@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Revision: 1.1 $ -->
+ <chapter id="features.file-upload">
+  <title>Dosya yükleme yönetimi</title>
+
+  <sect1 id="features.file-upload.post-method">
+   <title>POST metodu ile dosya yükleme</title>
+
+   <simpara>
+    PHP, RFC-1867 uyumlu tüm taray&inodot;c&inodot;lardan (Netscape Navigator 3 ve daha üst sürümler,
+    Mücrosoft'un yay&inodot;nlad&inodot;&gbreve;&inodot; bir yama ile Microsoft Internet Explorer 3, veya di&gbreve;er üst sürümleri)
+	dosya yüklemek için yeteneklidir. Bu özellik kullan&inodot;c&inodot;lar&inodot;n binary veya metinsel
+	dosya yükleyebilmelerini sa&gbreve;lamaktad&inodot;r.  PHP'nin yetkilendirme ve dosya i&scedil;leme özellikleri ile,
+	dosyalar&inodot; kimin yükleybilece&gbreve;i ve yüklendikten sonra ne yap&inodot;laca&gbreve;&inodot; konusunda tam kontrol sahibisinizdir.
+   </simpara>
+   <para>
+    PHP, Netscape Composer ve W3C'nin Amaya üyeleri taraf&inodot;ndan kullan&inodot;lan PUT yöntemi ile de 
+	dosya yükleme i&scedil;lemini destekler. PUT Yöntemi hakk&inodot;nda detayl&inodot; bilgi için<link
+    linkend="features.file-upload.put-method">t&inodot;klay&inodot;n&inodot;z.</link>
+   </para>
+   <para>
+    Dosya yükleme ekran&inodot;, a&scedil;a&gbreve;&inodot;daki gibi özel bir form haz&inodot;rlamakla olu&scedil;turulur:
+    <example>
+     <title>Dosya Yükleme Formu</title>
+     <programlisting role="html">
+<![CDATA[
+<form enctype="multipart/form-data" action="_URL_" method="post">
+<input type="hidden" name="MAX_FILE_SIZE" value="1000">
+Bu dosyay&inodot; gönder: <input name="userfile" type="file">
+<input type="submit" value="Gönder">
+</form>
+]]>
+     </programlisting>
+    </example>
+    _URL_ bir PHP dosyas&inodot;n&inodot; i&scedil;aret etmelidir.  MAX_FILE_SIZE gizli alan&inodot;, form içinde
+    dosya alan&inodot;ndan üstte olmal&inodot;d&inodot;r ve ta&scedil;&inodot;&gbreve;&inodot;d&inodot; de&gbreve;er, kabul edilebilir enfazla dosya boyunu 
+	gösterir.  De&gbreve;er byte cinsindendir.
+	<warning>
+	 <para>
+	  MAX_FILE_SIZE sadece taray&inodot;c&inodot;ya, bu boyutu a&scedil;mamas&inodot;n&inodot; söyler. Bunu a&scedil;mak çok kolayd&inodot;r.
+	  Bu yüzden buna pek fazla güvenmeyin. PHP'nin ayarlar&inodot;ndaki maximum-size ise a&scedil;&inodot;lamaz.
+	 </para>
+	</warning>
+   </para>
+
+   <para>
+    PHP'de , <filename>php.ini</filename> içindeki <link
+    linkend="ini.register-globals">register_globals</link>'&inodot;n on oldu&gbreve;u varsay&inodot;l&inodot;rsa, 
+	ba&scedil;ar&inodot;l&inodot; bir dosya yükleme an&inodot;nda a&scedil;a&gbreve;&inodot;daki de&gbreve;i&scedil;kenler tan&inodot;mlan&inodot;r.
+	E&gbreve;er <link
+    linkend="ini.track-vars">track_vars</link> on ise, bu de&gbreve;i&scedil;kenler PHP'nin 
+    <varname>$HTTP_POST_VARS</varname> dizinleri olarak da al&inodot;nabilir.
+	A&scedil;a&gbreve;&inodot;daki de&gbreve;i&scedil;ken adlar&inodot;, yukar&inodot;daki örnekteki 'userfile' alan ad&inodot;n&inodot;n kullan&inodot;ld&inodot;&gbreve;&inodot; varsay&inodot;larak
+	verilmi&scedil;tir:
+
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       <varname>$userfile</varname> - Dosyan&inodot;n, sunucuda saklanan geçici ad&inodot;.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <varname>$userfile_name</varname> - Dosyay&inodot; gönderen ki&scedil;inin bilgisayar&inodot;ndaki dosyan&inodot;n
+	   orijinal ad&inodot; veya sistem yolu.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <varname>$userfile_size</varname> - Gönderilen dosyan&inodot;n byte cinsinden boyutu.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <varname>$userfile_type</varname> - Taray&inodot;c&inodot;n&inodot;n bu bilgiyi vermesine ba&gbreve;l&inodot; olarak, 
+	   dosyan&inodot;n mime tipi. Örne&gbreve;in "image/gif".
+      </simpara>
+     </listitem>
+    </itemizedlist>
+	Yukar&inodot;daki de&gbreve;i&scedil;kenlerin "$userfile" bölümü, yükleme formundaki INPUT TYPE=file 
+	alan&inodot;na verdi&gbreve;iniz isimdir.	Yukar&inodot;daki yükleme formunda biz "userfile" ismini kulland&inodot;k.
+   </para>
+
+   <para>
+   PHP 4'de durum bir parça farkl&inodot;. Yüklenen dosya bilgileri <varname>$HTTP_POST_FILES</varname>
+   dizinlerine yüklenmi&scedil;tir. Bu PHP 3'de oldu&gbreve;u gibi, e&gbreve;er <link linkend="ini.track-vars">track_vars</link> 
+   on olarak tan&inodot;mlanm&inodot;&scedil; ise geçerlidir. Fakat PHP 4.0.2 ve üst sürümlerinde 
+   <link linkend="ini.track-vars">track_vars</link> on olarak tan&inodot;ml&inodot; gelir.
+   </para>
+
+   <para>
+    <varname>$HTTP_POST_FILES</varname>'&inodot;n içeri&gbreve;i a&scedil;a&gbreve;&inodot;daki gibidir.
+	Bu örnekte de, formdaki dosya yükleme alan&inodot;n&inodot;n ad&inodot;n&inodot;n "userfile" oldu&gbreve;u varsay&inodot;lm&inodot;&scedil;t&inodot;r:
+    <variablelist>
+     <varlistentry>
+      <term><varname>$HTTP_POST_FILES['userfile']['name']</varname></term>
+      <listitem>
+       <para>
+        Dosyan&inodot;n, dosyay&inodot; gönderenin bilgisayar&inodot;ndaki orijinal ad&inodot;.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><varname>$HTTP_POST_FILES['userfile']['type']</varname></term>
+      <listitem>
+       <para>
+        Taray&inodot;c&inodot;n&inodot;n bu bilgiyi vermesine ba&gbreve;l&inodot; olarak, 
+	   dosyan&inodot;n mime tipi. Örne&gbreve;in <literal>"image/gif"</literal>.
+        </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><varname>$HTTP_POST_FILES['userfile']['size']</varname></term>
+      <listitem>
+       <para>
+        Gönderilen dosyan&inodot;n byte cinsinden boyutu.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><varname>$HTTP_POST_FILES['userfile']['tmp_name']</varname></term>
+      <listitem>
+       <para>
+        Dosyan&inodot;n, sunucuda saklanan geçici ad&inodot;.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+
+   <para>
+    <filename>php.ini</filename> içindeki <link
+    linkend="ini.upload-tmp-dir">upload_tmp_dir</link> tan&inodot;mlamas&inodot;na farkl&inodot; bir yer 
+	tan&inodot;mlanmad&inodot;kça, dosyalar, sunucuda tan&inodot;ml&inodot; olan geçici klasör de saklan&inodot;r.
+    Sunucunun tan&inodot;ml&inodot; geçici klasörü, <envar>TMPDIR</envar> de&gbreve;i&scedil;keni tan&inodot;mlanarak de&gbreve;i&scedil;tirilebilir.
+    Bu tan&inodot;mlamay&inodot;, PHP dosyas&inodot; içinde <function>putenv</function> fonksiyonunu kullanarak
+	tan&inodot;mlamak geçerli olmayacakt&inodot;r.
+	Bu de&gbreve;i&scedil;keni, gönderilen dosya üzerindeki ba&scedil;ka i&scedil;lemlerin çal&inodot;&scedil;&inodot;rl&inodot;&gbreve;&inodot;ndan
+	emin olmak içinde kullanabilirsiniz.
+    <example>
+     <title>Dosya Yükleme Kontrolü</title>
+     <para>
+	 A&scedil;a&gbreve;&inodot;daki örnek, PHP 3'ün, 3.0.16'den ve PHP 4'ün 4.0.2'den yüksek sürümleri içindir.
+	 Fonksiyon özellikleri için  <function>is_uploaded_file</function> ve
+      <function>move_uploaded_file</function> sayfalar&inodot;na bak&inodot;n&inodot;z.
+     </para>
+     <programlisting role="php">
+<![CDATA[
+<?php 
+if (is_uploaded_file($userfile)) {
+    copy($userfile, "/place/to/put/uploaded/file");
+} else {
+    echo "Possible file upload attack: filename '$userfile'.";
+}
+/* ...or... */
+move_uploaded_file($userfile, "/place/to/put/uploaded/file");
+?>
+]]>
+     </programlisting>
+     <para>
+      PHP'nin daha önceki sürümleri için, a&scedil;a&gbreve;&inodot;daki gibi bir seye ihtiyac&inodot;n&inodot;z var.
+      <note>
+       <para>
+        Bu örnek PHP'nin 4.0.2'den sonraki sürümlerinde <emphasis>çal&inodot;&scedil;maz</emphasis>.
+       </para>
+      </note>
+     </para>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/* Userland test for uploaded file. */ 
+function is_uploaded_file($filename) {
+    if (!$tmp_file = get_cfg_var('upload_tmp_dir')) {
+        $tmp_file = dirname(tempnam('', ''));
+    }
+    $tmp_file .= '/' . basename($filename);
+    /* User might have trailing slash in php.ini... */
+    return (ereg_replace('/+', '/', $tmp_file) == $filename);
+}
+
+if (is_uploaded_file($userfile)) {
+    copy($userfile, "/place/to/put/uploaded/file");
+} else {
+    echo "Possible file upload attack: filename '$userfile'.";
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    Gönderilen dosyay&inodot; alan PHP dosyan&inodot;z, gönderilen dosyan&inodot;n ne yap&inodot;laca&gbreve;&inodot;na
+	karar vermek için programlanmal&inodot;d&inodot;r.
+	Örne&gbreve;in, dosya boyutu çok büyük veya çok küçük olan
+	dosyalar&inodot; kabul etmemek için <varname>$file_size</varname> de&gbreve;i&scedil;kenini kullanabilirsiniz.
+	<varname>$file_type</varname> de&gbreve;i&scedil;kenini, belirledi&gbreve;iniz kriterlerdeki dosya tipine uymayan
+	dosyalar&inodot; kabul etmemek için kullanabilirsiniz.
+	&Idot;stemedi&gbreve;iniz bu dosyalar&inodot;, geçici klasörden silebilir veya farkl&inodot; bir klasöre ta&scedil;&inodot;yabilirsiniz.
+   </simpara>
+   <simpara>
+   &Idot;&scedil;lem sonunda, dosya ta&scedil;&inodot;nmad&inodot; veya ad&inodot; de&gbreve;i&scedil;tirilmedi ise, geçici 
+   klasörden silinir.
+   </simpara>
+  </sect1>
+ 
+  <sect1 id="features.file-upload.common-pitfalls">
+   <title>Genel Tehlikeler</title>
+   <simpara>
+    Formdaki <literal>MAX_FILE_SIZE</literal> alan&inodot;, PHP'nin ini tan&inodot;mlar&inodot;ndaki 
+	<link linkend="ini.upload-max-filesize">upload_max_filesize</link> da tan&inodot;mlanm&inodot;&scedil; de&gbreve;erden
+	daha büyük bir de&gbreve;er tan&inodot;yamaz. Tan&inodot;ml&inodot; gelen 2 Megabyte t&inodot;r.
+   </simpara>
+   <simpara>
+   &Idot;&scedil;lem yapt&inodot;&gbreve;&inodot;n&inodot;z dosyay&inodot; kontrol etmemek, kullan&inodot;c&inodot;lar&inodot;n di&gbreve;er klasörlerdeki
+   hassas bilgilerinize eri&scedil;ebilmesi demektir.
+   </simpara>
+   <simpara>
+   Lütfen CERN httpd'nin istemciden gelen content-type mime ba&scedil;l&inodot;&gbreve;&inodot;nda ilk bo&scedil;luktan sonraki her &scedil;eyi silme e&gbreve;iliminde oldu&gbreve;unu
+   not edin. Bu durum devam ettikçe, CERN httpd dosya yükleme özelli&gbreve;ini desteklemeyecektir.
+   </simpara>
+  </sect1>
+
+  <sect1 id="features.file-upload.multiple">
+   <title>Çoklu Dosya Yükleme</title>
+   <simpara>
+   Ayn&inodot; anda birden fazla dosya yüklemek ve dosya bilgilerini otomatik olarak
+   organize olmu&scedil; bir dizin olarak almak mümkündür. Bunu yapmak için, HTML formlarda kulland&inodot;&gbreve;&inodot;n&inodot;z
+   Checkbox alanlar&inodot;nda oldu&gbreve;u gibi, ayn&inodot; dizin gönderimi yapmal&inodot;s&inodot;n&inodot;z:
+   </simpara>
+   <note>
+    <para>
+	Çoklu dosya yükleme deste&gbreve;i 3.0.10 sürümünde eklenmi&scedil;tir.
+    </para>
+   </note>
+   <para>
+    <example>
+     <title>Çoklu Dosya Yükleme</title>
+     <programlisting role="html">
+<![CDATA[
+<form action="file-upload.php" method="post" enctype="multipart/form-data">
+  Send these files:<br>
+  <input name="userfile[]" type="file"><br>
+  <input name="userfile[]" type="file"><br>
+  <input type="submit" value="Send files">
+</form>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+   Yukar&inodot;daki form gönderildi&gbreve;inde, dizinler
+    <varname>$userfile</varname>,
+    <varname>$userfile_name</varname>, ve
+    <varname>$userfile_size</varname> will be formed in
+    the global scope (as well as in $HTTP_POST_FILES ($HTTP_POST_VARS
+    in PHP 3)). Bunlar&inodot;n her biri, gönderilen dosyalar&inodot;n de&gbreve;erlerini içeren
+	numaraland&inodot;r&inodot;lm&inodot;&scedil; dizin olacakt&inodot;r.
+   </simpara>
+   <simpara>
+    Örne&gbreve;in, gönderilen dosya adlar&inodot;n&inodot;n &scedil;öyle oldu&gbreve;unu varsayal&inodot;m:
+    <filename>/home/test/review.html</filename> ve
+    <filename>/home/test/xwp.out</filename>.  Bu durumda,
+	<varname>$userfile_name[0]</varname>, <filename>review.html</filename> de&gbreve;erini içerir,
+    ve <varname>$userfile_name[1]</varname> de <filename>xwp.out</filename> de&gbreve;erini içerir.
+	Bir benzeri de,
+    <varname>$userfile_size[0]</varname>, <filename>review.html</filename>'in dosya boyutunu içerir. Di&gbreve;erleri de ayn&inodot;d&inodot;r.
+   </simpara>
+   <simpara>
+    <varname>$userfile['name'][0]</varname>,
+    <varname>$userfile['tmp_name'][0]</varname>,
+    <varname>$userfile['size'][0]</varname>, ve
+    <varname>$userfile['type'][0]</varname> de tan&inodot;mlanm&inodot;&scedil;t&inodot;r.
+   </simpara>
+  </sect1>
+
+  <sect1 id="features.file-upload.put-method">
+   <title>PUT Yönetmi Deste&gbreve;i</title>
+
+   <para>
+    PHP Netscape Composer ve W3C Amaya gibi programlar&inodot;n kulland&inodot;&gbreve;&inodot; HTTP PUT 
+	yöntemini de destekler. PUT i&scedil;lemi, bir dosya yükleme i&scedil;leminden
+	daha basittir ve a&scedil;a&gbreve;&inodot;daki gibidir:
+    <informalexample>
+     <programlisting>
+PUT /path/filename.html HTTP/1.1
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    Bu &scedil;u demektir: dosyay&inodot; yükleyen, dosyay&inodot;, web düzeniniz içindeki
+	/path/filename.html içine kaydetmek istemektedir.
+    Tüm kulan&inodot;c&inodot;lar&inodot;n, web dizini içindeki herhangi bir dosyan&inodot;n üzerine yazmak
+	Apache ve PHP için kesinlikle iyi bir fikir de&gbreve;ildir.
+	Bu tür bir i&scedil;lemi kontrol alt&inodot;na almak için, web sunucunuza böyle bir i&scedil;lem için
+	belirli bir PHP dosyas&inodot;n&inodot; kullanmas&inodot;n&inodot; söylemelisiniz. Apache'de bu i&scedil;lem <emphasis>Script</emphasis>
+	direktifi ile yap&inodot;lmaktad&inodot;r. Bu direktif, Apache'nin konfigursasyon dosyas&inodot;nda
+	herhangi bir yere konulabilir.  Genellikle &lt;Directory&gt; blo&gbreve;unun
+	veya &lt;Virtualhost&gt; blo&gbreve;unun içine konur.
+	Bunun gibi bir sat&inodot;r i&scedil;inizi görecektir:
+    <informalexample>
+     <programlisting>
+Script PUT /put.php
+     </programlisting>
+    </informalexample>
+   </para>
+   <simpara>
+   Bu sat&inodot;r, Apache'ye, tüm PUT istemlerini, ekledi&gbreve;imiz sat&inodot;rda bulunan
+   put.php dosyas&inodot;na göndermesini söyler. Bu örnek, .php uzant&inodot;s&inodot;n&inodot;n çal&inodot;&scedil;&inodot;r oldu&gbreve;u
+   ve PHP nin aktif oldu&gbreve;u varsay&inodot;larak verilmi&scedil;tir.
+   </simpara>
+   <simpara>
+   
+    put.php dosyan&inodot;zda, &scedil;öyle bir&scedil;ey yapabilirsiniz:
+   </simpara>
+   <para>
+    <informalexample><programlisting role="php">
+<![CDATA[
+<?php copy($PHP_UPLOADED_FILE_NAME,$DOCUMENT_ROOT.$REQUEST_URI); ?>
+]]>
+    </programlisting></informalexample>
+   </para>
+   <simpara>
+   Bu i&scedil;lem, dosyay&inodot;, i&scedil;elemi yapan ki&scedil;inin istedi&gbreve;i klasöre kopyalar.
+    Bu kopyalama i&scedil;lemini gerçekle&scedil;tirmeden önce, baz&inodot; kontroler ve/veya
+	giri&scedil; kontrolleri yapmak isteyebilirsiniz.
+    &Idot;stek sonland&inodot;&gbreve;&inodot;nda, bu geçici dosya silinir.  Dolay&inodot;s&inodot; ile
+	i&scedil;lemi gerçekle&scedil;tiren dosyan&inodot;z, bu dosyay&inodot; ba&scedil;ka bir yere kopyalamal&inodot;d&inodot;r.
+	Bu geçici klasördeki dosya ad&inodot; $PHP_PUT_FILENAME de&gbreve;i&scedil;kenindedir
+	ve iste&gbreve;i gönderenin belirledi&gbreve;i dosya ad&inodot;n&inodot; $REQUEST_URI 
+	(Apache d&inodot;&scedil;&inodot;ndaki web sunucularda de&gbreve;i&scedil;ebilir) de&gbreve;i&scedil;keninde görebilirsiniz.
+    Bu belirtilen dosya ad&inodot;, dosyay&inodot; gönderenin belirledi&gbreve;i dosya ad&inodot;d&inodot;r.
+	Bu iste&gbreve;i gerçekle&scedil;tirmek zorunda de&gbreve;ilsinizdir. Örne&gbreve;in
+	tüm dosyalar&inodot;, belirledi&gbreve;iniz bir klasöre kopyalabilirsiniz.
+   </simpara>
+  </sect1>
+
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
