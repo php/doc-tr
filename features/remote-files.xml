@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
  <chapter id="features.remote-files">
-  <title>Uzaktaki Dosyalar&inodot; Kullanmak</title>
+  <title>Uzaktaki Dosyaları Kullanmak</title>
 
+  <!-- dirge: remote file => uzak dosya -->
   <para>
-   &quot;URL fopen wrapper&quot; PHP derlenmeden önce aktifle&scedil;tirildi&gbreve;i (ki,
-   --disable-url-fopen-wrapper parametresini özellikle vermedi&gbreve;inizde
+   &quot;URL fopen wrapper&quot; PHP derlenmeden önce aktifleştirildiği (ki,
+   --disable-url-fopen-wrapper parametresini özellikle vermediğinizde
    böyledir) (4.0.3 öncesi sürümler için) veya php.ini'de
-   <parameter>allow_url_fopen</parameter> ayar&inodot;na off de&gbreve;erini vermediyseniz
+   <parameter>allow_url_fopen</parameter> ayarına off değerini vermediğiniz
    (yeni sürümler için) sürece, HTTP ve FTP URL'lerini parametre olarak
-   dosya ismi alan ço&gbreve;u fonksiyonda, <function>require</function> ve
-   <function>include</function> ifadeleri dahil, kullanabilirsiniz.
+   dosya ismi alan, <function>require</function> ve
+   <function>include</function> ifadeleri dahil, çoğu fonksiyonda kullanabilirsiniz.
   </para>
   <para>
    <note>
     <para>
-     Uzak dosyalar&inodot; Windows alt&inodot;nda <function>include</function> ve
-     <function>require</function> ifadelerinde kullanamazs&inodot;n&inodot;z.
+     Uzak dosyaları Windows altında <function>include</function> ve
+     <function>require</function> ifadelerinde kullanamazsınız.
     </para>
    </note>
   </para>
   <para>
-   Örne&gbreve;in, bunu uzaktaki bir HTTP sunucusunda olan bir dosyay&inodot; açmak,
-   ç&inodot;kt&inodot;s&inodot;n&inodot; ay&inodot;klamak ve elde edilen bilgiyi bir veritaban&inodot; sorgusunda
-   kullanmak, ya da basitçe web sitenizin geri kalan&inodot;na uygun bir görüntüde
+   Örneğin, bunu uzaktaki bir HTTP sunucusunda olan bir dosyayı açmak,
+   çıktısını ayıklamak ve elde edilen bilgiyi bir veritabanı sorgusunda
+   kullanmak, ya da basitçe web sitenizin geri kalanına uygun bir görüntüde
    göstermek için kullanabilirsiniz.
   </para>
   <para>
    <example>
-    <title>Uzaktaki bir sayfan&inodot;n ba&scedil;l&inodot;&gbreve;&inodot;n&inodot; almak</title>
+    <title>Uzaktaki bir sayfanın başlığını almak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $file = fopen ("http://www.php.net/", "r");
 if (!$file) {
-    echo "<p>Uzaktaki dosya aç&inodot;lamad&inodot;.\n";
+    echo "<p>Uzaktaki dosya açılamadı.\n";
     exit;
 }
 while (!feof ($file)) {
     $line = fgets ($file, 1024);
-    /* Bu sadece title etiketi ve içeri&gbreve;i ayn&inodot; sat&inodot;rdaysa i&scedil;e yarar */
+    /* Bu sadece title etiketi ve içeriği aynı satırdaysa işe yarar */
     if (eregi ("<title>(.*)</title>", $line, $out)) {
         $title = $out[1];
         break;
@@ -52,12 +53,12 @@ fclose($file);
    </example>
   </para>
   <para>
-   Ya da bunu, do&gbreve;ru eri&scedil;im hakk&inodot;na sahip bir kullan&inodot;c&inodot;yla ba&gbreve;land&inodot;&gbreve;&inodot;n&inodot;z
-   ve çoktan dosya varolmad&inodot;&gbreve;&inodot; sürece FTP ile uzaktaki dosyalara yazmak
-   için kullanabilirsiniz. 'anonymous' d&inodot;&scedil;&inodot;nda bir kullan&inodot;c&inodot; olarak ba&gbreve;lanmak
-   için kullan&inodot;c&inodot;y&inodot; (ve muhtemelen parolay&inodot;) URL içine yazmal&inodot;s&inodot;n&inodot;z, örne&gbreve;in
-   'ftp://kullan&inodot;c&inodot;:parola@ftp.example.com/yol/dosya' gibi. (Ayn&inodot; yöntemi
-   HTTP'de Basic Authentication'a ihtiyaç duyan dosyalara eri&scedil;mek için de
+   Ya da bunu, doğru erişim hakkına sahip bir kullanıcıyla bağlandığınız
+   ve çoktan dosya varolmadığı sürece FTP ile uzaktaki dosyalara yazmak
+   için kullanabilirsiniz. 'anonymous' dışında bir kullanıcı olarak bağlanmak
+   için kullanıcıyı (ve muhtemelen parolayı) URL içine yazmalısınız, örneğin
+   'ftp://kullanıcı:parola@ftp.example.com/yol/dosya' gibi. (Aynı yöntemi
+   HTTP'de Basic Authentication'a ihtiyaç duyan dosyalara erişmek için de
    kullanabilirsiniz.)
   </para>
   <para>
@@ -68,7 +69,7 @@ fclose($file);
 <?php
 $file = fopen ("ftp://ftp.php.net/incoming/outputfile", "w");
 if (!$file) {
-    echo "<p>Yazmak üzere uzak dosya aç&inodot;lamad&inodot;\n";
+    echo "<p>Yazmak üzere uzak dosya açılamadı\n";
     exit;
 }
 /* Veriyi yaz */
@@ -82,11 +83,11 @@ fclose ($file);
   <para>
    <note>
     <para>
-     Yukar&inodot;daki örnekten, uzaktaki bir günlü&gbreve;e yazmak için nas&inodot;l bir teknik
-     kullanaca&gbreve;&inodot;n&inodot;z konusunda bir fikir alm&inodot;&scedil;s&inodot;n&inodot;zd&inodot;r, fakat önceden
-     belirtildi&gbreve;i gibi, URL fopen() sarg&inodot;lar&inodot;yla sadece yeni dosyalara
-     yazabilirsiniz. Bunun gibi da&gbreve;&inodot;t&inodot;lm&inodot;&scedil; günlük tutmak isterseniz,
-     <function>syslog</function>'s bir göz atmal&inodot;s&inodot;n&inodot;z.
+     Yukarıdaki örnekten, uzaktaki bir günlüğe yazmak için nasıl bir teknik
+     kullanacağınız konusunda bir fikir almışsınızdır, fakat önceden
+     belirtildiği gibi, URL fopen() sargılarıyla sadece yeni dosyalara
+     yazabilirsiniz. Bunun gibi dağıtılmış günlük tutmak isterseniz,
+     <function>syslog</function>'a bir göz atmalısınız.
     </para> 
    </note>
   </para>

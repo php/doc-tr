@@ -1,117 +1,120 @@
 <?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
  <chapter id="features.persistent-connections">
-  <title>Kal&inodot;c&inodot; Veritaban&inodot; Ba&gbreve;lant&inodot;lar&inodot;</title>
+  <title>Kalıcı Veritabanı Bağlantıları</title>
 
   <simpara>
-   Kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar, beti&gbreve;iniz sonland&inodot;&gbreve;&inodot;nda kapat&inodot;lmayan SQL ba&gbreve;lant&inodot;lar&inodot;na
-   denir. Kal&inodot;c&inodot; bir ba&gbreve;lant&inodot; istendi&gbreve;inde, PHP daha önceden tamamen ayn&inodot;
-   özelliklerde ba&scedil;ka bir kal&inodot;c&inodot; ba&gbreve;lant&inodot; aç&inodot;l&inodot;p aç&inodot;lmad&inodot;&gbreve;&inodot;na bakar (daha
-   önceden kalan) - ve e&gbreve;er varsa, onu kullan&inodot;r. E&gbreve;er yoksa, yeni ba&gbreve;lant&inodot;y&inodot;
-   yapar. 'Tamamen ayn&inodot;' ba&gbreve;lant&inodot;lar, ayn&inodot; sunucuya, ayn&inodot; kullan&inodot;c&inodot; ismi ve
-   &scedil;ifreyle (gerekliyse) aç&inodot;lm&inodot;&scedil; ba&gbreve;lant&inodot;lard&inodot;r.
+   Kalıcı bağlantılar, betiğiniz sonlandığında kapatılmayan SQL bağlantılarına
+   denir. Kalıcı bir bağlantı istendiğinde, PHP daha önceden tamamen aynı
+   özelliklerde başka bir kalıcı bağlantı açılıp açılmadığına bakar (daha
+   önceden kalan) - ve eğer varsa, onu kullanır. Eğer yoksa, yeni bağlantı
+   kurar. 'Tamamen aynı' bağlantılar, aynı sunucuya, aynı kullanıcı ismi ve
+   (gerekliyse) şifreyle açılmış bağlantılardır.
   </simpara>
 
   <simpara>
-   HTTP sunucular&inodot;n&inodot;n çal&inodot;&scedil;ma mant&inodot;&gbreve;&inodot;na a&scedil;ina olmayanlar, kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar&inodot;
-   gerçekte olmad&inodot;klar&inodot; &scedil;eyler sanabilirler. Özellikle, ayn&inodot; SQL ba&gbreve;lant&inodot;s&inodot;
-   üzerinde 'kullan&inodot;c&inodot; oturumlar&inodot;' <emphasis>açmazlar</emphasis>,
-   transaction'lar&inodot; daha etkili bir &scedil;ekilde yapman&inodot;z&inodot;
-   <emphasis>sa&gbreve;lamazlar</emphasis> ve ba&scedil;ka pek çok &scedil;eyi gerçekle&scedil;tirmezler.
-   Konu hakk&inodot;nda daha aç&inodot;k olmak gerekirse, kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar size karde&scedil;leri
-   kal&inodot;c&inodot; olmayan ba&gbreve;lant&inodot;lar&inodot;n sunmad&inodot;&gbreve;&inodot; hiç bir ek özellik
+   HTTP sunucularının çalışma mantığına aşina olmayanlar, kalıcı bağlantıları
+   gerçekte olmadıkları şeyler sanabilirler. Özellikle, aynı SQL bağlantısı
+   üzerinde 'kullanıcı oturumları' <emphasis>açmazlar</emphasis>,
+   transaction'ları daha etkili bir şekilde yapmanızı
+   <emphasis>sağlamazlar</emphasis> ve başka pek çok şeyi gerçekleştirmezler.
+   Konu hakkında daha açık olmak gerekirse, kalıcı bağlantılar size kardeşleri
+   kalıcı olmayan bağlantıların sunmadığı hiç bir ek özellik
    <emphasis>sunmazlar</emphasis>.
   </simpara>
   <simpara>
    Neden?
   </simpara> 
   <simpara>
-   Bu daha çok HTTP sunucular&inodot;n&inodot;n çal&inodot;&scedil;ma mant&inodot;&gbreve;&inodot;yla alakal&inodot;. Sunucunun
-   PHP'yi kullanarak web sayfalar&inodot; olu&scedil;turmas&inodot;n&inodot;n üç yöntemi var.
+   Bu daha çok HTTP sunucularının çalışma mantığıyla alakalı. Sunucunun
+   PHP'yi kullanarak web sayfaları oluşturmasının üç yöntemi var.
   </simpara>
   <simpara>
-   <!-- dirge: wrapper => sarg&inodot; -->
-   &Idot;lk yöntem PHP'yi CGI "sarg&inodot;s&inodot;" olarak kullanmak. Bu &scedil;ekilde çal&inodot;&scedil;t&inodot;&gbreve;&inodot;nda,
-   sunucuya gelen her sayfa iste&gbreve;i için ayr&inodot; bir PHP yorumlay&inodot;c&inodot;s&inodot; yarat&inodot;l&inodot;r
-   ve yokedilir (PHP sayfalar&inodot; için). &Idot;&scedil;lemler sonunda yokedildikleri için,
-   yaratt&inodot;klar&inodot; her kaynak (SQL sunucusuna ba&gbreve;lant&inodot;lar gibi) da onlarla
-   birlikte yokolur. Bu durumda, kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar kurmay&inodot; denemekle elinize
-   hiçbir&scedil;ey geçmez -- basitçe, kal&inodot;c&inodot; olamazlar.
+   <!-- dirge: wrapper => sargı -->
+   İlk yöntem PHP'yi CGI "sargısı" olarak kullanmak. Bu şekilde çalıştığında,
+   sunucuya gelen her sayfa isteği için ayrı bir PHP yorumlayıcısı yaratılır
+   ve yokedilir (PHP sayfaları için). İşlemler sonunda yokedildikleri için,
+   yarattıkları her kaynak da (SQL sunucusuna bağlantılar gibi) onlarla
+   birlikte yokolur. Bu durumda, kalıcı bağlantılar kurmayı denemekle elinize
+   hiçbirşey geçmez -- basitçe, kalıcı olamazlar.
+  </simpara>
+  <simpara> 
+   <!-- dirge: multiprocess => çok işlemli -->
+   İkinci, ve en popüler, yöntem PHP'yi çok işlemli (multiprocess) bir
+   sunucuda modül olarak kullanmak, şu an sadece Apache'de olduğu gibi. Çok
+   işlemli bir sunucu genellikle bir ana işlemden (parent) ve onun kontrolündeki
+   gerçekte işlemleri yapan çocuk işlemlerden (children) oluşur. Ne zaman bir
+   alıcıdan istek gelse, istek o anda başka bir isteğe cevap vermeyen bir çocuk
+   işleme devredilir. Bu demektir ki, aynı alıcı ikinci bir istek yolladığında,
+   başka bir çocuk işlem tarafından karşılanabilir. Kalıcı bağlantıların
+   sizin için burada yaptığı iş, her çocuk işlemin sadece ilk seferde SQL
+   sunucusuna bağlanmasıdır. Başka bir sayfanın aynı bağlantıya ihtiyaç duyması
+   durumunda önceden kurulmuş bağlantı kullanılır.
   </simpara>
   <simpara>
-   &Idot;kinci, ve en popüler, yöntem PHP'yi çok i&scedil;lemli (multiprocess) bir
-   sunucuda modül olarak kullanmak, &scedil;u an sadece Apache'de oldu&gbreve;u gibi. Çok
-   i&scedil;lemli bir sunucu genellikle bir ana i&scedil;lemden (parent) ve onun kontrolündeki
-   gerçekte i&scedil;lemleri yapan çocuk i&scedil;lemlerden (children) olu&scedil;ur. Ne zaman bir
-   al&inodot;c&inodot;dan istek gelse, o anda ba&scedil;ka bir iste&gbreve;e cevap vermeyen bir çocuk
-   i&scedil;leme devredilir. Bu demektir ki, ayn&inodot; al&inodot;c&inodot; ikinci bir istek yollad&inodot;&gbreve;&inodot;nda,
-   ba&scedil;ka bir çocuk i&scedil;lem taraf&inodot;ndan kar&scedil;&inodot;lanabilir. Kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar&inodot;n
-   sizin için burada yapt&inodot;&gbreve;&inodot; i&scedil;, her çocuk i&scedil;lemin sadece ilk seferde SQL
-   sunucusuna ba&gbreve;lanmas&inodot;. Ba&scedil;ka bir sayfan&inodot;n ayn&inodot; ba&gbreve;lant&inodot;ya duymas&inodot; durumunda
-   önceden yap&inodot;lm&inodot;&scedil; ba&gbreve;lant&inodot; kullan&inodot;l&inodot;r.
+   <!-- dirge: thread => iş parçacığı -->
+   Son yöntem PHP'yi çok iş parçacıklı (multithreaded) sunucularda eklenti
+   olarak kullanmak. Şu anda PHP 4'ün Netscape FastTrack (iPlanet), Microsoft
+   Internet Information Server (IIS), ve O'Reilly Website Pro gibi çok iş
+   parçacıklı sunucularda çalışmasını sağlayan ISAPI, WSAIP, ve NSAPI
+   (Windows'ta) için desteği var. Bu çalışma şekli az önce anlatılan çok
+   işlemli modelle aynı. SAPI desteğinin PHP 3'te olmadığına dikkat edin.
   </simpara>
   <simpara>
-   <!-- dirge: thread => i&scedil; parçac&inodot;&gbreve;&inodot; -->
-   Son yöntem PHP'yi çok i&scedil; parçac&inodot;kl&inodot; (multithreaded) sunucularda eklenti
-   olarak kullanmak. &Scedil;u anda PHP 4'ün Netscape FastTrack (iPlanet), Microsoft
-   Internet Information Server (IIS), ve O'Reilly Website Pro gibi çok i&scedil;
-   parçac&inodot;kl&inodot; sunucularda çal&inodot;&scedil;mas&inodot;n&inodot; sa&gbreve;layan ISAPI, WSAIP, ve NSAPI
-   (Windows'ta) için deste&gbreve;i var. Bu çal&inodot;&scedil;ma &scedil;ekli az önce anlat&inodot;lan çok
-   i&scedil;lemli modelle ayn&inodot;. SAPI deste&gbreve;inin PHP 3'te olmad&inodot;&gbreve;&inodot;na dikkat edin.
-  </simpara>
-  <simpara>
-   E&gbreve;er kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar&inodot;n ek özellikleri yoksa, neye yararlar?
+   Eğer kalıcı bağlantıların ek özellikleri yoksa, neye yararlar?
   </simpara>
   <simpara>
    <!-- dige: efficiency => etkinlik -->
-   Buradaki cevap oldukça basit -- etkinlik. Kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar, SQL
-   sunucunuza yeni ba&gbreve;lant&inodot; açmak performans aç&inodot;s&inodot;ndan hesapl&inodot; de&gbreve;ilse 
-   çok i&scedil;e yararlar. Performans hesapl&inodot;l&inodot;&gbreve;&inodot; pek çok &scedil;eye ba&gbreve;l&inodot;d&inodot;r. Örne&gbreve;in, ne
-   tür bir veritaban&inodot; oldu&gbreve;u, HTTP sunucusuyla ayn&inodot; bilgisayarda olup
-   olmay&inodot;&scedil;&inodot;, SQL sunucusunun çal&inodot;&scedil;t&inodot;&gbreve;&inodot; bilgisayar&inodot;n i&scedil;lem yo&gbreve;unlu&gbreve;u ve
-   benzeri. Sonuç &scedil;u ki, yeni ba&gbreve;lant&inodot; performans&inodot; dü&scedil;ükse, kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar
-   i&scedil;e yarar. Her çocuk i&scedil;lemin her seferinde yeni ba&gbreve;lant&inodot; açmas&inodot; yerine
-   hayat&inodot; boyunca sadece bir kere ba&gbreve;lant&inodot; yapmas&inodot;n&inodot; ve sürekli onu kullanmas&inodot;n&inodot;
-   sa&gbreve;larlar. Bu demektir ki, kal&inodot;c&inodot; ba&gbreve;lant&inodot; açan her çocuk i&scedil;lemin SQL
-   sunucusuna kendine ait kal&inodot;c&inodot; bir ba&gbreve;lant&inodot;s&inodot; olacakt&inodot;r. Örne&gbreve;in, 20 tane
-   kal&inodot;c&inodot; ba&gbreve;lant&inodot; açan betik çal&inodot;&scedil;t&inodot;rm&inodot;&scedil; farkl&inodot; çocuk i&scedil;lem varsa, SQL
-   sunucusuna 20 tane ba&gbreve;lant&inodot; olacakt&inodot;r, her çocuk i&scedil;lemden bir tane.
+   Buradaki cevap oldukça basit -- etkinlik. Kalıcı bağlantılar, SQL
+   sunucunuza yeni bağlantı açmak performans açısından hesaplı değilse 
+   çok işe yararlar. Performans hesaplılığı pek çok şeye bağlıdır. Örneğin, ne
+   tür bir veritabanı olduğu, HTTP sunucusuyla aynı bilgisayarda olup
+   olmayışı, SQL sunucusunun çalıştığı bilgisayarın işlem yoğunluğu ve
+   benzeri. Sonuç şu ki, yeni bağlantı performansı düşükse, kalıcı bağlantılar
+   işe yarar. Her çocuk işlemin her seferinde yeni bağlantı açması yerine
+   hayatı boyunca sadece bir kere bağlantı yapmasını ve sürekli onu kullanmasını
+   sağlarlar. Bu demektir ki, kalıcı bağlantı açan her çocuk işlemin kendisine
+   ait SQL sunucusuna kalıcı bir bağlantısı olacaktır. Örneğin, 20 tane
+   kalıcı bağlantı açan betik çalıştırmış farklı çocuk işlem varsa, SQL
+   sunucusuna, her çocuk işlemden bir tane olmak üzere, 20 tane bağlantı
+   olacaktır.
   </simpara>
   <simpara>
-   Ancak dikkat edin ki, bunun SQL sunucusunun ba&gbreve;lant&inodot; limiti kal&inodot;c&inodot;
-   ba&gbreve;lant&inodot;larla a&scedil;&inodot;ld&inodot;&gbreve;&inodot;nda bir tak&inodot;m götürüler olacakt&inodot;r. E&gbreve;er veritaban&inodot;
-   sunucunuz ayni anda 16 ba&gbreve;lant&inodot;ya izin veriyorsa, ve yo&gbreve;un bir çal&inodot;&scedil;ma
-   an&inodot;nda 17 çocuk i&scedil;lem kal&inodot;c&inodot; ba&gbreve;lant&inodot; açmaya kalkarsa, bunlardan biri
-   ba&gbreve;lant&inodot;y&inodot; açamaz. E&gbreve;er betiklerinizde ba&gbreve;lant&inodot;lar&inodot;n kapanabilmesine olanak
-   tan&inodot;mayan hatalar varsa (k&inodot;s&inodot;r döngü gibi), 32 ba&gbreve;lant&inodot;ya izin verecek bir
-   veritaban&inodot; sunucusu çok çabuk bir &scedil;ekilde kullan&inodot;&scedil;s&inodot;z hale gelir. Bo&scedil; duran
-   (idle) ba&gbreve;lant&inodot;larla nas&inodot;l ilgilenece&gbreve;iniz konusunda veritaban&inodot;n&inodot;z&inodot;n
-   dökümanlar&inodot;na ba&scedil;vurun.
+   Ancak dikkat edin ki, SQL sunucusunun bağlantı limiti kalıcı bağlantılarla
+   aşıldığında bunun bir takım götürüleri olacaktır. Eğer veritabanı
+   sunucunuz ayni anda 16 bağlantıya izin veriyorsa, ve yoğun bir çalışma
+   anında 17 çocuk işlem kalıcı bağlantı açmaya kalkarsa, bunlardan biri
+   bağlantıyı açamaz. Eğer betiklerinizde bağlantıların kapanabilmesine olanak
+   tanımayan hatalar varsa (kısır döngüler gibi), 32 bağlantıya izin veren bir
+   veritabanı sunucusu çok çabuk bir şekilde kullanım dışı olur. Boş duran
+   (idle) bağlantılarla nasıl ilgileneceğiniz konusunda veritabanınızın
+   dökümanlarına başvurun.
   </simpara>
   <warning>
    <simpara>
-    Kal&inodot;c&inodot; ba&gbreve;lant&inodot; kullan&inodot;rken ak&inodot;lda tutulmas&inodot; gereken birkaç ek götürü daha
-    var. Örne&gbreve;in kal&inodot;c&inodot; bir ba&gbreve;lant&inodot;yla bir tablo kitlendiyse (LOCK), ve betik
-    herhangi bir sebepten dolay&inodot; kilidi kald&inodot;ram&inodot;yorsa, ard&inodot;s&inodot;ra gelen
-    ve ayn&inodot; ba&gbreve;lant&inodot;y&inodot; kullanacak betikler süresiz olarak bloke olacak, ve
-    sizin ya HTTP sunucusunu ya da veritaban&inodot; sunucusunu ba&scedil;tan çal&inodot;&scedil;t&inodot;rman&inodot;z
-    gerekecektir. Ba&scedil;ka bir götürü transaction kullan&inodot;rken olu&scedil;abilir. Bir
-    transaction blo&gbreve;u, beti&gbreve;in çal&inodot;&scedil;ma süresi blo&gbreve;un ömründen kisaysa, bir
-    sonraki beti&gbreve;e ta&scedil;&inodot;nacakt&inodot;r. &Idot;ki durumda da
+    <!-- dirge: register => kaydetmek -->
+    Kalıcı bağlantı kullanırken akılda tutulması gereken birkaç ek götürü daha
+    var. Örneğin kalıcı bir bağlantı üzerinden bir tablo kitlendiyse (LOCK),
+    ve betik herhangi bir sebepten dolayı kilidi kaldıramıyorsa, ardısıra gelen
+    ve aynı bağlantıyı kullanacak betikler süresiz olarak bloke olacak, ve
+    sizin ya HTTP sunucusunu ya da veritabanı sunucusunu baştan çalıştırmanız
+    gerekecektir. Başka bir götürü transaction kullanırken oluşabilir. Bir
+    transaction bloğu, betiğin çalışma süresi bloğun ömründen kisaysa, bir
+    sonraki betiğe taşınacaktır. İki durumda da
     <function>register_shutdown_function</function> ile transaction'i geri
-    alacak ya da tablo kilitlerini kald&inodot;racak bir temizlik fonksiyonu
+    alacak ya da tablo kilitlerini kaldıracak bir temizlik fonksiyonu
     kaydedebilirsiniz. Daha iyisi, problemleri tümüyle önlemek için tablo
-    kilitleri veya transaction kullanan betiklerde kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar&inodot;
-    kullanmamak (ba&scedil;ka yerlerde hala kullanabilirsiniz).
+    kilitleri veya transaction kullanan betiklerde kalıcı bağlantıları
+    kullanmamaktır (başka yerlerde hala kullanabilirsiniz).
    </simpara>
   </warning>
   <simpara>
-   Önemli bir özet. Kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar normal ba&gbreve;lant&inodot;larla birebir
-   e&scedil;lenebilecek &scedil;ekilde tasarland&inodot;. Bu demektir ki <emphasis>her
-    zaman</emphasis> kal&inodot;c&inodot; ba&gbreve;lant&inodot;lar&inodot; normal olanlarla de&gbreve;i&scedil;tirebilirsiniz,
-   ve bu betiklerin davran&inodot;&scedil;lar&inodot;n&inodot; etkilemeyecektir. Betiklerin etkinliklerini
-   <emphasis>belki</emphasis> de&gbreve;i&scedil;tirebilirler, fakat davran&inodot;&scedil;&inodot;n&inodot;
-   de&gbreve;i&scedil;tirmezler!
+   Önemli bir özet. Kalıcı bağlantılar normal bağlantılarla birebir
+   eşlenebilecek şekilde tasarlandı. Bu demektir ki <emphasis>her
+    zaman</emphasis> kalıcı bağlantıları normal olanlarla değiştirebilirsiniz,
+   ve bu betiklerin davranışlarını etkilemeyecektir. Betiklerin etkinliklerini
+   <emphasis>belki</emphasis> değiştirebilirler, fakat davranışını
+   değiştirmezler!
   </simpara>
 
  </chapter>
