@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Revision: 1.1 $ -->
+ <chapter id="security">
+  <title>Güvenlik</title>
+
+  <simpara>
+  PHP, hem
+  web sunucusu modülü hem de <acronym>CGI</acronym> uygulamas&inodot;
+  sürümleri ile, sistemdeki dosyalar&inodot; okuyabilen, komutlar&inodot; çal&inodot;&scedil;t&inodot;rabilen ve
+  a&gbreve; ba&gbreve;lant&inodot;lar&inodot; kurabilen çok güçlü bir dildir. Bu özellikler, güvenlik önlemi
+  al&inodot;nmam&inodot;&scedil; bir web sunucusunda istenilen her &scedil;eyin çal&inodot;&scedil;t&inodot;r&inodot;labilmesini sa&gbreve;lar.
+  PHP, CGI programlar&inodot;n&inodot;n yaz&inodot;ld&inodot;&gbreve;&inodot; Perl ve C gibi dillerden daha güvenli bir
+  dil olacak &scedil;ekilde tasarlanm&inodot;&scedil;t&inodot;r, derleme s&inodot;ras&inodot;nda ve çal&inodot;&scedil;ma s&inodot;ras&inodot;nda ayarlanabilen konfigürasyon
+  seçenekleri, ve do&gbreve;ru kodlama teknikleri ile size istedi&gbreve;iniz özgürlük ve güvenlik
+  birle&scedil;imini verecektir.
+  </simpara>
+  <simpara>
+  PHP'yi birçok farkl&inodot; alanlarda kullanabildi&gbreve;iniz gibi, davran&inodot;&scedil;lar&inodot;n&inodot; kontrol etti&gbreve;iniz
+  birçok farkl&inodot; konfigürasyon seçene&gbreve;i mevcuttur. Geni&scedil; bir seçenek yelpazesi
+  PHP'yi çok çe&scedil;itli amaçlarla kullanman&inodot;za imkan tan&inodot;rken, ayn&inodot; zamanda
+  bu ayarlar&inodot;n aras&inodot;ndan yap&inodot;lacak birle&scedil;imlerin güvensiz kurulumlarla sonuçlanmas&inodot;na
+  neden olabilir.
+  </simpara>
+  <simpara>
+  PHP'nin esnek konfigürasyon yap&inodot;s&inodot;, esnek kod yap&inodot;s&inodot; ile ayn&inodot; güçtedir.
+  PHP büyük sunucu uygulamalar&inodot; yazarken shell kullan&inodot;c&inodot;s&inodot;n&inodot;n bütün gücünü kullanma
+  olana&gbreve;&inodot;n&inodot; sa&gbreve;larken, ufak sunucu tarafl&inodot; eklentilerle kontrolde tutulan ve ufak risk
+  ta&scedil;&inodot;yan uygulamalar&inodot;n da yaz&inodot;labilmesini sa&gbreve;lar. Bu ortam&inodot;n nas&inodot;l in&scedil;a edildi&gbreve;i, ve
+  ne kadar güvenli oldu&gbreve;u, çok büyük miktarda PHP geli&scedil;tiricisine ba&gbreve;l&inodot;d&inodot;r.
+  </simpara>
+  <simpara>
+  Bu bölüm baz&inodot; genel güvenlik önerilerinden ba&scedil;layarak, birlikte güvenle kullan&inodot;labilecek
+  farkl&inodot; konfigürasyon seçeneklerini ve durumlar&inodot; aç&inodot;klayacak, ve farkl&inodot; güvenlik seviyeleri
+  için kodlama s&inodot;ras&inodot;nda al&inodot;nabilecek farkl&inodot; kararlar&inodot; ele alacakt&inodot;r.
+  </simpara>
+
+  <sect1 id="security.general">
+   <title>Genel Bak&inodot;&scedil;</title>
+   <simpara>
+   Tamamen güvenli bir sistem sanal bir imkans&inodot;zl&inodot;kt&inodot;r, o nedenle güvenlik i&scedil;ine
+   s&inodot;kl&inodot;kla riskin ve kullan&inodot;labilirli&gbreve;in dengelenmesi olarak bak&inodot;l&inodot;r. Kullan&inodot;c&inodot; taraf&inodot;ndan
+   gönderilen veri iki farkl&inodot; biometrik do&gbreve;rulamadan (retina taramas&inodot; ve parmak izi gibi)
+   geçiriliyorsa, oldukça yüksek bir maliyet ödeyeceksiniz demektir. Ayr&inodot;ca kar&inodot;&scedil;&inodot;k
+   say&inodot;labilecek bir formun doldurulmas&inodot; yar&inodot;m saati bulacak, bu da kullan&inodot;c&inodot;lar&inodot;n
+   güvenlik sistemini a&scedil;mak için cesaret bulmas&inodot;na neden olacakt&inodot;r.
+   </simpara>
+   <simpara>
+   En iyi güvenlik, kullan&inodot;c&inodot;lar&inodot;n i&scedil;ini engellemeden ve onlar&inodot; gereksiz bir karma&scedil;&inodot;kl&inodot;&gbreve;a
+   sürüklemeden sa&gbreve;lanabilir. Öte yandan, baz&inodot; güvenlik sald&inodot;r&inodot;lar&inodot; bu tip normal
+   üstü güvenli&gbreve;e sahip sistemlerde, zamanla bu sistemlerin zaman a&scedil;&inodot;m&inodot;na u&gbreve;ramas&inodot;
+   sonucu gerçekle&scedil;mektedir.
+   </simpara>
+   <simpara>
+   Hat&inodot;rlanmaya de&gbreve;er bir söz: Bir zincir yaln&inodot;zca en zay&inodot;f halkas&inodot; kadar sa&gbreve;lamd&inodot;r.
+   Bütün i&scedil;lemler zaman, yer, i&scedil;lem tipi vb. gibi ince detaylara kadar kaydedilirken,
+   kullan&inodot;c&inodot; yaln&inodot;zca tek bir çerezle do&gbreve;rulan&inodot;yorsa, kayd&inodot; tutulan di&gbreve;er i&scedil;lemlerin
+   do&gbreve;rulu&gbreve;u da ciddi biçimde ku&scedil;ku yarat&inodot;r.
+   </simpara>
+   <simpara>
+   Sistemi denerken, en basit sayfalar için bile bütün olas&inodot; testleri yapamayaca&gbreve;&inodot;n&inodot;z&inodot;
+   akl&inodot;n&inodot;zda bulundurun. Sizin akl&inodot;n&inodot;za gelmeyecek bir &scedil;ey bilinçsiz bir çal&inodot;&scedil;an taraf&inodot;ndan,
+   bol bol vakti olan bir cracker taraf&inodot;ndan, ya da klavyenin üstünde yürüyen bir kedi
+   taraf&inodot;ndan yap&inodot;labilir. &Idot;&scedil;te bu nedenle koda mant&inodot;k perspektifinden yakla&scedil;mal&inodot;,
+   beklenmeyen verinin nereden gelece&gbreve;ini bulmal&inodot;, ve buradaki aç&inodot;&gbreve;&inodot;n nas&inodot;l giderilece&gbreve;i
+   üzerinde çal&inodot;&scedil;mal&inodot;s&inodot;n&inodot;z.
+   </simpara>
+   <simpara>
+   Internet sizin kodunuzu bozarak, sitenizi göçerterek, küfürlü içerik göndererek, ve
+   ilginç bir gün geçirmenize neden olarak kendisine isim yapmak isteyen insanlarla
+   doludur. Küçük ya da büyük bir siteye sahip olman&inodot;z önemli de&gbreve;ildir, online olarak
+   zaten bir hedef haline gelirsiniz. Birçok sald&inodot;r&inodot; program&inodot; boyutu önemsemez, 
+   yaln&inodot;zca geni&scedil; IP bloklar&inodot;n&inodot; tarayarak kurbanlar&inodot;n&inodot; ararlar. Onlardan biri olmamaya
+   çal&inodot;&scedil;&inodot;n.
+   </simpara>
+  </sect1>
+
+  <sect1 id="security.cgi-bin">
+   <title>CGI Kurulum</title>
+
+   <sect2 id="security.cgi-bin.attacks">
+    <title>Olas&inodot; sald&inodot;r&inodot;lar</title>
+    <simpara>
+    PHP'nin bir nedenden dolay&inodot; sunucu yaz&inodot;l&inodot;m&inodot;na (Apache gibi) entegre edilmek
+    istenmedi&gbreve;i, ya da PHP'yi farkl&inodot; tipte CGI okuyucular&inodot; kullanarak uygulamalar
+    için güvenli chroot ve setuid ortamlar&inodot;n&inodot;n yarat&inodot;lmak istendi&gbreve;i durumlarda
+    PHP'yi <acronym>CGI</acronym> bir seçenek olabilir. Bu kurulum PHP
+    çal&inodot;&scedil;t&inodot;r&inodot;labilir dosyas&inodot;n&inodot;n web sunucusunun cgi-bin klasörüne kurulmas&inodot;yla
+    gerçekle&scedil;tirilebilir. CERT dan&inodot;&scedil;man&inodot; <ulink url="&url.cert;">CA-96.11</ulink>
+    cgi-bin klasörüne hiçbir yorumlay&inodot;c&inodot;n&inodot;n kurulmamas&inodot;n&inodot; tavsiye eder. PHP,
+    tek ba&scedil;&inodot;na okuyucu olarak kullan&inodot;ld&inodot;&gbreve;&inodot; takdirde, bu tip kurulumdan kaynaklanan
+    a&scedil;a&gbreve;&inodot;daki sald&inodot;r&inodot;lar&inodot; önleyecek biçimde tasarlanm&inodot;&scedil;t&inodot;r:
+    </simpara>
+    <itemizedlist>
+     <listitem>
+      <simpara>
+      Sistem dosyalar&inodot;na eri&scedil;im: 
+       <filename
+       role="url">http://my.host/cgi-bin/php?/etc/passwd</filename>
+      </simpara>
+      <simpara>
+      URL içindeki soru i&scedil;aretinden (?) sonra gelen sorgu bilgisi, CGI arayüzü
+      taraf&inodot;ndan okuyucuya komut sat&inodot;r&inodot; parametresi olarak aktar&inodot;l&inodot;r. S&inodot;kl&inodot;kla
+      okuyucular komut sat&inodot;r&inodot;n&inodot;n ilk argüman&inodot; olarak belirtilmi&scedil; dosyay&inodot; açar ve
+      çal&inodot;&scedil;t&inodot;r&inodot;rlar.
+      </simpara>
+      <simpara>
+      CGI olarak çal&inodot;&scedil;t&inodot;r&inodot;ld&inodot;&gbreve;&inodot;nda, PHP komut sat&inodot;r&inodot; parametrelerini i&scedil;lemeyi reddeder.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+      Sunucudaki herhangi bir web doküman&inodot;na eri&scedil;im:
+      <filename
+       role="url">http://my.host/cgi-bin/php/secret/doc.html</filename>
+      </simpara>
+      <simpara>
+      URL içindeki PHP çal&inodot;&scedil;t&inodot;r&inodot;labilirinden sonraki yol bilgisi,
+       <filename role="uri">/secret/doc.html</filename>,
+       <acronym>CGI</acronym> arayüzü taraf&inodot;ndan programa iletilecek ve
+       program taraf&inodot;ndan aç&inodot;l&inodot;p yorumlanacak dosyan&inodot;n ismini belirtir.
+       Baz&inodot; web sunucu konfigürasyon direktifleri (Apache: Action) bu tip istekleri
+       <filename
+       role="url">http://my.host/secret/script.php</filename> gibi adreslere
+       yönlendirmek için kullan&inodot;l&inodot;r. Bu tip kurulumla, web sunucusu önce <filename
+       role="uri">/secret</filename> klasörüne eri&scedil;im hakk&inodot;n&inodot; gözden geçirir, ve
+       sonra yönlendirilmi&scedil; iste&gbreve;i yarat&inodot;r <filename
+       role="url">http://my.host/cgi-bin/php/secret/script.php</filename>.
+       Ne yaz&inodot;k ki, istek orjinal olarak bu &scedil;ekilde verildiyse, web sunucusu
+       <filename
+       role="uri">/secret/script.php</filename> dosyas&inodot;na eri&scedil;imi kontrol
+       etmeyecek, yaln&inodot;zca <filename role="uri">/cgi-bin/php</filename>
+       için kontrol yapacakt&inodot;r. Bu &scedil;ekilde <filename
+       role="uri">/cgi-bin/php</filename> a eri&scedil;imi olan herhangi bir kullan&inodot;c&inodot;,
+       web sunucusu üzerindeki korunan herhangi bir dokümana eri&scedil;ebilir olacakt&inodot;r.
+      </simpara>
+      <simpara>
+      PHP, bu sald&inodot;r&inodot;lar&inodot; derleme s&inodot;ras&inodot;ndaki konfigürasyon seçene&gbreve;i <link
+       linkend="install.configure.enable-force-cgi-redirect">--enable-force-cgi-redirect</link>
+       ve çal&inodot;&scedil;ma s&inodot;ras&inodot;ndaki konfigürasyon direktifi <link
+       linkend="ini.doc-root">doc_root</link> ve <link
+       linkend="ini.user-dir">user_dir</link> ile  sunucu doküman
+       a&gbreve;ac&inodot; eri&scedil;im k&inodot;s&inodot;tlamas&inodot; yap&inodot;lm&inodot;&scedil; bir klasöre sahipse önleyebilir. A&scedil;a&gbreve;&inodot;daki
+       örne&gbreve;i inceleyerek farkl&inodot; birle&scedil;imler için aç&inodot;klamalar bulabilirsiniz.
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </sect2>
+
+   <sect2 id="security.cgi-bin.default">
+    <title>Durum 1: yaln&inodot;zca public dosyalar&inodot;n sunulmas&inodot;</title>
+
+    <simpara>
+    Sunucunuz parola ile k&inodot;s&inodot;tlanm&inodot;&scedil; bir bölüme sahip de&gbreve;ilse ya da IP baz&inodot;nda
+    eri&scedil;im kontrolü yap&inodot;lm&inodot;yorsa, bu konfigürasyon ayarlar&inodot;na ihtiyac&inodot;n&inodot;z yoktur.
+    Web sunucunuz yönlendirme i&scedil;lemine izin vermiyorsa, ya da sunucunuzun
+    PHP ile ileti&scedil;im kurup iste&gbreve;in güvenli bir yönlendirme iste&gbreve;i oldu&gbreve;unu iletme
+    imkan&inodot; yoksa, <link
+     linkend="install.configure.enable-force-cgi-redirect">--enable-force-cgi-redirect</link>
+     seçene&gbreve;ini kullanarak konfigürasyon yapabilirsiniz. PHP uygulamalar&inodot;n&inodot;z&inodot;n bu
+     uygulamay&inodot; ba&scedil;ka bir yoldan ya da direk olarak çal&inodot;&scedil;t&inodot;rabilir olmad&inodot;&gbreve;&inodot;ndan emin olmal&inodot;s&inodot;n&inodot;z.
+     Bu ne <filename
+     role="php">http://my.host/cgi-bin/php/dir/script.php</filename> olmal&inodot;d&inodot;r, ne de
+     <filename
+     role="php">http://my.host/dir/script.php</filename> olmal&inodot;d&inodot;r.
+    </simpara>
+    <simpara>
+    Yönlendirme Apache içersinden AddHandler ve Action direktifleri kullan&inodot;larak
+    yap&inodot;labilir (a&scedil;a&gbreve;&inodot;ya bak&inodot;n).
+    </simpara>
+   </sect2>
+      
+   <sect2 id="security.cgi-bin.force-redirect">
+    <title>Durum 2: --enable-force-cgi-redirect kullan&inodot;m&inodot;</title>
+    <simpara>
+    Bu derleme s&inodot;ras&inodot;nda kullan&inodot;lan komut, PHP'nin <filename
+     role="php">http://my.host/cgi-bin/php/secretdir/script.php</filename>
+     gibi bir url kullan&inodot;larak direk olarak ça&gbreve;r&inodot;lmas&inodot;n&inodot; önler. PHP bu modda
+     yaln&inodot;zca web sunucusu bir yönlendirme kural&inodot; olu&scedil;turmu&scedil;sa çal&inodot;&scedil;acakt&inodot;r.
+    </simpara>
+    <simpara>
+    Apache konfigürasyonu içinde yönlendirme a&scedil;a&gbreve;&inodot;daki direktifler izlenerek
+    yap&inodot;labilir:
+    </simpara>
+    <programlisting role="apache-conf">
+<![CDATA[
+Action php-script /cgi-bin/php
+AddHandler php-script .php
+]]>
+    </programlisting>
+    <simpara>
+    Bu seçenek yaln&inodot;zca Apache web sunucusu için test edilmi&scedil;tir, ve Apache'&inodot;n
+    yönlendirmede kulland&inodot;&gbreve;&inodot; CGI ortam de&gbreve;i&scedil;keni <envar>REDIRECT_STATUS</envar>
+    de&gbreve;i&scedil;kenine ba&gbreve;&inodot;ml&inodot;d&inodot;r. Web sunucunuz iste&gbreve;in direk mi yoksa yönlendirme mi oldu&gbreve;unu
+    iletme özelli&gbreve;ine sahip de&gbreve;ilse, bu seçene&gbreve;i kullanamazs&inodot;n&inodot;z. Bu durumda
+    burada anlatan di&gbreve;er CGI kurulumlar&inodot;ndan birini denemeniz gereklidir.
+    </simpara>
+   </sect2>
+      
+   <sect2 id="security.cgi-bin.doc-root">
+    <title>Durum 3: setting doc_root ya da user_dir</title>
+    <simpara>
+    Uygulamalar ve çal&inodot;&scedil;t&inodot;r&inodot;labilirler gibi, web sunucu doküman klasörlerine
+    canl&inodot; içerik eklemek için, baz&inodot; durumlarda güvensiz i&scedil;lemler yapman&inodot;z gerekir.
+    Baz&inodot; konfigürasyon hatalar&inodot; yüzünden, uygulamalar düzgün çal&inodot;&scedil;t&inodot;r&inodot;lmaz ve
+    normal HTML dokümanlar&inodot; gibi görüntülenirse, bu durum parolalar&inodot;n ele verilmesi
+    gibi istenmeyen güvenlik aç&inodot;klar&inodot;na neden olacakt&inodot;r. Birçok sistem yöneticisi,
+    yaln&inodot;zca yorumlayan ve ç&inodot;kt&inodot; üretmeyen uygulama dosyalar&inodot; için yaln&inodot;zca PHP CGI taraf&inodot;ndan eri&scedil;ilebilen farkl&inodot; bir klasör yap&inodot;s&inodot; yaratmay&inodot;
+    tercih etmektedir.
+    </simpara>
+    <simpara>
+    Bir önceki bölümde anlat&inodot;ld&inodot;&gbreve;&inodot; gibi, isteklerin yönlendirilmedi&gbreve;ini kontrol eden
+    sistem kullan&inodot;lamaz oldu&gbreve;unda, web sunucusunun kök doküman klasörü haricinde
+    bir doc_root ayarlanmas&inodot; mutlaka gereklidir.
+    </simpara>
+    <simpara>
+    PHP uygulama kök doküman klasörünü isterseniz 
+    <link linkend="configuration.file">konfigürasyon dosyas&inodot;</link>
+    içindeki <link linkend="ini.doc-root">doc_root</link> direktifinden,
+    isterseniz ortam de&gbreve;i&scedil;keni olan <envar>PHP_DOCUMENT_ROOT</envar>
+    de&gbreve;erinden de&gbreve;i&scedil;tirebilirsiniz. Bu de&gbreve;er kullan&inodot;ld&inodot;&gbreve;&inodot;nda, PHP'nin CGI sürümü
+    aç&inodot;lacak dosya ismini <parameter>doc_root</parameter> de&gbreve;eriyle belirtilene
+    göre yaratacak, böylece bu klasörün d&inodot;&scedil;&inodot;ndaki hiçbir uygulama çal&inodot;&scedil;t&inodot;r&inodot;lmayacakt&inodot;r
+    (<parameter>user_dir</parameter> d&inodot;&scedil;&inodot;ndakiler).
+    </simpara>
+    <simpara>
+    Bir di&gbreve;er kullan&inodot;&scedil;l&inodot; seçenek <link
+     linkend="ini.user-dir">user_dir</link> seçene&gbreve;idir. user_dir bo&scedil; oldu&gbreve;unda,
+     aç&inodot;lan dosya yaln&inodot;zca <parameter>doc_root</parameter> ile kontrol edilir.
+     <filename
+     role="url">http://my.host/~user/doc.php</filename> gibi bir url aç&inodot;lmak
+     istendi&gbreve;inde, PHP users klasöründeki dosyay&inodot; açmak yerine, doc_root alt&inodot;ndaki
+    <filename role="uri">~user/doc.php</filename> isimli bir dosyay&inodot; açmaya
+    </simpara>      
+    <simpara>
+    Örne&gbreve;in user_dir <filename
+     role="dir">public_php</filename> olarak ayarlanm&inodot;&scedil;sa, <filename
+     role="url">http://my.host/~user/doc.php</filename> gibi bir istek,
+     <filename role="dir">public_php</filename> alt&inodot;ndaki ayn&inodot; isimli dosyaya
+     yönlendirilecektir. E&gbreve;er kullan&inodot;c&inodot;n&inodot;n ana klasörü <filename
+     role="dir">/home/user</filename> ise, dosya 
+    <filename>/home/user/public_php/doc.php</filename> olarak çal&inodot;&scedil;t&inodot;r&inodot;l&inodot;r.
+    </simpara>
+    <simpara>
+     <parameter>user_dir</parameter> geni&scedil;lemesi 
+     <parameter>doc_root</parameter> ayar&inodot;ndan ba&gbreve;&inodot;ms&inodot;z olarak gerçekle&scedil;ir,
+     bu &scedil;ekilde kök klasör eri&scedil;imi ile kullan&inodot;c&inodot; klasörlerine eri&scedil;im birbirinden ayr&inodot; kontrol edilebilir.
+    </simpara>
+   </sect2>
+      
+   <sect2 id="security.cgi-bin.shell">
+    <title>Durum 4: PHP okuyucusu web a&gbreve;ac&inodot;n&inodot;n d&inodot;&scedil;&inodot;nda</title>
+    <para>
+    PHP okuyucu dosyas&inodot;n&inodot;n web a&gbreve;ac&inodot; d&inodot;&scedil;&inodot;nda bir yere yerle&scedil;tirilmesi çok güvenli
+    bir kurulumdur. Dosya örne&gbreve;in <filename
+     role="dir">/usr/local/bin</filename> klasörüne konulabilir. Bu seçenek tek
+     olumsuz taraf&inodot; uygulama dosyalar&inodot;n&inodot;z&inodot;n ba&scedil;&inodot;na a&scedil;a&gbreve;&inodot;dakine benzer bir sat&inodot;r
+     koyman&inodot;z&inodot; gerektirmesidir:
+     <informalexample>
+      <programlisting>
+<![CDATA[
+#!/usr/local/bin/php
+]]>
+      </programlisting>
+     </informalexample>
+     Bu sat&inodot;r bütün dosyalar&inodot;n ilk sat&inodot;r&inodot;na yaz&inodot;lmal&inodot;d&inodot;r. Ayr&inodot;ca bu dosyay&inodot;
+     çal&inodot;&scedil;t&inodot;r&inodot;labilir hale getirmeniz gerekir. Bu &scedil;ekilde, PHP ayn&inodot; Perl ya da sh ya da
+     di&gbreve;er bilinen dillerin kulland&inodot;&gbreve;&inodot; <literal>#!</literal> shell-kaç&inodot;&scedil; mekanizmas&inodot;
+     ile çal&inodot;&scedil;t&inodot;r&inodot;labilir hale gelir.
+    </para>
+    <para>
+    Bu kurulumda PHP'nin <envar>PATH_INFO</envar> ve
+     <envar>PATH_TRANSLATED</envar> de&gbreve;erlerini düzgün biçimde alabilmesi için,
+     php okuyucusu <link
+     linkend="install.configure.enable-discard-path">--enable-discard-path</link>
+     konfigürasyon seçene&gbreve;i ile derlenmelidir.
+    </para>
+   </sect2>
+  
+  </sect1>
+
+  <sect1 id="security.apache">
+   <title>Apache Modülü olarak Kurulum</title>
+   <simpara>
+   PHP Apache modülü olarak kullan&inodot;ld&inodot;&gbreve;&inodot;nda, Apache'in kullan&inodot;c&inodot; izinlerini al&inodot;r
+   (genel olarak "nobody" kullan&inodot;c&inodot;s&inodot;n&inodot;n"). Bunun güvenlik ve do&gbreve;rulama i&scedil;lemlerine
+   birkaç etkisi vard&inodot;r. Örne&gbreve;in, PHP ile veritaban&inodot;na eri&scedil;iyorsan&inodot;z, veritaban&inodot;
+   önyüklü bir eri&scedil;im kontrolüne sahip olmad&inodot;&gbreve;&inodot; sürece, veritaban&inodot;n&inodot; "nobody" kullan&inodot;c&inodot;s&inodot;
+   taraf&inodot;ndan eri&scedil;ilebilir halde tutman&inodot;z gerekir. Bunun anlam&inodot; kötü niyetli bir
+   uygulama kullan&inodot;c&inodot; ve parola dahi kullanmadan veritaban&inodot;na eri&scedil;ip üzerinde de&gbreve;i&scedil;iklik yapabilir
+   demektir. Bir web örümce&gbreve;inin veritaban&inodot;ndaki bütün yönetici web sayfalar&inodot;n&inodot; almas&inodot;
+   ve veritaban&inodot;n&inodot;z&inodot; komple yok etmesi mümkündür. Bundan Apache do&gbreve;rulama sistemini
+   kullanarak korunabilirsiniz, ya da örne&gbreve;in LDAP kullanarak kendi eri&scedil;im modelinizi
+   olu&scedil;turabilir, .htaccess kullanabilir vb. ve bu kodu kendi PHP uygulamalar&inodot;n&inodot;za
+   ekleyebilirsiniz.
+   </simpara>
+   <simpara>
+   S&inodot;kl&inodot;kla, bir defa PHP kullan&inodot;c&inodot;s&inodot; (bu durumda, apache kullan&inodot;c&inodot;s&inodot;) çok az riskle
+   çal&inodot;&scedil;&inodot;r hale getirildi&gbreve;inde, PHP kullan&inodot;c&inodot; klasörlerine yazamaz hale gelir. Ya da belki
+   veritabanlar&inodot;na eri&scedil;im ya da i&scedil;lem yapma hakk&inodot;n&inodot; kaybetmi&scedil;tir. PHP iyi ve kötü
+   dosyalara, iyi ve kötü veritaban&inodot; i&scedil;lemlerine e&scedil;it derecede güvenlik uygular.
+   </simpara>
+   <simpara>
+   Bu noktada s&inodot;kl&inodot;kla yap&inodot;lan bir güvenlik hatas&inodot;, apache'a root kullan&inodot;c&inodot; izni vermek,
+   ya da Apache'in s&inodot;n&inodot;rlar&inodot;n&inodot; farkl&inodot; bir yolla geni&scedil;letmektir.
+   </simpara>
+   <simpara>
+   Apache kullan&inodot;c&inodot;s&inodot;n&inodot;n izinlerini root seviyesine ç&inodot;kartmak oldukça tehlikelidir
+   ve bütün sistemi etkileyebilir. Bu nedenle sudo, chroot, ve di&gbreve;er root olarak
+   çal&inodot;&scedil;t&inodot;rma i&scedil;lemleri, güvenlik uzmanlar&inodot; taraf&inodot;ndan tercih edilmemesi gereken
+   yöntemlerdir.
+   </simpara>
+   <simpara>
+   Daha basit baz&inodot; çözümler mevcuttur. <link linkend="ini.open-basedir">open_basedir</link>
+   kullanarak PHP taraf&inodot;ndan kullan&inodot;labilecek klasörleri kontrol edebilir ve k&inodot;s&inodot;tlayabilirsiniz.
+   Ayn&inodot; &scedil;ekilde yaln&inodot;zca Apache taraf&inodot;ndan eri&scedil;ilebilecek alanlar&inodot; ayarlayabilir, böylece
+   bütün web tabanl&inodot; aktiviteyi kontrol alt&inodot;na alabilirsiniz.
+   </simpara>
+  </sect1>
+
+  <sect1 id="security.filesystem">
+   <title>Dosya Sistemi Güvenli&gbreve;i</title>
+   <simpara>
+   PHP birçok sunucu sisteme kurulu güvenlik sisteminin dosya ve klasör izinlerine
+   uyum gösterir. Bu, size dosya sistemindeki hangi dosyalar&inodot;n okunabilece&gbreve;ini kontrol
+   etme imkan&inodot;n&inodot; verir. Herkes taraf&inodot;ndan okunabilir dosyalar&inodot;n, dosya sistemine
+   eri&scedil;imi olan kullan&inodot;c&inodot;lar taraf&inodot;ndan güvenle okunabilir olmas&inodot; mutlaka dikkate
+   al&inodot;nmal&inodot;d&inodot;r.
+   </simpara>
+   <simpara>
+   PHP dosya sistemine kullan&inodot;c&inodot; seviyesi tabanl&inodot; eri&scedil;im sa&gbreve;lamak üzere tasarland&inodot;&gbreve;&inodot;ndan,
+   PHP uygulamalar&inodot;n&inodot;n /etc/password gibi sistem dosyalar&inodot;n&inodot; okumalar&inodot;, ethernet
+   ba&gbreve;lant&inodot;lar&inodot; üzerinde de&gbreve;i&scedil;iklik yapmalar&inodot;, yaz&inodot;c&inodot;ya ard&inodot; ard&inodot;na görevler yüklemeleri
+   ve benzeri birçok eylemi kolayca yapmalar&inodot; mümkündür. Bu durum, sizi kullan&inodot;c&inodot;lar&inodot;n hangi
+   dosyalara okuma ve yazma haklar&inodot; oldu&gbreve;unu denetlemeye zorunlu k&inodot;lar.
+   </simpara>
+   <simpara>
+   Kullan&inodot;c&inodot;n&inodot;n kendi ana klasöründeki bir dosyay&inodot; silmek istedi&gbreve;i a&scedil;a&gbreve;&inodot;daki uygulamay&inodot;
+   ele alal&inodot;m. PHP web arayüzünün dosya yönetimini sa&gbreve;lamak için kullan&inodot;ld&inodot;&gbreve;&inodot;n&inodot;,
+   ve Apache kullan&inodot;c&inodot;s&inodot;n&inodot;n kullan&inodot;c&inodot;n&inodot;n ana klasöründeki dosyalar&inodot; silme iznine sahip
+   oldu&gbreve;unu kabul edelim.
+   </simpara>
+   <para>
+    <example>
+     <title>Yetersiz de&gbreve;i&scedil;ken kontrolünün yol açt&inodot;&gbreve;&inodot;....</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// kullan&inodot;c&inodot;n&inodot;n ana klasöründen dosya silme
+$username = $HTTP_POST_VARS['user_submitted_name'];
+$homedir = "/home/$username";
+$file_to_delete = "$userfile";
+unlink ($homedir/$userfile);
+echo "$file_to_delete silindi!";
+?>
+]]>
+     </programlisting>
+    </example>
+    username bir kullan&inodot;c&inodot; formundan gönderilebilir oldu&gbreve;u için, ba&scedil;kas&inodot;na ait bir
+    kullan&inodot;c&inodot; ad&inodot; ve dosya ismi ile, istedi&gbreve;i dosyay&inodot; silebilir. Bu durumda, bir çe&scedil;it
+    kullan&inodot;c&inodot; do&gbreve;rulama sistemi kullanman&inodot;z gereklidir. Burada gönderilen de&gbreve;erlerin
+    "../etc/" ve "passwd" oldu&gbreve;unda neler olabilece&gbreve;ini dü&scedil;ünün. Kodu bu &scedil;ekilde okursak:
+    <example>
+     <title>... Bir dosya sistemi sald&inodot;r&inodot;s&inodot;</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// PHP kullan&inodot;c&inodot;s&inodot;n&inodot;n izniyle silinebilecek diskteki bütün dosyalari
+// siler. PHP kullan&inodot;c&inodot;s&inodot; root eri&scedil;imine sahipse:
+$username = "../etc/";
+$homedir = "/home/../etc/";
+$file_to_delete = "passwd";
+unlink ("/home/../etc/passwd");
+echo "/home/../etc/passwd silindi!";
+?>
+]]>
+     </programlisting>
+    </example>
+    Bu durumu önlemenizi gerektiren iki önemli ölçü vard&inodot;r.
+    <itemizedlist>
+     <listitem>
+      <simpara>
+      PHP web kullan&inodot;c&inodot;s&inodot;na ait binary dosyas&inodot;na yaln&inodot;zca k&inodot;s&inodot;tl&inodot; eri&scedil;im izni ver.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+      Gönderilen bütün de&gbreve;erleri kontrol et.
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    &Idot;&scedil;te geli&scedil;tirilmi&scedil; bir uygulama:
+    <example>
+     <title>Daha güvenli dosya ismi kontrolü</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Diskten PHP kullanicisinin silme izni varsa
+// dosyay&inodot; siler. 
+$username = $HTTP_SERVER_VARS['REMOTE_USER']; // dogrulama mekanizmasi
+
+$homedir = "/home/$username";
+
+$file_to_delete = basename("$userfile"); // yol ayristiriliyor
+unlink ($homedir/$file_to_delete);
+
+$fp = fopen("/home/logging/filedelete.log","+a"); // silme islemi kaydediliyor
+$logstring = "$username $homedir $file_to_delete";
+fputs ($fp, $logstring);
+fclose($fp);
+
+echo "$file_to_delete silindi!";
+?>
+]]>
+     </programlisting>
+    </example>
+    Ancak bu bile istedi&gbreve;imizi tam olarak yapmaz. Do&gbreve;rulama sisteminiz kullan&inodot;c&inodot;lar&inodot;n
+    kendilerine özel oturum açma hakk&inodot;n&inodot; tan&inodot;yorsa, ve bir bullan&inodot;c&inodot; "../etc" olarak
+    login olmay&inodot; seçerse, sistem tekrar k&inodot;r&inodot;labilir. Bu nedenle, daha özelle&scedil;tirilmi&scedil;
+    bir kontrol yazmay&inodot; tercih etmelisiniz:
+    <example>
+     <title>Daha güvenli dosya ismi kontrolü</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$username = $HTTP_SERVER_VARS['REMOTE_USER']; // dogrulama mekanizmasi
+$homedir = "/home/$username";
+
+if (!ereg('^[^./][^/]*$', $userfile))
+     die('bad filename'); //öl, islem yok
+     
+if (!ereg('^[^./][^/]*$', $username))
+     die('bad username'); //öl, islem yok
+//vb...
+?>
+]]>
+     </programlisting>
+    </example> 
+   </para>
+   <para>
+   &Idot;&scedil;letim sisteminize ba&gbreve;l&inodot; olarak, endi&scedil;elenmenizi gerektirecek farkl&inodot; dosyalar bulunur.
+   Bunlar&inodot;n aras&inodot;nda ayg&inodot;t giri&scedil;leri (/dev/ ya da COM1), konfigürasyon dosyalar&inodot; (/etc/
+   dosyalar&inodot; ve .ini dosyalar&inodot;), herkesçe bilinen dosya saklama alanlar&inodot; (/home/,
+   Belgelerim), vb. Bu nedenle, öncelikle her &scedil;eyi yasaklay&inodot;p daha sonra izin verilecek
+   alanlar&inodot; belirlemek, kullan&inodot;m aç&inodot;s&inodot;ndan daha kolayd&inodot;r.
+   </para>   
+  </sect1>
+
+  <sect1 id="security.errors">
+   <title>Hata Raporlama</title>
+   <para>
+   PHP güvenli&gbreve;inde, hatalar&inodot;n raporland&inodot;&gbreve;&inodot; iki taraf vard&inodot;r. Birincisi güvenli&gbreve;i
+   artt&inodot;rmaya yöneliktir, ikincisi ise azaltmaya yönelik.
+   </para>
+   <para>
+   Standart bir sald&inodot;r&inodot; takti&gbreve;i, sisteme uygunsuz veri giri&scedil;i yaparak, geri dönen
+   hata mesajlar&inodot;n&inodot; incelemektir. Bu, sistemi k&inodot;rmak isteyen ki&scedil;iye sunucu hakk&inodot;nda
+   bilgi toplama ve olas&inodot; zay&inodot;fl&inodot;klar hakk&inodot;nda fikir sahibi olma &scedil;ans&inodot; verir. Örne&gbreve;in, 
+   bir sald&inodot;rgan form verilerinin i&scedil;lendi&gbreve;i dosya hakk&inodot;nda yeterli bilgiye sahip olursa,
+   de&gbreve;i&scedil;kenleri ezmeye ya da onlar&inodot; de&gbreve;i&scedil;tirmeye çal&inodot;&scedil;abilir:
+    <example>
+     <title>De&gbreve;i&scedil;kenlere özelle&scedil;tirilmi&scedil; bir HTML sayfas&inodot; ile sald&inodot;rmak</title>
+     <programlisting role="php">
+<![CDATA[
+<form method="post" action="attacktarget?username=badfoo&password=badfoo">
+<input type="hidden" name="username" value="badfoo">
+<input type="hidden" name="password" value="badfoo">
+</form>
+]]>
+     </programlisting>
+    </example> 
+   </para>
+   <para>
+   Normal olarak döndürülen PHP hatalar&inodot;, uygulamas&inodot;ndaki hatalar&inodot; ay&inodot;klayan bir
+   geli&scedil;tirici için yard&inodot;mc&inodot;d&inodot;r. Bu &scedil;ekilde hatan&inodot;n yer ald&inodot;&gbreve;&inodot; dosyay&inodot;, sorun yaratan
+   fonksiyonu, hangi sat&inodot;r&inodot;n problem ç&inodot;kartt&inodot;&gbreve;&inodot;n&inodot; tespit edebilir. &Idot;&scedil;te bütün bu bilgiler
+   ayn&inodot; zamanda kötü amaçlara alet edilebilir. Bir php geli&scedil;tiricisinin hata ay&inodot;klama
+   sürecinde <function>show_source</function>, <function>highlight_string</function>
+   ya da <function>highlight_file</function> fonksiyonlar&inodot;n&inodot; kullanmalar&inodot; az
+   raslanan bir durum de&gbreve;ildir. Ama yay&inodot;ndaki bir sitede, bu durum gizli de&gbreve;i&scedil;kenleri
+   aç&inodot;&gbreve;a ç&inodot;karabilir, kontrol edilmemi&scedil; söz dizimini ele verebilir ve bu listeye daha birçok
+   tehlikeli bilgi dahil edilebilir. Özellikle önyüklü hata ay&inodot;klama yöntemlerini ya da 
+   bilinen hata ay&inodot;klama tekniklerini kullan&inodot;yorsan&inodot;z tehlike alt&inodot;ndas&inodot;n&inodot;z demektir.
+   Sald&inodot;rgan hangi genel tekni&gbreve;i kulland&inodot;&gbreve;&inodot;n&inodot;z&inodot; belirlerse, sayfaya çe&scedil;itli ay&inodot;klama
+   de&gbreve;erleri gönderebilir:
+    <example>
+     <title>Ortak hata ay&inodot;klama de&gbreve;i&scedil;kenleri üzerinden sald&inodot;rmak</title>
+     <programlisting role="php">
+<![CDATA[
+<form method="post" action="attacktarget?errors=Y&amp;showerrors=1"&debug=1">
+<input type="hidden" name="errors" value="Y">
+<input type="hidden" name="showerrors" value="1">
+<input type="hidden" name="debug" value="1">
+</form>
+]]>
+     </programlisting>
+    </example>     
+   </para>
+   <para>
+   Hata takibi için kullan&inodot;lan yöntemden ba&gbreve;&inodot;ms&inodot;z olarak, sistem hatalar&inodot;na s&inodot;zabilmek,
+   sald&inodot;rgan için sistem hakk&inodot;nda daha fazla bilgi toplamak anlam&inodot;na gelir.
+   </para>
+   <para>
+   Örne&gbreve;in, en çok bilinen PHP hatas&inodot;, sistemde PHP'nin kullan&inodot;ld&inodot;&gbreve;&inodot;n&inodot; ortaya ç&inodot;kart&inodot;r.
+   Sald&inodot;rgan bir .html sayfas&inodot; ar&inodot;yorsa, ve geri planda çal&inodot;&scedil;an sistemi analiz etmek
+   istiyorsa (sistemin bilinen zay&inodot;fl&inodot;klar&inodot;na sald&inodot;rmak için), hatal&inodot; veri göndererek
+   sistemin PHP ile yap&inodot;ld&inodot;&gbreve;&inodot;n&inodot; ortaya ç&inodot;kartabilir.
+   </para>
+   <para>
+   Bir fonksiyon hatas&inodot;, sistemde hangi veritaban&inodot;n&inodot;n çal&inodot;&scedil;t&inodot;&gbreve;&inodot;n&inodot; ortaya ç&inodot;kartabilir,
+   ya da web sayfas&inodot;n&inodot;n nas&inodot;l programland&inodot;&gbreve;&inodot; ya da tasarland&inodot;&gbreve;&inodot; hakk&inodot;nda ipucu verebilir.
+   Bu, aç&inodot;k veritaban&inodot; portlar&inodot;na yönelik daha derin ara&scedil;t&inodot;rmaya yöneltebilir, ya da
+   web sayfas&inodot;nda olabilecek hata veya zay&inodot;fl&inodot;klar&inodot; incelettirebilir. Farkl&inodot; hatal&inodot; veri
+   parçalar&inodot; göndererek, bir sald&inodot;rgan örne&gbreve;in uygulama içindeki do&gbreve;rulama s&inodot;ralamas&inodot;n&inodot;
+   bulabilir (hata sat&inodot;rlar&inodot;ndan), ya da uygulaman&inodot;n farkl&inodot; bölümleri için geçerli olabilecek
+   aç&inodot;klar&inodot; tespit edebilir.
+   </para>
+   <para>
+   Bir dosya sistemi ya da genel PHP hatas&inodot;, web sunucusunun hangi izinlere sahip
+   oldu&gbreve;unu gösterebilir, ayn&inodot; zamanda web sunucusunun yap&inodot;s&inodot; ve organizasyonu
+   hakk&inodot;nda bilgi verir. Geli&scedil;tirici taraf&inodot;ndan belirlenmi&scedil; hata kodu bu sorunu derinle&scedil;tirebilir,
+   bu &scedil;ekilde "gizli" bilgiler kolayca aç&inodot;&gbreve;a ç&inodot;kart&inodot;labilir.
+   </para>
+   <para>
+   Bu duruma ait üç önemli çözüm bulunmaktad&inodot;r. Birincisi bütün kodun fonksiyonlar&inodot;n
+   içine gömülerek, hata mesajlar&inodot;n&inodot;n yans&inodot;t&inodot;lmamas&inodot;na çal&inodot;&scedil;makt&inodot;r. &Idot;kincisi,
+   çal&inodot;&scedil;makta olan kod içersinden bütün hata raporlama i&scedil;lemini kapatmakt&inodot;r. Üçüncüsü,
+   PHP'nin özelle&scedil;tirilmi&scedil; hata kontrol fonksiyonlar&inodot;n&inodot; kullanarak kendi hata takip sisteminizi
+   kurmakt&inodot;r. Güvenlik politikan&inodot;za uygun olarak, her üç durumu da kendi sisteminize
+   uygulayabilirsiniz.
+   </para>
+   <para>
+   Bu durumdan korunman&inodot;n yollar&inodot;ndan birisi, PHP'nin kendi <function>error_reporting</function>
+   fonksiyonunu size kodunuzdaki güvenli&gbreve;i artt&inodot;rmak ve kullan&inodot;m&inodot; tehlikeli olabilecek
+   de&gbreve;i&scedil;kenleri bulmakta yard&inodot;mc&inodot; olmas&inodot; amac&inodot;yla kullanmakt&inodot;r. Kodunuzu üretim a&scedil;amas&inodot;na
+   geçmeden önce E_ALL ile test ederek, neredeki de&gbreve;i&scedil;kenlerin farkl&inodot; yollarla sald&inodot;r&inodot;ya
+   u&gbreve;rayabilece&gbreve;ini kestirebilirsiniz. Bir defa üretim a&scedil;amas&inodot;na geçmeye haz&inodot;r oldu&gbreve;unuzda,
+   E_NONE kullanarak, kodunuzu incelemelere kapatm&inodot;&scedil; olursunuz.
+    <example>
+     <title>E_ALL ile tehlikeli de&gbreve;i&scedil;kenlerin bulunmas&inodot;</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if ($username) {  // Kullanimdan önce kontrol edilmiyor
+    $good_login = 1; 
+}
+if ($good_login == 1) { // Yukardaki test basarisiz olursa, yaratilmayacak ve denetlenmeyecektir
+    fpassthru ("/highly/sensitive/data/index.html");
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect1>
+
+  <sect1 id="security.registerglobals">
+   <title>Register Globals Kullan&inodot;m&inodot;</title>
+   <para>
+   PHP'nin bir özelli&gbreve;i, <link linkend="ini.register-globals">register_globals</link> = off
+   ile konfigüre edilerek güvenli&gbreve;in artt&inodot;r&inodot;labilmesidir. Bu özelli&gbreve;in kapat&inodot;lmas&inodot;, PHP
+   içine direk olarak hiçbir de&gbreve;erin girmemesini sa&gbreve;lamak anlam&inodot;na gelir. Bu &scedil;ekilde,
+   potansiyel bir sald&inodot;rgan taraf&inodot;ndan yap&inodot;labilecek de&gbreve;i&scedil;ken sald&inodot;r&inodot;lar&inodot;n&inodot; azaltm&inodot;&scedil; olursunuz.
+   De&gbreve;i&scedil;kenlere sald&inodot;rmaya çal&inodot;&scedil;mak onlara fazladan zamana mal olacak, ve iç de&gbreve;i&scedil;kenler
+   kullan&inodot;c&inodot; taraf&inodot;ndan gönderilen verilerden verimli bir &scedil;ekilde izole edilmi&scedil; olacakt&inodot;r.
+   </para>
+   <para>
+   Bu durum PHP ile çal&inodot;&scedil;&inodot;rken harcanmas&inodot; gereken zaman&inodot; artt&inodot;rsa da, faydalar&inodot;
+   kaybetti&gbreve;iniz zamana k&inodot;yasla çok daha fazlad&inodot;r.
+    <example>
+     <title>register_globals=off olmadan çal&inodot;&scedil;mak</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if ($username) {  // get/post/cookies ile kullan&inodot;c&inodot; taraf&inodot;ndan de&gbreve;i&scedil;tirilebilir
+    $good_login = 1; 
+}
+
+if ($good_login == 1) { // get/post/cookies ile kullan&inodot;c&inodot; taraf&inodot;ndan de&gbreve;i&scedil;tirilebilir
+    fpassthru ("/highly/sensitive/data/index.html");
+}
+?>
+]]>
+     </programlisting>
+    </example>
+    <example>
+     <title>register_globals = off olarak çal&inodot;&scedil;mak</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if($HTTP_COOKIE_VARS['username']){ 
+    // yaln&inodot;zca çerezden gelebilir
+    $good_login = 1;
+    fpassthru ("/highly/sensitive/data/index.html");
+}
+?>
+]]>
+     </programlisting>
+    </example>
+    Bunu ak&inodot;ll&inodot;ca kullanarak, sald&inodot;r&inodot; i&scedil;lemi gerçekle&scedil;ti&gbreve;inde çal&inodot;&scedil;acak bir uyar&inodot; mekanizmas&inodot;
+    kurabilirsiniz. De&gbreve;i&scedil;kenin gelmesi gerekti&gbreve;i yeri tam olarak biliyorsan&inodot;z, gönderilen
+    verinin uygunsuz olup olmad&inodot;&gbreve;&inodot;n&inodot; denetleyebilirsiniz. Bu sald&inodot;rma amaçl&inodot; kullan&inodot;lan
+    verinin tamamen durdurulabilece&gbreve;ini garanti etmese de, sald&inodot;rgan&inodot; do&gbreve;ru sald&inodot;r&inodot;
+    &scedil;eklini tahmin etmeye zorlar.
+    <example>
+     <title>Basit de&gbreve;i&scedil;ken sald&inodot;r&inodot;s&inodot;n&inodot; tespit etmek</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if ($HTTP_COOKIE_VARS['username'] &&
+    !$HTTP_POST_VARS['username'] &&
+    !$HTTP_GET_VARS['username'] ) { 
+    // Kullaniciyi dogrulamak icin diger yöntemleri uygular...
+    $good_login = 1;
+    fpassthru ("/highly/sensitive/data/index.html");
+} else {
+   mail("admin@example.com", "Olas&inodot; sald&inodot;r&inodot; denemesi", $HTTP_SERVER_VARS['REMOTE_ADDR']);
+   echo "Güvenlik ihlali, yönetici uyarildi.";
+   exit;
+}
+?>
+]]>
+     </programlisting>
+    </example>
+    Elbette, register_globals de&gbreve;erinin basit bir &scedil;ekilde kapat&inodot;lmas&inodot;, kodun güvenli&gbreve;inin
+    sa&gbreve;land&inodot;&gbreve;&inodot; anlam&inodot;na gelmez. Gönderilen her veri parças&inodot; için, farkl&inodot; denetleme i&scedil;lemlerinin
+    de yap&inodot;lmas&inodot; gereklidir.
+   </para>
+  </sect1>
+
+  
+  <sect1 id="security.variables">
+   <title>Kullan&inodot;c&inodot; taraf&inodot;ndan Gönderilen Veri</title>
+   <para>
+   Birçok PHP program&inodot;ndaki en büyük zay&inodot;fl&inodot;k, dilin kendi iç dinamiklerinden de&gbreve;il de,
+   geli&scedil;tiricinin kodlama sürecinde güvenli&gbreve;i kafas&inodot;nda bulundurmamas&inodot;ndan kaynaklan&inodot;r.
+   Bu nedenle, verilen kod üzerindeki olas&inodot; durumlar incelenmeli, beklenmedik bir
+   de&gbreve;i&scedil;ken gönderildi&gbreve;inde olu&scedil;abilecek olas&inodot; hasar tespit edilmeli ve önlenmelidir.
+    <example>
+     <title>Tehlikeli De&gbreve;i&scedil;ken Kullan&inodot;m&inodot;</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// kullan&inodot;c&inodot;n&inodot;n... ya da bir ba&scedil;kas&inodot;n&inodot;n? ana klasöründen dosya
+// siler
+unlink ($evil_var);
+
+// Eri&scedil;imi kaydeder... ya da belki bir /etc/password giri&scedil;i yapar?
+fputs ($fp, $evil_var);
+
+// Bir uygulamay&inodot; çal&inodot;&scedil;t&inodot;r&inodot;r.. ya da rm -rf * komutunu?
+system ($evil_var);
+exec ($evil_var);
+
+?>
+]]>
+     </programlisting>
+    </example>
+    Kodunuzu her zaman için web taray&inodot;c&inodot;s&inodot; taraf&inodot;ndan gönderilen verilerin yeterli
+    &scedil;ekilde denetleyecek halde tutmal&inodot;, ve kendinize a&scedil;a&gbreve;&inodot;daki sorular&inodot; sormal&inodot;s&inodot;n&inodot;z:
+    <itemizedlist>
+     <listitem>
+      <simpara>
+      Bu uygulama yaln&inodot;zca istenen dosyalar&inodot; m&inodot; etkiliyor?
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+      &Idot;stenmeyen verilerin kullan&inodot;m&inodot; söz konusu olabilir mi?
+      </simpara>
+     </listitem>
+     <listitem>
+     <simpara>
+     Bu uygulama hesaplanmayan biçimlerde çal&inodot;&scedil;t&inodot;r&inodot;labilir mi?
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+      Bu uygulama ba&scedil;ka uygulamalarla olumsuz anlamda birlik yaratabilir mi?
+      </simpara>
+     </listitem> 
+     <listitem>
+      <simpara>
+      Bütün i&scedil;lemler gerekti&gbreve;i biçimde ar&scedil;ivleniyor mu?
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    Uygulaman&inodot;z&inodot; yazarken bu sorular&inodot; daha sonra sormak yerine &scedil;imdi sorarak, 
+    güvenli&gbreve;inizi artt&inodot;rmak için kodu yeni ba&scedil;tan yazmak durumunda kalmazs&inodot;n&inodot;z.
+    Bu mant&inodot;kla yola ç&inodot;karak, belki sisteminizdeki güvenli&gbreve;i garantileyemezsiniz, ama
+    geli&scedil;tirilmesine ciddi olarak katk&inodot;da bulunmu&scedil; olursunuz.
+   </para>
+   <para>
+   Bunlar&inodot;n haricinde register_globals, magic_quotes ve benzeri de&gbreve;erleri kapatarak,
+   de&gbreve;i&scedil;ken do&gbreve;rulamas&inodot;nda karma&scedil;a yaratabilecek etkilerden korunabilirsiniz.
+   PHP'nin hata raporlamas&inodot; (E_ALL) modu ile çal&inodot;&scedil;mak, sorun yaratabilecek de&gbreve;i&scedil;kenleri
+   yarat&inodot;lmadan ve denetlenmeden önce tespit etmeniz aç&inodot;s&inodot;ndan size yard&inodot;mc&inodot; olabilir
+   (böylece uygunsuz verinin i&scedil;lenmesini önlemi&scedil; olursunuz).
+   </para>
+  </sect1>
+  
+  <sect1 id="security.hiding">
+   <title>PHP'nin Gizlenmesi</title>
+   <para>
+   Baz&inodot; basit teknikler PHP'nin gizlenmesine yard&inodot;mc&inodot; olabilir. Bu &scedil;ekilde sisteminizdeki
+   zay&inodot;fl&inodot;klar&inodot; bulmak isteyen sald&inodot;rganlar&inodot; yava&scedil;latabilirsiniz. php.ini dosyas&inodot;ndaki
+   expose_php = off de&gbreve;erini ayarlayarak, sald&inodot;rganlara verilecek bilgi miktar&inodot;n&inodot; azaltabilirsiniz.
+   </para>
+   <para>
+   Bir di&gbreve;er taktik, apache gibi web sunucular&inodot;na farkl&inodot; tipteki dosyalar&inodot; PHP'den
+   geçirmesini söylemektir. Bu .htaccess dosyas&inodot; ile ya da bizzat apache konfigürasyon
+   dosyas&inodot; ile yap&inodot;labilir. A&scedil;a&gbreve;&inodot;daki uzant&inodot;lar&inodot; kullanarak yanl&inodot;&scedil; yönlendirmede bulunabilirsiniz:
+    <example>
+     <title>PHP'nin farkl&inodot; bir dil olarak saklanmas&inodot;</title>
+     <programlisting role="apache-conf">
+<![CDATA[
+# Make PHP code look like other code types
+AddType application/x-httpd-php .asp .py .pl
+]]>
+     </programlisting>
+    </example>
+    Ya da tamamen saklanmas&inodot;:
+    <example>
+     <title>PHP için bilinmeyen uzant&inodot; isimlerinin kullan&inodot;lmas&inodot;</title>
+     <programlisting role="apache-conf">
+<![CDATA[
+# Make PHP code look like unknown types
+AddType application/x-httpd-php .bop .foo .133t
+]]>
+     </programlisting>
+    </example>
+    Ya da html kodu gibi saklay&inodot;n, yaln&inodot;z bu durum performans dü&scedil;ü&scedil;üne neden olabilir
+    çünkü bütün HTML dosyalar&inodot; PHP motorundan geçirilecektir:
+    <example>
+     <title>PHP uzant&inodot;lar&inodot; için html tipinin kullan&inodot;m&inodot;</title>
+     <programlisting role="apache-conf">
+<![CDATA[
+# Make all PHP code look like html
+AddType application/x-httpd-php .htm .html
+]]>
+     </programlisting>
+    </example>
+    Bunun verimli bir bi&scedil;imde çal&inodot;&scedil;abilmesi için, PHP dosyalar&inodot;n&inodot;z&inodot;n uzant&inodot;s&inodot;n&inodot; yukardaki
+    uzant&inodot;larla de&gbreve;i&scedil;tirmelisiniz. Bulan&inodot;kl&inodot;kla güvenli&gbreve;in sa&gbreve;lanmas&inodot; bir yöntemse de,
+    yan etkisi de kendi etkisi de az olan bir uygulamad&inodot;r.
+   </para>
+  </sect1>
+  
+  <sect1 id="security.current">
+   <title>Güncel Tutmak</title>
+   <simpara>
+   PHP, di&gbreve;er bütün büyük sistemler gibi, tutarl&inodot; bir geli&scedil;im sürecindedir.
+   Her yeni sürüm s&inodot;kl&inodot;kla güvenli&gbreve;i artt&inodot;rmak ve onarmak, konfigürasyon hatalar&inodot;n&inodot; düzeltmek,
+   ve sistem güvenli&gbreve;inin bütünlü&gbreve;ünü ve kararl&inodot;l&inodot;&gbreve;&inodot;n&inodot; bozabilecek hatalar&inodot; düzeltmek için
+   büyük ve küçük de&gbreve;i&scedil;iklikler içerir.
+   </simpara>
+   <simpara>
+   Di&gbreve;er bütün sistem seviyesindeki uygulama dilleri ve programlar gibi, en iyi yakla&scedil;&inodot;m
+   s&inodot;kl&inodot;kla güncellemek, ve son sürüm ve üzerindeki de&gbreve;i&scedil;ikliklerden haberdar olmakt&inodot;r.
+   </simpara>
+  </sect1>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
