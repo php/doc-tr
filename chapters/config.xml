@@ -1,0 +1,1677 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Revision: 1.1 $ -->
+ <chapter id="configuration">
+  <title>Konfigürasyon</title>
+
+  <sect1 id="configuration.file">
+   <title>Konfigürasyon dosyas&inodot;</title>
+
+   <simpara>
+   Konfigürasyon dosyas&inodot; (PHP 3.0 için <filename>php3.ini</filename>,
+   PHP 4.0 için <filename>php.ini</filename> olarak adland&inodot;r&inodot;l&inodot;r), PHP ba&scedil;lad&inodot;&gbreve;&inodot;nda
+   okunur. PHP'nin sunucu modülleri için, bu i&scedil;lem yaln&inodot;zca web sunucusu okundu&gbreve;unda
+   gerçekle&scedil;tirilir. <acronym>CGI</acronym> kurulumlar için, her yeni sayfa
+   iste&gbreve;inde okunur.</simpara>
+   <para>
+    <example>
+     <title>php.ini örne&gbreve;i</title>
+     <programlisting role="ini">
+<![CDATA[
+; any text on a line after an unquoted semicolon (;) is ignored
+[php] ; section markers (text within square brackets) are also ignored
+; Boolean values can be set to either:
+;    true, on, yes
+; or false, off, no, none
+register_globals = off
+magic_quotes_gpc = yes
+
+; you can enclose strings in double-quotes
+include_path = ".:/usr/local/lib/php"
+
+; backslashes are treated the same as any other character
+include_path = ".;c:\php\lib"
+]]>
+</programlisting>
+<!-- TODO: add more details about values and expressions -->
+    </example>
+   </para>
+
+   <simpara>
+   PHP, Apache modülü olarak kullan&inodot;ld&inodot;&gbreve;&inodot;nda, konfigürasyon ayarlar&inodot; Apache
+   konfigürasyon dosyas&inodot;ndan ve .htaccess dosyalar&inodot;n&inodot;n içinden de de&gbreve;i&scedil;tirilebilir.
+   </simpara>
+
+   <simpara>
+   PHP 3.0'da, "php3_" öntak&inodot;s&inodot;na sahip olanlar d&inodot;&scedil;&inodot;nda <filename>php3.ini</filename>
+   içindeki bütün ayarlar&inodot;n birer Apache direktif kar&scedil;&inodot;l&inodot;&gbreve;&inodot; bulunur.
+   </simpara>
+
+   <para>
+   PHP 4.0'da, PHP konfigürasyonunu Apache konfigürasyon dosyas&inodot;ndan
+   de&gbreve;i&scedil;tirmenize izin veren bir dizi Apache direktifi bulunur.
+    <variablelist>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_value</systemitem>
+       <parameter>isim</parameter>
+       <parameter>de&gbreve;er</parameter>
+      </term>
+      <listitem>
+       <para>
+       Seçili de&gbreve;i&scedil;kene de&gbreve;er atar.
+        </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_flag</systemitem>
+       <parameter>isin</parameter>
+       <parameter>aç|kapa</parameter>
+      </term>
+      <listitem>
+       <para>
+       Bu komut Boolean konfigürasyon ayarlar&inodot; için kullan&inodot;l&inodot;r.</para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_admin_value</systemitem>
+       <parameter>isim</parameter>
+       <parameter>de&gbreve;er</parameter>
+      </term>
+      <listitem>
+       <para>
+       Seçili de&gbreve;i&scedil;kenin de&gbreve;erini de&gbreve;i&scedil;tirir. "Admin" konfigürasyon ayarlar&inodot;
+       ancak Apache konfigürasyon dosyas&inodot; içersinden de&gbreve;i&scedil;tirilebilir, .htaccess
+       kullan&inodot;larak yap&inodot;lamaz.</para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_admin_flag</systemitem>
+       <parameter>isim</parameter>
+       <parameter>aç|kapa</parameter>
+      </term>
+      <listitem>
+       <para>
+        Bu komut Boolean konfigürasyon ayarlar&inodot; için kullan&inodot;l&inodot;r.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+   <para>
+    <example>
+     <title>Apache konfigürasyon örne&gbreve;i</title>
+     <programlisting role="ini">
+<![CDATA[
+<IfModule mod_php4.c>
+  php_value include_path ".:/usr/local/lib/php"
+  php_flag safe_mode on
+</IfModule>
+<IfModule mod_php3.c>
+  php3_include_path ".:/usr/local/lib/php"
+  php3_safe_mode on
+</IfModule>
+]]>
+</programlisting>
+    </example>
+   </para>
+
+   <simpara>
+   <function>phpinfo</function> komutunun ç&inodot;kt&inodot;s&inodot;ndan konfigürasyon
+   de&gbreve;erlerinin ayarlar&inodot;n&inodot; görebilirsiniz. Ayr&inodot;ca <function>get_cfg_var</function>
+   fonksiyonunu kullanarak, bu de&gbreve;erlere tek tek eri&scedil;ebilirsiniz.
+    <function>get_cfg_var</function>.
+   </simpara>
+   
+   <sect2 id="ini.sect.general">
+    <title>Genel Konfigürasyon Direktifleri</title>
+    <para>
+     <variablelist>
+      <varlistentry id="ini.allow-url-fopen">
+       <term>
+        <parameter>allow_url_fopen</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Bu seçenek URL-duyarl&inodot; fopen okuyucusunun URL'lere dosyaym&inodot;&scedil; gibi
+	eri&scedil;ebilmesini etkinle&scedil;tirir. Öntan&inodot;ml&inodot; okuyucular <link linkend="features.remote-files">uzaktaki dosyalar</link>a
+	eri&scedil;im için ftp ya da http protokolünün kullan&inodot;m&inodot;n&inodot; sa&gbreve;larlar, zlib gibi uzant&inodot;lar
+	ek okuyucular da sa&gbreve;layabilirler.
+        </para>
+
+        <note>
+         <para>
+	 Bu seçenek 4.0.3 sürümünün hemen ard&inodot;ndan tan&inodot;t&inodot;lm&inodot;&scedil;t&inodot;r. 4.0.3 ve ona
+	 kadar olan sürümler, bu seçene&gbreve;i yaln&inodot;zca derleme esnas&inodot;nda
+	<link linkend="install.configure.disable-url-fopen-wrapper"><parameter>--disable-url-fopen-wrapper</parameter></link>.
+	komutunu vererek devre d&inodot;&scedil;&inodot; b&inodot;rakabilirler.
+         </para>
+        </note>
+
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.asp-tags">
+       <term>
+        <parameter>asp_tags</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <simpara>
+	ASP-tipi &lt;% %&gt; etiketlerinin al&inodot;&scedil;&inodot;lm&inodot;&scedil; &lt;?php ?&gt; etiketlerine
+	ek olarak kullan&inodot;labilmesini sa&gbreve;lar. Bu de&gbreve;i&scedil;ken de&gbreve;eri h&inodot;zl&inodot;ca yazmak için
+	kullan&inodot;lan &lt;%= $value %&gt; kullan&inodot;m&inodot;n&inodot; da içerir. Daha fazla bilgi için,
+	<link linkend="language.basic-syntax.phpmode">HTML'den kaç&inodot;&scedil;</link>
+	bölümünü okuyun.
+        </simpara>
+
+        <note>
+         <para>ASP-tipi etiket deste&gbreve;i 3.0.4 sürümünde eklenmi&scedil;tir.</para>
+        </note>
+
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.auto-append-file">
+       <term>
+        <parameter>auto_append_file</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Ana dosyadan hemen sonra okunacak dosya ismini belirtir. Bu dosya
+	<function>include</function> fonksiyonu ile ça&gbreve;r&inodot;lm&inodot;&scedil; gibi çal&inodot;&scedil;t&inodot;r&inodot;l&inodot;r,
+	bu nedenle <link linkend="ini.include-path">include_path</link>
+	kullan&inodot;l&inodot;r.
+          </para>
+        <para>
+	Özel <systemitem class="constant">none</systemitem> de&gbreve;eri
+	auto-appending i&scedil;lemini devre d&inodot;&scedil;&inodot; b&inodot;rak&inodot;r.
+         <note>
+          <simpara>
+	  Uygulama <function>exit</function> ile sonland&inodot;r&inodot;ld&inodot;&gbreve;&inodot;nda,
+	  auto-append i&scedil;lemi <emphasis>gerçekle&scedil;meyecektir</emphasis>.
+	</simpara>
+         </note></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.auto-prepend-file">
+       <term>
+        <parameter>auto_prepend_file</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Ana dosyadan hemen önce okunacak dosya ismini belirtir. Dosya
+	<function>include</function> fonksiyonu ile ça&gbreve;r&inodot;lm&inodot;&scedil; gibi çal&inodot;&scedil;t&inodot;r&inodot;l&inodot;r,
+	bu nedenle <link linkend="ini.include-path">include_path</link>
+	kullan&inodot;l&inodot;r.
+	</para>
+        <para>
+	Özel <systemitem class="constant">none</systemitem> de&gbreve;eri
+	auto-prepending i&scedil;lemini devre d&inodot;&scedil;&inodot; b&inodot;rak&inodot;r.
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.cgi-ext">
+       <term>
+        <parameter>cgi_ext</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.display-errors">
+       <term>
+        <parameter>display_errors</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Bu seçenek hatalar&inodot;n ekrana HTML ç&inodot;kt&inodot;s&inodot;n&inodot;n bir parças&inodot; olarak yazd&inodot;r&inodot;l&inodot;p
+	yazd&inodot;r&inodot;lmayaca&gbreve;&inodot;n&inodot; belirtir.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.doc-root">
+       <term>
+        <parameter>doc_root</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	PHP'nin sunucudaki "kök klasör"üdür. Yaln&inodot;zca dolu oldu&gbreve;unda kullan&inodot;l&inodot;r.
+	PHP <link linkend="ini.safe-mode">güvenli mod</link>da çal&inodot;&scedil;&inodot;yorsa,
+	bu klasörün d&inodot;&scedil;&inodot;ndaki dosyalar çal&inodot;&scedil;t&inodot;r&inodot;lamaz.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.engine">
+       <term>
+        <parameter>engine</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Bu direktif yaln&inodot;zca PHP Apache modülü olarak kullan&inodot;ld&inodot;&gbreve;&inodot;nda kullan&inodot;&scedil;l&inodot;d&inodot;r.
+	PHP kullan&inodot;m&inodot;n&inodot; klasör baz&inodot;nda ya da sanal sunucu baz&inodot;nda denetlemek isteyen
+	siteler için uygundur. <filename>httpd.conf</filename> dosyas&inodot;nda uygun
+	gerekli yere <userinput>engine off</userinput> yaz&inodot;larak, PHP devre d&inodot;&scedil;&inodot;
+	b&inodot;rak&inodot;labilir.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.error-log">
+       <term>
+        <parameter>error_log</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Uygulama hata ç&inodot;kt&inodot;lar&inodot;n&inodot;n saklanaca&gbreve;&inodot; dosya ismidir. Özel bir de&gbreve;er olan
+	<literal>syslog</literal> kullan&inodot;ld&inodot;&gbreve;&inodot;nda, hatalar sistem hata yöneticisine
+	gönderilir. UNIX alt&inodot;nda bu, syslog(3)'ün ve Windows NT alt&inodot;nda event log'un
+	kullan&inodot;laca&gbreve;&inodot; anlam&inodot;na gelir. Sistem hata yöneticisi Windows 95 alt&inodot;nda
+	desteklenmemektedir.</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.error-reporting">
+       <term>
+        <parameter>error_reporting</parameter>
+        <type>integer</type>
+       </term>
+       <listitem>
+        <para>
+	Hata raporlama seviyesini belirler. Bu parametre bit alan&inodot;n&inodot; temsil eden
+	bir tamsay&inodot;d&inodot;r. Kullanmak istedi&gbreve;iniz hata raporlama seviyelerini toplay&inodot;n.
+         <table>
+          <title>Hata Raporlama Seviyeleri</title>
+          <tgroup cols="2">
+           <thead>
+            <row>
+             <entry>bit de&gbreve;eri</entry>
+             <entry>raporlamay&inodot; etkinle&scedil;tir</entry>
+            </row>
+           </thead>
+           <tbody>
+            <row>
+             <entry>1</entry>
+             <entry>normal hatalar</entry>
+            </row>
+            <row>
+             <entry>2</entry>
+             <entry>normal uyar&inodot;lar</entry>
+            </row>
+            <row>
+             <entry>4</entry>
+             <entry>okuyucu hatalar&inodot;</entry>
+            </row>
+            <row>
+             <entry>8</entry>
+             <entry>kritik olmayan uyar&inodot;lar</entry>
+            </row>
+           </tbody>
+          </tgroup>
+         </table>
+	 Bu direktif için öntan&inodot;ml&inodot; de&gbreve;er 7'dir (normal hatalar, normal uyar&inodot;lar ve
+	 okuyucu hatalar&inodot; görüntülenir).
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.html-errors">
+       <term>
+        <parameter>html_errors</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Hata mesajlar&inodot;ndaki HTML etiketlerini kapat&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.open-basedir">
+       <term>
+        <parameter>open_basedir</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	PHP taraf&inodot;ndan aç&inodot;labilecek dosyalar&inodot;n bulundu&gbreve;u dizin yap&inodot;s&inodot;n&inodot; k&inodot;s&inodot;tlar.
+        </para>
+        <para>
+	Bir uygulama bir dosyay&inodot; açmak istedi&gbreve;inde, örne&gbreve;in fopen ya da gzopen ile,
+	dosyan&inodot;n yeri kontrol edilir. Dosya belirtilen dizin yap&inodot;s&inodot;n&inodot;n d&inodot;&scedil;&inodot;ndaysa, PHP
+	dosyay&inodot; açmay&inodot; reddeder. Bütün sembolik linkler çözülür, bu nedenle bu k&inodot;s&inodot;tlamay&inodot;
+	symlink kullanarak a&scedil;mak mümkün de&gbreve;ildir.
+        </para>
+        <para>
+	Özel bir de&gbreve;er olan <systemitem class="constant">.</systemitem>
+	çal&inodot;&scedil;t&inodot;r&inodot;lan dosyan&inodot;n bulundu&gbreve;u klasörün temel klasör olarak kullan&inodot;laca&gbreve;&inodot;n&inodot;
+	belirtir.
+        </para>
+        <para>
+	Windows alt&inodot;nda, klasörleri noktal&inodot; virgülle ay&inodot;r&inodot;n. Di&gbreve;er bütün sistemlerde,
+	klasörleri virgül ile ay&inodot;r&inodot;n. open_basedir alt&inodot;ndaki bütün klasörler otomatik
+	olarak dizin listesine dahil edilmektedir.
+        </para>
+        <note>
+         <para>Çoklu klasör deste&gbreve;i 3.0.7'de eklenmi&scedil;tir.</para>
+        </note>
+        <para>
+	Öntan&inodot;ml&inodot; de&gbreve;er bütün dosyalar&inodot;n aç&inodot;lmas&inodot;na izin verir.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.gpc-order">
+       <term>
+        <parameter>gpc_order</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	GET/POST/ÇEREZ de&gbreve;i&scedil;kenlerinin i&scedil;lenme s&inodot;ras&inodot;n&inodot; belirler. Öntan&inodot;ml&inodot;
+	de&gbreve;er "GPC"dir. Bu de&gbreve;erin örne&gbreve;in "GP" olarak ayarlanmas&inodot;, PHP'nin
+	bütün çerezleri gözard&inodot; etmesi ve POST metodu ile gelip de GET metoduyla
+	gelen de&gbreve;i&scedil;kenlerden biriyle ayn&inodot; isimde olan bütün de&gbreve;i&scedil;kenlerin GET metodu
+	de&gbreve;eriyle ezilmesine neden olur.
+        </para>
+        <para>
+	Bu seçenek PHP 4'te mevcut de&gbreve;ildir. <link linkend="ini.variables-order">variables_order</link>
+         kullan&inodot;n.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.variables-order">
+       <term>
+        <parameter>variables_order</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	EGPCS (Ortam, GET, POST, Çerez, Sunucu) de&gbreve;i&scedil;kenlerinin i&scedil;lenme s&inodot;ras&inodot;n&inodot;
+	belirler. Öntan&inodot;ml&inodot; de&gbreve;er "EGPCS"dir. Bu de&gbreve;erin "GP" olarak de&gbreve;i&scedil;tirilmesi,
+	PHP'nin ortam de&gbreve;i&scedil;kenlerini, çerezleri ve sunucu de&gbreve;i&scedil;kenleri tamam&inodot;yla
+	gözard&inodot; etmesine ve ayn&inodot; isimde olan bütün GET ve POST de&gbreve;i&scedil;kenlerinden
+	GET de&gbreve;i&scedil;kenini POST de&gbreve;i&scedil;keni ile ezecektir.
+        </para>
+        <para>
+         Ayr&inodot;ca bak&inodot;n <link linkend="ini.register-globals">register_globals</link>.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.ignore-user-abort">
+       <term>
+        <parameter>ignore_user_abort</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Öntan&inodot;ml&inodot; olarak aç&inodot;kt&inodot;r. Off olarak de&gbreve;i&scedil;tirildi&gbreve;inde, kullan&inodot;c&inodot;n&inodot;n ba&gbreve;lant&inodot;y&inodot;
+	koparmas&inodot; durumunda PHP'nin çal&inodot;&scedil;mas&inodot; da durur.
+         <function>ignore_user_abort</function>.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.include-path">
+       <term>
+        <parameter>include_path</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	<function>require</function>, <function>include</function>
+         ve <function>fopen_with_path</function> fonksiyonlar&inodot;n&inodot;n tarayaca&gbreve;&inodot;
+	 klasötleri belirler. Biçimi sistemdeki <envar>PATH</envar> ortam
+	 de&gbreve;i&scedil;keni gibidir: UNIX alt&inodot;nda virgülle, Windows alt&inodot;nda noktal&inodot; virgülle
+	 ayr&inodot;lm&inodot;&scedil; klasör isimleri.
+         <example>
+          <title>UNIX include_path</title>
+          <programlisting role="php3.ini">
+<![CDATA[
+include_path=.:/home/httpd/php-lib
+]]>
+					</programlisting>
+         </example>
+         <example>
+          <title>Windows include_path</title>
+          <programlisting role="php3.ini">
+<![CDATA[
+include_path=".;c:\www\phplib"
+]]>
+					</programlisting>
+         </example>
+	 Bu direktif için öntan&inodot;ml&inodot; de&gbreve;er olan <literal>.</literal> yaln&inodot;zca
+	 geçerli klasörde tarama yapar.</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.isapi-ext">
+       <term>
+        <parameter>isapi_ext</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.log-errors">
+       <term>
+        <parameter>log_errors</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Uygulama hata mesajlar&inodot;n&inodot;n sunucu hata yöneticisinde saklan&inodot;p saklanmayaca&gbreve;&inodot;n&inodot;
+	belirler. Bu seçenek sunucu-ba&gbreve;&inodot;ml&inodot;d&inodot;r.
+	</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.magic-quotes-gpc">
+       <term>
+        <parameter>magic_quotes_gpc</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	GPC (Get/Post/Çerez) i&scedil;lemleri için magic_quotes de&gbreve;erinin durumunu belirler.
+	magic_quotes aç&inodot;k oldu&gbreve;unda, bütün ' (tek-t&inodot;rnak), &quot; (çift t&inodot;rnak),
+	\ (ters bölü) ve NUL de&gbreve;erlerinden bir ters bölü kullan&inodot;larak kaç&inodot;lacakt&inodot;r.
+         magic_quotes_sybase aç&inodot;ksa, tek-t&inodot;rnak i&scedil;areti, tersbölü yerine ikinci bir
+	tek t&inodot;rnak ile kaç&inodot;lacakt&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.magic-quotes-runtime">
+       <term>
+        <parameter>magic_quotes_runtime</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	<parameter>magic_quotes_runtime</parameter> etkinle&scedil;tirildi&gbreve;inde,
+	veritaban&inodot; ya da metin dosyas&inodot; gibi d&inodot;&scedil; kaynaklardan veri döndüren bütün
+	fonksiyonlar&inodot;n döndürdükleri de&gbreve;erler ters bölü ile kaç&inodot;lacakt&inodot;r. 
+	<parameter>magic_quotes_sybase</parameter> de&gbreve;eri de aç&inodot;ksa,
+	tek-t&inodot;rnaklar, ikinci bir tek-t&inodot;rnak ile kaç&inodot;lacakt&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.magic-quotes-sybase">
+       <term>
+        <parameter>magic_quotes_sybase</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	<parameter>magic_quotes_sybase</parameter> de&gbreve;eri aktifse,
+	<parameter>magic_quotes_gpc</parameter> ya da
+         <parameter>magic_quotes_runtime</parameter> de&gbreve;erlerinin etkin
+	 olmas&inodot; durumunda tek-t&inodot;rnaklar ters bölü yerine ikinci bir tek-t&inodot;rnak kullan&inodot;larak
+	 kaç&inodot;lacakt&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.max-execution-time">
+       <term>
+        <parameter>max_execution_time</parameter>
+        <type>integer</type>
+       </term>
+       <listitem>
+        <para>
+	Bu seçenek bir uygulaman&inodot;n PHP taraf&inodot;ndan sonland&inodot;r&inodot;lmadan önce
+	en çok kaç saniye çal&inodot;&scedil;abilece&gbreve;ini belirler. Bu, kötü yaz&inodot;lm&inodot;&scedil; uygulamalar&inodot;n
+	sunucuyu çökertmesini önlemeye yard&inodot;mc&inodot; olur. Öntan&inodot;ml&inodot; de&gbreve;er
+	<literal>30</literal> dur.
+        </para>
+        <para>
+	En fazla çal&inodot;&scedil;ma zaman&inodot; sistem ça&gbreve;r&inodot;lar&inodot;ndan etkilenmez
+	(<function>sleep</function> fonksiyonu gibi). Lütfen daha fazla bilgi
+	için <function>set_time_limit</function> fonksiyonuna gözat&inodot;n.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.memory-limit">
+       <term>
+        <parameter>memory_limit</parameter>
+        <type>integer</type>
+       </term>
+       <listitem>
+        <para>
+	Bir uygulaman&inodot;n kullanabilece&gbreve;i en fazla haf&inodot;za miktar&inodot;n&inodot; belirler.
+	Bu, kötü yaz&inodot;lm&inodot;&scedil; uygulamalar&inodot;n bütün sistem haf&inodot;zas&inodot;n&inodot; yiyip bitirmesini
+	önlemeye yard&inodot;mc&inodot; olur.
+        </para>
+       </listitem>
+      </varlistentry>
+      
+      <varlistentry id="ini.nsapi-ext">
+       <term>
+        <parameter>nsapi_ext</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+        </para>
+       </listitem>
+      </varlistentry>
+                
+      <varlistentry id="ini.register-globals">
+       <term>
+        <parameter>register_globals</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>                 
+        <para>
+	EGPCS (Ortam, GET, POST, Çerez, Sunucu) de&gbreve;i&scedil;kenlerinin global
+	de&gbreve;i&scedil;ken olarak kullan&inodot;l&inodot;p kullan&inodot;lamayaca&gbreve;&inodot;n&inodot; belirtir. Uygulamalar&inodot;n&inodot;zdaki
+	de&gbreve;i&scedil;kenlerin kullan&inodot;c&inodot; verilerinden etkilenmesini istemiyorsan&inodot;z bu seçene&gbreve;i
+	kapatabilirsiniz. Bu seçenek en çok <link
+         linkend="ini.track-vars">track_vars</link> ile birlikte kullan&inodot;ld&inodot;&gbreve;&inodot;nda
+	 anlaml&inodot; olur. Bu &scedil;ekilde EGPCS de&gbreve;i&scedil;kenlerine
+         <varname>$HTTP_ENV_VARS</varname>,
+         <varname>$HTTP_GET_VARS</varname>,
+         <varname>$HTTP_POST_VARS</varname>,
+         <varname>$HTTP_COOKIE_VARS</varname>, ve
+         <varname>$HTTP_SERVER_VARS</varname>
+	 dizi-de&gbreve;i&scedil;kenlerini kullanarak global boyuttan ula&scedil;abilirsiniz.
+        </para>
+        <para>
+	Bunun çal&inodot;&scedil;abilmesi için Apache ayar dosyan&inodot;zdaki ilgili klasöre ait
+	AllowOverride de&gbreve;erinin AllowOverride All olmas&inodot; gerekti&gbreve;ini unutmay&inodot;n.
+        </para>
+       </listitem>
+      </varlistentry>
+                
+      <varlistentry id="ini.short-open-tag">
+       <term>
+        <parameter>short_open_tag</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	PHP moduna geçmek için kullan&inodot;lan k&inodot;sa &scedil;eklin (<userinput>&lt;? ?&gt;</userinput>)
+	kullan&inodot;m&inodot;na izin verilip verilmeyece&gbreve;ini belirtir. PHP'yi XML ile birlikte kullanmak
+	istiyorsan&inodot;z, bu seçene&gbreve;i devre d&inodot;&scedil;&inodot; b&inodot;rakmal&inodot;s&inodot;n&inodot;z. Devre d&inodot;&scedil;&inodot; b&inodot;rak&inodot;ld&inodot;&gbreve;&inodot;nda,
+	aç&inodot;l&inodot;&scedil; etiketinin uzun hali kullan&inodot;lmal&inodot;d&inodot;r (<userinput>&lt;?php ?&gt;</userinput>).
+	</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.sql.safe-mode">
+       <term>
+        <parameter>sql.safe_mode</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.track-errors">
+       <term>
+        <parameter>track_errors</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Etkinle&scedil;tirildi&gbreve;inde, son verilen hata her zaman global boyuttaki
+	<symbol>$php_errormsg</symbol> de&gbreve;i&scedil;kenine atan&inodot;r.
+	</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.track-vars">
+       <term>
+        <parameter>track_vars</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Etkinle&scedil;tirildi&gbreve;inde, Ortam, GET, POST, Çerez ve Sunucu de&gbreve;i&scedil;kenlerine
+         <varname>$HTTP_ENV_VARS</varname>,
+         <varname>$HTTP_GET_VARS</varname>,
+         <varname>$HTTP_POST_VARS</varname>,
+         <varname>$HTTP_COOKIE_VARS</varname>, ve
+         <varname>$HTTP_SERVER_VARS</varname> global dizi-de&gbreve;i&scedil;kenlerinden
+	 ula&scedil;&inodot;labilir.
+        </para>
+        <para>
+	PHP 4.0.3'ten itibaren, <systemitem
+         role="directive">track_vars</systemitem> her zaman aç&inodot;kt&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.upload-tmp-dir">
+       <term>
+        <parameter>upload_tmp_dir</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Upload yap&inodot;l&inodot;rken dosyalar&inodot;n saklanaca&gbreve;&inodot; geçici klasörü belirtir.
+	PHP'nin çal&inodot;&scedil;t&inodot;&gbreve;&inodot; kullan&inodot;c&inodot;n&inodot;n bu klasöre yazma hakk&inodot; bulunmal&inodot;d&inodot;r.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.upload-max-filesize">
+       <term>
+        <parameter>upload_max_filesize</parameter>
+        <type>integer</type>
+       </term>
+       <listitem>
+        <para>
+	Upload edilecek dosyan&inodot;n sahip olabilece&gbreve;i en büyük boyuttur. De&gbreve;er
+	byte cinsindendir.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.user-dir">
+       <term>
+        <parameter>user_dir</parameter>
+        <type>string</type>
+       </term>
+       <listitem>
+        <para>
+	Kullan&inodot;c&inodot;lar&inodot;n PHP için kulland&inodot;klar&inodot; ana klasörü belirtir. Örnek olarak
+	<literal>public_html</literal> verilebilir.
+         </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="ini.warn-plus-overloading">
+       <term>
+        <parameter>warn_plus_overloading</parameter>
+        <type>boolean</type>
+       </term>
+       <listitem>
+        <para>
+	Etkinle&scedil;tirildi&gbreve;inde, art&inodot; (<literal>+</literal>) operatörünün karakter dizilerinde
+	kullan&inodot;lmas&inodot; durumunda uyar&inodot; verir. Bu, karakter dizisi birle&scedil;tiricisi olan 
+	(<literal>.</literal>) kullan&inodot;larak yeniden yaz&inodot;lmas&inodot; gereken uygulamalar&inodot;
+	bulmak için kullan&inodot;&scedil;l&inodot;d&inodot;r.
+         </para>
+       </listitem>
+      </varlistentry>
+
+     </variablelist>
+    </para>
+   </sect2>
+
+   <sect2 id="ini.sect.safe-mode">
+    <title>Güvenli Mod Konfigürasyon Direktifleri</title>
+    <variablelist>
+
+     <varlistentry id="ini.safe-mode">
+      <term>
+       <parameter>safe_mode</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       PHP'nin güvenli modunun etkinle&scedil;tirilip etkinle&scedil;tirilmeyece&gbreve;ini belirler.
+       <link linkend="security">Güvenlik</link> ve 
+       <link linkend="features.safe-mode">Güvenli Mod</link>
+       bölümlerinden daha fazla bilgiye ula&scedil;abilirsiniz.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.safe-mode-exec-dir">
+      <term>
+       <parameter>safe_mode_exec_dir</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       PHP güvenli modda kullan&inodot;ld&inodot;&gbreve;&inodot;nda, <function>system</function>
+       ve di&gbreve;er sistem dosyalar&inodot;n&inodot; çal&inodot;&scedil;t&inodot;ran uygulamalar, belirtilen klasörün
+       d&inodot;&scedil;&inodot;nda olmalar&inodot; durumunda çal&inodot;&scedil;t&inodot;r&inodot;lmayacakt&inodot;r.</para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.debugger">
+    <title>Ay&inodot;klay&inodot;c&inodot; Konfigürasyon Direktifleri</title>
+    <variablelist>
+
+     <varlistentry id="ini.debugger.host">
+      <term>
+       <parameter>debugger.host</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Ay&inodot;klay&inodot;c&inodot; taraf&inodot;ndan kullan&inodot;lacak DNS ismini ya da IP adresini belirtir.
+        </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.debugger.port">
+      <term>
+       <parameter>debugger.port</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Ay&inodot;klay&inodot;c&inodot; taraf&inodot;ndan kullan&inodot;lacak port numaras&inodot;n&inodot; belirtir.
+        </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.debugger.enabled">
+      <term>
+       <parameter>debugger.enabled</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Ay&inodot;klay&inodot;c&inodot;n&inodot;n etkinle&scedil;tirilip etkinle&scedil;tirilmeyece&gbreve;ini belirtir.
+        </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.extension">
+    <title>Uzant&inodot; Yükleme Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.enable-dl">
+      <term>
+        <parameter>enable_dl</parameter>
+        <type>boolean</type>
+      </term>
+      <listitem>
+        <para>
+	Bu direktif sadece PHP Apache modülü olarak kullan&inodot;ld&inodot;&gbreve;&inodot;nda anlam ta&scedil;&inodot;r.
+	PHP uzant&inodot;lar&inodot;n&inodot;n dinamik olarak <function>dl</function> ile yüklenmesini
+	sanal sunucu ya da klasör baz&inodot;nda k&inodot;s&inodot;tlayabilirsiniz.
+        </para>
+        <para>
+	Dinamik yüklemeyi kapatman&inodot;n ana gerekçesi güvenliktir. Dinamik yükleme ile,
+	bütün safe_mode ve open_basedir k&inodot;s&inodot;tlamalar&inodot;n&inodot;n atlat&inodot;lmas&inodot; mümkündür.
+        </para>
+        <para>
+	safe_mode haricinde öntan&inodot;ml&inodot; i&scedil;lem dinamik yüklemeye izin verilmesidir.
+	Güvenli modda, <function>dl</function> fonksiyonunu kullanmak her zaman
+	imkans&inodot;zd&inodot;r.
+        </para>
+      </listitem>
+     </varlistentry>
+      
+     <varlistentry id="ini.extension-dir">
+      <term>
+       <parameter>extension_dir</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       PHP'nin dinamik olarak yükleyebilece&gbreve;i uzant&inodot;lar&inodot; nerede aramas&inodot; gerekti&gbreve;ini
+       belirler.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.extension">
+      <term>
+       <parameter>extension</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       PHP ba&scedil;lad&inodot;&gbreve;&inodot;nda hangi dinamik olarak yüklenebilir uzant&inodot;lar&inodot;n yüklenece&gbreve;ini
+       belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.mysql">
+    <title>MySQL Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.mysql.allow-persistent">
+      <term>
+       <parameter>mysql.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       MySQL sürekli ba&gbreve;lant&inodot;s&inodot;na izin verilip verilmeyece&gbreve;ini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.default-host">
+      <term>
+       <parameter>mysql.default_host</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Veritaban&inodot; sunucusuna ba&gbreve;lan&inodot;rken ba&scedil;ka bir sunucu adresi belirtilmemi&scedil;se
+       kullan&inodot;lacak öntan&inodot;ml&inodot; sunucu adresini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.default-user">
+      <term>
+       <parameter>mysql.default_user</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Veritaban&inodot; sunucusuna ba&gbreve;lan&inodot;rken ba&scedil;ka bir kullan&inodot;c&inodot; ismi belirtilmemi&scedil;se
+       kullan&inodot;lacak öntan&inodot;ml&inodot; kullan&inodot;c&inodot; ismini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.default-password">
+      <term>
+       <parameter>mysql.default_password</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Veritaban&inodot; sunucusuna ba&gbreve;lan&inodot;rken ba&scedil;ka bir parola belirtilmemi&scedil;se
+       kullan&inodot;lacak öntan&inodot;ml&inodot; parolay&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.default-port">
+      <term>
+       <parameter>mysql.default_port</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Veritaban&inodot; sunucusuna ba&gbreve;lan&inodot;rken ba&scedil;ka bir TCP portu belirtilmemi&scedil;se
+       kullan&inodot;lacak öntan&inodot;ml&inodot; TCP portunu belirtir. Öntan&inodot;ml&inodot; bir de&gbreve;er belirtilmemi&scedil;se,
+       port de&gbreve;eri <literal>MYSQL_TCP_PORT</literal> ortam de&gbreve;i&scedil;keninden,
+       <filename>/etc/services</filename> içindeki <literal>mysql-tcp</literal>
+       de&gbreve;erinden ya da derleme s&inodot;ras&inodot;ndaki <literal>MYSQL_PORT</literal>
+       de&gbreve;erinden ayn&inodot; s&inodot;ralamayla al&inodot;nacakt&inodot;r. Win32 alt&inodot;nda yaln&inodot;zca
+	<literal>MYSQL_PORT</literal> sabiti kullan&inodot;l&inodot;r.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.default-socket">
+      <term>
+       <parameter>mysql.default_socket</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Veritaban&inodot; sunucusuna ba&gbreve;lan&inodot;rken ba&scedil;ka bir soket ismi belirtilmemi&scedil;se
+       kullan&inodot;lacak öntan&inodot;ml&inodot; soketi belirtir.       
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.max-persistent">
+      <term>
+       <parameter>mysql.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na dü&scedil;en en fazla sürekli MySQL ba&gbreve;lant&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.mysql.max-links">
+      <term>
+       <parameter>mysql.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na dü&scedil;en maksimum MySQL ba&gbreve;lant&inodot;s&inodot;n&inodot; verir, sürekli
+       ba&gbreve;lant&inodot;lar dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.msql">
+    <title>mSQL Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.msql.allow-persistent">
+      <term>
+       <parameter>msql.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       mSQL sürekli ba&gbreve;lant&inodot;lar&inodot;na izip verilip verilmeyece&gbreve;ini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.msql.max-persistent">
+      <term>
+       <parameter>msql.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum sürekli mSQL ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.msql.max-links">
+      <term>
+       <parameter>msql.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum mSQL ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir. Sürekli
+       ba&gbreve;lant&inodot;lar dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.pgsql">
+    <title>Postgres Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.pgsql.allow-persistent">
+      <term>
+       <parameter>pgsql.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Postgres ba&gbreve;lant&inodot;lar&inodot;na izin verilip verilmeyece&gbreve;ini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.pgsql.max-persistent">
+      <term>
+       <parameter>pgsql.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum sürekli Postgres ba&gbreve;lant&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.pgsql.max-links">
+      <term>
+       <parameter>pgsql.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum Postgres ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; verir,
+       sürekli ba&gbreve;lant&inodot;lar dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+
+   <sect2 id="ini.sect.sesam">
+    <title>SESAM Konfigüraston Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.sesam-oml">
+      <term>
+       <parameter>sesam_oml</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Yüklenebilir SESAM sürücü modüllerini içeren BS2000 PLAM kütüphanesinin
+       yerini belirtir. SESAM fonksiyonlar&inodot; için gereklidir. BS2000 PLAM kütüphanesi
+       ACCESS=READ,SHARE=YES olarak ayarlanmal&inodot;d&inodot;r çünkü Apache sunucusunun
+       kullan&inodot;c&inodot;s&inodot; taraf&inodot;ndan okunmas&inodot; gereklidir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sesam-configfile">
+      <term>
+       <parameter>sesam_configfile</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       SESAM uygulama konfigürasyon dosyas&inodot;n&inodot;n ismidir. SESAM fonksiyonlar&inodot;
+       için gereklidir. BS2000 dosyas&inodot; Apache sunucusunun kullan&inodot;c&inodot;s&inodot; taraf&inodot;ndan
+       okunabilir olmal&inodot;d&inodot;r.
+       </para>
+       <para>
+       Uygulama konfigürasyon dosyas&inodot; genel olarak a&scedil;a&gbreve;&inodot;daki konfigürasyonu içerir
+       (SESAM referans k&inodot;lavuzunu inceleyin):
+        <informalexample>
+         <programlisting role="bs2000">
+<![CDATA[
+CNF=B
+NAM=K
+NOTYPE
+]]>
+				 </programlisting>
+        </informalexample>
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sesam-messagecatalog">
+      <term>
+       <parameter>sesam_messagecatalog</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       SESAM mesaj katalog dosyas&inodot;n&inodot;n ismi. Birçok durumda, bu direktif
+       gerekli de&gbreve;ildir. Yaln&inodot;zca SESAM mesaj dosyas&inodot;n&inodot;n sistemdeki BS2000
+       mesaj dosya tablosuna yüklenmedi&gbreve;i durumlarda bu direktif kullan&inodot;labilir.
+       </para>
+       <para>
+       Mesaj katalo&gbreve;u ACCESS=READ,SHARE=YES olarak ayarlanmal&inodot;d&inodot;r
+       çünkü Apache sunucusunun kullan&inodot;c&inodot;s&inodot; taraf&inodot;ndan okunabilmelidir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+
+   <sect2 id="ini.sect.sybase">
+    <title>Sybase Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.sybase.allow-persistent">
+      <term>
+       <parameter>sybase.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Sybase sürekli ba&gbreve;lant&inodot;lar&inodot;na izin verilip verilmeyece&gbreve;ini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybase.max-persistent">
+      <term>
+       <parameter>sybase.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum sürekli Sybase ba&gbreve;lant&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybase.max-links">
+      <term>
+       <parameter>sybase.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek maksimum Sybase ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir,
+       sürekli ba&gbreve;lant&inodot;lar buna dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.sybct">
+    <title>Sybase-CT Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.sybct.allow-persistent">
+      <term>
+       <parameter>sybct.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Sürekli Sybase-CT ba&gbreve;lant&inodot;lar&inodot;na izin verilip verilmeyece&gbreve;ini belirtir.
+       Öntan&inodot;ml&inodot; de&gbreve;er on dur.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.max-persistent">
+      <term>
+       <parameter>sybct.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek en fazla sürekli Sybase-CT ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir.
+       Öntan&inodot;ml&inodot; de&gbreve;er -1 s&inodot;n&inodot;rs&inodot;z anlam&inodot;na gelir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.max-links">
+      <term>
+       <parameter>sybct.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na olabilecek en fazla Sybase-CT ba&gbreve;lant&inodot;s&inodot;n&inodot; belirtir,
+       buna sürekli ba&gbreve;lant&inodot;lar dahildir. Öntan&inodot;ml&inodot; de&gbreve;er -1 s&inodot;n&inodot;rs&inodot;z anlam&inodot;na gelir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.min-server-severity">
+      <term>
+       <parameter>sybct.min_server_severity</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       sybct.min_server_severity de&gbreve;erine e&scedil;it ve daha yüksek olan sunucu mesajlar&inodot;
+       uyar&inodot; olarak rapor edilecektir. Bu de&gbreve;er uygulama içinden 
+       <function>sybase_min_server_severity</function> ça&gbreve;r&inodot;larak da ayarlanabilir.
+       Öntan&inodot;ml&inodot; de&gbreve;er 10'dur.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.min-client-severity">
+      <term>
+       <parameter>sybct.min_client_severity</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       sybct.min_client_severity de&gbreve;erine e&scedil;it ve daha yüksek olan istemci kütüphane
+       mesajlar&inodot; uyar&inodot; olarak rapor edilecektir. Bu de&gbreve;er uygulama içinden
+       <function>sybase_min_client_severity</function> kullan&inodot;larak ayarlanabilir.
+       10 de&gbreve;eri verimli bir &scedil;ekilde raporlamay&inodot; devre d&inodot;&scedil;&inodot; b&inodot;rak&inodot;r.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.login-timeout">
+      <term>
+       <parameter>sybct.login_timeout</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Bir ba&gbreve;lant&inodot; denemesi için ba&scedil;ar&inodot;s&inodot;z de&gbreve;eri dönene kadar beklenecek saniye
+       cinsinden en fazla süreyi belirtir. max_execution_time a&scedil;&inodot;lm&inodot;&scedil;sa, uygulaman&inodot;z
+	ba&scedil;ar&inodot;s&inodot;z durumuna dü&scedil;meden zaman a&scedil;&inodot;m&inodot;na u&gbreve;rar. Öntan&inodot;ml&inodot; de&gbreve;er
+	bir dakikad&inodot;r.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.timeout">
+      <term>
+       <parameter>sybct.timeout</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Bir select_db ya da sorgu i&scedil;leminin tamamlanmas&inodot; için beklenecek en fazla
+       süreyi saniye cinsinden belirtir. &Idot;&scedil;lem tamamlanamazsa ba&scedil;ar&inodot;s&inodot;z döndürülür.
+       &Idot;&scedil;lem zaman a&scedil;&inodot;m&inodot;na u&gbreve;rad&inodot;&gbreve;&inodot;nda max_execution_time de&gbreve;eri a&scedil;&inodot;lm&inodot;&scedil;sa,
+       uygulaman&inodot;z ba&scedil;ar&inodot;s&inodot;z de&gbreve;erini döndüremeden sonlanacakt&inodot;r. Öntan&inodot;ml&inodot; de&gbreve;er
+       s&inodot;n&inodot;rs&inodot;zd&inodot;r.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.sybct.hostname">
+      <term>
+       <parameter>sybct.hostname</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       sp_who taraf&inodot;ndan görüntülenecek ba&gbreve;lant&inodot; kurulan makina ismini belirtir.
+       Öntan&inodot;ml&inodot; de&gbreve;er yoktur.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.informix">
+    <title>Informix Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.ifx.allow-persistent">
+      <term>
+       <parameter>ifx.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Sürekli Informix ba&gbreve;lant&inodot;lar&inodot;n&inodot;n kullan&inodot;l&inodot;p kullan&inodot;lmayaca&gbreve;&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.ifx.max-persistent">
+      <term>
+       <parameter>ifx.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na en fazla sürekli Informix ba&gbreve;lant&inodot;s&inodot;n&inodot; belirtir.
+        process.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.ifx.max-links">
+      <term>
+       <parameter>ifx.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na en fazla sürekli Informix ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir,
+       sürekli ba&gbreve;lant&inodot;lar dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.default-host">
+      <term>
+       <parameter>ifx.default_host</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       <function>ifx_connect</function> ya da 
+        <function>ifx_pconnect</function> ile bir ba&gbreve;lant&inodot; adresi belirtilmedi&gbreve;inde
+	kullan&inodot;lacak öntan&inodot;ml&inodot; adres de&gbreve;eridir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.default-user">
+      <term>
+       <parameter>ifx.default_user</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       <function>ifx_connect</function> ya da 
+        <function>ifx_pconnect</function> ile bir kullan&inodot;c&inodot; id'si belirtilmedi&gbreve;inde
+	kullan&inodot;lacak öntan&inodot;ml&inodot; kullan&inodot;c&inodot; id'sidir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.default-password">
+      <term>
+       <parameter>ifx.default_password</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       <function>ifx_connect</function> ya da
+        <function>ifx_pconnect</function> ile bir parola belirtilmedi&gbreve;inde
+	kullan&inodot;lacak öntan&inodot;ml&inodot; parolad&inodot;r.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.blobinfile">
+      <term>
+       <parameter>ifx.blobinfile</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Blob sütunlar&inodot;n dosya içine döndürülmesini istiyorsan&inodot;z &true; de&gbreve;erini,
+       haf&inodot;zaya döndürülmesini istiyorsan&inodot;z &false; de&gbreve;erini atay&inodot;n. Bu seçene&gbreve;i
+       çal&inodot;&scedil;ma esnas&inodot;nda <function>ifx_blobinfile_mode</function> fonksiyonunu
+       kullanarak de&gbreve;i&scedil;tirebilirsiniz.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.textasvarchar">
+      <term>
+       <parameter>ifx.textasvarchar</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Select cümlelerinde TEXT sütunlar&inodot;n normal karakter dizileri olarak döndürülmesini
+       istiyorsan&inodot;z &true; de&gbreve;erini, blob id parametrelerini kullanmak istiyorsan&inodot;z
+       &false; de&gbreve;erini atay&inodot;n. Bu seçene&gbreve;i çal&inodot;&scedil;ma esnas&inodot;nda 
+       <function>ifx_textasvarchar</function> fonksiyonunu kullanarak
+       de&gbreve;i&scedil;tirebilirsiniz.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.byteasvarchar">
+      <term>
+       <parameter>ifx.byteasvarchar</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Select sorgular&inodot;nda BYTE sütunlar&inodot;n&inodot;n normal karakter dizi de&gbreve;erler olarak
+       döndürülmesini istiyorsan&inodot;z &true; de&gbreve;erini, blob id parametresi olarak
+       kullanmak istiyorsan&inodot;z &false; de&gbreve;erini atay&inodot;n. Bu seçene&gbreve;i çal&inodot;&scedil;ma esnas&inodot;nda
+       <function>ifx_textasvarchar</function> fonksiyonu ile de&gbreve;i&scedil;tirebilirsiniz.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.charasvarchar">
+      <term>
+       <parameter>ifx.charasvarchar</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       CHAR sütunlar&inodot;n çekilirken ba&scedil;taki ve sondaki bo&scedil;luklar&inodot;n temizlenmesini
+       istiyorsan&inodot;z &true; de&gbreve;erini atay&inodot;n.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.ifx.nullformat">
+      <term>
+       <parameter>ifx.nullformat</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       &null; sütunlar&inodot;n "&null;" karakter dizisi olarak döndürülmesini istiyorsan&inodot;z
+       &true; de&gbreve;erini, bo&scedil; "" de&gbreve;er olarak döndürülmesini istiyorsan&inodot;z &false;
+       de&gbreve;erini atay&inodot;n. Bu seçene&gbreve;i çal&inodot;&scedil;ma esnas&inodot;nda <function>ifx_nullformat</function>
+       fonksiyonunu kullanarak de&gbreve;i&scedil;tirebilirsiniz.
+       </para>
+      </listitem>
+     </varlistentry>
+
+
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.bcmath">
+    <title>BC Math Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.bcmath.scale">
+      <term>
+       <parameter>bcmath.scale</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Bütün bcmath fonksiyonlar&inodot; için noktadan sonra kullan&inodot;lacak rakkam say&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.browscap">
+    <title>Taray&inodot;c&inodot; Nitelik Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.browscap">
+      <term>
+       <parameter>browscap</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+       Taray&inodot;c&inodot; nitelik dosyas&inodot;n&inodot;n ismi. Ayr&inodot;ca <function>get_browser</function>
+       fonksiyonunu inceleyin.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.uodbc">
+    <title>Tekille&scedil;tirilmi&scedil; ODBC Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.uodbc.default-db">
+      <term>
+       <parameter>uodbc.default_db</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <function>odbc_connect</function> ya da
+        <function>odbc_pconnect</function> ile belirtilmedi&gbreve;i takdirde
+	kullan&inodot;lacak ODBC veri kayna&gbreve;&inodot;.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.uodbc.default-user">
+      <term>
+       <parameter>uodbc.default_user</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <function>odbc_connect</function> ya da
+        <function>odbc_pconnect</function> ile belirtilmemi&scedil;se kullan&inodot;lacak
+	kullan&inodot;c&inodot; ismi.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.uodbc.default-pw">
+      <term>
+       <parameter>uodbc.default_pw</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <function>odbc_connect</function> ya da
+        <function>odbc_pconnect</function> ile belirtilmemi&scedil;se kullan&inodot;lacak
+	parola.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.uodbc.allow-persistent">
+      <term>
+       <parameter>uodbc.allow_persistent</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+       Sürekli ODBC ba&gbreve;lant&inodot;lar&inodot;na izin verilip verilmeyece&gbreve;ini belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.uodbc.max-persistent">
+      <term>
+       <parameter>uodbc.max_persistent</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       Process ba&scedil;&inodot;na en fazla sürekli ODBC ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+     <varlistentry id="ini.uodbc.max-links">
+      <term>
+       <parameter>uodbc.max_links</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+       
+       Process ba&scedil;&inodot;na en fazla ODBC ba&gbreve;lant&inodot; say&inodot;s&inodot;n&inodot; belirtir. Sürekli ba&gbreve;lant&inodot;
+       say&inodot;s&inodot; dahildir.
+       </para>
+      </listitem>
+     </varlistentry>
+     
+    </variablelist>
+   </sect2>
+
+   <sect2 id="ini.sect.mbstring">
+    <title>Çoklu-Byte Karakter Dizisi Konfigürasyon Direktifleri</title>
+    <variablelist>
+     
+     <varlistentry id="ini.mbstring.internal-encoding">
+      <term>
+       <parameter>mbstring.internal_encoding</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <literal>mbstring.internal_encoding</literal> öntan&inodot;ml&inodot; uluslararas&inodot;
+	karakter kodlamas&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.mbstring.http-input">
+      <term>
+       <parameter>mbstring.http_input</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <literal>mbstring.http_input</literal> öntan&inodot;ml&inodot; HTTP karakter giri&scedil;
+         kodlamas&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.mbstring.http-output">
+      <term>
+       <parameter>mbstring.http_output</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <literal>mbstring.http_output</literal> öntan&inodot;ml&inodot; HTTP ç&inodot;k&inodot;&scedil; karakter kodlamas&inodot;n&inodot;
+         belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.mbstring.detect-order">
+      <term>
+       <parameter>mbstring.detect_order</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <literal>mbstring.detect_order</literal> öntan&inodot;ml&inodot; karakter kodlamas&inodot;
+         tan&inodot;ma s&inodot;ras&inodot;n&inodot; belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="ini.mbstring.substitute-character">
+      <term>
+       <parameter>mbstring.substitute_character</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        <literal>mbstring.substitute_character</literal> hatal&inodot; karakter kodlar&inodot;yla
+	de&gbreve;i&scedil;tirilecek karakteri belirtir.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect2>
+
+  </sect1>
+
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
