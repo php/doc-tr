@@ -1,0 +1,578 @@
+<!-- $Revision: 1.1 $ -->
+ <reference id="ref.ftp">
+  <title>FTP fonksiyonlar&inodot;</title>
+  <titleabbrev>FTP</titleabbrev>
+
+  <partintro>
+   <para>
+    Burada yer alan fonksiyonlar   &spec.ftp;  de tan&inodot;mlanan Dosya Aktar&inodot;m&inodot; Protokolu
+   (File Transfer Protokol) ne göre dosya sunucular&inodot;na eri&scedil;mek için kullan&inodot;l&inodot;r.  
+   </para>
+
+   <para>
+   A&scedil;a&gbreve;&inodot;daki sabitler  <constant>FTP_ASCII</constant> ve   <constant>FTP_BINARY</constant>
+   FTP modülleri kullan&inodot;ld&inodot;&gbreve;&inodot; zaman tan&inodot;ml&inodot;d&inodot;rlar. 
+   </para>
+  <para>
+  PHP ayarlar&inodot; ile FTP fonksiyonlar&inodot;n&inodot; kullanmak için PHP4 kurulumunda 
+ <link linkend="install.configure.enable-ftp"> <option>--enable-ftp</option></link> 
+bu opsiyonu eklemelisin.PHP 3 kullan&inodot;ld&inodot;&gbreve;&inodot; zamanda <link linkend="install.configure.with-ftp">
+   <option>--with-ftp</option></link> bu opsiyon ile ayarlamal&inodot;s&inodot;n.
+  </para>
+   <para>
+    <example>
+     <title><function>ftp</function> örne&gbreve;i</title>
+      <programlisting>
+&lt;?php
+// ftp sunucusuna ba&gbreve;lan&inodot;yoruz.
+$conn_id = ftp_connect("$ftp_server"); 
+
+// kullan&inodot;c&inodot; ad&inodot; ve &scedil;ifre do&gbreve;rulamas&inodot; yap&inodot;l&inodot;yor.
+$login_result = ftp_login($conn_id, "$ftp_user_name", "$ftp_user_pass"); 
+
+// ba&gbreve;lant&inodot;n&inodot;n sa&gbreve;lan&inodot;p sa&gbreve;lanmad&inodot;&gbreve;&inodot; kontrol ediliyor.
+if ((!$conn_id) || (!$login_result)) { 
+        echo "Ftp ba&gbreve;lant&inodot;s&inodot; sa&gbreve;lanamad&inodot;!";
+        die; 
+    } else {
+        echo "$ftp_server ftp sunucusuna   $user kullan&inodot;c&inodot;s&inodot; olarak ba&gbreve;lan&inodot;ld&inodot;.";
+    }
+
+// dosya yükleyelim.
+$upload = ftp_put($conn_id, "$hedef_dosya", "$kaynak_dosya", FTP_BINARY); 
+
+// Yüklemenin gerçekle&scedil;me durumu kontrol ediliyor.
+if (!$upload) { 
+        echo "Ftp yüklemesi gerçekle&scedil;medi.!";
+    } else {
+        echo "$kaynak_dosya  $ftp_server sunucusuna  $hedef_dosya ismi ile yüklendi.";
+    }
+
+// ftp ba&scedil;lant&inodot;s&inodot;n&inodot; kapat&inodot;yoruz. 
+ftp_quit($conn_id); 
+?>
+     </programlisting>
+    </example>
+   </para>
+  </partintro>
+
+  <refentry id="function.ftp-connect">
+   <refnamediv>
+    <refname>ftp_connect</refname>
+    <refpurpose>Belirtilen sunucuya bir ftp ba&gbreve;lant&inodot;s&inodot; açar.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_connect</function></funcdef>
+      <paramdef>string <parameter>host</parameter></paramdef>
+      <paramdef>int <parameter><optional>port</optional>
+       </parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+   Ba&scedil;ar&inodot; durumunda ftp ba&gbreve;lant&inodot;s&inodot;n&inodot;, hata durumunda &false; de&gbreve;eri döndürür.  
+   </para>  
+    <para>
+     <function>ftp_connect</function> komutu belirtilen <parameter>sunucuya</parameter> bir ftp ba&gbreve;lant&inodot;s&inodot; açar.
+     <parameter>port</parameter> parametresi ba&gbreve;lant&inodot; için alternatif bir port belirtir.
+     e&gbreve;er belirtilmezse veya 0 de&gbreve;eri verilirse default port olarak 21 kullan&inodot;l&inodot;r.
+  </para>
+   </refsect1>
+  </refentry>
+
+
+  <refentry id="function.ftp-login">
+   <refnamediv>
+    <refname>ftp_login</refname>
+    <refpurpose>FTP ba&gbreve;lant&inodot;s&inodot; aç&inodot;lan sunucuya kullan&inodot;c&inodot; ad&inodot; veya &scedil;ifre ile giri&scedil; yapar.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_login</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>kullan&inodot;c&inodot; ad&inodot;</parameter></paramdef>
+      <paramdef>string <parameter>sifre</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+   Ba&scedil;ar&inodot; halinde &true;  hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para> 
+     FTP ba&gbreve;lant&inodot;s&inodot; aç&inodot;lan sunucuya kullan&inodot;c&inodot; ad&inodot; veya &scedil;ifre ile giri&scedil; yapar.
+  </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-pwd">
+   <refnamediv>
+    <refname>ftp_pwd</refname>
+    <refpurpose>Sunucuda o an bulunulan dizin ismini döndürür.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>string <function>ftp_pwd</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde dizin ismini, hata halinde &false de&gbreve;erini döndürür.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-cdup">
+   <refnamediv>
+    <refname>ftp_cdup</refname>
+    <refpurpose>Sunucuda bir üst dizine geçmek için kullan&inodot;l&inodot;r.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_cdup</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+      Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para> 
+     Sunucuda bir üst dizine geçer.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-chdir">
+   <refnamediv>
+    <refname>ftp_chdir</refname>
+    <refpurpose>FTP sunucusunda belirtilen dizine geçmek için kullan&inodot;l&inodot;r.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_chdir</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dizin</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+      Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para> 
+      Belirtilen <parameter>dizin</parameter>e geçer.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-mkdir">
+   <refnamediv>
+    <refname>ftp_mkdir</refname>
+    <refpurpose>Sunucuda dizin yarat&inodot;r.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>string <function>ftp_mkdir</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dizin</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde yeni yarat&inodot;lan dizin ad&inodot;n&inodot;, hata halinde  &false; de&gbreve;erini döndürür.</para>
+    <para> 
+     Belirtilen isimde bir <parameter>dizin</parameter> yarat&inodot;r.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-rmdir">
+   <refnamediv>
+    <refname>ftp_rmdir</refname>
+    <refpurpose>Sunucudaki dizini siler.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_rmdir</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dizin</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+         Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para> 
+     Belirtilen <parameter>dizini</parameter> siler.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-nlist">
+   <refnamediv>
+    <refname>ftp_nlist</refname>
+    <refpurpose>Belirtilen dizinde bulunan dosyalar&inodot;n listesini döndürür.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>array <function>ftp_nlist</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dizin</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde içinde dosya isimlerinin bulundu&gbreve;u bir dizi , hata halinde  &false; döndürür.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-rawlist">
+   <refnamediv>
+    <refname>ftp_rawlist</refname>
+    <refpurpose>
+     Belirtilen dizinde bulunan dosyalar&inodot;n ayr&inodot;nt&inodot;l&inodot; bir listesini döndürür.
+    </refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>array <function>ftp_rawlist</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dizin</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     <function>ftp_rawlist</function> sunucuda FTP LIST komutunu çal&inodot;&scedil;t&inodot;r&inodot;r ve sonuçlar&inodot;
+    bir dizi halinde döndürür.  Her dizi eleman&inodot; textin bir sat&inodot;r&inodot;na kar&scedil;&inodot;l&inodot;k gelir.
+    ÇIkt&inodot; herhangi bir &scedil;ekilde parse edilmez.  
+    Ayr&inodot;ca  <function>ftp_systype</function> ile döndürülen sistem tip belirteci sonuçlar&inodot;n 
+     nas&inodot;l yorumlanmas&inodot; gerektigini saptamada kullan&inodot;labilir.
+ </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-systype">
+   <refnamediv>
+    <refname>ftp_systype</refname>
+    <refpurpose>
+     Ba&gbreve;l&inodot; bulunulan FTP serverinin sistem tip belirtecini döndürür. 
+    </refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>string <function>ftp_systype</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde ftp sunucusunun sistem tip belirtecini , hata durumunda  &false; de&gbreve;erini döndürür.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-pasv">
+   <refnamediv>
+    <refname>ftp_pasv</refname>
+    <refpurpose>Pasif durumu (passive mode) açar veya kapar.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_pasv</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>int <parameter>pasv</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true; hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_pasv</function> 
+      <parameter>pasv</parameter>  parametresi &true; ise pasif durumu açar
+   ( <parameter>pasv</parameter> parametresi &false; ise pasif durumu kapat&inodot;r.)  Pasif durumda
+   , veri ba&gbreve;lant&inodot;s&inodot; sunucu taraf&inodot;ndan de&gbreve;il de istemci taraf&inodot;ndan ba&scedil;lat&inodot;l&inodot;r.</para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-get">
+   <refnamediv>
+    <refname>ftp_get</refname>
+    <refpurpose>FTP sunucusundan dosya indirir.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_get</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>lokal_dosya</parameter></paramdef>
+      <paramdef>string <parameter>uzak_dosya</parameter></paramdef>
+      <paramdef>int <parameter>mode</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+    Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_get</function> ftp sunucusundan <parameter>uzak_dosya</parameter>y&inodot;
+     al&inodot;r ve <parameter>lokal_dosya</parameter>olarak bilgisayara kaydeder.
+     <parameter>mode</parameter> parametresi ya <constant>FTP_ASCII</constant> ya da
+     <constant>FTP_BINARY</constant> olarak belirtilmeli.
+    </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-fget">
+   <refnamediv>
+    <refname>ftp_fget</refname>
+    <refpurpose>FTP sunucusundan bir dosya indirir ve onu aç&inodot;k olan bir dosyaya kaydeder.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_fget</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>int <parameter>fp</parameter></paramdef>
+      <paramdef>string <parameter>uzak_dosya</parameter></paramdef>
+      <paramdef>int <parameter>mode</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.
+    <para>
+     
+ <function>ftp_fget</function> fonksiyonu FTP sunucusundan uzak_dosya ile
+  belirtilen dosyay&inodot; al&inodot;r ve onu aç&inodot;k olan (dosya belirteci <parameter>fp</parameter>olan)  
+  dosyaya kaydeder. Belirtilen aktar&inodot;m  <parameter>modu</parameter> FTP_ASCII veya 
+  FTP_BINARY olmal&inodot;d&inodot;r.
+  </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-put">
+   <refnamediv>
+    <refname>ftp_put</refname>
+    <refpurpose>FTP sunucusuna dosya yükler.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_put</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>uzak_dosya</parameter></paramdef>
+      <paramdef>string <parameter>yerel_dosya</parameter></paramdef>
+      <paramdef>int <parameter>mode</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+    Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_put</function>  fonksiyonu yerel_dosya ile belirtilen dosyay&inodot;
+     <parameter>uzak_dosya</parameter> olarak FTP sunucusuna yükler.
+    Belirtilen aktar&inodot;m  <parameter>modu</parameter> <constant>FTP_ASCII</constant>veya 
+  <constant>FTP_BINARY</constant> olmal&inodot;d&inodot;r.
+
+    </para>
+    <para>
+     <example>
+      <title><function>ftp_put</function> örne&gbreve;i</title>
+      <programlisting role="php">
+$upload = ftp_put ($conn_id, "$dosyan&inodot;n_sunucudaki_ad&inodot;", "$yerel_dosya", FTP_ASCII); 
+      </programlisting>
+     </example>
+    </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-fput">
+   <refnamediv>
+    <refname>ftp_fput</refname>
+    <refpurpose>Aç&inodot;k olan dosyay&inodot; FTP sunucuna yükler.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_fput</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dosyan&inodot;n_sunucudaki_ad&inodot;</parameter></paramdef>
+      <paramdef>int <parameter>fp</parameter></paramdef>
+      <paramdef>int <parameter>mode</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_fput</function> <parameter>fp</parameter> dosya belirtecinin i&scedil;aret etti&gbreve;i
+    dosyadan dosyan&inodot;n sonuna kadar olan veriyi FTP sunucusuna yükler.Dosyadan al&inodot;nan 
+    veri <parameter>dosyan&inodot;n_sunucudaki_ad&inodot;</parameter> olarak FTP sunucusuna kaydedilir.
+   Belirtilen aktar&inodot;m  <parameter>modu</parameter> <constant>FTP_ASCII</constant>veya 
+    <constant>FTP_BINARY</constant> olmal&inodot;d&inodot;r.
+      </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-size">
+   <refnamediv>
+    <refname>ftp_size</refname>
+    <refpurpose>Verilen dosyan&inodot;n boyut bilgisini döndürür.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_size</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>uzak_dosya</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde belirtilen dosyan&inodot;n boyutunu , hata halinde -1  de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_size</function> belirtilen dosyan&inodot;n boyutunu döndürür.E&gbreve;er hata olu&scedil;ursa 
+    veya  belirtilen dosya yoksa -1 de&gbreve;eri döner.Bu özelli&gbreve;i bütün sunucular desteklememektedir.
+  </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-mdtm">
+   <refnamediv>
+    <refname>ftp_mdtm</refname>
+    <refpurpose>Belirtilen dosyan&inodot;n son de&gbreve;i&scedil;tirilme tarihini döndürür.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_mdtm</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>uzak_dosya</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde  UNIX timestamp  de&gbreve;erini , hata halinde -1 de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_mdtm</function> fonksiyonu dosyan&inodot;n son de&gbreve;i&scedil;tirilme tarihini kontrol eder ve 
+    bu de&gbreve;eri UNIX timestamp olarak döndürür.E&gbreve;er hata olu&scedil;ursa 
+    veya  belirtilen dosya yoksa -1 de&gbreve;eri döner.Bu özelli&gbreve;i bütün sunucular desteklememektedir.
+    </para>
+    <note>
+     <para>
+      <function>ftp_mdtm</function> fonksiyonu ile  dizin boyutlar&inodot; ö&gbreve;renilemez.
+     </para>
+    </note>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-rename">
+   <refnamediv>
+    <refname>ftp_rename</refname>
+    <refpurpose>FTP sunucusundaki dosyan&inodot;n ad&inodot;n&inodot; de&gbreve;i&scedil;tirir.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>boolean <function>ftp_rename</function></funcdef>
+      <paramdef>resource <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dosyan&inodot;n_eski_ad&inodot;</parameter></paramdef>
+      <paramdef>string <parameter>dosyan&inodot;n_yeni_ad&inodot;</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true; , hata halinde &false; de&gbreve;erini döndürür.
+    </para>
+    <para>
+     <function>ftp_rename</function> fonksiyonu FTP sunucusunda <parameter>dosyan&inodot;n_eski_ad&inodot;</parameter>
+    parametresi ile belirtilen dizin veya dosyan&inodot;n ad&inodot;n&inodot; <parameter>dosyan&inodot;n_yeni_ad&inodot;</parameter>
+    parametresi ile belirtilen ad'a çevirir.
+      </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-delete">
+   <refnamediv>
+    <refname>ftp_delete</refname>
+    <refpurpose>FTP sunucusundaki dosyay&inodot; siler.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_delete</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>dosya_adresi(path)</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true; , hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_delete</function> fonksiyonu  <parameter>dosya_adresi(path)</parameter> 
+    parametresi ile belirtilen dosyay&inodot; FTP sunucusundan siler.  </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-site">
+   <refnamediv>
+    <refname>ftp_site</refname>
+    <refpurpose>FTP sunucusuna bir SITE komutu gönderir.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_site</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+      <paramdef>string <parameter>komut</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     Ba&scedil;ar&inodot; halinde &true;, hata halinde &false; de&gbreve;erini döndürür.</para>
+    <para>
+     <function>ftp_site</function> fonksiyonu <parameter>komut</parameter>
+     parametresi ile belirtilen komutu FTP sunucusuna gönderir.
+     SITE komutlar&inodot; standartla&scedil;m&inodot;&scedil; de&gbreve;ildir, ve sunucudan sunucuya de&gbreve;i&scedil;irler.
+     Bu komutlar dosya izinleri ve grup üyelikleri i&scedil;lemleri için kullan&inodot;l&inodot;rlar.
+  </para>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ftp-quit">
+   <refnamediv>
+    <refname>ftp_quit</refname>
+    <refpurpose>FTP ba&gbreve;lant&inodot;s&inodot;n&inodot; kapat&inodot;r.</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Tan&inodot;m</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ftp_quit</function></funcdef>
+      <paramdef>int <parameter>ftp_stream</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <para>
+     <function>ftp_connect</function> komutuyla aç&inodot;lan ve <parameter>ftp_stream</parameter> ile belirtilen FTP ba&gbreve;lant&inodot;s&inodot;n&inodot; kapat&inodot;r. 
+    </para>
+   </refsect1>
+  </refentry>
+
+</reference>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
