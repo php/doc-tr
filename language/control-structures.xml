@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
  <chapter id="language.control-structures">
   <title>Kontrol Yapıları</title>
 
   <simpara>
   Bütün PHP betikleri bir dizi deyimden (statement) oluşur. Bir deyim;
-  bir atama, bir fonksiyon çağrımı, bir döngü, bir koşullu deyim hatta
+  bir atama, bir fonksiyonun çağrılması, bir döngü, bir koşullu deyim hatta
   hiçbir şey yapmayan bir deyim (boş bir deyim) olabilir. Deyimler bir
   noktalı virgülle sonlandırılır. Ek olarak, deyimler köşeli parantez içine
   alınarak deyim grupları haline getirilebilirler. Bir deyim grubu da
@@ -78,73 +78,68 @@ if ($a > $b) {
    <simpara>
     <literal>If</literal> deyimleri sonsuz sayıda diğer
     <literal>if</literal> deyiminin içine gömülebilir. Bu size
-    uygulamanızın çeşitli bölümlerinde uygulamanızın koşullu komutlar
-    uygulayabilmesi için tam bir esneklik sağlar.
+    uygulamanızın çeşitli bölümlerinde koşullu deyimler
+    uygulayabilmeniz için tam bir esneklik sağlar.
    </simpara>
   </sect1>
 
   <sect1 id="control-structures.else">
    <title><literal>else</literal></title>
    <para>
-    Often you'd want to execute a statement if a certain condition is
-    met, and a different statement if the condition is not met.  This
-    is what <literal>else</literal> is for.  <literal>else</literal>
-    extends an <literal>if</literal> statement to execute a statement
-    in case the expression in the <literal>if</literal> statement
-    evaluates to &false;.  For example, the following
-    code would display <computeroutput>a is bigger than
-    b</computeroutput> if <varname>$a</varname> is bigger than
-    <varname>$b</varname>, and <computeroutput>a is NOT bigger
-    than b</computeroutput> otherwise:
-    <informalexample>
+   Çoğu zaman belli bir koşul sağlandığında bir deyimin, o koşul sağlanmadığında
+   başka bir deyimin çalıştırılmasını isteyeceksiniz. Bu yapıyı sağlamak için
+   <literal>else</literal> kullanılmaktadır. <literal>Else</literal>,
+   bir <literal>if</literal> deyiminin genişleyerek, belirtilen koşul sağlanmadığı
+   ve &false; döndürdüğü takdirde ne yapılacağını belirtmek için kullanılır.
+   Örneğin, buradaki kod <varname>$a</varname>
+   değeri <varname>$b</varname> değerinden büyükse
+   <computeroutput>a büyüktür b</computeroutput> mesajını,
+   büyük değilse <computeroutput>a büyük değildir b</computeroutput>
+   mesajını görüntüleyecektir:
+   <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 if ($a > $b) {
-    echo "a is bigger than b";
+    echo "a büyüktür b";
 } else {
-    echo "a is NOT bigger than b";
+    echo "a büyük değildir b";
 }
 ?>
 ]]>
      </programlisting>
     </informalexample>
 
-    The <literal>else</literal> statement is only executed if the
-    <literal>if</literal> expression evaluated to
-    &false;, and if there were any
-    <literal>elseif</literal> expressions - only if they evaluated to
-    &false; as well (see <link
+    <literal>Else</literal> deyimi yalnızca <literal>if</literal> deyiminin
+    &false; döndürdüğü durumda çalıştırılacaktır. Aynı durum, &false;
+    döndüren herhangi bir <literal>elseif</literal> ifadesinin olması durumunda da
+    geçerlidir (bakınız <link
     linkend="control-structures.elseif">elseif</link>).
-
    </para>
   </sect1>
 
   <sect1 id="control-structures.elseif">
    <title><literal>elseif</literal></title>
    <para>
-    <literal>elseif</literal>, as its name suggests, is a combination
-    of <literal>if</literal> and <literal>else</literal>.  Like
-    <literal>else</literal>, it extends an <literal>if</literal>
-    statement to execute a different statement in case the original
-    <literal>if</literal> expression evaluates to
-    &false;.  However, unlike
-    <literal>else</literal>, it will execute that alternative
-    expression only if the <literal>elseif</literal> conditional
-    expression evaluates to &true;.  For example, the
-    following code would display <computeroutput>a is bigger than
-    b</computeroutput>, <computeroutput>a equal to b</computeroutput>
-    or <computeroutput>a is smaller than b</computeroutput>:
+    <literal>elseif</literal>, isminden de anlaşılacağı gibi, <literal>if</literal> ve
+    <literal>else</literal> deyimlerinin biraraya gelmesiyle oluşur. 
+    <literal>else</literal> gibi, orijinal <literal>if</literal> ifadesinin
+    &false; döndürdüğü durumda farklı bir deyimin çalıştırılması için kullanılır.
+    Ancak, <literal>else</literal>'ten faklı olarak, bu deyim alternatif ifadeyi
+    yalnızca kendisine ait koşullu ifade &true; değerini döndürdüğü durumda çalıştıracaktır.
+    Örneğin, buradaki kod <computeroutput>a büyüktür b</computeroutput>,
+    <computeroutput>a eşittir b</computeroutput> ya da 
+    <computeroutput>a küçüktür b</computeroutput> mesajını görüntüleyecektir:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 if ($a > $b) {
-    echo "a is bigger than b";
+    echo "a büyüktür b";
 } elseif ($a == $b) {
-    echo "a is equal to b";
+    echo "a eşittir b";
 } else {
-    echo "a is smaller than b";
+    echo "a küçüktür b";
 }
 ?>
 ]]>
@@ -152,70 +147,66 @@ if ($a > $b) {
     </informalexample>
    </para>
    <simpara>
-    There may be several <literal>elseif</literal>s within the same
-    <literal>if</literal> statement.  The first
-    <literal>elseif</literal> expression (if any) that evaluates to
-    &true; would be executed.  In PHP, you can also
-    write 'else if' (in two words) and the behavior would be identical
-    to the one of 'elseif' (in a single word).  The syntactic meaning
-    is slightly different (if you're familiar with C, this is the same
-    behavior) but the bottom line is that both would result in exactly
-    the same behavior.
+   Aynı <literal>if</literal> deyimine ait birden çok <literal>elseif</literal>
+   bulunabilir. İlk önce hangi <literal>elseif</literal> deyimi &true; değerini
+   döndürürse (eğer döndüren varsa) o deyim çalıştırılır. Bu deyimi 'elseif'
+   biçiminde tek sözcük olarak kullanabileceğiniz gibi, 'else if' biçiminde iki
+   sözcük olarak da kullanabilirsiniz, sonuç aynı olacaktır. Sözdimi anlamı açısından
+   küçük bir farklılık olsa da (C diline aşinaysanız, aynı fark) sonuç olarak her ikisi
+   de aynı sonucu üretecektir.
    </simpara>
    <simpara>
-    The <literal>elseif</literal> statement is only executed if the
-    preceding <literal>if</literal> expression and any preceding
-    <literal>elseif</literal> expressions evaluated to
-    &false;, and the current
-    <literal>elseif</literal> expression evaluated to
-    &true;.
+   <literal>elseif</literal> ifadesi yalnızca kendisinden önceki <literal>if</literal> ifadesi
+   ve bu ifadeye bağlı kendisinden önce gelen diğer tüm <literal>elseif</literal> ifadeleri &false; olduğunda
+   çalıştırılır ve &true; değerini döndürür.
    </simpara>
   </sect1>
 
   <sect1 id="control-structures.alternative-syntax">
-   <title>Alternative syntax for control structures</title>
+   <title>Kontrol yapıları için alternatif sözdizimi</title>
    <para>
-    PHP offers an alternative syntax for some of its control
-    structures; namely, <literal>if</literal>,
+   PHP bazı kontrol yapıları için alternatif sözdizimi imkanları sunar.
+   Bunlar <literal>if</literal>,
     <literal>while</literal>, <literal>for</literal>,
-    <literal>foreach</literal>, and <literal>switch</literal>.
-    In each case, the basic form of the alternate syntax is to change
-    the opening brace to a colon (:) and the closing brace to
+    <literal>foreach</literal> ve <literal>switch</literal> yapılarıdır.
+    Her bir durumda, alternatif sözdiziminin basit şekli açılışta kullanılan köşeli parantez
+    yerine iki nokta üst üste (:) kullanmak ve kapanışta kullanılan köşeli parantez yerine
     <literal>endif;</literal>, <literal>endwhile;</literal>,
-    <literal>endfor;</literal>, <literal>endforeach;</literal>, or
-    <literal>endswitch;</literal>, respectively.
+    <literal>endfor;</literal>, <literal>endforeach;</literal> ya da
+    <literal>endswitch;</literal> deyimlerinden birini kullanmaktır.
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php if ($a == 5): ?>
-A is equal to 5
+A eşittir 5
 <?php endif; ?>
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <simpara>
-    In the above example, the HTML block "A is equal to 5" is nested within an
-    <literal>if</literal> statement written in the alternative syntax.  The
-    HTML block would be displayed only if <varname>$a</varname> is equal to 5.
+   Yukarıdaki örnekte, içeriği "A eşittir 5" olan HTML bloğu alternatif sözdimi
+   kullanılarak yazılmış bir <literal>if</literal> deyiminin içine gömülmüştür.
+   HTML bloğu yalnızca <varname>$a</varname> değişkeni 5'e eşit olduğunda
+   gösterilecektir.
    </simpara>
    <para>
-    The alternative syntax applies to <literal>else</literal> and
-    <literal>elseif</literal> as well.  The following is an
-    <literal>if</literal> structure with <literal>elseif</literal> and
-    <literal>else</literal> in the alternative format:
+   Alternatif sözdimi, <literal>else</literal> ve <literal>elseif</literal>
+   için de kullanılabilir. Birazdan vereceğimiz örnek, alternatif format ile yazılmış
+   ve <literal>elseif</literal> ile <literal>else</literal> içeren bir
+   <literal>if</literal> yapısıdır:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 if ($a == 5):
-    echo "a equals 5";
+    echo "a eşittir 5";
     echo "...";
 elseif ($a == 6):
-    echo "a equals 6";
+    echo "a eşittir 6";
     echo "!!!";
 else:
-    echo "a is neither 5 nor 6";
+    echo "a ne 5 ne de 6";
 endif;
 ?>
 ]]>
@@ -223,50 +214,49 @@ endif;
     </informalexample>
    </para>
    <para>
-    See also <link linkend="control-structures.while">while</link>,
-    <link linkend="control-structures.for">for</link>, and <link
-    linkend="control-structures.if">if</link> for further examples.
+    Daha fazla örnek için <link linkend="control-structures.while">while</link>,
+    <link linkend="control-structures.for">for</link>, ve <link
+    linkend="control-structures.if">if</link> bölümlerine bakabilirsiniz.
    </para>
   </sect1>
 
   <sect1 id="control-structures.while">
    <title><literal>while</literal></title>
    <para>
-    <literal>while</literal> loops are the simplest type of loop in
-    PHP.  They behave just like their C counterparts.  The basic form
-    of a <literal>while</literal> statement is:
+    <literal>while</literal> döngüsü PHP'de yer alan en basit döngü tipidir.
+    C'deki karşılığı ile aynı şekilde çalışır. Bir <literal>while</literal> deyiminin
+    basit kullanımı:
     <informalexample>
      <programlisting>
 <![CDATA[
-while (expr)
-    statement
+while (ifade)
+    deyimler
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <simpara>
-    The meaning of a <literal>while</literal> statement is simple.  It
-    tells PHP to execute the nested statement(s) repeatedly, as long
-    as the <literal>while</literal> expression evaluates to
-    &true;.  The value of the expression is checked
-    each time at the beginning of the loop, so even if this value
-    changes during the execution of the nested statement(s), execution
-    will not stop until the end of the iteration (each time PHP runs
-    the statements in the loop is one iteration).  Sometimes, if the
-    <literal>while</literal> expression evaluates to
-    &false; from the very beginning, the nested
-    statement(s) won't even be run once.
+   <literal>While</literal> deyiminin anlamı basittir. Kendi kapsama
+   alanı içinde tanımlanmış deyimlerin tekrar tekrar çalıştırılmasını
+   sağlar. Tekrar çalıştırma işlemi <literal>while</literal> deyimine
+   ait ifadenin karşılığı &true; oldukça devam eder. İfadenin değeri döngü
+   her tekrarlandığında yeniden hesaplanır, deyimlerin çalıştırılması
+   sırasında bu ifadenin değeri değişse bile, döngü içindeki deyimler
+   en son adıma kadar çalıştırılmaya devam edilir (PHP'nin döngü içindeki
+   deyimleri her çalıştırışı bir döngüyü ifade etmektedir). Bazen,
+   <literal>while</literal> ifadesi daha ilk tekrardan önce &false; değerini
+   verir, bu durumda <literal>while</literal> kapsamındaki deyimler
+   tek bir defa bile çalıştırılmazlar.
    </simpara>
    <para>
-    Like with the <literal>if</literal> statement, you can group
-    multiple statements within the same <literal>while</literal> loop
-    by surrounding a group of statements with curly braces, or by
-    using the alternate syntax:
-    <informalexample>
+   <literal>If</literal> deyiminde olduğu gibi, birden çok deyimi aynı
+   <literal>while</literal> döngüsü içinde köşeli parantez kullanarak ya da
+   alternatif sözdimi yönteminden faydalanarak gruplayabilirsiniz:
+   <informalexample>
      <programlisting>
 <![CDATA[
-while (expr):
-    statement
+while (ifade):
+    deyimler
     ...
 endwhile;
 ]]>
@@ -274,22 +264,22 @@ endwhile;
     </informalexample>
    </para>
    <para>
-    The following examples are identical, and both print numbers from
-    1 to 10:
+   Aşağıdaki örnekler birbirleri ile aynıdırlar, her ikisi de 1'den 10'a kadar
+   rakamları yazacaktır:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-/* example 1 */
+/* örnek 1 */
 
 $i = 1;
 while ($i <= 10) {
-    echo $i++;  /* the printed value would be
-                    $i before the increment
-                    (post-increment) */
+    echo $i++;  /* yazdırılan değer $i
+                    değerinin artıştan önceki
+                    değeridir (sonda-arttırım) */
 }
 
-/* example 2 */
+/* örnek 2 */
 
 $i = 1;
 while ($i <= 10):
@@ -306,21 +296,19 @@ endwhile;
   <sect1 id="control-structures.do.while">
    <title><literal>do-while</literal></title>
    <simpara>
-    <literal>do-while</literal> loops are very similar to
-    <literal>while</literal> loops, except the truth expression is
-    checked at the end of each iteration instead of in the beginning.
-    The main difference from regular <literal>while</literal> loops is
-    that the first iteration of a <literal>do-while</literal> loop is
-    guaranteed to run (the truth expression is only checked at the end
-    of the iteration), whereas it's may not necessarily run with a
-    regular <literal>while</literal> loop (the truth expression is
-    checked at the beginning of each iteration, if it evaluates to
-    &false; right from the beginning, the loop
-    execution would end immediately).
+    <literal>do-while</literal> döngüsü,
+    <literal>while</literal> döngüsü ile oldukça benzerdir.
+    <literal>do-while</literal> döngüsünün farkı, kontrol edilecek
+    ifadenin tekrarların başında değil sonunda kontrol ediliyor olmasıdır.
+    <literal>while</literal> döngüsü ile temek farklılık, <literal>do-while</literal>
+    kullanıldığında ilk tekrarın çalışmasının garanti altına alınıyor olmasıdır
+    (ifadenin doğruluğu yalnızca tekrarın sonunda kontrol edilecektir). 
+    <literal>while</literal> döngüsü, ifadenin kontrolünü her bir tekrardan önce
+    yapmaktadır, ilk tekrar öncesinde &false; değeri alındığı takdirde, döngü daha
+    başlamadan sona erecektir.
    </simpara>
    <para>
-    There is just one syntax for <literal>do-while</literal> loops:
-
+   <literal>do-while</literal> döngüsü için yalnızca tek bir sözdizimi mevcuttur:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
@@ -335,34 +323,33 @@ do {
     </informalexample>
    </para>
    <simpara>
-     The above loop would run one time exactly, since after the first
-     iteration, when truth expression is checked, it evaluates to
-     &false; ($i is not bigger than 0) and the loop
-     execution ends.
+   Yukarıdaki döngü tam olarak bir defa çalışacaktır, ilk tekrardan sonra ifadenin
+   doğruluğu kontrol edildiğinde, &false; değerini verecek ($i büyük değildir 0) ve
+   döngünün çalışması sonlanacaktır.
    </simpara>
    <para>
-    Advanced C users may be familiar with a different usage of the
-    <literal>do-while</literal> loop, to allow stopping execution in
-    the middle of code blocks, by encapsulating them with
-    <literal>do-while</literal> (0), and using the <link
-    linkend="control-structures.break"><literal>break</literal></link>
-    statement.  The following code fragment demonstrates this:
+   İleri seviye C kullanıcıları <literal>do-while</literal> döngüsünün
+   farklı kullanımlarına aşina olabilirler. Bu döngü, kod bloklarının çalıştırıldıkları
+   esnada çalışmanın ortasında sonlandırılmalarını sağlamak için kullanılabilir.
+   Bu işlem kod bloğunu <literal>do-while</literal> (0) döngüsü içine alıp
+   <link linkend="control-structures.break"><literal>break</literal> deyimi
+   kullanılarak yapılabilmektedir. Aşağıdaki kod parçası bu durumu örneklemektedir:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 do {
     if ($i < 5) {
-        echo "i is not big enough";
+        echo "i yeterince büyük değil";
         break;
     }
     $i *= $factor;
     if ($i < $minimum_limit) {
         break;
     }
-   echo "i is ok";
+   echo "i uygun";
 
-    /* process i */
+    /* i değerini işle */
 
 } while (0);
 ?>
@@ -371,68 +358,65 @@ do {
     </informalexample>
    </para>
    <simpara>
-    Don't worry if you don't understand this right away or at all.
-    You can code scripts and even powerful scripts without using this
-    'feature'.
+   Bu yöntemi anlamadıysanız endişelenmeyin. Bu 'özelliği' kullanmadan
+   da oldukça gelişmiş ve güçlü uygulamalar geliştirebilirsiniz.
    </simpara>
   </sect1>
 
   <sect1 id="control-structures.for">
    <title><literal>for</literal></title>
    <para>
-    <literal>for</literal> loops are the most complex loops in PHP.
-    They behave like their C counterparts.  The syntax of a
-    <literal>for</literal> loop is:
+    <literal>for</literal> döngüsü, PHP dahilindeki en karmaşık döngü
+    yapısıdır. C'deki karşılığı ile aynı biçimde çalışır. <literal>for</literal>
+    döngüsünün sözdimi şu şekildedir:
     <informalexample>
      <programlisting>
 <![CDATA[
-for (expr1; expr2; expr3)
-    statement
+for (ifade1; ifade2; ifade3)
+    deyimler
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <simpara>
-    The first expression (<varname>expr1</varname>) is
-    evaluated (executed) once unconditionally at the beginning of the
-    loop.
+   İlk ifade (<varname>expr1</varname>) döngünün en başında
+   tek bir defa koşulsuz olarak çalıştırılır.
    </simpara>
    <simpara>
-    In the beginning of each iteration,
-    <varname>expr2</varname> is evaluated.  If it evaluates to
-    &true;, the loop continues and the nested
-    statement(s) are executed.  If it evaluates to
-    &false;, the execution of the loop ends.
+   Her bir tekrarın başında, <varname>expr2</varname> çalıştırılır.
+   Bu ifadeden &true; sonucu elde edilirse, döngüye devam edilir ve döngü
+   dahilindeki deyimler çalıştırılır. Bu ifadeden &false; sonucu elde edilirse,
+   döngünün çalışması sonlandırılır.
    </simpara>
    <simpara>
-    At the end of each iteration, <varname>expr3</varname> is
-    evaluated (executed).
+   Her bir tekrarın sonunda, <varname>expr3</varname>
+   çalıştırılır.
    </simpara>
    <simpara>
-    Each of the expressions can be empty.
-    <varname>expr2</varname> being empty means the loop should
-    be run indefinitely (PHP implicitly considers it as
-    &true;, like C).  This may not be as useless as
-    you might think, since often you'd want to end the loop using a
-    conditional <link
-    linkend="control-structures.break"><literal>break</literal></link>
-    statement instead of using the <literal>for</literal> truth
-    expression.
+   İfadelerin herbiri için boş kullanım mümkündür.
+   <varname>expr2</varname> ifadesinin boş olması, döngünün
+   sonsuza kadar çalıştırılacağı anlamına gelir (PHP C'deki gibi bu durumu
+   &true; olarak değerlendirir). Döngüleri sıklıkla bir şarta bağlı olarak
+   <link linkend="control-structures.break"><literal>break</literal>
+   deyimi ile sonlandırmak isteyeceğiniz düşünüldüğünde, bu durum
+   düşündüğünüz kadar kullanışsız değildir. Bu kullanım size
+   <literal>for</literal> deyiminin imkanlarından daha fazla esneklik
+   sağlayabilir.
    </simpara>
    <para>
-    Consider the following examples.  All of them display numbers from
-    1 to 10:
+   Aşağıdaki örnekleri inceleyin ve karşılaştırın. Hepsi de 1'den 10'a kadar
+   rakamları görüntülemektedir:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-/* example 1 */
+/* örnek 1 */
 
 for ($i = 1; $i <= 10; $i++) {
     echo $i;
 }
 
-/* example 2 */
+/* örnek 2 */
 
 for ($i = 1; ; $i++) {
     if ($i > 10) {
@@ -441,7 +425,7 @@ for ($i = 1; ; $i++) {
     echo $i;
 }
 
-/* example 3 */
+/* örnek 3 */
 
 $i = 1;
 for (; ; ) {
@@ -452,7 +436,7 @@ for (; ; ) {
     $i++;
 }
 
-/* example 4 */
+/* örnek 4 */
 
 for ($i = 1; $i <= 10; print $i, $i++);
 ?>
@@ -461,19 +445,19 @@ for ($i = 1; $i <= 10; print $i, $i++);
     </informalexample>
    </para>
    <simpara>
-    Of course, the first example appears to be the nicest one (or
-    perhaps the fourth), but you may find that being able to use empty
-    expressions in <literal>for</literal> loops comes in handy in many
-    occasions.
+   Elbette, kullandığımız ilk örnek en güzel örnek olarak gözükmektedir (
+   ya da belki dördüncü örnek), ancak birçok durumda <literal>for</literal>
+   döngüsü içerisinde boş ifadeler kullanmanın oldukça kullanışlı olduğu
+   sonucuna varabilirsiniz.
    </simpara>
    <para>
-    PHP also supports the alternate "colon syntax" for
-    <literal>for</literal> loops.
+   PHP, alternatif "iki nokta üst üste" sözdimi şeklini
+   <literal>for</literal> döngüleri için de desteklemektedir.
     <informalexample>
      <programlisting>
 <![CDATA[
-for (expr1; expr2; expr3):
-    statement
+for (ifade1; ifade2; ifade3):
+    deyimler
     ...
 endfor;
 ]]>
@@ -485,69 +469,66 @@ endfor;
   <sect1 id="control-structures.foreach">
    <title><literal>foreach</literal></title>
    <para>
-    PHP 4 introduced a <literal>foreach</literal> construct, much
-    like Perl and some other languages. This simply gives an easy way to
-    iterate over arrays. <literal>foreach</literal> works only on arrays, and
-    will issue an error when you try to use it on a variable with a different
-    data type or an uninitialized variable. There are two syntaxes; the
-    second is a minor but useful extension of the first:
+   PHP 4 ile birlikte Perl ve bazı diğer dillerde mevcut olan
+   <literal>foreach</literal> yapısı da kullanıma sunulmuştur.
+   Bu deyimi dizi-değişkenler üzerinde tekrar işlemleri yapmayı
+   kolaylaştırmaktadır. <literal>foreach</literal> yalnızca
+   diziler için kullanılabilir; farklı bir değişken veri tipi ile ya da henüz
+   oluşturulmamış bir değişken ile kullanmak istediğinizde hata oluşturacaktır.
+   İki türlü sözdizimi mevcuttur; ikinci kullanım şekli birinciden biraz daha uzun
+   ama biraz daha kullanışlıdır:
     <informalexample>
      <programlisting>
 <![CDATA[
 foreach (array_expression as $value)
-    statement
+    deyimler
 foreach (array_expression as $key => $value)
-    statement
+    deyimler
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <simpara>
-    The first form loops over the array given by
-    <literal>array_expression</literal>. On each loop, the value of
-    the current element is assigned to <literal>$value</literal> and
-    the internal array pointer is advanced by one (so on the next
-    loop, you'll be looking at the next element).
+   İlk yöntem <literal>array_expression</literal> ile belirtilen
+   dizinin üzerinde döngü oluşturur. Her tekrarda, mevcut elemanın
+   değeri <literal>$value</literal> değişkenine atanır ve dizinin
+   iç imleci bir ilerletilir (böylece sonraki tekrarda, son elemana
+   bakılıyor olması sağlanır).
    </simpara>
    <simpara>
-    The second form does the same thing, except that the current
-    element's key will be assigned to the variable
-    <literal>$key</literal> on each loop.
+   İkinci yöntem aynı şeyi yapar, yalnızca her tekrarda mevcut elemanın
+   anahtar değeri <literal>$key</literal> değişkenine atanır.
    </simpara>
    <simpara>
-    As of PHP 5, it is possible to
-    <link linkend="language.oop5.iterations">iterate objects</link> too.
+   PHP 5'den itibaren, <link linkend="language.oop5.iterations">nesneler üzerinde tekrar yapmak</link>
+   mümkün olmuştur.
    </simpara>
    <para>
     <note>
      <para>
-      When <literal>foreach</literal> first starts executing, the
-      internal array pointer is automatically reset to the first element
-      of the array. This means that you do not need to call
-      <function>reset</function> before a <literal>foreach</literal>
-      loop.
+     <literal>foreach</literal> ilk çalışmaya başladığında, dizinin iç imleci
+     otomatik olarak ilk elemanı gösterecek biçimde sıfırlanır. Bu sebeple
+     <literal>foreach</literal> deyiminden önce <function>reset</function>
+     fonksiyonunu çalıştırmanıza gerek yoktur.
      </para>
     </note>
    </para>
    <para>
     <note>
      <para>
-      Unless the array is <link linkend="language.references">referenced</link>,
-      <literal>foreach</literal> operates on a copy of
-      the specified array and not the array itself. Therefore, the
-      array pointer is not modified as with the
-      <function>each</function> construct, and changes to the array
-      element returned are not reflected in the original array.
-      However, the internal pointer of the original array
-      <emphasis>is</emphasis> advanced with the processing of the
-      array.  Assuming the foreach loop runs to completion, the
-      array's internal pointer will be at the end of the array.
+     Dizi <link linkend="language.references">referans edilmiş</link> olmadığı
+     sürece, <literal>foreach</literal> dizinin kendisi üzerinde çalışmaz,
+     bir kopyası üzerinde çalışır. Bundan dolayı dizi imleci <function>each</function>
+     yapısında olduğu gibi değiştirilmez, ve döndürülen dizi elemanı üzerinde yapılan
+     değişiklikler orijinal diziye yansıtılmaz. Öte yandan, orijinal dizinin imleci
+     dizi üzerinde işlem yapıldıkça <emphasis>ilerler</emphasis>. foreach döngüsünün
+     çalışması tamamlandığında, dizinin iç imleci de dizinin sonuna gelmiş olacaktır.
      </para>
      <para>
-      As of PHP 5, you can easily modify array's elements by preceding
-      <literal>$value</literal> with &amp;. This will assign
-      <link linkend="language.references">reference</link> instead of copying
-      the value.
+     PHP 5'den itibaren, dizinin elemanları üzerinde <literal>$value</literal> değişkeninin
+     önüne &amp; koyarak değişiklik yapabilirsiniz. Bu kullanım değerin bir kopyasını kullanmak
+     yerine kendisine bir <link linkend="language.references">referans</link> atanmasını
+     sağlayacaktır:
       <informalexample>
        <programlisting role="php">
 <![CDATA[
@@ -556,57 +537,57 @@ $arr = array(1, 2, 3, 4);
 foreach ($arr as &$value) {
     $value = $value * 2;
 }
-// $arr is now array(2, 4, 6, 8)
+// $arr şimdi array(2, 4, 6, 8) olmuştur
 ?>
 ]]>
        </programlisting>
       </informalexample>
-      This is possible only if iterated array can be referenced (i.e. is
-      variable).
+      Bu durum yalnızca üzerinde çalışılan dizi referans oluşturulabilir
+      türde ise mümkündür (örn. bir değişkense).
      </para>
     </note>
    </para>
    <para>
     <note>
      <para>
-      <literal>foreach</literal> does not support the ability to
-      suppress error messages using '@'.
+      <literal>foreach</literal> ile hata mesajlarının '@' kullanılarak
+      gözardı edilmesi mümkün değildir.
      </para>
     </note>
    </para>
    <para>
-    You may have noticed that the following are functionally
-    identical:
+   İşlevsel olarak aşağıdakilerin birbirleri ile aynı olduğunu tespit
+   etmiş olabilirsiniz:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-$arr = array("one", "two", "three");
+$arr = array("bir", "iki", "üç");
 reset($arr);
 while (list(, $value) = each($arr)) {
-    echo "Value: $value<br />\n";
+    echo "Değer: $value<br />\n";
 }
 
 foreach ($arr as $value) {
-    echo "Value: $value<br />\n";
+    echo "Değer: $value<br />\n";
 }
 ?>
 ]]>
      </programlisting>
     </informalexample>
-    The following are also functionally identical:
+    Aşağıdakiler de işlevsel olarak aynıdır:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-$arr = array("one", "two", "three");
+$arr = array("bir", "iki", "üç");
 reset($arr);
 while (list($key, $value) = each($arr)) {
-    echo "Key: $key; Value: $value<br />\n";
+    echo "Anahtar: $key; Değer: $value<br />\n";
 }
 
 foreach ($arr as $key => $value) {
-    echo "Key: $key; Value: $value<br />\n";
+    echo "Anahtar: $key; Değer: $value<br />\n";
 }
 ?>
 ]]>
@@ -614,44 +595,44 @@ foreach ($arr as $key => $value) {
     </informalexample>
    </para>
    <para>
-    Some more examples to demonstrate usages:
+   Değişik kullanımlara örnekler:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-/* foreach example 1: value only */
+/* foreach örnek 1: yalnızca değer */
 
 $a = array(1, 2, 3, 17);
 
 foreach ($a as $v) {
-   echo "Current value of \$a: $v.\n";
+   echo "\$a değişkeninin şu anki değeri: $v.\n";
 }
 
-/* foreach example 2: value (with key printed for illustration) */
+/* foreach örnek 2: değer (örnek olması için anahtar ile birlikte yazdırılmıştır) */
 
 $a = array(1, 2, 3, 17);
 
-$i = 0; /* for illustrative purposes only */
+$i = 0; /* for yalnızca örnekleme için */
 
 foreach ($a as $v) {
     echo "\$a[$i] => $v.\n";
     $i++;
 }
 
-/* foreach example 3: key and value */
+/* foreach örnek 3: anahtar ve değer */
 
 $a = array(
-    "one" => 1,
-    "two" => 2,
-    "three" => 3,
-    "seventeen" => 17
+    "bir" => 1,
+    "iki" => 2,
+    "üç" => 3,
+    "on yedi" => 17
 );
 
 foreach ($a as $k => $v) {
     echo "\$a[$k] => $v.\n";
 }
 
-/* foreach example 4: multi-dimensional arrays */
+/* foreach örnek 4: çok boyutlu diziler */
 $a = array();
 $a[0][0] = "a";
 $a[0][1] = "b";
@@ -664,7 +645,7 @@ foreach ($a as $v1) {
     }
 }
 
-/* foreach example 5: dynamic arrays */
+/* foreach örnek 5: dinamik diziler */
 
 foreach (array(1, 2, 3, 4, 5) as $v) {
     echo "$v\n";
