@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.2 $ -->
+<!-- $Revision: 1.3 $ -->
  <chapter id="language.control-structures">
   <title>Kontrol Yapıları</title>
 
@@ -660,40 +660,40 @@ foreach (array(1, 2, 3, 4, 5) as $v) {
   <sect1 id="control-structures.break">
    <title><literal>break</literal></title>
    <simpara>
-    <literal>break</literal> ends execution of the current
+    <literal>break</literal> deyimi,
     <literal>for</literal>, <literal>foreach</literal>,
-    <literal>while</literal>, <literal>do-while</literal> or
-    <literal>switch</literal> structure.
+    <literal>while</literal>, <literal>do-while</literal> veya
+    <literal>switch</literal> yapılarının çalışmasını durdurmak için kullanılır.
    </simpara>
    <simpara>
-    <literal>break</literal> accepts an optional numeric argument
-    which tells it how many nested enclosing structures are to be
-    broken out of.
+    <literal>break</literal> deyimi ile seçime bağlı bir sayısal argüman
+    kullanılabilir. Bu argüman iç içe kaç tane yapının aynı anda durdurulacağını
+    belirler.
    </simpara>
    <para>
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-$arr = array('one', 'two', 'three', 'four', 'stop', 'five');
+$arr = array('sifir', 'bir', 'iki', 'üç', 'dur', 'dört', 'beş');
 while (list(, $val) = each($arr)) {
-    if ($val == 'stop') {
-        break;    /* You could also write 'break 1;' here. */
+    if ($val == 'dur') {
+        break;    /* Aynı zamanda 'break 1;' de yazabilirsiniz. */
     }
     echo "$val<br />\n";
 }
 
-/* Using the optional argument. */
+/* Seçime bağlı argümanın kullanımı. */
 
 $i = 0;
 while (++$i) {
     switch ($i) {
     case 5:
-        echo "At 5<br />\n";
-        break 1;  /* Exit only the switch. */
+        echo "5'de<br />\n";
+        break 1;  /* Yalnızca switch'ten çıkar. */
     case 10:
-        echo "At 10; quitting<br />\n";
-        break 2;  /* Exit the switch and the while. */
+        echo "10'da; çıkılıyor<br />\n";
+        break 2;  /* switch ve while'dan birlikte çıkılır. */
     default:
         break;
     }
@@ -708,22 +708,22 @@ while (++$i) {
   <sect1 id="control-structures.continue">
    <title><literal>continue</literal></title>
    <simpara>
-    <literal>continue</literal> is used within looping structures to
-    skip the rest of the current loop iteration and continue execution
-    at the condition evaluation and then the beginning of the next iteration.
+    <literal>continue</literal> deyimi döngü yapılarının arasında kullanılır.
+    Bu deyim kullanıldığında, döngünün kalan kısmı atlanır ve
+    sonraki döngü tekrarına başlanılır.
    </simpara>
    <note>
     <simpara>
-     Note that in PHP the
-     <link linkend="control-structures.switch">switch</link> statement is
-     considered a looping structure for the purposes of
-     <literal>continue</literal>.
+    PHP'de
+     <link linkend="control-structures.switch">switch</link> deyimi
+     <literal>continue</literal> deyiminin kullanılabileceği döngülerden
+     biri olarak kabul edilmektedir.
     </simpara>
    </note>
    <simpara>
-    <literal>continue</literal> accepts an optional numeric argument
-    which tells it how many levels of enclosing loops it should skip
-    to the end of.
+    <literal>continue</literal> deyime ile seçime bağlı sayısal bir argüman
+    kullanılarak, kaç seviye üstteki döngüye kadar atlama işleminin uygulanacağı
+    belirtilebilir.
    </simpara>
    <para>
     <informalexample>
@@ -731,7 +731,7 @@ while (++$i) {
 <![CDATA[
 <?php
 while (list($key, $value) = each($arr)) {
-    if (!($key % 2)) { // skip odd members
+    if (!($key % 2)) { // tek sayıları atla
         continue;
     }
     do_something_odd($value);
@@ -739,16 +739,16 @@ while (list($key, $value) = each($arr)) {
 
 $i = 0;
 while ($i++ < 5) {
-    echo "Outer<br />\n";
+    echo "Dış<br />\n";
     while (1) {
-        echo "&nbsp;&nbsp;Middle<br />\n";
+        echo "&nbsp;&nbsp;Orta<br />\n";
         while (1) {
-            echo "&nbsp;&nbsp;Inner<br />\n";
+            echo "&nbsp;&nbsp;İç<br />\n";
             continue 3;
         }
-        echo "This never gets output.<br />\n";
+        echo "Bu hiçbir zaman çıktı vermez.<br />\n";
     }
-    echo "Neither does this.<br />\n";
+    echo "Bundan da çıktı alamazsınız.<br />\n";
 }
 ?>
 ]]>
@@ -756,8 +756,8 @@ while ($i++ < 5) {
      </informalexample>
     </para>
     <para>
-     Omitting the semicolon after <literal>continue</literal> can lead to
-     confusion. Here's an example of what you shouldn't do.
+    <literal>continue</literal> deyiminden sonra noktalı virgül konmazsa
+    bu durum karışıklığa yol açabilir. Yapmamanız gereken ile ilgili bir örnek:
     </para>
     <para>
      <informalexample>
@@ -773,7 +773,7 @@ while ($i++ < 5) {
 ]]>
       </programlisting>
       <para>
-       One can expect the result to be :
+       Şu biçimde bir çıktı almayı bekleyebilirsiniz:
       </para>
       <screen>
 <![CDATA[
@@ -784,7 +784,7 @@ while ($i++ < 5) {
 ]]>
       </screen>
       <para>
-       but this script will output :
+       Ancak beklenen çıktı şu şekilde olacaktır:
       </para>
       <screen>
 <![CDATA[
@@ -792,9 +792,10 @@ while ($i++ < 5) {
 ]]>
       </screen>
       <para>
-       because the return value of the <function>print</function>
-       call is <literal>int(1)</literal>, and it will look like the
-       optional numeric argument mentioned above.
+      Bunun sebebi <function>print</function> fonksiyonundan dönen
+      değerin <literal>int(1)</literal> olması ve bu dönen değerin
+      PHP tarafından yukarıda bahsedilen seçime sağlı sayısal argüman
+      olarak algılanmasıdır.
       </para>
      </informalexample>
     </para>
@@ -803,49 +804,48 @@ while ($i++ < 5) {
   <sect1 id="control-structures.switch">
    <title><literal>switch</literal></title>
    <simpara>
-    The <literal>switch</literal> statement is similar to a series of
-    IF statements on the same expression.  In many occasions, you may
-    want to compare the same variable (or expression) with many
-    different values, and execute a different piece of code depending
-    on which value it equals to.  This is exactly what the
-    <literal>switch</literal> statement is for.
+    <literal>switch</literal> deyimi, aynı ifade içersinde yer alan bir dizi
+    IF deyimine benzer. Birçok durumda, aynı değişkeni (ya da ifadeyi)
+    birden çok değerle karşılaştırmak ve her karşılaştırmanın sonucunu
+    ayrı bir kod parçası çalıştırarak değerlendirmek istersiniz. Bu tam olarak
+    <literal>switch</literal> deyiminin varlık sebebidir.
    </simpara>
    <note>
     <simpara>
-     Note that unlike some other languages, the
-     <link linkend="control-structures.continue">continue</link> statement
-     applies to switch and acts similar to <literal>break</literal>.  If you
-     have a switch inside a loop and wish to continue to the next iteration of
-     the outer loop, use <literal>continue 2</literal>.
+    Başka bazı dillerden farklı olarak, <link linkend="control-structures.continue">continue</link>
+    deyimi switch ile uygulanabilir ve <literal>break</literal> ile benzerlik
+    gösterir. Bir döngü içerisinde switch kullandıysanız ve kodun yürütülmesine
+    dıştaki döngünün tekrarlanmasıyla devam etmek istiyorsanız, <literal>continue 2</literal>
+    sözdizimini kullanabilirsiniz.
     </simpara>
    </note>
    <para>
-    The following two examples are two different ways to write the
-    same thing, one using a series of <literal>if</literal> and
-    <literal>elseif</literal> statements, and the other using the
-    <literal>switch</literal> statement:
+   Aşağıdaki iki örnek aynı şeyi yazmanın iki farklı yolunu göstermektedir.
+   Birincisi bir dizi <literal>if</literal> ve  <literal>elseif</literal>
+   deyiminin kullanımını, ikincisi ise <literal>switch</literal>
+   deyiminin kullanımını örneklemektedir:
     <example>
-     <title><literal>switch</literal> structure</title>
+     <title><literal>switch</literal> yapısı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 if ($i == 0) {
-    echo "i equals 0";
+    echo "i eşittir 0";
 } elseif ($i == 1) {
-    echo "i equals 1";
+    echo "i eşittir 1";
 } elseif ($i == 2) {
-    echo "i equals 2";
+    echo "i eşittir 2";
 }
 
 switch ($i) {
 case 0:
-    echo "i equals 0";
+    echo "i eşittir 0";
     break;
 case 1:
-    echo "i equals 1";
+    echo "i eşittir 1";
     break;
 case 2:
-    echo "i equals 2";
+    echo "i eşittir 2";
     break;
 }
 ?>
@@ -853,19 +853,19 @@ case 2:
      </programlisting>
     </example>
     <example>
-     <title><literal>switch</literal> structure allows usage of strings</title>
+     <title><literal>switch</literal> ile karakter dizisi kullanımı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 switch ($i) {
-case "apple":
-    echo "i is apple";
+case "elma":
+    echo "i bir elmadır";
     break;
-case "bar":
-    echo "i is bar";
+case "çikolata":
+    echo "i bir çikolatadır";
     break;
-case "cake":
-    echo "i is cake";
+case "kek":
+    echo "i bir kektir";
     break;
 }
 ?>
@@ -874,30 +874,28 @@ case "cake":
     </example>
    </para>
    <para>
-    It is important to understand how the <literal>switch</literal>
-    statement is executed in order to avoid mistakes.  The
-    <literal>switch</literal> statement executes line by line
-    (actually, statement by statement).  In the beginning, no code is
-    executed.  Only when a <literal>case</literal> statement is found
-    with a value that matches the value of the
-    <literal>switch</literal> expression does PHP begin to execute the
-    statements.  PHP continues to execute the statements until the end
-    of the <literal>switch</literal> block, or the first time it sees
-    a <literal>break</literal> statement.  If you don't write a
-    <literal>break</literal> statement at the end of a case's
-    statement list, PHP will go on executing the statements of the
-    following case.  For example:
+   Hatalardan kaçınmak için <literal>switch</literal> deyiminin
+   nasıl çalıştığını anlamak önemlidir. <literal>Switch</literal>
+   deyimi satır satır çalışır (yani deyim deyim). Başlangıçta,
+   hiçbir kod çalıştırılmaz. Yalnızca <literal>switch</literal> 
+   ifadesiyle birlikte verilen değer ile uyuşan <literal>case</literal>
+   deyimi bulunduğunda PHP ilgili deyimleri çalıştırmaya başlar.
+   PHP <literal>switch</literal> bloğu sonlanana kadar ya da
+   ilk <literal>break</literal> deyimi ile karşılaşıncaya kadar
+   çalışmasına devam eder. Bir case bloğunun sonuna
+   <literal>break</literal> koymazsanız, PHP bu bloktan sonra
+   gelen kodları çalıştırmaya devam eder. Örneğin:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 switch ($i) {
 case 0:
-    echo "i equals 0";
+    echo "i eşittir 0";
 case 1:
-    echo "i equals 1";
+    echo "i eşittir 1";
 case 2:
-    echo "i equals 2";
+    echo "i eşittir 2";
 }
 ?>
 ]]>
@@ -905,25 +903,23 @@ case 2:
     </informalexample>
    </para>
    <simpara>
-    Here, if <varname>$i</varname> is equal to 0, PHP would execute all of the echo
-    statements!  If <varname>$i</varname> is equal to 1, PHP would execute the last two
-    echo statements. You would get the expected behavior ('i equals 2'
-    would be displayed) only if <varname>$i</varname> is equal to 2.  Thus,
-    it is important not to forget <literal>break</literal> statements
-    (even though you may want to avoid supplying them on purpose under
-    certain circumstances).
+   Burada, <varname>$i</varname> 0'a eşit ise, PHP tüm echo deyimlerini
+   çalıştıracaktır! <varname>$i</varname> 1'e eşit ise, PHP sondaki iki echo
+   deyimini çalıştıracaktır! Beklediğiniz sonucu ('i eşittir 2' metninin görüntülenmesi) yalnızca
+   <varname>$i</varname> 2'ye eşitse almanız mümkün olacaktır. Bu durumu engellemek
+   için, <literal>break</literal> deyimini kullanmayı unutmamanız önemlidir (bazı durumlarda
+   break deyimini kullanmak istemeyebilirsiniz).
    </simpara>
    <simpara>
-    In a <literal>switch</literal> statement, the condition is
-    evaluated only once and the result is compared to each
-    <literal>case</literal> statement. In an <literal>elseif</literal>
-    statement, the condition is evaluated again. If your condition is
-    more complicated than a simple compare and/or is in a tight loop,
-    a <literal>switch</literal> may be faster.
+    Bir <literal>switch</literal> deyiminde, koşul yalnızca bir defa sorgulanır
+    ve sonuç her bir <literal>case</literal> deyimi ile karşılaştırılır. Bir
+    <literal>elseif</literal> deyiminde, koşul tekrar sorgulanır. Kullanmak istediğiniz
+    koşul basit bir karşılaştırma işleminden daha karmaşıksa ve/veya bir döngü
+    içerisindeyse, <literal>switch</literal> kullanmak daha hızlı olabilir.
    </simpara>
    <para>
-    The statement list for a case can also be empty, which simply
-    passes control into the statement list for the next case.
+   Case bloğu kod içermeyebilir ve amacı yalnızca kontrolü bir sonraki case
+   bloğuna geçirmek olabilir.
     <informalexample>
      <programlisting role="php">
 <![CDATA[
@@ -932,10 +928,10 @@ switch ($i) {
 case 0:
 case 1:
 case 2:
-    echo "i is less than 3 but not negative";
+    echo "i 3'ten küçüktür ama negatif değildir";
     break;
 case 3:
-    echo "i is 3";
+    echo "i eşittir 3";
 }
 ?>
 ]]>
@@ -943,25 +939,25 @@ case 3:
     </informalexample>
    </para>
    <para>
-    A special case is the <literal>default</literal> case.  This case matches
-    anything that wasn't matched by the other cases, and should be the last
-    <literal>case</literal> statement.  For example:
+   <literal>Default</literal> durumu özel bir durumdur. Bu durum diğer
+   hiçbir <literal>case</literal> ile uyuşmayan değerle için kullanılır ve
+   en sonda yer almalıdır. Örneğin:
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 switch ($i) {
 case 0:
-    echo "i equals 0";
+    echo "i eşittir 0";
     break;
 case 1:
-    echo "i equals 1";
+    echo "i eşittir 1";
     break;
 case 2:
-    echo "i equals 2";
+    echo "i eşittir 2";
     break;
 default:
-    echo "i is not equal to 0, 1 or 2";
+    echo "i eşit değildir 0, 1 ya da 2";
 }
 ?>
 ]]>
@@ -969,32 +965,31 @@ default:
     </informalexample>
    </para>
    <para>
-    The <literal>case</literal> expression may be any expression that
-    evaluates to a simple type, that is, integer or floating-point
-    numbers and strings.  Arrays or objects cannot be used here unless
-    they are dereferenced to a simple type.
+    <literal>Case</literal> ile kullanılan ifade, basit tip olması kaydıyla herhangi
+    bir tip olabilir, tam sayı (integer), kayan noktalı sayı (floating point) ve karakter dizisi (string) gibi.
+    Diziler ya da objeler, basit tipte bir değere indirgenmedikleri sürece kullanılamazlar.
    </para>
    <para>
-    The alternative syntax for control structures is supported with
-    switches. For more information, see <link
-    linkend="control-structures.alternative-syntax">Alternative syntax
-    for control structures</link> .
+   Kontrol yapıları için alternatif söz dizimi, switch deyimi için de desteklenmektedir.
+   Daha fazla bilgi için, <link
+    linkend="control-structures.alternative-syntax">Kontrol yapıları için alternatif
+    söz dizimi</link> bölümünü inceleyebilirsiniz.
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
 switch ($i):
 case 0:
-    echo "i equals 0";
+    echo "i eşittir 0";
     break;
 case 1:
-    echo "i equals 1";
+    echo "i eşittir 1";
     break;
 case 2:
-    echo "i equals 2";
+    echo "i eşittir 2";
     break;
 default:
-    echo "i is not equal to 0, 1 or 2";
+    echo "i eşit değildir 0'a, 1'e ya da 2'ye";
 endswitch;
 ?>
 ]]>
