@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.3 $ -->
+<!-- $Revision: 1.4 $ -->
  <chapter id="language.control-structures">
   <title>Kontrol Yapıları</title>
 
@@ -1001,86 +1001,83 @@ endswitch;
   <sect1 id="control-structures.declare">
    <title><literal>declare</literal></title>
    <para>
-    The <literal>declare</literal> construct is used to
-    set execution directives for a block of code.
-    The syntax of <literal>declare</literal> is similar to
-    the syntax of other flow control constructs:
+   <literal>Declare</literal> yapısı bir kod bloğunun
+   çalıştırılması esnasında uygulanacak direktifleri belirlemek
+   için kullanılır. <literal>Declare</literal> yapısının söz dizimi
+   diğer akış kontrol yapılarının söz dizimi ile benzerdir:
     <informalexample>
      <programlisting>
 <![CDATA[
-declare (directive)
-    statement
+declare (direktif)
+    deyim
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <para>
-    The <literal>directive</literal> section allows the
-    behavior of the <literal>declare</literal> block to
-    be set.
-    Currently only one directive is recognized: the
-    <literal>ticks</literal> directive. (See below for more
-    information on the
-    <link linkend="control-structures.declare.ticks">ticks</link>
-    directive)
+   <literal>Directive</literal> bölümü, <literal>declare</literal>
+   bloğunun nasıl davranacağını belirlemek için kullanılır.
+   Şu an için yalnızca bir direktif kullanılabilmektedir:
+    <literal>Ticks</literal> direktifi. (<link linkend="control-structures.declare.ticks">Ticks</link>
+    hakkında daha fazla bilgi edinmek istiyorsanız aşağıya gözatın.
    </para>
    <para>
-    The <literal>statement</literal> part of the
-    <literal>declare</literal> block will be executed -- how
-    it is executed and what side effects occur during execution
-    may depend on the directive set in the
-    <literal>directive</literal> block.
+   <literal>Declare</literal> bloğunun <literal>deyim</literal>
+   bölümünün nasıl çalıştırılacağı ve çalışma esnasındaki yan
+   etkilerinin ne olacağı <literal>directive</literal> bloğunda
+   belirtilir.
    </para>
    <para>
-    The <literal>declare</literal> construct can also be used in the global
-    scope, affecting all code following it.
+   <literal>Declare</literal> yapısı global kapsamda kullanılabilir ve
+   kendisinden sonra gelen tüm kodu etkilemesi sağlanabilir.
     <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php
-// these are the same:
+// aşağıdaki iki örnek aynıdır:
 
-// you can use this:
+// bunu kullanabilirsiniz:
 declare(ticks=1) {
-    // entire script here
+    // bütün uygulama kodunuz
 }
 
-// or you can use this:
+// ya da bunu kullanabilirsiniz:
 declare(ticks=1);
-// entire script here
+// bütün uygulama kodunuz
 ?>
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <sect2 id="control-structures.declare.ticks">
-    <title>Ticks</title>
-    <para>A tick is an event that occurs for every
-    <varname>N</varname> low-level statements executed
-    by the parser within the <literal>declare</literal> block.
-    The value for <varname>N</varname> is specified
-    using <literal>ticks=<varname>N</varname></literal>
-    within the <literal>declare</literal> blocks's
-    <literal>directive</literal> section.
+    <title>Tick'ler</title>
+    <para>Tick, <literal>declare</literal>
+    bloğu içerisinde tanımlanmış kodun
+    PHP tarayıcısı tarafından her bir
+    <varname>N</varname>  alt-seviye deyimi için
+    çalıştırıldığı eyleme verilen isimdir. <varname>N</varname>
+    için belirlenen değer 
+    <literal>ticks=<varname>N</varname></literal>
+    biçiminde <literal>declare</literal> bloğunun
+    <literal>directive</literal> bölümünde tanımlanır.
    </para>
    <para>
-    The event(s) that occur on each tick are specified using the
-    <function>register_tick_function</function>. See the example
-    below for more details. Note that more than one event can occur
-    for each tick.
+   Her bir tick ile oluşturulacak eylem <function>register_tick_function</function>
+   fonksiyonu ile belirtilir. Aşağıdaki örneği inceleyerek daha detaylı bilgi
+   edilenebilirsiniz. Her bir tick için birden fazla eylem oluşturulabilir.
    </para>
    <para>
     <example>
-     <title>Profile a section of PHP code</title>
+     <title>PHP kodunun bir bölümünün profili</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-// A function that records the time when it is called
+// Çağrıldığında saati kaydeden bir fonksiyon
 function profile($dump = FALSE)
 {
     static $profile;
 
-    // Return the times stored in profile, then erase it
+    // Profilde saklanmış saati döndürür, sonra siler
     if ($dump) {
         $temp = $profile;
         unset($profile);
@@ -1090,40 +1087,42 @@ function profile($dump = FALSE)
     $profile[] = microtime();
 }
 
-// Set up a tick handler
+// Tick yönlendiricisini kur
 register_tick_function("profile");
 
-// Initialize the function before the declare block
+// Declare bloğundan önce fonksiyonu kur
 profile();
 
-// Run a block of code, throw a tick every 2nd statement
+// Bir kod bloğu çalıştır, her iki deyimde bir, bir tick çalıştır
 declare(ticks=2) {
     for ($x = 1; $x < 50; ++$x) {
         echo similar_text(md5($x), md5($x*$x)), "<br />;";
     }
 }
 
-// Display the data stored in the profiler
+// Profil verisini görüntüle
 print_r(profile(TRUE));
 ?>
 ]]>
      </programlisting>
     </example>
-    The example profiles the PHP code within the 'declare'
-    block, recording the time at which every second low-level
-    statement in the block was executed. This information can
-    then be used to find the slow areas within particular
-    segments of code. This process can be performed using other
-    methods: using ticks is more convenient and easier to
-    implement.
+    Örnekte, 'declare' bloğu içindeki kod incelenerek,
+    kaç saniyede bir deyim içerisindeki alt-seviye bir bloğun
+    çalıştırıldığı görüntülenmektedir. Bu bilgi daha sonra
+    belli bir kod parçacığında yavaşlığa sebep olan bölümlerin
+    tespit edilmesi amacıyla kullanılabilir. Bu proses başka
+    yöntemler kullanılarak da uygulanabilir: Tick kullanımı
+    daha basit ve kullanışlı bir yöntemdir.
    </para>
    <simpara>
-    Ticks are well suited for debugging, implementing simple
-    multitasking, background I/O and many other tasks.
+   Tickler hata ayıklama, basit çokgörevli uygulamalar geliştirme,
+   arkaplanda çalışan I/O (input/output - girdi/çıktı) ve benzeri
+   birçok işlem için kullanılabilir.
    </simpara>
    <simpara>
-    See also <function>register_tick_function</function> and
-    <function>unregister_tick_function</function>.
+   <function>register_tick_function</function> ve
+   <function>unregister_tick_function</function> fonksiyonlarını
+   da inceleyin.
    </simpara>
    </sect2>
   </sect1>
@@ -1131,50 +1130,48 @@ print_r(profile(TRUE));
   <sect1 id="function.return">
    <title>return</title>
    <simpara>
-    If called from within a function, the <function>return</function>
-    statement immediately ends execution of the current function, and
-    returns its argument as the value of the function
-    call. <function>return</function> will also end the execution of
-    an <function>eval</function> statement or script file.
+   Bir fonksiyonun içinden çağrıldığında, <function>return</function>
+   deyimi çalışmakta olan fonksiyonu hemen sonlandırır ve kendisine
+   ait argümanı fonksiyonun değeri olarak döndürür. <function>return</function>
+   aynı zamanda <function>eval</function> fonksiyonu ile çalıştırılan
+   bir deyimi ya da betiği de sonlandırır.
    </simpara>
    <simpara>
-    If called from the global scope, then execution of the current
-    script file is ended. If the current script file was
-    <function>include</function>ed or <function>require</function>ed,
-    then control is passed back to the calling file. Furthermore, if
-    the current script file was <function>include</function>ed, then
-    the value given to <function>return</function> will be returned as
-    the value of the <function>include</function> call. If
-    <function>return</function> is called from within the main script
-    file, then script execution ends. If the current script file was
-    named by the <link
-    linkend="ini.auto-prepend-file">auto_prepend_file</link> or <link
-    linkend="ini.auto-append-file">auto_append_file</link>
-    configuration options in &php.ini;,
-    then that script file's execution is ended.
+   Global kapsamda çağrıldığında, mevcut çalışmakta olan betik dosyasının
+   çalışması sonlandırılır. Mevcut betik dosyası <function>include</function>
+   ya da <function>require</function> ile çağrılmış bir dosya ise, kontrol tekrar
+   bu dosyayı çağıran ana dosyaya geçirilir. Dahası, mevcut betik dosyası
+   <function>include</function> edilmişse, <function>return</function>
+   ile birlikte döndürülen değer <function>include</function> çağrısının
+   değeri olarak döndürülecektir. <function>return</function> ana betik
+   dosyasının içinden çağrıldığı takdirde, betiğin çalışması sonlandırılacaktır.
+   Mevcut betik dosyası &php.ini; içerisindeki <link
+    linkend="ini.auto-prepend-file">auto_prepend_file</link> ya da
+    <link
+    linkend="ini.auto-append-file">auto_append_file</link> yapılandırma
+    seçenekleri içinde belirtilmişse, bu betik dosyasının çalışması sonlandırılır.
    </simpara>
-   <simpara>For more information, see <link
-   linkend="functions.returning-values">Returning values</link>.
+   <simpara>Daha fazla bilgi için, <link
+   linkend="functions.returning-values">Dönüş değerleri</link> bölümünü
+   ziyaret edin.
    </simpara>
    <para>
     <note>
      <simpara>
-      Note that since <function>return</function> is a language
-      construct and not a function, the parentheses surrounding its
-      arguments are <emphasis>only</emphasis> required if the argument
-      contains an expression. It is common to leave them out while returning a
-      variable, and you actually should as PHP has less work to do in this
-      case.
+     <function>return</function> bir fonksiyon değil bir dil yapısı olduğundan,
+     argümanlarını çevreleyen parantez <emphasis>yalnızca</emphasis>
+     argüman bir ifade içeriyorsa zorunludur. Bir değişken döndürürken genellikle
+     parantez kullanılmaz, PHP'de de bu yöntemi izlemeniz gerekir.
      </simpara>
     </note>
     <note>
      <simpara>
-      You should <emphasis>never</emphasis> use parentheses around your return
-      variable when returning by reference, as this will not work. You can
-      only return variables by reference, not the result of a statement. If
-      you use <literal>return ($a);</literal> then you're not returning a
-      variable, but the result of the expression <literal>($a)</literal>
-      (which is, of course, the value of <varname>$a</varname>).
+     Bir değişkeni referans olarak döndürüyorsanız, <emphasis>asla</emphasis>
+     parantez kullanmamalısınız, bu çalışmayacaktır. Bir deyimin sonucunu referans olarak
+     döndüremezsiniz, yalnızca değişkenler referans olarak döndürülebilir.
+     <literal>return ($a);</literal> kullanıyorsanız, bir değişken döndürmüyor ama bir ifadenin
+     sonucunu <literal>($a)</literal> döndürüyorsunuz demektir (bu da elbette, <varname>$a</varname>
+     değişkeninin değeridir).
       </simpara>
      </note>
    </para>
@@ -1185,29 +1182,29 @@ print_r(profile(TRUE));
    <title><function>require</function></title>
 
    <simpara>
-    The <function>require</function> statement includes and evaluates
-    the specific file.
+    <function>require</function> deyimi belirtilen dosyayı ekler ve çalıştırır.
    </simpara>
    <simpara>
-     <function>require</function> includes and evaluates a specific file.
-     Detailed information on how this inclusion works is described in the
-     documentation for <function>include</function>.
+     <function>require</function> istenen dosyayı ekler ve çalıştırır.
+     Ekleme işleminin nasıl gerçekleştiğine dair detaylı bilgilendirme
+     <function>include</function> bölümünde anlatılmıştır.
    </simpara>
    <simpara>
-     <function>require</function> and <function>include</function>
-     are identical in every way except how they handle failure.
-     <function>include</function> produces a
-     <link linkend="internal.e-warning">Warning</link> while
-     <function>require</function> results in a <link linkend="internal.e-error">
-     Fatal Error</link>.  In other words, don't hesitate to use
-     <function>require</function> if you want a missing file to halt processing
-     of the page.  <function>include</function> does not behave this way, the
-     script will continue regardless.  Be sure to have an appropriate
-     <link linkend="ini.include-path">include_path</link> setting as well.
+     <function>require</function> ve <function>include</function>
+     birçok yönden birbirlerinin aynısıdırlar. Farklı oldukları yön, başarısızlık
+     durumunda ne yaptıklarıdır. <function>include</function> bir
+     <link linkend="internal.e-warning">Uyarı</link> üretirken,
+     <function>require</function> bir <link linkend="internal.e-error">
+     Ölümcül Hata</link> üretir. Başka bir deyişle, kayıp bir dosyanın tüm işleyişi
+     durdurmasını istiyorsanız <function>require</function> fonksiyonunu
+     kullanmaktan çekinmeyin. <function>include</function> bu şekilde
+     davranmayarak betiğin çalışmaya devam etmesine izin vermektedir.
+     <link linkend="ini.include-path">include_path</link> ayarının doğru
+     yapıldığından emin olmanız faydalı olacaktır.
    </simpara>
    <para>
     <example>
-     <title>Basic <function>require</function> examples</title>
+     <title>Temel <function>require</function> örnekleri</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -1224,20 +1221,21 @@ require ('somefile.txt');
    </example>
    </para>
    <simpara>
-    See the <function>include</function> documentation for more examples.
+    Daha fazla örnek için kılavuzun <function>include</function> bölümüne bakabilirsiniz.
    </simpara>
    <para>
     <note>
      <simpara>
-      Prior to PHP 4.0.2, the following applies: <function>require</function>
-      will always attempt to read the target file, even if the line it's on
-      never executes.  The conditional statement won't affect
-      <function>require</function>. However, if the line on which the
-      <function>require</function> occurs is not executed, neither will any of
-      the code in the target file be executed.  Similarly, looping structures
-      do not affect the behaviour of <function>require</function>. Although
-      the code contained in the target file is still subject to the loop, the
-      <function>require</function> itself happens only once.
+     PHP 4.0.2'den önce, kullanım şu şekildeydi: <function>require</function>
+     komutunun bulunduğu satış çalıştırılacak satırlar arasında olmasa bile
+     hedef dosyanın okunması mutlaka denenir. 
+     Koşula bağlı deyimler <function>require</function> deyimini etkilemeyecektir.
+     Ancak, <function>require</function> deyiminin bulunduğu satır çalıştırılmazsa,
+     hedef dosya içindeki hiçbir kod çalıştırılmayacaktır.Benzer şekilde,
+     döngüsel yapılar <function>require</function> fonksiyonunun bu çalışma
+     şeklini değiştirmemektedir. Hedef dosyanın içerisindeki kod halen döngü tarafından
+     çalıştırılacak olsa da, <function>require</function> deyiminin kendisi yalnızca
+     bir defa çalıştırılır.
      </simpara>
     </note>
    </para>
@@ -1247,72 +1245,72 @@ require ('somefile.txt');
    &warn.no-win32-fopen-wrapper;
 
    <simpara>
-    See also <function>include</function>, <function>require_once</function>,
+   Bakabileceğiniz diğer kaynaklar:
+    <function>include</function>, <function>require_once</function>,
     <function>include_once</function>, <function>eval</function>,
     <function>file</function>, <function>readfile</function>,
-    <function>virtual</function> and <link linkend="ini.include-path">include_path</link>.
+    <function>virtual</function> ve <link linkend="ini.include-path">include_path</link>.
    </simpara>
   </sect1>
 
  <sect1 id="function.include">
    <title><function>include</function></title>
    <simpara>
-    The <function>include</function> statement includes and evaluates
-    the specified file.
+    <function>include</function> deyimi belirtilen dosyayı okur ve işler.
    </simpara>
    <simpara>
-     The documentation below also applies to <function>require</function>.
-     The two constructs are identical in every way except how they handle
-     failure.  <function>include</function> produces a
-     <link linkend="internal.e-warning">Warning</link> while <function>require</function>
-     results in a <link linkend="internal.e-error">Fatal Error</link>.
-     In other words, use <function>require</function> if you want
-     a missing file to halt processing of the page.  <function>include</function> does
-     not behave this way, the script will continue regardless.  Be sure to have an
-     appropriate <link linkend="ini.include-path">include_path</link> setting as well.
-     Be warned that parse error in included file doesn't cause processing halting
-     in PHP versions prior to PHP 4.3.5. Since this version, it does.
+   Aşağıdaki dokümantasyon aynı zamanda<function>require</function> için de
+   geçerlidir. <function>include</function> ile <function>require</function>
+   arasındaki fark, okunacak ve işlenecek dosya bulunamadığında,
+   <function>include</function> tarafından <link linkend="internal.e-warning">Uyarı</link>,
+   <function>require</function> tarafından <link linkend="internal.e-warning">Ölümcül Hata</link>
+   sonucunun üretilmesidir. Başka bir deyişle, okunup işlenmek istenen dosya bulunamıyorsa,
+   sayfanın işlenmesini durdurmak için <function>require</function> kullanmanız gerekmektedir.
+   <function>include</function> bu şekilde hareket etmez ve betiğin çalışmaya devam etmesine
+   izin verir. Bu deyimi kullanmadan önce <link linkend="ini.include-path">include_path</link>
+   ayarınızın doğru olduğundan emin olun. PHP 4.3.5'den önceki sürümlerde, include edilen dosyadaki
+   okuma hatası uygulamanın çalışmasını durdurmuyordu. Bu sürümden itibaren, uygulamanın
+   çalışması durdurulmaktadır.
    </simpara>
    <simpara>
-    Files for including are first looked in include_path relative to the current working directory
-    and then in include_path relative to the directory of current script. E.g. if your include_path
-    is <literal>.</literal>, current working directory is <filename class="directory">/www/</filename>,
-    you included <filename>include/a.php</filename> and there is <literal>include "b.php"</literal>
-    in that file, <filename>b.php</filename> is first looked in <filename class="directory">/www/</filename>
-    and then in <filename class="directory">/www/include/</filename>.
-    If filename begins with <literal>./</literal> or <literal>../</literal>, it
-    is looked only in include_path relative to the current working directory.
+   Include edilecek dosyalar için öncelikle include_path direktifinin mevcut çalışma klasörüne göreceli
+   konumuna bakılır, istenen dosya bulunamazsa mevcut betiğin bulunduğu klasöre göreceli konumda
+   dosya aranır. Örneğin, include_path direktifinizin değeri <literal>.</literal>, mevcut çalışma klasörü
+   <filename class="directory">/www/</filename>, <filename>include/a.php</filename> include
+   edilmiş ve bu dosyanın içinde <literal>include "b.php"</literal> komutu var ise, <filename>b.php</filename>
+   dosyası için önce <filename class="directory">/www/</filename> klasörüne bakılır ve ardından
+   <filename class="directory">/www/include/</filename> klasörü taranır. Dosya ismi <literal>./</literal>
+   ile ya da <literal>../</literal> ile başlıyorsa, dosya yalnızca mevcut çalışma klasörüne göreceli include_path
+   içersinde aranır.
    </simpara>
    <simpara>
-     When a file is included, the code it contains inherits the
-     <link linkend="language.variables.scope">variable scope</link> of the
-     line on which the include occurs.  Any variables available at that line
-     in the calling file will be available within the called file, from that
-     point forward.
-     However, all functions and classes defined in the included file have the
-     global scope.
+   Bir dosya include edildiğinde, bu dosyanın içerdiği kod include deyiminin
+   kullanıldığı satır itibariyle geçerli olan
+   <link linkend="language.variables.scope">değişken kapsamını</link>
+   miras alır. Include komutunun çalıştırıldığı satıra kadar olan tüm değişkenler,
+   include edilen dosyada da kullanılabilir olacaktır.
    </simpara>
    <para>
      <example>
-      <title>Basic <function>include</function> example</title>
+      <title>Temel <function>include</function> örneği</title>
       <programlisting role="php">
 <![CDATA[
 vars.php
 <?php
 
-$color = 'green';
-$fruit = 'apple';
+$renk = 'yeşil';
+$meyve = 'elma';
 
 ?>
 
 test.php
 <?php
 
-echo "A $color $fruit"; // A
+echo "Bir $color $fruit"; // A
 
 include 'vars.php';
 
-echo "A $color $fruit"; // A green apple
+echo "Bir $color $fruit"; // Bir yeşil elma
 
 ?>
 ]]>
@@ -1320,34 +1318,34 @@ echo "A $color $fruit"; // A green apple
      </example>
    </para>
    <simpara>
-     If the include occurs inside a function within the calling file,
-     then all of the code contained in the called file will behave as
-     though it had been defined inside that function.  So, it will follow
-     the variable scope of that function.
+   Include deyimi, deyimin kullanıldığı dosya içindeki bir fonksiyonda
+   kullanılırsa, include edilen dosyanın içindeki tüm kodlar sanki o fonksiyon
+   içinde tanımlanmış gibi çalıştırılacaktır. Özetle, fonksiyonun değişken
+   kapsamına dahil olacaklardır.
    </simpara>
    <para>
      <example>
-     <title>Including within functions</title>
+     <title>Fonksiyon içi Include kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
 
 function foo()
 {
-    global $color;
+    global $renk;
 
     include 'vars.php';
 
-    echo "A $color $fruit";
+    echo "Bir $color $fruit";
 }
 
-/* vars.php is in the scope of foo() so     *
- * $fruit is NOT available outside of this  *
- * scope.  $color is because we declared it *
- * as global.                               */
-
-foo();                    // A green apple
-echo "A $color $fruit";   // A green
+/* vars.php foo() fonksiyonunun kapsamı
+ * içindedir, dolayısıyla $fruit bu kapsamın *
+ * dışında kullanılamamaktadır. $color *
+ * kullanılabilir çünkü global olarak tanımlanmıştır *
+ 
+foo();                    // Bir yeşil elma
+echo "Bir $color $fruit";   // A green
 
 ?>
 ]]>
@@ -1355,52 +1353,52 @@ echo "A $color $fruit";   // A green
     </example>
    </para>
    <simpara>
-     When a file is included, parsing drops out of PHP mode and
-     into HTML mode at the beginning of the target file, and resumes
-     again at the end.  For this reason, any code inside the target
-     file which should be executed as PHP code must be enclosed within
-     <link linkend="language.basic-syntax.phpmode">valid PHP start
-     and end tags</link>.
+   Bir dosya include edildiğinde, PHP kipinden çıkılır ve HTML kipine
+   geçilir. Bu sebeple hedef dosyada çalıştırılmak istenen PHP kodu varsa
+   <link linkend="language.basic-syntax.phpmode">
+   geçerli bir PHP başlangıç ve sonlandırma etiketi</link> arasına
+   konması gereklidir. Include edilen dosya sonlandığında, okuyucu
+   tekrar HTML kipinden PHP kipine geçmektedir.
    </simpara>
    <simpara>
-     If "<link linkend="ini.allow-url-fopen">URL fopen wrappers</link>"
-     are enabled in PHP (which they are in the default configuration),
-     you can specify the file to be included using a URL (via HTTP or
-     other supported wrapper - see <xref linkend="wrappers"/> for a list
-     of protocols) instead of a local pathname.  If the target server interprets
-     the target file as PHP code, variables may be passed to the included
-     file using a URL request string as used with HTTP GET.  This is
-     not strictly speaking the same thing as including the file and having
-     it inherit the parent file's variable scope; the script is actually
-     being run on the remote server and the result is then being
-     included into the local script.
-   </simpara>
+   "<link linkend="ini.allow-url-fopen">URL fopen wrappers</link>"
+   PHP'de etkinleştirilmiş ise (öntanımlı yapılandırmada etkindirler),
+   yerel dosya yolu belirtmek yerine
+   URL (HTTP ya da desteklenen başka bir protokol üzerinden - 
+   protokol listesi için <xref linkend="wrappers"/> bölümünü inceleyin)
+   kullanarak include işlemini gerçekleştirebilirsiniz. Hedef sunucu
+   hedef dosyayı PHP kodu olarak çalıştırabiliyorsa, değişkenler include
+   edilen dosyaya bir URL karakter dizisi olarak HTTP GET ile aktarılabilir.
+   Bu durum dosyayı include edip ana dosyanın değişken kapsamını miras
+   almaktan çok farklı değildir; betik gerçekte uzaktaki sunucuda çalışmakta
+   ve sonuçları yereldeki betiğe include edilmektedir.
+      </simpara>
    &warn.no-win32-fopen-wrapper;
    <para>
     <example>
-     <title><function>include</function> through HTTP</title>
+     <title>HTTP üzerinden <function>include</function></title>
      <programlisting role="php">
 <![CDATA[
 <?php
 
-/* This example assumes that www.example.com is configured to parse .php
- * files and not .txt files. Also, 'Works' here means that the variables
- * $foo and $bar are available within the included file. */
+/* Bu örnek www.example.com sitesinin .php uzantılı dosyaları çalıştırabildiğini
+ * ve .txt uzantılıları çalıştırmadığını kabul eder. Ayrıca, 'Çalışır' ifadesi burada 
+ * $foo ve $bar değişkenlerinin include edilen dosyada kullanılabilir olup
+ * olmadığını ifade eder. */
 
-// Won't work; file.txt wasn't handled by www.example.com as PHP
+// Çalışmaz; file.txt dosyası www.example.com sitesinde PHP tarafından işlenmez
 include 'http://www.example.com/file.txt?foo=1&bar=2';
 
-// Won't work; looks for a file named 'file.php?foo=1&bar=2' on the
-// local filesystem.
+// Çalışmaz; yerel dosya sisteminde 'file.php?foo=1&bar=2' isminde bir dosya arar
 include 'file.php?foo=1&bar=2';
 
-// Works.
+// Çalışır.
 include 'http://www.example.com/file.php?foo=1&bar=2';
 
 $foo = 1;
 $bar = 2;
-include 'file.txt';  // Works.
-include 'file.php';  // Works.
+include 'file.txt';  // Çalışır.
+include 'file.php';  // Çalışır.
 
 ?>
 ]]>
@@ -1408,43 +1406,43 @@ include 'file.php';  // Works.
     </example>
    </para>
    <warning>
-    <title>Security warning</title>
+    <title>Güvenlik uyarısı</title>
     <para>
-     Remote file may be processed at the remote server (depending on the file
-     extension and the fact if the remote server runs PHP or not) but it still
-     has to produce a valid PHP script because it will be processed at the
-     local server. If the file from the remote server should be processed
-     there and outputted only, <function>readfile</function> is much better
-     function to use. Otherwise, special care should be taken to secure the
-     remote script to produce a valid and desired code.
+    Uzaktaki dosya uzaktaki sunucu tarafından işlenebilir (dosyanın uzantısına
+    ve uzaktaki sunucunun PHP çalıştırıp çalıştırmadığına bağlı olarak).
+    Ancak bu işlemenin sonucu yine mutlaka geçerli bir PHP betiği olmalıdır
+    çünkü elde edilen çıktı yine yerel sunucu tarafından işlenecektir. Dosyanın
+    uzaktaki sunucuda işlenmesini ve işlemlerin o sunucu üzerinde kalmasını
+    istiyorsanız, <function>readfile</function> daha iyi bir seçim olacaktır.
+    Aksi takdirde, uzakta çalıştırılan betiğin geçerli ve istenen kodu üretebilmesini
+    güvence altına alabilmek için özel çaba harcamak gerekir.
     </para>
    </warning>
    <para>
-    See also <link linkend="features.remote-files">Remote files</link>,
-    <function>fopen</function> and <function>file</function> for related
-    information.
+   Ayrıca bakın <link linkend="features.remote-files">Uzaktaki dosyalar</link>,
+    <function>fopen</function> ve <function>file</function>.
    </para>
    <para>
-     Because <function>include</function> and <function>require</function>
-     are special language constructs, you must enclose them within a statement
-     block if it's inside a conditional block.
+   <function>include</function> ve <function>require</function> özel
+   dil yapıları olduklarından, koşula bağlı bir blok içinde kullandığınızda bu deyimleri
+   deyim bloğu parantezleri ile kapatmanız gerekmektedir.
    </para>
    <para>
     <example>
-     <title>include() and conditional blocks</title>
+     <title>include() ve koşula bağlı bloklar</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 
-// This is WRONG and will not work as desired.
-if ($condition)
+// Bu YANLIŞTIR ve istenildiği gibi çalışmayacaktır.
+if ($kosul)
     include $file;
 else
     include $other;
 
 
-// This is CORRECT.
-if ($condition) {
+// Bu DOĞRUDUR.
+if ($kosul) {
     include $file;
 } else {
     include $other;
@@ -1456,34 +1454,35 @@ if ($condition) {
     </example>
    </para>
    <simpara>
-    Handling Returns: It is possible to execute a <function>return</function>
-    statement inside an included file in order to terminate processing in that
-    file and return to the script which called it.  Also, it's possible to return
-    values from included files.  You can take the value of the include call as
-    you would a normal function.  This is not, however, possible when including
-    remote files unless the output of the remote file has
-    <link linkend="language.basic-syntax.phpmode">valid PHP start
-    and end tags</link> (as with any local file).  You can declare the needed
-    variables within those tags and they will be introduced at whichever point
-    the file was included.
+   Return kullanımı: Include edilmiş bir dosyanın içersinde, bu dosyanın işlenmesi
+   durdurmak ve include eden betiğe geri dönmek için <function>return</function>
+   fonksiyonu kullanılabilir. Ayrıca, include edilen dosyalardan değer döndürmek
+   de mümkündür. Normal fonksiyonda olduğu gibi, include çağrısından elde edilen
+   değeri bir değişkene atayabilirsiniz. Ancak bu durum, uzaktaki dosyalar için
+   tek bir koşul dışında mümkün değildir: Uzaktaki dosyanın çıktısı
+   <link linkend="language.basic-syntax.phpmode">geçerli PHP başlangıç
+   ve sonlandırma etiketlerine</link> sahipse (herhangi yerel bir dosyada olduğu
+   gibi), bu özellik uzaktaki dosyalar için de kullanılabilir. Gerekli değişkenleri
+   bu etiketlerin arasında tanımlayabilirsiniz, bu şekilde dosyanın include edildiği
+   andan itibaren kullanılabilir olacaklardır.
    </simpara>
    <para>
-    Because <function>include</function> is a special language construct,
-    parentheses are not needed around its argument. Take care when comparing
-    return value.
+    <function>include</function> özel bir dil yapısı olduğundan,
+    bu argümanın etrafında parantez bulunmasına gerek yoktur. Dönen değerle
+    ilgili bir karşılaştırma yaparken dikkatli olmalısınız.
     <example>
-     <title>Comparing return value of include</title>
+     <title>Include işleminden dönen değerin karşılaştırılması</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-// won't work, evaluated as include(('vars.php') == 'OK'), i.e. include('')
-if (include('vars.php') == 'OK') {
-    echo 'OK';
+// Çalışmaz, include(('vars.php') == 'TAMAM') olarak değerlendirilir, örn. include('')
+if (include('vars.php') == 'TAMAM') {
+    echo 'TAMAM';
 }
 
-// works
-if ((include 'vars.php') == 'OK') {
-    echo 'OK';
+// Çalışır
+if ((include 'vars.php') == 'TAMAM') {
+    echo 'TAMAM';
 }
 ?>
 ]]>
@@ -1493,15 +1492,16 @@ if ((include 'vars.php') == 'OK') {
    <para>
     <note>
      <simpara>
-      In PHP 3, the return may not appear inside a block unless it's
-      a function block, in which case the <function>return</function> applies
-      to that function and not the whole file.
+     PHP 3 sürümünde, sözkonusu blok bir fonksiyon bloğu olmadığı sürece
+     return deyiminin blok içinde kullanılması gerekli değildir, bu durumda
+     <function>return</function> yalnızca ilgili fonksiyona uygulanır ve
+     dosyanın tümüne uygulanmaz.
      </simpara>
     </note>
    </para>
    <para>
     <example>
-     <title><function>include</function> and the <function>return</function> statement</title>
+     <title><function>include</function> ve <function>return</function> deyimleri</title>
       <programlisting role="php">
 <![CDATA[
 return.php
@@ -1525,11 +1525,11 @@ testreturns.php
 
 $foo = include 'return.php';
 
-echo $foo; // prints 'PHP'
+echo $foo; // 'PHP' yazdırır
 
 $bar = include 'noreturn.php';
 
-echo $bar; // prints 1
+echo $bar; // 1 yazdırır
 
 ?>
 ]]>
@@ -1537,30 +1537,31 @@ echo $bar; // prints 1
     </example>
    </para>
    <simpara>
-    <literal>$bar</literal> is the value <literal>1</literal> because the include
-    was successful.  Notice the difference between the above examples.  The first uses
-    <function>return</function> within the included file while the other does not.
-    If the file can't be included, &false; is returned and
-    <literal>E_WARNING</literal> is issued.
+    <literal>$bar</literal>, <literal>1</literal> değerini taşıyor çünkü
+    include işlemi başarıyla sonuçlandı. Yukarıdaki örnekler arasındaki farklara
+    dikkat edin. Birincisi <function>return</function> deyimini include
+    edilen dosyada kullanırken ikincisi kullanmıyor. Dosya include edilemediği durumda,
+    &false; döndürülüyor ve <literal>E_WARNING</literal> üretiliyor.
    </simpara>
    <para>
-    If there are functions defined in the included file, they can be used in the
-    main file independent if they are before <function>return</function> or after.
-    If the file is included twice, PHP 5 issues fatal error because functions
-    were already declared, while PHP 4 doesn't complain about functions
-    defined after <function>return</function>.
-    It is recommended to use <function>include_once</function> instead of
-    checking if the file was already included and conditionally return inside
-    the included file.
+   Include edilen dosyanın içinde tanımlanmış fonksiyonlar varsa, 
+   <function>return</function>'den önce ya da sonra olduğundan bağımsız olarak
+   ana dosya içersinde kullanılabilirler. Dosya iki defa include edilmişse, PHP 5
+   ölümcül hata üretir çünkü fonksiyonlar halihazırda deklare edilmiştir, PHP 4 ise
+   <function>return</function>'den sonra tanımlanmış fonksiyonlar için
+   şikayet etmeyecektir. Dosyanın halihazırda include edilip edilmediğini kendiniz
+   tespit edip koşula bağlı return çalıştırmak yerine, <function>include_once</function>
+   fonksiyonunu kullanmanız önerilir.
    </para>
    <simpara>
-    Another way to "include" a PHP file into a variable is to capture the
-    output by using the <link linkend="ref.outcontrol">Output Control
-    Functions</link> with <function>include</function>. For example:
+   Bir PHP dosyasını bir değişkene "include" etmenin diğer bir yolu, çıktıyı
+   <link linkend="ref.outcontrol">Çıktı Kontol Fonksiyonları</link>
+   ile yakalamak ve <function>include</function> ile birlikte kullanmaktır.
+   Örneğin:
    </simpara>
    <para>
     <example>
-     <title>Using output buffering to include a PHP file into a string</title>
+     <title>Include ve Çıktı Tamponlama Kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
@@ -1583,18 +1584,18 @@ function get_include_contents($filename) {
     </example>
    </para>
    <para>
-    In order to automatically include files within scripts, see also the
-    <link linkend="ini.auto-prepend-file">auto_prepend_file</link> and
+   Uygulamanızda dosyaları otomatik include etmek için,
+    <link linkend="ini.auto-prepend-file">auto_prepend_file</link> ve
     <link linkend="ini.auto-append-file">auto_append_file</link>
-    configuration options in &php.ini;.
+    &php.ini; içersindeki yapılandırma seçeneklerini inceleyebilirsiniz.
    </para>
 
    &note.language-construct;
 
    <simpara>
-    See also <function>require</function>, <function>require_once</function>,
+    Ayrıca bakın <function>require</function>, <function>require_once</function>,
     <function>include_once</function>, <function>readfile</function>,
-    <function>virtual</function>, and
+    <function>virtual</function>, ve
     <link linkend="ini.include-path">include_path</link>.
    </simpara>
  </sect1>
@@ -1602,67 +1603,65 @@ function get_include_contents($filename) {
  <sect1 id="function.require-once">
    <title><function>require_once</function></title>
    <para>
-    The <function>require_once</function> statement includes and evaluates
-    the specified file during the execution of the script.
-    This is a behavior similar to the <function>require</function> statement,
-    with the only difference being that if the code from a file has already
-    been included, it will not be included again.  See the documentation for
-    <function>require</function> for more information on how this statement
-    works.
+    <function>require_once</function> deyimi belirtilen dosyayı betiğin çalışması
+    esnasında okur ve çalıştırır. Bu deyimin çalışma biçimi
+    <function>require</function> deyimi ile benzerdir,tek fark ilgili dosya içerisindeki
+    kod tekrar include edilmek isteniyorsa, tekrar include etme işleminin yapılmamasıdır.
+    Daha fazla bilgi için <function>require</function> dokümantasyonuna bakabilirsiniz.
    </para>
    <para>
-    <function>require_once</function> should be used in cases where
-    the same file might be included and evaluated more than once during a
-    particular execution of a script, and you want to be sure that it is
-    included exactly once to avoid problems with function redefinitions,
-    variable value reassignments, etc.
+    <function>require_once</function> deyimi, bir betiğin çalışması esnasında aynı
+    dosyanın birden fazla defa include edilme ihtimaline karşılık, bu dosyanın yalnızca
+    bir defa include edileceğinden emin olmak istediğinizde kullanılmalıdır. Bu sayede
+    fonksiyonların yeniden tanımlanmaya çalışılması, değişkenlere tekrar değer atanması
+    gibi sorunlardan korunmuş olursunuz.
    </para>
    <para>
-     For examples on using <function>require_once</function> and
-     <function>include_once</function>, look at the
-     <ulink url="&url.php.pear;">PEAR</ulink> code included in the
-     latest PHP source code distributions.
+    <function>require_once</function> ve
+     <function>include_once</function> ile ilgili örnekler için, PHP'nin en son
+     kaynak kodu dağıtımında yer alan
+     <ulink url="&url.php.pear;">PEAR</ulink> kodlarını inceleyebilirsiniz.
    </para>
    <para>
-    Return values are the same as with <function>include</function>. If the file
-    was already included, this function returns &true;
+   Dönen değerlerin yönetimi <function>include</function> fonksiyonu ile aynıdır.
+   Dosya halihazırda include edilmişse, bu fonksiyon &true; değerini döndürür.
    </para>
    <para>
     <note>
      <para>
-      <function>require_once</function> was added in PHP 4.0.1pl2
+      <function>require_once</function> PHP 4.0.1pl2 ile eklenmiştir.
      </para>
     </note>
    </para>
    <para>
     <note>
      <para>
-      Be aware, that the behaviour of <function>require_once</function>
-      and <function>include_once</function> may not be what you expect
-      on a non case sensitive operating system (such as Windows).
+     Büyük-küçük harf duyarlı olmayan işletim sistemlerinde (Windows gibi),
+     <function>require_once</function> ve <function>include_once</function>
+     deyimlerinin beklediğiniz sonucu üretmeyebileceğine dikkat edin.
       <example>
-       <title><function>require_once</function> is case insensitive on Windows</title>
+       <title><function>require_once</function> Windows'ta büyük-küçük harf duyarsızdır</title>
        <programlisting role="php">
 <![CDATA[
 <?php
-require_once("a.php"); // this will include a.php
-require_once("A.php"); // this will include a.php again on Windows! (PHP 4 only)
+require_once("a.php"); // bu a.php dosyasını include edecektir
+require_once("A.php"); // bu Windows altında yine a.php dosyasını include edecektir! (yalnızca PHP 4)
 ?>
 ]]>
         </programlisting>
       </example>
-      This behaviour changed in PHP 5 - the path is normalized first so that
-      <filename>C:\PROGRA~1\A.php</filename> is realized the same as
-      <filename>C:\Program Files\a.php</filename> and the file is required just once.
+      Bu davranış PHP 5'te değişmiştir - öncelikle yol normalize edilir, böylece
+      <filename>C:\PROGRA~1\A.php</filename> ile <filename>C:\Program Files\a.php</filename>
+      aynı kapsamda değerlendirilir ve dosya yalnızca bir defa işlenir.
      </para>
     </note>
    </para>
    &warn.no-win32-fopen-wrapper;
    <para>
-    See also <function>require</function>,
+    Ayrıca bakın <function>require</function>,
     <function>include</function>, <function>include_once</function>,
     <function>get_required_files</function>,
-    <function>get_included_files</function>, <function>readfile</function>, and
+    <function>get_included_files</function>, <function>readfile</function>, ve
     <function>virtual</function>.
    </para>
   </sect1>
@@ -1670,67 +1669,67 @@ require_once("A.php"); // this will include a.php again on Windows! (PHP 4 only)
  <sect1 id="function.include-once">
    <title><function>include_once</function></title>
    <para>
-    The <function>include_once</function> statement includes and evaluates
-    the specified file during the execution of the script.
-    This is a behavior similar to the <function>include</function> statement,
-    with the only difference being that if the code from a file has already
-    been included, it will not be included again.  As the name suggests,
-    it will be included just once.
+    <function>include_once</function> betiğin çalışması esnasında belirtilen
+    dosyayı okur ve işler.
+    Bu çalışma biçimi <function>include</function> deyimi ile benzerdir,
+    tek fark dosyanın içindeki kod halihazırda include edilmişse, include işlemi
+    tekrarlanmaz. İsimden de anlaşılabileceği gibi, dosya yalnızca bir defa
+    include edilir.
    </para>
    <para>
-    <function>include_once</function> should be used in cases where
-    the same file might be included and evaluated more than once during a
-    particular execution of a script, and you want to be sure that it is
-    included exactly once to avoid problems with function redefinitions,
-    variable value reassignments, etc.
+    <function>include_once</function> deyimi, bir betiğin çalışması esnasında aynı
+    dosyanın birden fazla defa include edilme ihtimaline karşılık, bu dosyanın yalnızca
+    bir defa include edileceğinden emin olmak istediğinizde kullanılmalıdır. Bu sayede
+    fonksiyonların yeniden tanımlanmaya çalışılması, değişkenlere tekrar değer atanması
+    gibi sorunlardan korunmuş olursunuz.
    </para>
    <para>
-    For more examples on using <function>require_once</function> and
-    <function>include_once</function>, look at the
-    <ulink url="&url.php.pear;">PEAR</ulink> code included in the latest
-    PHP source code distributions.
+   <function>require_once</function> ve <function>include_once</function>
+   kullanımı ile ilgili daha fazla örnek için, PHP'nin en son
+     kaynak kodu dağıtımında yer alan
+     <ulink url="&url.php.pear;">PEAR</ulink> kodlarını inceleyebilirsiniz.
    </para>
    <para>
-    Return values are the same as with <function>include</function>. If the file
-    was already included, this function returns &true;
+   Dönen değerlerin yönetimi <function>include</function> fonksiyonu ile aynıdır.
+   Dosya halihazırda include edilmişse, bu fonksiyon &true; değerini döndürür.
    </para>
    <para>
     <note>
      <para>
-      <function>include_once</function> was added in PHP 4.0.1pl2
+      <function>include_once</function> PHP 4.0.1pl2 sürümü ile eklenmiştir.
      </para>
     </note>
    </para>
    <para>
    <note>
      <para>
-      Be aware, that the behaviour of <function>include_once</function>
-      and <function>require_once</function> may not be what you expect
-      on a non case sensitive operating system (such as Windows).
+     Büyük-küçük harf duyarlı olmayan işletim sistemlerinde (Windows gibi),
+     <function>require_once</function> ve <function>include_once</function>
+     deyimlerinin beklediğiniz sonucu üretmeyebileceğine dikkat edin.
       <example>
-       <title><function>include_once</function> is case insensitive on Windows</title>
+       <title><function><function>include_once</function> Windows'ta büyük-küçük harf duyarsızdır</title>
        <programlisting role="php">
 <![CDATA[
 <?php
-include_once("a.php"); // this will include a.php
-include_once("A.php"); // this will include a.php again on Windows! (PHP 4 only)
+include_once("a.php"); // bu a.php dosyasını include edecektir
+include_once("A.php"); // bu Windows altında yine a.php dosyasını include edecektir! (yalnızca PHP 4)
 ?>
 ]]>
         </programlisting>
       </example>
-      This behaviour changed in PHP 5 - the path is normalized first so that
-      <filename>C:\PROGRA~1\A.php</filename> is realized the same as
-      <filename>C:\Program Files\a.php</filename> and the file is included just once.
+      Bu davranış PHP 5'te değişmiştir - öncelikle yol normalize edilir, böylece
+      <filename>C:\PROGRA~1\A.php</filename> ile <filename>C:\Program Files\a.php</filename>
+      aynı kapsamda değerlendirilir ve dosya yalnızca bir defa işlenir.
      </para>
     </note>
    </para>
    &warn.no-win32-fopen-wrapper;
    <para>
-    See also <function>include</function>,
+    Ayrıca bakın <function>include</function>,
     <function>require</function>, <function>require_once</function>,
     <function>get_required_files</function>,
     <function>get_included_files</function>, <function>readfile</function>,
-    and <function>virtual</function>.
+    ve <function>virtual</function>.
    </para>
   </sect1>
   
