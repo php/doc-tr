@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Revision: 1.1 $ -->
+ <sect1 id="language.oop5.paamayim-nekudotayim">
+  <title>Kapsam Çözünürlük Operatörü (Scope Resolution Operator (::))</title>
+
+  <para>
+  Kapsam Çözünürlük Operatörü (ayný zamanda Paamayim Nekudotayim olarak bilinir)
+  ya da daha basit terimlerle iki nokta üst üste,
+  <link linkend="language.oop5.static">static</link>,
+  <link linkend="language.oop5.constants">constant</link> ve
+  bir sýnýfýn iptal edilmiþ öðelerine ya da metodlarýna eriþilebilmesini
+  saðlayan bir simgedir.
+  </para>
+
+  <para>
+  Bu öðelere sýnýf tanýmlamasýnýn dýþýnda bir yerden referans vermek istediðinizde,
+  sýnýfýn ismini kullanýn.
+  </para>
+
+  <para>
+  Paamayim Nekudotayim ilk bakýþta iki nokta üst üste için garip bir adlandýrma
+  gibi gözükebilir. Ancak, Zend Engine 0.5 (php 3'ün kalbidir) yazýldýðý esnada
+  Zend ekibinin kullanmak istediði terim bu oldu. Esasýnda bu iki sözcük de
+  iki nokta üst üste anlamýna gelmektedir - Ýbranice'de!
+  </para>
+
+  <example>
+   <title>:: sýnýf tanýmlamasýnýn dýþýnda</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass {
+    const CONST_VALUE = 'Bir deðiþmez deðeri';
+}
+
+echo MyClass::CONST_VALUE;
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+  Ýki özel anahtar sözcük <varname>self</varname> ve <varname>parent</varname>
+  bir sýnýfýn öðelerine ya da metodlarýna sýnýfýn içinden eriþilmek istendiðinde
+  kullanýlýr.
+  </para>
+
+  <example>
+   <title>:: sýnýf tanýmlamasýnýn içinde</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class OtherClass extends MyClass
+{
+    public static $my_static = 'static var';
+
+    public static function doubleColon() {
+        echo parent::CONST_VALUE . "\n";
+        echo self::$my_static . "\n";
+    }
+}
+
+OtherClass::doubleColon();
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+  Bir sýnýf geniþletildiðinde (extending) alt metodlar ana metodlarýn üzerine
+  yazýlýr. Bu durumda, PHP ana sýnýfa ait metodu çaðýrmaz. Ana sýnýfa ait metodun
+  çalýþtýrýlýp çalýþtýrýlmayacaðý, geniþletilmiþ sýnýfýn insiyatifindedir.
+  Bu durum ayný zamanda <link
+   linkend="language.oop5.decon">Ýlklendiriciler ve Sonlandýrýcýlar</link>, <link
+   linkend="language.oop5.overloading">Overloading</link>, ve <link
+   linkend="language.oop5.magic">Magic</link> matod tanýmlamalarý için de
+   geçerlidir.
+  </para>
+
+  <example>
+   <title>Ana sýnýfa ait metodu çaðýrmak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass
+{
+    protected function myFunc() {
+        echo "MyClass::myFunc()\n";
+    }
+}
+
+class OtherClass extends MyClass
+{
+    // Ana sýnýfýn tanýmlamasý ezilir
+    public function myFunc()
+    {
+        // Ama hala ana fonksiyonu çaðýrabilir
+        parent::myFunc();
+        echo "OtherClass::myFunc()\n";
+    }
+}
+
+$class = new OtherClass();
+$class->myFunc();
+?>
+]]>
+   </programlisting>
+  </example>
+
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
