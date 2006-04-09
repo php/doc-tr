@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="iso-8859-9"?>
+<!-- $Revision: 1.1 $ -->
+ <sect1 id="language.oop5.magic">
+  <title>Sihirli (Magic) Metodlar</title>
+  <para>
+   <literal>__construct</literal>,
+   <literal>__destruct</literal>
+   (bakınız <link linkend="language.oop5.decon">İlklendiriciler ve Sonlandırıcılar</link>),
+   <literal>__call</literal>,
+   <literal>__get</literal>,
+   <literal>__set</literal>,
+   <literal>__isset</literal>,
+   <literal>__unset</literal>
+   (bakınız <link linkend="language.oop5.overloading">Overloading</link>),
+   <literal>__sleep</literal>,
+   <literal>__wakeup</literal>,
+   <literal>__toString</literal>,
+   <literal>__set_state</literal>,
+   <link linkend="language.oop5.cloning">__clone</link> ve
+   <link linkend="language.oop5.autoload">__autoload</link>
+   fonksiyonları, PHP sınıfları içerisinde sihirli fonksiyonlar olarak bilinir.
+   Bir sınıf içerisinde, yukarıdaki fonksiyon isimlerini ancak bu fonksiyonların
+   sihirli özelliklerinden faydalanmak istediğinizde kullanabilirsiniz.
+  </para>
+
+  <caution>
+   <simpara>
+   PHP __ ile başlayan tüm fonksiyon isimlerini sihirli olarak ayırmıştır.
+   Bu sebeple __ ile başlayan fonksiyon isimleri kullanmamanızı öneririz.
+   </simpara>
+  </caution>
+ 
+  <sect2 id="language.oop5.magic.sleep">
+   <title><literal>__sleep</literal> ve <literal>__wakeup</literal></title>
+   <para>
+    <function>serialize</function> fonksiyonu, sınıfınıza dahil bir
+    sihirli <literal>__sleep</literal> fonksiyonu olup olmadığını kontrol eder.
+    Bu fonksiyon mevcutsa, serialization işleminden önce bu fonksiyon çalıştırılır.
+    Bu fonksiyon ile nesne üzerinde temizlik yapabilir ve serialize edilmesi
+    gereken nesneye ait tüm değişkenleri içeren bir dizinin döndürülmesini
+    sağlayabilirsiniz.
+   </para>
+   <para>
+   <literal>__sleep</literal> fonksiyonunun alışılageldik kullanımında
+   tüm veritabanı bağlantıları kapatılır, beklemede olan veri işlemlerinin
+   onaylanması ve benzeri temizleme işlemleri de buna dahildir.
+   Tümüyle kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu olduğunda
+   yine bu fonksiyondan faydalanabilirsiniz.
+   </para>
+   <para>
+   <function>unserialize</function> fonksiyonu tersine bir işlem yaparak
+   <literal>__wakeup</literal> sihirli fonksiyonunun varlığını araştırır.
+   Bu fonksiyon mevcutsa, nesnenin sahip olduğu tüm kaynaklar yeniden
+   oluşturulmaya çalışılır.
+   </para>
+   <para>
+   <literal>__wakeup</literal> fonksiyonunun alışılageldik kullanımı,
+   serialization işlemi sırasında kaybolan veritabanı bağlantılarının yeniden kurulmasıdır.
+   Ayrıca nesne ile ilgili diğer başlangıç işlemleri de gerçekleştirilebilir.
+   </para>
+   <example>
+    <title>Sleep ve wakeup</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Connection {
+    protected $link;
+    private $server, $username, $password, $db;
+    
+    public function __construct($server, $username, $password, $db)
+    {
+        $this->server = $server;
+        $this->username = $username;
+        $this->password = $password;
+        $this->db = $db;
+        $this->connect();
+    }
+    
+    private function connect()
+    {
+        $this->link = mysql_connect($this->server, $this->username, $this->password);
+        mysql_select_db($this->db, $this->link);
+    }
+    
+    public function __sleep()
+    {
+        mysql_close($this->link);
+    }
+    
+    public function __wakeup()
+    {
+        $this->connect();
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 id="language.oop5.magic.tostring">
+   <title><literal>__toString</literal></title>
+   <para>
+    <literal>__toString</literal> metodu, sınıf bir karakter dizisine çevrildiğinde
+    nasıl davranılacağını belirler.
+   </para>
+   <example>
+    <title>Basit bir örnek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Basit bir sınıf tanımı
+class TestClass
+{
+    public $foo;
+
+    public function __construct($foo) {
+        $this->foo = $foo;
+    }
+
+    public function __toString() {
+        return $this->foo;
+    }
+}
+
+$class = new TestClass('Merhaba');
+echo $class;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba
+]]>
+    </screen>
+   </example>
+   <para>
+   <literal>__toString</literal> metodu, <function>echo</function> ya da
+   <function>print</function> fonksiyonları ile birlikte kullanılmadığı
+   sürece kendi başına bir değer taşımaz.
+   </para>
+   <example>
+    <title><literal>__toString</literal> kullanıldığı durumlar</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// __toString çağrılır
+echo $class;
+
+// __toString çağrılır (echo için normal bir parametre)
+echo 'metin', $class;
+
+// __toString çağrılmaz (önce birleştirme operatörü kullanılmış)
+echo 'metin' . $class;
+
+// __toString çağrılmaz (önce karakter dizisine çevrilmiş)
+echo (string) $class;
+
+// __toString çağrılmaz (önce karakter dizisine çevrilmiş)
+echo "metin $class";
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 id="language.oop5.magic.set-state">
+   <title><literal>__set_state</literal></title>
+   <para>
+    Bu <link linkend="language.oop5.static">static</link> metod, <function>var_export</function>
+    tarafından dışa aktarılmış sınıflar için PHP 5.1.0 sürümünden beri kullanılmaktadır.
+   </para>
+   <para>
+   Bu metod için tek parametre, <literal>array('property' => value, ...)</literal> formunda
+   dışa aktarılmış özellikleri içeren bir dizidir.
+   </para>
+  </sect2>
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

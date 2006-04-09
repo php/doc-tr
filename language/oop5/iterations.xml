@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="iso-8859-9"?>
+<!-- $Revision: 1.1 $ -->
+ <sect1 id="language.oop5.iterations">
+  <title>Nesne Yineleme</title>
+  <para>
+  PHP 5 ile tanımlanan nesneler, <link
+   linkend="control-structures.foreach">foreach</link> gibi bir
+   komut kullanılarak bir öge listesi üzerinden yinelenebilirler.
+   Öntanımlı olarak, tüm <link linkend="language.oop5.visibility">görünür</link>
+   özellikler yineleme sürecine dahil edilir.
+  </para>
+
+  <example>
+   <title>Basit Nesne Yineleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass
+{
+    public $var1 = 'value 1';
+    public $var2 = 'value 2';
+    public $var3 = 'value 3';
+
+    protected $protected = 'protected var';
+    private   $private   = 'private var';
+
+    function iterateVisible() {
+       echo "MyClass::iterateVisible:\n";
+       foreach($this as $key => $value) {
+           print "$key => $value\n";
+       }
+    }
+}
+
+$class = new MyClass();
+
+foreach($class as $key => $value) {
+    print "$key => $value\n";
+}
+echo "\n";
+
+
+$class->iterateVisible();
+
+?>
+]]>
+   </programlisting>
+   &example.outputs; 
+   <screen role="php">
+<![CDATA[
+var1 => value 1
+var2 => value 2
+var3 => value 3
+
+MyClass::iterateVisible:
+var1 => value 1
+var2 => value 2
+var3 => value 3
+protected => protected var
+private => private var
+]]>
+   </screen>
+
+  </example>
+
+ <para>
+ Çıktının gösterdiği gibi, <link
+  linkend="control-structures.foreach">foreach</link> tüm
+  <link linkend="language.oop5.visibility">görünür</link> ve erişilebilir
+  değişkenleri yineledi. Bir adım öteye giderek, PHP'nin kendi iç bünyesinde
+  yer alan bir <link
+  linkend="language.oop5.interfaces">arayüz</link> olan <varname>Iterator</varname>
+  kullanılabilir. <varname>Iterator</varname> kullanılarak, bir nesnenin hangi
+  biçimde yineleneceğine karar verilebilir.
+ </para>
+
+  <example>
+   <title>Iterator kullanılarak Nesne Yineleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyIterator implements Iterator
+{
+    private $var = array();
+
+    public function __construct($array)
+    {
+        if (is_array($array)) {
+            $this->var = $array;
+        }
+    }
+
+    public function rewind() {
+        echo "başa al\n";
+        reset($this->var);
+    }
+
+    public function current() {
+        $var = current($this->var);
+        echo "mevcut: $var\n";
+        return $var;
+    }
+
+    public function key() {
+        $var = key($this->var);
+        echo "anahtar: $var\n";
+        return $var;
+    }
+
+    public function next() {
+        $var = next($this->var);
+        echo "sonraki: $var\n";
+        return $var;
+    }
+
+    public function valid() {
+        $var = $this->current() !== false;
+        echo "geçerli: {$var}\n";
+        return $var;
+    }
+}
+
+$values = array(1,2,3);
+$it = new MyIterator($values);
+
+foreach ($it as $a => $b) {
+    print "$a: $b\n";
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen role="php">
+<![CDATA[
+başa al
+mevcut: 1
+geçerli: 1
+mevcut: 1
+anahtar: 0
+0: 1
+sonraki: 2
+mevcut: 2
+geçerli: 1
+mevcut: 2
+anahtar: 1
+1: 2
+sonraki: 3
+mevcut: 3
+geçerli: 1
+mevcut: 3
+anahtar: 2
+2: 3
+sonraki:
+mevcut:
+geçerli:
+]]>
+   </screen>
+
+  </example>
+
+  <para>
+  <varname>Iterator</varname> fonksiyonlarının tümünü her defasında yeniden
+  tanımlamamak için, PHP 5 ile birlikte gelen <varname>IteratorAggregate</varname>
+  arayüzünü tanımlayıp kullanabilirsiniz.
+  </para>
+
+  <example>
+   <title>IteratorAggregate ile Nesne Yineleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyCollection implements IteratorAggregate
+{
+    private $items = array();
+    private $count = 0;
+
+    // IteratorAggregate için gerekli arayüz tanımı
+    public function getIterator() {
+        return new MyIterator($this->items);
+    }
+
+    public function add($value) {
+        $this->items[$this->count++] = $value;
+    }
+}
+
+$coll = new MyCollection();
+$coll->add('değer 1');
+$coll->add('değer 2');
+$coll->add('değer 3');
+
+foreach ($coll as $key => $val) {
+    echo "key/value: [$key -> $val]\n\n";
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs;  
+   <screen role="php">
+<![CDATA[
+başa al
+mevcut: değer 1
+geçerli: 1
+mevcut: değer 1
+anahtar: 0
+anahtar/değer: [0 -> değer 1]
+
+sonraki: değer 2
+mevcut: değer 2
+geçerli: 1
+mevcut: değer 2
+anahtar: 1
+anahtar/değer: [1 -> değer 2]
+
+sonraki: değer 3
+mevcut: değer 3
+geçerli: 1
+mevcut: değer 3
+anahtar: 2
+anahtar/değer: [2 -> değer 3]
+
+sonraki:
+mevcut:
+geçerli:
+]]>
+   </screen>
+
+  </example>
+
+  <note>
+   <para>
+   Yineleyiciler ile ilgili daha fazla örnek için, 
+    <link linkend="ref.spl">SPL Uzantısı</link> bölümünü inceleyin.
+   </para>
+  </note> 
+
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
