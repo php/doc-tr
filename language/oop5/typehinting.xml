@@ -1,24 +1,25 @@
-<?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.2 $ -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.3 $ -->
+<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/typehinting.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
  <sect1 xml:id="language.oop5.typehinting" xmlns="http://docbook.org/ns/docbook">
   <title>Tip Belirtme (Type Hinting)</title>
   <para>
-  PHP 5, Tip Belirtme (Type Hinting) özelliğine sahiptir. Artık fonksiyonlar,
-  paremetreleri nesne olma (fonksiyon prototipinde sınıfın ismini belirterek) ya da dizi olma (PHP 5.1'den itibaren) konusunda zorlayabilmektedirler.
+  PHP 5, Tip Belirtme (Type Hinting) Ã¶zelligine sahiptir. Artik fonksiyonlar,
+  paremetreleri nesne olma (fonksiyon prototipinde sinifin ismini belirterek) ya da dizi olma (PHP 5.1'den itibaren) konusunda zorlayabilmektedirler.
   </para>
   
   <example>
-   <title>Tip Belirtme örnekleri</title>
+   <title>Tip Belirtme Ã¶rnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Örnek bir sınıf
+// Ã–rnek bir sinif
 class MyClass
 {
     /**
      * Bir test fonksiyonu
      *
-     * İlk parametre OtherClass tipinde bir nesne olmalıdır
+     * Ilk parametre OtherClass tipinde bir nesne olmalidir
      */
     public function test(OtherClass $otherclass) {
         echo $otherclass->var;
@@ -26,74 +27,74 @@ class MyClass
 
 
     /**
-     * Bir diğer test fonksiyonu
+     * Bir diger test fonksiyonu
      *
-     * İlk parametre bir dizi olmalıdır
+     * Ilk parametre bir dizi olmalidir
      */
     public function test_array(array $input_array) {
         print_r($input_array);
     }
 }
 
-// Bir diğer örnek sınıf
+// Bir diger Ã¶rnek sinif
 class OtherClass {
-    public $var = 'Merhaba Dünya';
+    public $var = 'Merhaba DÃ¼nya';
 }
 ?>
 ]]>
    </programlisting>
    <para>
-   Tip belirtme kuralına uymamak ölümcül hata ile sonuçlanır.
+   Tip belirtme kuralina uymamak Ã¶lÃ¼mcÃ¼l hata ile sonuÃ§lanir.
    </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Her iki sınıftan da bir örnek oluşturalım
+// Her iki siniftan da bir Ã¶rnek olusturalim
 $myclass = new MyClass;
 $otherclass = new OtherClass;
 
-// Ölümcül Hata: Argüman 1 OtherClass sınıfından bir nesne olmalıdır
+// Ã–lÃ¼mcÃ¼l Hata: ArgÃ¼man 1 OtherClass sinifindan bir nesne olmalidir
 $myclass->test('hello');
 
-// Ölümcül Hata: Argüman 1 OtherClass sınıfından bir örnek olmalıdır
+// Ã–lÃ¼mcÃ¼l Hata: ArgÃ¼man 1 OtherClass sinifindan bir Ã¶rnek olmalidir
 $foo = new stdClass;
 $myclass->test($foo);
 
-// Ölümcül Hata: Argüman 1 null olmamalıdır
+// Ã–lÃ¼mcÃ¼l Hata: ArgÃ¼man 1 null olmamalidir
 $myclass->test(null);
 
-// Çalışır: Merhaba Dünya yazdırır
+// Ã‡alisir: Merhaba DÃ¼nya yazdirir
 $myclass->test($otherclass);
 
-// Ölümcül Hata: Argüman 1 bir dizi olmalıdır
+// Ã–lÃ¼mcÃ¼l Hata: ArgÃ¼man 1 bir dizi olmalidir
 $myclass->test_array('bir metin');
 
-// Çalışır: Diziyi yazdırır
+// Ã‡alisir: Diziyi yazdirir
 $myclass->test_array(array('a', 'b', 'c'));
 ?>
 ]]>
    </programlisting>
    <para>
-   Tip belirtme aynı zamanda fonksiyonlarla da çalışır:
+   Tip belirtme ayni zamanda fonksiyonlarla da Ã§alisir:
    </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Örnek bir sınıf
+// Ã–rnek bir sinif
 class MyClass {
-    public $var = 'Merhaba Dünya';
+    public $var = 'Merhaba DÃ¼nya';
 }
 
 /**
  * Bir test fonksiyonu
  *
- * İlk parametre MyClass tipinde bir nesne olmalıdır
+ * Ilk parametre MyClass tipinde bir nesne olmalidir
  */
 function MyFunction (MyClass $foo) {
     echo $foo->var;
 }
 
-// Çalışır
+// Ã‡alisir
 $myclass = new MyClass;
 MyFunction($myclass);
 ?>
@@ -101,8 +102,8 @@ MyFunction($myclass);
    </programlisting>
   </example>
   <para>
-  Tip Belirtme yalnızca <type>object</type> ve <type>array</type> (PHP 5.1
-  itibariyle) tipleri için geçerlidir. Geleneksel tip belirtmede varolan
+  Tip Belirtme yalnizca <type>object</type> ve <type>array</type> (PHP 5.1
+  itibariyle) tipleri iÃ§in geÃ§erlidir. Geleneksel tip belirtmede varolan
   <type>int</type> ve <type>string</type> desteklenmemektedir.
   </para>
  </sect1>

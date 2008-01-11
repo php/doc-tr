@@ -1,31 +1,31 @@
-<?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.2 $ -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.3 $ -->
+<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/overloading.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
  <sect1 xml:id="language.oop5.overloading" xmlns="http://docbook.org/ns/docbook">
-  <title>Overloading</title>
-
+  <title>Bindirme - Overloading</title>
   <para>
-  Tüm metod çağrımları ve üye erişimleri __call, __get ve __set
-  metodları kullanılarak overload edilebilir. Bu metodlar yalnızca
-  nesneniz ya da miras alınan nesneniz erişim sağlamak istediğiniz
-  üyeyi ya da metodu içermiyorsa kullanılabilir. Hiçbir overloading
+  TÃ¼m metod Ã§agrimlari ve Ã¼ye erisimleri __call, __get ve __set
+  metodlari kullanilarak overload edilebilir. Bu metodlar yalnizca
+  nesneniz ya da miras alinan nesneniz erisim saglamak istediginiz
+  Ã¼yeyi ya da metodu iÃ§ermiyorsa kullanilabilir. HiÃ§bir overloading
   metodu <link linkend="language.oop5.static">static</link> olarak
-  tanımlanmamalıdır. PHP 5.0.x sürümünde, tüm overloading metodları
+  tanimlanmamalidir. PHP 5.0.x sÃ¼rÃ¼mÃ¼nde, tÃ¼m overloading metodlari
   <link linkend="language.oop5.visibility">public</link> olarak
-  tanımlanmalıdır.
+  tanimlanmalidir.
   </para>
   <para>
-  PHP 5.1.0 sürümünden itibaren, <function>isset</function> ve <function>unset</function>
-  fonksiyonlarının da __isset ve __unset metodları kullanılarak overload edilebilmesi
-  mümkün hale getirilmiştir.
+  PHP 5.1.0 sÃ¼rÃ¼mÃ¼nden itibaren, <function>isset</function> ve <function>unset</function>
+  fonksiyonlarinin da __isset ve __unset metodlari kullanilarak overload edilebilmesi
+  mÃ¼mkÃ¼n hale getirilmistir.
   </para>
 
   <sect2 xml:id="language.oop5.overloading.members">
-   <title>Üye overloading</title>
+   <title>Ãœye overloading</title>
 
    <methodsynopsis>
     <type>void</type><methodname>__set</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+    <methodparam><type>mixed</type><parameter>deger</parameter></methodparam>
    </methodsynopsis>
    <methodsynopsis>
     <type>mixed</type><methodname>__get</methodname>
@@ -41,15 +41,15 @@
    </methodsynopsis>
 
    <para>
-   Sınıf üyeleri, sınıfınız dahilinde tanımlayacak bu özel isimli metodlar
-   kullanılarak overload edilebilir. <varname>$isim</varname> parametresi
-   kullanılarak değeri değiştirilmek istenen ya da değeri alınmak istenen
-   değişken seçilebilir. __set() metodu ile kullanılan <varname>$value</varname>
-   parametresi, <varname>$isim</varname> için yeni atanacak değeri belirler.
+   Sinif Ã¼yeleri, sinifiniz dahilinde tanimlayacak bu Ã¶zel isimli metodlar
+   kullanilarak overload edilebilir. <varname>$isim</varname> parametresi
+   kullanilarak degeri degistirilmek istenen ya da degeri alinmak istenen
+   degisken seÃ§ilebilir. __set() metodu ile kullanilan <varname>$value</varname>
+   parametresi, <varname>$isim</varname> iÃ§in yeni atanacak degeri belirler.
    </para>
 
    <example>
-    <title>__get, __set, __isset ve __unset ile overloading örneği</title>
+    <title>__get, __set, __isset ve __unset ile overloading Ã¶rnegi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -60,32 +60,32 @@ class Setter
 
     private function __get($nm)
     {
-        echo "Alınan [$nm]\n";
+        echo "Alinan [$nm]\n";
 
         if (isset($this->x[$nm])) {
             $r = $this->x[$nm];
-            print "Döndürülen: $r\n";
+            print "DÃ¶ndÃ¼rÃ¼len: $r\n";
             return $r;
         } else {
-            echo "Hiçbir şey!\n";
+            echo "HiÃ§bir sey!\n";
         }
     }
 
     private function __set($nm, $val)
     {
-        echo "[$nm] değerinin atandığı: $val\n";
+        echo "[$nm] degerinin atandigi: $val\n";
 
         if (isset($this->x[$nm])) {
             $this->x[$nm] = $val;
             echo "OK!\n";
         } else {
-            echo "OK değil!\n";
+            echo "OK degil!\n";
         }
     }
 
     private function __isset($nm)
     {
-        echo "$nm değiştirilmiş mi kontrol ediliyor\n";
+        echo "$nm degistirilmis mi kontrol ediliyor\n";
 
         return isset($this->x[$nm]);
     }
@@ -104,12 +104,12 @@ $foo->a = 100;
 $foo->a++;
 $foo->z++;
 
-var_dump(isset($foo->a)); //doğru
+var_dump(isset($foo->a)); //dogru
 unset($foo->a);
-var_dump(isset($foo->a)); //yanlış
+var_dump(isset($foo->a)); //yanlis
 
-// bu direk olarak __isset() metodundan geçmez
-// çünkü 'n' public bir özellik
+// bu direk olarak __isset() metodundan geÃ§mez
+// Ã§Ã¼nkÃ¼ 'n' public bir Ã¶zellik
 var_dump(isset($foo->n));
 
 var_dump($foo);
@@ -160,19 +160,19 @@ object(Setter)#1 (2) {
    <methodsynopsis>
     <type>mixed</type><methodname>__call</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-    <methodparam><type>array</type><parameter>argümanlar</parameter></methodparam>
+    <methodparam><type>array</type><parameter>argÃ¼manlar</parameter></methodparam>
    </methodsynopsis>
 
    <para>
-   Sınıf metodları, istenen metoda özel bir isim tanımlanmasını sağlayacak özel
-   bir kod yazılarak overload edilebilir. Kullanılan <varname>$name</varname> parametresi,
-   kullanımı istenen fonksiyon ismini taşır. Fonksiyona geçirilen argümanlar,
-   <varname>$arguments</varname> parametresi içinde bir dizi olarak tanımlanacaktır.
-   __call() metodundan dönen değerler, çağrıyı yapan metoda geri döndürülecektir.
+   Sinif metodlari, istenen metoda Ã¶zel bir isim tanimlanmasini saglayacak Ã¶zel
+   bir kod yazilarak overload edilebilir. Kullanilan <varname>$name</varname> parametresi,
+   kullanimi istenen fonksiyon ismini tasir. Fonksiyona geÃ§irilen argÃ¼manlar,
+   <varname>$arguments</varname> parametresi iÃ§inde bir dizi olarak tanimlanacaktir.
+   __call() metodundan dÃ¶nen degerler, Ã§agriyi yapan metoda geri dÃ¶ndÃ¼rÃ¼lecektir.
    </para>
 
    <example>
-    <title>__call ile overload örneği</title>
+    <title>__call ile overload Ã¶rnegi</title>
     <programlisting role="php">
   <![CDATA[
 <?php
@@ -182,7 +182,7 @@ class Caller
 
     private function __call($m, $a)
     {
-        print "$m metodu çağrıldı:\n";
+        print "$m metodu Ã§agrildi:\n";
         var_dump($a);
         return $this->x;
     }
@@ -198,7 +198,7 @@ var_dump($a);
     <screen role="php">
 <![CDATA[
 
-test metodu çağrıldı:
+test metodu Ã§agrildi:
 array(4) {
     [0]=>
     int(1)

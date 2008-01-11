@@ -1,35 +1,36 @@
-<?xml version="1.0" encoding="iso-8859-9"?>
-<!-- $Revision: 1.2 $ -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.3 $ -->
+<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/patterns.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
 <sect1 xml:id="language.oop5.patterns" xmlns="http://docbook.org/ns/docbook">
  <title>Modeller (Patterns)</title>
  <para>
-  Modeller, en iyi uygulamaları ve doğru tasarımları betimleme yöntemidir.
-  Modeller ile genel programlama sorunlarına esnek çözümler aranmaktadır.
+  Modeller, en iyi uygulamalari ve dogru tasarimlari betimleme yÃ¶ntemidir.
+  Modeller ile genel programlama sorunlarina esnek Ã§Ã¶zÃ¼mler aranmaktadir.
  </para>
 
  <sect2 xml:id="language.oop5.patterns.factory">
   <title>Factory</title>
   <para>
-  Factory modeli, çalışma zamanında (runtime) nesnelerin yaratılmasını sağlar.
-  Factory modeli olarak adlandırılmasının sebebi, nesnenin "üretiminden" sorumlu
-  olmasıdır. Parametrelendirilmiş Factory, sınıfın ismini argüman olarak alarak
-  nesneyi oluşturur.
+  Factory modeli, Ã§alisma zamaninda (runtime) nesnelerin yaratilmasini saglar.
+  Factory modeli olarak adlandirilmasinin sebebi, nesnenin "Ã¼retiminden" sorumlu
+  olmasidir. Parametrelendirilmis Factory, sinifin ismini argÃ¼man olarak alarak
+  nesneyi olusturur.
   </para>
   <example>
-   <title>Parametrelendirilmiş Factory Metodu</title>
+   <title>Parametrelendirilmis Factory Metodu</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 class Example
 {
-    // Parametrelendirilmiş factory metodu
+    // Parametrelendirilmis factory metodu
     public static function factory($type)
     {
         if (include_once 'Drivers/' . $type . '.php') {
             $classname = 'Driver_' . $type;
             return new $classname;
         } else {
-            throw new Exception ('Sürücü bulunamadı');
+            throw new Exception ('SÃ¼rÃ¼cÃ¼ bulunamadi');
         }
     }
 }
@@ -37,19 +38,19 @@ class Example
 ]]>
    </programlisting>
    <para>
-   Bir sınıf içerisinde bu metod tanımlanarak, sürücülerin çalışma esnasında
-   yüklenmesi sağlanır. <literal>Example</literal> sınıfı bir veritabanı soyutlama
-   sınıfı (database abstraction class) olsaydı, <literal>MySQL</literal> ve
-   <literal>SQLite</literal> sürücülerinin yüklenmesi işlemi aşağıdaki biçimde
-   yapılabilirdi:
+   Bir sinif iÃ§erisinde bu metod tanimlanarak, sÃ¼rÃ¼cÃ¼lerin Ã§alisma esnasinda
+   yÃ¼klenmesi saglanir. <literal>Example</literal> sinifi bir veritabani soyutlama
+   sinifi (database abstraction class) olsaydi, <literal>MySQL</literal> ve
+   <literal>SQLite</literal> sÃ¼rÃ¼cÃ¼lerinin yÃ¼klenmesi islemi asagidaki biÃ§imde
+   yapilabilirdi:
    </para>
    <programlisting role="php">
 <![CDATA[
 <?php
-// MySQL sürücüsünü yükle
+// MySQL sÃ¼rÃ¼cÃ¼sÃ¼nÃ¼ yÃ¼kle
 $mysql = Example::factory('MySQL');
 
-// SQLite sürücüsünü yükle
+// SQLite sÃ¼rÃ¼cÃ¼sÃ¼nÃ¼ yÃ¼kle
 $sqlite = Example::factory('SQLite');
 ?>
 ]]>
@@ -60,9 +61,9 @@ $sqlite = Example::factory('SQLite');
  <sect2 xml:id="language.oop5.patterns.singleton">
   <title>Singleton</title>
   <para>
-  Singleton modeli, bir sınıfın tek bir örneğine ihtiyaç duyulduğu durumlarda
-  uygulanır. Bu duruma en genel örnek, veritabanı bağlantısıdır. Bu model kullanılarak,
-  tek bir örneğin başka birçok nesne tarafından erişilebilir olması sağlanabilir.
+  Singleton modeli, bir sinifin tek bir Ã¶rnegine ihtiyaÃ§ duyuldugu durumlarda
+  uygulanir. Bu duruma en genel Ã¶rnek, veritabani baglantisidir. Bu model kullanilarak,
+  tek bir Ã¶rnegin baska birÃ§ok nesne tarafindan erisilebilir olmasi saglanabilir.
   </para>
   <example>
    <title>Singleton Fonksiyonu</title>
@@ -71,13 +72,13 @@ $sqlite = Example::factory('SQLite');
 <?php
 class Example
 {
-    // Sınıfın bir örneğini taşır
+    // Sinifin bir Ã¶rnegini tasir
     private static $instance;
     
-    // Private olarak tanımlanmış bir ilklendirici, nesnenin direk olarak yaratılmasını engeller
+    // Private olarak tanimlanmis bir ilklendirici, nesnenin direk olarak yaratilmasini engeller
     private function __construct() 
     {
-        echo 'İlklendirildim';
+        echo 'Ilklendirildim';
     }
 
     // Singleton metodu
@@ -91,16 +92,16 @@ class Example
         return self::$instance;
     }
     
-    // Örnek method
+    // Ã–rnek method
     public function bark()
     {
         echo 'Woof!';
     }
 
-    // Kullanıcıların örneği klonlamasını engelle
+    // Kullanicilarin Ã¶rnegi klonlamasini engelle
     public function __clone()
     {
-        trigger_error('Klon yaratılmasına izin verilmez.', E_USER_ERROR);
+        trigger_error('Klon yaratilmasina izin verilmez.', E_USER_ERROR);
     }
 
 }
@@ -109,20 +110,20 @@ class Example
 ]]>
    </programlisting>
    <para>
-   Aşağıdaki örnek <literal>Example</literal> sınıfı için tek bir örnek
-   alınmasını sağlar.
+   Asagidaki Ã¶rnek <literal>Example</literal> sinifi iÃ§in tek bir Ã¶rnek
+   alinmasini saglar.
    </para>
    <programlisting role="php">
 <![CDATA[
 <?php
-// Bu işlem başarısız olur çünkü ilklendirici private olarak tanımlandı
+// Bu islem basarisiz olur Ã§Ã¼nkÃ¼ ilklendirici private olarak tanimlandi
 $test = new Example;
 
-// Bu işlem her zaman sınıfa ait tek bir örnek verir
+// Bu islem her zaman sinifa ait tek bir Ã¶rnek verir
 $test = Example::singleton();
 $test->bark();
 
-// Bu bir E_USER_ERROR mesajı oluşturur.
+// Bu bir E_USER_ERROR mesaji olusturur.
 $test_clone = clone($test);
 
 ?>
