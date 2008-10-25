@@ -1,19 +1,47 @@
-TÜM YAZILARINIZI UTF-8 TEXT OLARAK KAYDEDİNİZ.
-WINDOWS`TA BULUNAN NOT DEFTERİ DEFTERI UTF-8 DESTEKLEMEZ!!!
-UTF-8 DESTEGI OLAN ORNEK BIR EDITOR: http://www.pspad.com/
+Çevirilerinizin karakter kodlaması UTF-8 olmak zorunda değildir.
+ISO-8859-9 da kullanabilirsiniz. Yalnız XML başlığında hangi
+dosya içeriğini hangi kodlamayla yazdığınızı belirtmeniz önemlidir.
+Aksi takdirde çıktı hatalı görünür. XML dosyanın kodlaması ile
+dönüşüm ürününün kodlaması aynı olmak zorunda değildir.
+<?xml version="1.0" encoding="utf-8"?>
+veya
+<?xml version="1.0" encoding="iso-8859-9"?>
+Windows 1254 ile ISO-8859-9 hemen hemen aynıdır. Bu bakımdan
+Windows’da yaptığınız çeviri için bu başlık satırını kullanabilirsiniz.
 ---
-UYARI: EDİTÖRÜNÜZDE UTF-8 DESTEĞİ YOKSA YAZDIKLARINIZ BOŞA GİDEBİLİR VE
-İŞE YARAMAYACAK HALDE KAYDETMENİZE SEBEP OLABİLİR.
+Asıl dikkat etmeniz gereken satırsonu karakteridir. Satırsonu karakterleri
+Unix türünde olmalıdır.
+---
+XML başlığının altında bulunan CVS bilgi satırına dokunmuyoruz. O satır
+yaptığınız çevirinin sürümünü içerecek. O satırın altına şöyle bir
+satır ekleyin:
 
-ÖRNEK OLARAK VERİLEN turkce_ornek_ceviri.xml DOSYASINA BAKINIZ, GEREKİRSE
-BU DOSYAYA DENEME AMAÇLI EKLEME YAPIP KAYDEDİNiZ. DOSYAYI KAPATIP TEKRAR AÇINIZ
-VE KARAKTERLERİN DÜZGÜN GÖZÜKTÜĞÜNE EMİN OLUNUZ.
----
-Dosyalar içinde <para>test english</para> şeklinde tag adı verilen kısımlar vardır. Bu tagler
-aynen bırakılmalıdır. Yani çevrilmiş haliyle <para>deneme İngilizce</para> haline gelecektir.
+<!-- EN-Revision: 1.56 Maintainer: flarecaster Status: working -->
+
+1.56 özgün belgenin sürüm numarası, flarecaster çevirmenin CVS
+kullanıcı adı, sonuncusu ise dosyanın durumunu gösterecek.
+Çeviri tamamlandığında oraya ready yazacaksınız.
+
+Böylece özgün belgenin sürüm numarası değiştiğinde cvs diff
+ile iki sürüm arasındaki farkı kolayca görebilecek, tüm dosyayı
+yeni baştan elden geçirmekten kurtulacağız.
+Yani çeviriyi güncellemek kolaylaşacak. Tabii, çeviriyi yapan
+güncelleyecek ;-)
+
+Güncelleme sırasında 1.56 yerine özgün belgenin yeni sürüm numarasını
+yazmayı unutmuyoruz.
+
+Bu satırları kullanan bir betik de yazmışlar. Bu betik sayesinde hangi
+dosyaların eskimiş olduğunu öğrenebiliyoruz. Çalışma dizininizde
+scripts/revcheck.php tr > ../revisions.html
+komutunu verirseniz, revisions.html, dosyaların durumunu gösteriyor.
+--
+Dosyalar içinde <para>test english</para> şeklinde etiketler vardır. 
+Bu etiketler HTML etiketleri gibidir, aynen bırakılmalıdır. 
+Yani metin, çevrilmiş haliyle <para>deneme İngilizce</para> haline gelecektir.
 ---
 Ayrıca özel kullanımı olan değişkenler vardır. Bu değişkenler & ile başlar ve
-; ile biter. Bu değişlenler de çevrilmemelidir.
+; ile biter. Bu değişkenler de çevrilmemelidir.
 
 Örnek:
 Array &Functions;
@@ -22,57 +50,105 @@ Array &Functions;
 Dizi &Functions;
 
 Bu değişkenler tanımlandığı dosyada çevrildiğinden, ayrıca çevrilmez.
----
-DOSYA BAŞINDAKİ SATIRIN DÜZELTİLMESİ
-Her dosyanın başında karakter kodlamasını belirten bir satır vardır. Bu satırın
-UTF-8 yapılması gerekir.
-<?xml version="1.0" encoding="utf-8"?>
+Bazı başlangıç etiketlerinde bulunan öznitelikleri de çevirmeyeceksiniz.
+Linux kullananların çeviriyi kate üzerinde yapmasını öneririm. XML
+dosyaları renklendirdiğinden çeviri daha kolay olur. Ayrıca XML dosyanın
+geçerliliğini de kate’e sınatabilirsiniz. Bazı etiketleri yanlışlıkla
+silerseniz, depoya hatalı dosya teslim etmekten kurtulabilirsiniz.
 
-Belirtilen encoding zaten UTF-8 ise değişiklik yapmaya gerek yoktur.
+Ama siz siz olun buna da fazla güvenmeyin ve PhD kurun. PhD’yi pear ile
+kurmaya çalışmayın; hata veriyor. phd yerine çalışma dizininizde
+şu komutları kullanın:
+
+$ php configure.php --with-lang=tr
+
+komutu ile bir hata yapıp yapmadığınıza baktıktan sonra sorun yoksa
+şu satırları bir betiğe yazıp betiği çalıştırın.
+
+export TZ='Europe/Istanbul'
+php ../PhD/build.php -f xhtml -t bightml -d .manual.xml
+
+Betik bightml.html dosyasını üretecek. Bu seçenekleri vermezseniz
+build.php üretebildiği bütün dosya türlerini üretiyor ve bu arada boşa zaman
+ve kaynak harcanmış oluyor.
 ---
 Aşağıda bilinen İngilizce terimlerin Türkçe karşılıkları yazılmıştır.
-AMACIMIZ AYNI TERIMLERI KULLANMAKTIR. TERIMDEN EMIN DEGILSENIZ BURAYA BAKIN.
+AMACIMIZ AYNI TERİMLERİ KULLANMAKTIR. TERİMDEN EMİN DEĞİLSENIZ BURAYA BAKIN.
 
-BURADA OLMAYAN TERIMLERI EN ÜSTE EKLEYINIZ.
-BURADA YAZILAN HERHANGI BIR BILGI YANLIS ISE LUTFEN BILDIRIN.
+Yeni dosyaları çevirmeye başlamadan önce mevcut dosyaları baştan çeviricesine
+elden geçirelim. Böylece hem terim uyumsuzluklarından kurtulur hem de
+sürüm takibini şimdiden hayata geçirmiş oluruz. Dosyaları üstlenenler
+çeviriyi elden geçirmeye başlamadan önce dosya başlık satırlarını
+depoda güncellesinler, böylece bir dosya üzerinde iki kişinin çalışmasını
+engellemiş oluruz. Elden geçirilen dosyalara
+
+<!-- Emeği geçenler: Cumhur Onat, Serdar Soydemir, Ekin Koç, Buğra Gökalp Okçu -->
+
+biçeminde üçüncü bir açıklama satırı daha eklerseniz, bizden öncekileri 
+onurlandırmış oluruz. Bu isimleri ben language-defs.ent dosyası için 
+listede bulduğum commit iletilerinden topladım. Siz de aynısını yapabilirsiniz.
+Listeye kendi adınızı da yazmayı unutmayın.
+
+Bu arada her cvs commit öncesi bir cvs update yapmayı kesinlikle 
+ihmal etmiyoruz. Ayrıca commit işleminde neyi niçin yaptığınızı
+kısaca belirtin; "New Turkish translations" veya "update for sync
+with English docs." gibi. Bunlar olayı ne kadar ciddiye aldığınızı
+gösterir.
+
+BURADA OLMAYAN TERİMLERİ EN ÜSTE EKLEYİNİZ.
+Mevcut terimleri değiştirmeyin. Bu terimler belgeler.org’da ve Apache
+belgelerinde kullanılan terimlerdir. Önerinizi tartışmak isterseniz, 
+listeye yazın tartışalım.
 
 ================================================
 `               &apos;                  BU KODLANMIS HALIDIR, ` YERINE BUNU KULLANINIZ.
-Abstract        Özet
+Abstract        Metin için "Özet" ifadeler için "soyut", bu bir işlev ismi ise işlev mutlak değer üretir.
 Array		Dizi
-Assocıative Array       İlintili Dizi
-Backslash       Ters taksim
-Binary          İkili sistem
-Boolean         boole
-CGI             Genel Geçit Arayüzü - GGA
-Class           Nesne - daha iyi bir terim varsa paylasin.
+Associative Array   İlintili Dizi
+Backslash       Ters bölü
+Binary          Programsa kastedilen "çalıştırılabilir", veri türü ise çevrilmez, 
+		veri türünü niteliyorsa "ikil", bir işleci niteliyorsa "iki terimli".
+Boolean         Kendisi veri türü ise çevrilmez. Veri türünü niteliyorsa "mantıksal"
+Callback	Geriçağırım
+CGI             Açılımı yazıyor olsa bile kısaltmayı kullanın ama Türkçe okunuşuna
+		göre ek verin (CGI’nin açılımı, gibi). Bunu tüm kısaltmalara
+		uygulayın. Bu çevirileri İng. bilmeyenler okuyacak.
+Class           Sınıf
 Compile         Derleme
-Constants       Sabitler (Değişmezler değil)
-Control Structure       Kontrol Yapisi
-Default         Temel değer
+Constants       Sabitler (Değişmezler değil!)
+Control Structure    Denetim Yapısı
+Default         Öntanımlı
+Detail		Ayrıntı (lütfen "detay" diye çevirmeyin)
 double quote    çift tırnak "
-Exception       Istisna
-Escape		Çıkış
-Escape character	Çıkış karakteri
+Exception       İstisna
+Escape		Escape tuşu için çevrilmez.
+Escape character	Önceleme karakteri
 Executable      Çalıştırılabilir
 Form            Form
+Function	İşlev
+Idle		Boşakoşum
 Interpreter     Yorumlayıcı
 integer         tamsayı
-mixed           karma
-NULL            YOKLUK  (yanında NULL diye de belirtin)
+Method		Yöntem
+mixed           karışık
+NULL            Bir sabit ise çevrilmez. Cümle içinde "boş değer"..
 Object          Nesne
-Operator        Islem
-Pointer         İmleç
-Resource        Kaynak
-Root user       Kök kullanici
-Runtime         Çalışma zamanlı
+Operand		Terim
+Operator        İşleç
+Parameter       Değiştirge
+Pointer         Fare oku sözkonusu ise "imleç", C tarzı pointer için "gösterici.
+Resource        Özkaynak
+root user       root kullanıcı (Linux’ta root en yetkili kullanıcının ismidir).
+Runtime         Çalışma anı
 Server          Sunucu
 single quote    tek tırnak '
-Slash           Taksim
+Slash           Bölü imi
 String  	Dizgi
-Script          Kod veya Program veya Uygulama veya Yazilim
-Scriping        Kodlama
-Types           Türler (Degiskenler için)
-Variables       Degiskenler
-Variable Type   Degisken Türü
+Script          Betik
+Scripting       Kodlama, kod yazma
+Tertiary	Üç terimli
+Type            Tür veya veri türü (veri türü anlamında kullanılmışsa "veri türü"
+		diye açık açık yazın.
+Unary		Tek terimli
+Variable        Değişken
 ================================================
