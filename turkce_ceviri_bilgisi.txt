@@ -1,154 +1,218 @@
-Çevirilerinizin karakter kodlaması UTF-8 olmak zorunda değildir.
-ISO-8859-9 da kullanabilirsiniz. Yalnız XML başlığında hangi
-dosya içeriğini hangi kodlamayla yazdığınızı belirtmeniz önemlidir.
-Aksi takdirde çıktı hatalı görünür. XML dosyanın kodlaması ile
-dönüşüm ürününün kodlaması aynı olmak zorunda değildir.
+$Id$
+
+PHP Belgelerini NASIL çevrilir?
+
+Herşeyden önce bir CVS çalışma dizinine ihtiyacınız var.
+Bir CVS hesabınız varsa siz zaten ne yapılacağını biliyorsunuzdur.
+Aşağıdaki CVS ile çalışma bölümü şöyle bir okuyup geçin.
+"Bir CVS hesabınız yoksa" dosya sisteminizin uygun bir yerinde
+şu komutu verin:
+
+cvs -d :pserver:cvsread@cvs.php.net:/repository checkout phpdoc-tr
+
+Parola sorarsa "phpfi"yi deneyin. phpdoc-tr çalışacağımız CVS modülüdür.
+Bu komut phpdoc-tr diye bir dizin açacak ve altına CVS deposundan bu modüle
+ait dosyaları indirecektir. Bundan sonra phpdoc-tr dizininden bahsederken
+"çalışma dizini" diyeceğiz. Bunu yaptıktan sonra yeni bir çeviriye başlamaya
+karar vermeden önce çalışma dizininizde daima
+
+cvs update -dP
+
+komutunu vermelisiniz. Bu komut çalışma dizininizi son haline getirir.
+Onun için bir çeviri yapmaktaysanız bu komutu vermeyin. Yoksa çevirdikleriniz
+heba olabilir. tr/ dizininde sadece çevrilmiş ve çevirisi sürmekte olan
+dosyalar vardır. Yani çevireceğiniz dosya tr/ altında varsa başka bir dosya
+seçmeniz gerekecek. Çevireceğiniz dosyayı en/ dizini altından seçip tr/
+altındaki yerine kopyalayacaksınız. Örneğin,
+'phpdoc-tr/en/reference/apache/book.xml' dosyasını gözünüze kestirdiniz
+diyelim. Yapacağınız, çalışma dizininizin içinde
+
+cp en/reference/apache/book.xml tr/reference/apache/book.xml
+
+komutunu vermeye eşdeğer bir işlem olacak.
+
+Ama hemen çeviriye girişmeyeceksiniz. Bazı önişlemler var.
+** Bundan sonrası CVS hesabı bulunanları da ilgilendiriyor. **
+
+Dosyanın ilk satırı genelde şuna benzer bir girdi içerir:
 <?xml version="1.0" encoding="utf-8"?>
-veya
-<?xml version="1.0" encoding="iso-8859-9"?>
-Windows 1254 ile ISO-8859-9 hemen hemen aynıdır. Bu bakımdan
-Windows’da yaptığınız çeviri için bu başlık satırını kullanabilirsiniz.
----
-Asıl dikkat etmeniz gereken satırsonu karakteridir. Satırsonu karakterleri
+Bu satıra "XML başlığı" diyelim.
+Burada "utf-8", çeviri yaparken kullanacağınız karakter kodlamasıdır.
+Linux kullanıyorsanız, öntanımlı ayarları değiştirmediyseniz karakter
+kodlamanız UTF-8’dir. Windows kullanıyorsanız, muhtemelen CP1254’tür.
+Karakter kodlaması olarak UTF-8 kullanmayanlar buraya "iso-8859-9"
+yazacaklar. Ancak, dosyayı çevirirken UTF-8 kullanmamış olsanız bile
+dosyanın karakter kodlamasını 'recode', 'iconv' gibi bir araçla UTF-8’e
+dönüştürüp oraya "utf-8" yazmanızı öneririm. PHP ekibi bir gün XML
+dosyalarda UTF-8 kodlanmamış olanlar dönüştürülmeyecek derlerse ve
+o güne kadar biz 7000 dosya çevirmişsek, vay halimize... ISO-8859-9
+kullanımı giderek azalıyor. Herkes dünyayla bütünleşmek adına UTF-8
+kullanmaya çalışıyor. Bu, bir gün olacak, onun için biz önlemimizi
+şimdiden almalıyız.
+
+Unix ve türevleri dışında bir işletim sistemi kullananların asıl dikkat
+etmesi gereken satırsonu karakteridir. Satırsonu karakterleri
 Unix türünde olmalıdır.
----
-XML başlığının altında bulunan CVS bilgi satırına dokunmuyoruz. O satır
-yaptığınız çevirinin sürümünü içerecek. O satırın altına şöyle bir
-satır ekleyin:
 
-<!-- EN-Revision: 1.56 Maintainer: flarecaster Status: working -->
+XML başlığının altında bulunan CVS sürüm satırına dokunmuyoruz. O satırı
+CVS günceller. Bundan sonra yaptığınız çevirinin sürümünü içerecek. O satırın
+altına şöyle bir satır ekleyin:
 
-1.56 özgün belgenin sürüm numarası, flarecaster çevirmenin CVS
+<!-- EN-Revision: 1.56 Maintainer: flarecaster Status: ready -->
+
+Bu satıra "güncelleme satırı" diyelim.
+'1.56' özgün belgenin sürüm numarası, 'flarecaster' çevirmenin CVS
 kullanıcı adı, sonuncusu ise dosyanın durumunu gösterecek.
-Çeviri tamamlandığında oraya ready yazacaksınız.
+Çeviriye başlarken oraya "partial", tamamlandığında "ready" yazacaksınız.
 
-Böylece özgün belgenin sürüm numarası değiştiğinde cvs diff
-ile iki sürüm arasındaki farkı kolayca görebilecek, tüm dosyayı
-yeni baştan elden geçirmekten kurtulacağız.
-Yani çeviriyi güncellemek kolaylaşacak. Tabii, çeviriyi yapan
+Böylece özgün belgenin sürüm numarası değiştiğinde en/ dizini altındaki
+dosya için
+
+cvs diff -u -r<EN-revision> <en/dizin/dosya>
+
+komutuyla eski ve yeni sürümler arasındaki farkı kolayca görebilecek,
+tüm dosyayı yeni baştan çevirircesine elden geçirmekten kurtulacağız.
+Yani, çeviriyi güncellemek kolaylaşacak. Tabii, çeviriyi yapan
 güncelleyecek ;-)
 
 Güncelleme sırasında 1.56 yerine özgün belgenin yeni sürüm numarasını
 yazmayı unutmuyoruz.
 
-Bu satırları kullanan bir betik de yazmışlar. Bu betik sayesinde hangi
-dosyaların eskimiş olduğunu öğrenebiliyoruz. Çalışma dizininizde
-scripts/revcheck.php tr > ../revisions.html
-komutunu verirseniz, revisions.html, dosyaların durumunu gösteriyor.
---
-Dosyalar içinde <para>test english</para> şeklinde etiketler vardır. 
-Bu etiketler HTML etiketleri gibidir, aynen bırakılmalıdır. 
-Yani metin, çevrilmiş haliyle <para>deneme İngilizce</para> haline gelecektir.
----
-Ayrıca özel kullanımı olan değişkenler vardır. Bu değişkenler & ile başlar ve
-; ile biter. Bu değişkenler de çevrilmemelidir.
+Bu iki satır sayesinde çeviri istatistikleri oluşturuluyor:
+http://doc.php.net/php/tr/revcheck.php?p=filesummary
 
-Örnek:
-Array &Functions;
+Güncelleme satırının altında bazı dosyalarda
 
-Çevrilmiş hali:
-Dizi &Functions;
+<!-- CREDITS: Cumhur Onat, Serdar Soydemir, Ekin Koç, Buğra Gökalp Okçu -->
 
-Bu değişkenler tanımlandığı dosyada çevrildiğinden, ayrıca çevrilmez.
-Bazı başlangıç etiketlerinde bulunan öznitelikleri de çevirmeyeceksiniz.
+gibi satırlar göreceksiniz. Bu kişiler o belgenin çevirisiyle evvelce
+ilgilenmiş kişilerdir. Onları böyle bir satırla hatırlamış oluyoruz.
+Eğer siz de bir sahipsiz kalmış bir belgeyi günceleyecek olursanız,
+dosyadaki son çevirmen satırında yazan ismi böyle bir satır oluşturup oraya
+yazacaksınız. Kendi isminizi ise bu satırın altına
+
+<!-- Last translator: <adınız ve soyadınız> -->
+
+biçeminde ekleyeceksiniz. Bu işlemler bitince çeviriye başlamadan dosyayı
+CVS hesabınız varsa depoya, yoksa ekip liderine göndereceksiniz ki o sizin
+yerinize dosyayı depoya göndersin. Böylece her çeviri başlangıcı öncesi
+verdiğimiz update komutu ile güncellenen çalışma dizinine bakarak bu dosyayı
+bir başkası çevirmeye yeltenmeyecek.
+
+Sıra geldi çeviride dikkat edilecek hususlara...
+Dosyalar '<para>This extension requires PHP 5.</para>' şeklinde HTML’ye benzer
+etiketler arasında bir takım metinler içerir. Bu etiketler XML dosyanın yapı
+taşları olduğundan onları çevirmeyeceğiz. Bazı etiketlerin HTML
+etiketlerindeki gibi öznitelikleri vardır, onlara da dokunmuyoruz. Yani,
+yukarıdaki metni <para>Bu eklenti PHP 5 gerektirir.</para> şeklinde
+çevireceğiz.
+
+Ayrıca dosyalarda bazen & ile başlayıp ; ile biten bazı sözcüklere
+rastlayacaksınız. Onları cümlenin bir parçası haline getireceksiniz.
+Örneğin,
+<para>You must enable the <literal>foo</literal> setting in &php.ini;</para>
+yerine
+<para><literal>foo</literal> ayarını &php.ini; içinde yapmış olmalısınız.</para>
+yazacaksınız. Ancak bazı durumlarda bunu yapamayabiliriz. Değişken içindeki
+metin parçası cümle içinde kulanıldığında bir yerde doğruyken başka bir
+yerde imla hatasına yol açabilir. Böyle bir durumdan şüphe duyarsanız mevcut
+HTML belgeye bakıp ne yapacağınıza kendiniz karar vermelisiniz. XML belgeyle
+ilişkili HTML belgeye, genellikle, XML belgenin kök etiketindeki xml:id
+değerinin sonuna .html veya .php getirerek ulaşabilirsiniz.
+
+Tırnak karakteri yerine &apos; kullanılmışsa siz de onu kullanın. Sizin cümle
+içinde tek tırnak imi kullanmanız gerekirse yine &apos; kullanın. Böylece
+`'‘’ gibi farklı tırnak imleri yerine tek bir tırnak imi kullanmış oluruz.
+Ayrıca XML belgelerin HTML veya PHP’ye dönüştürülmesi sırasında olası bir
+tırnak ayırma hatasını da önlemiş oluruz. Bu durum belgelerin kılavuz
+sayfaları üretilirken bilhassa önem kazanmaktadır. Kılavuz (man) sayfalarında
+' iminden başkası (&apos; olur, kendileri) görüntülenmez. Yani &apos; yerine
+başka bir tırnak imi kullanmışsanız kılavuz sayfasında o tırnağı
+bulamayabilirsiniz.
+
+Çeviri bittikten sonra güncelleme satırındaki 'partial' dizgesini
+'ready' yapmayı unutmayın.
+
 Linux kullananların çeviriyi kate üzerinde yapmasını öneririm. XML
 dosyaları renklendirdiğinden çeviri daha kolay olur. Ayrıca XML dosyanın
 geçerliliğini de kate’e sınatabilirsiniz. Bazı etiketleri yanlışlıkla
 silerseniz, depoya hatalı dosya teslim etmekten kurtulabilirsiniz.
 
-Ama siz siz olun buna da fazla güvenmeyin ve PhD kurun. PhD’yi pear ile
-kurmaya çalışmayın; hata veriyor. phd yerine çalışma dizininizde
-şu komutları kullanın:
+Ama siz siz olun buna da fazla güvenmeyin. Çünkü kate DTD ile ilgili hatalara
+siz zorlamadıkça bakmaz. Son olarak dosyayı teslim etmeden önce çalışma
+dizininizde şu komutunu kullanın:
 
 $ php configure.php --with-lang=tr
 
-komutu ile bir hata yapıp yapmadığınıza baktıktan sonra sorun yoksa
-şu satırları bir betiğe yazıp betiği çalıştırın.
+Belgenizde kate’in saptayamadığı bir hata varsa bu komut size bilgi verir.
+Komut hata vermemişse ve bir CVS hesabınız varsa dosyayı depoya
+gönderebilirsiniz, yoksa dosyayı ekip liderine göndermelisiniz. Verdiği
+hatayı nasıl gidereceğinizi bilmiyorsanız listedekilere sorunuz. (Burada
+artık esr’nin ünlü belgesinden söz etmeyelim.)
 
-export TZ='Europe/Istanbul'
-php ../PhD/build.php -f xhtml -t bightml -d .manual.xml
-
-Betik bightml.html dosyasını üretecek. Bu seçenekleri vermezseniz
-build.php üretebildiği bütün dosya türlerini üretiyor ve bu arada boşa zaman
-ve kaynak harcanmış oluyor.
----
+*********************
 Aşağıda bilinen İngilizce terimlerin Türkçe karşılıkları yazılmıştır.
 AMACIMIZ AYNI TERİMLERİ KULLANMAKTIR. TERİMDEN EMİN DEĞİLSENIZ BURAYA BAKIN.
-
-Yeni dosyaları çevirmeye başlamadan önce mevcut dosyaları baştan çeviricesine
-elden geçirelim. Böylece hem terim uyumsuzluklarından kurtulur hem de
-sürüm takibini şimdiden hayata geçirmiş oluruz. Dosyaları üstlenenler
-çeviriyi elden geçirmeye başlamadan önce dosya başlık satırlarını
-depoda güncellesinler, böylece bir dosya üzerinde iki kişinin çalışmasını
-engellemiş oluruz. Elden geçirilen dosyalara
-
-<!-- Emeği geçenler: Cumhur Onat, Serdar Soydemir, Ekin Koç, Buğra Gökalp Okçu -->
-
-biçeminde üçüncü bir açıklama satırı daha eklerseniz, bizden öncekileri 
-onurlandırmış oluruz. Bu isimleri ben language-defs.ent dosyası için 
-listede bulduğum commit iletilerinden topladım. Siz de aynısını yapabilirsiniz.
-Listeye kendi adınızı da yazmayı unutmayın.
-
-Bu arada her cvs commit öncesi bir cvs update yapmayı kesinlikle 
-ihmal etmiyoruz. Ayrıca commit işleminde neyi niçin yaptığınızı
-kısaca belirtin; "New Turkish translations" veya "update for sync
-with English docs." gibi. Bunlar olayı ne kadar ciddiye aldığınızı
-gösterir.
-
 BURADA OLMAYAN TERİMLERİ EN ÜSTE EKLEYİNİZ.
 Mevcut terimleri değiştirmeyin. Bu terimler belgeler.org’da ve Apache
-belgelerinde kullanılan terimlerdir. Önerinizi tartışmak isterseniz, 
+belgelerinde kullanılan terimlerdir. Önerinizi tartışmak isterseniz,
 listeye yazın tartışalım.
 
+Liste demişken,
+http://lists.sourceforge.net/mailman/listinfo/belgeler-phpdoc
+adresinden iletişim listemize üye olmayı ihmal etmeyin. Aksi
+takdirde kim kime dum duma, bir yere varamayız.
+
 ================================================
-`               &apos;                  BU KODLANMIS HALIDIR, ` YERINE BUNU KULLANINIZ.
-Abstract        Metin için "Özet" ifadeler için "soyut", bu bir işlev ismi ise işlev mutlak değer üretir.
-Array		Dizi
+Abstract        Metin için "Özet" ifadeler için "soyut" veya "mutlak"
+Array		        Dizi
 Associative Array   İlintili Dizi
+Attribute       Öznitelik
 Backslash       Ters bölü
-Binary          Programsa kastedilen "çalıştırılabilir", veri türü ise çevrilmez, 
-		veri türünü niteliyorsa "ikil", bir işleci niteliyorsa "iki terimli".
-Boolean         Kendisi veri türü ise çevrilmez. Veri türünü niteliyorsa "mantıksal"
-Callback	Geriçağırım
-CGI             Açılımı yazıyor olsa bile kısaltmayı kullanın ama Türkçe okunuşuna
-		göre ek verin (CGI’nin açılımı, gibi). Bunu tüm kısaltmalara
-		uygulayın. Bu çevirileri İng. bilmeyenler okuyacak.
+Binary          Programsa kastedilen "çalıştırılabilir", kendisi bir veri
+                türü ise çevrilmez, veri türünü niteliyorsa "ikil", bir
+                işleci niteliyorsa "iki terimli".
+Boolean         Kendisi veri türü ise çevrilmez. Türü niteliyorsa "mantıksal"
+Callback	      Geriçağırım
 Class           Sınıf
 Compile         Derleme
 Constants       Sabitler (Değişmezler değil!)
 Control Structure    Denetim Yapısı
 Default         Öntanımlı
-Detail		Ayrıntı (lütfen "detay" diye çevirmeyin)
+Detail		      Ayrıntı (lütfen "detay" diye çevirmeyin)
 double quote    çift tırnak "
 Exception       İstisna
-Escape		Escape tuşu için çevrilmez.
+Escape		      Escape tuşu için çevrilmez.
 Escape character	Önceleme karakteri
 Executable      Çalıştırılabilir
 Form            Form
-Function	İşlev
-Idle		Boşakoşum
+Function	      İşlev
+Idle		        Boşakoşum
 Interpreter     Yorumlayıcı
 integer         tamsayı
-Method		Yöntem
+Method		      Yöntem
 mixed           karışık
+Multithread     Çok evreli
+Multibyte       Çok baytlı
 NULL            Bir sabit ise çevrilmez. Cümle içinde "boş değer"..
 Object          Nesne
-Operand		Terim
+Operand		      Terim
 Operator        İşleç
 Parameter       Değiştirge
-Pointer         Fare oku sözkonusu ise "imleç", C tarzı pointer için "gösterici.
+Pointer         Fare oku sözkonusu ise "imleç", C tarzı ise "gösterici"
 Resource        Özkaynak
-root user       root kullanıcı (Linux’ta root en yetkili kullanıcının ismidir).
+root user       root kullanıcı (Linux’ta en yetkili kullanıcı root’dur).
 Runtime         Çalışma anı
 Server          Sunucu
 single quote    tek tırnak '
 Slash           Bölü imi
-String  	Dizgi
+String  	      Dizge
 Script          Betik
 Scripting       Kodlama, kod yazma
-Tertiary	Üç terimli
-Type            Tür veya veri türü (veri türü anlamında kullanılmışsa "veri türü"
-		diye açık açık yazın.
-Unary		Tek terimli
+Tertiary	      Üç terimli
+Thread          Evre
+Tag             İmlenim dilleri (*ML) için "etiket"
+Type            "Tür" veya "veri türü"
+Unary		        Tek terimli
 Variable        Değişken
 ================================================
