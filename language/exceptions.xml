@@ -1,127 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/exceptions.xml,v 1.3 2008-01-11 08:02:21 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.6 Maintainer: tpug Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Alper Ersoy, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <chapter xml:id="language.exceptions" xmlns="http://docbook.org/ns/docbook">
-  <title>ıstisnalar (Exceptions)</title>
+  <title>İstisnalar</title>
 
   <para>
-  PHP 5 diğer programlama dillerindekine benzer bir istisna modeline sahiptir.
-  Bir istisna <literal>oluşabilir (İngilizce eşdeğeri:thrown)</literal>, ve yakalanabilir
-  ("<literal>catched</literal>"). Potansiyel istisnaların yakalanabilmesi için,
-  kod bir <literal>try</literal> bloğu ile çevrilebilir.
-  Her bir <literal>try</literal> bloğu ile ilişkili en az bir <literal>catch</literal>
-  bloğu bulunmalıdır. Farklı sınıfa ait istisnaları yakalamak için birden fazla
-  <literal>catch</literal> bloğu kullanılabilir. En son sırada tanımlanmış catch
-  bloğundan sonra normal çalışma (<literal>try</literal> bloğu içerisinde istisna
-  oluşmadığı ya da oluşan istisna ile uyuşan bir <literal>catch</literal> bulunmadığı
-  durum) devam eder. İstisnalar bir <literal>catch</literal> bloğu içerisinde 
-  <literal>oluşabilir (thrown)</literal> (ya da tekrar oluşabilir - rethrown).
+    PHP 5 diğer programlama dillerindekine benzer bir istisna modeline
+    sahiptir. Bir istisna oluşturulabilir (<code>throw</code>) ve
+    yakalanabilir (<code>catch</code>). Olası istisnaların yakalanabilmesi
+    için, kod bir <code>try</code> bloğu içine alınabilir. Her
+    <code>try</code> bloğuna karşılık en az bir tane <code>catch</code> bloğu
+    olması gerekir. Farklı sınıflara ait istisnaları yakalamak için birden
+    fazla <code>catch</code> bloğu kullanılabilir. Normal çalışma sıradaki
+    son <code>catch</code> bloğundan sonra devam eder. Buradaki normal
+    çalışma, <code>try</code> bloğu içinde hiçbir istisna oluşmadığı veya bir
+    <code>catch</code> bloğu ile eşleşen bir oluşmuş istisnalar sınıfının
+    mevcut olmadığı duruma karşılıktır. İstisnalar bir <code>catch</code>
+    bloğu içerisinde oluşmuş olabileceği gibi yeniden de oluşabilir.
   </para>
   <para>
-  Bir istisna oluştuğunda, takip eden kodlar çalıştırılmaz ve PHP oluşan istisna ile
-  uyuşan ilk <literal>catch</literal> bloğunu bulmaya çalışır. Uyuşan bir tanımlama yok
-  ise, PHP bir Ölümcül Hata (Fatal Error) oluşturur ve "<literal>Uncaught Exception ...</literal>"
-  mesajını verir. <function>set_exception_handler</function> fonksiyonu ile bir işleyici (handler)
-  tanımlanarak bu hatanın oluşması önlenebilir.
+    Bir istisna oluştuğunda, istisnanın oluştuğu yerden sonraki kodlar
+    çalıştırılmaz ve PHP oluşan istisna ile uyuşan ilk <code>catch</code>
+    bloğunu bulmaya çalışır. Bir istisnanın yakalanmaması durumunda,
+    <function>set_exception_handler</function> işlevi ile evvelce bir istisna
+    eylemcisi tanımlanmamışsa, PHP bir ölümcül hata durumu oluşturur ve bir
+    "<literal>Uncaught Exception ...</literal>" ("Yakalanmamış istisna ...")
+    iletisi çıktılar.
   </para>
    <example>
-    <title>Bir İstisna Oluşturmak</title>
+    <title>- Bir İstisna Oluşturmak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-try {
-    $error = 'Her zaman bu hatayı oluştur';
-    throw new Exception($error);
-
-    // İstisnadan sonra gelen kod çalıştırılmaz.
-    echo 'Asla çalıştırılmaz';
-
-} catch (Exception $e) {
-    echo 'Yakalanan istisna: ',  $e->getMessage(), "\n";
+function inverse($x) {
+    if (!$x) {
+        throw new Exception('Sıfıra bölme.');
+    }
+    else return 1/$x;
 }
 
-// Çalışmaya devam eder
+try {
+    echo inverse(5) . "\n";
+    echo inverse(0) . "\n";
+} catch (Exception $e) {
+    echo 'Yakalanan olağandışılık: ',  $e->getMessage(), "\n";
+}
+
+// Çalışma sürer
 echo 'Merhaba Dünya';
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+0.2
+Yakalanan olağandışılık: Sıfıra bölme.
+Merhaba Dünya
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- İç içe istisnalar</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            try {
+                throw new MyException('foo!');
+            } catch (MyException $e) {
+                /* yeniden yakala */
+                throw $e;
+            }
+        } catch (Exception $e) {
+            var_dump($e->getMessage());
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(4) "foo!"
+]]>
+    </screen>
    </example>
 
   <sect1 xml:id="language.exceptions.extending">
-   <title>ıstisnaları Genişletmek</title>
+   <title>İstisnaları Genişletmek</title>
    <para>
-   Yerleşik İstisna sınıfı, kullanıcı tanımlı bir istisna sınıfı tanımlanarak genişletilebilir.
-   Aşağıdaki üyeler ve özellikler, yerleşik istisna sınıfından türetilen alt sınıf içerisinde
-   nelerin erişilebilir olduğunu göstermektedir.
+    Yerleşik <classname>Exception</classname> sınıfını genişleten kullanıcı
+    tanımlı bir istisna sınıfı tanımlanabilir. Aşağıdaki üyeler ve
+    özellikler, yerleşik <classname>Exception</classname> sınıfından
+    türetilen alt sınıf içerisinde nelerin erişilebilir olduğunu
+    göstermektedir.
    </para>
    <example>
-    <title>Yerleşik İstisna sınıfı</title>
+    <title>- Yerleşik <classname>Exception</classname> sınıfı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class Exception
 {
-    protected $message = 'Bilinmeyen istisna';  // istisna mesajı
-    protected $code = 0;                        // kullanıcı tanımlı istisna kodu
-    protected $file;                            // istisnanın kaynak dosyası
-    protected $line;                            // istisnanın kaynak dosyasındaki satırı
+    protected $message = 'Bilinmeyen istisna';  // istisna iletisi
+    protected $code = 0;                     // kullanıcı tanımlı istisna kodu
+    protected $file;                         // istisnanın kaynak dosyası
+    protected $line;                  // istisnanın kaynak dosyasındaki satırı
 
     function __construct($message = null, $code = 0);
 
-    final function getMessage();                // istisnanın mesajı
+    final function getMessage();                // istisna iletisi
     final function getCode();                   // istisnanın kodu
     final function getFile();                   // kaynak dosya
     final function getLine();                   // kaynak dosya satırı
     final function getTrace();                  // backtrace() dizisi
-    final function getTraceAsString();          // trace için formatlı karakter dizisi
-
-    /* Ezilebilir */
-    function __toString();                       // görüntüleme için formatlı karakter dizisi
+    final function getTraceAsString();          // trace için biçemlenmiş
+                                                // karakter dizisi
+    /* Geçersiz kılınabilir */
+    function __toString();  // görüntüleme için biçemlenmiş karakter dizisi
 }
 ?>
 ]]>
     </programlisting>
    </example>
    <para>
-   Bir sınıf yerleşik İstisna sınıfını genişletiyor ve <link
-    linkend="language.oop5.decon">ilklendiriciyi</link> yeniden tanımlıyorsa,
-    tüm mevcut verinin düzgün biçimde atandığından emin olmak için <link
-    linkend="language.oop5.paamayim-nekudotayim">parent::__construct()</link>
-    fonksiyonunun da çağrılması şiddetle önerilir. Nesne bir karakter dizisi
-    olaran sunulduğunda özelleştirilmiş bir çıktı sağlayabilmek için <link
-    linkend="language.oop5.magic">__toString()</link> metodu ezilebilir.
+    Bir sınıf yerleşik <classname>Exception</classname> sınıfını genişletiyor
+    ve <link linkend="language.oop5.decon">nesne kurucuyu</link> yeniden
+    tanımlıyorsa, mevcut tüm verinin düzgün biçimde atandığından emin olmak
+    için <link linkend="language.oop5.paamayim-nekudotayim"
+    >parent::__construct()</link> işlevinin de çağrılması hararetle önerilir.
+    Nesne bir karakter dizisi olarak sunulduğunda özelleştirilmiş bir çıktı
+    sağlayabilmek için <link linkend="language.oop5.magic"
+    >__toString()</link> yöntemi geçersiz kılınabilir.
    </para>
    <example>
-    <title>ıstisna sınıfının genişletilmesi</title>
+    <title>- <classname>Exception</classname> sınıfının genişletilmesi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 /**
- * Özelleştirilmiş bir istisna sınıfı tanımlama
+ * Özelleştirilmiş bir istisna sınıfı tanımlayalım
  */
 class MyException extends Exception
 {
-    // İstisnayı yeniden tanımla böylece mesaj opsiyonel olmaktan çıkar
+    // İstisnayı yeniden tanımlayalım, böylece ileti seçimlik olmaktan çıkar
     public function __construct($message, $code = 0) {
         // biraz kod
-    
+
         // her şeyin düzgün atandığından emin olalım
         parent::__construct($message, $code);
     }
 
-    // nesne için özelleştirilmiş karakter dizini sunumu
+    // nesnenin özelleştirilmiş karakter dizisi gösterimi
     public function __toString() {
         return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
     }
 
     public function customFunction() {
-        echo "Bu türdeki istisnalar için özelleştirilmiş fonksiyon\n";
+        echo "Bu türdeki istisnalar için özelleştirilmiş işlev\n";
     }
 }
 
 
 /**
- * İstisnanın testi için sınıf yaratma
+ * İstisnayı denemek için bir sınıf oluşturalım
  */
 class TestException
 {
@@ -136,16 +191,16 @@ class TestException
         switch ($avalue) {
             case self::THROW_CUSTOM:
                 // özelleştirilmiş istisna oluştur
-                throw new MyException('1 geçersiz bir parametredir', 5);
+                throw new MyException('1 geçersiz bir değiştirgedir', 5);
                 break;
 
             case self::THROW_DEFAULT:
                 // öntanımlı olarak bir oluşturulur.
-                throw new Exception('2 parametre olarak kabul edilmez', 6);
+                throw new Exception('2 geçerli bir değiştirge değildir', 6);
                 break;
 
-            default: 
-                // İstisna yok, nesne yaratılır.
+            default:
+                // İstisna yok; nesne oluşturulacak.
                 $this->var = $avalue;
                 break;
         }
@@ -159,7 +214,7 @@ try {
 } catch (MyException $e) {      // Yakalanacaktır
     echo "Benim istisnam yakalandı\n", $e;
     $e->customFunction();
-} catch (Exception $e) {        // Skipped
+} catch (Exception $e) {        // Bu atlanır
     echo "Öntanımlı istisna yakalandı\n", $e;
 }
 
@@ -174,7 +229,7 @@ try {
 } catch (MyException $e) {      // Bu tür ile uyuşmuyor
     echo "Benim istisnam yakalandı\n", $e;
     $e->customFunction();
-} catch (Exception $e) {        // Will be caught
+} catch (Exception $e) {        // Bu yakalanacaktır
     echo "Öntanımlı istisna yakalandı\n", $e;
 }
 
@@ -198,7 +253,7 @@ echo "\n\n";
 // Örnek 4
 try {
     $o = new TestException();
-} catch (Exception $e) {        // Atlandı, istisna yok
+} catch (Exception $e) {        // Bu atlandır; istisna yok
     echo "Öntanımlı İstisna yakalandı\n", $e;
 }
 
@@ -212,7 +267,7 @@ echo "\n\n";
   </sect1>
 
  </chapter>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
