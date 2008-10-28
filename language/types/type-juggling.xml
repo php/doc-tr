@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.5 Maintainer: nilgun Status: working -->
+<!-- Last translator: Nilgün Belma Bugüner -->
+<sect1 xml:id="language.types.type-juggling">
+ <title>Tür Dönüşümü</title>
+
+ <simpara>
+  PHP değişken bildiriminde tür tanımlamayı gerektirmez (veya desteklemez);
+  bir değişkenin türü kullanıldığı bağlama göre saptanır. Yani,
+  <type>string</type> türünde bir değer  <varname>$var</varname> değişkenine
+  atanırsa <varname>$var</varname>, <type>string</type> türünde bir değişken
+  haline gelir. <varname>$var</varname> değişkenine bir <type>integer</type>
+  değer atanırsa <varname>$var</varname>, <type>integer</type> türünde bir
+  değişken haline gelir.
+ </simpara>
+
+ <para>
+  Toplama işleci '+', PHP'nin özdevinimli tür dönüşümüne iyi bir örnektir.
+  Bir toplama işleminde terimlerden biri <type>float</type> türündeyse her
+  iki terim <type>float</type> olarak ele alınır ve sonuç <type>float</type>
+  türünde olur. Aksi takdirde, terimler <type>integer</type> olarak
+  yorumlanır ve sonuç <type>integer</type> türünde olur. Yalnız dikkat edin,
+  bu işlem ne terimlerin kendi türlerini ne de ifadenin kendi türünü
+  değiştirir.
+ </para>
+
+ <informalexample>
+  <programlisting role="php">
+<![CDATA[
+<?php
+$foo = "0";  // $foo string türündedir (ASCII 48)
+$foo += 2;   // $foo integer türündedir (2)
+$foo = $foo + 1.3;  // $foo float türündedir (3.3)
+$foo = 5 + "10 Little Piggies"; // $foo integer türündedir (15)
+$foo = 5 + "10 Small Pigs";     // $foo integer türündedir (15)
+?>
+]]>
+<!-- bad example, no real operator (must be used with variable, modifies it too)
+$foo++;      // $foo is the string "1" (ASCII 49)
+
+TODO: explain ++/- - behaviour with strings
+
+examples:
+
+++'001' = '002'
+++'abc' = 'abd'
+++'xyz' = 'xza'
+++'9.9' = '9.0'
+++'-3'  = '-4'
+- -'9'   = 8 (integer!)
+- -'5.5' = '5.5'
+- -'-9'  = -10 (integer)
+- -'09'  = 8 (integer)
+- -'abc' = 'abc'
+
+-->
+  </programlisting>
+ </informalexample>
+
+ <simpara>
+  Eğer yukarıdaki son iki örnek size tuhaf geldiyse <link
+  linkend="language.types.string.conversion">Dizgelerin sayıya
+  dönüşümü</link> konusuna bakınız.
+ </simpara>
+
+ <simpara>
+  Bir değişkeni belli bir türe dönüşmeye zorlamak istiyorsanız <link
+  linkend="language.types.typecasting">Tür Çarpıtma</link> konusuna bakınız.
+  Bir değişkenin türünü değiştirmek istiyorsanız <function>settype</function>
+  işlevine bakınız.
+ </simpara>
+
+ <para>
+  Bu bölümdeki örnekleri sınamak için <function>var_dump</function> işlevini
+  kullanınız.
+ </para>
+
+ <note>
+  <para>
+   <type>array</type> türüne özdevinimli dönüşüm şimdilik tanımsızdır.
+  </para>
+
+  <para>
+   Ayrıca, PHP dizgelerde konumlar üzerinden indislemeyi dizi indislemede
+   kullanılan sözdizimiyle desteklediğinden aşağıdaki örnek tüm PHP sürümleri
+   için geçerli bir örnektir:
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a    = 'car'; // $a string türündedir
+$a[0] = 'b';   // $a hala string türündedir
+echo $a;       // -> bar
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Daha fazla bilgi edinmek için <link linkend="language.types.string.substr"
+   >Karakterinden dizgeye erişim</link> konusuna bakınız.
+  </para>
+ </note>
+
+ <sect2 xml:id="language.types.typecasting">
+  <title>Tür Çarpıtma</title>
+
+  <para>
+   PHP'de tür çarpıtma (type casting) C'deki gibi çalışır: İstenen türün ismi
+   parantez içinde türü çarpıtılacak değişkenin önüne yazılır.
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 10;               // $foo integer türündedir
+$bar = (boolean) $foo;   // $bar boolean türündedir
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   İzin verilen çarpıtmalar:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <simpara>(int), (integer) - <type>integer</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(bool), (boolean) - <type>boolean</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(float), (double), (real) - <type>float</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(string) - <type>string</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(binary) - ikil <type>string</type> türe dönüşüm(PHP 6)</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(array) - <type>array</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(object) - <type>object</type> türüne dönüşüm</simpara>
+   </listitem>
+   <listitem>
+    <simpara>(unset) - <type>NULL</type>'a dönüşüm (PHP 5)</simpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   (binary) çarpıtması ve b önekinin ileriye dönük desteği PHP 5.2.1'de
+   eklenmiştir.
+  </para>
+
+  <para>
+   Parantezler içinde sekmelere ve boşluklara izin verildiğinden aşağıdaki
+   iki deyim eşdeğerdir:
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$foo = (int) $bar;
+$foo = ( int ) $bar;
+?>
+]]>
+   </programlisting>
+
+   <para>
+    Normal dizgelerin ikil dizgelere dönüştürülmesi:
+   </para>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+$binary = (binary)$string;
+$binary = b"ikil dizge";
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <note>
+   <para>
+    Bir değişkenin türünü <type>string</type> türüne çarpıtmak yerine
+    değişkeni çift tırnak içine almak aynı sonucu sağlar:
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 10;            // $foo integer türündedir
+$str = "$foo";        // $str string türündedir
+$fst = (string) $foo; // $fst de string türündedir
+
+// Bu, "bunlar aynı" basar
+if ($fst === $str) {
+    echo "bunlar aynı";
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+  </note>
+
+  <para>
+   Belli türler arasında çarpıtma yapılırken tam olarak ne olup bittiği
+   açıkça belli olmayabilir. Daha fazla bilgi için şu bölümlere bakınız:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.boolean.casting"><code>boolean</code>
+     türüne dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.integer.casting"><code>integer</code>
+     türüne dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.float.casting"><code>float</code> türüne
+     dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.casting"><code>string</code> türüne
+     dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.array.casting"><code>array</code> türüne
+     dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.object.casting"><code>object</code> türüne
+     dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.resource.casting"><code>resource</code>
+     türüne dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.null.casting"><code>NULL</code>'a
+     dönüşüm</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="types.comparisons">Tür karşılaştırma tabloları</link>
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
