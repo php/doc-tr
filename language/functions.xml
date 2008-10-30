@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/functions.xml,v 1.3 2008-01-11 08:02:21 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.69 Maintainer: tpug Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
-  <title>Fonksiyonlar</title>
+  <title>İşlevler</title>
 
   <sect1 xml:id="functions.user-defined">
-   <title>Kullanıcı-tanımlı fonksiyonlar</title>
- 
+   <title>Kullanıcı tanımlı işlevler</title>
+
    <para>
-   Bir fonksiyon, aşağıdakine benzer bir söz dizimi kullanılarak tanımlanabilir:
+   Bir işlev, şöyle bir söz dizimi kullanılarak tanımlanabilir:
    </para>
    <para>
     <example>
-     <title>Fonksiyon kullanımını gösteren sözde kod</title>
+     <title>- İşlev kullanımını gösteren sözde kod</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 function foo($arg_1, $arg_2, /* ..., */ $arg_n)
 {
-    echo "Örnek fonksiyon.\n";
+    echo "Örnek işlev.\n";
     return $retval;
 }
 ?>
@@ -26,32 +28,23 @@ function foo($arg_1, $arg_2, /* ..., */ $arg_n)
      </programlisting>
     </example>
    </para>
-   
+
    <simpara>
-   Bir fonksiyonun içerisinde geçerli her tür PHP kodu kullanılabilir,
-   buna başka fonksiyonlar ve <link linkend="keyword.class">sınıf</link>
-   tanımlamaları da dahildir.
+    Bir işlevin içerisinde geçerli her tür PHP kodu kullanılabilir, buna başka işlevler ve <link linkend="keyword.class">sınıf</link> tanımları da dahildir.
    </simpara>
    <para>
-   Fonksiyon isimleri, PHP'deki diğer isimlerle aynı kurallara tabidir.
-   Geçerli bir fonksiyon ismi bir harf ya da alt çizgi ile başlar,
-   herhangi bir sayıda geçerli harf, sayı ya da alt çizgi ile devam eder.
-   Düzenli ifade olarak yazmak istersek, şu şekilde ifade edebiliriz:
+    İşlev isimleri, PHP'deki diğer isimlerle aynı kurallara tabidir. Geçerli bir işlev ismi bir harf ya da alt çizgi ile başlar, herhangi bir sayıda geçerli harf, sayı ya da alt çizgi ile devam eder. Düzenli ifade olarak, şu şekilde ifade edebiliriz:
    <literal>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</literal>.
    </para>
    <simpara>
-   PHP 3'te, fonksiyonların referans edilmeden önce tanımlanması gerekliydi.
-   PHP 4 itibariyle bu gereksinim aşağıdaki iki örnekte gösterilen
-   <emphasis>istisna</emphasis> durum haricinde ortadan kalkmıştır.
+    İşlevlerin çağrılmadan önce tanımlanmaları, aşağıdaki iki örnekte görüldüğü gibi koşullu olarak tanımlandıkları durumlar haricinde gerekmez.
    </simpara>
    <para>
-   Bir fonksiyon aşağıdaki iki örnekte gösterildiği gibi koşullu olarak tanımlandıysa,
-   bu fonksiyonun tanımlamasının fonksiyon çağrılmadan <emphasis>önce</emphasis>
-   yapılması gerekmektedir.
+    Bir işlev aşağıdaki iki örnekte gösterildiği gibi koşullu olarak tanımlandıysa, bu işlev tanımının işlev çağrılmadan <emphasis>önce</emphasis> yapılması gerekmektedir.
    </para>
    <para>
     <example>
-     <title>Koşula bağlı fonksiyonlar</title>
+     <title>- Koşula bağlı işlevler</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -70,11 +63,12 @@ if ($makefoo) {
   }
 }
 
-/* Artık foo() çağrılabilir çünkü $makefoo değişkenine true değeri atandı */
+/* $makefoo doğru olduğundan
+   artık foo() çağrılabilir */
 
 if ($makefoo) foo();
 
-function bar() 
+function bar()
 {
   echo "Program başlatıldığı anda ben de varolurum.\n";
 }
@@ -86,13 +80,13 @@ function bar()
    </para>
    <para>
     <example>
-     <title>Fonksiyon içinde fonksiyon</title>
+     <title>İşlev içinde işlev</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-function foo() 
+function foo()
 {
-  function bar() 
+  function bar()
   {
     echo "foo() çağrılana kadar yokum.\n";
   }
@@ -104,47 +98,41 @@ function foo()
 foo();
 
 /* Artık bar() çağrılabilir,
-   foo() işlendiğinde bar()
+   foo() çağrıldığında bar()
    erişilebilir hale gelir */
 
 bar();
 
-?>  
+?>
 ]]>
      </programlisting>
     </example>
    </para>
    <para>
-   PHP'de tüm fonksiyonlar ve sınıflar global kapsamdadır - Bir fonksiyonun
-   içinden bile tanımlanmış olsalar ya da tam tersi de olsa bu durum geçerlidir.
+    PHP'de tüm işlevler ve sınıflar betik genelinde geçerlidir - bir işlevin
+    içinden bile tanımlanmış olsalar işlevin dışından çağrılabilirler.
    </para>
    <simpara>
-   PHP fonksiyon overloading işlemini desteklemez, önceden tanımlanmış bir
-   fonksiyonun yeniden tanımlanması ya da tanımsız kılınması mümkün değildir.
+    PHP işlevlerin farklı değiştirgeli yeni tanımlarının yapılmasını
+    desteklemediği gibi, işlevler yeniden tanımlanamaz veya tanımsız
+    kılınamaz.
    </simpara>
    <note>
     <simpara>
-    Fonksiyon isimleri büyük-küçük harf duyarsızdır, ancak fonksiyon isimlerini
-    tanımlandıkları şekilde kullanmak iyi bir alışkanlık olabilir.
+      İşlev isimleri büyük-küçük harf duyarsızdır, ancak işlev isimlerini
+      tanımlandıkları halleriyle kullanmak daha iyidir.
     </simpara>
-   </note>   
+   </note>
    <simpara>
-   PHP 3 fonksiyona geçirilen argüman sayısını değişken olarak verebilme özelliğine
-   sahip değildir, ancak öntanımlı argümanlar desteklenmektedir (bakınız
-   <link linkend="functions.arguments.default">Öntanımlı argüman değerleri</link>).
-   PHP 4'den itibaren her iki özellik de desteklenmektedir. Daha fazla bilgi için
-   <link linkend="functions.variable-arg-list">Değişken-uzunluğu argüman listeleri</link>
-   bölümüne ve fonksiyon referansları için <function>func_num_args</function>,
-   <function>func_get_arg</function> ve <function>func_get_args</function>
-   bölümlerine bakabilirsiniz.
+    <link linkend="functions.variable-arg-list">Değiştirge sayısı değişken işlevler</link> desteklendiği gibi işlevlerde <link linkend="functions.arguments.default">öntanımlı değiştirge</link> kullanımı da desteklenmektedir. Daha ayrıntılı bilgi edinmek için <function>func_num_args</function>, <function>func_get_arg</function> ve <function>func_get_args</function> işlevlerine de bakınız.
    </simpara>
-   
+
    <para>
-   PHP'de tekrarlanan fonksiyonlar çağırmak mümkündür. Ancak 100-200 seviyeli
-   tekrar içeren fonksiyonlardan kaçınmalısınız, bu tür bir kullanım belleği
-   zorlar ve mevcut betiğin çalışmasının durmasına sebep olabilir.
+    PHP'de işlevlerin kendilerini çağırması da mümkündür. Ancak 100-200
+    iç içe çağrıdan kaçınmalısınız, bu tür kullanım yığıtın dolmasına ve
+    betiğin sonlandırılmasına olabilir.
     <example>
-     <title>Tekrarlanan fonksiyonlar</title>
+     <title>- Kendini çağıran işlev</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -162,243 +150,220 @@ function recursion($a)
    </para>
 
   </sect1>
- 
+
   <sect1 xml:id="functions.arguments">
-   <title>Fonksiyon argümanları</title>
- 
+   <title>İşlev değiştirgeleri</title>
+
    <simpara>
-   Bilgi, noktalarla ayrılmış bir ifadeler listesi olarak ilgili fonksiyona argüman
-   listesi olarak geçirilir.
-   </simpara> 
+    Bir işleve veri, virgül ayraçlı ifadelerden oluşan bir değiştirge listesi ile aktarılır.
+   </simpara>
    <para>
-   PHP, değer bazlı argüman geçirmeyi (öntanımlı olarak), <link
-    linkend="functions.arguments.by-reference">referans bazlı değer geçirmeyi</link> ve
-    <link linkend="functions.arguments.default">öntanımlı argüman değerlerini</link>
-    destekler. Değişken-uzunluklu argüman listeleri yalnızca PHP 4 ve sonrasında desteklenir;
-    <link linkend="functions.variable-arg-list">Değişken-uzunluklu argüman listeleri</link>
-    bölümünü ve <function>func_num_args</function>, <function>func_get_arg</function> ve
-    <function>func_get_args</function> bölümlerini inceleyerek daha fazla bilgi edinebilirsiniz.
-    PHP 3'te benzer bir etki, fonksiyona bir argüman dizisi geçirilerek sağlanabilir:
+    PHP, değiştirgelerin değerleriyle aktarılmalarını (öntanımlı), <link
+    linkend="functions.arguments.by-reference">gönderimli aktarım</link>ı ve <link linkend="functions.arguments.default">öntanımlı değiştirge kullanımı</link>nı destekler. <link linkend="functions.variable-arg-list">Değiştirge sayısı değişken işlevler</link> de desteklenmektedir; daha ayrıntılı bilgi edinmek için <function>func_num_args</function>, <function>func_get_arg</function> ve
+    <function>func_get_args</function> işlevlerini de inceleyiniz.
    </para>
    <para>
     <example>
-     <title>Fonksiyonlara dizi geçirmek</title>
+     <title>- İşlevlere dizi aktarımı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-function takes_array($input)
+function dizi_kabul_eder($girdi)
 {
-    echo "$input[0] + $input[1] = ", $input[0]+$input[1];
+    echo "$girde[0] + $girdi[1] = ", $girdi[0]+$girdi[1];
 }
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
- 
+
    <sect2 xml:id="functions.arguments.by-reference">
-    <title>Argümanların referans bazlı geçirilmesini sağlamak</title>
- 
+    <title>Gönderimli değiştirge kullanımı</title>
+
     <simpara>
-    Öntanımlı olarak, fonksiyon argümanları değer bazlı geçirilmektedir
-    (bu durumda fonksiyon içerisinde argümanlardan birinin değerini
-    değiştirdiğinizde, fonksiyonun dışındaki argüman değeri bundan
-    etkilenmemektedir). Fonksiyonun argümanları üzerinde değişiklik
-    yapabilmesini istiyorsanız, bu argümanları referans bazlı geçirmelisiniz.
+      Öntanımlı olarak, işlev değiştirgeleri değerleriyle aktarılırlar (bu durumda bir değiştirgenin değeri işlev içinde değiştirildiğinde işlevin çağrıldığı yerdeki değeri bundan etkilenmez. İşlevin çağrıldığı yerdeki değerinin de değişmesini istiyorsanız gönderimli değiştirge kullanmalısınız.
     </simpara>
     <para>
-    Bir argümanın bir fonksiyona her zaman referans bazlı geçirilmesini istiyorsanız,
-    fonksiyon tanımlamasında o argümanın başına ampersan (&amp;) koyarak bunu sağlayabilirsiniz:
+      Bir işleve bir değiştirgenin daima gönderimli olarak aktarılmasını istiyorsanız, işlev tanımladığınız yerde o değiştirgenin başına &amp; karakterini koyarak bunu sağlayabilirsiniz:
     </para>
     <para>
      <example>
-      <title>Fonksiyon parametrelerini referans bazlı geçirmek</title>
+      <title>- Gönderimli işlev değiştirgelerinin aktarımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-function add_some_extra(&$string)
+function şunu_da_ekle(&$dizge)
 {
-    $string .= 've biraz daha karakter.';
+    $dizge .= 've bir kaç karakter eklenmiştir.';
 }
-$str = 'Bu bir karakter dizisidir, ';
-add_some_extra($str);
-echo $str;    // 'Bu bir karakter dizisidir, ve biraz daha karakter.' çıktısını verir.
+$dzg = 'Bu bir dizgedir ';
+şunu_da_ekle($dzg);
+echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
+              //  çıktısını verir.
 ?>
 ]]>
       </programlisting>
      </example>
     </para>
- 
+
    </sect2>
- 
+
    <sect2 xml:id="functions.arguments.default">
-    <title>Öntanımlı argüman değerleri</title>
- 
+    <title>Öntanımlı değiştirge değerleri</title>
+
     <para>
-    Bir fonksiyon, sayıl (scalar) argümanlar için C++ türünde
-    öntanımlı değerleri aşağıdaki biçimde tanımlayabilir:
+      Bir işlevde, sayıl değiştirgeler için C++ tarzı öntanımlı değerler aşağıdaki biçimde tanımlanabilir:
     </para>
     <para>
      <example>
-      <title>Fonksiyon içerisinde öntanımlı parametre kullanımı</title>
+      <title>- İşlev içinde öntanımlı değiştirge kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-function makecoffee($type = "cappuccino")
+function kahveyap($hangisi = "orta şekerli")
 {
-    return "Bir bardak $type yapalım.\n";
+    return "Bir fincan $hangisi kahve yapalım.\n";
 }
-echo makecoffee();
-echo makecoffee("espresso");
+echo kahveyap();
+echo makecoffee(null);
+echo kahveyap("az şekerli");
 ?>
 ]]>
       </programlisting>
      </example>
     </para>
- 
+
     <para>
      Yukarıdaki koddan alınacak çıktı:
     </para>
     <para>
      <screen>
-     Bir bardak cappuccino yapalım.
-     Bir bardak espresso yapalım.
+Bir fincan orta şekerli kahve yapalım.
+Bir fincan kahve yapalım.
+Bir fincan az şekerli kahve yapalım.
      </screen>
     </para>
     <para>
-    PHP öntanımlı değer olarak dizileri ve özel bir tip olan NULL'ı da
-    kullanmanıza izin verir, örneğin:
+      PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün kullanımına da izin verir, örneğin:
     </para>
     <para>
      <example>
-      <title>Sayıl olmayan tiplerin öntanımlı değer olarak kullanımı</title>
+      <title>- Sayıl olmayan türlerin öntanımlı değer olarak kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-function makecoffee($types = array("cappuccino"), $coffeeMaker = NULL)
+function kahveyap($hangi = array("orta şekerli"), $neyde = NULL)
 {
-    $device = is_null($coffeeMaker) ? "hands" : $coffeeMaker;
-    return "Bir bardak ".join(", ", $types)." $device kullanılarak yapıldı.\n";
+    $neyde = is_null($neyde) ? "ocakta" : $neyde;
+    return "Bir fincan ".join(", bir fincan ", $hangi)." kahve $neyde yapıldı.\n";
 }
-echo makecoffee();
-echo makecoffee(array("cappuccino", "lavazza"), "teapot");
+echo kahveyap();
+echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
 ?>
 ]]>
       </programlisting>
      </example>
-    
+
     </para>
     <simpara>
-    Öntanımlı değerler değişmez bir ifade olmalıdır, (örneğin) bir değişken,
-    bir sınıf üyesi ya da bir fonksiyon çağrımı olmamalıdır.
+      Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı değil, bir sabit ifadesi olmalıdır.
     </simpara>
     <para>
-    Öntanımlı argümanlar kullanırken, öntanımlama yapılmış tüm argümanların
-    öntanımlama yapılmamış argümanların sağında yer alması gerektiğini unutmayın.
-    Aksi takdirde, işler beklediğiniz gibi gelişmeyebilir. Aşağıdaki kod parçasını
-    inceleyin:
+      Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer almasına gerektiğine dikkat edin. Aksi takdirde işler yolunda gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
     </para>
     <para>
      <example>
-      <title>Öntanımlı fonksiyon argümanlarının hatalı kullanımı</title>
+      <title>- Öntanımlı değiştirgelerin hatalı kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-function makeyogurt($type = "acidophilus", $flavour)
+function yoğurtyap($nekadar = "az", $neli)
 {
-    return "Bir kase $type $flavour yapılışı.\n";
+    return "Bir kase $nekadar $neli yoğurt yap.\n";
 }
- 
-echo makeyogurt("ahududu");   // beklendiği gibi çalışmayacaktır
+
+echo yoğurtyap("çilekli");   // beklendiği gibi çalışmayacaktır
 ?>
 ]]>
       </programlisting>
      </example>
     </para>
- 
+
     <para>
      Yukarıdaki örnekten alınan çıktı:
     </para>
     <para>
      <screen>
-Warning: Missing argument 2 in call to makeyogurt() in 
-/usr/local/etc/httpd/htdocs/php3test/functest.html on line 41
-Bir kase ahududu yapılışı.
+Warning: Missing argument 2 for yoğurtyap(), called in
+/home/nilgun/dnm/php-dnm on line 7 and defined in
+/home/nilgun/dnm/php-dnm on line 2
+Bir kase çilekli  yoğurt yap.
      </screen>
     </para>
     <para>
-    şimdi, yukarıdakini bununla karşılaştıralım:
+      Şimdi, yukarıdakini bununla karşılaştıralım:
     </para>
     <para>
      <example>
-      <title>Öntanımlı fonksiyon argümanlarının doğru kullanımı</title>
+      <title>- Öntanımlı değiştirgelerin doğru kullanımı</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-function makeyogurt($flavour, $type = "acidophilus")
+function yoğurtyap($nekadar= "az", $neli)
 {
-    return "Bir kase $type $flavour yapılışı.\n";
+    return "Bir kase $nekadar $neli yoğurt yap.\n";
 }
- 
-echo makeyogurt("ahududu");   // beklendiği gibi çalışır
+
+echo yoğurtyap("çilekli");   // beklendiği gibi çalışır
 ?>
 ]]>
       </programlisting>
      </example>
     </para>
- 
+
     <para>
      Bu örnekten alınan çıktı:
     </para>
     <para>
      <screen>
-Bir kase acidophilus ahududu yapılışı.
+Bir kase az çilekli yoğurt yap.
      </screen>
     </para>
-    
+
     <note>
      <simpara>
-     PHP 5'den itibaren, öntanımlı değerler referans bazlı geçirilebilmektedir.
+     PHP 5'den itibaren, öntanımlı değerler gönderimli aktarılabilmektedir.
      </simpara>
     </note>
 
    </sect2>
 
    <sect2 xml:id="functions.variable-arg-list">
-    <title>Değişken-uzunluklu argüman listeleri</title>
+    <title>Değiştirge sayısı değişken işlevler</title>
 
     <simpara>
-    PHP 4 ve üstü, kullanıcı-tanımlı fonksiyonlarda değişken-uzunluklu argüman listelerini
-    desteklemektedir. Bu özelliğin kullanımı oldukça basittir,
-     <function>func_num_args</function>,
-     <function>func_get_arg</function>, ve
-     <function>func_get_args</function> fonksiyonlarını inceleyerek bu özelliğin
-     nasıl kullanıldığını görebilirsiniz.
+      PHP 4 ve sonrasında, değiştirge sayısı değişken kullanıcı tanımlı işlevler desteklemektedir. <function>func_num_args</function>,
+     <function>func_get_arg</function> ve <function>func_get_args</function> işlevleri sayesinde bu özelliği kolayca kullanabilirsiniz.
     </simpara>
 
     <simpara>
-    Özel bir söz dizimi gerekli değildir, argüman listelerinin açık bir şekilde
-    fonksiyon tanımlaması ile birlikte yapılmasına devam edilecek ve normal
-    biçimde çalışma işlemi sürdürülecektir.
+      Özel bir sözdizimi gerekli değildir, değiştirge listesini işlev tanımında açıkça belirtirseniz normal davranışını gösterecektir.
     </simpara>
 
    </sect2>
 
   </sect1>
- 
+
   <sect1 xml:id="functions.returning-values">
    <title>Dönen değerler</title>
- 
+
    <para>
-   Değerlerin döndürülmesi, kullanımı seçime bağlı olan return deyimi ile sağlanır.
-   Bir fonksiyondan herhangi bir tipte değer döndürülebilir, buna diziler ve nesneler
-   de dahildir. Bu deyim kullanıldığında fonksiyonun çalışması aniden durdurulur
-   ve kontrol fonksiyonun çağrıldığı satıra iade edilir. <function>return</function>
-   bölümünü inceleyerek daha fazla bilgiye ulaşabilirsiniz.
+    Değerler, kullanımı seçime bağlı olan return deyimi kullanılarak döndürülür. Her türde değer döndürülebilir, buna diziler ve nesneler dahildir. <function>return</function> kullanıldığında işlevin çalışması o noktada hemen durdurulur ve denetim işlevin çağrıldığı satıra aktarılır. Daha ayrıntılı bilgi için <function>return</function> bölümüne bakınız.
    </para>
    <para>
     <example>
-     <title><function>return</function> kullanımı</title>
+     <title>- <code>return</code> kullanımı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -406,83 +371,75 @@ function square($num)
 {
     return $num * $num;
 }
-echo square(4);   // '16' çıktısını verir.
+echo square(4);   // '16' çıktılar.
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
-      
+
    <para>
-   Bir fonksiyondan birden fazla değer döndüremezsiniz, ancak benzer bir sonuç
-   bir dizi döndürülerek elde edilebilir.
+    Bir işlevden birden fazla değer döndüremezsiniz, ancak böyle bir sonucu   bir dizi döndürülerek elde edebilirsiniz.
    </para>
    <para>
     <example>
-     <title>Birden fazla değer elde etmek için dizi döndürmek</title>
+     <title>- Bir diziyle birden fazla değerin döndürülmesi</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-function small_numbers()
+function küçük_sayılar()
 {
     return array (0, 1, 2);
 }
-list ($zero, $one, $two) = small_numbers();
+list ($sıfır, $bir, $iki) = küçük_sayılar();
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
    <para>
-   Bir fonksiyondan referans döndürmek için, hem fonksiyon tanımlamasında
-   hem de fonksiyondan dönen değeri bir değişkene atama aşamasında
-   &amp; referans operatörünü kullanmalısınız:
+    Bir işlevden gönderimli bir değer döndürmek için, &amp; işlecini hem işlev bildiriminde hem de dönen değeri bir değişkene atarken kullanmalısınız:
    </para>
    <para>
     <example>
-     <title>Bir fonksiyondan referans döndürmek</title>
+     <title>Bir işlevden gönderimli değer döndürmek</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-function &returns_reference()
+function &gönderimli_döndür()
 {
-    return $someref;
+    return $gönderim;
 }
 
-$newref =& returns_reference();
+$yenigönderim =& gönderimli_döndür();
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
    <simpara>
-   Referanslar hakkında daha fazla bilgi için, lütfen <link
-    linkend="language.references">Referanslar Açıklanıyor</link> bölümünü inceleyin.
+    Gönderimler hakkında daha fazla bilgi edinmek için <link
+    linkend="language.references">Gönderimler Hakkında</link> bölümüne bakınız.
    </simpara>
   </sect1>
- 
+
   <sect1 xml:id="functions.variable-functions">
-   <title>Değişken fonksiyonlar</title>
+   <title>Değişken işlevler</title>
 
    <para>
-   PHP değişken fonksiyon kavramını desteklemektedir. Bir değişken isminin
-   sonuna parantez eklenmişse, PHP aynı isimde bir fonksiyon olup olmadığına bakar ve
-   bulduğu takdirde bu fonksiyonu çalıştırmaya çalışır. Başka olası işlemlerin yanında,
-   bu özellik geriçağrımların (callbacks), fonksiyon tablolarının ve bir dizi başka
-   işlemin hayata geçirilmesinde kullanılabilir.
+   PHP değişken işlev kavramını desteklemektedir. Yani, bir değişken isminin
+   sonuna parantez eklenmişse, PHP aynı isimde bir işlev olup olmadığına bakar ve bulduğu takdirde bu işlevi çalıştırmaya çalışır. Başka olası işlemlerin yanında, bu özellik geri çağırımların, işlev tablolarının ve bezerlerinin gerçeklenmesinde kullanılabilir.
    </para>
    <para>
-   Değişken fonksiyonlar, aşağıdakine benzer dil yapılarında çalışmayacaktır:
+    Değişken işlevler,
     <function>echo</function>, <function>print</function>,
     <function>unset</function>, <function>isset</function>,
     <function>empty</function>, <function>include</function>,
-    <function>require</function> ve benzerleri. Bu yapıları değişken fonksiyon
-    olarak kullanmak istediğiniz takdirde, kendi sarıcı (wrapper) fonksiyonunuzu
-    yazmak durumundasınız.
+    <function>require</function> ve benzeri dil yapılarında çalışmayacaktır. Bu yapıları değişken işlev olarak kullanmak istediğiniz takdirde, gerekli sarmalayıcı işlevleri kendiniz yazmalısınız.
    </para>
    <para>
     <example>
-     <title>Değişken fonksiyon örneği</title>
+     <title>- Değişken işlev örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -495,7 +452,7 @@ function bar($arg = '')
     echo "In bar(); argument was '$arg'.<br />\n";
 }
 
-// Bu echo için sarıcı bir fonksiyondur
+// Bu echo için sarmalayıcı işlevdir
 function echoit($string)
 {
     echo $string;
@@ -515,10 +472,9 @@ $func('test');  // echoit() çağrılır
     </example>
    </para>
    <para>
-   Değişken fonksiyon özelliğini kullanarak bir nesnenin metodunu da
-   çağırabilmeniz mümkündür.
+    Değişken işlev özelliğini kullanarak bir nesnenin bir yöntemini de çağırabilmeniz mümkündür.
     <example>
-     <title>Değişken metod örneği</title>
+     <title>Değişken yöntem örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -527,9 +483,9 @@ class Foo
     function Variable()
     {
         $name = 'Bar';
-        $this->$name(); // Bu Bar() metodunu çağıracaktır
+        $this->$name(); // Bu Bar() yöntemini çağıracaktır
     }
-    
+
     function Bar()
     {
         echo "Bu bir Bar";
@@ -538,7 +494,7 @@ class Foo
 
 $foo = new Foo();
 $funcname = "Variable";
-$foo->$funcname();  // Bu $foo->Variable() fonksiyonunu çağıracaktır
+$foo->$funcname();  // Bu $foo->Variable() işlevini çağıracaktır
 
 ?>
 ]]>
@@ -547,53 +503,29 @@ $foo->$funcname();  // Bu $foo->Variable() fonksiyonunu çağıracaktır
    </para>
    <para>
     Ayrıca bakınız: <function>call_user_func</function>,
-    <link linkend="language.variables.variable">
-    değişkenin değişkeni</link> ve <function>function_exists</function>.
+    <link linkend="language.variables.variable"> değişken değişkenleri</link> ve <function>function_exists</function>.
    </para>
   </sect1>
-  
+
   <sect1 xml:id="functions.internal">
-   <title>ıç (yerleşik) fonksiyonlar</title>
-   
+   <title>Yerleşik işlevler</title>
+
    <para>
-   PHP standart olarak birçok fonksiyon ve yapı ile birlikte gelmektedir.
-   Bunun yanında, özel PHP uzantılarına ihtiyaç duyan ve aksi takdirde
-   "tanımlanmamış fonksiyon" hatası üreten fonksiyonlar da mevcuttur.
-   Örneğin, <function>imagecreatetruecolor</function> gibi <link linkend="ref.image">resim</link>
-   fonksiyonlarını kullanabilmeniz için, PHP'yi <productname>GD</productname> desteği
-   ile birlikte derlemiş olmanız gereklidir. Ya da, <function>mysql_connect</function>
-   fonksiyonunu kullanabilmek için, PHP'nin <link linkend="ref.mysql">MySQL</link> desteği
-   ile derlenmiş olması gerekmektedir. Bütün PHP sürümlerine eklenen <link linkend="ref.strings">karakter dizisi</link>
-   ve <link linkend="ref.var">değişkenler</link> gibi birçok çekirdek fonksiyon mevcuttur.
-   <function>phpinfo</function> ya da <function>get_loaded_extensions</function> fonksiyonlarına
-   yapılacak bir çağrı ile PHP'ye hangi uzantıların yüklenmiş olduğunu görebilirsiniz.
-   Birçok uzantı öntanımlı olarak etkinleştirilmiştir ve PHP kullanım kılavuzu bu eklentilerle
-   ilgili geniş bilgi içermektedir. <link linkend="configuration">Yapılandırma</link>,
-   <link linkend="install">kurulum</link> ve uzantılara özel bölümleri inceleyerek,
-   PHP'nizi nasıl yapılandırmanız gerektiği hakkında daha fazla bilgiye erişebilirsiniz.
+    PHP standart olarak birçok işlev ve oluşum ile birlikte gelmektedir. Bunun yanında, özel PHP eklentilerinin derlenmesini gerektiren, aksi takdirde "tanımsız işlev" hatası üreten işlevler de mevcuttur. Örneğin, <function>imagecreatetruecolor</function> gibi <link linkend="ref.image" >resim</link> işlevlerini kullanabilmek için, PHP'yi <productname>GD</productname> desteğiyle derlemiş olmanız gerekir. Ya da, <function>mysql_connect</function> işlevini kullanabilmek için, PHP'nin <link linkend="ref.mysql">MySQL</link> desteği ile derlenmiş olması gerekmektedir. Bunların yanında, bütün PHP sürümlerine eklenen <link linkend="ref.strings">dizge</link> ve <link linkend="ref.var" >değişken</link> işlevleri gibi birçok çekirdek işlev de mevcuttur. <function>phpinfo</function> ya da <function>get_loaded_extensions</function> işlevlerine yapılacak bir çağrı ile PHP'ye hangi eklentilerin yüklenmiş olduğunu görebilirsiniz. Birçok uzantı öntanımlı olarak etkinleştirilmiş olup PHP Kılavuzunda bu eklentilerle ilgili geniş bilgi verilmiştir. PHP'yi nasıl yapılandırmanız gerektiğiyle ilgili bilgiyi <link linkend="configuration" >yapılandırma</link> ve <link linkend="install">kurulum</link> bölümleri ile eklerdeki özel bölümlerde bulabilirsiniz.
    </para>
    <para>
-   Kılavuzun <link linkend="about.prototypes">fonksiyon tanımı nasıl okunur</link>
-   bölümünde fonksiyon prototipleri ile ilgili bilgilendirme bulunmaktadır.
-   Bir fonksiyonun bir değer mi döndürdüğü ya da yalnızca değer geçirilerek işlem
-   mi yaptığını anlamak önemlidir.Örneğin, <function>str_replace</function>
-   işlenen karakter dizisini döndürürken, <function>usort</function> kendisine
-   geçirilen değer üzerinde çalışır. Herbir kılavuz sayfası aynı zamanda
-   herbir fonksiyon ile ilgili fonksiyon parametreleri, davranış değişimleri,
-   başarı ya da başarısızlık durumunda döndürülen değerler ve mevcudiyet bilgilerini
-   de içermektedir. Bu önemli (ve sıklıkla algılanması güç) farklılıkların
-   bilinmesi, doğru PHP kodunun yazılabilmesi için çok önem taşımaktadır.
+    Kılavuzun <link linkend="about.prototypes">işlev tanımı nasıl okunur</link> bölümünde bir işlev tanımının nasıl okunup anlaşılabileceği ile ilgili bilgiler bulunmaktadır. Bir işlevin bir değer mi döndürdüğü yoksa aktarılan değerlerle sadece işlem mi yaptığını anlamak önemlidir. Örneğin, <function>str_replace</function> değiştirilmiş dizgeyle dönerken, <function>usort</function> sadece kendisine aktarılan değer üzerinde çalışır. Ayrıca, her kılavuz sayfasında her işlevin değiştirgeleri, davranış değişiklikleri, başarı ya da başarısızlık durumunda döndürülen değerler ve kullanılabilirlik bilgileri bulunmaktadır. Bu önemli (ve sıklıkla algılanması güç) farklılıkların bilinmesi, doğru PHP kodunun yazılabilmesi için büyük önem taşımaktadır.
    </para>
    <para>
-    Ayrıca bakınız <function>function_exists</function>, 
-    <link linkend="funcref">the function reference</link>,
-    <function>get_extension_funcs</function>, ve 
+    Ayrıca bakınız: <function>function_exists</function>,
+    <link linkend="funcref">İşlev Başvuru Kılavuzu</link>,
+    <function>get_extension_funcs</function> ve
     <function>dl</function>.
    </para>
   </sect1>
 
  </chapter>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
