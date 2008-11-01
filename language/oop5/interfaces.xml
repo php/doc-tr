@@ -1,77 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/interfaces.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.interfaces" xmlns="http://docbook.org/ns/docbook">
   <title>Nesne Arayüzleri</title>
   <para>
-  Nesne arayüzleri size bir sinifin sahip olmasi gereken metodlari gösteren kodlari,
-  bu metodlarin nasil yönetilecegini tanimlamaniza gerek kalmadan tanimlayabilmenizi saglar.
+    Nesne arayüzleri, bir sınıfın gerçeklemesi gereken yöntemlerin
+    belirtildiği kodu, bu yöntemlerin nasıl yönetileceğini tanımlamaksızın
+    oluşturmanıza imkan sağlar.
   </para>
   <para>
-  Arayüzler, interface anahtar sözcügü kullanarak tanimlanir. Tanimlama islemi standart
-  siniflarda oldugu gibidir, ancak hiçbir metodun içerigi tanimlanmamistir.
+    Arayüzler, standart sınıflardan farklı olarak hiçbir yöntemin içeriği
+    tanımlanmaksızın <code>interface</code> anahtar sözcüğü kullanılarak
+    tanımlanırlar.
   </para>
   <para>
-  Arayüz olarak tanimlanmis tüm metodlar public olarak tanimlanmalidir. Bu arayüz kullaniminin
-  dogal mantigidir.
+    Bir arayüzdeki tüm yöntemler, arayüzün doğası gereği <code>public</code>
+    olarak bildirilmelidir.
   </para>
   <sect2>
-   <title><literal>implements</literal></title>
+   <title><code>implements</code> işleci</title>
    <para>
-   Bir arayüzü gerçeklestirmek için, <literal>implements</literal> operatörü kullanilir.
-   Arayüzdeki tüm metodlar bir sinif içersinde gerçeklestirilmelidir; bunu yapamadiginiz
-   yakdirde ölümcül hata ile karsilasirsiniz. Her bir sinif virgülle ayrildigi takdirde,
-   bir sinif birden fazla arayüzü gerçeklestirebilir.
+    Bir arayüzü gerçeklemek için, <literal>implements</literal> işleci
+    kullanılır. Arayüzdeki tüm yöntemler bir sınıf içersinde
+    gerçeklenmelidir; aksi takdirde bir ölümcül hata alırsınız. Bir sınıfın,
+    birden fazla arayüz tanımlaması arayüzler virgülle ayrılarak sağlanabilir.
    </para>
    <note>
     <para>
-    Belirsizlige yol açacagindan, bir sinif fonksiyon isimlerini paylasan iki
-    farkli arayüzü gerçeklestiremez.
+    Belirsizliğe yol açacağından, bir sınıf aynı işlev isimlerine sahip iki
+    arayüz gerçekleyemez.
+    </para>
+   </note>
+   <note>
+    <para>
+     Arayüzler, sınıflar gibi <literal>extend</literal> işleciyle
+     genişletilebilir.
     </para>
    </note>
   </sect2>
-  <sect2>
+  <sect2 xml:id="language.oop5.interfaces.constants">
+   <title>Sabitler</title>
+   <para>
+    Arayüzlerin sabitlerinin olması mümkündür. Arayüz sabitleri tıpkı <link
+    linkend="language.oop5.constants">sınıf sabitleri</link> gibi çalışırlar.
+    Kendilerini miras alan sınıflar veya arayüzler tarafından geçersiz
+    kılınamazlar.
+   </para>
+  </sect2>
+  <sect2 xml:id="language.oop5.interfaces.examples">
    &reftitle.examples;
-   <example>
-    <title>Arayüz örnegi</title>
+   <example xml:id="language.oop5.interfaces.examples.ex1">
+    <title>- Arayüz örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-// 'iTemplate' arayüzünün tanimlanmasi
+// 'iTemplate' arayüzünü tanımlayalım
 interface iTemplate
 {
     public function setVariable($name, $var);
     public function getHtml($template);
 }
 
-// Arayüzün gerçeklestirilmesi
-// Bu çalisacaktir
+// Arayüzü gerçekleyelim
+// Bu çalışacaktır
 class Template implements iTemplate
 {
     private $vars = array();
-  
+
     public function setVariable($name, $var)
     {
         $this->vars[$name] = $var;
     }
-  
+
     public function getHtml($template)
     {
         foreach($this->vars as $name => $value) {
             $template = str_replace('{' . $name . '}', $value, $template);
         }
- 
+
         return $template;
     }
 }
 
-// Bu çalismayacaktir
-// Ölümcül hata: BadTemplate sinifi 1 soyut metod içermektedir
-// ve bu metodun abstract olarak tanimlanmasi gerekmektedir (iTemplate::getHtml)
+// Bu çalışmayacaktır
+// Ölümcül hata: BadTemplate sınıfı 1 soyut yöntem içermektedir
+// dolayısıyla soyut olarak tanımlanması gerekir (iTemplate::getHtml)
 class BadTemplate implements iTemplate
 {
     private $vars = array();
-  
+
     public function setVariable($name, $var)
     {
         $this->vars[$name] = $var;
@@ -82,13 +101,117 @@ class BadTemplate implements iTemplate
 ]]>
     </programlisting>
    </example>
+   <example xml:id="language.oop5.interfaces.examples.ex2">
+    <title>- Genişletilebilir Arayüzler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface a
+{
+    public function foo();
+}
+
+interface b extends a
+{
+    public function baz(Baz $baz);
+}
+
+// Bu çalışır
+class c implements b
+{
+    public function foo()
+    {
+    }
+
+    public function baz(Baz $baz)
+    {
+    }
+}
+
+// Bu çalışmaz, ölümcül hatayla sonuçlanır
+class d implements b
+{
+    public function foo()
+    {
+    }
+
+    public function baz(Foo $foo)
+    {
+    }
+}
+?>
+]]>
+     </programlisting>
+   </example>
+   <example xml:id="language.oop5.interfaces.examples.ex3">
+    <title>- Çok sayıda anayüz oluşturma</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface a
+{
+    public function foo();
+}
+
+interface b
+{
+    public function bar();
+}
+
+interface c extends a, b
+{
+    public function baz();
+}
+
+class d implements c
+{
+    public function foo()
+    {
+    }
+
+    public function bar()
+    {
+    }
+
+    public function baz()
+    {
+    }
+}
+?>
+]]>
+     </programlisting>
+   </example>
+   <example xml:id="language.oop5.interfaces.examples.ex4">
+    <title>- Arayüzler ve sabitleri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface a
+{
+    const b = 'Arayüz sabiti';
+}
+
+// Şunu basar: Arayüz sabiti
+echo a::b;
+
+
+// Sabitler geçersiz kılınamayacağından bu çalışmaz.
+// Sınıf sabitleri için de bu böyledir.
+class b implements a
+{
+    const b = 'Sınıf sabiti';
+}
+?>
+]]>
+     </programlisting>
+   </example>
    <simpara>
-   Ayrica bakin: <link linkend="language.operators.type">instanceof</link> operatörü.
+   Ayrıca bakınız: <link linkend="language.operators.type">instanceof</link> işleci.
    </simpara>
   </sect2>
 
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

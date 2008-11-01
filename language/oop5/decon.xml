@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/decon.xml,v 1.4 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.16 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.decon" xmlns="http://docbook.org/ns/docbook">
-  <title>İlklendiriciler ve sonlandırıcılar (Constructors and Destructors)</title>
+  <title>Kurucular ve Yıkıcılar</title>
 
   <sect2 xml:id="language.oop5.decon.constructor">
-   <title>İlklendiriciler (Constructor)</title>
+   <title>Kurucular</title>
    <methodsynopsis>
     <type>void</type><methodname>__construct</methodname>
-    <methodparam choice="opt"><type>mixed</type><parameter>args</parameter></methodparam>
+    <methodparam choice="opt">
+    <type>mixed</type><parameter>değiştirge</parameter></methodparam>
     <methodparam choice="opt"><parameter>...</parameter></methodparam>
    </methodsynopsis>
    <para>
-   PHP 5 gelistiricilere sınıflar için ilklendirici fonksiyon tanımlama
-   imkani sunar. İlgili sınıf kullanılarak her yeni nesne yaratımında
-   ilk önce ilklendirici olarak adlandırılan bu fonksiyon çalıstırılır.
-   Kullanım şekli sebebiyle nesnenin her türlü kullanımından önce çalıştırılması
-   uygundur.
+    PHP 5 geliştiricilerin sınıflar için kurucu yöntemler bildirmesine
+    imkan verir. Bir kurucu yöntemi olan sınıflar her yeni nesne
+    oluşturuluşunda bu yöntemi çağırırlar, bu bakımdan nesne kullanılmadan
+    önce yapılması gereken ilklendirmeler için kurucular çok uygundur.
    </para>
    <note>
     <simpara>
-    Alt (child) sınıf tarafından tanımlı bir ilklendrici fonksiyon bulunuyorsa
-    ana sınıfa ait ilklendirici otomatik olarak çalistirilmaz. Ana ilklendirici
-    fonksiyonun çalistirilabilmesi için, alt ilklendirici içerisinde
-     <function>parent::__construct</function> fonksiyonunun çağrılmasi
-     gereklidir.
+     Çocuk sınıflardan kurucusu olanlar için örtük olarak ebeveyn sınıfın
+     kurucusu çağrılmaz. Ebeveyn sınıfın kurucusunu çocuk sınıftan çağırmak
+     için, çocuk sınıf içinden <function>parent::__construct</function>
+     çağrısı yapılması gerekir.
     </simpara>
    </note>
    <example>
-    <title>Yeni birleştirilmiş ilklendiricilerin kullanılması</title>
+    <title>- Yeni tekilleşmiş kurucuların kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class BaseClass {
+class AnaSınıf {
    function __construct() {
-       print "BaseClass ilklendiricisi içerisindeyim\n";
+       print "AnaSınıf kurucusundayız\n";
    }
 }
 
-class SubClass extends BaseClass {
+class AltSınıf extends AnaSınıf {
    function __construct() {
        parent::__construct();
-       print "SubClass ilklendiricisi içerisindeyim\n";
+       print "AltSınıf kurucusundayız\n";
    }
 }
 
-$obj = new BaseClass();
-$obj = new SubClass();
-?> 
+$obj = new AnaSınıf();
+$obj = new AltSınıf();
+?>
 ]]>
     </programlisting>
    </example>
    <para>
-   Geriye dönük uyumluluk için, PHP 5 ilgili sınıfa ait bir
-    <function>__construct</function> fonksiyonu bulamazsa,
-    sınıfin isminin kullanildigi eski tip ilklendirici fonksiyon olup olmadigina
-    bakacaktir. Dolayisiyla, uyumluluk problemi yasayacaginiz tek durum sınıf
-    dahilinde <function>__construct</function> isimli bir fonksiyonun ilklendirici
-    amaci disinda kullanilmasi ile olusabilir.
+    Geriye dönük uyumluluk için, PHP 5 belirtilen sınıfa ait bir
+    <function>__construct</function> yöntemi bulamazsa, sınıfın ismine
+    bakarak eski tarz bir kurucu arayacaktır. Dolayısıyla, uyumluluk sorunu
+    yaşayacağınız tek durum sınıf dahilinde <function>__construct</function>
+    isimli bir yöntemin amacı dışında kullanılması olabilir.
    </para>
   </sect2>
 
   <sect2 xml:id="language.oop5.decon.destructor">
-   <title>sonlandırıcı (Destructor)</title>
+   <title>Yıkıcılar</title>
    <methodsynopsis>
     <type>void</type><methodname>__destruct</methodname>
     <void />
    </methodsynopsis>
    <para>
-   PHP 5, C++ gibi nesne-yönelimli dillerdekine benzer bir sonlandırıcı
-   konsepti sunar. sonlandırıcı metod belirli bir nesneye yönelik tüm referanslar
-   kaldirildiginda ya da nesne tamamen yok edildiğinde çalıstırılacaktır.
+    PHP 5, C++ gibi nesne yönelimli dillerdekine benzer bir yıkıcı tasarımına
+    sahiptir. Yıkıcı yöntem, belli bir nesneye yönelik tüm gönderimler
+    kaldırıldığı ya da nesne kapanma sırasında açıkça yok edildiği anda
+    çalıştırılacaktır.
    </para>
    <example>
-    <title>Sonlandırıcı Örneği</title>
+    <title>- Yıkıcı Örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class MyDestructableClass {
+class YıkıcıSınıf {
    function __construct() {
-       print "Ilklendirici içinde\n";
-       $this->name = "MyDestructableClass";
+       print "Kurucu çalıştı\n";
+       $this->name = "YıkıcıSınıf";
    }
 
    function __destruct() {
@@ -88,26 +89,28 @@ class MyDestructableClass {
    }
 }
 
-$obj = new MyDestructableClass();
-?> 
+$obj = new YıkıcıSınıf();
+?>
 ]]>
     </programlisting>
    </example>
    <para>
-   Ilklendiricilerde oldugu gibi, ana sonlandırıcı uygulama tarafindan otomatik
-   olarak çagrilmayacaktir. Ana sonlandırıcınin çalismasi için, birisi tarafindan
-   <function>parent::__destruct</function> fonksiyonunun çalistirilmasi gerekir.
+    Kurucularda olduğu gibi ebeveyn yıkıcılar çocuk sınıflar için dolaylı
+    olarak çağrılmayacaktır. Ebeveyn sınıfın yıkıcısının çalışması için çocuk
+    sınıfın yıkıcısından <function>parent::__destruct</function> çağrısının
+    yapılması gerekir.
    </para>
    <note>
     <para>
-    sonlandırıcılar betik sonlanirken çalıştırılır, böylece başlık (header) bölümünün
-    her zaman halihazirda gönderilmiş olması sağlanır.
+      Yıkıcılar, HTTP başlıklarının gönderilmiş olmasını sağlamak için betik
+      sonlanırken çağrılırlar. Betiğin kapanma aşamasındaki çalışma dizini
+      bazı SAPI’lerde (Apache gibi) farklı olabilir.
     </para>
    </note>
    <note>
     <para>
-    Bir sonlandırıcı içerisinden istisna oluşturmaya çalışmak ölümcül hata ile
-    sonuçlanir.
+      Bir yıkıcı içinden bir istisna oluşturmaya çalışmak (betiğin
+      sonlandırılması sırasında) ölümcül hata ile sonuçlanır.
     </para>
    </note>
   </sect2>
