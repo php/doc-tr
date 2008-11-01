@@ -1,132 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/cloning.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.6 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.cloning" xmlns="http://docbook.org/ns/docbook">
-  <title>Nesne klonlama</title>
-  
+  <title>Nesne kopyalama</title>
+
   <para>
-  Bir nesnenin tüm özelliklerinin aynen kopyalanarak çoğaltılması her zaman
-  istenilen durum değildir. İlklendirici fonksiyonların kopyalanması iyi bir örnektir,
-  bir GTK penceresini temsil eden bir nesneniz varsa ve bu nesne GTK penceresine
-  ait kaynağı tutuyorsa, bu nesnenin kopyasını yarattığınızda, yeni nesnenin
-  önceki pencere ile aynı özelliklere sahip yeni bir pencereye sahip olmasını
-  ve önceki nesne ile aynı şekilde pencereye ait kaynağı tutuyor olmasını
-  isteyebilirsiniz. Bir diğer örnek, nesneniz başka bir nesneye ait bir referans
-  tutuyorsa, ana nesne üzerinde bir işlem yapıldığında diğer nesnenin yeni bir
-  örneğinin yaratılmasını isteyebilirsiniz, böylece yapılan işlem sonucunun kendine
-  ait bir kopyaya sahip olmasını sağlayabilirsiniz.
+    Bir nesnenin tüm özelliklerinin aynen kopyalanarak çoğaltılması her zaman
+    istenilen durum değildir. Kurucuların kopyalanması iyi bir örnektir,
+    bir GTK penceresini temsil eden bir nesneniz varsa ve bu nesne GTK
+    penceresine ait özkaynağı tutuyorsa, bu nesnenin kopyasını
+    oluşturduğunuzda, yeni nesnenin önceki pencere ile aynı özelliklere sahip
+    yeni bir pencereye sahip olmasını ve önceki nesne ile aynı şekilde
+    pencereye ait özkaynağı tutuyor olmasını isteyebilirsiniz. Bir diğer
+    örnek, nesneniz kullandığı başka bir nesneye ait bir gönderim tutuyorsa,
+    ebeveyn nesne kopyalandığında diğer nesnenin de yeni bir örneğinin
+    oluşturulmasını isteyebilirsiniz, yani ebeveynin kopyasının kendine ait
+    ayrı bir kopyası olur.
   </para>
 
   <para>
-  Clone anahtar sözcüğü kullanılarak bir nesneye ait kopya yaratılabilir
-  (mümkünse nesnenin __close() metodu çağrılır). Bir nesnenin __clone()
-  metodu direk olarak çağrılamaz.
+   Bir nesnenin kopyası (mümkünse nesnenin <code>__clone()</code> yöntemini
+   çağıran) <code>clone</code> anahtar sözcüğü kullanılarak oluşturulur. Bir
+   nesnenin <code>__clone()</code> yöntemi doğrudan doğruya çağrılamaz.
   </para>
 
   <informalexample>
    <programlisting>
 <![CDATA[
-$copy_of_object = clone $object;
+$nesnenin_kopyası = clone $object;
 ]]>
    </programlisting>
   </informalexample>
 
   <para>
-  Bir nesne klonlandığında, PHP 5 nesnenin tüm özelliklerinin yüzeysel bir
-  kopyasını çıkartacaktır. Başka değişkenlere ait referans tutan tüm özellikler,
-  referans olarak kalacaktır. Bir __clone() metodu tanımlanmışsa, 
-  yeni yaratılan nesneye ait __clone() metodu çağrılacak, böylece olası
-  değişiklik gerektiren tüm özellikler güncellenecektir.
+    Bir nesne kopyalandığında, PHP 5 nesnenin tüm özelliklerinin yüzeysel bir
+    kopyasını çıkartacaktır. Diğer değişkenlere birer gönderim olan tüm
+    özellikler gönderim olarak kalacaktır. Bir <code>__clone()</code> yöntemi
+    tanımlanmışsa, değişmesi gereken lüzumlu tüm özelliklere izin vermek için
+    yeni oluşturulan nesnenin <code>__clone()</code> yöntemi çağrılacaktır.
   </para>
 
   <example>
-   <title>Bir nesnenin klonlanması</title>
+   <title>- Bir nesnenin kopyalanması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-class SubObject
+class AltNesne
 {
-    static $instances = 0;
-    public $instance;
+    static $örnek_sayısı = 0;
+    public $örnek;
 
     public function __construct() {
-        $this->instance = ++self::$instances;
+        $this->örnek = ++self::$örnek_sayısı;
     }
 
     public function __clone() {
-        $this->instance = ++self::$instances;
+        $this->örnek = ++self::$örnek_sayısı;
     }
 }
 
-class MyCloneable
+class KopyalanabilirNesnem
 {
-    public $object1;
-    public $object2;
+    public $nesne1;
+    public $nesne2;
 
     function __clone()
     {
-        // Force a copy of this->object, otherwise
-        // it will point to same object.
-        $this->object1 = clone($this->object1);
+        // this->nesne1'in bir kopyasını oluşturmak için
+        // zorlayalım, yoksa aynı nesneyi gösterecek.
+        $this->nesne1 = clone $this->nesne1;
     }
 }
 
-$obj = new MyCloneable();
+$nes = new KopyalanabilirNesnem();
 
-$obj->object1 = new SubObject();
-$obj->object2 = new SubObject();
+$nes->nesne1 = new AltNesne();
+$nes->nesne2 = new AltNesne();
 
-$obj2 = clone $obj;
+$nes2 = clone $nes;
 
 
-print("Original Object:\n");
-print_r($obj);
+print("Özgün Nesne:\n");
+print_r($nes);
 
-print("Cloned Object:\n");
-print_r($obj2);
-
-?> 
-]]>
-   </programlisting>
+print("Kopya Nesne:\n");
+print_r($nes2);
+?>
+]]></programlisting>
    &example.outputs;
    <screen role="php">
 <![CDATA[
-Original Object:
-MyCloneable Object
+Özgün Nesne:
+KopyalanabilirNesnem Object
 (
-    [object1] => SubObject Object
+    [nesne1] => AltNesne Object
         (
-            [instance] => 1
+            [örnek] => 1
         )
 
-    [object2] => SubObject Object
+    [nesne2] => AltNesne Object
         (
-            [instance] => 2
+            [örnek] => 2
         )
 
 )
-Cloned Object:
-MyCloneable Object
+Kopya Nesne:
+KopyalanabilirNesnem Object
 (
-    [object1] => SubObject Object
+    [nesne1] => AltNesne Object
         (
-            [instance] => 3
+            [örnek] => 3
         )
 
-    [object2] => SubObject Object
+    [nesne2] => AltNesne Object
         (
-            [instance] => 2
+            [örnek] => 2
         )
 
 )
-]]>
-
-   </screen>
+]]></screen>
 
   </example>
 
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

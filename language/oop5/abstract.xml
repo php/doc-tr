@@ -1,89 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/abstract.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.15 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.abstract" xmlns="http://docbook.org/ns/docbook">
-  <title>Sınıf Soyutlama (Class Abstraction)</title>
+  <title>Sınıf Soyutlama</title>
 
   <para>
-  PHP 5, soyut (abstract) sınıf ve metodların kullanımını mümkün kılmıştır.
-  Soyut olarak tanımlanmış bir sınıftan örnek (instance) yaratılmasına izin
-  verilmemektedir. Bir sınıf en az bir soyut metod içeriyorsa, o sınıf da
-  soyut olarak tanımlanmalıdır. Soyut olarak tanımlanmış metodlar o metodun
-  imzasıdır, uygulamanın bütünü temsil edemezler.
+    PHP 5, soyut sınıf ve yöntemlerin kullanımını mümkün kılmıştır. Soyut
+    olarak tanımlanmış bir sınıftan örnek oluşturmaya izin verilmemektedir.
+    Bir sınıf en az bir soyut yöntem içeriyorsa, o sınıf da soyut olarak
+    tanımlanmalıdır. Soyut olarak tanımlanmış yöntemler o yöntemlerin
+    imzasıdırlar, gerçeklemenin bütününü temsil edemezler.
   </para>
 
   <para>
-  Soyut bir sınıftan kalıtsal özellikleri devralırken, ana sınıfın tanımında
-  soyut olarak belirtilmiş tüm metodların alt sınıf tarafından da tanımlanması
-  gerekir. Ek olarak, bu metodların aynı (ya da daha düşük)
-  <link linkend="language.oop5.visibility">görünürlükte</link>
-  tanımlanması gereklidir. Örneğin, soyut metod protected olarak tanımlandı ise,
-  kurulumu yapılan fonksiyon ya protected ya da public olarak tanımlanmalıdır.
+    Soyut bir sınıftan kalıtsal özellikler devralınırken, ebeveyn sınıf
+    bildiriminde soyut olarak bildirilmiş tüm yöntemlerin çocuk sınıf
+    tarafından da tanımlanması gerekir. Ek olarak, bu yöntemlerin aynı (ya da
+    daha az sınırlı) <link linkend="language.oop5.visibility"
+    >görünürlükle</link> tanımlanması gerekir. Örneğin, soyut yöntem
+    <code>protected</code> olarak tanımlanmışsa, işlev gerçeklenimi
+    <code>private</code> değil, <code>protected</code> ya da
+    <code>public</code> olarak tanımlanmalıdır.
   </para>
 
   <example>
-   <title>Soyut sınıf örneği</title>
+   <title>- Soyut sınıf örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-abstract class AbstractClass
+abstract class SoyutSınıf
 {
-    // Genişletilen sınıfı bu metodu tanımlamaya zorla
-    abstract protected function getValue();
-    abstract protected function prefixValue($prefix);
+    // Genişletilen sınıfı bu yöntemi tanımlamaya zorla
+    abstract protected function değeriAl();
+    abstract protected function önekDeğeri($önek);
 
-    // Ortak metod
-    public function printOut() {
-        print $this->getValue() . "\n";
+    // Ortak yöntem
+    public function yazdır() {
+        print $this->değeriAl() . "\n";
     }
 }
 
-class ConcreteClass1 extends AbstractClass
+class SomutSınıf1 extends SoyutSınıf
 {
-    protected function getValue() {
-        return "ConcreteClass1";
+    protected function değeriAl() {
+        return "SomutSınıf1";
     }
 
-    public function prefixValue($prefix) {
-        return "{$prefix}ConcreteClass1";
+    public function önekDeğeri($önek) {
+        return "{$önek}SomutSınıf1";
     }
 }
 
-class ConcreteClass2 extends AbstractClass
+class SomutSınıf2 extends SoyutSınıf
 {
-    public function getValue() {
-        return "ConcreteClass2";
+    public function değeriAl() {
+        return "SomutSınıf2";
     }
 
-    public function prefixValue($prefix) {
-        return "{$prefix}ConcreteClass2";
+    public function önekDeğeri($önek) {
+        return "{$önek}SomutSınıf2";
     }
 }
 
-$class1 = new ConcreteClass1;
-$class1->printOut();
-echo $class1->prefixValue('FOO_') ."\n";
+$class1 = new SomutSınıf1;
+$class1->yazdır();
+echo $class1->önekDeğeri('FOO_') ."\n";
 
-$class2 = new ConcreteClass2;
-$class2->printOut();
-echo $class2->prefixValue('FOO_') ."\n";
+$class2 = new SomutSınıf2;
+$class2->yazdır();
+echo $class2->önekDeğeri('FOO_') ."\n";
 ?>
 ]]>
    </programlisting>
    &example.outputs;
    <screen>
 <![CDATA[
-ConcreteClass1
-FOO_ConcreteClass1
-ConcreteClass2
-FOO_ConcreteClass2
+SomutSınıf1
+FOO_SomutSınıf1
+SomutSınıf2
+FOO_SomutSınıf2
 ]]>
    </screen>
   </example>
 
   <para>
-  Kullanıcı tarafından tanımlanmamış  'soyut' ismini taşıyan sınıfları ve fonksiyonları
-  içeren eski kodlar, bir değişikliğe gerek duyulmadan çalışabilir durumdadır.
+    Kullanıcı tanımlı sınıfları veya 'abstract' isimli işlevleri olmayan eski
+    kodun bir değişikliğe gerek duyulmadan çalışabilmesi gerekir.
   </para>
  </sect1>
 
