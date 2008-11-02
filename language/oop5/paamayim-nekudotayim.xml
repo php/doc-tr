@@ -1,115 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/paamayim-nekudotayim.xml,v 1.4 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.paamayim-nekudotayim" xmlns="http://docbook.org/ns/docbook">
-  <title>Kapsam Çözünürlük Operatörü (Scope Resolution Operator (::))</title>
+  <title>Etki Alanı Çözünürlük İşleci (::)</title>
 
   <para>
-  Kapsam Çözünürlük Operatörü (aynı zamanda Paamayim Nekudotayim olarak bilinir)
-  ya da daha basit terimlerle iki nokta üst üste,
-  <link linkend="language.oop5.static">static</link>,
-  <link linkend="language.oop5.constants">constant</link> ve
-  bir sınıfın iptal edilmiş öğelerine ya da metodlarına erişilebilmesini
-  sağlayan bir simgedir.
+    Etki Alanı Çözünürlük İşleci (Paamayim Nekudotayim de denirmiş), basitçe
+    bir çift iki nokta iminden ibaret olup (biz "iki nokta çifti"
+    diyebiliriz), bir sınıfın <link linkend="language.oop5.static"
+    >duruk</link>, <link linkend="language.oop5.constants">sabit</link> ve
+    geçersiz kılınmış üye ve yöntemlerine erişilebilmesini sağlayan bir
+    simgedir.
   </para>
 
   <para>
-  Bu öğelere sınıf tanımlamasının dışında bir yerden referans vermek istediğinizde,
-  sınıfın ismini kullanın.
+    Bu öğelere sınıf tanımının dışından erişirken bu işlecin solunda sınıfın
+    ismini kullanın.
   </para>
 
   <para>
-  Paamayim Nekudotayim ilk bakışta iki nokta üst üste için garip bir adlandırma
-  gibi gözükebilir. Ancak, Zend Engine 0.5 (php 3'ün kalbidir) yazıldığı esnada
-  Zend ekibinin kullanmak istediği terim bu oldu. Esasında bu iki sözcük de
-  iki nokta üst üste anlamına gelmektedir - İbranice'de!
+   PHP 5.3.0 ve sonrasında, bu işlecin solunda sınıf ismi yerine bir değişken
+   kullanmak da mümkündür. Değişken ismi, (<literal>self</literal>,
+   <literal>parent</literal>, <literal>static</literal> gibi) bir anahtar
+   sözcük olmamalıdır.
+  </para>
+
+  <para>
+    <quote>Paamayim Nekudotayim</quote> ilk bakışta iki nokta üst üste için
+    garip bir adlandırma gibi gözükebilir. Ancak, Zend Engine 0.5 (php 3'ün
+    kalbidir) yazıldığı esnada Zend ekibinin kullanmak istediği terim bu
+    oldu. Esasında bu iki sözcük de iki nokta çifti anlamına gelmektedir -
+    İbranice'de!
   </para>
 
   <example>
-   <title>:: sınıf tanımlamasının dışında</title>
+   <title>- Sınıf tanımı dışında ::</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-class MyClass {
-    const CONST_VALUE = 'Bir değişmez değeri';
+class Sınıfım {
+    const SABİT_DEĞER = 'Bir sabit değer';
 }
 
-echo MyClass::CONST_VALUE;
+echo Sınıfım::SABİT_DEĞER;
 ?>
 ]]>
    </programlisting>
   </example>
 
   <para>
-  İki özel anahtar sözcük <varname>self</varname> ve <varname>parent</varname>
-  bir sınıfın öğelerine ya da metodlarına sınıfın içinden erişilmek istendiğinde
-  kullanılır.
+    Bir sınıfın üye ve yöntemlerine bu işleç sayesinde sınıfın içinden
+    erişilmek istendiğinde işlecin solunda <varname>self</varname> veya
+    <varname>parent</varname> anahtar sözcüğü kullanılır.
   </para>
 
   <example>
-   <title>:: sınıf tanımlamasının içinde</title>
+   <title>- Sınıf tanımı içinde ::</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-class OtherClass extends MyClass
+class BaşkaSınıf extends Sınıfım
 {
-    public static $my_static = 'static var';
+    public static $duruk = 'Bir duruk değişken';
 
-    public static function doubleColon() {
-        echo parent::CONST_VALUE . "\n";
-        echo self::$my_static . "\n";
+    public static function ikiNoktaÇifti() {
+        echo parent::SABİT_DEĞER . "\n";
+        echo self::$duruk . "\n";
     }
 }
 
-OtherClass::doubleColon();
+$sınıfadı = 'BaşkaSınıf';
+echo $sınıfadı::ikiNoktaÇifti(); // PHP 5.3.0 ve sonrası
+
+BaşkaSınıf::ikiNoktaÇifti();
 ?>
 ]]>
    </programlisting>
   </example>
 
   <para>
-  Bir sınıf genişletildiğinde (extending) alt metodlar ana metodların üzerine
-  yazılır. Bu durumda, PHP ana sınıfa ait metodu çağırmaz. Ana sınıfa ait metodun
-  çalıştırılıp çalıştırılmayacağı, genişletilmiş sınıfın insiyatifindedir.
-  Bu durum aynı zamanda <link
-   linkend="language.oop5.decon">İlklendiriciler ve Sonlandırıcılar</link>, <link
-   linkend="language.oop5.overloading">Overloading</link>, ve <link
-   linkend="language.oop5.magic">Magic</link> matod tanımlamaları için de
-   geçerlidir.
+    Çocuk sınıf ebeveyninin yöntem tanımlarından birini geçersiz kıldığı
+    takdirde PHP ebeveyne ait yöntemi çağıramayacaktır. Ebeveynin yönteminin
+    çağrılıp çağrılmayacağı çocuk sınıfın inisiyatifindedir. Bu durum aynı
+    zamanda <link linkend="language.oop5.decon">Kurucular ve
+    Yıkıcılar</link>, <link linkend="language.oop5.overloading">Aşırı
+    Yükleme</link> ve <link linkend="language.oop5.magic">Sihirli</link>
+    yöntem tanımları için de geçerlidir.
   </para>
 
   <example>
-   <title>Ana sınıfa ait metodu çağırmak</title>
+   <title>- Ebeveynin yöntemini çağırmak</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-class MyClass
+class Sınıfım
 {
-    protected function myFunc() {
-        echo "MyClass::myFunc()\n";
+    protected function işlevim() {
+        echo "Sınıfım::işlevim()\n";
     }
 }
 
-class OtherClass extends MyClass
+class BaşkaSınıf extends Sınıfım
 {
-    // Ana sınıfın tanımlaması ezilir
-    public function myFunc()
+    // Ebeveynin tanımını geçersiz kılalım
+    public function işlevim()
     {
-        // Ama hala ana fonksiyonu çağırabilir
-        parent::myFunc();
-        echo "OtherClass::myFunc()\n";
+        // Ama hala ebeveynin işlevini çağırabiliriz
+        parent::işlevim();
+        echo "BaşkaSınıf::işlevim()\n";
     }
 }
 
-$class = new OtherClass();
-$class->myFunc();
+$class = new BaşkaSınıf();
+$class->işlevim();
 ?>
 ]]>
    </programlisting>
   </example>
 
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

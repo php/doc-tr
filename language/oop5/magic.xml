@@ -1,96 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/magic.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.20 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
-  <title>Sihirli (Magic) Metodlar</title>
+  <title>Sihirli Yöntemler</title>
   <para>
-   <literal>__construct</literal>,
-   <literal>__destruct</literal>
-   (bakiniz <link linkend="language.oop5.decon">Ilklendiriciler ve Sonlandiricilar</link>),
-   <literal>__call</literal>,
-   <literal>__get</literal>,
-   <literal>__set</literal>,
-   <literal>__isset</literal>,
-   <literal>__unset</literal>
-   (bakiniz <link linkend="language.oop5.overloading">Overloading</link>),
-   <literal>__sleep</literal>,
-   <literal>__wakeup</literal>,
-   <literal>__toString</literal>,
-   <literal>__set_state</literal>,
-   <link linkend="language.oop5.cloning">__clone</link> ve
-   <link linkend="language.oop5.autoload">__autoload</link>
-   fonksiyonlari, PHP siniflari içerisinde sihirli fonksiyonlar olarak bilinir.
-   Bir sinif içerisinde, yukaridaki fonksiyon isimlerini ancak bu fonksiyonlarin
-   sihirli özelliklerinden faydalanmak istediginizde kullanabilirsiniz.
+   <literal>__construct</literal>, <literal>__destruct</literal>
+   (bak: <link linkend="language.oop5.decon">Kurucular ve Yıkıcılar</link>),
+   <literal>__call</literal>, <literal>__callStatic</literal>,
+   <literal>__get</literal>, <literal>__set</literal>,
+   <literal>__isset</literal>, <literal>__unset</literal>
+   (bak: <link linkend="language.oop5.overloading">Aşırı yükleme</link>),
+   <literal>__sleep</literal>, <literal>__wakeup</literal>,
+   <literal>__toString</literal>, <literal>__set_state</literal> ve
+   <link linkend="language.oop5.cloning">__clone</link> işlev isimleri PHP
+   sınıflarında sihirli işlemler yaparlar. İşlevlerinize sihirli bir
+   işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
+   ismi olarak kullanamazsınız.
   </para>
 
   <caution>
    <simpara>
-   PHP __ ile baslayan tüm fonksiyon isimlerini sihirli olarak ayirmistir.
-   Bu sebeple __ ile baslayan fonksiyon isimleri kullanmamanizi öneririz.
+   PHP, __ ile baslayan tüm işlev isimlerini sihirli işlevlere ayırmıştır.
+   Belgelenmiş bir kaç sihirli işlevsellik dışında __ ile başlayan işlev
+   isimleri kullanmamanızı öneririz.
    </simpara>
   </caution>
- 
+
   <sect2 xml:id="language.oop5.magic.sleep">
-   <title><literal>__sleep</literal> ve <literal>__wakeup</literal></title>
+   <title><code>__sleep</code> ve <code>__wakeup</code></title>
    <para>
-    <function>serialize</function> fonksiyonu, sinifiniza dahil bir
-    sihirli <literal>__sleep</literal> fonksiyonu olup olmadigini kontrol eder.
-    Bu fonksiyon mevcutsa, serialization isleminden önce bu fonksiyon çalistirilir.
-    Bu fonksiyon ile nesne üzerinde temizlik yapabilir ve serialize edilmesi
-    gereken nesneye ait tüm degiskenleri içeren bir dizinin döndürülmesini
-    saglayabilirsiniz.
+    <function>serialize</function> işlevi, sınıfınızın <code>__sleep</code>
+    adında sihirli bir işleve sahip olup olmadığına bakar. Böyle bir işlev
+    varsa herhangi bir serileştirme işleminden önce bu işlev çalıştırılır.
+    Bu işlev ile nesne üzerinde temizlik yapabilir ve serileştirilmesi
+    gereken nesnenin tüm değişken isimlerinin bir dizi halinde döndürülmesini
+    sağlayabilirsiniz. Eğer işlev hiçbir şey döndürmemişse &null;
+    serileştirilir ve bir E_NOTICE çıktılanır.
    </para>
    <para>
-   <literal>__sleep</literal> fonksiyonunun alisilageldik kullaniminda
-   tüm veritabani baglantilari kapatilir, beklemede olan veri islemlerinin
-   onaylanmasi ve benzeri temizleme islemleri de buna dahildir.
-   Tümüyle kaydedilmesi gerekmeyen büyük veri parçalari sözkonusu oldugunda
-   yine bu fonksiyondan faydalanabilirsiniz.
+    <code>__sleep</code> işlevinin asıl kullanım amacı askıdaki veriyi
+    göndermek gibi temizliğe benzer işlemler yapmaktır. Ayrıca, tümüyle
+    kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu olduğunda da bu
+    işlevden yararlanabilirsiniz.
    </para>
    <para>
-   <function>unserialize</function> fonksiyonu tersine bir islem yaparak
-   <literal>__wakeup</literal> sihirli fonksiyonunun varligini arastirir.
-   Bu fonksiyon mevcutsa, nesnenin sahip oldugu tüm kaynaklar yeniden
-   olusturulmaya çalisilir.
+    <function>unserialize</function> işlevi tersine bir işlem yaparak
+    <code>__wakeup</code> adında bir sihirli işlevin varlığını araştırır.
+    Böyle bir işlev varsa, bu işlev nesnenin sahip olduğu tüm özkaynakları
+    yeniden oluşturabilir.
    </para>
    <para>
-   <literal>__wakeup</literal> fonksiyonunun alisilageldik kullanimi,
-   serialization islemi sirasinda kaybolan veritabani baglantilarinin yeniden kurulmasidir.
-   Ayrica nesne ile ilgili diger baslangiç islemleri de gerçeklestirilebilir.
+    <code>__wakeup</code> işlevinin asıl kullanım amacı, serileştirme
+    sırasında kaybedilebilen veritabanı bağlantılarını yeniden oluşturmak ve
+    diğer ilklendirme işlemlerini yeniden yapmaktır.
    </para>
    <example>
-    <title>Sleep ve wakeup</title>
+    <title>- Uyutma ve uyandırma</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class Connection {
-    protected $link;
-    private $server, $username, $password, $db;
-    
-    public function __construct($server, $username, $password, $db)
+class Bağlantı {
+    protected $hat;
+    private $sunucu, $kullanıcı, $parola, $db;
+
+    public function __construct($sunucu, $kullanıcı, $parola, $db)
     {
-        $this->server = $server;
-        $this->username = $username;
-        $this->password = $password;
+        $this->sunucu = $sunucu;
+        $this->kullanıcı = $kullanıcı;
+        $this->parola = $parola;
         $this->db = $db;
         $this->connect();
     }
-    
-    private function connect()
+
+    private function bağlan()
     {
-        $this->link = mysql_connect($this->server, $this->username, $this->password);
-        mysql_select_db($this->db, $this->link);
+        $this->hat = mysql_connect($this->sunucu, $this->kullanıcı, $this->parola);
+        mysql_select_db($this->db, $this->hat);
     }
-    
+
     public function __sleep()
     {
-        mysql_close($this->link);
+        mysql_close($this->hat);
     }
-    
+
     public function __wakeup()
     {
-        $this->connect();
+        $this->bağlan();
     }
 }
 ?>
@@ -100,17 +97,17 @@ class Connection {
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.tostring">
-   <title><literal>__toString</literal></title>
+   <title><code>__toString</code></title>
    <para>
-    <literal>__toString</literal> metodu, sinif bir karakter dizisine çevrildiginde
-    nasil davranilacagini belirler.
+    <code>__toString</code> yöntemi, sınıf bir dizgeye dönüştürüldüğünde
+    sınıfın nasıl tepki vereceğine karar vermeyi sağlar.
    </para>
    <example>
-    <title>Basit bir örnek</title>
+    <title>- Basit bir örnek</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Basit bir sinif tanimi
+// Basit bir sınıf tanımlayalım
 class TestClass
 {
     public $foo;
@@ -137,48 +134,76 @@ Merhaba
     </screen>
    </example>
    <para>
-   <literal>__toString</literal> metodu, <function>echo</function> ya da
-   <function>print</function> fonksiyonlari ile birlikte kullanilmadigi
-   sürece kendi basina bir deger tasimaz.
+    PHP 5.2.0'dan önce <code>__toString</code> yönteminin, doğrudan
+    <function>echo</function> ya da <function>print</function> işlevleri ile
+    birlikte çağrılmadıkça bir önemi yoktu. PHP 5.2.0'dan beri sadece dizge
+    bağlamlarında (<code>%s</code> değiştiricili <function>printf</function>
+    gibi) çağrılabilmekte, diğer bağlamlarda (<code>%d</code> değiştiricili
+    <function>printf</function> gibi) çağrılamamaktadır. PHP 5.2.0'dan beri
+    nesneleri <code>__toString</code> yöntemi olmaksızın dizgeye dönüştürme
+    işlemi <constant>E_RECOVERABLE_ERROR</constant> hatasına yol açmaktadır.
    </para>
-   <example>
-    <title><literal>__toString</literal> kullanildigi durumlar</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-// __toString çagrilir
-echo $class;
-
-// __toString çagrilir (echo için normal bir parametre)
-echo 'metin', $class;
-
-// __toString çagrilmaz (önce birlestirme operatörü kullanilmis)
-echo 'metin' . $class;
-
-// __toString çagrilmaz (önce karakter dizisine çevrilmis)
-echo (string) $class;
-
-// __toString çagrilmaz (önce karakter dizisine çevrilmis)
-echo "metin $class";
-?>
-]]>
-    </programlisting>
-   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.set-state">
-   <title><literal>__set_state</literal></title>
+   <title><code>__set_state</code></title>
    <para>
-    Bu <link linkend="language.oop5.static">static</link> metod, <function>var_export</function>
-    tarafindan disa aktarilmis siniflar için PHP 5.1.0 sürümünden beri kullanilmaktadir.
+    Bu <link linkend="language.oop5.static">duruk</link> yöntem, PHP 5.1.0
+    sürümünden beri <function>var_export</function> tarafından ihraç edilen
+    sınıflar için çağrılmaktadır.
    </para>
    <para>
-   Bu metod için tek parametre, <literal>array('property' => value, ...)</literal> formunda
-   disa aktarilmis özellikleri içeren bir dizidir.
+    Bu yöntemin tek değiştirgesi <code>array('özellik' => değer, ...)</code>
+    biçeminde ihraç edilen özellikleri içeren bir dizidir.
    </para>
+   <example>
+    <title>- <code>__set_state</code> kullanımı (PHP 5.1.0 ve sonrası)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class A
+{
+    public $var1;
+    public $var2;
+
+    public static function __set_state($bir_dizi) // PHP 5.1.0'dan beri
+    {
+        $obj = new A;
+        $obj->var1 = $bir_dizi['var1'];
+        $obj->var2 = $bir_dizi['var2'];
+        return $obj;
+    }
+}
+
+$a = new A;
+$a->var1 = 5;
+$a->var2 = 'foo';
+
+eval('$b = ' . var_export($a, true) . ';'); // $b = A::__set_state(array(
+                                            //    'var1' => 5,
+                                            //    'var2' => 'foo',
+                                            // ));
+var_dump($b);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+object(A)#2 (2) {
+  ["var1"]=>
+  int(5)
+  ["var2"]=>
+  string(3) "foo"
+}
+]]>
+    </screen>
+   </example>
   </sect2>
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
