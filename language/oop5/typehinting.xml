@@ -1,113 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/typehinting.xml,v 1.3 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.6 Maintainer: nilgun Status: working -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.typehinting" xmlns="http://docbook.org/ns/docbook">
-  <title>Tip Belirtme (Type Hinting)</title>
+  <title>Tür Dayatma</title
+    >
   <para>
-  PHP 5, Tip Belirtme (Type Hinting) özelligine sahiptir. Artik fonksiyonlar,
-  paremetreleri nesne olma (fonksiyon prototipinde sinifin ismini belirterek) ya da dizi olma (PHP 5.1'den itibaren) konusunda zorlayabilmektedirler.
+    PHP 5, Tür Dayatma özelliğine sahiptir. İşlevler artık değiştirgelerinde
+    belli bir nesne veya (PHP 5.1 ve sonrasında) bir dizi belirtilmesi için
+    zorlayıcı olabilmektedir.
   </para>
-  
+
   <example>
-   <title>Tip Belirtme örnekleri</title>
+   <title>- Tür dayatma örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Örnek bir sinif
-class MyClass
+// Şöyle bir sınıfımız olsun
+class Sınıfım
 {
     /**
-     * Bir test fonksiyonu
+     * Bir nesne sınama işlevi
      *
-     * Ilk parametre OtherClass tipinde bir nesne olmalidir
+     * İlk değiştirge ÖbürSınıf türünde bir nesne olmalı
      */
-    public function test(OtherClass $otherclass) {
-        echo $otherclass->var;
+    public function nesne_dnm(ÖbürSınıf $diğersınıf) {
+        echo $diğersınıf->değişken;
     }
 
 
     /**
-     * Bir diger test fonksiyonu
+     * Bir dizi sınama işlevi
      *
-     * Ilk parametre bir dizi olmalidir
+     * İlk değiştirge bir dizi olmalı
      */
-    public function test_array(array $input_array) {
-        print_r($input_array);
+    public function dizi_dnm(array $dizi_girdisi) {
+        print_r($dizi_girdisi);
     }
 }
 
-// Bir diger örnek sinif
-class OtherClass {
-    public $var = 'Merhaba Dünya';
+// Bu da öbür sınıfımız olsun
+class ÖbürSınıf {
+    public $değişken = 'Merhaba Dünya';
 }
 ?>
 ]]>
    </programlisting>
    <para>
-   Tip belirtme kuralina uymamak ölümcül hata ile sonuçlanir.
+    Dayatılan türe uymamanın sonucu yakalanabilir bir ölümcül hatadır.
    </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Her iki siniftan da bir örnek olusturalim
-$myclass = new MyClass;
-$otherclass = new OtherClass;
+// Her iki sınıftan birer örnek oluşturalım
+$sınıfım = new Sınıfım;
+$diğersınıf = new ÖbürSınıf;
 
-// Ölümcül Hata: Argüman 1 OtherClass sinifindan bir nesne olmalidir
-$myclass->test('hello');
+// Ölümcül Hata: 1. değiştirge ÖbürSınıf türünde bir nesne olmalıdır
+$sınıfım->nesne_dnm('hello');
 
-// Ölümcül Hata: Argüman 1 OtherClass sinifindan bir örnek olmalidir
-$foo = new stdClass;
-$myclass->test($foo);
+// Ölümcül Hata: 1. değiştirge ÖbürSınıf türünde bir nesne örneği olmalıdır
+$foo = new stdSınıf;
+$sınıfım->nesne_dnm($foo);
 
-// Ölümcül Hata: Argüman 1 null olmamalidir
-$myclass->test(null);
+// Ölümcül Hata: 1. değiştirge null olmamalıdır
+$sınıfım->nesne_dnm(null);
 
-// Çalisir: Merhaba Dünya yazdirir
-$myclass->test($otherclass);
+// Bu çalışır: Merhaba Dünya yazdırır
+$sınıfım->nesne_dnm($otherclass);
 
-// Ölümcül Hata: Argüman 1 bir dizi olmalidir
-$myclass->test_array('bir metin');
+// Ölümcül Hata: 1. değiştirge bir dizi olmalıdır
+$sınıfım->dizi_dnm('bir metin');
 
-// Çalisir: Diziyi yazdirir
-$myclass->test_array(array('a', 'b', 'c'));
+// Bu çalışır: Diziyi yazdırır
+$sınıfım->dizi_dnm(array('a', 'b', 'c'));
 ?>
 ]]>
    </programlisting>
    <para>
-   Tip belirtme ayni zamanda fonksiyonlarla da çalisir:
+    Tür dayatma işlevlerle de çalışır:
    </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Örnek bir sinif
-class MyClass {
-    public $var = 'Merhaba Dünya';
+// Şöyle bir sınıfımız olsun
+class Sınıfım {
+    public $değişken = 'Merhaba Dünya';
 }
 
 /**
- * Bir test fonksiyonu
+ * Bir işlev sınama işlevi
  *
- * Ilk parametre MyClass tipinde bir nesne olmalidir
+ * İlk değiştirge Sınıfım türünde bir nesne olmalı
  */
-function MyFunction (MyClass $foo) {
-    echo $foo->var;
+function İşlevim (Sınıfım $birsınıf) {
+    echo $birsınıf->değişken;
 }
 
-// Çalisir
-$myclass = new MyClass;
-MyFunction($myclass);
+// Bu çalışır
+$sınıfım = new Sınıfım;
+İşlevim($sınıfım);
+?>
+]]>
+   </programlisting>
+   <para>
+    Tür dayatırken NULL değere izin verilir:
+   </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+/* NULL değerin kabul edilmesi */
+function deneme(stdSınıf $obj = NULL) {
+
+}
+
+deneme(NULL);
+deneme(new stdSınıf);
+
 ?>
 ]]>
    </programlisting>
   </example>
   <para>
-  Tip Belirtme yalnizca <type>object</type> ve <type>array</type> (PHP 5.1
-  itibariyle) tipleri için geçerlidir. Geleneksel tip belirtmede varolan
-  <type>int</type> ve <type>string</type> desteklenmemektedir.
+    Tür dayatma (PHP 5.1 itibariyle) sadece <type>object</type> veya
+    <type>array</type> türünde olabilir. <type>int</type> ve
+    <type>string</type> ile yapılan geleneksel tür dayatma
+    desteklenmemektedir.
   </para>
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
