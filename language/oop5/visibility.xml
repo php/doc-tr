@@ -1,151 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- $Header: /home/svn/phpsvn_tmp/cvsrepo/phpdoc/tr/language/oop5/visibility.xml,v 1.4 2008-01-11 08:53:45 sezer Exp $ -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.15 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: Serdar Soydemir, Sezer Yalçın -->
+<!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.visibility" xmlns="http://docbook.org/ns/docbook">
-  <title>Görünürlük (Visibility)</title>
+  <title>Görünürlük</title>
   <para>
-  Bir özelligin ya da bir metodun görünürlügü, bu özellik ya da metod tanimlanirken
-  basina eklenecek su anahtar sözcüklerle belirlenebilir: public, protected ya da
-  private. Public olarak tanimlanmis ögeler her yerden erisilebilir durumdadir.
-  Protected tanimlanmis ögelere erisim, miras alinmis ve ana siniflarla sinirlidir
-  (ve bu ögeyi tanimlayan sinif). Private tanimlanmis ögelere erisim yalnizca
-  bu ögeyi tanimlayan sinifla sinirlidir.
+    Bir özelliğin ya da bir yöntemin görünürlüğü, bildirim sırasında önüne şu
+    anahtar sözcüklerden biri getirilerek belirlenebilir:
+    <code>public</code>, <code>protected</code> ya da <code>private</code>.
+    <command>public</command> olarak bildirilmiş öğereler her yerden
+    erişilebilir. <command>protected</command> bildirimli öğelere sadece
+    miras alınmış ve ebeveyn sınıflardan (ve öğenin tanımlandığı nesneden)
+    erişilebilir. <command>private</command> bildirimli öğelere ise sadece
+    öğenin tanımlandığı sınıfın içinden erişilebilir.
   </para>
   <sect2 xml:id="language.oop5.visiblity-members">
-   <title>Ögelerin Görünürlügü</title>
+   <title>Üyelerin Görünürlüğü</title>
    <para>
-   Sinif öğeleri public, private ya da protected olarak tanimlanmalidir.
+    Sınıf üyeleri <code>public</code>, <code>protected</code> ya da
+    <code>private</code> olarak tanımlanmalıdır.
    </para>
    <para>
     <example>
-     <title>Öge tanimi</title>
+     <title>- Üye bildirimi</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 /**
- * MyClass tanimi
+ * Sınıfım tanımı
  */
-class MyClass
+class Sınıfım
 {
-    public $public = 'Genel';
-    protected $protected = 'Korumali';
-    private $private = 'Özel';
+    public $genel = 'Genel';
+    protected $korumalı = 'Korumalı';
+    private $özel = 'Özel';
 
-    function printHello()
+    function selamVer()
     {
-        echo $this->public;
-        echo $this->protected;
-        echo $this->private;
+        echo $this->genel;
+        echo $this->korumalı;
+        echo $this->özel;
     }
 }
 
-$obj = new MyClass();
-echo $obj->public; // Çalisir
-echo $obj->protected; // Ölümcül Hata
-echo $obj->private; // Ölümcül Hata
-$obj->printHello(); // Genel, Korumali ve Özel görüntüler
+$nesne = new Sınıfım();
+echo $nesne->genel;    // Çalışır
+echo $nesne->korumalı; // Ölümcül Hata
+echo $nesne->özel;     // Ölümcül Hata
+$nesne->selamVer();    // Genel, Korumalı ve Özel görüntüler
 
 
 /**
- * MyClass2 tanimi
+ * ÖbürSınıfım tanımı
  */
-class MyClass2 extends MyClass
+class ÖbürSınıfım extends Sınıfım
 {
-    // public ve protected metodlari yeniden tanimlayabiliriz, ancak private
-    // olanlar tanimlanamaz
-    protected $protected = 'Korumali2';
+    // public ve protected yöntemleri yeniden tanımlayabiliriz,
+    // ancak private olanlar tanımlanamaz
+    protected $korumalı = 'Öbür korumalı';
 
-    function printHello()
+    function selamVer()
     {
-        echo $this->public;
-        echo $this->protected;
-        echo $this->private;
+        echo $this->genel;
+        echo $this->korumalı;
+        echo $this->özel;
     }
 }
 
-$obj2 = new MyClass2();
-echo $obj->public; // Çalisir
-echo $obj2->private; // Tanimsiz
-echo $obj2->protected; // Ölümcül Hata
-$obj2->printHello(); // Genel ve Korumali2 görüntülenir ancak Private görüntülenmez
+$nesne2 = new ÖbürSınıfım();
+echo $nesne2->genel;    // Çalışır
+echo $nesne2->özel;     // Tanımsız
+echo $nesne2->korumalı; // Ölümcül Hata
+$nesne2->selamVer();    // Genel, Öbür korumalı ve Undefined görüntülenir
 
-?> 
+?>
 ]]>
      </programlisting>
     </example>
    </para>
    <note>
     <simpara>
-    PHP 4 ile birlikte kullanilan <emphasis>var</emphasis> anahtar sözcügünün
-    kullanimi PHP 5 nesneleri ile birlikte geçerliligini yitirmistir. Uyumluluk
-    açisindan bu anahtar sözcük ile tanimlanmis degiskenler öntanimli olarak
-    public görünürlük kapsaminda degerlendirilecektir. Buna ek olarak
-    <constant>E_STRICT</constant> uyarisi üretilecektir.
+      PHP 4'te bir değişken bildiriminde (<code>public</code> yerine)
+      kullanılan <emphasis>var</emphasis> anahtar sözcüğü uyumluluk adına
+      hala desteklenmektedir. PHP 5'in 5.1.3 sürümünden önceki sürümlerinde
+      <emphasis>var</emphasis> kullanımı bir <constant>E_STRICT</constant>
+      uyarısına sebep olurdu.
     </simpara>
    </note>
   </sect2>
   <sect2 xml:id="language.oop5.visiblity-methods">
-   <title>Metod Görünürlügü</title>
+   <title>Yöntem Görünürlüğü</title>
    <para>
-   Sinif metodlari public, private ya da protected olarak tanimlanabilir.
-   Tanimlama yapilmamis metodlar public olarak kabul edilir.
+    Sınıf yöntemleri <code>public</code>, <code>protected</code> ya da
+    <code>private</code> olarak tanımlanmalıdır. Herhangi bir görünürlük
+    bildirimi yapılmamış yöntemlerin <code>public</code> olarak tanımlandığı
+    varsayılır.
    </para>
    <para>
     <example>
-     <title>Metod Tanimlama</title>
+     <title>- Yöntem bildirimi</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 /**
- * MyClass tanimi
+ * Sınıfım tanımı
  */
-class MyClass
+class Sınıfım
 {
-    // Ilklendiriciler public olmalidir
+    // public kurucu bildirimi
     public function __construct() { }
 
-    // Public metod tanimi
-    public function MyPublic() { }
+    // public yöntem bildirimi
+    public function Genel() { }
 
-    // Protected metod tanimi
-    protected function MyProtected() { }
+    // protected yöntem bildirimi
+    protected function Korumalı() { }
 
-    // Private metod tanimi
-    private function MyPrivate() { }
+    // private yöntem bildirimi
+    private function Özel() { }
 
-    // Bu public metoddur
-    function Foo()
+    // Bu da public bir yöntem
+    function Falanca()
     {
-        $this->MyPublic();
-        $this->MyProtected();
-        $this->MyPrivate();
+        $this->Genel();
+        $this->Korumalı();
+        $this->Özel();
     }
 }
 
-$myclass = new MyClass;
-$myclass->MyPublic(); // Çalisir
-$myclass->MyProtected(); // Ölümcül Hata
-$myclass->MyPrivate(); // Ölümcül Hata
-$myclass->Foo(); // Public, Protected ve Private çalisir
+$sınıfım = new Sınıfım;
+$sınıfım->Genel();    // Çalışır
+$sınıfım->Korumalı(); // Ölümcül Hata
+$sınıfım->Özel();     // Ölümcül Hata
+$sınıfım->Falanca();  // Public, Protected ve Private çalisir
 
 
 /**
- * MyClass2 tanimi
+ * ÖbürSınıfım tanımı
  */
-class MyClass2 extends MyClass
+class ÖbürSınıfım extends Sınıfım
 {
-    // Bu public metoddur
-    function Foo2()
+    // Bu public bir yöntemdir
+    function Filanca()
     {
-        $this->MyPublic();
-        $this->MyProtected();
-        $this->MyPrivate(); // Ölümcül Hata
+        $this->Genel();
+        $this->Korumalı();
+        $this->Özel();  // Ölümcül Hata
     }
 }
 
-$myclass2 = new MyClass2;
-$myclass2->MyPublic(); // Çalisir
-$myclass2->Foo2(); // Public ve Protected çalisir, Private çalismaz
+$öbürSınıfım = new Sınıfım;
+$öbürSınıfım->Genel();   // Çalışır
+$öbürSınıfım->Filanca(); // Genel ve Korumalı çalışır, Özel çalışmaz
+
+class Bar
+{
+    public function dnm() {
+        $this->dnmÖzel();
+        $this->dnmGenel();
+    }
+
+    public function dnmGenel() {
+        echo "Bar::dnmGenel\n";
+    }
+
+    private function dnmÖzel() {
+        echo "Bar::dnmÖzel\n";
+    }
+}
+
+class Foo extends Bar
+{
+    public function dnmGenel() {
+        echo "Foo::dnmGenel\n";
+    }
+
+    private function dnmÖzel() {
+        echo "Foo::dnmÖzel\n";
+    }
+}
+
+$fo = new Foo();
+$fo->dnm();  // Bar::dnmÖzel
+             // Foo::dnmGenel
+
 ?>
 ]]>
      </programlisting>
@@ -153,7 +192,7 @@ $myclass2->Foo2(); // Public ve Protected çalisir, Private çalismaz
    </para>
   </sect2>
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
