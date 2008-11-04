@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.38 Maintainer: nilgun Status: working -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.39 Maintainer: nilgun Status: ready -->
 <!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.reflection" xmlns="http://docbook.org/ns/docbook">
   <title>Yansıtma</title>
@@ -34,10 +34,15 @@
   <sect2 xml:id="language.oop5.reflection.introduction">
    <title>Giriş</title>
    <para>
-    PHP 5, tersine mühendislik sınıfları, arayüzleri, işlevleri, yöntemleri ve hatta eklentileri yeteneği sağlayan eksiksiz bir yansıtma arayüzü ile gelmektedir. Buna ek olarak, yansıtma arayüzü, işlevler sınıflar ve yöntemler için belgeleme açıklamalarının elde edilmesini sağlayan yollar içerir.
+    PHP 5, sınıflar, arayüzler, işlevler, yöntemler ve hatta eklentiler
+    üzerinde  tersine mühendislik yapabilmeyi sağlayan eksiksiz bir yansıtma
+    arayüzü ile gelmektedir. Buna ek olarak, yansıtma arayüzü, işlevler,
+    sınıflar ve yöntemler için belgeleme açıklamalarının elde edilmesini
+    sağlayan yollar içerir.
    </para>
    <para>
-    Yansıtma arayüzü Zend Motorunun bir nesne yönelimli eklentisi olup şu sınıflardan oluşur:
+    Yansıtma arayüzü Zend Motorunun bir nesne yönelimli eklentisi olup şu
+    sınıflardan oluşur:
    </para>
    <informalexample>
     <programlisting role="php">
@@ -59,7 +64,8 @@ class ReflectionExtension implements Reflector { }
    </informalexample>
    <note>
     <simpara>
-     Bu sınıflarla ilgili ayrıntılı bilgi edinmek için sonraki bölümlere bakınız.
+     Bu sınıflarla ilgili ayrıntılı bilgi edinmek için sonraki bölümlere
+     bakınız.
     </simpara>
    </note>
    <para>
@@ -139,7 +145,8 @@ Class [ <internal> class Exception ] {
   <sect2 xml:id="language.oop5.reflection.reflector">
    <title><classname>Reflector</classname> Arayüzü</title>
    <para>
-    <classname>Reflector</classname> arayüzü, tüm ihraç edilebilir yansıtma sınıflarınca gerçeklenmiş bir arayüzdür.
+    <classname>Reflector</classname> arayüzü, tüm ihraç edilebilir yansıtma
+    sınıflarınca gerçeklenmiş bir arayüzdür.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -159,15 +166,17 @@ interface Reflector
   <sect2 xml:id="language.oop5.reflection.reflectionexception">
    <title><classname>ReflectionException</classname> Sınıfı</title>
    <para>
-    <classname>ReflectionException</classname> sınıfı, standard <link
-    linkend="language.exceptions">Exception</link> sınıfını genişletir ve yansıtma arayüzü tarafından oluşturulur. Hiçbir yöntemi veya özelliği yoktur.
+    <classname>ReflectionException</classname> sınıfı, yansıtma arayüzü
+    tarafından oluşturulmuş olup standard <link
+    linkend="language.exceptions">Exception</link> sınıfını genişletir.
    </para>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionfunction">
    <title><classname>ReflectionFunction</classname> Sınıfı</title>
    <para>
-    <classname>ReflectionFunction</classname> sınıfı, işlevler üzerinde tersine mühendisliği mümkün kılar.
+    <classname>ReflectionFunction</classname> sınıfı, işlevler üzerinde
+    tersine mühendisliği mümkün kılar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -201,85 +210,90 @@ class ReflectionFunction extends ReflectionFunctionAbstract implements Reflector
     </programlisting>
    </informalexample>
    <para>
-    Ebeveyn <classname>ReflectionFunctionAbstract</classname> sınıfı <function>invoke</function>, <function>invokeArgs</function>, <function>export</function> ve <function>isDisabled</function> yöntemleri hariç aynı yöntemlere sahiptir.
+    Ebeveyn <classname>ReflectionFunctionAbstract</classname> sınıfı
+    <function>invoke</function>, <function>invokeArgs</function>,
+    <function>export</function> ve <function>isDisabled</function> yöntemleri
+    hariç aynı yöntemlere sahiptir.
    </para>
    <note>
     <simpara>
      <function>getNumberOfParameters</function> ve
-     <function>getNumberOfRequiredParameters</function>, PHP 5.0.3 ile, <function>invokeArgs</function> ise PHP 5.1.0 ile eklenmiştir.
+     <function>getNumberOfRequiredParameters</function>, PHP 5.0.3 ile,
+     <function>invokeArgs</function> ise PHP 5.1.0 ile eklenmiştir.
     </simpara>
    </note>
    <para>
-    To introspect a function, you will first have to create an instance
-    of the <classname>ReflectionFunction</classname> class. You can then call
-    any of the above methods on this instance.
+    Bir işlevi incelemek için önce <classname>ReflectionFunction</classname>
+    sınıfının bir örneğini oluşturmalısınız. Yukarıdakı yöntemleri ancak
+    böyle bir örnek üzerinden çağırabilirsiniz.
    </para>
    <example>
-    <title>Using the <classname>ReflectionFunction</classname> class</title>
+    <title>- <classname>ReflectionFunction</classname> sınıfının
+    kullanımı</title>
     <programlisting role='php'>
 <![CDATA[
 <?php
 /**
- * A simple counter
+ * Basit bir sayaç
  *
  * @return    int
  */
-function counter()
+function sayaç()
 {
     static $c = 0;
     return $c++;
 }
 
-// Create an instance of the ReflectionFunction class
-$func = new ReflectionFunction('counter');
+// ReflectionFunction sınıfının bir örneğini oluşturalım
+$işlev = new ReflectionFunction('sayaç');
 
-// Print out basic information
+// İşlev hakkında bilgi alalım
 printf(
-    "===> The %s function '%s'\n".
-    "     declared in %s\n".
-    "     lines %d to %d\n",
-    $func->isInternal() ? 'internal' : 'user-defined',
-    $func->getName(),
-    $func->getFileName(),
-    $func->getStartLine(),
-    $func->getEndline()
+    "===> %s işlevi %s bir işlev olup,\n".
+    "     %s dosyasının\n".
+    "     %d ve %d satırları arasında tanımlanmıştır.\n",
+    $işlev->getName(),
+    $işlev->isInternal() ? 'yerleşik' : 'kullanıcı tanımlı',
+    $işlev->getFileName(),
+    $işlev->getStartLine(),
+    $işlev->getEndline()
 );
 
-// Print documentation comment
-printf("---> Documentation:\n %s\n", var_export($func->getDocComment(), 1));
+// Belgeleme açıklamalarını alalım
+printf("---> Belgeleme:\n %s\n", var_export($işlev->getDocComment(), 1));
 
-// Print static variables if existant
-if ($statics = $func->getStaticVariables())
+// Mevcutsa duruk değişkenleri görelim
+if ($statics = $işlev->getStaticVariables())
 {
-    printf("---> Static variables: %s\n", var_export($statics, 1));
+    printf("---> Duruk değişkenler: %s\n", var_export($statics, 1));
 }
 
-// Invoke the function
-printf("---> Invokation results in: ");
-var_dump($func->invoke());
+// İşlevi çağıralım
+printf("---> Çağrı sonucu: ");
+var_dump($işlev->invoke());
 
 
-// you may prefer to use the export() method
-echo "\nReflectionFunction::export() results:\n";
-echo ReflectionFunction::export('counter');
+// belki export() yöntemini kullanmak istersiniz
+echo "\nReflectionFunction::export() sonuçları:\n";
+echo ReflectionFunction::export('sayaç');
 ?>
 ]]>
     </programlisting>
    </example>
    <note>
     <simpara>
-     The method <function>invoke</function> accepts a variable number of
-     arguments which are passed to the function just as in
-     <function>call_user_func</function>.
+     <function>invoke</function> yöntemi, tıpkı
+     <function>call_user_func</function> işlevi gibi değişken sayıda
+     değiştirge kabul eder.
     </simpara>
    </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionparameter">
-   <title><classname>ReflectionParameter</classname></title>
+   <title><classname>ReflectionParameter</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionParameter</classname> class retrieves
-    information about a function's or method's parameters.
+    <classname>ReflectionParameter</classname> sınıfı bir işlev veya yöntemin
+    değiştirgeleri hakkında bilgi edinilmesini sağlar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -310,21 +324,22 @@ class ReflectionParameter implements Reflector
    <note>
     <para>
      <function>getDefaultValue</function>,
-     <function>isDefaultValueAvailable</function> and
-     <function>isOptional</function> were added in PHP 5.0.3,
-     while <function>isArray</function> was added in PHP 5.1.0.
-     <function>getDeclaringFunction</function> and
-     <function>getPosition</function> were added in PHP 5.2.3.
+     <function>isDefaultValueAvailable</function> ve
+     <function>isOptional</function> PHP 5.0.3, <function>isArray</function>
+     PHP 5.1.0, <function>getDeclaringFunction</function> ve
+     <function>getPosition</function> ise PHP 5.2.3 sürümünde eklenmiştir.
     </para>
    </note>
    <para>
-    To introspect function parameters, you will first have to create an instance
-    of the <classname>ReflectionFunction</classname> or
-    <classname>ReflectionMethod</classname> classes and then use their
-    <function>getParameters</function> method to retrieve an array of parameters.
+    Bir işlevin değiştirgelerini incelemek için önce
+    <classname>ReflectionFunction</classname> veya
+    <classname>ReflectionMethod</classname> sınıfının bir örneğini
+    oluşturmalı, sonra da bu sınıfların <function>getParameters</function>
+    yöntemini kullanarak değiştirge dizisini almalısınız.
    </para>
    <example>
-    <title>Using the <classname>ReflectionParameter</classname> class</title>
+    <title>- <classname>ReflectionParameter</classname> sınıfının
+    kullanımı</title>
     <programlisting role='php'>
 <![CDATA[
 <?php
@@ -333,26 +348,26 @@ function bar(Exception $a, &$b, $c) { }
 function baz(ReflectionFunction $a, $b = 1, $c = null) { }
 function abc() { }
 
-// Create an instance of ReflectionFunction with the
-// parameter given from the command line.
-$reflect = new ReflectionFunction($argv[1]);
+// ReflectionFunction sınıfının bir örneğini komut
+// satırında belirtilen bir değiştirge ile oluşturalım.
+$yansıt = new ReflectionFunction($argv[1]);
 
-echo $reflect;
+echo $yansıt;
 
-foreach ($reflect->getParameters() as $i => $param) {
+foreach ($yansıt->getParameters() as $i => $param) {
     printf(
-        "-- Parameter #%d: %s {\n".
-        "   Class: %s\n".
-        "   Allows NULL: %s\n".
-        "   Passed to by reference: %s\n".
-        "   Is optional?: %s\n".
+        "-- Değiştirge #%d: %s {\n".
+        "   Sınıf: %s\n".
+        "   NULL'a izin var: %s\n".
+        "   Gönderimli aktarım var: %s\n".
+        "   Seçimlik mi?: %s\n".
         "}\n",
-        $i, // $param->getPosition() can be used from PHP 5.2.3
+        $i, // $param->getPosition() PHP 5.2.3 ve sonrası kullanılır
         $param->getName(),
         var_export($param->getClass(), 1),
         var_export($param->allowsNull(), 1),
         var_export($param->isPassedByReference(), 1),
-        $param->isOptional() ? 'yes' : 'no'
+        $param->isOptional() ? 'evet' : 'hayır'
     );
 }
 ?>
@@ -362,10 +377,10 @@ foreach ($reflect->getParameters() as $i => $param) {
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionclass">
-   <title><classname>ReflectionClass</classname></title>
+   <title><classname>ReflectionClass</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionClass</classname> class lets
-    you reverse-engineer classes and interfaces.
+    <classname>ReflectionClass</classname> sınıfı, sınıflar ve arayüzler
+    üzerinde tersine mühendisliği mümkün kılar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -421,63 +436,65 @@ class ReflectionClass implements Reflector
    <note>
     <simpara>
      <function>hasConstant</function>, <function>hasMethod</function>,
-     <function>hasProperty</function>, <function>getStaticPropertyValue</function>
-     and <function>setStaticPropertyValue</function> were added in PHP 5.1.0, while
-     <function>newInstanceArgs</function> was added in PHP 5.1.3.
+     <function>hasProperty</function>,
+     <function>getStaticPropertyValue</function>
+     ve <function>setStaticPropertyValue</function> PHP 5.1.0,
+     <function>newInstanceArgs</function> ise PHP 5.1.3 sürümünde eklenmiştir.
     </simpara>
    </note>
    <para>
-    To introspect a class, you will first have to create an instance
-    of the <classname>ReflectionClass</classname> class. You can then
-    call any of the above methods on this instance.
+    Bir sınıfı incelemek için önce <classname>ReflectionClass</classname>
+    sınıfının bir örneğini oluşturmalısınız. Yukarıdaki yöntemleri ancak bu
+    örnek üzerinden çağırabilirsiniz.
    </para>
    <example>
-    <title>Using the <classname>ReflectionClass</classname> class</title>
+    <title>- <classname>ReflectionClass</classname> sınıfının kullanımı
+    </title>
     <programlisting role='php'>
 <![CDATA[
 <?php
-interface Serializable
+interface Serileştirilebilir
 {
     // ...
 }
 
-class Object
+class Nesne
 {
     // ...
 }
 
 /**
- * A counter class
+ * Bir sayaç sınıfı
  */
-class Counter extends Object implements Serializable
+class Sayaç extends Nesne implements Serileştirilebilir
 {
     const START = 0;
-    private static $c = Counter::START;
+    private static $c = Sayaç::START;
 
     /**
-     * Invoke counter
+     * Sayacı çağıralım
      *
-     * @access  public
-     * @return  int
+     * erişim: genel
+     * dönen değer: tamsayı
      */
-    public function count() {
+    public function say() {
         return self::$c++;
     }
 }
 
-// Create an instance of the ReflectionClass class
-$class = new ReflectionClass('Counter');
+// ReflectionClass sınıfının bir örneğini oluşturalım
+$class = new ReflectionClass('Sayaç');
 
-// Print out basic information
+// Temel bilgileri görelim
 printf(
-    "===> The %s%s%s %s '%s' [extends %s]\n" .
-    "     declared in %s\n" .
-    "     lines %d to %d\n" .
-    "     having the modifiers %d [%s]\n",
-        $class->isInternal() ? 'internal' : 'user-defined',
-        $class->isAbstract() ? ' abstract' : '',
+    "===> %s%s%s %s '%s' [extends %s]\n" .
+    "     %s dosyasının\n" .
+    "     %d. ve %d. satırları arasında\n" .
+    "     %d [%s] değiştiriciye sahip.\n",
+        $class->isInternal() ? 'yerleşik' : 'kullanıcı tanımlı',
+        $class->isAbstract() ? ' soyut' : '',
         $class->isFinal() ? ' final' : '',
-        $class->isInterface() ? 'interface' : 'class',
+        $class->isInterface() ? 'arayüz' : 'sınıf',
         $class->getName(),
         var_export($class->getParentClass(), 1),
         $class->getFileName(),
@@ -487,30 +504,31 @@ printf(
         implode(' ', Reflection::getModifierNames($class->getModifiers()))
 );
 
-// Print documentation comment
-printf("---> Documentation:\n %s\n", var_export($class->getDocComment(), 1));
+// Belgeleme açıklamalarını görelim
+printf("---> Belgeleme:\n %s\n", var_export($class->getDocComment(), 1));
 
-// Print which interfaces are implemented by this class
-printf("---> Implements:\n %s\n", var_export($class->getInterfaces(), 1));
+// Bu sınıf tarafından gerçeklenen arayüzleri görelim
+printf("---> Gerçeklenenler:\n %s\n", var_export($class->getInterfaces(), 1));
 
-// Print class constants
-printf("---> Constants: %s\n", var_export($class->getConstants(), 1));
+// Sınıf sabitlerini görelim
+printf("---> Sabitler: %s\n", var_export($class->getConstants(), 1));
 
-// Print class properties
-printf("---> Properties: %s\n", var_export($class->getProperties(), 1));
+// Sınıf özelliklerini görelim
+printf("---> Özellikler: %s\n", var_export($class->getProperties(), 1));
 
-// Print class methods
-printf("---> Methods: %s\n", var_export($class->getMethods(), 1));
+// Sınıf yöntemlerini görelim
+printf("---> Yöntemler: %s\n", var_export($class->getMethods(), 1));
 
-// If this class is instantiable, create an instance
+// Sınıf örneklenebiliyorsa bir örneğini oluşturalım
 if ($class->isInstantiable()) {
-    $counter = $class->newInstance();
+    $sayaç = $class->newInstance();
 
-    echo '---> $counter is instance? ';
-    echo $class->isInstance($counter) ? 'yes' : 'no';
+    echo '---> $sayaç bir sınıf örneği mi? ';
+    echo $class->isInstance($sayaç) ? 'evet' : 'hayır';
 
-    echo "\n---> new Object() is instance? ";
-    echo $class->isInstance(new Object()) ? 'yes' : 'no';
+    echo "\n---> new Nesne() bir sınıf örneği mi? ";
+    echo $class->isInstance(new Nesne()) ? 'evet' : 'hayır';
+    echo "\n";
 }
 ?>
 ]]>
@@ -518,25 +536,25 @@ if ($class->isInstantiable()) {
    </example>
    <note>
     <simpara>
-     The method <function>newInstance</function> accepts a variable number of
-     arguments which are passed to the function just as in
-     <function>call_user_func</function>.
+     <function>newInstance</function> yöntemi, tıpkı
+     <function>call_user_func</function> işlevi gibi değişken sayıda
+     değiştirge kabul eder.
     </simpara>
    </note>
    <note>
     <simpara>
-     <literal>$class = new ReflectionClass('Foo'); $class-&gt;isInstance($arg)</literal>
-     is equivalent to <literal>$arg instanceof Foo</literal> or
-     <literal>is_a($arg, 'Foo')</literal>.
+     <code>$class = new ReflectionClass('Foo');
+     $class-&gt;isInstance($arg)</code> ile <code>$arg instanceof Foo</code>
+     veya <code>is_a($arg, 'Foo')</code> eşdeğerdir.
     </simpara>
    </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionobject">
-   <title><classname>ReflectionObject</classname></title>
+   <title><classname>ReflectionObject</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionObject</classname> class lets
-    you reverse-engineer objects.
+    <classname>ReflectionObject</classname> sınıfı, nesneler üzerinde tersine
+    mühendisliği mümkün kılar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -556,10 +574,10 @@ class ReflectionObject extends ReflectionClass
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionmethod">
-   <title><classname>ReflectionMethod</classname></title>
+   <title><classname>ReflectionMethod</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionMethod</classname> class lets you
-    reverse-engineer class methods.
+    <classname>ReflectionMethod</classname> sınıfı, yöntemler üzerinde
+    tersine mühendisliği mümkün kılar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -581,10 +599,10 @@ class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector
     public bool isConstructor()
     public bool isDestructor()
     public int getModifiers()
-    public mixed getClosure() /* As of PHP 5.3.0 */
+    public mixed getClosure() /* PHP 5.3.0 ve sonrası */
     public ReflectionClass getDeclaringClass()
 
-    // Inherited from ReflectionFunctionAbstract
+    // ReflectionFunctionAbstract'tan miras alındı
     final private __clone()
     public string getName()
     public bool isInternal()
@@ -604,51 +622,52 @@ class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector
     </programlisting>
    </informalexample>
    <para>
-    To introspect a method, you will first have to create an instance
-    of the <classname>ReflectionMethod</classname> class. You can then call
-    any of the above methods on this instance.
+    Bir yöntemi incelemek için önce <classname>ReflectionMethod</classname>
+    sınıfının bir örneğini oluşturmalısınız. Yukarıdaki yöntemleri ancak bu
+    örnek üzerinden çağırabilirsiniz.
    </para>
    <example>
-    <title>Using the <classname>ReflectionMethod</classname> class</title>
+    <title>- <classname>ReflectionMethod</classname> sınıfının kullanımı
+    </title>
     <programlisting role='php'>
 <![CDATA[
 <?php
-class Counter
+class Sayaç
 {
     private static $c = 0;
 
     /**
-     * Increment counter
+     * Artan sayaç
      *
-     * @final
-     * @static
-     * @access  public
-     * @return  int
+     * final
+     * duruk
+     * erişim: genel
+     * Dönüş değeri: tamsayı
      */
-    final public static function increment()
+    final public static function say()
     {
         return ++self::$c;
     }
 }
 
-// Create an instance of the ReflectionMethod class
-$method = new ReflectionMethod('Counter', 'increment');
+// ReflectionMethod sınıfının bir örneğini oluşturalım
+$method = new ReflectionMethod('Sayaç', 'say');
 
-// Print out basic information
+// Temel bilgileri alalım
 printf(
-    "===> The %s%s%s%s%s%s%s method '%s' (which is %s)\n" .
-    "     declared in %s\n" .
-    "     lines %d to %d\n" .
-    "     having the modifiers %d[%s]\n",
-        $method->isInternal() ? 'internal' : 'user-defined',
-        $method->isAbstract() ? ' abstract' : '',
+    "===> %s%s%s%s%s%s%s (%s olarak) '%s' yöntemi\n" .
+    "     %s dosyasının\n" .
+    "     %d. ve %d. satırları arasında\n" .
+    "     %d[%s] değiştirici ile bildirilmiştir.\n",
+        $method->isInternal() ? 'Yerleşik' : 'Kullanıcı tanımlı',
+        $method->isAbstract() ? ' soyut' : '',
         $method->isFinal() ? ' final' : '',
-        $method->isPublic() ? ' public' : '',
-        $method->isPrivate() ? ' private' : '',
-        $method->isProtected() ? ' protected' : '',
-        $method->isStatic() ? ' static' : '',
+        $method->isPublic() ? ' genel' : '',
+        $method->isPrivate() ? ' özel' : '',
+        $method->isProtected() ? ' kormalı' : '',
+        $method->isStatic() ? ' duruk' : '',
+        $method->isConstructor() ? 'kurucu' : 'sıradan bir yöntem',
         $method->getName(),
-        $method->isConstructor() ? 'the constructor' : 'a regular method',
         $method->getFileName(),
         $method->getStartLine(),
         $method->getEndline(),
@@ -656,26 +675,28 @@ printf(
         implode(' ', Reflection::getModifierNames($method->getModifiers()))
 );
 
-// Print documentation comment
-printf("---> Documentation:\n %s\n", var_export($method->getDocComment(), 1));
+// Belgeleme açıklamalarını görelim
+printf("---> Belgeleme:\n %s\n", var_export($method->getDocComment(), 1));
 
-// Print static variables if existant
+// Varsa duruk değişkenleri görelim
 if ($statics= $method->getStaticVariables()) {
     printf("---> Static variables: %s\n", var_export($statics, 1));
 }
 
-// Invoke the method
-printf("---> Invokation results in: ");
+// Yöntem çağrısı
+printf("---> Çağrı sonuçları: ");
 var_dump($method->invoke(NULL));
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>Getting closure using <classname>ReflectionMethod</classname> class</title>
+    <title>- <classname>ReflectionMethod</classname> sınıfı ile kapanış
+    örneği</title>
     <programlisting role='php'>
 <![CDATA[
 <?php
+//Bu örnek PHP 5.3.0 ve sonrasında çalışır
 
 class Example {
     static function printer () {
@@ -685,7 +706,7 @@ class Example {
 
 $class = new ReflectionClass('Example');
 $method = $class->getMethod('printer');
-$closure = $method->getClosure(); /* As of PHP 5.3.0 */
+$closure = $method->getClosure();
 $closure(); // Hello World!
 
 ?>
@@ -694,25 +715,25 @@ $closure(); // Hello World!
    </example>
    <note>
     <simpara>
-     Trying to invoke private, protected or abstract methods will result
-     in an exception being thrown from the <function>invoke</function>
-     method.
+     Genel, korumalı veya soyut bir yöntemin çağrılması,
+     <function>invoke</function> yönteminin oluşturduğu bir istisna ile
+     sonuçlanır.
     </simpara>
    </note>
    <note>
     <simpara>
-     For static methods as seen above, you should pass NULL as the first
-     argument to <function>invoke</function>. For non-static methods, pass
-     an instance of the class.
+     Yukarıdaki gibi duruk yöntemler için, <function>invoke</function>
+     yöntemine ilk değiştirge olarak &null;, duruk olmayan yöntemler için
+     ise, sınıfın örneğini aktarmalısınız.
     </simpara>
    </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionproperty">
-   <title><classname>ReflectionProperty</classname></title>
+   <title><classname>ReflectionProperty</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionProperty</classname> class lets you
-    reverse-engineer class properties.
+    <classname>ReflectionProperty</classname> sınıfı, özellikler üzerinde
+    tersine mühendisliği mümkün kılar.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -730,7 +751,7 @@ class ReflectionProperty implements Reflector
     public bool isProtected()
     public bool isStatic()
     public bool isDefault()
-    public void setAccessible() /* As of PHP 5.3.0 */
+    public void setAccessible() /* PHP 5.3.0 ve sonrası*/
     public int getModifiers()
     public mixed getValue(stdclass object)
     public void setValue(stdclass object, mixed value)
@@ -743,61 +764,64 @@ class ReflectionProperty implements Reflector
    </informalexample>
    <note>
     <simpara>
-     <function>getDocComment</function> was added in PHP 5.1.0.
-     <function>setAccessible</function> was added in PHP 5.3.0.
+     <function>getDocComment</function> PHP 5.1.0,
+     <function>setAccessible</function> ise PHP 5.3.0 sürümünde eklendi.
     </simpara>
    </note>
    <para>
-    To introspect a property, you will first have to create an instance
-    of the <classname>ReflectionProperty</classname> class. You can then
-    call any of the above methods on this instance.
+    Bir özelliği incelemek için önce
+    <classname>ReflectionProperty</classname> sınıfının bir örneğini
+    oluşturmalısınız. Yukarıdaki yöntemleri ancak bu örnek üzerinden
+    çağırabilirsiniz.
    </para>
    <example>
-    <title>Using the <classname>ReflectionProperty</classname> class</title>
+    <title>- <classname>ReflectionProperty</classname> sınıfının kullanımı
+    </title>
     <programlisting role='php'>
 <![CDATA[
 <?php
-class String
+class Dizge
 {
-    public $length  = 5;
+    public $uzunluk  = 5;
 }
 
-// Create an instance of the ReflectionProperty class
-$prop = new ReflectionProperty('String', 'length');
+// ReflectionProperty sınıfının bir örneğini oluşturalım
+$prop = new ReflectionProperty('Dizge', 'uzunluk');
 
-// Print out basic information
+// Temel bilgileri görelim
 printf(
-    "===> The%s%s%s%s property '%s' (which was %s)\n" .
-    "     having the modifiers %s\n",
-        $prop->isPublic() ? ' public' : '',
-        $prop->isPrivate() ? ' private' : '',
-        $prop->isProtected() ? ' protected' : '',
+    "===> %s%s%s%s özellik '%s' (derleme anında %s)\n" .
+    "     %s değiştiricilere sahiptir.\n",
+        $prop->isPublic() ? 'Genel' : '',
+        $prop->isPrivate() ? 'Özel' : '',
+        $prop->isProtected() ? 'Korumalı' : '',
         $prop->isStatic() ? ' static' : '',
         $prop->getName(),
-        $prop->isDefault() ? 'declared at compile-time' : 'created at run-time',
+        $prop->isDefault() ? 'bildirilen' : 'oluşturulan',
         var_export(Reflection::getModifierNames($prop->getModifiers()), 1)
 );
 
-// Create an instance of String
-$obj= new String();
+// Dizge'nin bir örneğini oluşturalım
+$nesne= new Dizge();
 
-// Get current value
-printf("---> Value is: ");
-var_dump($prop->getValue($obj));
+// Mevcut değeri görelim
+printf("---> Değeri: ");
+var_dump($prop->getValue($nesne));
 
-// Change value
-$prop->setValue($obj, 10);
-printf("---> Setting value to 10, new value is: ");
-var_dump($prop->getValue($obj));
+// Değeri değiştirelim
+$prop->setValue($nesne, 10);
+printf("---> Değer 10 yapıldı, yeni değer:: ");
+var_dump($prop->getValue($nesne));
 
-// Dump object
-var_dump($obj);
+// Nesneyi dökümleyelim
+var_dump($nesne);
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>Getting value from private and protected properties using <classname>ReflectionProperty</classname> class</title>
+    <title>- <classname>ReflectionProperty</classname> sınıfı ile özel ve
+    korumalı özelliklerden değer istemek</title>
     <programlisting role='php'>
 <![CDATA[
 <?php
@@ -811,11 +835,11 @@ class Foo {
 $obj = new Foo;
 
 $prop = new ReflectionProperty('Foo', 'y');
-$prop->setAccessible(true); /* As of PHP 5.3.0 */
+$prop->setAccessible(true);                 /* PHP 5.3.0 ve sonrası */
 var_dump($prop->getValue($obj)); // int(2)
 
 $prop = new ReflectionProperty('Foo', 'z');
-$prop->setAccessible(true); /* As of PHP 5.3.0 */
+$prop->setAccessible(true);                 /* PHP 5.3.0 ve sonrası */
 var_dump($prop->getValue($obj)); // int(2)
 
 ?>
@@ -824,18 +848,19 @@ var_dump($prop->getValue($obj)); // int(2)
    </example>
    <note>
     <simpara>
-     Trying to get or set private or protected class property's values
-     will result in an exception being thrown.
+      Özel veya korumalı bir sınıf özelliğinin değerini alma veya atama
+      girişimi bir istisna oluşması ile sonuçlanır.
     </simpara>
    </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionextension">
-   <title><classname>ReflectionExtension</classname></title>
+   <title><classname>ReflectionExtension</classname> Sınıfı</title>
    <para>
-    The <classname>ReflectionExtension</classname> class lets you
-    reverse-engineer extensions. You can retrieve all loaded extensions
-    at runtime using the <function>get_loaded_extensions</function>.
+    <classname>ReflectionExtension</classname> sınıfı, eklentiler üzerinde
+    tersine mühendisliği mümkün kılar. Yüklü eklentilerin tümünü çalışma
+    anında <function>get_loaded_extensions</function> işlevini kullanarak
+    öğrenebilirsiniz.
    </para>
    <informalexample>
     <programlisting role="php">
@@ -860,28 +885,30 @@ class ReflectionExtension implements Reflector {
     </programlisting>
    </informalexample>
    <para>
-    To introspect an extension, you will first have to create an instance
-    of the <classname>ReflectionExtension</classname> class. You can then call
-    any of the above methods on this instance.
+    Bir eklentiyi incelemek için önce
+    <classname>ReflectionExtension</classname> sınıfının bir örneğini
+    oluşturmalısınız. Yukarıdaki yöntemleri ancak bu örnek üzerinden
+    çağırabilirsiniz.
    </para>
    <example>
-    <title>Using the <classname>ReflectionExtension</classname> class</title>
+    <title>- <classname>ReflectionExtension</classname> sınıfının kullanımı
+    </title>
     <programlisting role='php'>
 <![CDATA[
 <?php
-// Create an instance of the ReflectionProperty class
+// ReflectionExtension sınıfının bir örneğini oluşturalım
 $ext = new ReflectionExtension('standard');
 
-// Print out basic information
+// Temel bilgileri görelim
 printf(
-    "Name        : %s\n" .
-    "Version     : %s\n" .
-    "Functions   : [%d] %s\n" .
-    "Constants   : [%d] %s\n" .
-    "INI entries : [%d] %s\n" .
-    "Classes     : [%d] %s\n",
+    "Eklenti ismi  : %s\n" .
+    "Sürüm         : %s\n" .
+    "İşlevler      : [%d] %s\n" .
+    "Sabitler      : [%d] %s\n" .
+    "INI girdileri : [%d] %s\n" .
+    "Sınıflar      : [%d] %s\n",
         $ext->getName(),
-        $ext->getVersion() ? $ext->getVersion() : 'NO_VERSION',
+        $ext->getVersion() ? $ext->getVersion() : 'SÜRÜM_YOK',
         sizeof($ext->getFunctions()),
         var_export($ext->getFunctions(), 1),
 
@@ -901,20 +928,20 @@ printf(
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.extending">
-   <title>Extending the reflection classes</title>
+   <title>Yansıtma Sınıflarının Genişletilmesi</title>
    <para>
-    In case you want to create specialized versions of the built-in
-    classes (say, for creating colorized HTML when being exported,
-    having easy-access member variables instead of methods or
-    having utility methods), you may go ahead and extend them.
+    Yerleşik sınıfların özelleştirilmiş sürümlerini oluşturmak istediğiniz
+    takdirde (yöntemler yerine üye değişkenlere kolayca erişmek veya aracı
+    yöntemlere sahip olmak ya da renkli HTML sürümünü oluşturmak
+    istiyorsunuz diyelim), baştan sona hepsini genişletebilirsiniz.
    </para>
    <example>
-    <title>Extending the built-in classes</title>
+    <title>- Yerleşik sınıfların genişletilmesi</title>
     <programlisting role='php'>
 <![CDATA[
 <?php
 /**
- * My Reflection_Method class
+ * Kendi Reflection_Method sınıfımız
  */
 class My_Reflection_Method extends ReflectionMethod
 {
@@ -928,7 +955,7 @@ class My_Reflection_Method extends ReflectionMethod
 }
 
 /**
- * Demo class #1
+ * Sınıf denemesi 1
  *
  */
 class T {
@@ -936,14 +963,14 @@ class T {
 }
 
 /**
- * Demo class #2
+ * Sınıf denemesi 2
  *
  */
 class U extends T {
     function x() {}
 }
 
-// Print out information
+// Bilgiler görelim
 var_dump(new My_Reflection_Method('U', 'x'));
 ?>
 ]]>
@@ -951,12 +978,13 @@ var_dump(new My_Reflection_Method('U', 'x'));
    </example>
    <note>
     <simpara>
-     Caution: If you're overwriting the constructor, remember to call
-     the parent's constructor _before_ any code you insert. Failing to
-     do so will result in the following:
+     Dikkat: Kurucunun üzerine yazıyorsanız, herhangi bir kod yazmadan
+     _önce_ ebeveynin kurucusunu çağırmayı unutmayın. Bunu yapmazsanız şöyle
+     bir sonuç alırsınız:
      <literal>
       Fatal error: Internal error: Failed to retrieve the reflection object
-     </literal>
+     </literal> Türkçesi: Ölümcül hata: Dahili hata: reflection nesnesi
+     alınamadı
     </simpara>
    </note>
   </sect2>
