@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.5 $ -->
-<!-- EN-Revision: 1.26 Maintainer: nilgun Status: working -->
+<!-- $Revision: 1.6 $ -->
+<!-- EN-Revision: 1.26 Maintainer: nilgun Status: ready-->
 <!-- Last translator: Nilgün Belma Bugüner -->
 
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
   <sect2 xml:id="language.oop5.basic.class">
-   <title>class</title>
+   <title><code>class</code> Anahtar Sözcüğü</title>
    <para>
-    Every class definition begins with the keyword class, followed by a class
-    name, which can be any name that isn't a <link linkend="reserved">reserved</link>
-    word in PHP. Followed  by a pair of curly braces,
-    which contains the definition of the classes members and methods. A
-    pseudo-variable, <varname>$this</varname> is available when a method is
-    called from within an object context. <varname>$this</varname> is a
-    reference to the calling object (usually the object to which the method
-    belongs, but can be another object, if the method is called
-    <link linkend="language.oop5.static">statically</link> from the context
-    of a secondary object). This is illustrated in the following examples:
+    Her sınıf tanımı <code>class</code> anahtar sözcüğü ile başlar ve <link
+    linkend="reserved">anahtar sözcük</link> olmayan bir isimle devam eder.
+    Bunların ardından gelen bir çift kaşlı ayracın arasında sınıf üyelerinin
+    ve yöntemlerinin tanımları bulunur. Bir nesne bağlamı içinden bir yöntem
+    çağırmak için <varname>$this</varname> diye bir sözde değişken
+    kullanılır. <varname>$this</varname> çağrılan nesneye bir gönderimdir
+    (normalde yöntemin ait olduğu nesnedir, ancak eğer nesne diğer nesnenin
+    bağlamından <link linkend="language.oop5.static">duruk olarak</link>
+    çağrılıyorsa, bu başka bir nesne de olabilir). Bu duruma uyan bir örnek:
     <example>
-     <title><varname>$this</varname> variable in object-oriented language</title>
+     <title>- Nesne yönelimli dilde <varname>$this</varname> değişkeni</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -29,11 +28,11 @@ class A
     function foo()
     {
         if (isset($this)) {
-            echo '$this is defined (';
+            echo '$this tanımlı (';
             echo get_class($this);
             echo ")\n";
         } else {
-            echo "\$this is not defined.\n";
+            echo "\$this tanımsız.\n";
         }
     }
 }
@@ -58,27 +57,27 @@ B::bar();
      &example.outputs;
      <screen>
 <![CDATA[
-$this is defined (a)
-$this is not defined.
-$this is defined (b)
-$this is not defined.
+$this tanımlı (A)
+$this tanımsız.
+$this tanımlı (B)
+$this tanımsız.
 ]]>
      </screen>
     </example>
    </para>
    <example>
-    <title>Simple Class definition</title>
+    <title>- Basit sınıf tanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class SimpleClass
+class BasitSınıf
 {
-    // member declaration
-    public $var = 'a default value';
+    // üye bildirimi
+    public $değer = 'bir öntanımlı değer';
 
-    // method declaration
-    public function displayVar() {
-        echo $this->var;
+    // yöntem bildirimi
+    public function değerGöster() {
+        echo $this->değer;
     }
 }
 ?>
@@ -87,27 +86,27 @@ class SimpleClass
    </example>
 
    <para>
-    The default value must be a constant expression, not (for example) a
-    variable, a class member or a function call.
+    Öntanımlı değer, (örneğin) bir değişken, bir sınıf üyesi veya bir işlev
+    çağrısı değil, bir sabit ifade olmalıdır.
     <example>
-     <title>Class members' default value</title>
+     <title>- Sınıf üyesinin öntanımlı değeri</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-class SimpleClass
+class BasitSınıf
 {
-    // invalid member declarations:
-    public $var1 = 'hello '.'world';
+    // geçersiz üye bildirimleri:
+    public $var1 = 'merhaba '.'dünya';
     public $var2 = <<<EOD
-hello world
+merhaba dünya
 EOD;
     public $var3 = 1+2;
-    public $var4 = self::myStaticMethod();
-    public $var5 = $myVar;
+    public $var4 = self::birDurukYöntem();
+    public $var5 = $birDeğer;
 
-    // valid member declarations:
-    public $var6 = myConstant;
-    public $var7 = self::classConstant;
+    // geçerli üye bildirimleri:
+    public $var6 = birSabit;
+    public $var7 = self::sınıfSabiti;
     public $var8 = array(true, false);
 
 
@@ -119,21 +118,22 @@ EOD;
    </para>
    <note>
     <para>
-    There are some nice functions to handle classes and objects. You might want
-    to take a look at the <link linkend="ref.classobj">Class/Object
-    Functions</link>.
+      Sınıflar ve nesnelerle çalışmak için ilginizi çekebilecek bazı işlevler
+      vardır. Bunlar için <link linkend="ref.classobj">Sınıf/Nesne
+      İşlevleri</link> bölümüne bakabilirsiniz.
     </para>
    </note>
 
    <para>
-    Unlike heredocs, nowdocs can be used in any static data context.
+    Duruk veri bağlamında yorumlanan çok satırlı metinler değil (heredoc),
+    yorumlanmayan çok satırlı metinler (nowdoc) kullanılabilir.
     <example>
-     <title>Static data example</title>
+     <title>- Duruk veri örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 class foo {
-    // As of PHP 5.3.0
+    // PHP 5.3.0 ve sonrası
     public $bar = <<<'EOT'
 bar
 EOT;
@@ -145,58 +145,58 @@ EOT;
    </para>
    <note>
     <para>
-     Nowdoc support was added in PHP 5.3.0.
+     <link linkend="language.types.string.syntax.nowdoc">Yorumlanmayan çok
+     satırlı metin (nowdoc)</link> desteği 5.3.0'da eklenmiştir.
     </para>
    </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.new">
-   <title>new</title>
+   <title><code>new</code> Anahtar Sözcüğü</title>
    <para>
-    To create an instance of a class, a new object must be created and
-    assigned to a variable.  An object will always be assigned when
-    creating a new object unless the object has a
-    <link linkend="language.oop5.decon">constructor</link> defined that throws an
-    <link linkend="language.exceptions">exception</link> on error. Classes
-    should be defined before instantiation (and in some cases this is a
-    requirement).
+    Bir sınıfın örneğini oluşturmak için yeni bir nesne oluşturulup bir
+    değişkene atanmalıdır. Nesne, hata durumunda bir <link
+    linkend="language.exceptions">istisna</link> oluşturan bir <link
+    linkend="language.oop5.decon">kurucu</link>ya sahip olmadıkça, yeni bir
+    nesne daima bir değişkene atanarak oluştulur. Sınıflar, örnekleme öncesi
+    tanımlanmış olmalıdır (ve bu, bazı durumlarda bir gereksinimdir).
    </para>
    <example>
-    <title>Creating an instance</title>
+    <title>- Bir sınıf örneğinin oluşturulması</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$instance = new SimpleClass();
+$örnek = new BasitSınıf();
 ?>
 ]]>
     </programlisting>
    </example>
    <para>
-    In the class context, it is possible to create a new object by
-    <literal>new self</literal> and <literal>new parent</literal>.
+    Sınıf bağlamında yeni bir nesneyi <literal>new self</literal> veya
+    <literal>new parent</literal> kullanarak oluşturmak mümkündür.
    </para>
    <para>
-    When assigning an already created instance of a class to a new variable, the new variable
-    will access the same instance as the object that was assigned. This
-    behaviour is the same when passing instances to a function. A copy
-    of an already created object can be made by
-    <link linkend="language.oop5.cloning">cloning</link> it.
+    Oluşturulmuş bir sınıf örneğinin yeni bir değişkene atanması sırasında,
+    yeni değişken, atanan nesneyle aynı örneğe erişecektir. Bu davranışın
+    örneklerin bir işleve aktarılmasından bir farkı yoktur. <link
+    linkend="language.oop5.cloning">Kopyalamak</link> suretiyle oluşturulmuş
+    bir nesnenin daima bir kopyası yapılabilir.
    </para>
    <example>
-    <title>Object Assignment</title>
+    <title>- Nesne Atama</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$assigned   =  $instance;
-$reference  =& $instance;
+$atama     =  $örnek;
+$gönderim  =& $örnek;
 
-$instance->var = '$assigned will have this value';
+$örnek->var = '$atama bu değere sahip olacak';
 
-$instance = null; // $instance and $reference become null
+$örnek = null; // $örnek ve $gönderim null olur
 
-var_dump($instance);
-var_dump($reference);
-var_dump($assigned);
+var_dump($örnek);
+var_dump($gönderim);
+var_dump($atama);
 ?>
 ]]>
     </programlisting>
@@ -205,9 +205,9 @@ var_dump($assigned);
 <![CDATA[
 NULL
 NULL
-object(SimpleClass)#1 (1) {
-   ["var"]=>
-     string(30) "$assigned will have this value"
+object(BasitSınıf)#1 (1) {
+  ["var"]=>
+  string(30) "$atama bu değere sahip olacak"
 }
 ]]>
     </screen>
@@ -215,44 +215,46 @@ object(SimpleClass)#1 (1) {
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.extends">
-   <title>extends</title>
+   <title><code>extends</code> Anahtar Sözcüğü</title>
    <para>
-    A class can inherit methods and members of another class by using the
-    extends keyword in the declaration. It is not possible to extend multiple
-    classes, a class can only inherit one base class.
+    Bir sınıfın bildiriminde <code>extends</code> anahtar sözcüğü
+    kullanılarak başka bir sınıfın yöntemleri ve üyeleri miras alınabilir.
+    Çok sayıda sınıfı miras alarak genişlemek mümkün değildir, bir sınıf
+    sadece bir ana sınıfı miras alabilir.
    </para>
    <para>
-    The inherited methods and members can be overridden, unless the parent
-    class has defined a method as <link linkend="language.oop5.final">final</link>,
-    by redeclaring them with the same name defined in the parent class.
-    It is possible to access the overridden methods or static members by
-    referencing them with <link linkend="language.oop5.paamayim-nekudotayim">parent::</link>
+    Miras alınan yöntemler ve üyeler, ebeveyn sınıfta tanımlı isimleriyle
+    yeniden bildirilerek geçersiz kılınabilir; bu sadece ebeveyn sınıfın
+    <link linkend="language.oop5.final">final</link> tanımlı yöntemleri için
+    yapılamaz. Geçersiz kılınmış yöntemlere ve duruk üyelere <link
+    linkend="language.oop5.paamayim-nekudotayim">parent::</link> öneki ile
+    atıfta bulunarak erişilebilir.
    </para>
    <example>
-    <title>Simple Class Inheritance</title>
+    <title>- Basit bir sınıfın miras alınması</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class ExtendClass extends SimpleClass
+class EkSınıf extends BasitSınıf
 {
-    // Redefine the parent method
-    function displayVar()
+    // ebeveyn yöntemi yeniden bildirelim
+    function değerGöster()
     {
-        echo "Extending class\n";
-        parent::displayVar();
+        echo "Sınıf genişletiliyor\n";
+        parent::değerGöster();
     }
 }
 
-$extended = new ExtendClass();
-$extended->displayVar();
+$ek = new EkSınıf();
+$ek->değerGöster();
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-Extending class
-a default value
+Sınıf genişletiliyor
+bir öntanımlı değer
 ]]>
     </screen>
    </example>
