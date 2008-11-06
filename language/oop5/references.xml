@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.1 Maintainer: nilgun Status: working -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
 <!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.references" xmlns="http://docbook.org/ns/docbook">
   <title>Nesneler ve Gönderimler</title>
   <para>
-   One of the key-point of PHP5 OOP that is often mentioned is that
-   "objects are passed by references by default" This is not completely true.
-   This section rectifies that general thought using some examples.
+    PHP 5 için nesne yönelimli programlama ile ilgili olarak "öntanımlı olarak
+    nesneler gönderimli aktarılır" diye bir kanı oluşmuştur, fakat bu tamamen
+    doğru değildir. Bu bölümde bir örnek üzerinden bu genel kanı düzeltilmeye
+    çalışılmıştır.
   </para>
 
   <para>
-   A PHP reference is an alias, which allows two different variables to write
-   to the same value. As of PHP5, an object variable doesn't contain the object
-   itself as value anymore. It only contains a object identifier which allows
-   object accessors to find the actual object. When an object is sent by
-   argument, returned or assigned to another variable, the different variables
-   are not aliases: they hold a copy of the identifier, which points to the same
-   object.
+   Bir PHP gönderimi, aynı değeri iki farklı değişkene yazmayı mümkün kılan
+   bir takma addır. PHP 5'ten itibaren bir nesne değişkeni artık değer
+   olarak nesnenin kendisini içermemektedir. Bunun yerine, nesne erişimcilerin
+   asıl nesneyi bulmasını sağlayacak bir nesne tanıtıcısı içerir.  Bir nesne
+   değiştirgesi ile aktarılırken, döndürülürken veya başka bir değişkene
+   atanırken bunlar takma ad değil, farklı değişkenlerdir: Aynı nesneyi
+   gösteren tanıtıcının birer kopyasını içerirler.
   </para>
 
   <example>
-   <title>References and Objects</title>
+   <title>- Gönderimler ve Nesneler</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -30,15 +31,15 @@ class A {
 }
 
 $a = new A;
-$b = $a;     // $a and $b are copies of the same identifier
-             // ($a) = ($b) = <id>
+$b = $a;     // $a ve $b aynı nesne tanıtıcısının kopyalarını içerir
+             // ($a) = ($b) = <tanıtıcı>
 $b->foo = 2;
 echo $a->foo."\n";
 
 
 $c = new A;
-$d = &$c;    // $c and $d are references
-             // ($c,$d) = <id>
+$d = &$c;    // $c ve $d gönderimdir
+             // ($c,$d) = <tanıtıcı>
 
 $d->foo = 2;
 echo $c->foo."\n";
@@ -47,7 +48,7 @@ echo $c->foo."\n";
 $e = new A;
 
 function foo($obj) {
-    // ($obj) = ($e) = <id>
+    // ($obj) = ($e) = <tanıtıcı>
     $obj->foo = 2;
 }
 
