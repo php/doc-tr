@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.3 Maintainer: nilgun Status: working -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
 <!-- Last translator: Nilgün Belma Bugüner -->
  <sect1 xml:id="language.oop5.late-static-bindings" xmlns="http://docbook.org/ns/docbook">
-  <title>Late Static Bindings</title>
+  <title>Duruk İçselleştirim</title>
   <para>
-   As of PHP 5.3.0, PHP implements a feature called late static bindings which
-   can be used to reference the called class in a context of static inheritance.
+   PHP 5.3.0'dan itibaren, miras alınan duruk bağlamın çağrıldığı nesne
+   bağlamında değerlendirilmesini sağlayan ve duruk içselleştirim (İng.:late
+   static bindings) adı verilen bir özellik eklenmiştir.
   </para>
 
   <para>
-   This feature was named "late static bindings" with an internal perspective in
-   mind. "Late binding" comes from the fact that <literal>static::</literal>
-   will no longer be resolved using the class where the method is defined but
-   it will rather be computed using runtime information.
-
-   It was also called a "static binding" as it can be used for (but is not
-   limited to) static method calls.
+    "Duruk içselleştirme",  <code>static::</code> yöntemin çalışma anında,
+    tanımlandığı nesnenin bağlamında değil, çağrıldığı nesnenin bağlamında
+    değerlendirilmesi olgusunu betimler.
   </para>
 
   <sect2 xml:id="language.oop5.late-static-bindings.self">
-   <title>Limitations of <literal>self::</literal></title>
+   <title><code>self::</code> ile ilgili sınırlamalar</title>
    <para>
-    Static references to the current class like <literal>self::</literal> or
-    <literal>__CLASS__</literal> are resolved using the class in which the
-    function belongs, as in where it was defined:
+    <code>self::</code> veya <code>__CLASS__</code> gibi bulunduğu sınıfa
+    duruk gönderim yapan öğeler, örnekten de görüleceği üzere, yöntemi miras
+    alan sınıf bağlamında değil, yöntemin ait olduğu sınıf bağlamında
+    değerlendirilirler:
    </para>
    <example>
-    <title><literal>self::</literal> usage</title>
+    <title>- <code>self::</code> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class A {
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__;
     }
-    public static function test() {
-        self::who();
+    public static function dene() {
+        self::kimsin();
     }
 }
 
 class B extends A {
-    public static function who() {
+    public static function kimsin() {
          echo __CLASS__;
     }
 }
 
-B::test();
+B::dene();
 ?>
 ]]>
     </programlisting>
@@ -61,38 +59,39 @@ A
   </sect2>
 
   <sect2 xml:id="language.oop5.late-static-bindings.usage">
-   <title>Late Static Bindings' usage</title>
+   <title>Duruk İçselleştirimin uygulanması</title>
 
    <para>
-    Late static bindings tries to solve that limitation by introducing a
-    keyword that references the class that was initially called at runtime.
-    Basically, a keyword that would allow you to reference
-    <literal>B</literal> from <literal>test()</literal> in the previous
-    example. It was decided not to introduce a new keyword but rather use
-    <literal>static</literal> that was already reserved.
+    Duruk içselleştirimde çözümlemenin, gönderimin çalışma anında ilk
+    çağrıldığı sınıfla sınırlandırılması, gönderim için özel bir anahtar
+    sözcük kullanılarak sağlanır. Temel olarak, böyle bir anahtar sözcük,
+    yukarıdaki örnekteki <code>dene()</code> yönteminin aşağıdaki gibi
+    <code>B</code> döndürmesini sağlar. Bunun için yeni bir anahtar sözcük
+    atamaktansa, zaten bir anahtar sözcük olan <code>static</code> sözcüğü
+    kullanılmıştır.
    </para>
 
    <example>
-    <title><literal>static::</literal> simple usage</title>
+    <title>- <code>static::</code> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class A {
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__;
     }
-    public static function test() {
-        static::who(); // Here comes Late Static Bindings
+    public static function dene() {
+        static::kimsin(); // Burada duruk içselleştirim yapılıyor
     }
 }
 
 class B extends A {
-    public static function who() {
+    public static function kimsin() {
          echo __CLASS__;
     }
 }
 
-B::test();
+B::dene();
 ?>
 ]]>
     </programlisting>
@@ -105,91 +104,92 @@ B
    </example>
    <note>
     <para>
-     <literal>static::</literal> does not work like <literal>$this</literal> for
-     static methods! <literal>$this-></literal> follows the rules of
-     inheritance while <literal>static::</literal> doesn't. This difference is
-     detailed later on this manual page.
+     Duruk yöntemler için <code>static::</code>, <code>$this</code> gibi
+     çalışmaz! <code>$this</code> kalıtım kurallarına bağlıdır,
+     <code>static::</code> değildir.
     </para>
    </note>
    <example>
-    <title><literal>static::</literal> usage in a non-static context</title>
+    <title>- Duruk olmayan bağlamda <code>static::</code> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class TestChild extends TestParent {
+class Çocuk extends Ebeveyn {
     public function __construct() {
-        static::who();
+        static::kimsin();
     }
 
-    public function test() {
-        $o = new TestParent();
+    public function dene() {
+        $o = new Ebeveyn();
     }
 
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__."\n";
     }
 }
 
-class TestParent {
+class Ebeveyn {
     public function __construct() {
-        static::who();
+        static::kimsin();
     }
 
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__."\n";
     }
 }
-$o = new TestChild;
-$o->test();
+$o = new Çocuk;
+$o->dene();
 
-?>
-]]>
+?>]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-TestChild
-TestParent
+Çocuk
+Ebeveyn
 ]]>
     </screen>
    </example>
    <note>
     <para>
-     Late static bindings' resolution will stop at a fully resolved static call with no fallback. On the other hand, static calls using keywords like <literal>parent::</literal> or <literal>self::</literal> will forward the calling information.
+     Duruk içselleştirimin çözümlemesi duruk çağrının tamamen çözümlendiği
+     noktada durdurulur, daha öteye gidilmez. Diğer taraftan,
+     <code>parent::</code> veya <code>self::</code> gibi anahtar sözcükler
+     kullanılarak yapılan duruk çağrılar çağrı bilgisini ötelerler.
     </para>
     <example>
-     <title>Forwarding and non-forwarding calls</title>
+     <title>Ötelenen ve ötelenmeyen çağrılar</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 class A {
-    public static function foo() {
-        static::who();
+    public static function nesin() {
+        static::kimsin();
     }
 
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__."\n";
     }
 }
 
 class B extends A {
-    public static function test() {
-        A::foo();
-        parent::foo();
-        self::foo();
+    public static function dene() {
+        A::nesin();
+        parent::nesin();
+        self::nesin();
     }
 
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__."\n";
     }
 }
 class C extends B {
-    public static function who() {
+    public static function kimsin() {
         echo __CLASS__."\n";
     }
 }
 
-C::test();
+C::dene();
 ?>
 ]]>
      </programlisting>
@@ -205,38 +205,37 @@ C
    </note>
   </sect2>
   <sect2 xml:id="language.oop5.late-static-bindings.edge-cases">
-   <title>Edge cases</title>
+   <title>Yan etkiler</title>
    <para>
-    There are lots of different ways to trigger a method call in PHP, like
-    callbacks or magic methods. As late static bindings base their resolution
-    on runtime information, it might give unexpected results in so-called edge
-    cases.
+     PHP'de bir yöntem çağrısını tetiklemenin çok çeşitli yolları vardır;
+     geri çağırımlar ve sihirli yöntemler gibi. Bunlar duruk içselleştirime
+     tabi tutulduklarında, çalışma anında beklenmeyen sonuçlara sebep olurlar.
    </para>
    <example>
-    <title>Late static bindings inside magic methods</title>
+    <title>- Sihirli yöntemlerin içinde duruk içselleştirim</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class A {
 
-   protected static function who() {
+   protected static function kimsin() {
         echo __CLASS__."\n";
    }
 
    public function __get($var) {
-       return static::who();
+       return static::kimsin();
    }
 }
 
 class B extends A {
 
-   protected static function who() {
+   protected static function kimsin() {
         echo __CLASS__."\n";
    }
 }
 
 $b = new B;
-$b->foo;
+$b->nesin;
 ?>
 ]]>
     </programlisting>
