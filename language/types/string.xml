@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.16 Maintainer: nilgun Status: ready -->
+<!-- Last translator: Nilgün Belma Bugüner -->
+<sect1 xml:id="language.types.string">
+ <title><code>string</code></title>
+
+ <para>
+  Bir dizge <type>string</type> türünde bir sayıl değer olup bir dizi
+  karakterden oluşur. PHP 6 öncesi her karakter tek bayt ile ifade
+  ediliyordu. Yani, olası karakter sayısı 256'dan ibaretti. Bu yüzden PHP
+  Unicode için yerleşik desteğe sahip olamıyordu. Temel Unicode işlevselliği
+  hakkında bilgi edinmek için <function>utf8_encode</function> ve
+  <function>utf8_decode</function> işlevlerine bakınız.
+ </para>
+
+ <note>
+  <simpara>
+   Bir dizgenin çok büyük olması bir sorun teşkil etmez. PHP,
+   <type>string</type> türünde bir değer için boyut sınırlaması yapmaz; tek
+   sınırlama PHP'nin çalıştığı makinede PHP'nin kullanımına ayrılan bellek
+   miktarıdır.
+  </simpara>
+ </note>
+
+ <sect2 xml:id="language.types.string.syntax">
+  <title>Sözdizimi</title>
+
+  <para>
+  <type>string</type> türünde bir sayıl dört şekilde belirtilebilir:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.single">tek tırnaklı dizge
+     </link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.double">çift tırnaklı dizge
+     </link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.heredoc">yorumlu metin
+     </link> (heredoc)
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.nowdoc">yorumsuz metin
+     </link> (nowdoc) - (PHP 5.3.0 ve sonrası)
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <sect3 xml:id="language.types.string.syntax.single">
+   <title>Tek tırnaklı dizgeler</title>
+
+   <para>
+    Bir dizgeyi belirtmenin en basit yolu dizgeyi tek tırnak (') imlerinin
+    arasına almaktır.
+   </para>
+
+   <para>
+    Tek tırnaklı bir dizge içinde tek tırnağı sayıl değeriyle kullanmak
+    isterseniz önüne bir tersbölü imi getirmelisiniz (\'). Bir tersbölü imini
+    sayıl değeriyle kullanmak isterseniz onun da önüne bir tersbölü imi
+    getirmelisiniz (\\). Tersbölü imini bunlardan başka bir karakterin önünde
+    kullanırsanız, tersbölü imi karakterle birlikte basılır.
+   </para>
+
+   <note>
+    <simpara>
+     Diğer iki sözdiziminin aksine, <link linkend="language.variables"
+     >değişkenler</link> ve özel karakterlerin öncelemleri tek tırnaklı
+     dizgelerin içinde kullanıldıklarında yorumlanmazlar.
+    </simpara>
+   </note>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo 'Bu basit bir dizgedir';
+
+echo 'Dizgelerin içinde satırsonu karakterlerini
+tıpkı buradaki gibi
+kullanabilirsiniz';
+
+// Çıktısı: Arnold dedi ki: "I'll be back"
+echo 'Arnold dedi ki: "I\'ll be back"';
+
+// Çıktısı: You deleted C:\*.*?
+echo 'You deleted C:\\*.*?';
+
+// Çıktısı: You deleted C:\*.*?
+echo 'You deleted C:\*.*?';
+
+// Çıktısı: This will not expand: \n a newline
+echo 'This will not expand: \n a newline';
+
+// Çıktısı: Variables do not $expand $either
+echo 'Variables do not $expand $either';
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.double">
+   <title>Çift tırnaklı dizgeler</title>
+
+   <para>
+    Eğer bir dizge çift tırnak (") içine alınmışsa PHP, aşağıdaki özel
+    karakter öncelemlerini yorumlayacaktır:
+   </para>
+
+   <table>
+    <title>Tersbölü ile öncelenmiş karakterler</title>
+
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Öncelem</entry>
+       <entry>Anlamı</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>\n</literal></entry>
+       <entry>satırsonu (LF veya ASCII 10 (0x0A))</entry>
+      </row>
+      <row>
+       <entry><literal>\r</literal></entry>
+       <entry>satırbaşı (CR veya ASCII 13 (0x0D))</entry>
+      </row>
+      <row>
+       <entry><literal>\t</literal></entry>
+       <entry>yatay sekme (HT veya ASCII 9 (0x09))</entry>
+      </row>
+      <row>
+       <entry><literal>\v</literal></entry>
+       <entry>düşey sekme (VT veya ASCII 11 (0x0B)) (PHP 5.2.5 ve sonrası)</entry>
+      </row>
+      <row>
+       <entry><literal>\f</literal></entry>
+       <entry>sayfa ileri (FF veya ASCII 12 (0x0C)) (PHP 5.2.5 ve sonrası)</entry>
+      </row>
+      <row>
+       <entry><literal>\\</literal></entry>
+       <entry>tersbölü</entry>
+      </row>
+      <row>
+       <entry><literal>\$</literal></entry>
+       <entry>dolar imi</entry>
+      </row>
+      <row>
+       <entry><literal>\"</literal></entry>
+       <entry>çift tırnak</entry>
+      </row>
+      <row>
+       <entry><literal>\[0-7]{1,3}</literal></entry>
+       <entry>
+        Bu düzenli ifade ile eşleşen dizilim, karakterin sekizlik
+        gösterimidir.
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\x[0-9A-Fa-f]{1,2}</literal></entry>
+       <entry>
+        Bu düzenli ifade ile eşleşen dizilim, karakterin onaltılık
+        gösterimidir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+   <para>
+    Tersbölü imini bunlardan başka bir karakterin önünde kullanırsanız,
+    tersbölü imi karakterle birlikte basılır. PHP 5.1.1'den önce,
+    <literal>\{$var}</literal> içindeki tersbölü imi basılmıyordu.
+   </para>
+
+   <para>
+    Çift tırnaklı dizgelerin en önemli özelliği içerdiği değişkenlerin
+    yorumlanmasıdır. Bu konuda daha ayrıntılı bilgi edinmek için <link
+    linkend="language.types.string.parsing">Değişken çözümleme</link>
+    bölümüne bakınız.
+   </para>
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.heredoc">
+   <title>Yorumlu metinler</title>
+
+   <simpara>
+    Bir dizgenin sınırlarını belirlemenin üçüncü yolu, <emphasis>yorumlu
+    metin</emphasis> sözdizimidir. Bir yorumlu metin daima
+    <literal>&lt;&lt;&lt;</literal> karakterleri ile başlar ve hemen ardından
+    bir betimleyici ve bir satırsonu karakteri gelir. Asıl dizge satırsonu
+    karakterinden sonra yer alır. Dizgenin sonunu belirtmek üzere dizgenin
+    sonuna, baştaki betimleyici konur.
+   </simpara>
+
+   <simpara>
+    Kapanış betimleyicisinin dizgeden sonraki satırın başında olması
+    <emphasis>gerekir</emphasis>. Ayrıca, betimleyici PHP'deki diğer isimlere
+    uygulanan kurallara uygun olmalıdır: Sadece bir harfle veya alt çizgi imi
+    ile başlayabilir; sadece harfler, rakamlar veya alt çizgi imleri
+    içerebilir.
+   </simpara>
+
+   <warning>
+    <simpara>
+     Kapanış betimleyicisinin bulunduğu satırda betimleyicinin hemen ardına
+     konan noktalı virgül dışında hiçbir karakter bulunmaması çok önemli olup
+     buna özellikle dikkat etmelisiniz. Yani, betimleyici özellikle
+     <emphasis>girintilenmemeli</emphasis>; noktalı virgülden önce ve sonra
+     herhangi bir boşluk karakteri bulunmamalıdır. Ayrıca, kapanış
+     betimleyicisinden hemen önce gelen karakterin yerel işletim sistemine
+     özgü satırsonu karakteri olması çok önemlidir. Bu karakter Unix ve Mac
+     OS X için <literal>\n</literal>'dir. Kapanış betimleyicisinden (ve olası
+     noktalı virgül karakterinden) sonraki karakter de böyle bir satırsonu
+     karakteri olmalıdır.
+    </simpara>
+
+    <simpara>
+     Eğer bu kurallara uyulmaz ve kapanış betimleyicisinin etrafı temiz
+     tutulmazsa kapanış betimleyicisi algılanamayacağından PHP kapanış
+     betimleyicisini aramaya devam edecektir. Eğer dosyanın sonuna kadar
+     uygun bir kapanış betimleyicisi bulunamazsa son satırda bir çözümleme
+     hatası oluşacaktır.
+    </simpara>
+
+    <para>
+     Yorumlu metinler sınıf üyelerini ilklendirmek için kullanılamazlar.
+     Bunun yerine <link linkend="language.types.string.syntax.nowdoc"
+     >yorumsuz metinler</link> kullanılabilir.
+    </para>
+
+    <example>
+     <title>- Geçersiz örnek</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<EOT
+bar
+EOT;
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </warning>
+
+   <para>
+    Yorumlu metinler tıpkı çift tırnaklı dizgeler gibi davranırlar. Yorumlu
+    metin çift tırnaklar arasına alınmaz ve metin içindeki çift tırnak
+    imlerinin tersbölü ile öncelenmesi gerekmez, ancak yukarıda çift tırnaklı
+    dizgeler için belirtilen öncelem kodları kullanılabilir. Değişkenler
+    yorumlanır, fakat yorumlanan metin içinde yer alan karmaşık değişkenler
+    ifade edilirken dizgelerde dikkate alınması gerekenler yorumlu metinlerde
+    de dikkate alınmalıdır.
+   </para>
+
+   <example>
+    <title>- Yorumlu metin örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = <<<EOD
+Yorumlu metin sözdizimi
+kullanılarak çok sayıda
+satıra bölünmüş dizge örneği.
+EOD;
+
+/* Değişkenlerin de kullanıldığı daha karmaşık bir örnek */
+class foo
+{
+    var $foo;
+    var $bar;
+
+    function foo()
+    {
+        $this->foo = 'Foo';
+        $this->bar = array('Bar1', 'Bar2', 'Bar3');
+    }
+}
+
+$foo = new foo();
+$name = 'Kimimben';
+
+echo <<<EOT
+Adım "$name" ve işim $foo->foo basmak.
+Şimdi {$foo->bar[1]} basıyorum.
+Bu büyük 'A' basmalı: \x41\n
+EOT;
+?>
+]]>
+    </programlisting>
+   </example>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Adım "Kimimben" ve işim Foo basmak.
+Şimdi Bar2 basıyorum.
+Bu büyük 'A' basmalı: A]]>
+   </screen>
+
+   <para>
+    Ayrıca işlev değiştirgesinde veri aktarırken de yorumlu metin
+    kullanılabilir:
+   </para>
+
+   <example>
+    <title>- Değiştirgelerde yorumlu metin kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(array(<<<EOD
+foobar!
+EOD
+));
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <note>
+    <para>
+     Yorumlu metin desteği PHP 4'te eklenmiştir.
+    </para>
+   </note>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.nowdoc">
+   <title>Yorumsuz metinler</title>
+
+   <para>
+    Yorumlu metinlerin çift tırnaklı dizgelere karşılık gelmesi gibi yorumsuz
+    metinler de tek tırnaklı dizgelere karşılık gelir. Yorumsuz metinler de
+    yorumlular gibi belirtilir ama, <emphasis>yorumsuz metin içinde çözümleme
+    yapılmaz</emphasis>. Yorumsuz metinler, PHP kodlarını veya büyük metin
+    bloklarını herhangi bir önlem almaksızın içine yerleştirmek için
+    elverişlidirler. Belirtilen metin bloğunun çözümlenmemesinden dolayı
+    SGML'nin <literal>&lt;![CDATA[ ]]&gt;</literal> oluşumu ile benzer
+    özelliklere sahiptir.
+   </para>
+
+   <para>
+    Yorumsuz metin de yorumlu metindeki <literal>&lt;&lt;&lt;</literal>
+    dizgesini kullanır fakat betimleyicisi tek tırnak içine alınır; yani,
+    şuna benzer: <literal>&lt;&lt;&lt;'EOT'</literal>. Yorumlu metin için
+    geçerli tüm diğer kurallar yorumsuz metin için de geçerlidir; özellikle
+    de kapanış betimleyici ile ilgili olanlar.
+   </para>
+
+   <example>
+    <title>- Yorumsuz metin örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = <<<'EOD'
+Yorumlu metin sözdizimi
+kullanılarak çok sayıda
+satıra bölünmüş dizge örneği.
+EOD;
+
+/* Değişkenli daha karmaşık bir örnek. */
+class foo
+{
+    public $foo;
+    public $bar;
+
+    function foo()
+    {
+        $this->foo = 'Foo';
+        $this->bar = array('Bar1', 'Bar2', 'Bar3');
+    }
+}
+
+$foo = new foo();
+$name = 'Kimimben';
+
+echo <<<'EOT'
+İsmim "$name" ve işim $foo->foo basmak.
+Artık {$foo->bar[1]} basıyorum.
+Bu büyük 'A' basmalı: \x41
+EOT;
+?>
+]]>
+    </programlisting>
+   </example>
+   &example.outputs;
+   <screen>
+<![CDATA[
+İsmim "$name" ve işim $foo->foo basmak.
+Artık {$foo->bar[1]} basıyorum.
+Bu büyük 'A' basmalı: \x41]]></screen>
+
+   <note>
+    <para>
+     Yorumlu metinlerin aksine yorumsuz metinler herhangi bir duruk veri
+     bağlamında kullanılabilirler. Sınıf üyelerini veya sabitlerini yorumsuz
+     metin kullanarak ilklendirme örneği:
+    </para>
+
+    <example>
+     <title>- Duruk veri örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<'EOT'
+bar
+EOT;
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </note>
+
+   <note>
+    <para>
+     Yorumlu metin desteği PHP 5.3.0'da eklenmiştir.
+    </para>
+   </note>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.parsing">
+   <title>Değişken çözümleme</title>
+
+   <simpara>
+    Bir dizge çift tırnaklar arasında veya  bir yorumlu metin olarak
+    belirtilmişse içindeki <link linkend="language.variables"
+    >değişkenler</link> çözümlenir.
+   </simpara>
+
+   <simpara>
+    İki sözdizimi türü vardır: Biri <link
+    linkend="language.types.string.parsing.simple">basit</link>, diğeri <link
+    linkend="language.types.string.parsing.complex">karmaşık</link>. Basit
+    sözdizimi en çok kullanılanı ve elverişli olanıdır; bir değişken, bir
+    dizi değeri veya bir nesne özelliğini bir dizge içinde en az çabayla
+    kullanmayı sağlar.
+   </simpara>
+
+   <simpara>
+    Karmaşık sözdizimi PHP4'ten itibaren kullanılmakta olup ifadeyi
+    sarmalayan kaşlı ayraçlar biçiminde kendini gösterir.
+   </simpara>
+
+   <sect4 xml:id="language.types.string.parsing.simple">
+    <title>Basit Sözdizimi</title>
+
+    <simpara>
+     Çözümleyici, bir dolar imine (<literal>$</literal>) rastlandığında,
+     geçerli bir değişken ismi oluşturmak için alabildiği bütün dizgecikleri
+     açgözlülükle toplar. Değişken isminin kaşlı ayraçlar arasına alınması
+     ismin sonunun açıkça belirtilmesini sağlar.
+    </simpara>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$bira = 'Bira';
+echo "$bira'nın tadı berbattır"; // çalışır; "'" değişken adında geçersizdir
+echo "$biralar geldi";   // çalışmaz; 'lar' değişken isminde geçerlidir
+                         // ama değişken "$biralar" değildir.
+echo "${bira}lar geldi"; // çalışır
+echo "{$bira}lar geldi"; // çalışır
+?>
+]]>
+     </programlisting>
+    </informalexample>
+
+    <simpara>
+     Bir dizi indisi veya bir nesne özelliği de benzer şekilde
+     çözümlenebilir. Dizi indislerinde indis sonunu, kapayan köşeli ayraç
+     belirler. Aynı kural, basit değişkenler olarak nesne özelliklerine de
+     uygulanır.
+    </simpara>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Bu örnekler dizge içinde dizi kullanımına özgüdür.
+// Dizilerin dizgesel anahtarları daima tırnak içine alınır,
+// bu amaçla kaşlı ayraçlar kullanılmaz.
+
+// Bütün hataları görelim
+error_reporting(E_ALL);
+
+$meyve = array('çilek' => 'kırmızı', 'muz' => 'sarı');
+
+// Çalışır, fakat bunun dizge dışında farklı çalışacağına dikkat edin
+echo "Bir muz $meyve[muz] renktedir.";
+
+// Çalışır
+echo "Bir muz {$meyve['muz']} renktedir.";
+
+// çalışır, fakat PHP aşağıda açıklandığı gibi önce muz adında bir sabit arar
+echo "Bir muz {$meyve[muz]} renktedir.";
+
+// Çalışmaz, kaşlı ayraç kullanın. Bir çözümleme hatasına yol açar.
+echo "Bir muz $meyve['muz'] renktedir.";
+
+// Çalışır
+echo "Bir muz " . $meyve['muz'] . " renktedir.";
+
+// Çalışır
+echo "Bu karenin bir kenarı $square->width metre uzunluktadır.";
+
+// Çalışmaz. Çözüm için karmaşık sözdizimine bakın.
+echo "Bu karenin bir kenarı $square->width00 santimetre uzunluktadır.";
+?>
+]]>
+<!-- XXX this won't work:
+echo "This square is $square->{width}00 centimeters broad.";
+// XXX: php developers: it would be consequent to make this work.
+// XXX: like the $obj->{expr} syntax outside a string works,
+// XXX: analogously to the ${expr} syntax for variable var's.
+-->
+     </programlisting>
+    </informalexample>
+
+    <simpara>
+     Bunlardan daha karmaşık herşey için karmaşık sözdizimini kullanmalısınız.
+    </simpara>
+   </sect4>
+
+   <sect4 xml:id="language.types.string.parsing.complex">
+    <title>Karmaşık (kaşlı ayraçlı) sözdizimi</title>
+
+    <simpara>
+     Buna karmaşık denmesinin sebebi sözdiziminin karmaşıklığı değil,
+     karmaşık ifadelerin kullanımını mümkün kılmasıdır.
+    </simpara>
+
+    <simpara>
+     Aslında, isim alanındaki her değer, bir dizge içinde bu sözdizimi ile
+     yer alabilir. İfade basitçe dizge dışındaki gösterimiyle yazılıp
+     <literal>{</literal> ve <literal>}</literal> arasına alınır.
+     <literal>{</literal> öncelenemeyeceğinden bu sözdizimi sadece
+     <literal>$</literal> iminin <literal>{</literal> iminin hemen ardında
+     yer aldığı durumlarda tanınır. <literal>{\$</literal> kullanımı bir
+     sayıl <literal>{$</literal> alınmasıyla sonuçlanır. Bazı örnekler:
+    </simpara>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Tüm hataları görelim
+error_reporting(E_ALL);
+
+$şahane = 'harika';
+
+// Çalışmaz, çıktısı: Bu çok { harika}
+echo "Bu çok { $şahane}";
+
+// Çalışır, çıktısı: Bu çok harika
+echo "Bu çok {$şahane}";
+echo "Bu çok ${şahane}";
+
+// Çalışır
+echo "Bu karenin bir kenarı {$square->width}00 santimetre uzunluktadır.";
+
+// Çalışır
+echo "Bu çalışır: {$arr[4][3]}";
+
+// $foo[bar] bir dizge dışında neden yanlışsa bu da o yüzden yanlıştır.
+// Yani, bu yine de çalışır fakat PHP önce foo adında bir sabit
+// arayacağından çalışır; bununla birlikte E_NOTICE seviyesinde
+// bir hata oluşacaktır (tanımsız sabit).
+echo "Bu yanlış: {$arr[foo][3]}";
+
+// Çalışır. Çok boyutlu dizileri dizgelerin içinde kullanılırken,
+// dizileri daima kaşlı ayraçlar arasına alın.
+echo "Bu çalışır: {$arr['foo'][3]}";
+
+// Çalışır.
+echo "Bu çalışır: " . $arr['foo'][3];
+
+echo "Bu da çalışır: {$obj->values[3]->name}";
+
+echo "$name adlı değişkenin değeri: {${$name}}";
+
+echo "Adı getName() işlevinin dönüş değeri olan değişkenin değeri: {${getName()}}";
+
+echo "Adı \$object->getName() yönteminin dönüş değeri olan değişkenin değeri: {${$object->getName()}}";
+?>
+]]>
+<!-- maybe it's better to leave this out??
+// this works, but i disencourage its use, since this is NOT
+// involving functions, rather than mere variables, arrays and objects.
+$beer = 'Heineken';
+echo "I'd like to have another {${ strrev('reeb') }}, hips";
+ -->
+     </programlisting>
+    </informalexample>
+
+    <note>
+     <para>
+      İşlev ve yöntemlerin <literal>{$}</literal> içinde çağrılması PHP 5'tan
+      beri çalışmaktadır.
+     </para>
+    </note>
+
+   </sect4>
+  </sect3>
+
+  <sect3 xml:id="language.types.string.substr">
+   <title>Dizge erişimi ve karaktere göre değişiklik</title>
+
+   <para>
+    Dizgelerin içindeki karakterlere, dizilerin köşeli ayraçları arasında
+    karakterin dizinin başlangıcından itibaren (ilk karakterin indisi sıfır
+    olmak üzere) kaçıncı karakter olduğu belirtilerek ($dizge[42] gibi)
+    erişilebilir veya o karakterde değişiklik yapılabilir. Dizgeler bu
+    nedenle bir karakter dizisi olarak düşünülür.
+   </para>
+
+   <note>
+    <simpara>
+     Dizge karakterlerine ayrıca <varname>$str{42}</varname> biçeminde kaşlı
+     ayraçlar kullanılarak da erişilebilirse de bu sözdiziminin kullanımı PHP
+     6 itibariyle önerilmemektedir. Bu amaçla kaşlı ayraçları değil, daima
+     köşeli ayraçları tercih edin.
+    </simpara>
+   </note>
+
+   <warning>
+    <simpara>
+     Karakter indisi olarak dizgenin uzunluğundan büyük bir değer belirtmek,
+     dizgenin sonuna boşlukların eklenmesine sebep olur. Tamsayı olmayan
+     indis değerleri tamsayıya dönüştürülür. Kuraldışı indis belirtimi
+     <constant>E_NOTICE</constant>'e sebep olur. Yazma sırasında negatif
+     indisler bir <constant>E_NOTICE</constant> çıktılanmasına sebep olurken
+     okuma işlemi boş dizge okunmasıyla sonuçlanır. Atanmış bir dizgenin
+     sadece ilk karakteri kullanılır. Boş dizge atamak &null; atamasıyla
+     sonuçlanır.
+    </simpara>
+   </warning>
+
+   <example>
+    <title>- Bazı dizge örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Dizgenin ilk karakterini alalım
+$str = 'This is a test.';
+$first = $str[0];
+
+// Dizgenin üçüncü karakterini alalım
+$third = $str[2];
+
+// Dizgenin son karakterini alalım
+$str = 'This is still a test.';
+$last = $str[strlen($str)-1];
+
+// Dizgenin son karakterini değiştirelim
+$str = 'Look at the sea';
+$str[strlen($str)-1] = 'e';
+
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <note>
+    <para>
+     Diğer türlerdeki değişkenlere <literal>[]</literal> veya
+     <literal>{}</literal> kullanarak erişme çabası &null; dönmesiyle
+     sonuçlanır.
+    </para>
+   </note>
+
+  </sect3>
+ </sect2><!-- end syntax -->
+
+ <sect2 xml:id="language.types.string.useful-funcs">
+  <title>Kullanışlı işlevler ve işleçler</title>
+
+  <para>
+   Dizgeler '.' (nokta) işleci kullanılarak ardarda eklenebilir. '+'
+   (toplama) işlecinin bu amaçla kullanımının yararsız oluşuna dikkat ediniz.
+   Daha ayrıntılı bilgi edinmek için <link
+   linkend="language.operators.string">Dizge İşleçleri</link> belgesine
+   bakınız.
+  </para>
+
+  <para>
+   Dizgelerde değişiklik yapmak için çok sayıda yararlı işlev mevcuttur.
+  </para>
+
+  <simpara>
+   Genel işlevler için <link linkend="ref.strings">Dizge İşlevleri</link>ne,
+   ileri düzey bul ve değiştir işlevselliği için <link
+   linkend="ref.regex">düzenli ifade işlevleri</link>ne veya  <link
+   linkend="ref.pcre">Perl uyumlu düzenli ifade işlevleri</link>ne bakınız.
+  </simpara>
+
+  <simpara>
+   Ayrıca, <link linkend="ref.url">URL dizgeleri için işlevler</link> ve
+   dizgeleri şifrelemek veya şifrelerini çözmek için <link
+   linkend="ref.mcrypt">mcrypt</link> ve <link
+   linkend="ref.mhash">mhash</link> işlevleri vardır.
+  </simpara>
+
+  <simpara>
+   Son olarak, <link linkend="ref.ctype">karakter türü işlevleri</link>ne de
+   bakabilirsiniz.
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.types.string.casting">
+  <title>Dizgeye dönüşüm</title>
+
+  <para>
+   Bir değer bir dizgeye <literal>(string)</literal> tür çarpıtması veya
+   <function>strval</function> işleviyle dönüştürülür. Bir dizgenin gerekli
+   olduğu ifade bağlamlarında dizgeye dönüşüm özdevinimli olarak gerçekleşir.
+   Bu genellikle, <function>echo</function> veya <function>print</function>
+   işlevleri kullanılırken veya bir değişken bir dizge ile karşılaştırılırken
+   gerçekleşir. Aşağıdakilere, <link linkend="language.types">Türler</link>
+   ve <link linkend="language.types.type-juggling">Tür Dönüşümü</link>
+   bölümlerinde daha ayrıntılı değinilmiştir. Ayrıca,
+   <function>settype</function> işlevine de bakabilirsiniz.
+  </para>
+
+  <para>
+    <type>boolean</type> türündeki &true; değeri <type>string</type>
+    türündeki <literal>"1"</literal> değerine dönüştürülür.
+    <type>boolean</type> türündeki &false; değeri <type>string</type>
+    türündeki <literal>""</literal> değerine (boş dizgeye) dönüştürülür. Bu
+    şekilde, <type>boolean</type> ve <type>string</type> değerler arasında
+    her iki yönde de dönüşüm yapılabilmektedir.
+  </para>
+
+  <para>
+   <type>integer</type> veya <type>float</type> türünde bir değerin
+   <type>string</type> türüne dönüşümü sayının dizgesel gösterimiyle (üstel
+   gösterim dahil) sonuçlanır. Kayan noktalı sayılar üstel gösterim
+   kullanılarak dönüştürülebilir (<literal>4.1E+6</literal> gibi).
+  </para>
+
+  <note>
+   <para>
+    Ondalık nokta karakteri betiğin çalıştığı yerele (LC_NUMERIC) özgüdür.
+    Bakınız: <function>setlocale</function> işlevi.
+   </para>
+  </note>
+
+  <para>
+   Diziler daima <literal>"Array"</literal> dizgesine dönüştürülür; bundan
+   dolayı <function>echo</function> ve <function>print</function> bir dizinin
+   içeriğini kendiliklerinden gösteremezler. Tek bir dizi elemanını
+   görüntüleyebilmek için <literal>echo $arr['foo']</literal> gibi bir oluşum
+   kullanınız. İçeriğin tamamının görüntülenebilmesiyle ilgili ipuçları için
+   aşağıya bakınız.
+  </para>
+
+  <para>
+   <type>object</type> türler PHP 4'te daima <literal>"Object"</literal>
+   dizgesine dönüştürülür. Nesne üyelerinin değerlerini hata ayıklama
+   amacıyla basmak için aşağıdaki paragrafı okuyunuz. Nesne sınıfının ismini
+   öğrenmek için <function>get_class</function> işlevini kullanınız. PHP 5
+   itibariyle, uygulanabildiği takdirde, <link linkend="language.oop5.magic"
+   >__toString</link> yöntemi kullanılır.
+  </para>
+
+  <para>
+   <type>resource</type> türler daima <literal>"Resource id #1"</literal>
+   benzeri bir dizgeye dönüştürülürler; buradaki <literal>1</literal>,
+   özkaynağa PHP tarafından çalışma anında atanan eşsiz bir sayıdır. Bu
+   yapıya güvenmeseniz iyi olur; ilerde değişebilir. Özkaynağın türünü
+   öğrenmek için <function>get_resource_type</function> işlevini kullanınız.
+  </para>
+
+  <para>
+   &null; daima boş bir dizgeye dönüştürülür.
+  </para>
+
+  <para>
+   Yukarıda bahsedildiği gibi, bir diziyi, nesneyi veya özkaynağı doğrudan
+   dönüştürmek, bunların değerleri hakkında işe yarar hiçbir bilgi sağlamaz.
+   Bu tür içerikleri daha verimli şekilde incelemek isterseniz
+   <function>print_r</function> ve <function>var_dump</function> işlevlerine
+   bakınız.
+  </para>
+
+  <para>
+   Çoğu PHP değeri kalıcı olarak saklamak amacıyla dizgelere
+   dönüştürülebilir. Bu yönteme serileştirme adı verilir ve
+   <function>serialize</function> işlevi tarafından gerçekleştirilir. Eğer
+   PHP motoru <link linkend="ref.wddx">WDDX</link> desteğiyle derlenmişse PHP
+   değerleri ayrıca iyi biçimli XML metin olarak da serileştirilebilir.
+  </para>
+
+ </sect2>
+
+ <sect2 xml:id="language.types.string.conversion">
+  <title>Dizgelerin sayılara dönüşümü</title>
+
+  <simpara>
+   Bir dizge, sayısal bir bağlamda değerlendirildiğinde sonuçlanacak değer ve
+   türün nasıl belirleneceği aşağıda açıklanmıştır.
+  </simpara>
+
+  <simpara>
+   Dizge, '.', 'e' veya 'E' karakterlerini içeriyorsa bir <type>float</type>
+   tür olarak değerlendirilir. Aksi takdirde, bir <type>integer</type> tür
+   olarak değerlendirilir.
+  </simpara>
+
+  <para>
+   Değerin dizgenin başında belirtileceği varsayılır. Eğer dizge geçerli bir
+   sayısal veri ile başlıyorsa sayısal değer olarak bu kullanılır. Aksi
+   takdirde değer 0 (sıfır) olacaktır. Geçerli sayısal veri isteğe bağlı bir
+   işaret ile başlar, bir veya daha fazla sayıda rakam ile isteğe bağlı bir
+   ondalık nokta içerebilir ve isteğe bağlı bir üstel gösterimle sona erer.
+   Üs, 'e' veya 'E' harfini takibeden bir veya daha fazla rakamdan oluşur.
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 1 + "10.5";                // $foo float'tır (11.5)
+$foo = 1 + "-1.3e3";              // $foo float'tır (-1299)
+$foo = 1 + "bob-1.3e3";           // $foo integer'dir (1)
+$foo = 1 + "bob3";                // $foo integer'dir (1)
+$foo = 1 + "10 Small Pigs";       // $foo integer'dir (11)
+$foo = 4 + "10.2 Little Piggies"; // $foo float'tır (14.2)
+$foo = "10.0 pigs " + 1;          // $foo float'tır (11)
+$foo = "10.0 pigs " + 1.0;        // $foo float'tır (11)
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   Bu dönüşüm nakkında daha ayrıntılı bilgi edinmek için strtod(3) Unix
+   kılavuz sayfasına bakınız.
+  </simpara>
+
+  <para>
+   Bu bölümdeki örneklerden birini denemek isterseniz örnekleri
+   kopyala/yapıştır yöntemiyle aşağıdaki satıra yerleştirip neler olup
+   bittiğini görebilirsiniz:
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+echo "\$foo==$foo; " . gettype ($foo) . " türündedir<br />\n";
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Tamsayıya dönüştürerek C'deki gibi bir karakterin kodunu alabilmeyi
+   beklemeyin. Karakter/ASCII kod dönüşümleri için <function>ord</function> ve
+   <function>chr</function> işlevlerini kullanınız.
+  </para>
+
+ </sect2>
+</sect1><!-- end string -->
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
