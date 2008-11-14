@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.10 $ -->
-<!-- EN-Revision: 1.170 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.11 $ -->
+<!-- EN-Revision: 1.172 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.control-structures" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Denetim Yapıları</title>
@@ -1157,12 +1157,17 @@ declare (yönerge)
    </para>
    <para>
     <replaceable>yönerge</replaceable> bölümü, <command>declare</command>
-    bloğunun davranışını belirlemek için kullanılır. Şimdilik yalnızca bir
-    yönerge kullanılabilmektedir: <command>ticks</command> yönergesi. (Daha
+    bloğunun davranışını belirlemek için kullanılır. Şimdilik yalnızca iki
+    yönerge kullanılabilmektedir: <command>ticks</command> yönergesi (Daha
     fazla bilgi edinmek için aşağıya, <link
     linkend="control-structures.declare.ticks">ticks</link> yönergesine
-    bakınız.)
+    bakınız.) ve <command>encoding</command> yönergesi.
    </para>
+   <note>
+    <simpara>
+     <command>encoding</command> yönergesi PHP 5.3.0'da eklenmiştir.
+    </simpara>
+   </note>
    <para>
     <command>declare</command> bloğunun <replaceable>deyim</replaceable>
     bölümünün nasıl çalıştırılacağı ve çalışma esnasındaki yan etkilerinin
@@ -1172,7 +1177,7 @@ declare (yönerge)
    <para>
     <command>declare</command> bloğu kendinden sonra gelen tüm kodu
     etkilemesi için genel betik kapsamında da kullanılabilir. Bununla
-    birlikte, <command>declare</command> bloğunu dahil edilen bir dosyanın
+    birlikte, <command>declare</command> bloğu dahil edilen bir dosyanın
     içindeyse ebeveyn dosya bundan etkilenmez.
     <informalexample>
      <programlisting role="php">
@@ -1269,6 +1274,42 @@ print_r(profile(TRUE));
     Ayrıca, <function>register_tick_function</function> ve
     <function>unregister_tick_function</function> işlevlerini de inceleyin.
    </simpara>
+   </sect2>
+   <sect2 xml:id="control-structures.declare.encoding">
+    <title><code>encoding</code></title>
+     <para>
+      Her betiğin karakter kodlaması betiğin başında <code>encoding</code>
+      yönergesi ile belirtilebilir.
+      <example>
+        <title>- Betik için kodlama belirtmek</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+declare(encoding='ISO-8859-9');
+// kodlar burada
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+
+    <caution>
+     <simpara>
+      İsim alanları ile birlikte kullanıldığında, tek geçerli sözdizimi
+      <literal>declare(encoding='...');</literal> olup, buradaki
+      <literal>...</literal> kodlama değeridir.
+      <literal>declare(encoding='...') {}</literal> sözdizimi isim alanları
+      ile birlikte kullanıldığında bir çözümleme hatası ile sonuçlanacaktır.
+     </simpara>
+    </caution>
+    <para>
+     Karakter kodlaması bildirim değeri, PHP,
+     <literal>--enable-zend-multibyte</literal> yapılandırma seçeneği ile
+     derlenmediği takdirde PHP 5.3'te yoksayılır. PHP 6.0'da
+     <code>encoding</code> yönergesi, dosya oluşturulurken hangi kodlamanın
+     kullanıldığını tarayıcıya bildirmek için kullanılır. Meşru değerler,
+     UTF-8 gibi karakter kodlaması isimleridir.
+    </para>
    </sect2>
   </sect1>
 
