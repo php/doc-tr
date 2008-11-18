@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.4 Maintainer: nilgun Status: ready -->
+<chapter xml:id="language.namespaces" xmlns="http://docbook.org/ns/docbook"
+ version="1.1">
+ <title>İsim Alanları</title>
+
+ <sect1 xml:id="language.namespaces.rationale">
+  <title>Giriş</title>
+  <simpara>
+   İsim alanları büyük PHP kütüphanelerinde etki alanı sorunlarını çözümlemek
+   amacıyla tasarlanmışlardır. PHP'de tüm sınıf tanımları küreseldir. Bu
+   bakımdan, bir kütüphane yazarının çeşitli araçları ve programlama
+   arayüzlerinin sınıflarını oluştururken birlikte kullanılabileceği diğer
+   kütüphaneler tarafından kullanılmamış isimleri seçmek zorundadır. Normal
+   olarak, bunun çözümü sınıf isimlerinin önüne eşsiz bir isim getirmektir.
+   Örneğin, veritabanı sınıflarının isimlerinin başına
+   <classname>My_Library_DB</classname> yaftası yapıştırılabilir. Kütüphane
+   sayısı arttıkça bu önekler giderek daha uzun isimler haline gelmeye
+   başlarlar.
+  </simpara>
+  <simpara>
+   İsim alanları geliştiricilere uzun uzadıya isim yazmaksızın isim etki
+   alanını yönetme olanağı verir. Böylece küresel alanı paşlaşım sorunları
+   çözümlenerek kodun okunmama olasılığı ortadan kalkar.
+  </simpara>
+  <simpara>
+   İsim alanları PHP 5.3.0 sürümünden beri mevcuttur. Bu bölüm deneyseldir ve
+   değişikliklere açıktır.
+  </simpara>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.definition">
+  <title>İsim alanı tanımlama</title>
+  <para>
+   İsim alanları, betiğin başında <code>namespace</code> anahtar sözcüğü
+   kullanılarak bildirilirler.
+   <example>
+    <title>- İsim alanı tanımlama</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+    namespace Projem::VT;
+
+    const BAĞLANTI_TAMAM = 1;
+
+    class Bağlantı { /* ... */ }
+
+    function bağlan() { /* ... */  }
+
+?>
+]]>
+    </programlisting>
+   </example>
+   Aynı isim alanı ismi birden fazla dosyada kullanılabilir.
+  </para>
+
+  <para>
+    İsim alanları sınıf, sabit ve işlev tanımı içerebilir ama bunları veya
+    başka şeyleri çalıştıracak bağımsız kodlar içeremez.
+  </para>
+
+  <para>
+   İsim alanı tanımlama şöyle yapılır:
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      İsim alanı içinde kalan tanımlarda kullanılan tüm sınıf, işlev ve sabit
+      isimlerinin başına özdevinimli olarak isim alanı ismi getirilir. Sınıf
+      isimleri için daima tam isimleri kullanılır; yukarıdaki örnek için bu,
+      <classname>Projem::VT::Bağlantı</classname> olacaktır.
+     </simpara>
+    </listitem>
+    <listitem>
+    <simpara>
+     Sabit tanımları, isim alanı ismi ile sabit ismi birleştirilerek
+     oluşturulur. İsim alanı sabitleri, sınıf sabitleri gibi sadece duruk
+     değerler içerebilirler.
+    </simpara>
+    </listitem>
+    <listitem>
+     <para>
+      Nitelemesiz sınıf ismi (yani, isim alanı ismi ve <code>::</code>
+      içermeyen sınıf ismi) çalışma anında şu yol izlenerek çözümlenir:
+      <orderedlist>
+       <listitem>
+        <simpara>
+          Sınıf, geçerli isim alanı ismini başına yerleştirmek için, <link
+          linkend="language.oop5.autoload">özdevinimli olarak yükleme</link>
+          yapmaksızın, geçerli isim alanı içinde aranır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+          Sınıf, <link linkend="language.oop5.autoload">özdevinimli olarak
+          yükleme</link> yapmaksızın, küresel isim alanı içinde aranır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         Sınıf, ismi kullanılarak geçerli isim alanında özdevinimli olarak
+         yüklenmeye çalışılır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>Yapılan çalışma başarılı olmazsa arama başarısız olur.
+        </simpara>
+       </listitem>
+      </orderedlist>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Nitelemesiz işlev ismi (yani, isim alanı ismi ve <code>::</code>
+      içermeyen işlev ismi) çalışma anında önce geçerli isim alanında sonra
+      da küresel alanda aranır.
+     </para>
+    </listitem>
+    <listitem>
+    <para>
+     Nitelemesiz sabit isimleri önce geçerli isim alanında sonra da küresel
+     olarak tanımlı sabitler arasında aranır.
+    </para>
+    </listitem>
+   </itemizedlist>
+    Ayrıca, tüm <link linkend="language.namespaces.rules">isim alanı
+    çözümleme kuralları</link>na da bakınız.
+  </para>
+
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.using">
+  <title>İsim alanlarının kullanımı</title>
+  <para>
+   Bir isim alanındaki sınıf ve işlevlere tam isimleri ile erişilebilir
+   (<classname>Sınıfım::VT::Bağlantı</classname> veya
+   <classname>Sınıfım::VT::bağlan</classname> gibi).
+   <example>
+    <title>İsim alanı isminin kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+    require 'Sınıfım/Vt/Bağlantı.php';
+    $x = new Sınıfım::VT::Bağlantı;
+    Sınıfım::VT::bağlan();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   İsim alanları geçerli bağlama (küresel veya isim alanı) <code>use</code>
+   işleci kullanılarak dahil edilebilir. İşlecin sözdizimi:
+   <informalexample>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+/* ... */
+use Bir::Ad as TakmaAd;
+
+// Basitleştirilmiş use kullanımı:
+use Foo::Bar;
+// Bu da aynını yapar:
+use Foo::Bar as Bar;
+?>
+]]>
+    </programlisting>
+   </informalexample>
+    İsim alanına dahil edilen isim şöyle çalışır: Derleyici yerel ad olan
+    <literal>TakmaAd</literal> ismine her rastladığında bunun yerine (kendi
+    başına bir isim olarak veya <literal>::</literal> ile ayrılmış uzun isme
+    bir önek olarak) isim alanına dahil edilen <literal>Bir::Ad</literal>'ı
+    yerleştirir.
+  </para>
+
+  <para>
+   <code>use</code> sadece küresel alanda  kullanılabilir, işlev veya sınıf
+   içinde değil. İsim alanına ithal edilen isimler dahil edildikleri noktadan
+   dosya sonuna kadar etkilidirler. Olası bir karışıklıktan kaçınmak için
+   isim ithalatının dosyanın başlarında yapılması önerilir.
+  </para>
+
+  <para>
+   <example>
+    <title>İsim alanı ithali ve bu alana erişim</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+    require 'Sınıfım/Vt/Bağlantı.php';
+    use Sınıfım::VT;
+    use Sınıfım::VT::Bağlantı as VtBağlantısı;
+
+    $x = new Sınıfım::VT::Bağlantı();
+    $y = new VT::bağlantı();
+    $z = new VtBağlantısı();
+    VT::bağlan();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <note>
+    <simpara>
+     İthal işlemi sadece derleme anında yapılır; tüm yerel isimler derleyici
+     tarafından uzun isimli eşdeğerleriyle değiştirilir. Ancak, isimlerin
+     dizgelere dönüştürülmediğine dikkat edin, dolayısıyla geri çağırımlarda
+     isim alanı ithal kurallarına güvenilemez.
+    </simpara>
+   </note>
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.global">
+  <title>Küresel Alan</title>
+  <para>
+    Tüm sınıf ve işlev tanımları küresel alana yerleştirilirken, tıpkı isim
+    alanlarının desteklenmediği zamanlardaki gibi herhangi bir isim alanı
+    tanımı yapılmaksızın yerleştirilirler. Başına <literal>::</literal>
+    konmuş bir isim, isim alanı bağlamında kullanılmış bile olsa küresel
+    alandaki ismin gerektiğini belirtir.
+   <example>
+    <title>- Küresel alan belirtiminin kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+    namespace A::B::C;
+
+ /* Bu, A::B::C::fopen işlevi */
+    function fopen() {
+         /* ... */
+         $f = ::fopen(...); // bu da küresel fopen
+         return $f;
+    }
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.constant">
+  <title>__NAMESPACE__</title>
+  <para>
+    Derleme zamanı sabiti <constant>__NAMESPACE__</constant>, geçerli isim
+    alanının ismi olarak tanımlanmıştır. İsim alanı dışında bu sabitin değeri
+    boş dizgedir. Bu sabit, yerel isim alanlı isimler için tam ad kullanmak
+    gerekirse işe yarar.
+   <example>
+    <title>- <code>__NAMESPACE__</code> kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace A::B::C;
+
+function foo() {
+// eylemler
+}
+
+set_error_handler(__NAMESPACE__ . "::foo");
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.rules">
+  <title>İsim çözünürlük kuralları</title>
+  <para>
+   İsimler şu çözünürlük kurallarıyla çözümlenirler:
+   <orderedlist>
+    <listitem>
+     <simpara>
+      Tüm nitelemeli isimler derleme sırasında geçerli ithal kurallarına göre
+      dönüştürülürler. Örneğin, eğer A::B::C isim alanı ithal edilmişse
+      <code>C::D::e()</code> diye bir çağrı <code>A::B::C::D::e()</code>
+      çağrısına dönüştürülür.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Nitelemesiz sınıf isimleri derleme sırasında geçerli ithal kurallarına
+      göre dönüştürülürler (kısa isim, uzun isim haline getirilir). Örneğin,
+      eğer A::B::C isim alanı ithal edilmişse <code>new C()</code> deyimi
+      <code>new A::B::C()</code> olarak dönüştürülür.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      İsim alanı içinde, geçerli isim alanında tanımlanmış nitelemesiz
+      işlevlere yapılan çağrılar, derleme sırasında bu isim alanınının
+      işlevlerine yapılmış çağrılar olarak yorumlanırlar.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      İsim alanı (A::B olsun) içinde, geçerli isim alanında tanımlanmamış
+      işlevlere nitelemesiz yapılan çağrılar çalışma anında çözümlenir.
+      Aşağıda <literal>foo()</literal> işlevine yapılan çağrının nasıl
+      çözümlendiği gösterilmiştir:
+     </simpara>
+      <orderedlist>
+       <listitem>
+        <simpara>
+         Geçerli isim alanında <literal>A::B::foo()</literal> diye bir işlev
+         var mı diye bakılır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         Yerleşik bir <literal>foo()</literal> işlevi bulunup çağrılmaya
+         çalışılır.
+        </simpara>
+       </listitem>
+      </orderedlist>
+      <simpara>
+        Küresel alandaki kullanıcı tanımlı bir işleve çağrı yapmak için
+        <literal>::foo()</literal> biçemi kullanılır.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      İsim alanı (A::B olsun) içinde, nitelemesiz sınıf isimlerine yapılan
+      çağrılar çalışma anında çözümlenir. Aşağıda <code>new C()</code>
+      deyiminin çözümlenişi gösterilmiştir:
+     </simpara>
+     <orderedlist>
+      <listitem>
+       <simpara>
+        Geçerli isim alanında <literal>A::B::C</literal> diye bir sınıf var
+        mı diye bakılır.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        Yerleşik bir <literal>C</literal> sınıfı bulunup çağrılmaya çalışılır.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <literal>A::B::C</literal> özdevinimli olarak yüklenmeye çalışılır.
+       </simpara>
+      </listitem>
+     </orderedlist>
+     <simpara>
+      Küresel alandaki kullanıcı tanımlı bir sınıfa atıf yapmak için
+      <literal>new ::C()</literal> biçemi kullanılır.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Nitelemesiz işlev çağrıları çalışma anında çözümlenir. Aşağıda
+      <code>A::B::foo()</code> çağrısının çözümlenişi gösterilmiştir:
+     </simpara>
+      <orderedlist>
+       <listitem>
+        <simpara>
+         <literal>A::B</literal> isim alanında <literal>foo()</literal> diye
+         bir sınıf var mı diye bakılır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         <literal>A::B</literal> diye bir sınıf aranır ve bu sınıfın duruk
+         <literal>foo()</literal> yöntemi çağrılmaya çalışılır. Gerekirse,
+         sınıf özdevinimli olarak yüklenir.
+        </simpara>
+       </listitem>
+      </orderedlist>
+    </listitem>
+    <listitem>
+     <simpara>
+      Nitelemeli sınıf isimleri derleme sırasında karşı düştükleri isim
+      alanındaki bir sınıf ismi olarak çözümlenirler. Örneğin, <code>new
+      A::B::C</code> deyiminde <literal>A::B</literal> isim alanındaki
+      <literal>C</literal> sınıfı örneklenmektedir.
+     </simpara>
+    </listitem>
+   </orderedlist>
+  </para>
+  <example>
+   <title>- İsim alanı çözümleme örnekleri</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+namespace A;
+
+// İşlev çağrıları
+
+foo();      // önce "A" isim alanında tanımlı "foo",
+            // olmazsa yerleşik "foo" çağrılmaya çalışılır
+
+::foo();    // küresel alanda tanımlı "foo" işlevine çağrı
+
+// Sınıflara gönderimler
+
+new B();    // önce "A" isim alanında tanımlı "B" sınıfı,
+            // olmazsa yerleşik "B" sınıfı örneklenmeye çalışılır
+
+new ::B();  // küresel alanda tanımlı "B" sınıfı örnekleniyor
+
+// Başka isim alanlarının duruk yöntemleri ve isim alanı işlevleri
+
+B::foo();   // önce "A::B" isim alanında tanımlı "foo" işlevi,
+            // olmazsa yerleşik "B" sınıfındaki "foo" yöntemi
+            // çağrılmaya çalışılır
+
+::B::foo(); // önce "B" isim alanında tanımlı "foo" işlevi,
+            // olmazsa küresel alandaki "B" sınıfının "foo" yöntemi
+            // çağrılmaya çalışılır
+
+// Geçerli isim alanının duruk yöntemleri ve isim alanı işlevleri
+
+A::foo();   // önce "A::A" isim alanında tanımlı "foo" işlevi,
+            // olmazsa "A" isim alanındaki "A" sınıfının "foo" yöntemi,
+            // o da olmazsa "A" isim alanındaki "foo" işlevi,
+            // o da olmazsa yerleşik "A" sınıfının "foo" yöntemi
+            // çağrılmaya çalışılır.
+
+::A::foo(); // önce "A" isim alanındaki "foo" işlevi,
+            // olmazsa küresel alandaki "A" sınıfının "foo" yöntemi
+            // çağrılmaya çalışılır
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect1>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ indent-tabs-mode:nil
+ sgml-parent-document:nil
+ sgml-default-dtd-file:"../../manual.ced"
+ sgml-exposed-tags:nil
+ sgml-local-catalogs:nil
+ sgml-local-ecat-files:nil
+ End:
+ vim600: syn=xml fen fdm=syntax fdl=2 si
+ vim: et tw=78 syn=sgml
+ vi: ts=1 sw=1
+-->
