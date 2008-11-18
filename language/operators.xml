@@ -1,0 +1,1413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.127 Maintainer: nilgun Status: ready -->
+ <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
+  <title>İşleçler</title>
+  <simpara>
+    Bir işleç, başka bir değer üretmek üzere bir veya daha fazla değerle
+    (programcı dilinde ifadeyle) beslenen bir şeydir (yani, değerler işleçle
+    birlikte bir ifade haline gelir). Bu bakımdan, bir değer döndüren
+    işlevler ve benzeri oluşumlar (print gibi) ya da belirtilenden başka bir
+    şey döndürmeyen (echo gibi) oluşumlar birer işleç olarak düşünülebilir.
+  </simpara>
+  <para>
+   Üç tür işleç vardır. İlki tek bir değerle çalışan tek terimli işleç olup
+   ! (olumsuzlama işleci) veya ++ (arttırım işleci) buna birer örnektir.
+   İkinci işleç grubu iki terimlilerdir; PHP'nin desteklediği işleçlerin
+   çoğunluğu bu grupta olup aşağıda <link
+   linkend="language.operators.precedence">İşleç Önceliği</link> bölümünde
+   liste halinde verilmişlerdir.
+  </para>
+  <para>
+   Üçüncü grupta üç terimli işleç yer alır: ?:.  Bir ifadeye bağlı olarak
+   iki deyim veya çalıştırma yolunu seçmekten ziyade diğer iki ifadeden
+   birini seçmek için kullanılır. İşlecin üç ifadesini parantez içinde
+   belirtmek iyi bir uygulamadır.
+  </para>
+
+  <sect1 xml:id="language.operators.precedence">
+   <title>İşleç Önceliği</title>
+   <para>
+    İşleç önceliği iki ifadenin birbirine hangi sıkılıkta bağlı olduğunu
+    belirtir. Örneğin, <code>1 + 5 * 3</code> ifadesinin sonucu 18 değil,
+    16'dır. Çünkü, çarpma ("*") işlecinin önceliği toplama ("+") işlecinden
+    yüksektir. Önceliği arttırmak için gerekirse parantezler kullanılabilir.
+    Örneğin, <code>(1 + 5) * 3</code> ifadesinin sonucu 18 olacaktır. Eğer
+    işleç önceliklerinde eşitlik sözkonusu olursa soldaki işleç sağdakinden
+    öncelikli olur.
+   </para>
+   <para>
+    Aşağıdaki listede işleçler en yüksek öncelikliden başlayıp en düşük
+    öncelikliye doğru sıralanmışlardır. Aynı satırda yer alan işleçler
+    eşöncelikli olup hangi sırada ele alınacaklarına değerlendirme sırasında
+    karar verilir.
+    <table>
+     <title>İşleç Öncelikleri</title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>İlişkilendirme</entry>
+        <entry>İşleçler</entry>
+        <entry>Ek bilgi</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>clone new</entry>
+        <entry><link linkend="language.oop5.cloning">clone</link> ve <link
+        linkend="language.oop5.basic.new">new</link></entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>[</entry>
+        <entry><function>array</function></entry>
+       </row>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>++ --</entry>
+        <entry>
+         <link
+         linkend="language.operators.increment">arttırım/eksiltim</link>
+        </entry>
+       </row>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>~ - (int) (float) (string) (array) (object) (bool) @</entry>
+        <entry>
+         <link linkend="language.types">Türler</link>
+        </entry>
+       </row>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>instanceof</entry>
+        <entry>
+         <link linkend="language.types">Türler</link>
+        </entry>
+       </row>
+       <row>
+        <entry>sağdan</entry>
+        <entry>!</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>* / %</entry>
+        <entry>
+         <link linkend="language.operators.arithmetic">aritmetik</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>+ - .</entry>
+        <entry>
+         <link linkend="language.operators.arithmetic">aritmetik</link>
+         &listendand; <link linkend="language.operators.string"
+         >dizge</link></entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>&lt;&lt; &gt;&gt;</entry>
+        <entry>
+         <link linkend="language.operators.bitwise">bitsel</link>
+        </entry>
+       </row>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>&lt; &lt;= &gt; &gt;= &lt;&gt;</entry>
+        <entry>
+         <link linkend="language.operators.comparison">karşılaştırma</link>
+        </entry>
+       </row>
+       <row>
+        <entry>yönsüz</entry>
+        <entry>== != === !==</entry>
+        <entry>
+         <link linkend="language.operators.comparison">karşılaştırma</link>
+        </entry>
+       </row>
+       <row>
+        <entry>left</entry>
+        <entry>&amp;</entry>
+        <entry>
+         <link linkend="language.operators.bitwise">bitsel</link>&listendand;
+         <link linkend="language.references">gönderimler</link></entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>^</entry>
+        <entry>
+         <link linkend="language.operators.bitwise">bitsel</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>|</entry>
+        <entry>
+         <link linkend="language.operators.bitwise">bitsel</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>&amp;&amp;</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>||</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>? :</entry>
+        <entry>
+         <link linkend="language.operators.comparison.ternary">üç terimli
+         </link>
+        </entry>
+       </row>
+       <row>
+        <entry>sağdan</entry>
+        <entry>
+         = += -= *= /= .= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;=
+        </entry>
+        <entry>
+         <link linkend="language.operators.assignment">atama</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>and</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>xor</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>or</entry>
+        <entry>
+         <link linkend="language.operators.logical">mantıksal</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry>,</entry>
+        <entry>birçok kullanım</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+   <para>
+    Soldan ilişkilendirme, ifadenin soldan sağa, sağdan ilişkilendirme ise
+    sağdan sola değerlendirileceği anlamına gelir.
+    <example>
+     <title>- Öncelik yönü</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3 * 3 % 5; // (3 * 3) % 5 = 4
+$a = true ? 0 : true ? 1 : 2; // (true ? 0 : true) ? 1 : 2 = 2
+
+$a = 1;
+$b = 2;
+$a = $b += 3; // $a = ($b += 3) -> $a = 5, $b = 5
+?>
+]]>
+     </programlisting>
+    </example>
+    Parantezleri kodun okunabilirliğini arttırmak için kullanın.
+   </para>
+   <note>
+    <para>
+     Eşitlik (<literal>=</literal>) işleci çoğu işleçten daha düşük önceliğe
+     sahip olduğundan PHP halen şuna benzer ifadelere izin vermektedir:
+     <literal>foo()</literal> işlevinin dönüş değerini <varname>$a</varname>
+     değişkenine atayan <literal>if (!$a = foo())</literal> ifadesi.
+    </para>
+   </note>
+  </sect1>
+
+  <sect1 xml:id="language.operators.arithmetic">
+   <title>Aritmetik İşleçler</title>
+   <simpara>
+    Okulda öğrendiğiniz temel aritmetiği hatırlıyor musunuz? Bu işleçler tam
+    da öyle çalışır.
+   </simpara>
+   <table>
+    <title>Aritmetik İşleçler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>-$a</entry>
+       <entry>Olumsuzlama</entry>
+       <entry>$a'nın eksi işaretlisi.</entry>
+      </row>
+      <row>
+       <entry>$a + $b</entry>
+       <entry>Toplama</entry>
+       <entry>$a ile $b'nin toplamı.</entry>
+      </row>
+      <row>
+       <entry>$a - $b</entry>
+       <entry>Çıkarma</entry>
+       <entry>$a'nın $b'den farkı.</entry>
+      </row>
+      <row>
+       <entry>$a * $b</entry>
+       <entry>Çarpma</entry>
+       <entry>$a ile $b'nin çarpımı.</entry>
+      </row>
+      <row>
+       <entry>$a / $b</entry>
+       <entry>Bölme</entry>
+       <entry>$a'nın $b'ye bölümü.</entry>
+      </row>
+      <row>
+       <entry>$a % $b</entry>
+       <entry>Kalan</entry>
+       <entry>$a'nın $b'ye bölümünden kalan.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <simpara>
+    Bölme işlecinin tamsayı bölüm vermesi için iki teriminin de tamsayı
+    (veya dönüşüm sonucu tamsayı olan dizge) olması ve birbirlerine tam
+    olarak bölünmesi gerekir, aksi takdirde bölüm gerçek sayı olacaktır.
+   </simpara>
+   <simpara>
+    Kalan işlecinin (%) terimleri gerçek sayılarsa ondalık kısımları
+    atılarak tamsayıya dönüştürülürler.
+   </simpara>
+   <note>
+    <simpara>
+     <literal>$a % $b</literal> işleminin sonucu, <literal>$a</literal>
+     negatifse negatif olacaktır.
+    </simpara>
+   </note>
+   <simpara>
+    <link linkend="ref.math">Matematik işlevleri</link> bölümüne de bakınız.
+   </simpara>
+
+  </sect1>
+
+  <sect1 xml:id="language.operators.assignment">
+   <title>Atama İşleçleri</title>
+   <simpara>
+    Temel atama işleci "=" imidir. Programlamaya yeni başlayanlar bu işleci
+    "eşittir" diye okurlar. Aslında yapılan işlem bir şeyleri birbirlerine
+    eşitlemek değildir. Yaptığı iş sağındaki ifadenin değerini solundaki
+    terimin değeri haline getirmektir, yani imleci içeren ifadeyi birşey'in
+    değeri diye okumak daha doğrudur.
+   </simpara>
+   <para>
+    Bir atama ifadesinin değeri atanan değerdir. Yani, "$a = 3" ifadesinin
+    değeri 3'tür. Bunun bir takım yan sonuçları da vardır:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$a = ($b = 4) + 5; // $a'nın değeri 9, $b'nin değeri 4 olur.
+
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    Temel atama işlecinden başka atama işlemini temel aritmetik, <link
+    linkend="language.operators">ikil aritmetik</link> işlemleriyle veya
+    dizi ya da dizge birleştirme işlemleriyle  birleştiren, "birleşik atama
+    işleçleri" vardır. Örnek:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$a = 3;
+$a += 5; // $a'nın değeri 8 olur, asıl işlem: $a = $a + 5;
+$b = "Herkese ";
+$b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
+                  // asıl işlem: $b = $b . "Merhaba!";
+
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    Atama işleminin özgün değişkeni yeni değişkene kopyaladığına (değeriyle
+    atadığına) dikkat ediniz. Dolayısıyla birinde yapılan değişiklik
+    diğerini etkilemeyecektir. Kapalı bir döngü içinde büyükçe bir diziye
+    atama işlemleri yapma ihtiyacı duyarsanız bu ayrı bir anlam kazanır.
+    Gönderimli atama <code>$değişken = &amp;$diğerdeğişken;</code> sözdizimi
+    ile desteklenmektedir. 'Gönderimli atama' denince, iki değişkenin aynı
+    veriyi gösterdiğini ve birbirlerinden birşeyler kopyalamadıklarını
+    anlıyoruz. Gönderimler hakkında daha ayrıntılı bilgi edinmek için <link
+    linkend="language.references">Gönderimlerle ilgili herşey</link>
+    bölümüne bakınız. PHP 5'ten itibaren, <link
+    linkend="language.oop5.cloning">clone</link> anahtar sözcüğü ile yeni
+    bir nesneye atama yapılmadıkça, nesneler gönderimli olarak atanırlar.
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.operators.bitwise">
+   <title>Bitsel İşleçler</title>
+   <simpara>
+    Bitsel işleçler, bir tamsayının içindeki belli bitleri 0 ya da 1
+    yaparlar. Eğer terimlerinden biri bir dizge ise bitsel işleç
+    karakterlerin ASCII değerleri üzerinde işlem yapar.
+   </simpara>
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo 12 ^ 9; // '5' çıktılar
+
+echo "12" ^ "9"; // Gerisilme karakterini çıktılar (ASCII 8)
+                 // ('1' (ascii 49)) ^ ('9' (ascii 57)) =  ASCII 8
+
+echo "hallo" ^ "hello"; // Çıktılanan ASCII değerler #0 #4 #0 #0 #0
+                        // 'a' ^ 'e' = #4
+
+echo 2 ^ "3"; // 1 çıktılar
+              // 2 ^ ((int)"3") == 1
+
+echo "2" ^ 3; // 1 çıktılar
+              // ((int)"2") ^ 3 == 1
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <table>
+    <title>Bitsel İşleçler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>$a &amp; $b</entry>
+       <entry>Ve</entry>
+       <entry>Hem $a hem de $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
+      </row>
+      <row>
+       <entry>$a | $b</entry>
+       <entry>Veya</entry>
+       <entry>$a veya $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
+      </row>
+      <row>
+       <entry>$a ^ $b</entry>
+       <entry>Ayrıcalıklı Veya</entry>
+       <entry>
+        Hem $a hem de $b'de 0 veya 1 olan bitler sonuçta 0, diğerleri 1
+        yapılır.
+       </entry>
+      </row>
+      <row>
+       <entry>~ $a</entry>
+       <entry>Değil</entry>
+       <entry>
+        $a'nın 0 olan bitleri 1, 1 olanları 0 yapılır.
+       </entry>
+      </row>
+      <row>
+       <entry>$a &lt;&lt; $b</entry>
+       <entry>Sola kaydırma</entry>
+       <entry>
+        $a'nın bitleri $b adım sola kaydırılır (her adım ikiyle çarpma
+        işlemine denktir).
+       </entry>
+      </row>
+      <row>
+       <entry>$a &gt;&gt; $b</entry>
+       <entry>Sağa kaydırma</entry>
+       <entry>
+        $a'nın bitleri $b adım sağa kaydırılır (her adım ikiye bölme
+        işlemine denktir).
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <warning>
+    <para>
+     32 bitlik sistemlerde 32 bitten fazla sağa kaydırma yapmayın. 32 bitten
+     daha geniş bir sayıyla sonuçlanacak şekilde sola kaydırma yapmayın.
+    </para>
+   </warning>
+  </sect1>
+
+  <sect1 xml:id="language.operators.comparison">
+   <title>Karşılaştırma İşleçleri</title>
+   <simpara>
+    Karşılaştırma işleçleri isminden de anlaşılacağı üzere iki değerin
+    karşılaştırılmasını sağlarlar. Çeşitli veri türleri arasındaki
+    karşılaştırma örneklerinin yer aldığı <link linkend="types.comparisons"
+    >tür karşılaştırma tabloları</link> ilginizi çekebilir.
+   </simpara>
+   <table>
+    <title>Karşılaştırma İşleçleri</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>$a == $b</entry>
+       <entry>Eşittir</entry>
+       <entry>$a ve $b aynı değere sahipse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a === $b</entry>
+       <entry>Aynıdır</entry>
+       <entry>
+        $a ve $b aynı değere sahipse ve türleri de aynıysa sonuç &true;
+        olur. (PHP 4'ten beri vardır.)
+       </entry>
+      </row>
+      <row>
+       <entry>$a != $b</entry>
+       <entry>Eşit değildir</entry>
+       <entry>$a ve $b aynı değere sahip değilse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a &lt;&gt; $b</entry>
+       <entry>Eşit değildir</entry>
+       <entry>$a ve $b aynı değere sahip değilse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a !== $b</entry>
+       <entry>Farklıdır</entry>
+       <entry>
+        $a ve $b aynı değere sahip değilse veya türleri aynı değilse sonuç
+        &true; olur. (PHP 4'ten beri vardır.)
+       </entry>
+      </row>
+      <row>
+       <entry>$a &lt; $b</entry>
+       <entry>Küçüktür</entry>
+       <entry>$a kesin olarak $b'den küçükse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a &gt; $b</entry>
+       <entry>Büyüktür</entry>
+       <entry>$a kesin olarak $b'den büyükse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a &lt;= $b</entry>
+       <entry>Küçük veya eşittir</entry>
+       <entry>$a, $b'den küçük veya ona eşitse sonuç &true; olur.</entry>
+      </row>
+      <row>
+       <entry>$a &gt;= $b</entry>
+       <entry>Büyük veya eşittir</entry>
+       <entry>$a, $b'den büyük veya ona eşitse sonuç &true; olur.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    Bir tamsayıyı bir dizge ile karşılaştırmak isterseniz dizge önce <link
+    linkend="language.types.string.conversion">bir sayıya
+    dönüştürülür</link>. İki sayısal dizge tamsayı karşılaştırması olarak
+    ele alınır. Bu kurallar ayrıca <link linkend="control-structures.switch"
+    >switch</link> deyimine de uygulanır.
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(0 == "a"); // 0 == 0 -> doğru
+var_dump("1" == "01"); // 1 == 1 -> doğru
+var_dump("1" == "1e0"); // 1 == 1 -> doğru
+
+switch ("a") {
+case 0:
+    echo "0";
+    break;
+case "a": // burası hiç işlem görmez, çünkü "a" daima 0 ile eşleşir
+    echo "a";
+    break;
+}
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    Çeşitli türler arasında karşılaştırma aşağıdaki tabloya ve tablodaki
+    sıralamaya uygun olarak yapılır.
+   </para>
+   <table xml:id="language.operators.comparison.types">
+    <title>Çeşitli Türlerin Karşılaştırılması</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>1. Terimin Türü</entry>
+       <entry>2. Terimin Türü</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><type>null</type> veya <type>string</type></entry>
+       <entry><type>string</type></entry>
+       <entry>&null;, "" dizgesine dönüştürülür, sayısal veya alfabetik
+       karşılaştırma yapılır.</entry>
+      </row>
+      <row>
+       <entry><type>bool</type> veya <type>null</type></entry>
+       <entry>herhangi bir tür</entry>
+       <entry><type>bool</type> türüne dönüşümden sonra &false; &lt; &true;
+       karşılaştırması yapılır</entry>
+      </row>
+      <row>
+       <entry><type>object</type></entry>
+       <entry><type>object</type></entry>
+       <entry>Yerleşik sınıflar kendi karşılaştırmalarını tanımlayabilir.
+       Farklı sınıflar karşılaştırılamazlar. Aynı sınıfın özellikleri
+       dizilerdeki gibi (PHP 4) karşılaştırırılır. PHP 5'in <link
+       linkend="language.oop5.object-comparison">uygulaması</link> farklıdır.
+       </entry>
+      </row>
+      <row>
+       <entry><type>string</type>, <type>resource</type> veya
+       <type>number</type></entry>
+       <entry><type>string</type>, <type>resource</type> veya
+       <type>number</type></entry>
+       <entry>Diziler ve özkaynaklar sayılara dönüştürülür, sayısal
+       karşılaştırma yapılır.</entry>
+      </row>
+      <row>
+       <entry><type>array</type></entry>
+       <entry><type>array</type></entry>
+       <entry>Daha az üyeye sahip dizi diğerinden küçüktür. Eğer 1. terimin
+       anahtarı 2. terimde yoksa diziler karşılaştırılamaz. Karşılaştırma
+       daima değerler karşılaştırılarak yapılır (aşağıdaki örneğe
+       bakınız).</entry>
+      </row>
+      <row>
+       <entry><type>array</type></entry>
+       <entry>herhangi bir tür</entry>
+       <entry><type>array</type> daima büyüktür.</entry>
+      </row>
+      <row>
+       <entry><type>object</type></entry>
+       <entry>herhangi bir tür</entry>
+       <entry><type>object</type> daima büyüktür</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    <example>
+     <title>- Özetle Standard Dizi Karşılaştırması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Diziler bunun gibi standart karşılaştırma işleçleri ile karşılaştırılır
+function standard_dizi_karşılaştır($trm1, $trm2)
+{
+    if (count($ter1) < count($ter2)) {
+      return -1;                          // $ter1 < $ter2
+    } elseif (count($op1) > count($op2)) {
+        return 1;                         // $ter1 > $ter2
+    }
+    foreach ($ter1 as $anh => $değ) {
+        if (!array_key_exists($anh, $ter2)) {
+            return null;                   // karşılaştırılamaz
+        } elseif ($değ < $ter2[$anh]) {
+            return -1;
+        } elseif ($değ > $ter2[$anh]) {
+            return 1;
+        }
+    }
+    return 0; // $ter1 == $ter2
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    Ayrıca, <function>strcasecmp</function>, <function>strcmp</function>
+    işlevlerine, <link linkend="language.operators.array">Dizi
+    işleçleri</link>ne ve <link linkend="language.types">Türler</link>
+    bölümüne de bakınız.
+   </para>
+
+   <sect2 xml:id="language.operators.comparison.ternary">
+    <title>Üç Terimli İşleç</title>
+    <para>
+     Diğer bir karşılaştırma işleci "?:" (üç terimli) işlecidir.
+     <example>
+      <title>- Öntanımlı bir değer atama</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+// Üç terimli işleç için kullanım örneği
+$action = (empty($_POST['action'])) ? 'default' : $_POST['action'];
+
+// Yukarıdaki kod ile buradaki if/else deyimi aynı işlemi yapar.
+if (empty($_POST['action'])) {
+    $action = 'default';
+} else {
+    $action = $_POST['action'];
+}
+
+?>
+]]>
+      </programlisting>
+     </example>
+     <literal>(ifade1) ? (ifade2) : (ifade3)</literal> ifadesinin sonucu,
+     <replaceable>ifade1</replaceable> doğruysa
+     <replaceable>ifade2</replaceable> değilse
+     <replaceable>ifade3</replaceable>'dir.
+    </para>
+    <note>
+     <simpara>
+      Üç terimli işleç aslında bir deyimdir, dolayısıyla sonucu bir
+      değişkene atanamaz. Bir değişkeni gönderimli döndürmek istediğiniz
+      takdirde bu önem kazanır. Gönderimli olarak değer döndüren bir işlevde
+      <literal>return $var == 42 ? $a : $b;</literal> deyimi bu bakımdan
+      çalışmaz ve güncel PHP sürümlerinde bir uyarı gösterilir.
+     </simpara>
+    </note>
+    <note>
+     <para>
+      Üç terimli işleçleri iç içe kullanmanız önerilmez. PHP'nin böyle bir
+      işlemin tek bir deyimde yapılmak istenmesi durumundaki davranışı
+      beklendiği gibi olmayabilir.
+      <example>
+       <title>- İç içe üç terimli davranışı</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+// ilk bakışta aşağıdaki deyimin sonucu 'true' olacak sanılır.
+echo (true?'true':false?'t':'f');
+
+// ancak gerçekte çıktı 't' olur.
+// Çünkü üç terimli ifade soldan sağa değerlendirilir.
+
+// Aynı deyimi şöyle yazarsanız, durum anlaşılır hale gelir
+echo ((true ? 'true' : 'false') ? 't' : 'f');
+
+// Burada, ilk ifade mantıksal olarak doğru olduğundan sonuç 'true'
+// olacak, böylece ikinci üç terimlinin ilk terimi 'true' olacak ve
+// ikinci üç terimliden 't' dönecektir.
+?>
+]]>
+       </programlisting>
+      </example>
+     </para>
+    </note>
+   </sect2>
+
+  </sect1>
+
+  <sect1 xml:id="language.operators.errorcontrol">
+   <title>Hata Denetim İşleçleri</title>
+   <simpara>
+    PHP tek bir hata denetim işlecini destekler: kuyruklu a imi (@). PHP'de
+    bir deyimin başına getirildiğinde, bu deyimin üreteceği olası hata
+    iletileri yok sayılır.
+   </simpara>
+   <simpara>
+    Eğer <link linkend="ini.track-errors"><code>track_errors</code></link>
+    özelliği etkinse bu deyimin ürettiği hata iletileri
+    <varname>$php_errormsg</varname> değişkenine kaydedilir. Her hata
+    oluşunda yeni hata eskisinin yerini alacağından bu değişkene yeterli
+    sıklıkta bakmanız gerekir.
+   </simpara>
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/* Kasıtlı dosya hatası */
+$dosyam = @file ('var_olmayan_dosya') or
+    die ("Dosya açılamadı: hata '$php_errormsg' değişkeninde kayıtlı");
+
+// İfadelerle çalışır ama işlevlerle çalışmaz:
+$value = @$cache[$key];
+// $key indisi mevcut değilse bir uyarı çıktılanır.
+
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <note>
+    <simpara>
+     Kuyruklu a işleci sadece <link linkend="language.expressions"
+     >ifadeler</link>in başında kullanıldığında çalışır. Kısaca: Bir değer
+     elde edebildiğiniz herşeyin başına @ getirebilirsiniz. Örneğin,
+     değişkenlerin işlev veya <function>include</function> çağrılarının,
+     sabitlerin ve benzerlerinin başına @ getirebilirsiniz. Ama işlev veya
+     sınıf tanımlarının veya <literal>if</literal> ve
+     <literal>foreach</literal> gibi denetim yapılarının başına @
+     koyamazsınız.
+    </simpara>
+   </note>
+   <simpara>
+    Ayrıca, <function>error_reporting</function> işlevine ve
+    <link linkend="ref.errorfunc">Hata İşleme ve Günce Kayıt
+    İşlevleri</link> bölümüne bakınız.
+   </simpara>
+   <warning>
+    <para>
+     Şu an "@" hata denetim işleci, betiğin çalışmasını sonlandıracak önemli
+     hataların raporlanmasını bile iptal edebilmektedir. Bu bakımdan, işleci
+     örneğin bir işlevden kaynaklanabilecek hataları bastırmak için
+     kullanıyorsanız, işlev tanımında yaptığınız yazım hataları veya işlevin
+     yokluğu halinde ne olup bittiğini anlamadan betiğiniz sonlanıverebilir.
+    </para>
+   </warning>
+  </sect1>
+
+  <sect1 xml:id="language.operators.execution">
+   <title>Çalıştırma İşleci</title>
+   <para>
+    PHP tek bir çalıştırma işlecini destekmektedir: ters tırnak imleri (``).
+    Bunların bildiğiniz tek tırnaklar olmadığına dikkat edin! Ters tırnak
+    imlerinin arasına yazılmış komutları PHP komut satırında çalıştıracak ve
+    çıktısını döndürecektir. Yani, komut satırına birşey çıktılanmaz; ama
+    sonucu bir değişkene atayabilirsiniz. Çalıştırma işleci
+    <function>shell_exec</function> işlevinin yaptığı işi yapar.
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$output = `ls -al`;
+echo "<pre>$output</pre>";
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <note>
+    <para>
+     &safemode; etkinse veya <function>shell_exec</function> işlevi etkin
+     değilse, çalıştırma işleci etkin değildir.
+    </para>
+   </note>
+   <para>
+    Ayrıca, <link linkend="ref.exec">Program Çalıştırma İşlevleri</link>,
+    <function>popen</function>, <function>proc_open</function> işlevleri ve
+    <link linkend="features.commandline">PHP'nin komut satırından
+    kullanılması</link> bölümüne de bakınız.
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.operators.increment">
+   <title>Arttırım ve Eksiltim İşleçleri</title>
+   <para>
+    PHP, C tarzı önceden ve sonradan arttırım ve eksiltim işleçlerini
+    destekler.
+   </para>
+   <note>
+    <simpara>
+     Arttırım ve eksiltim işleçleri mantıksal değerler üzerinde etkisizdir.
+     &null; değerini eksiltmenin bir etkisi yoktur fakat arttırmanın sonucu
+     <literal>1</literal>'dir.
+    </simpara>
+   </note>
+   <table>
+    <title>Arttırım ve Eksiltim İşleçleri</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Etkisi</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>++$a</entry>
+       <entry>Önceden arttırım</entry>
+       <entry>$a bir arttırıldıktan sonra döndürülür.</entry>
+      </row>
+      <row>
+       <entry>$a++</entry>
+       <entry>Sonradan arttırım</entry>
+       <entry>$a döndürüldükten sonra değeri bir arttırılır.</entry>
+      </row>
+      <row>
+       <entry>--$a</entry>
+       <entry>Önceden eksiltim</entry>
+       <entry>$a bir eksiltildikten sonra döndürülür.</entry>
+      </row>
+      <row>
+       <entry>$a--</entry>
+       <entry>Sonradan eksiltim</entry>
+       <entry>$a döndürüldükten sonra değeri bir eksiltilir.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    Basit bir betik örneği:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo "<h3>Sonradan arttırım</h3>\n";
+$a = 5;
+echo "5 olmalı: " . $a++ . "<br />\n";
+echo "6 olmalı: " . $a . "<br />\n";
+
+echo "<h3>Önceden arttırım</h3>\n";
+$a = 5;
+echo "6 olmalı: " . ++$a . "<br />\n";
+echo "6 olmalı: " . $a . "<br />\n";
+
+echo "<h3>Sonradan eksiltim</h3>\n";
+$a = 5;
+echo "5 olmalı: " . $a-- . "<br />\n";
+echo "4 olmalı: " . $a . "<br />\n";
+
+echo "<h3>Önceden eksiltim</h3>\n";
+$a = 5;
+echo "4 olmalı: " . --$a . "<br />\n";
+echo "4 olmalı: " . $a . "<br />\n";
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    PHP, karakter değişkenleri üzerinde çalışırken C'nin değil Perl'in
+    yöntemlerini izler. Örneğin, Perl'de 'Z'+1 ifadesi 'AA' değerini
+    döndürürken, C'de '[' döner ( ord('Z') == 90, ord('[') == 91 ).
+    Karakterlerin arttırılabileceğini fakat azaltılamayacağını ve sadece
+    ASCII harflerin (a-z ve A-Z) desteklendiğine dikkat ediniz.
+    <example>
+     <title>- Karakter değişkenleri üzerinde aritmetik işlemler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$i = 'W';
+for ($n=0; $n<6; $n++) {
+    echo ++$i . "\n";
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+X
+Y
+Z
+AA
+AB
+AC
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    Mantıksal değerlere arttırım ve eksiltim uygulamanın bir etkisi olmaz.
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.operators.logical">
+   <title>Mantıksal İşleçler</title>
+
+   <table>
+    <title>Mantıksal İşleçler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>$a and $b</entry>
+       <entry>Ve</entry>
+       <entry>$a ve $b her ikisi de doğruysa sonuç doğrudur (&true;).</entry>
+      </row>
+      <row>
+       <entry>$a or $b</entry>
+       <entry>Veya</entry>
+       <entry>$a veya $b doğruysa sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a xor $b</entry>
+       <entry>Ayrıcalıklı Veya</entry>
+       <entry>$a veya $b doğruysa sonuç doğru, her ikiside doğruysa sonuç
+       yanlıştır (&false;).</entry>
+      </row>
+      <row>
+       <entry>! $a</entry>
+       <entry>Değil</entry>
+       <entry>$a doğru değilse sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a &amp;&amp; $b</entry>
+       <entry>Ve</entry>
+       <entry>$a ve $b her ikisi de doğruysa sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a || $b</entry>
+       <entry>Veya</entry>
+       <entry>$a veya $b doğruysa sonuç doğrudur.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <simpara>
+    Ve, Veya işleçlerinin iki farklı türü olmasının sebebi önceliklerinin
+    farklı oluşudur. (Bakınız: <link linkend="language.operators.precedence"
+    >İşleç Önceliği</link>.)
+   </simpara>
+   <example>
+    <title>- Örneklerle mantıksal işleçler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+// Aşağıdaki ifadelerde ilk terim sonucu belirlediğinden ikinci
+// terime hiç bakılmayacak, yani foo() işlevi hiç çağrılmayacaktır.
+$a = (false && foo());
+$b = (true  || foo());
+$c = (false and foo());
+$d = (true  or  foo());
+
+// "||" işlecinin önceliği "or" işlecinden yüksektir.
+$e = false || true; // $e değişkenine true atanır
+$f = false or true; // $f değişkenine false atanır
+var_dump($e, $f);
+
+// "&&" işlecinin önceliği "and" işlecinden yüksektir.
+$g = true && false;  // $g değişkenine false atanır
+$h = true and false; // $h değişkenine true atanır
+var_dump($g, $h);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+bool(true)
+bool(false)
+bool(false)
+bool(true)
+]]>
+    </screen>
+   </example>
+  </sect1>
+
+  <sect1 xml:id="language.operators.string">
+   <title>Dizge İşleçleri</title>
+   <simpara>
+    İki tane dizge işleci vardır. İlki sol ve sağ terimlerini ard arda
+    ekleyen birleştirme işleci ('.'), ikincisi ise sağ taraftaki
+    değiştirgeyi sol taraftaki değiştirgeye ekleyen birleştirerek atama
+    işlecidir ('.='). Daha fazla bilgi için <link
+    linkend="language.operators.assignment">atama işleçleri</link> bölümüne
+    bakınız.
+   </simpara>
+
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = "Merhaba ";
+$b = $a . "Dünyalı!"; // $b artık "Merhaba Dünyalı!" içeriyor
+
+$a = "Merhaba ";
+$a .= "Dünyalı!";     // $a artık "Merhaba Dünyalı!" içeriyor
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    Ayrıca, <type>string</type> türünün açıklamasına ve <link
+    linkend="ref.strings">Dizge İşlevleri</link> bölümüne bakınız.
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.operators.array">
+   <title>Dizi İşleçleri</title>
+   <table>
+    <title>Dizi İşleçleri</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>$a + $b</entry>
+       <entry>Birleşim</entry>
+       <entry>$a ve $b'nin birleşimi.</entry>
+      </row>
+      <row>
+       <entry>$a == $b</entry>
+       <entry>Eşitlik</entry>
+       <entry>$a ve $b aynı anahtar/değer çiftlerine sahipse sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a === $b</entry>
+       <entry>Aynılık</entry>
+       <entry>$a ve $b aynı anahtar/değer çiftlerine sahipse ve bunların sırası ve türleri aynıysa sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a != $b</entry>
+       <entry>Eşitsizlik</entry>
+       <entry>$a ve $b birbirine eşit değilse sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a &lt;&gt; $b</entry>
+       <entry>Eşitsizlik</entry>
+       <entry>$a ve $b birbirine eşit değilse sonuç doğrudur.</entry>
+      </row>
+      <row>
+       <entry>$a !== $b</entry>
+       <entry>Farklılık</entry>
+       <entry>$a ve $b aynı dizi değilse sonuç doğrudur.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    <literal>+</literal> işleci sağ taraftaki dizinin elemanlarını sol
+    taraftaki dizinin elemanlarının arasına ekler. Bunu yaparken anahtarları
+    aynı olan elemanların üzerine yazılmaz.
+   </para>
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = array("a" => "elma", "b" => "armut");
+$b = array("a" => "vişne", "b" => "kiraz", "c" => "çilek");
+
+$c = $a + $b;
+echo "\$a ve \$b'nin birleşimi: \n";
+var_dump($c);
+
+$c = $b + $a;
+echo "\$b ve \$a'nın birleşimi: \n";
+var_dump($c);
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    Betik çalıştırıldığında şu çıktıyı verir:
+    <screen role="php">
+<![CDATA[
+$a ve $b'nin birleşimi:
+array(3) {
+  ["a"]=>
+  string(4) "elma"
+  ["b"]=>
+  string(5) "armut"
+  ["c"]=>
+  string(6) "çilek"
+}
+$b ve $a'nın birleşimi:
+array(3) {
+  ["a"]=>
+  string(6) "vişne"
+  ["b"]=>
+  string(5) "kiraz"
+  ["c"]=>
+  string(6) "çilek"
+}
+]]>
+    </screen>
+   </para>
+   <para>
+    Aynı anahtar ve değere sahip dizi elemanları birbirine eşit kabul edilir.
+   </para>
+   <para>
+    <example>
+     <title>- Dizilerin karşılaştırılması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = array("elma", "armut");
+$b = array(1 => "armut", "0" => "elma");
+
+var_dump($a == $b); // bool(true)
+var_dump($a === $b); // bool(false)
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Ayrıca, <type>array</type> türünün açıklamasına ve <link
+    linkend="ref.array">Dizi İşlevleri</link> bölümüne de bakınız.
+   </para>
+  </sect1>
+  <sect1 xml:id="language.operators.type">
+   <title>Tür İşleçleri</title>
+   <para>
+    <literal>instanceof</literal> işleci, bir PHP değişkeninin belli bir
+    <link linkend="language.oop5.basic.class">sınıf</link>ın nesnel örneği
+    olup olmadığını saptar:
+    <example>
+     <title>- <code>instanceof</code> ve sınıflar</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Sınıfım
+{
+}
+
+class BaşkaSınıf
+{
+}
+$a = new Sınıfım;
+
+var_dump($a instanceof Sınıfım);
+var_dump($a instanceof BaşkaSınıf);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+bool(true)
+bool(false)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    <literal>instanceof</literal> ayrıca, bir değişkenin, bir ebeveyn
+    sınıftan miras alınan bir sınıfın nesnel örneği olup olmadığını saptamak
+    için de kullanılabilir:
+    <example>
+     <title>- Miras alınan sınıflar ve <code>instanceof</code> kullanımı
+     </title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class EbeveynSınıf
+{
+}
+
+class Sınıfım extends EbeveynSınıf
+{
+}
+
+$a = new Sınıfım;
+
+var_dump($a instanceof Sınıfım);
+var_dump($a instanceof EbeveynSınıf);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+bool(true)
+bool(true)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    Bir nesne bir sınıfın örneği değilse bunu sınamak için  <link
+    linkend="language.operators.logical">mantıksal değil işleci</link>
+    kullanılabilir.
+    <example>
+     <title>- Bir sınıfın örneği olmayan bir sınıfın <code>instanceof</code>
+     ile sınanması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Sınıfım
+{
+}
+
+$a = new Sınıfım;
+var_dump(!($a instanceof stdClass));
+?>
+]]>
+     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(true)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    Son olarak, <code>instanceof</code> işleci, bir değişkenin, bir <link
+    linkend="language.oop5.interfaces">arayüz</link>ü gerçekleyen bir
+    sınıfın örneği olup olmadığını sınamak için kullanılabilir:
+    <example>
+     <title>- Arayüzler için <code>instanceof</code> kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface Arayüzüm
+{
+}
+
+class Sınıfım implements Arayüzüm
+{
+}
+
+$a = new Sınıfım;
+
+var_dump($a instanceof Sınıfım);
+var_dump($a instanceof Arayüzüm);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+bool(true)
+bool(true)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    <code>instanceof</code> işlecinin normal olarak bir sayıl sınıf ismi ile
+    kullanılmasının yanında başka bir nesne veya bir dizge değişkeni ile de
+    kullanılabilir:
+    <example>
+     <title>- Başka değişkenlerle <code>instanceof</code> kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface Arayüzüm
+{
+}
+
+class Sınıfım implements Arayüzüm
+{
+}
+
+$a = new Sınıfım;
+$b = new Sınıfım;
+$c = 'Sınıfım';
+$d = 'BaşkaSınıf';
+
+var_dump($a instanceof $b); // $b, Sınıfım sınıfının bir nesnesidir
+var_dump($a instanceof $c); // $c 'Sınıfım' dizgesini içerir
+var_dump($a instanceof $d); // $d 'BaşkaSınıf' dizgesini içerir
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(true)
+bool(true)
+bool(false)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    Burada bilmeniz gereken bir kaç zorluk vardır.  PHP 5.1.0 öncesinde,
+    <literal>instanceof</literal> işleci, sınıf mevcut değilse <link
+    linkend="language.oop5.autoload">__autoload()</link> çağrısı yapardı.
+    Buna ek olarak, sınıf yüklenmemişse bir ölümcül hata oluşurdu. Bunun
+    olmaması için bir <literal>devingen sınıf gönderimi</literal> veya sınıf
+    ismini içeren bir dizge değişkeni kullanılabilir:
+    <example>
+     <title>- PHP 5.0'da <code>instanceof</code> ile ölümcül hatalardan ve
+     sınıf ismi aramalarından kaçınmak</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$d = 'BaşkaSınıf';
+var_dump($a instanceof $d); // burada ölümcül hata oluşmaz
+?>
+     ]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(false)
+]]>
+     </screen>
+    </example>
+   </para>
+   <simpara>
+     <literal>instanceof</literal> işleci PHP 5'ten itibaren mevcuttur.
+     Evvelce <function>is_a</function> işlevi kullanılırdı fakat
+     <literal>instanceof</literal> kullanımını teşvik etmek için artık
+     <function>is_a</function> kullanımı önerilmemektedir.
+   </simpara>
+   <para>
+    Ayrıca, <function>get_class</function> ve <function>is_a</function>
+    işlevlerine de bakınız.
+   </para>
+  </sect1>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
