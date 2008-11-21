@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.10 Maintainer: onurozgurozkan Status: ready -->
+<!-- splitted from ./en/functions/array.xml, last change in rev 1.10 -->
+<refentry xml:id="function.create-function" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>create_function</refname>
+  <refpurpose>Bir anonim (lamda tarzı) işlev oluşturur</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>create_function</methodname>
+   <methodparam><type>string</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam><type>string</type><parameter>kod</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Verilen değiştirgelerden isimsiz bir işlev oluşturur ve onun için eşsiz
+   bir isim döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   Genellikle bu değiştirgeler tek tırnaklar arasına alınmış bir dizge ile
+   işleve aktarılır. Tek tırnak kullanılmasının nedeni değişken isimlerini
+   çözümleme işleminden korumaktır. Çift tırnak kullanırsanız, değişken
+   adlarını <literal>\$avar</literal> örneğinde olduğu öncelemeniz
+   gerekecektir.
+   <variablelist>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+       İşlevin değiştirgeleri.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kod</parameter></term>
+     <listitem>
+      <para>
+       İşlevin kodu.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Hata oluşmamışsa bir dizge olarak işleve eşsiz bir isim, aksi takdirde
+   &false; döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>-
+     <function>create_function</function> ile isimsiz işlev oluşturmak
+    </title>
+    <para>
+     Bu işlevi, çalışma anında toplanan bilgileri kullanarak yeni bir işlev
+     oluşturmak için kullanabilirsiniz.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$işlev = create_function('$a,$b', 'return "ln($a) + ln($b) = " . log($a * $b);');
+echo "Yeni bir isimsiz işlev: $işlev\n";
+echo $işlev(2, M_E) . "\n";
+// Çıktısı:
+// Yeni bir isimsiz işlev: lambda_1
+// ln(2) + ln(2.718281828459) = 1.6931471805599
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Belki, bir değiştirge listesi üzerinde belli işlemler yapan bir genel işlem
+   işlevi tercih edersiniz:
+  </para>
+  <para>
+   <example>
+    <title>- <function>create_function</function> işlevi ile bir genel işlem
+    işlevi oluşturmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function process($var1, $var2, $farr)
+{
+    foreach ($farr as $f) {
+        echo $f($var1, $var2) . "\n";
+    }
+}
+
+// Birkaç matematik işlevi oluşturalım
+$f1 = 'if ($a >=0) {return "b*a^2 = ".$b*sqrt($a);} else {return false;}';
+$f2 = "return \"min(b^2+a, a^2,b) = \".min(\$a*\$a+\$b,\$b*\$b+\$a);";
+$f3 = 'if ($a > 0 && $b != 0) {return "ln(a)/b = ".log($a)/$b; } else { return false; }';
+$farr = array(
+    create_function('$x,$y', 'return "biraz trig: ".(sin($x) + $x*cos($y));'),
+    create_function('$x,$y', 'return "bir hipotenüs: ".sqrt($x*$x + $y*$y);'),
+    create_function('$a,$b', $f1),
+    create_function('$a,$b', $f2),
+    create_function('$a,$b', $f3)
+    );
+
+echo "\nİlk isimsiz işlev grubumuz\n";
+echo "değiştirgeler: 2.3445, M_PI\n";
+process(2.3445, M_PI, $farr);
+
+// birkaç tane de dizge işlevi oluşturalım
+$garr = array(
+    create_function('$b,$a', 'if (strncmp($a, $b, 3) == 0) return "** \"$a\" '.
+    've \"$b\"\n** (ilk üç karaktere bakarak) Bak bu ikisi aynı!";'),
+    create_function('$a,$b', '; return "CRC\'ler: " . crc32($a) . ", ".crc32(b);'),
+    create_function('$a,$b', '; return "benzerlik(a,b) = " . similar_text($a, $b, &$p) . "(%$p)";')
+    );
+echo "\nİkinci isimsiz işlev grubumuz\n";
+process("Gün yavaş yavaş ışıyordu", "Gün aydınlanıyordu", $garr);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+İlk isimsiz işlev grubumuz
+değiştirgeler: 2.3445, M_PI
+biraz trig: -1.6291725057799
+bir hipotenüs: 3.9199852871011
+b*a^2 = 4.8103313314525
+min(b^2+a, a^2,b) = 8.6382729035898
+ln(a)/b = 0.27122299212594
+
+İkinci isimsiz işlev grubumuz
+** "Gün aydınlanıyordu" ve "Gün yavaş yavaş ışıyordu"
+** (ilk üç karaktere bakarak) Bak bu ikisi aynı!
+CRC'ler: 2226456759, 1908338681
+benzerlik(a,b) = 15(%58.823529411765)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   Şüphesiz, lamda tarzı (isimsiz) işlevlerin asıl kullanım amacı geriçağırım
+   işlevleri oluşturmaktır. <function>array_walk</function> ve
+   <function>usort</function> işlevlerini kullanan örnekler:
+  </para>
+  <para>
+   <example>
+    <title>- İsimsiz işlevlerin geriçağırım işlevlerinde kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$av = array("işte ", "bir ", "bu ", "şu ");
+array_walk($av, create_function('&$v,$k', '$v = $v . "mango";'));
+print_r($av);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => işte mango
+    [1] => bir mango
+    [2] => bu mango
+    [3] => şu mango
+)
+]]>
+    </screen>
+    <para>
+     Kısadan uzuna sıralanmış dizgelerden oluşan bir dizi:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$sv = array("kısa", "daha uzun", "daha da uzun", "daha daha uzun");
+print_r($sv);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => kısa
+    [1] => daha uzun
+    [2] => daha da uzun
+    [3] => daha daha uzun
+)
+
+]]>
+    </screen>
+    <para>
+     Şimdi uzundan kısaya doğru sıralayalım:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+usort($sv, create_function('$a,$b','return strlen($b) - strlen($a);'));
+print_r($sv);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+(
+    [0] => daha daha uzun
+    [1] => daha da uzun
+    [2] => daha uzun
+    [3] => kısa
+)
+
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
