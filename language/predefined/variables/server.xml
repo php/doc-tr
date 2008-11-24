@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: yasar Status: ready -->
+<phpdoc:varentry xmlns:phpdoc="http://php.net/ns/phpdoc" xml:id="reserved.variables.server" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
+ <refnamediv>
+  <refname>$_SERVER</refname>
+  <refname>$HTTP_SERVER_VARS [kullanımdan kalktı]</refname>
+  <refpurpose>Sunucu ve işletme ortamı bilgisi</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>
+   <varname>$_SERVER</varname> başlıklar, yollar ve betiklerin yerleri gibi
+   bilgileri içeren bir dizidir. Bu dizideki girdiler HTTP sunucusu tarafından
+   oluşturulur. Her HTTP sunucusu bunları sunacak diye bir garanti yoktur;
+   sunucular bazıları ile işlem yapmayabilir veya burada listelenmeyen
+   başkalarını sağlayabilirler. Bu değişkenlerden çoğu <link
+   xlink:href="&url.cgispec;">CGI 1.1 Belirtimi</link> içinde ele alınırlar;
+   yani bunlar genellikle her HTTP sunucusunda desteklenirler.
+  </para>
+
+  <simpara>
+   <varname>$HTTP_SERVER_VARS</varname> aynı başlangıç bilgisini içerir,
+   fakat bir <link linkend="language.variables.superglobals">süper
+   küresel</link> değildir (<varname>$HTTP_SERVER_VARS</varname> ve
+   <varname>$_SERVER</varname> farklı değişkenlerdir ve PHP de bu
+   şekilde ele alır).
+  </simpara>
+
+  <simpara>
+    Aşağıdaki elemanlardan bazılarını <varname>$_SERVER</varname> içinde
+    belki bulursunuz belki de bulamazsınız. PHP <link
+    linkend="features.commandline">komut satırı</link>nda çalıştırıldığında
+    bu değişkenlerden bazılarının herhangi bir anlamı varsa komut satırında
+    da kullanılabileceğine dikkat ediniz.
+  </simpara>
+
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>'<varname>PHP_SELF</varname>'</term>
+     <listitem>
+      <simpara>
+	Çalıştırılmakta olan betiğin, belge kök dizinine göreli dosya adıdır.
+	Örneğin, <filename>http://mesela.dom/dnm.php/foo.bar</filename>
+	adresindeki bir betik için <varname>$_SERVER['PHP_SELF']</varname>
+	değeri <filename>/dnm.php/foo.bar</filename> olacaktır. <link
+	linkend="language.constants.predefined">__FILE__</link> sabiti geçerli
+	dosyanın tam yolunu ve dosya adını içerir.
+      </simpara>
+      <simpara>
+	PHP 4.3.0 dan beri, eğer PHP komut satırı işlemcisi olarak çalışıyorsa
+	bu değişken betik adını içerir. Önceki sürümlerde bu mevcut değildi.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<link linkend="reserved.variables.argv">argv</link>'</term>
+     <listitem>
+      <simpara>
+	Betiğe aktarılan değiştirge dizisidir. Betik komut satırında
+	çalıştığında, komut satırı değiştirgelerine C gibi erişim imkanı
+	verir. Betik GET yöntemi üzerinden çağrıldığında, bu değişken sorgu
+	dizgesini içerir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<link linkend="reserved.variables.argc">argc</link>'</term>
+     <listitem>
+      <simpara>
+	Betiğe aktarılan komut satırı değiştirgelerinin sayısını içerir
+	(betik eğer komut satırından çalıştırılıyorsa).
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>GATEWAY_INTERFACE</varname>'</term>
+     <listitem>
+      <simpara>
+	Sunucunun desteklediği CGI belirtiminin sürümünü içerir;
+       '<literal>CGI/1.1</literal>' gibi.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_ADDR</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli betiğin altında çalıştığı sunucunun IP adresidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_NAME</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli betiğin altında çalıştığı sunucunun adıdır. Eğer betik bir
+	sanal konak üzerinde çalışıyorsa, o sanal konağın adını içerir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_SOFTWARE</varname>'</term>
+     <listitem>
+      <simpara>
+	Sunucu kimlik dizgesi, isteklere verilen cevap başlıklarının içinde
+	verilir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_PROTOCOL</varname>'</term>
+     <listitem>
+      <simpara>
+	Sayfa isteğinin yapıldığı protokolün ismi ve sürümüdür;
+	'<literal>HTTP/1.1</literal>' gibi;
+      </simpara>
+     </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+     <term>'<varname>REQUEST_METHOD</varname>'</term>
+     <listitem>
+      <simpara>
+	Sayfaya erişim için kullanılan istek yöntemi; '<literal>GET</literal>',
+       '<literal>HEAD</literal>', '<literal>POST</literal>',
+       '<literal>PUT</literal>' gibi.
+      </simpara>
+      <note>
+       <para>
+	Eğer istek yöntemi <literal>HEAD</literal> ise PHP betiği başlıklar
+	gönderildikten sonra (çıktının çıktı tamponu olmadan üretilmesinden
+	sonra anlamında) sonlandırılır.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_TIME</varname>'</term>
+     <listitem>
+      <simpara>
+	İsteğin başlangıç zaman etiketidir. PHP 5.1.0'dan beri mevcuttur.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>QUERY_STRING</varname>'</term>
+     <listitem>
+      <simpara>
+	Sorgu dizgesi, sayfaya erişirken kullanılabilir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>DOCUMENT_ROOT</varname>'</term>
+     <listitem>
+      <simpara>
+	Sunucunun ayar dosyasında da tanımlandığı gibi, geçerli betiğin altında
+	çalıştığı belge kök dizinidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_ACCEPT</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Accept:</literal> başlığının içeriğidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_ACCEPT_CHARSET</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Accept-Charset:</literal> başlığının içeriğidir.
+	Örnek: '<literal>iso-8859-9,*,utf-8</literal>'.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_ACCEPT_ENCODING</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Accept-Encoding:</literal> başlığının içeriğidir.
+        Örnek: '<literal>gzip</literal>'.
+      </simpara>
+     </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+     <term>'<varname>HTTP_ACCEPT_LANGUAGE</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Accept-Language:</literal> başlığının içeriğidir.
+        Örnek: '<literal>tr</literal>'.
+      </simpara>
+     </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+     <term>'<varname>HTTP_CONNECTION</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Connection:</literal> başlığının içeriğidir.
+        Örnek: '<literal>Keep-Alive</literal>'.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_HOST</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>Host:</literal> başlığının içeriğidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_REFERER</varname>'</term>
+     <listitem>
+      <simpara>
+	Kullanıcı tarayıcısını geçerli sayfaya gönderen sayfanın (varsa)
+	adresidir. Bu kullanıcı tarayıcısı tarafından belirtilir. Her
+	kullanıcı tarayıcısı bunu belirtmez ve bazıları
+        <varname>HTTP_REFERER</varname> değiştirmeyi bir özellik olarak
+        sunar. Kısaca, buna güvenilemez.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTP_USER_AGENT</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli isteğin <literal>User-Agent:</literal> başlığının içeriğidir.
+	Bu sayfaya erişen kullanıcı tarayıcısını ifade eden bir dizgedir.
+	Örneğin: <computeroutput>Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)</computeroutput>
+	<function>get_browser</function> işlevi ile elde edebileceğiniz bu
+	değeri sayfanın çıktısını kullanıcının tarayıcısına göre şekillendirmek
+	için kullanabilirsiniz.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTPS</varname>'</term>
+     <listitem>
+      <simpara>
+	Eğer betik HTTPS protokolü ile sorgulanmışsa boş olmayan bir değer atanır.
+      </simpara>
+      <simpara>
+	IIS ile ISAPI kullanırken, eğer istek HTTPS protokolü ile yapılmamışsa,
+	bu değerin <literal>off</literal> olacağına dikkat ediniz.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_ADDR</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli sayfayı görüntüleyen kullanıcının IP adresidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_HOST</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli sayfayı görüntüleyen kullanıcının sunucu adıdır.
+	Kullanıcının <varname>REMOTE_ADDR</varname> değerinden
+	ters dns sorgusuyla elde edilir.
+      </simpara>
+      <note>
+       <simpara>
+	HTTP sunucunuz bu değişkeni oluşturmak için ayarlanmak zorundadır.
+	Örneğin Apache'de &httpd.conf; içinde <literal>HostnameLookups On</literal>
+	olmalıdır. Ayrıca <function>gethostbyaddr</function> işlevine de bakınız.
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_PORT</varname>'</term>
+     <listitem>
+      <simpara>
+	Kullanıcının makinesinin HTTP sunucusu ile haberleşmek için
+	kullandığı porttur.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SCRIPT_FILENAME</varname>'</term>
+     <listitem>
+      <para>
+	Geçerli betiğin mutlak yoludur.
+       <note>
+        <para>
+	  Eğer betik <filename>file.php</filename> veya
+	  <filename>../file.php</filename> gibi göreli bir yolla komut
+	  satırından çalıştırılırsa, 
+	  <varname>$_SERVER['SCRIPT_FILENAME']</varname> kullanıcı tarafından
+	  belirtilen göreli yolu içerir.
+        </para>
+       </note>
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_ADMIN</varname>'</term>
+     <listitem>
+      <simpara>
+	HTTP sunucusu ayar dosyasındaki SERVER_ADMIN (Apache için) yönergesine
+	verilen değerdir. Eğer betik bir sanal konak üzerinde çalışıyorsa,
+	o sanal konak için için tanımlanmış değer olur.
+      </simpara>
+     </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+     <term>'<varname>SERVER_PORT</varname>'</term>
+     <listitem>
+      <simpara>
+	Haberleşme için HTTP sunucusu tarafından kullanılan porttur.
+	Öntanımlı kurulumlar için değeri '<literal>80</literal>'dir; örneğin
+	SSL kullanımında bunu güvenli HTTP portu olarak ne tanımladıysanız
+	ona değiştirebilirsiniz.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_SIGNATURE</varname>'</term>
+     <listitem>
+      <simpara>
+	Eğer etkinse, sunucu tarafından üretilen sayfalara eklenen,
+	sunucu sürümünü ve sanal konak adını içeren dizgidir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PATH_TRANSLATED</varname>'</term>
+     <listitem>
+      <simpara>
+	Sunucu gerekli sanaldan gerçeğe dönüşümleri yaptıktan sonra geçerli
+	betiğin dosya sistemini (belge kökü değil) temel alan yoludur.
+      </simpara>
+      <note>
+       <simpara>
+	PHP 4.3.2'den itibaren <envar>PATH_TRANSLATED</envar> değeri
+	Apache 2'de Apache 1'in tersine <acronym>SAPI</acronym> altında örtük
+	olarak belirtilmez. Apache 1'de bu değer Apache tarafından
+	yerleştirilmediğinde bu değer <envar>SCRIPT_FILENAME</envar> sunucu
+	değişkeni ile aynı olurdu.
+	Bu değişiklik, <envar>PATH_TRANSLATED</envar> değişkeninin sadece
+	<envar>PATH_INFO</envar> değişkeninin tanımlı olması durumunda var
+	olmasını gerektiren <acronym>CGI</acronym> belirtimi ile uyum sağlamak
+	için yapılmıştır.
+       </simpara>
+       <simpara>
+	Apache 2 kullanıcıları <envar>PATH_INFO</envar> tanımlatmak için
+	<filename>httpd.conf</filename> içinde <literal>AcceptPathInfo = On</literal>
+	yapılandırmasını kullanabilirler.
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SCRIPT_NAME</varname>'</term>
+     <listitem>
+      <simpara>
+	Geçerli betiğin yolunu içerir. Kendi kendilerini göstermesi gereken
+	sayfalar için kullanışlıdırlar. <link linkend="language.constants.predefined"
+	>__FILE__</link> sabiti geçerli (örn. içerilen) dosyanın tam yolunu ve
+	dosya adını içerir.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_URI</varname>'</term>
+     <listitem>
+      <simpara>
+	Sayfaya erişim için belirtilen URI; örneğin, '<literal>/index.html</literal>'.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_DIGEST</varname>'</term>
+     <listitem>
+      <simpara>
+	Apache altında bir modül olarak Özetli HTTP kimlik doğrulaması
+	yapılırken bu değişken istemci tarafından gönderilen 'Authorization'
+	başlığında belirtilir (böylece siz de uygun geçerlilik denetimini
+	yapmak için bunu kullanabilirsiniz).
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_USER</varname>'</term>
+     <listitem>
+      <simpara>
+	Apache veya IIS (PHP 5 üzerinde ISAPI) altında modül olarak HTTP
+	kimlik doğrulaması yapılırken bu değişkene kullanıcı tarafından
+	sağlanan kullanıcı adı atanır.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_PW</varname>'</term>
+     <listitem>
+      <simpara>
+	Apache veya IIS (PHP 5 üzerinde ISAPI) altında modül olarak HTTP
+	kimlik doğrulaması yapılırken bu değişkene kullanıcı tarafından
+	sağlanan parola atanır.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>AUTH_TYPE</varname>'</term>
+     <listitem>
+      <simpara>
+	Apache altında modül olarak HTTP kimlik doğrulaması yapılırken
+	bu değişkene kullanılan kimlik doğrulama türü atanır.
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.1.0</entry>
+       <entry>
+        <varname>$_SERVER</varname> ortaya çıkmış ve
+        <varname>$HTTP_SERVER_VARS</varname> kullanımdan kaldırılmıştır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example xml:id="variable.server.basic">
+    <title>- <varname>$_SERVER</varname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo $_SERVER['SERVER_NAME'];
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+www.falanca.dom
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.is-superglobal;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="book.filter">Süzme eklentisi</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</phpdoc:varentry>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
