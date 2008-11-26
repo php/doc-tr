@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.50 Maintainer: nilgun Status: ready -->
+ <chapter xml:id="language.references" xmlns="http://docbook.org/ns/docbook">
+  <title>Gönderimlerle İlgili Herşey</title>
+
+  <sect1 xml:id="language.references.whatare">
+   <title>Gönderim Nedir?</title>
+   <simpara>
+    PHP'de gönderimler aynı değişken içeriğine farklı isimlerle erişmek
+    demektir. C'deki göstericilere benzemezler; daha çok simge tablosu
+    rumuzlarıdırlar. PHP'de şuna dikkat edin: Değişken içeriği ve değişken
+    ismi farklı şeylerdir. Bu bakımdan, aynı içeriğin farklı isimleri
+    olabilir. En yakın benzerlik, Unix dosya isimleri ve dosyaları ile
+    kurulabilir; değişken isimleri dizinlerse, değişken içeriği de dizinin
+    içindeki dosyadır. Gönderimler ise Unix dosya sistemindeki sabit bağlar
+    olarak düşünülebilir.
+   </simpara>
+  </sect1>
+
+  <sect1 xml:id="language.references.whatdo">
+   <title>Gönderim Ne Yapar?</title>
+   <para>
+    PHP gönderimleri aynı içeriğe iki değişken tarafından atıf yapılmasını
+    mümkün kılar. Yani, şunu yazarsanız:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a =& $b;
+?>
+]]>
+     </programlisting>
+    </informalexample>
+      Bunun anlamı, <varname>$a</varname> ve <varname>$b</varname>
+      değişkenlerinin aynı içeriği gösterdiğidir.
+    <note>
+     <para>
+      Burada <varname>$a</varname> ve <varname>$b</varname> tamamen eşittir;
+      ne <varname>$a</varname>, <varname>$b</varname>'yi göstermekte ne de
+      <varname>$b</varname>, <varname>$a</varname>'yı göstermektedir;
+      <varname>$a</varname> ve <varname>$b</varname> aynı yeri göstermektedir.
+     </para>
+    </note>
+   </para>
+   <note>
+    <para>
+     Eğer bir dizi gönderimle kopyalanmışsa gösterilen şey değerler değildir.
+     Bu ayrıca işlevlere değerleriyle aktarılan diziler için de geçerlidir.
+    </para>
+   </note>
+   <note>
+    <para>
+      Eğer tanımlanmamış bir değişken gönderimle atanır, aktarılır  veya
+      döndürülürse oluşturulmuş olur.
+     <example>
+      <title>- Gönderimlerin tanımlanmamış değişkenlerle kullanımı</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function foo(&$var) { }
+
+foo($a); // $a "oluşturulur" ve değer olarak null atanır
+
+$b = array();
+foo($b['b']);
+var_dump(array_key_exists('b', $b)); // bool(true)
+
+$c = new StdClass;
+foo($c->d);
+var_dump(property_exists($c, 'd')); // bool(true)
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+   </note>
+   <para>
+    Aynı sözdizimi, gönderim döndüren işlevler ve <literal>new</literal>
+    işleci (PHP 4.0.4 ve sonrası) ile kullanılabilir:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$bar =& new BirSınıf();
+$foo =& dğşkn_bul($bar);
+?>
+]]>
+     </programlisting>
+    </informalexample>
+      PHP 5'ten beri, <link linkend="language.oop5.basic.new">new</link>
+      özdevinimli olarak gönderim döndürmekte, bu bakımdan böyle bir bağlamda
+      <literal>=&amp;</literal> kullanımı önerilmemekte ve kullanıldığında
+      E_STRICT seviyesinde ileti üretmektedir.
+   </para>
+    <note>
+     <para>
+      <literal>&amp;</literal> işlecinin kullanılmaması nesnenin bir
+      kopyasının yapılmasına sebep olur. Eğer sınıf içinde
+      <literal>$this</literal> kullanırsanız, <literal>$this</literal>
+      sınıfın mevcut örneği üzerinde işlem yapar. <literal>&amp;</literal>
+      olmaksızın atama, örneği (yani, nesneyi) kopyalayacak ve
+      <literal>$this</literal> kopyanın üzerinde işlem yapacaktır ki, bu her
+      zaman istenen bir şey değildir. Başarım ve bellek tüketimi bakımından
+      normalde tek bir örnek üzerinde çalışılmak istenir.
+     </para>
+     <para>
+      <literal>@</literal> işlecini <literal>@new</literal> olarak kullanarak
+      kurucudaki hataları susturmak mümkünse de  <literal>&amp;new</literal>
+      kullanarak bu mümkün olmaz. Bunun sebebi Zend Motorundaki bir sınırlama
+      olup, bu çeşit kullanım bir çözümleme hatasıyla sonuçlanır.
+     </para>
+   </note>
+   <warning>
+    <para>
+     Bir işlevin içinde küresel olarak bildirilmiş bir değişkeni gönderimli
+     olarak atarsanız gönderim sadece işlevin içinde görünür olur.
+     <varname>$GLOBALS</varname> dizisini kullanarak bundan kaçınabilirsiniz.
+     <example>
+      <title>- İşlev içinde küresel değişkenlere gönderim</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$var1 = "Örnek değişken";
+$var2 = "";
+
+function küresel_gönderimler($küreselleri_kullan)
+{
+    global $var1, $var2;
+    if (!$küreselleri_kullan) {
+        $var2 =& $var1; // sadece işlev içinde görünürdür
+    } else {
+        $GLOBALS["var2"] =& $var1; // küresel alanda da görünürdür
+    }
+}
+
+küresel_gönderimler(false);
+echo "var2'ye '$var2' atanır\n"; // var2'ye '' atanır
+küresel_gönderimler(true);
+echo "var2'ye '$var2' atanır\n"; // var2'ye 'Örnek değişken' atanır
+?>]]>
+      </programlisting>
+     </example>
+     <literal>global $var;</literal> deyimi <literal>$var
+     =&amp; $GLOBALS['var'];</literal> deyimine bir kısayol olarak düşünülür.
+     Bu bakımdan <literal>$var</literal>'a başka bir gönderim atamak sadece
+     yerel değişkenin gönderimini değiştirir.
+    </para>
+   </warning>
+   <note>
+    <para>
+     Eğer bir değişkene <link linkend="control-structures.foreach"
+     >foreach</link> döngüsü içinde gönderimle bir değer atarsanız gönderimde
+     de değişiklik yapılmış olur.
+     <example>
+      <title>- foreach döngüsü içinde gönderim</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$ref = 0;
+$row =& $ref;
+foreach (array(1, 2, 3) as $row) {
+    // işlemler
+}
+echo $ref; // 3 - yinelenen dizinin son elemanı
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+   </note>
+   <para>
+    Gönderimlerle yapılan ikinci şey değişkenleri gönderimle aktarmaktır. Bir
+    işlev içinde bir yerel değişken oluşturup çağrı etki alanında bir
+    değişkenle aynı içeriğe gönderim yaparak bu gerçeklenebilir. Örnek:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function foo(&$var)
+{
+    $var++;
+}
+
+$a=5;
+foo($a);
+echo $a; // 6 çıktılar
+?>
+]]>
+     </programlisting>
+    </informalexample>
+      <varname>$a</varname>'nın 6 olmasının sebebi <varname>foo</varname>
+      işlevinde <varname>$var</varname> değişkeninin
+      <varname>$a</varname>'nın içeriğine gönderimli olmasıdır. Daha
+      ayrıntılı açıklamayı <link linkend="language.references.pass"
+      >gönderimle aktarım</link> bölümünde bulabilirsiniz.
+   </para>
+   <simpara>
+    Gönderimlerle yapılan üçüncü şey <link
+    linkend="language.references.return">gönderimli değer döndürme</link>dir.
+   </simpara>
+  </sect1>
+
+  <sect1 xml:id="language.references.arent">
+   <title>Gönderimler Ne Değildir?</title>
+   <para>
+    Evvelce de değinildiği gibi bir gönderim bir gösterici değildir. Yani,
+    aşağıdaki oluşum bekleneni yapmayacaktır:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function foo(&$var)
+{
+    $var =& $GLOBALS["baz"];
+}
+foo($bar);
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <simpara>
+    Burada <varname>foo</varname> işlevindeki <varname>$var</varname>
+    değişkeni çağrı yapılan yerde <varname>$bar</varname> değişkenine
+    bağlanmakla kalmayıp bir de işlevin içinde
+    <varname>$GLOBALS["baz"]</varname> değişkenine bağlanmaktadır.
+    <varname>$bar</varname>'ın işlev etki alanı içinde gönderim mekanizması
+    ile başka bir değişkene bağlanması mümkün değildir, çünkü
+    <varname>$bar</varname> değişkeni <varname>foo</varname> işlevinin etki
+    alanında mevcut değildir (işlev etki alanında <varname>$var</varname>
+    tarafından temsil edilmekteyse de <varname>$var</varname> sadece
+    değişkenin içeriğine sahiptir ve çağrı simgeleri tablosunda ismi değere
+    bağlayan şey değildir). İşlev tarafından seçilen değişkenlere gönderim
+    yapabilmek için değeri <link linkend="language.references.return"
+    >gönderimle döndürme</link>lisiniz.
+   </simpara>
+  </sect1>
+
+  <sect1 xml:id="language.references.pass">
+   <title>Gönderimle Aktarım</title>
+   <para>
+    Bir değişkeni bir işleve gönderimle aktarabilirsiniz, böylece işlevin
+    değiştirgelerini değiştirebilirsiniz. Sözdizimi şöyledir:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function işlev(&$değişken)
+{
+    $değişken++;
+}
+
+$a=5;
+foo($a);
+// Burada $a artık 6'dır
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    İşlevin çağrıldığı yerde gönderim yapıldığına dair bir belirtinin
+    olmadığına dikkat ediniz; gönderim sadece işlevin üzerindedir. İşlev
+    tanımı değiştirgeyi gönderimle gerektiği gibi aktarmak için tek başına
+    yeterlidir. PHP'nin son sürümlerinde &amp; imini
+    <literal>işlev(&amp;$a);</literal> biçeminde kullandığınız takdirde
+    "Çağrı sırasında gönderimle aktarım" anlamına gelen bir uyarı alırsınız.
+  </para>
+  <para>
+    Aşağıdakiler bir işleve gönderimle aktarılabilir:
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      <literal>işlev($a)</literal> şeklinde bir değişken.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>işlev(new sınıf())</literal> şeklinde <code>new</code> deyimi.
+     </simpara>
+    </listitem>
+    <listitem>
+     <para>
+      Bir işlevden döndürerek bir gönderim. Örnek:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function &bar()
+{
+    $a = 5;
+    return $a;
+}
+foo(bar());
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    Ayrıca, <link linkend="language.references.return">gönderimle değer
+    döndürme</link> konusuna da bakınız.
+     </para>
+    </listitem>
+  </itemizedlist>
+  </para>
+  <para>
+    Sonuç tanımsız olacağından, başka hiçbir ifade gönderimle aktarılamaz.
+    Örneğin, aşağıdaki gönderimle aktarım örneği geçersizdir:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function bar() // Dikkat, & yok
+{
+    $a = 5;
+    return $a;
+}
+foo(bar()); // PHP 5.0.5'ten beri ölümcül hata üretmekte
+
+foo($a = 5); // Bir ifade, değişken değil
+foo(5);      // Ölümcül hata üretir
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    Bunlar PHP 4.0.4 ve sonrası için gereklidir.
+  </para>
+  </sect1>
+
+  <sect1 xml:id="language.references.return">
+   <title>Gönderimle Döndürme</title>
+   <para>
+    Gönderimle döndürme, gönderimin bağlayacağı değişkeni hedefleyen bir
+    işlev kullanmak istediğiniz takdirde yararlıdır. Gönderimle döndürmeyi
+    başarımı arttırmak amacıyla kullanmayın. Motor, bunu kendine göre en
+    iyileyecek yeteneğe sahiptir. Sadece geçerli bir teknik sebebiniz
+    olduğunda gönderimle döndürme yapın! Gönderimle döndürmek için şu söz
+    dizimi kullanılır:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class sınıf {
+    public $değer = 42;
+
+    public function &değeriBağla() {
+        return $this->değer;
+    }
+}
+
+$obj = new sınıf;
+$değerim = &$obj->değeriBağla(); // $değerim, $obj->değer için bir gönderimdir
+echo $değerim;                   // 42 basar
+$obj->değer = 2;
+echo $değerim;                   // 2 basar
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    Bu örnekte, <varname>değeriBağla</varname> işlevi ile döndürülen nesne
+    özelliği değişkene atanmaktadır, eğer gönderim söz dizimi kullanılmamış
+    olsaydı özelliğin kendisi değil bir kopyası atanmış olacaktı.
+   </para>
+   <note>
+    <simpara>
+     Değiştirge aktarmanın tersine, burada her iki taraftada (çağıran ve
+     çağrılan) <literal>&amp;</literal> kullanımı zorunludur. Çağıran tarafta
+     <literal>$değerim</literal> değişkenine yapılanın bir atama değil
+     gönderim bağlantısı olduğunu, çağrılan tarafta ise yapılanın sıradan bir
+     değer kopyalama değil bir gönderimle döndürme olduğunu belirtmektedir.
+    </simpara>
+   </note>
+   <note>
+    <simpara>
+      <literal>return ($this->değer);</literal> söz dizimi ile bir işlevden
+      bir gönderim döndürmek isterseniz bir değişkeni değil de bir ifadenin
+      sonucunu döndürmeye çalışmış olacağınızdan bu istediğinizi
+      yapmayacaktır. Bir işlevden gönderimle sadece değişkenleri
+      döndürebilirsiniz, başka bir şey döndüremezsiniz. PHP 4.4.0 ve PHP
+      5.1.0'dan beri gönderimle döndürme söz dizimini kullanan bir işlevden
+      bir devingen ifadenin veya bir <literal>new</literal> işlecinin
+      sonucunu döndürmeye çalışmak <constant>E_NOTICE</constant> seviyesinden
+      bir hata oluşturmaktadır.
+    </simpara>
+   </note>
+  </sect1>
+
+  <sect1 xml:id="language.references.unset">
+   <title>Gönderimi Tanımsız Yapmak</title>
+   <para>
+    Bir gönderimi <function>unset</function> ile tanımsız yapmakla aslında
+    değişken ismiyle değeri arasındaki bağlantıyı bozmuş olursunuz, değişkeni
+    içeriksiz bırakmış olmazsınız (aynı değeri gösteren iki değişkenden
+    sadece birini ortadan kaldırmış olursunuz). Örnek:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1;
+$b =& $a;
+unset($a);
+?>
+]]>
+     </programlisting>
+    </informalexample>
+    Burada <varname>$b</varname> değil <varname>$a</varname> tanımsız olur.
+   </para>
+   <simpara>
+    Bu işlem, Unix <command>unlink</command> komutunun yaptığı işlemden pek
+    de farklı değildir.
+   </simpara>
+  </sect1>
+
+  <sect1 xml:id="language.references.spot">
+   <title>Gönderimleri kullanan diğer oluşumlar</title>
+   <simpara>
+    PHP'deki çoğu söz dizimi oluşumu, gönderim mekanizması üzerinden
+    gerçeklenir, bu bakımdan yukarıda gönderimle ilgili bahsedilenlerin tümü
+    bu oluşumlara da uygulanır. Gönderimle aktarma veya döndürme gibi bazı
+    oluşumlardan yukarıda söz edilmiştir. Gönderimleri kullanan diğer
+    oluşumlar şunlardır:
+   </simpara>
+
+   <sect2 xml:id="references.global">
+    <title>Küresel Gönderimler</title>
+    <para>
+     Bir değişkeni <command>global $değişken</command> deyimi ile
+     bildirdiğiniz zaman aslında küresel bir değişkene bir gönderim
+     oluşturmuş olursunuz. Aşağıdaki örnekte de aynı işlem yapılmaktadır:
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$değişken =& $GLOBALS["değişken"];
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+    <simpara>
+     Yani, küresel olarak bildirildikten sonra <code>unset($değişken)</code>
+     ile küresel değişkeni tanımsız yapamazsınız, sadece yerel değişken
+     tanımsız olur.
+    </simpara>
+   </sect2>
+
+   <sect2 xml:id="references.this">
+    <title><code>$this</code></title>
+    <simpara>
+     Bir nesne yönteminde, <varname>$this</varname> daima çağrılan nesneye
+     bir gönderimdir.
+    </simpara>
+   </sect2>
+  </sect1>
+
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
