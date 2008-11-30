@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.13 Maintainer: behzat Status: wip -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.14 Maintainer: behzat Status: ready -->
 <!-- CREDITS: faruk -->
 <!-- splitted from ./en/functions/apache.xml, last change in rev 1.2 -->
 <refentry xml:id="function.getallheaders" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>getallheaders</refname>
-  <refpurpose>Tüm HTTP istek başlıklarını almak</refpurpose>
+  <refpurpose>Tüm HTTP istek başlıklarını getirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>dizi</type><methodname>getallheaders</methodname>
+   <type>array</type><methodname>getallheaders</methodname>
    <void/>
   </methodsynopsis>
   <para>
-   Mevcut isteğe ait tüm HTTP isteklerini alır.
+   Mevcut isteğe ait HTTP başlıklarının tümünü bir dizi olarak döndürür.
   </para>
   <para>
-   Bu fonksiyon <function>apache_request_headers</function> fonksiyonuna 
-   bağlı bir takma addır. Lütfen <function>apache_request_headers</function>
-   belgesini okuyarak bu fonksiyonun nasıl çalıştığı hakkında daha fazla bilgi edininiz.
+   Bu işlev <function>apache_request_headers</function> işlevine bir takma
+   addır. Bu işleven nasıl çalıştığı hakkında ayrıntılı bilgi edinmek için
+   <function>apache_request_headers</function> işlevinin açıklamasına bakınız.
   </para>
   &apache.req.module;
  </refsect1>
@@ -29,7 +29,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Mevcut isteğe ait tüm HTTP başlklarını içeren bir ilişkili dizi ya da hata halinde &false;.
+   Herşey yolunda gitmişse mevcut isteğe ait tüm HTTP başlıklarını içeren bir
+   ilişkili dizi döndürür, aksi takdirde  &false; döndürür.
   </para>
  </refsect1>
 
@@ -48,8 +49,9 @@
       <row>
        <entry>4.3.0</entry>
        <entry>
-        <function>apache_request_headers</function> fonksiyonuna ait bir takma ad haline geldi.
-        Aslında sadece adı değiştirildi. Bunu nedeni fonksiyonun sadece Apache altında çalışmasıdır.
+        <function>apache_request_headers</function> işlevine bir takma ad
+        haline geldi. Aslında sadece adı değiştirildi. Bunu nedeni
+        işlevin sadece Apache altında çalışmasıdır.
        </entry>
       </row>
      </tbody>
@@ -58,11 +60,31 @@
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>getallheaders</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+foreach (getallheaders() as $başlık => $değer) {
+    echo "$başlık: $değer\n";
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
   &note.apache.nsapi-module;
  </refsect1>
- 
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
@@ -71,6 +93,7 @@
    </simplelist>
   </para>
  </refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file
