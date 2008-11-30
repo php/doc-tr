@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.4 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.8 Maintainer: nilgun Status: ready -->
 <chapter xml:id="language.namespaces" xmlns="http://docbook.org/ns/docbook"
  version="1.1">
  <title>İsim Alanları</title>
@@ -8,259 +8,786 @@
  <sect1 xml:id="language.namespaces.rationale">
   <title>Giriş</title>
   <simpara>
-   İsim alanları büyük PHP kütüphanelerinde etki alanı sorunlarını çözümlemek
-   amacıyla tasarlanmışlardır. PHP'de tüm sınıf tanımları küreseldir. Bu
-   bakımdan, bir kütüphane yazarının çeşitli araçları ve programlama
-   arayüzlerinin sınıflarını oluştururken birlikte kullanılabileceği diğer
-   kütüphaneler tarafından kullanılmamış isimleri seçmek zorundadır. Normal
-   olarak, bunun çözümü sınıf isimlerinin önüne eşsiz bir isim getirmektir.
-   Örneğin, veritabanı sınıflarının isimlerinin başına
-   <classname>My_Library_DB</classname> yaftası yapıştırılabilir. Kütüphane
-   sayısı arttıkça bu önekler giderek daha uzun isimler haline gelmeye
-   başlarlar.
+   İsim alanı nedir? En dar tanımıyla, öğeleri sarmalamanın bir yoludur.
+   Çoğu bakımdan bu soyut bir kavram gibi görünebilir. Örneğin, bir işletim
+   sisteminin dizinleri bir birleriyle ilgili dosyaları gruplamaya yarar ve
+   içerdiği dosyalar için bir isim alanı görevi yapar. Daha belirgin bir
+   örnek olarak, <code>/home/ali</code> ve <code>/home/veli</code>
+   dizinlerinde <code>mesela.txt</code>  adında birer dosya bulunduğunu
+   varsayalım. <code>/home/ali</code> dizinindeki dosyaya dizin dışından
+   erişmek istersek dosyanın önüne dizin ayracı ile dizin adını
+   yerleştiririz. Programcılık dünyasındaki isim alanlarına da aynı kurallar
+   uygulanır.
   </simpara>
   <simpara>
-   İsim alanları geliştiricilere uzun uzadıya isim yazmaksızın isim etki
-   alanını yönetme olanağı verir. Böylece küresel alanı paşlaşım sorunları
-   çözümlenerek kodun okunmama olasılığı ortadan kalkar.
+    PHP dünyasında isim alanları, kütüphane ve uygulama yazarlarının
+    aşağıdaki gibi sınıflar ve işlevler gibi yeniden kullanılabilir
+    elemanları oluşturken karşılaştıkları iki soruna çözüm getirmek amacıyla
+    tasarlanmıştır:
   </simpara>
+  <para>
+   <orderedlist>
+    <listitem>
+     <simpara>
+      Yazdığınız kod ile yerleşik PHP sınıfları/işlevleri/sabitleri veya
+      üçüncü şahısların sınıfları/işlevleri/sabitleri arasındaki isim
+      çakışmaları.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      İlk sorunu hafifletmek ve kaynak kodun okunabilirliğini arttırmak için
+      epeyce_uzun_isimlere takma ad tanımlama (veya kısaltma) yeteneği.
+     </simpara>
+    </listitem>
+   </orderedlist>
+  </para>
   <simpara>
-   İsim alanları PHP 5.3.0 sürümünden beri mevcuttur. Bu bölüm deneyseldir ve
-   değişikliklere açıktır.
+   PHP isim alanları birbirleriyle ilişkili sınıflar, sabitler ve işlevleri
+   gruplamak için bir yol sunar. PHP'deki isim alanı söz dizimi için bir
+   örnek:
+  </simpara>
+  <programlisting role="php">
+   <![CDATA[
+<?php
+namespace isim\alanım; // "İsim Alanlarının Tanımlanması" bölümüne bakınız
+
+class Sınıfım {}
+function işlevim() {}
+const SABİTİM = 1;
+
+$a = new Sınıfım;
+$c = new \isim\alanım\Sınıfım; // "Küresel Etki Alanı" bölümüne bakınız
+
+$a = strlen('selam'); // "İsim alanlarının kullanımı: Son çare olarak
+                      // küresel işlev ve sabitler" bölümüne bakınız
+
+$d = \isim\alanım\SABİTİM;        // isim alanı işleci ve __NAMESPACE__
+$d = __NAMESPACE__ . '\SABİTİM';  // sabiti" bölümüne bakınız
+echo constant($d); // "İsim alanları ve devingen dil özellikleri"
+                   // bölümüne bakınız
+?>
+]]>
+  </programlisting>
+  <simpara>
+   İsim alanları PHP 5.3.0 sürümünden beri mevcuttur.
   </simpara>
  </sect1>
 
  <sect1 xml:id="language.namespaces.definition">
-  <title>İsim alanı tanımlama</title>
+  <title>İsim Alanlarının Tanımlanması</title>
   <para>
-   İsim alanları, betiğin başında <code>namespace</code> anahtar sözcüğü
-   kullanılarak bildirilirler.
+   İsim alanları içinde her çeşit PHP kodu bulunabilirse de sadece üç tür
+   kod isim alanlarından etkilenir: Sınıflar, işlevler ve sabitler.
+  </para>
+  <para>
+    İsim alanları, <code>namespace</code> anahtar sözcüğü ile bildirilirler.
+    Bir isim alanını içeren bir dosyada isim alanı bütün diğer kodlardan
+    önce dosyanın başlarında bildirilmelidir.
    <example>
-    <title>- İsim alanı tanımlama</title>
+    <title>- Tek bir isim alanı bildirimi</title>
     <programlisting role="php">
      <![CDATA[
 <?php
-    namespace Projem::VT;
+namespace Projem;
 
-    const BAĞLANTI_TAMAM = 1;
-
-    class Bağlantı { /* ... */ }
-
-    function bağlan() { /* ... */  }
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
 
 ?>
 ]]>
     </programlisting>
    </example>
-   Aynı isim alanı ismi birden fazla dosyada kullanılabilir.
+   Bir isim alanı bildiriminden önce bulunmasına izin verilen tek oluşum,
+   kaynak dosyanın kodlamasının tanımlandığı <code>declare</code> deyimidir.
+   Bunun dışında, baştaki fazladan boşluklar da dahil hiçbir PHP-dışı kod,
+   bir isim alanı bildiriminden önce yer alamaz. Örnek:
+   <example>
+    <title>- Tek bir isim alanı bildirimi</title>
+    <programlisting role="php">
+     <![CDATA[
+<html>
+<?php
+namespace Sınıfım; // ölümcül hata - namespace, betikteki ilk deyim olmalıdır
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
-
   <para>
-    İsim alanları sınıf, sabit ve işlev tanımı içerebilir ama bunları veya
-    başka şeyleri çalıştıracak bağımsız kodlar içeremez.
+    Diğer tüm PHP oluşumlarının tersine, isim alanının dosya sistemi içinde
+    parçalara bölünebilmesi için aynı isim alanı birden fazla dosyada
+    tanımlanabilir.
   </para>
+ </sect1>
 
+ <sect1 xml:id="language.namespaces.nested">
+  <title>Alt İsim Alanlarının Bildirilmesi</title>
   <para>
-   İsim alanı tanımlama şöyle yapılır:
-   <itemizedlist>
-    <listitem>
-     <simpara>
-      İsim alanı içinde kalan tanımlarda kullanılan tüm sınıf, işlev ve sabit
-      isimlerinin başına özdevinimli olarak isim alanı ismi getirilir. Sınıf
-      isimleri için daima tam isimleri kullanılır; yukarıdaki örnek için bu,
-      <classname>Projem::VT::Bağlantı</classname> olacaktır.
-     </simpara>
-    </listitem>
-    <listitem>
-    <simpara>
-     Sabit tanımları, isim alanı ismi ile sabit ismi birleştirilerek
-     oluşturulur. İsim alanı sabitleri, sınıf sabitleri gibi sadece duruk
-     değerler içerebilirler.
-    </simpara>
-    </listitem>
-    <listitem>
-     <para>
-      Nitelemesiz sınıf ismi (yani, isim alanı ismi ve <code>::</code>
-      içermeyen sınıf ismi) çalışma anında şu yol izlenerek çözümlenir:
-      <orderedlist>
-       <listitem>
-        <simpara>
-          Sınıf, geçerli isim alanı ismini başına yerleştirmek için, <link
-          linkend="language.oop5.autoload">özdevinimli olarak yükleme</link>
-          yapmaksızın, geçerli isim alanı içinde aranır.
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-          Sınıf, <link linkend="language.oop5.autoload">özdevinimli olarak
-          yükleme</link> yapmaksızın, küresel isim alanı içinde aranır.
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         Sınıf, ismi kullanılarak geçerli isim alanında özdevinimli olarak
-         yüklenmeye çalışılır.
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>Yapılan çalışma başarılı olmazsa arama başarısız olur.
-        </simpara>
-       </listitem>
-      </orderedlist>
-     </para>
-    </listitem>
-    <listitem>
-     <para>
-      Nitelemesiz işlev ismi (yani, isim alanı ismi ve <code>::</code>
-      içermeyen işlev ismi) çalışma anında önce geçerli isim alanında sonra
-      da küresel alanda aranır.
-     </para>
-    </listitem>
-    <listitem>
-    <para>
-     Nitelemesiz sabit isimleri önce geçerli isim alanında sonra da küresel
-     olarak tanımlı sabitler arasında aranır.
-    </para>
-    </listitem>
-   </itemizedlist>
-    Ayrıca, tüm <link linkend="language.namespaces.rules">isim alanı
-    çözümleme kuralları</link>na da bakınız.
-  </para>
+    Dizinler ve dosyalardaki gibi PHP isim alanı isimleri arasında da bir
+    hiyeraraşi belirtmek mümkündür. Bu bakımdan, bir isim alanı başka isim
+    alanlarının altında tanımlanabilir:
+   <example>
+    <title>- Tek bir isim alanının hiyerarşik bildirimi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem\Alt\Seviye;
 
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+
+?>
+]]>
+    </programlisting>
+   </example>
+   Yukarıdaki örnekte, <code>Projem\Alt\Seviye\BAĞLANTI_TAMAM</code> sabiti,
+   <code>Projem\Alt\Seviye\Bağlantı</code> sınıfı ve
+   <code>Projem\Alt\Seviye\bağlan</code> işlevi oluşturulmaktadır.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.definitionmultiple">
+  <title>Birden Fazla İsim Alanının Aynı Dosyada Tanımlanması</title>
+  <para>
+    Birden fazla isim alanı aynı dosya içinde bildirilebilir. İki çeşit söz
+    dizimine izin verilir.
+  </para>
+  <para>
+   <example>
+    <title>- Birden fazla isim alanın ayrımsız ardarda bildirilmesi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem;
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+
+namespace DiğerProjem;
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Bu söz dizimi aynı dosya içinde birden fazla isim alanı bildirimi için
+   önerilmez. Bunun yerine ayraçlı söz dizimi önerilir.
+  </para>
+  <para>
+   <example>
+    <title>- Birden fazla isim alanın ayraçlı olarak bildirilmesi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem {
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+}
+
+namespace DiğerProjem {
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Aynı dosya içinde birden fazla isim alanını birleştirmek iyi bir kodlama
+   uygulaması olarak teşvik edilmektedir. Çoğunlukla çok sayıda PHP betiğini
+   aynı dosyada birleştirmek amacıyla kullanılır.
+  </para>
+  <para>
+   İsim alansız küresel kodu isim alanlı kodla bir arada kullanmanın tek
+   yolu ayraçlı söz dizimini kullanmaktır (diğerine izin verilmemektedir).
+   Küresel kod isimsiz bir isim alanı bildirimi ile aynı dosyada şöyle
+   bildirilebilir:
+   <example>
+    <title>- Birden fazla isim alanın isim alansız kodla birlikte
+      bildirilmesi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem {
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+}
+
+namespace { // küresel kod
+session_start();
+$a = Projem\bağlan();
+echo Projem\Bağlantı::başlat();
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   İsim alanı ayraçlarının dışında, kodlama belirten <code>declare</code>
+   deyimi dışında hiçbir PHP kodu bulunamaz.
+   <example>
+    <title>- Birden fazla isim alanın isim alansız kodla birlikte
+      bildirilmesi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+declare(encoding='UTF-8');
+namespace Projem {
+
+const BAĞLANTI_TAMAM = 1;
+class Bağlantı { /* ... */ }
+function bağlan() { /* ... */  }
+}
+
+namespace { // küresel kod
+session_start();
+$a = Projem\bağlan();
+echo Projem\Bağlantı::başlat();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </sect1>
 
  <sect1 xml:id="language.namespaces.using">
-  <title>İsim alanlarının kullanımı</title>
+  <title>İsim alanlarının kullanımı: Temeller</title>
   <para>
-   Bir isim alanındaki sınıf ve işlevlere tam isimleri ile erişilebilir
-   (<classname>Sınıfım::VT::Bağlantı</classname> veya
-   <classname>Sınıfım::VT::bağlan</classname> gibi).
-   <example>
-    <title>İsim alanı isminin kullanımı</title>
-    <programlisting role="php">
-     <![CDATA[
-<?php
-    require 'Sınıfım/Vt/Bağlantı.php';
-    $x = new Sınıfım::VT::Bağlantı;
-    Sınıfım::VT::bağlan();
-?>
-]]>
-    </programlisting>
-   </example>
+   İsim alanlarının kullanımından önce PHP'nin kodunuzdaki hangi isim alanlı
+   kodu isteğinizi nasıl anlayabildiğinden bahsetmek gerekir. Bunu daha
+   kolay anlayabilmek için PHP isim alanları ile dosya sistemleri arasındaki
+   benzerlikten yola çıkılabilir. Bir dosya sistemindeki bir dosyaya üç
+   yolla erişilebilir:
+   <orderedlist>
+    <listitem>
+     <simpara>
+      <code>fan.txt</code> şeklinde göreli dosya ismiyle.  Bu isim dosya
+      sisteminde içinde bulunulan dizin  <code>geçerlidizin/</code> olmak
+      üzere <code>geçerlidizin/fan.txt</code> olarak çözümlenir. Dolayısıyla
+      geçerli dizin <code>/home/veli</code> ise dosya ismi
+      <code>/home/veli/fan.txt</code> olarak çözümlenecektir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <code>altdizin/fan.txt</code> şeklinde göreli dosya yolu. Bu isim
+      dosya sisteminde içinde bulunulan dizin  <code>geçerlidizin/</code>
+      olmak üzere <code>geçerlidizin/altdizin/fan.txt</code> olarak
+      çözümlenir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <code>/home/veli/fan.txt</code> şeklinde mutlak dosya yolu. Bu,
+      <code>/home/veli/fan.txt</code> olarak çözümlenir.
+     </simpara>
+    </listitem>
+   </orderedlist>
+   Aynı kurallar PHP'deki isim alanlı elemanlara da uygulanabilir. Örneğin
+   bir sınıf ismine üç şekilde başvurulabilir:
+   <orderedlist>
+    <listitem>
+     <simpara>
+      <code>$a = new fan();</code> veya
+      <code>fan::durukyöntem();</code> gibi bir nitelenmemiş isim veya
+      öneksiz bir sınıf ismi.  Eğer geçerli isim alanı ismi
+      <code>geçerlisimalanı</code> ise bu isim,
+      <code>geçerlisimalanı\fan</code> olarak çözümlenir. Eğer kod küresel
+      ve isim alansız ise, isim <code>fan</code> olarak çözümlenecektir.
+     </simpara>
+     <simpara>
+      Bir ayrıntı: Eğer isim alanlı işlev ve sabitler tanımlı ise
+      nitelenmemiş isimli işlevler ve sabitler küresel işlevler ve sabitler
+      olarak çözümlenir. Ayrıntılar için <link
+      linkend="language.namespaces.fallback">İsim alanlarının kullanımı: Son
+      çare olarak küresel işlev ve sabitler</link> bölümüne bakınız.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <code>$a = new altisimalanı\fan();</code> veya
+      <code>altisimalanı\fan::durukyöntem();</code> gibi bir nitelenmemiş
+      isim veya öneksiz bir sınıf ismi. Eğer geçerli isim alanı ismi
+      <code>geçerlisimalanı</code> ise bu isim,
+      <code>geçerlisimalanı\altisimalanı\fan</code> olarak çözümlenir. Eğer
+      kod küresel ve isim alansız ise, isim <code>altisimalanı\fan</code>
+      olarak çözümlenecektir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <code>$a = new \geçerlisimalanı\fan();</code> veya
+      <code>\geçerlisimalanı\fan::durukyöntem();</code> gibi tamamen
+      nitelenmiş isim veya küresel önekli bir isim. Bu isim daima kodda
+      belirtildiği gibi <code>geçerlisimalanı\fan</code> olarak çözümlenir.
+     </simpara>
+    </listitem>
+   </orderedlist>
   </para>
-
   <para>
-   İsim alanları geçerli bağlama (küresel veya isim alanı) <code>use</code>
-   işleci kullanılarak dahil edilebilir. İşlecin sözdizimi:
+   Üç söz dizimi aşağıda örneklenmiştir:
    <informalexample>
+    <simpara>dosya1.php</simpara>
     <programlisting role="php">
      <![CDATA[
 <?php
-/* ... */
-use Bir::Ad as TakmaAd;
+namespace Fan\Fin\altisimalanı;
 
-// Basitleştirilmiş use kullanımı:
-use Foo::Bar;
-// Bu da aynını yapar:
-use Foo::Bar as Bar;
+const FAN = 1;
+function fan() {}
+class fan
+{
+    static function durukyöntem() {}
+}
 ?>
-]]>
+     ]]>
+    </programlisting>
+    <simpara>dosya2.php</simpara>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Fan\Fin;
+include 'dosya1.php';
+
+const FAN = 2;
+function fan() {}
+class fan
+{
+    static function durukyöntem() {}
+}
+
+/* Nitelenmemiş isim */
+fan();              // Fan\Fin\fan işlevine çözümlenir
+fan::durukyöntem(); // Fan\Fin\fan sınıfının durukyöntem yöntemine çözümlenir
+echo FAN;           // Fan\Fin\FAN sabitine çözümlenir
+
+/* Nitelenmiş isim */
+altisimalanı\fan(); // Fan\Fin\altisimalanı\fan işlevine çözümlenir
+altisimalanı\fan::durukyöntem(); // Fan\Fin\altisimalanı\fan sınıfının
+                                 // durukyöntem yöntemine çözümlenir
+echo altisimalanı\FAN; // Fan\Fin\altisimalanı\FAN sabitine çözümlenir
+
+/* Tamamen nitelenmiş isim */
+\Fan\Fin\fan();              // Fan\Fin\fan işlevine,
+\Fan\Fin\fan::durukyöntem(); // Fan\Fin\fan sınıfının durukyöntem yöntemine,
+echo \Fan\Fin\FAN;           // Fan\Fin\FAN sabitine çözümlenir
+?>
+     ]]>
     </programlisting>
    </informalexample>
-    İsim alanına dahil edilen isim şöyle çalışır: Derleyici yerel ad olan
-    <literal>TakmaAd</literal> ismine her rastladığında bunun yerine (kendi
-    başına bir isim olarak veya <literal>::</literal> ile ayrılmış uzun isme
-    bir önek olarak) isim alanına dahil edilen <literal>Bir::Ad</literal>'ı
-    yerleştirir.
   </para>
-
   <para>
-   <code>use</code> sadece küresel alanda  kullanılabilir, işlev veya sınıf
-   içinde değil. İsim alanına ithal edilen isimler dahil edildikleri noktadan
-   dosya sonuna kadar etkilidirler. Olası bir karışıklıktan kaçınmak için
-   isim ithalatının dosyanın başlarında yapılması önerilir.
-  </para>
-
-  <para>
+   Herhangi bir küresel sınıf, işlev veya sabite
+   <function>\strlen</function>, <classname>\Exception</classname> veya
+   <code>\INI_ALL</code> gibi tamamen nitelenmiş isimleriyle
+   erişilebileceğine dikkat ediniz.
    <example>
-    <title>İsim alanı ithali ve bu alana erişim</title>
+    <title>- Küresel sınıf, işlev ve sabitlere bir isim alanı içinden erişim
+    </title>
     <programlisting role="php">
      <![CDATA[
 <?php
-    require 'Sınıfım/Vt/Bağlantı.php';
-    use Sınıfım::VT;
-    use Sınıfım::VT::Bağlantı as VtBağlantısı;
+namespace Fan;
 
-    $x = new Sınıfım::VT::Bağlantı();
-    $y = new VT::bağlantı();
-    $z = new VtBağlantısı();
-    VT::bağlan();
+function strlen() {}
+const INI_ALL = 3;
+class Exception {}
+
+$a = \strlen('merhaba');      // strlen küresel işlevini çağırır
+$b = \INI_ALL;                // INI_ALL küresel sabitini çağırır
+$c = new \Exception('error'); // Exception küresel sınıfını örnekler
 ?>
-]]>
+     ]]>
     </programlisting>
    </example>
-  </para>
-  <para>
-   <note>
-    <simpara>
-     İthal işlemi sadece derleme anında yapılır; tüm yerel isimler derleyici
-     tarafından uzun isimli eşdeğerleriyle değiştirilir. Ancak, isimlerin
-     dizgelere dönüştürülmediğine dikkat edin, dolayısıyla geri çağırımlarda
-     isim alanı ithal kurallarına güvenilemez.
-    </simpara>
-   </note>
   </para>
  </sect1>
 
+ <sect1 xml:id="language.namespaces.dynamic">
+  <title>İsim alanları ve devingen dil özellikleri</title>
+  <para>
+   PHP'nin isim alanları gerçeklenimi bir programlama dili olarak PHP'nin
+   kendi devingen doğasından etkilenir. Örnek olarak aşağıdaki kodu isim
+   alanlı koda dönüştürmek istersek:
+   <example>
+    <title>- Devingen olarak erişilen elemanlar</title>
+    <simpara>örnek1.php:</simpara>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+class sınıfadı
+{
+    function __construct()
+    {
+        echo __METHOD__,"\n";
+    }
+}
+function işlevadı()
+{
+    echo __FUNCTION__,"\n";
+}
+const sabitadı = "küresel";
+
+$a = 'sınıfadı';
+$obj = new $a;                   // sınıfadı::__construct basar
+$b = 'işlevadı';
+$b();                            // işlevadı basar
+echo constant('sabitadı'), "\n"; // küresel basar
+?>
+    ]]>
+    </programlisting>
+   </example>
+   Tamamen nitelenmiş isim kullanmak gerekir (isim alanı önekli sınıf adı).
+   Bir devingen sınıf, işlev veya sabit ismi içinde bir nitelenmiş isim ile
+   tamamen nitelenmiş isim arasında bir fark olmadığından baştaki ters
+   bölünün gereksiz oluşuna dikkat edin.
+   <example>
+    <title>- Devingen olarak erişilen isim alanlı elemanlar</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace isimalanıadı;
+class sınıfadı
+{
+    function __construct()
+    {
+        echo __METHOD__,"\n";
+    }
+}
+function işlevadı()
+{
+    echo __FUNCTION__,"\n";
+}
+const sabitadı = "isimalanlı";
+
+include 'örnek1.php';
+
+$a = 'sınıfadı';
+$obj = new $a;                    // sınıfadı::__construct basar
+$b = 'işlevadı';
+$b(); // prints funcname
+echo constant('sabitadı'), "\n"; // küresel basar
+
+/* çift tırnakları kullanacaksanız, "\\isimalanıadı\\sınıfadı"
+   biçiminde olmalıdır */
+$a = '\isimalanıadı\sınıfadı';
+$obj = new $a; // isimalanıadı\sınıfadı::__construct basar
+$a = 'isimalanıadı\sınıfadı';
+$obj = new $a; // bu da isimalanıadı\sınıfadı::__construct basar
+$b = 'isimalanıadı\işlevadı';
+$b(); // isimalanıadı\işlevadı basar
+$b = '\isimalanıadı\işlevadı';
+$b(); //bu da isimalanıadı\işlevadı basan
+echo constant('\isimalanıadı\sabitadı'), "\n"; // isimalanlı basar
+echo constant('isimalanıadı\sabitadı'), "\n"; // bu da isimalanlı basar
+?>
+    ]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   SSS arasındaki <link linkend="language.namespaces.faq.quote">Dizgelerdeki
+   isim alanı adlarının öncelenmesi</link>  konusuna da bakmayı unutmayın.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.namespaces.nsconstants">
+  <title><code>namespace</code> sözcüğü ve <code>__NAMESPACE__</code> sabiti
+  </title>
+  <para>
+   PHP, geçerli isim alanı içindeki elemanlara mutlak olarak iki yolla
+   erişimi destekler: sihirli <constant>__NAMESPACE__</constant> sabiti ve
+   <code>namespace</code> anahtar sözcüğü.
+  </para>
+  <para>
+   <constant>__NAMESPACE__</constant> sabitinin değeri içinde bulunulan isim
+   alanının adını içeren bir dizgedir. Küresel alandaki isim alansız kod
+   için sabitin değeri boş dizgedir.
+   <example>
+    <title>- İsim alanlı kod, __NAMESPACE__ örneği</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem;
+
+echo '"', __NAMESPACE__, '"'; // "Projem" basar
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- Küresel kod, __NAMESPACE__ örneği</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+
+echo '"', __NAMESPACE__, '"'; // "" basar
+?>
+]]>
+    </programlisting>
+   </example>
+   <constant>__NAMESPACE__</constant> sabiti devingen olarak oluşturulan
+   isimler için kullanışlıdır.
+   <example>
+    <title>- Devingen isim oluşturmak için __NAMESPACE__ kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem;
+
+function get($sınıfadı)
+{
+    $a = __NAMESPACE__ . '\\' . $sınıfadı;
+    return new $a;
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <code>namespace</code> sözcüğü, geçerli isim alanından veya bir alt isim
+   alanından doğrudan doğruya bir eleman isteği yaparken kullanılabilir.
+   Sınıflardaki <code>self</code> işlecinin isim alanlarındaki karşılığıdır.
+   <example>
+    <title>- Bir isim alanı içinde <code>namespace</code> işleci</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace Projem;
+
+use fan\fin as fon;  // "İsim alanlarının kullanımı: ithal/rumuz"
+
+fin\fon();           // fan\fin\fon() işlevini çağırır
+namespace\fin\fon(); // Projem\fin\fon() işlevini çağırır
+
+namespace\işlev();   // Projem\işlev() işlevini çağırır
+namespace\alt\işlev();    // Projem\alt\işlev() işlevini çağırır
+namespace\isim::yöntem(); // Projem\isim sınıfının duruk "yöntem"
+                          // yöntemini çağırır
+$a = new namespace\alt\isim(); // Projem\alt\isim sınıfını örnekler
+$b = namespace\SABİT;     // Projem\SABİT sabitinin değerini $b'ye atar
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- Küresel kod içinde <code>namespace</code> işleci</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+
+namespace\işlev();        // işlev() işlevini çağırır
+namespace\alt\işlev();    // alt\işlev() işlevini çağırır
+namespace\isim::yöntem(); // isim sınıfının duruk "yöntem" yöntemini çağırır
+$a = new namespace\alt\isim(); // alt\isim sınıfını örnekler
+$b = namespace\SABİT;     // SABİT sabitinin değerini $b'ye atar
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect1>
+ <sect1 xml:id="language.namespaces.importing">
+  <title>İsim alanlarının kullanımı: İthal/Rumuz</title>
+  <para>
+    Dış kaynaklı tamamen nitelenmiş bir isme bir takma adla veya ithal
+    ederek başvurma yeteneği isim alanlarının önemli bir özelliğidir. Bu
+    özellik, Unix dosya sistemlerinin bir dizin veya dosyaya bir sembolik
+    bağ oluşturma yeteneğine benzer.
+  </para>
+  <para>
+   PHP isim alanları iki çeşit takma ad kullanımını veya ithalini destekler:
+   bir sınıf adına takma ad ve bir isim alanı adına takma ad. Bir işlevin
+   veya sabitin ithalinin desteklenmediğine dikkat ediniz.
+  </para>
+  <para>
+   PHP'da takma ad kullanımı <code>use</code> işleci üzerinden sağlanır.
+   Aşağıda 3 çeşit ithal örneğine yer verilmiştir:
+   <example>
+    <title>- <code>use</code> işleci ile ithal/rumuz kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace fan;
+use Bir\Tam\Sınıfadı as BirBaşkası;
+
+// use Bir\Tam\iAadı as iAadı ile aynıdır
+use Bir\Tam\iAadı;
+
+// küresel bir sınıfın ithali
+use \DiziNesnesi;
+
+$nesne = new namespace\BirBaşkası; // fan\BirBaşkası sınıfını örnekler
+$nesne = new BirBaşkası; // Bir\Tam\Sınıfadı  sınıfını örnekler
+iAadı\altia\işlev(); // Bir\Tam\iAadı\altia\işlev işlevini çağırır
+$a = new DiziNesnesi(array(1)); // DiziNesnesi sınıfını örnekler
+// "use \DiziNesnesi" olmasaydı fan\DiziNesnesi sınıfını örneklerdik
+?>
+]]>
+    </programlisting>
+   </example>
+   İsim alanlı adlar için baştaki terbölü gereksiz olup izin verilmediği
+   gibi bunlar geçerli isim alanına göre işlenmezler. İthal edilen isimler
+   ise tamamen nitelenmiş olmalıdır. (Tamamen nitelenmiş isimler
+   <code>Fan\Fin</code> şeklinde isim alanı ayracı içermelerine karşın
+   küresel isimler <code>FanFin</code> şeklinde isim alanı ayracı
+   içermezler.)
+  </para>
+  <para>
+   PHP bunlara ek olarak çok sayıda <code>use</code> deyiminin aynı satırda
+   kullanılmasına imkan veren bir kısayola da sahiptir.
+   <example>
+    <title>- <code>use</code> işleci ile rumuz/ithal, çoklu <code>use</code>
+      kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+use Bir\Tam\Sınıfadı as BirBaşkası, Bir\Tam\iAadı;
+
+$nesne = new BirBaşkası; // Bir\Tam\Sınıfadı sınıfını örnekler
+iAadı\altia\işlev();     // Bir\Tam\iAadı\altia\işlev işlevini çağırır
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   İthal işlemi derleme sırasında yerine getirilir ve dolayısıyla devingen
+   sınıf, işlev ve sabit isimlerini etkilemez.
+   <example>
+    <title>- İthal işlemi ve devingen isimler</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+use Bir\Tam\Sınıfadı as BirBaşkası, Bir\Tam\iAadı;
+
+$nesne = new BirBaşkası; // Bir\Tam\Sınıfadı sınıfını örnekler
+$a = 'BirBaşkası';
+$nesne = new $a;         // BirBaşkası sınıfını örnekler
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Bunlara ek olarak, ithal işlemi sadece nitelenmemiş ve nitelenmiş
+   isimleri etkiler. Tamamen nitelenmiş isimler mutlak olup ithal işleminden
+   etkilenmez.
+   <example>
+    <title>- İthal işlemi ve tamamen nitelenmiş isimler</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+use Bir\Tam\Sınıfadı as BirBaşkası, Bir\Tam\iAadı;
+
+$nesne = new BirBaşkası;       // Bir\Tam\Sınıfadı sınıfını örnekler
+$nesne = new \BirBaşkası;        // BirBaşkası sınıfını örnekler
+$nesne = new BirBaşkası\birşey;  // Bir\Tam\Sınıfadı\birşey sınıfını örnekler
+$nesne = new \BirBaşkası\birşey; // BirBaşkası\birşey sınıfını örnekler
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect1>
  <sect1 xml:id="language.namespaces.global">
   <title>Küresel Alan</title>
   <para>
-    Tüm sınıf ve işlev tanımları küresel alana yerleştirilirken, tıpkı isim
-    alanlarının desteklenmediği zamanlardaki gibi herhangi bir isim alanı
-    tanımı yapılmaksızın yerleştirilirler. Başına <literal>::</literal>
-    konmuş bir isim, isim alanı bağlamında kullanılmış bile olsa küresel
-    alandaki ismin gerektiğini belirtir.
+   Herhangi bir isim alanı tanımı olmaksızın, tüm sınıf ve işlev tanımları
+   PHP'de isim alanlarının desteklenmediği zamanlardaki gibi küresel alana
+   yerleştirilir. Bir ismin önüne doğrudan doğruya <code>\</code> konulması,
+   bu ismin bir isim alanı bağlamında bile küresel alandan bir isim olarak
+   işlem görmesini sağlar.
    <example>
     <title>- Küresel alan belirtiminin kullanımı</title>
     <programlisting role="php">
      <![CDATA[
 <?php
-    namespace A::B::C;
+namespace A\B\C;
 
- /* Bu, A::B::C::fopen işlevi */
-    function fopen() {
-         /* ... */
-         $f = ::fopen(...); // bu da küresel fopen
-         return $f;
-    }
+/* A\B\C\fopen işlevidir */
+function fopen() {
+     /* ... */
+     $f = \fopen(...); // küresel fopen çağrılır
+     return $f;
+}
 ?>
-]]>
+    ]]>
     </programlisting>
    </example>
   </para>
  </sect1>
-
- <sect1 xml:id="language.namespaces.constant">
-  <title>__NAMESPACE__</title>
+ <sect1 xml:id="language.namespaces.fallback">
+  <title>İsim alanlarının kullanımı: son çare olarak küresel işlev ve
+    sabitler</title>
   <para>
-    Derleme zamanı sabiti <constant>__NAMESPACE__</constant>, geçerli isim
-    alanının ismi olarak tanımlanmıştır. İsim alanı dışında bu sabitin değeri
-    boş dizgedir. Bu sabit, yerel isim alanlı isimler için tam ad kullanmak
-    gerekirse işe yarar.
+   Bir isim alanı içinde PHP, bir sınıf ismi, işlev veya sabitin bağlamında
+   nitelenmemiş isimlere rastlarsa bunları farklı önceliklerle ele alır.
+   Sınıf isimleri daima geçerli isim alanı ismine çözümlenir. Dolayısıyla
+   yerleşik veya isim alansız kullanıcı sınıflarına erişmek için, bunların
+   aşağıdaki gibi tamamen nitelenmiş isimlerinin kullanılması gerekir:
    <example>
-    <title>- <code>__NAMESPACE__</code> kullanımı</title>
+    <title>- Küresel sınıflara bir isim alanı içinde erişim</title>
     <programlisting role="php">
      <![CDATA[
 <?php
-namespace A::B::C;
+namespace A\B\C;
+class Exception extends \Exception {}
 
-function foo() {
-// eylemler
+$a = new Exception('hi'); // $a, A\B\C\Exception sınıfının bir nesnesidir
+$b = new \Exception('hi'); // $b, Exception sınıfının bir nesnesidir
+
+$c = new ArrayObject; // ölümcül hata, A\B\C\ArrayObject yoktur
+?>
+    ]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   İşlevler ve sabitler açısından PHP, bir isim alanlı işlev veya sabit
+   mevcut değilse son çare olarak küresel işlevlere ve sabitlere başvurur.
+   <example>
+    <title>- Bir isim alanı içinde son çare olarak küresel işlev ve
+      sabitlerin kullanımı</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+namespace A\B\C;
+
+const E_ERROR = 45;
+function strlen($str)
+{
+    return \strlen($str) - 1;
 }
 
-set_error_handler(__NAMESPACE__ . "::foo");
+echo E_ERROR, "\n"; // "45" basar
+echo INI_ALL, "\n"; // "7" basar - son çare olarak küresel INI_ALL
+
+echo strlen('hi'), "\n"; // "1" basar
+if (is_array('hi')) { // "dizi değil" basar
+    echo "dizi\n";
+} else {
+    echo "dizi değil\n";
+}
 ?>
-]]>
+    ]]>
     </programlisting>
    </example>
   </para>
@@ -269,163 +796,725 @@ set_error_handler(__NAMESPACE__ . "::foo");
  <sect1 xml:id="language.namespaces.rules">
   <title>İsim çözünürlük kuralları</title>
   <para>
-   İsimler şu çözünürlük kurallarıyla çözümlenirler:
+   İsim çözünürlük kurallarının amaçları gereği bazı önemli tanımlar:
+   <variablelist>
+    <title>İsim alanı adı tanımları</title>
+    <varlistentry>
+     <term>Nitelenmemiş isim</term>
+     <listitem>
+      <para>
+       <code>Fan</code> gibi bir isim alanı ayracı içermeyen bir betimleyici.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Nitelenmiş isim</term>
+     <listitem>
+      <para>
+       <code>Fan\Fin</code> gibi bir isim alanı ayracı içeren bir
+       betimleyici.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Tamamen nitelenmiş isim</term>
+     <listitem>
+      <para>
+       <code>\Fan\Fin</code> gibi bir isim alanı ayracı ile başlayan isim
+       alanı ayraçlı bir betimleyici.  <code>namespace\Fan</code> da tamamen
+       nitelenmiş bir isimdir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+  <para>
+   İsimler şu kurallara göre çözümlenir:
    <orderedlist>
     <listitem>
      <simpara>
-      Tüm nitelemeli isimler derleme sırasında geçerli ithal kurallarına göre
-      dönüştürülürler. Örneğin, eğer A::B::C isim alanı ithal edilmişse
-      <code>C::D::e()</code> diye bir çağrı <code>A::B::C::D::e()</code>
+      Tamamen nitelenmiş işlev, sınıf ve sabit isimleri derleme sırasında
+      çözümlenir. Örneğin, <code>new \A\B</code> deyimi <code>A\B</code>
+      sınıfı olarak çözümlenir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Tamamen nitelenmemiş (nitelenmemiş ve nitelenmiş) isimlerin tamamı
+      derleme sırasında geçerli ithal kurallarına göre dönüştürülür.
+      Örneğin, <code>A\B\C</code> isim alanı <code>C</code> olarak ithal
+      edilmişse bir <code>C\D\e()</code> çağrısı  <code>A\B\C\D\e()</code>
       çağrısına dönüştürülür.
      </simpara>
     </listitem>
     <listitem>
      <simpara>
-      Nitelemesiz sınıf isimleri derleme sırasında geçerli ithal kurallarına
-      göre dönüştürülürler (kısa isim, uzun isim haline getirilir). Örneğin,
-      eğer A::B::C isim alanı ithal edilmişse <code>new C()</code> deyimi
-      <code>new A::B::C()</code> olarak dönüştürülür.
+      Bir isim alanı içinde ithal kurallarına göre dönüştürülmeyen tüm
+      nitelenmiş isimlerin önüne geçerli isim alanı ismi getirilir. Örneğin,
+      <code>A\B</code> isim alanında yapılmış bir <code>C\D\e()</code>
+      çağrısı <code>A\B\C\D\e()</code> çağrısına dönüştürülecektir.
      </simpara>
     </listitem>
     <listitem>
      <simpara>
-      İsim alanı içinde, geçerli isim alanında tanımlanmış nitelemesiz
-      işlevlere yapılan çağrılar, derleme sırasında bu isim alanınının
-      işlevlerine yapılmış çağrılar olarak yorumlanırlar.
+      Nitelenmemiş sınıf isimleri derleme sırasında geçerli ithal
+      kurallarına göre dönüştürülür (kısa ithal ismi için tam isim
+      kullanılır). Örneğin, <code>A\B\C</code> isim alanı <code>C</code>
+      olarak ithal edilmişse <code>new C()</code> deyimi <code>new
+        A\B\C()</code> deyimine dönüştürülür.
      </simpara>
     </listitem>
     <listitem>
      <simpara>
-      İsim alanı (A::B olsun) içinde, geçerli isim alanında tanımlanmamış
-      işlevlere nitelemesiz yapılan çağrılar çalışma anında çözümlenir.
-      Aşağıda <literal>foo()</literal> işlevine yapılan çağrının nasıl
-      çözümlendiği gösterilmiştir:
+      İsim alanı içindeki (A\B olsun), nitelenmemiş işlev çağrıları çalışma
+      anında çözümlenir. <code>fan()</code> diye bir işlev şöyle çözümlenir:
      </simpara>
       <orderedlist>
        <listitem>
         <simpara>
-         Geçerli isim alanında <literal>A::B::foo()</literal> diye bir işlev
-         var mı diye bakılır.
+         Geçerli isim alanında <code>A\B\fan()</code> işlevi aranır.
         </simpara>
        </listitem>
        <listitem>
         <simpara>
-         Yerleşik bir <literal>foo()</literal> işlevi bulunup çağrılmaya
-         çalışılır.
+         Küresel <code>fan()</code> işlevi bulunmaya ve çağrılmaya çalışılır.
         </simpara>
        </listitem>
       </orderedlist>
-      <simpara>
-        Küresel alandaki kullanıcı tanımlı bir işleve çağrı yapmak için
-        <literal>::foo()</literal> biçemi kullanılır.
-     </simpara>
     </listitem>
     <listitem>
      <simpara>
-      İsim alanı (A::B olsun) içinde, nitelemesiz sınıf isimlerine yapılan
-      çağrılar çalışma anında çözümlenir. Aşağıda <code>new C()</code>
-      deyiminin çözümlenişi gösterilmiştir:
+      İsim alanı içindeki (A\B olsun), nitelenmemiş (tamamen nitelenmemiş)
+      veya nitelenmiş  sınıf ismi çağrıları çalışma anında çözümlenir.
+      <code>new C()</code> ve <code>new D\E()</code> deyimlerinin
+      çözümlenişi aşağıda verilmiştir.
+     </simpara>
+     <simpara>
+      <code>new C()</code> için:
      </simpara>
      <orderedlist>
       <listitem>
        <simpara>
-        Geçerli isim alanında <literal>A::B::C</literal> diye bir sınıf var
-        mı diye bakılır.
+         Geçerli isim alanında <code>A\B\C</code> sınıfı aranır.
        </simpara>
       </listitem>
       <listitem>
        <simpara>
-        Yerleşik bir <literal>C</literal> sınıfı bulunup çağrılmaya çalışılır.
-       </simpara>
-      </listitem>
-      <listitem>
-       <simpara>
-        <literal>A::B::C</literal> özdevinimli olarak yüklenmeye çalışılır.
+        <code>A\B\C</code> özdevinimli olarak yüklenmeye çalışılır.
        </simpara>
       </listitem>
      </orderedlist>
      <simpara>
-      Küresel alandaki kullanıcı tanımlı bir sınıfa atıf yapmak için
-      <literal>new ::C()</literal> biçemi kullanılır.
+      <code>new D\E()</code> için:
      </simpara>
-    </listitem>
-    <listitem>
+     <orderedlist>
+      <listitem>
+       <simpara>
+        Geçerli isim alanı ile öncelenmiş olarak <code>A\B\D\E</code> sınıfı
+        aranır.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <code>A\B\D\E</code>  özdevinimli olarak yüklenmeye çalışılır.
+       </simpara>
+      </listitem>
+     </orderedlist>
      <simpara>
-      Nitelemesiz işlev çağrıları çalışma anında çözümlenir. Aşağıda
-      <code>A::B::foo()</code> çağrısının çözümlenişi gösterilmiştir:
-     </simpara>
-      <orderedlist>
-       <listitem>
-        <simpara>
-         <literal>A::B</literal> isim alanında <literal>foo()</literal> diye
-         bir sınıf var mı diye bakılır.
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         <literal>A::B</literal> diye bir sınıf aranır ve bu sınıfın duruk
-         <literal>foo()</literal> yöntemi çağrılmaya çalışılır. Gerekirse,
-         sınıf özdevinimli olarak yüklenir.
-        </simpara>
-       </listitem>
-      </orderedlist>
-    </listitem>
-    <listitem>
-     <simpara>
-      Nitelemeli sınıf isimleri derleme sırasında karşı düştükleri isim
-      alanındaki bir sınıf ismi olarak çözümlenirler. Örneğin, <code>new
-      A::B::C</code> deyiminde <literal>A::B</literal> isim alanındaki
-      <literal>C</literal> sınıfı örneklenmektedir.
+      Küresel isim alanındaki bir küresel sınıfa başvururken <code>new
+        \C()</code> şeklinde tamamen nitelenmiş isim kullanılmalıdır.
      </simpara>
     </listitem>
    </orderedlist>
   </para>
   <example>
-   <title>- İsim alanı çözümleme örnekleri</title>
+   <title>- Örneklerle İsim Çözünürlüğü</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 namespace A;
+use B\D, C\E as F;
 
-// İşlev çağrıları
+// işlev çağrıları
 
-foo();      // önce "A" isim alanında tanımlı "foo",
-            // olmazsa yerleşik "foo" çağrılmaya çalışılır
+fan();      // Varsa "A" isim alanında tanımlı "fan", yoksa küresel "fan"
 
-::foo();    // küresel alanda tanımlı "foo" işlevine çağrı
+\fan();     // Küresel alanda tanımlı "fan" çağrılır
 
-// Sınıflara gönderimler
+my\fan();   // "A\my" isim alanında tanımlı "fan" çağrılır
 
-new B();    // önce "A" isim alanında tanımlı "B" sınıfı,
-            // olmazsa yerleşik "B" sınıfı örneklenmeye çalışılır
+F();        // Varsa "A" isim alanında tanımlı "F", yoksa küresel "F"
 
-new ::B();  // küresel alanda tanımlı "B" sınıfı örnekleniyor
+//sınıf adı çağrıları
 
-// Başka isim alanlarının duruk yöntemleri ve isim alanı işlevleri
+new B();    // Varsa "A" isim alanında tanımlı "B" örneklenir
+            // Yoksa "A\B" sınıfı özdevinimli olarak yüklenmeye çalışılır
 
-B::foo();   // önce "A::B" isim alanında tanımlı "foo" işlevi,
-            // olmazsa yerleşik "B" sınıfındaki "foo" yöntemi
-            // çağrılmaya çalışılır
+new D();    // ithal kuralları ile, "B" isim alanında tanımlı "D" örneklenir
+            // yoksa "B\D" sınıfı özdevinimli olarak yüklenmeye çalışılır
 
-::B::foo(); // önce "B" isim alanında tanımlı "foo" işlevi,
-            // olmazsa küresel alandaki "B" sınıfının "foo" yöntemi
-            // çağrılmaya çalışılır
+new F();    // ithal kuralları ile, "C" isim alanında tanımlı "E" örneklenir
+            // yoksa "C\E" sınıfı özdevinimli olarak yüklenmeye çalışılır
 
-// Geçerli isim alanının duruk yöntemleri ve isim alanı işlevleri
+new \B();   // Varsa küresel alanda tanımlı "B" örneklenir
+            // yoksa "B" sınıfı özdevinimli olarak yüklenmeye çalışılır
 
-A::foo();   // önce "A::A" isim alanında tanımlı "foo" işlevi,
-            // olmazsa "A" isim alanındaki "A" sınıfının "foo" yöntemi,
-            // o da olmazsa "A" isim alanındaki "foo" işlevi,
-            // o da olmazsa yerleşik "A" sınıfının "foo" yöntemi
-            // çağrılmaya çalışılır.
+new \D();   // Varsa küresel alanda tanımlı "D" örneklenir
+            // yoksa "D" sınıfı özdevinimli olarak yüklenmeye çalışılır
 
-::A::foo(); // önce "A" isim alanındaki "foo" işlevi,
-            // olmazsa küresel alandaki "A" sınıfının "foo" yöntemi
-            // çağrılmaya çalışılır
+new \F();   // Varsa küresel alanda tanımlı "F" örneklenir
+            // yoksa "F" sınıfı özdevinimli olarak yüklenmeye çalışılır
+
+// başka bir isim alanından duruk yöntem/isim alanı işlevleri
+
+B\fan();    // "A\B" isim alanında tanımlı "fan" çağrılır
+
+B::fan();   // "A" isim alanında tanımlı "B" sınıfının "fan" yöntemi çağrılır
+            // "A\B" sınıfı yoksa, "A\B" özdevinimli yüklenmeye çalışılır
+
+D::fan();   // ithal kuralları ile, "B" isim alanında tanımlı "D" sınıfının
+            // "fan" yöntemi çağrılır; "B\D"  sınıfı yoksa, "B\D"
+            // özdevinimli yüklenmeye çalışılır
+
+\B\fan();   // "B" isim alanında tanımlı "fan" çağrılır
+
+\B::fan();  // Küresel alandaki "B" sınıfının "fan" yöntemi çağrılır
+            // "B" sınıfı yoksa, "B" özdevinimli yüklenmeye çalışılır
+
+// geçerli isim alanının duruk yöntemleri ve isim alanı işlevleri
+
+A\B::fan();   // "A\A" isim alanında tanımlı "B" sınıfının "fan" yöntemi
+              // çağrılır; "A\A\B" sınıfı yoksa, "A\A\B" özdevinimli
+              // yüklenmeye çalışılır
+
+\A\B::fan();  // "A\B" isim alanında tanımlı "B" sınıfının "fan" yöntemi
+              // çağrılır; "A\B" sınıfı yoksa, "A\B" özdevinimli yüklenmeye
+              // çalışılır
 ?>
 ]]>
    </programlisting>
   </example>
+ </sect1>
+ <sect1 xml:id="language.namespaces.faq">
+  <title>SSS: İsim alanları hakkında bilinmesi gerekenler</title>
+  <para>
+   Bu SSS iki bölüme ayrılır: genel sorular ve isim alanlarını tamamen
+   anlamaya yardımcı olacak gerçeklenime özgü ayrıntılar.
+  </para>
+  <para>
+   Önce genel sorularla başlıyoruz.
+   <orderedlist>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.shouldicare">İsim alanlarını
+        kullanmayacak olsam bile bu konuyla yine de ilgilenmeli miyim?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.globalclass">Yerleşik ve
+      küresel sınıfları bir isim alanı içinde nasıl kullanabilirim?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.innamespace">İsim alanlarının
+      sınıflarını, işlevlerini ve sabitlerini kendi isim alanlarında nasıl
+      kullanabilirim?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.full"><code>\bir\isim</code>
+      veya <code>\isim</code> gibi bir isim nasıl çözümlenir?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.qualified"
+      ><code>bir\isim</code> gibi bir isim nasıl çözümlenir?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.shortname1"><code>isim</code>
+      gibi bir nitelenmemiş sınıf ismi nasıl çözümlenir?</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.shortname2"><code>isim</code>
+      gibi bir nitelenmemiş işlev veya sabit ismi nasıl çözümlenir?</link>
+     </simpara>
+    </listitem>
+   </orderedlist>
+  </para>
+  <para>
+   İsim alanları gerçeklenimini tamamen anlamaya yardımcı olacak
+   gerçeklenime özgü bir kaç ayrıntı vardır.
+   <orderedlist>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.conflict">İthal edilen isimler
+      aynı dosyada tanımlı sınıf isimleriyle çakışmamalıdır.</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.nested">İç içe isim alanlarına
+      izin verilmez.</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.nofuncconstantuse"
+      ><code>use</code> deyimi üzerinden ne işlevler ne de sabitler ithal
+      edilebilir.</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.quote">Devingen isim alanları
+      isimlerinin (tırnak içine alınmış betimleyiciler) içindeki
+      tersbölülerin öncelenmesi gerekir.</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.constants">Tersbölü
+      kullanılarak atıf yapılan tanımsız sabitler ölümcül hataya sebep
+      olur.</link>
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="language.namespaces.faq.builtinconst">Özel NULL, TRUE,
+      FALSE, ZEND_THREAD_SAFE ve ZEND_DEBUG_BUILD sabitleri geçersiz
+      kılınamaz.</link>
+     </simpara>
+    </listitem>
+   </orderedlist>
+  </para>
+  <sect2 xml:id="language.namespaces.faq.shouldicare">
+   <title>İsim alanlarını kullanmayacak olsam bile bu konuyla yine de
+     ilgilenmeli miyim?</title>
+   <para>
+    Hayır. Ne isim alanları mevcut koddan etkilenir ne de isim alanlarını
+    içermeyen kodlar isim alanlarından etkilenir. İsterseniz kodu böyle
+    yazabilirsiniz:
+   </para>
+   <para>
+    <example>
+     <title>- Küresel sınıflara bir isim alanı dışından erişim</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = new \stdClass;
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Bu kod şuna eşdeğerdir:
+   </para>
+   <para>
+    <example>
+     <title>-  Küresel sınıflara bir isim alanı dışından erişim</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = new stdClass;
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.globalclass">
+   <title>Yerleşik ve küresel sınıfları bir isim alanı içinde nasıl
+     kullanabilirim?</title>
+   <para>
+    <example>
+     <title>- İsim alanı içinden yerleşik sınıflara erişim</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fan;
+$a = new \stdClass;
+
+function test(\ArrayObject $typehintexample = null) {}
+
+$a = \DirectoryIterator::CURRENT_AS_FILEINFO;
+
+// Bir yerleşik veya küresel sınıfın genişletilmesi
+class MyException extends \Exception {}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.innamespace">
+   <title>İsim alanlarının sınıflarını, işlevlerini ve sabitlerini kendi
+     isim alanlarında nasıl kullanabilirim?</title>
+   <para>
+    <example>
+     <title>- İsim alanındaki dahili sınıf, işlev ve sabitlere erişim
+     </title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fan;
+
+class Sınıfım {}
+
+// bir ipucu yazdırmak için geçerli isim alanındaki bir sınıfın kullanımı
+function dnm(Sınıfım $biripucuörneği = null) {}
+// ipucu yazdırmak için geçerli isim alanındaki bir sınıfın başka
+// bir yolla kullanımı
+function dnm(\fan\Sınıfım $biripucuörneği = null) {}
+
+// geçerli isim alanındaki bir sınıfın genişletilmesi
+class AltSınıfım extends Sınıfım {}
+
+// bir küresel işleve erişim
+$a = \küreselişlev();
+
+// bir küresel sabite erişim
+$b = \INI_ALL;
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.full">
+   <title><code>\bir\isim</code> veya <code>\isim</code> gibi bir isim nasıl
+     çözümlenir?</title>
+   <para>
+    <code>\</code> ile başlayan isimler daima yazıldıkları gibi
+    çözümlenirler, bu bakımdan <code>\bir\isim</code> aslında
+    <code>bir\isim</code>'dir; <code>\Exception</code> da aslında
+    <code>Exception</code>'dır.
+    <example>
+     <title>- Tamamen nitelenmiş isimler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fan;
+$a = new \bir\isim(); // "bir\isim" sınıfını örnekler
+echo \strlen('hi');   // "strlen" işlevini çağırır
+$a = \INI_ALL;        // $a değişkenine "INI_ALL" sabitinin değeri atanır
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.qualified">
+   <title><code>bir\isim</code> gibi bir isim nasıl çözümlenir?</title>
+   <para>
+    Bir tersbölü içeren, ancak tersbölü ile başlamayan <code>bir\isim</code>
+    gibi isimler iki farklı yolla çözümlenebilir.
+   </para>
+   <para>
+    <code>bir</code> ismini başka bir isimle ithal eden bir deyim varsa bu
+    takma isim <code>bir\isim</code> içindeki <code>bir</code>'e uygulanır.
+   </para>
+   <para>
+    Aksi takdirde, <code>bir\isim</code> isminin önüne geçerli isim alanı
+    adı getirilir.
+   </para>
+   <para>
+    <example>
+     <title>- Nitelenmiş isimler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fon;
+use fan\fin as fon;
+
+$a = new bir\isim(); // "fon\bir\isim" sınıfını örnekler
+fon\bar::isim(); // "fan\fin\bar" sınıfının "isim" duruk yöntemi çağrılır
+bir\bar();        // "fon\bir\bar" işlevi çağrılır
+$a = bir\BAR;    // $a değişkenine "fon\bir\BAR" sabitinin değeri atanır
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.shortname1">
+   <title><code>isim</code> gibi bir nitelenmemiş sınıf ismi nasıl
+     çözümlenir?</title>
+   <para>
+    <code>isim</code> gibi tersbölü içermeyen sınıf isimleri 2 farklı yolla
+    çözümlenebilir.
+   </para>
+   <para>
+    <code>isim</code> ismini başka bir isimle ithal eden bir deyim varsa bu
+    takma isim <code>isim</code>'e uygulanır.
+   </para>
+   <para>
+    Aksi takdirde, <code>isim</code> ismininin önüne geçerli isim alanı
+    getirilir.
+   </para>
+   <para>
+    <example>
+     <title>- Nitelenmemiş sınıf isimleri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fon;
+use fan\fin as fon;
+
+$a = new isim(); // "fon\isim" sınıfı örneklenir
+fon::isim();     // "fan\fin" sınıfının "isim" duruk yöntemi çağrılır
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.shortname2">
+   <title><code>isim</code> gibi bir nitelenmemiş işlev veya sabit ismi
+     nasıl çözümlenir?</title>
+   <para>
+    <code>isim</code> gibi tersbölü içermeyen işlev ve sabit isimleri 2
+    farklı yolla çözümlenebilir.
+   </para>
+   <para>
+    Önce <code>isim</code> isminin önüne geçerli isim alanı ismi getirilir.
+   </para>
+   <para>
+    Son olarak, eğer isim alanında <code>isim</code> diye bir işlev veya
+    sabit yoksa ve <code>isim</code> diye bir küresel işlev veya sabit varsa
+    küresel alandaki kullanılır.
+   </para>
+   <para>
+    <example>
+     <title>- Nitelenmemiş işlev veya sabit isimleri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace fon;
+use fan\fin as fon;
+
+const FON = 1;
+
+function bir() {}
+function fon() {}
+function sort(&$a)
+{
+    sort($a);
+    $a = array_flip($a);
+    return $a;
+}
+
+bir(); // "fon\bir" çarılır
+$a = strlen('hi');  // "fon\strlen" mevcut olmadığından küresel
+                    // "strlen" işlevi çağrılır
+$arr = array(1,3,2);
+$b = sort($arr);    // "fon\sort" işlevi çağrılır
+$c = fon(); // "fon\fon" işlevi çağrılır - ithal işlemi uygulanmaz
+
+$a = FON;     // $a değişkenine "fon\FON" sabitinin değeri
+              // atanır - ithal işlemi uygulanmaz
+$b = INI_ALL; // $b değişkenine "INI_ALL" küresel sabitinin değeri atanır
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.conflict">
+   <title>İthal edilen isimler aynı dosyada tanımlı sınıf isimleriyle
+     çakışmamalıdır.</title>
+   <para>
+    Aşağıdaki iki betik birlikte kurallara uygundur:
+    <informalexample>
+     <simpara>dosya1.php</simpara>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace bir\isim;
+class Sınıfım {}
+?>
+     ]]>
+     </programlisting>
+     <simpara>dosya2.php</simpara>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace diğer;
+class BirŞey {}
+?>
+     ]]>
+     </programlisting>
+     <simpara>dosya.php</simpara>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace bir\isim;
+include 'dosya1.php';
+include 'dosya2.php';
+
+use diğer\BirŞey as Sınıfım;
+$a = new Sınıfım; // "diğer" isim alanındaki "BirŞey" sınıfını örnekler
+?>
+     ]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    <code>Sınıfım</code> sınıfı <code>bir\isim</code> isim alanında mevcut
+    olduğu halde <code>Sınıfım</code> ayrı bir dosyada tanımlandığından
+    herhangi bir isim çakışması olmaz. Ancak, sonraki örnekte,
+    <code>Sınıfım</code> sınıfı <code>use</code> deyimi ile aynı dosyada
+    tanımlandığından isim çakışmasından dolayı ölümcül hata oluşur.
+    <informalexample>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace bir\isim;
+use diğer\BirŞey as Sınıfım;
+class Sınıfım {} // ölümcül hata: Sınıfım ithal edilen sınıfla çakışır
+$a = new Sınıfım;
+?>
+     ]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.nested">
+   <title>İç içe isim alanlarına izin verilmez.</title>
+   <para>
+    PHP isim alanlarının böyle iç içe tanımlanmasına izin vermez:
+    <informalexample>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace bir\isim {
+    namespace içiçe {
+        class fan {}
+    }
+}
+?>
+     ]]>
+     </programlisting>
+    </informalexample>
+    Bununla birlikte, isim alanlarını birbirinin içinde şöyle tanımlamak
+    mümkündür:
+    <informalexample>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace bir\isim\içiçe {
+    class fan {}
+}
+?>
+     ]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.nofuncconstantuse">
+   <title><code>use</code> deyimi üzerinden ne işlevler ne de sabitler ithal
+     edilebilir.</title>
+   <para>
+    <code>use</code> deyimlerinden sadece isim alanları ve sınıf isimleri
+    etkilenir. Uzunca bir işlev veya sabit ismini kısaltmak için kendilerini
+    içeren isim alanını ithal etmeniz yeterlidir.
+    <informalexample>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+namespace benimki;
+use epeyce\fazla\uzun\isim;
+
+$a = isim\SABİT;
+isim\işlev();
+?>
+     ]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.quote">
+   <title>Devingen isim alanları isimlerinin (tırnak içine alınmış
+     betimleyiciler) içindeki tersbölülerin öncelenmesi gerekir.</title>
+   <para>
+    Tersbölü imi dizgelerin içinde bir önceleme karakteri olarak
+    kullanıldığından çift tırnaklar arasına alınmış bir dizge içindeki bir
+    tersbölü karakterinin tersbölü ile öncelenmesi gerekir. Aksi takdirde,
+    istenmeyen durumlar ortaya çıkabilir:
+    <example>
+     <title>- İsim alanlı isimleri çift tırnaklar arasında kullanmak
+       tehlikelidir</title>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+$a = new "tehlikeli\nesne"; // \n, çift tırnaklı dizge içinde
+                            // satırsonu karakteridir!
+$obj = new $a;
+
+$a = new 'bu\tamamen\tehlikesiz\nesne'; // burada sorun yok.
+$obj = new $a;
+?>
+      ]]>
+     </programlisting>
+    </example>
+    Tersbölüleri tek tırnakları arasına alınmış bir dizge içinde kullanmak
+    daha güvenli olsa da her iki dizge türünde de tersbölüleri öncelemek en
+    güvenlisidir.
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.constants">
+   <title>Tersbölü kullanılarak atıf yapılan tanımsız sabitler ölümcül
+     hataya sebep olur.</title>
+   <para>
+    <code>FAN</code> gibi nitelenmemiş olarak tanımsız sabitlere
+    rastlandığında PHP, bunun <code>FAN</code> değerli bir sabit
+    varsayıldığını belirten bir uyarı üretecektir. İster nitelenmiş olsun
+    ister tamamen nitelenmiş olsun tanımsız bir sabit daima ölümcül hataya
+    sebep olur.
+    <example>
+     <title>- Tanımsız sabitler</title>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+namespace bar;
+$a = FAN;  // uyarı üretir - "FAN" sabit olarak tanımsız olduğundan
+           // bir sabit ismi değil, bir sabit değer olarak ele alınır.
+$a = \FAN;     // ölümcül hata, isim alanlı tanımsız sabit: FAN
+$a = Fin\FAN;  // ölümcül hata, isim alanlı tanımsız sabit: bar\Fin\FAN
+$a = \Fin\FAN; // ölümcül hata, isim alanlı tanımsız sabit: Fin\FAN
+?>
+      ]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+  <sect2 xml:id="language.namespaces.faq.builtinconst">
+   <title>Özel NULL, TRUE, FALSE, ZEND_THREAD_SAFE ve ZEND_DEBUG_BUILD
+     sabitleri geçersiz kılınamaz.</title>
+   <para>
+    Bir özel, yerleşik sabiti bir isim alanlı sabit olarak tanımlamaya
+    kalkışmak ölümcül hatayla sonuçlanır.
+    <example>
+     <title>- Tanımsız sabitler</title>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+namespace bar;
+const NULL = 0;       // ölümcül hata;
+const true = 'ahmak'; // bu da ölümcül hata;
+// etc.
+?>
+      ]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
  </sect1>
 </chapter>
 
