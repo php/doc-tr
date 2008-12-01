@@ -1,0 +1,1296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.56 Maintainer: yasar  Status: ready -->
+<chapter xml:id="features.commandline" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>PHP'nin komut satırından kullanımı</title>
+ <para>
+  PHP 4.3.0 sürümünden beri, <emphasis>Komut Satırı Arayüzü</emphasis>
+  anlamına gelen <literal>CLI</literal> isimli yeni bir
+  <literal>SAPI</literal> türünü (Sunucu Uygulaması Yazılım Arayüzü)
+  desteklemektedir.  Adından da anlaşıldığı gibi, bu <literal>SAPI</literal>
+  türünün ana odağı PHP ile kabuk (veya masaüstü) uygulamaları
+  geliştirmektir. <literal>CLI SAPI</literal>'nin bu bölümde anlatılan diğer
+  <literal>SAPI</literal>'lerden az bir farkı vardır. Söylemek gerekir ki,
+  her ne kadar <literal>CLI</literal> ve <literal>CGI</literal> birçok aynı
+  davranışı paylaşsa da farklı SAPI'lerdir.
+ </para>
+
+ <para>
+  <literal>CLI SAPI</literal> ilk kez PHP 4.2.0 ile dağıtıldı, fakat hala
+  deneyseldi ve  <command>./configure</command> çalıştırılırken açıkça
+  <option role="configure">--enable-cli</option> ile etkinleştirilmesi
+  gerekiyordu.  PHP 4.3.0'dan beri <literal>CLI SAPI</literal> deneysel
+  değil ve <option role="configure">--enable-cli</option> öntanımlı olarak
+  bulunmaktadır. Etkinliğini kaldırmak için <option
+  role="configure">--disable-cli</option> kullanabilirsiniz.
+ </para>
+
+ <para>
+  PHP 4.3.0'dan beri, CLI/CGI çalıştırılabilirinin adı, yeri ve mevcudiyeti
+  PHP'nin sisteminize nasıl kurulduğuna bağlı olarak değişecektir.
+  <command>make</command> çalıştırıldığında öntanımlı olarak, hem CGI hem de
+  CLI derlenir ve PHP kaynak ağacında <filename>sapi/cgi/php-cgi</filename>
+  ve <filename>sapi/cli/php</filename> dizinlerine ayrı yerleştirilirler.
+  Her ikisinin de adının php olduğunu farkedeceksiniz. <command>make
+  install</command> çalıştırıldığında ne yaşanacağı yapılandırma satırınıza
+  bağlıdır. Eğer yapılandırma sırasında apxs gibi bir SAPI modülü
+  seçildiyse, veya <option role="configure">--disable-cgi</option> seçeneği
+  kullanıldıysa, <command>make install</command> sırasında CLI
+  <filename>{PREFIX}/bin/php</filename> dizinine kopyalanır, aksi takdirde
+  buraya CGI yerleştirilir. Örneğin, <option role="configure">--with--apxs
+  </option> yapılandırma satırınızda ise <command>make install</command>
+  sırasında CLI <filename>{PREFIX}/bin/php</filename> dizinine kopyalanır.
+  Eğer CGI kurulumunu etkisiz kılmak isterseniz, <command>make
+  install</command>'dan sonra <command>make install-cli</command> kullanın.
+  Ya da yapılandırma satırınızda <option
+  role="configure">--disable-cgi</option> belirtebilirsiniz.
+  </para>
+
+ <note>
+  <para>
+   <option role="configure">--enable-cli</option> ve
+   <option role="configure">--enable-cgi</option> öntanımlı olarak
+   etkinleştirildiği için, yapılandırma satırınızda sadece <option
+   role="configure">--enable-cli</option> olması CLI'nin <command>make
+   install</command> sırasında <filename>{PREFIX}/bin/php</filename>
+   dizinine kopyalanacağı anlamına gelmez.
+  </para>
+ </note>
+
+ <para>
+  PHP 4.2.0 ve PHP 4.2.3 arasındaki Windows paketlerinde CLI
+  <filename>php-cli.exe</filename> olarak, CGI da aynı dizinde
+  <filename>php.exe</filename> olarak dağıtılmıştır. PHP 4.3.0'la başlayarak
+  Windows paketlerinde CLI,  <filename class="directory">cli</filename> adlı
+  farklı bir dizinde <filename>php.exe</filename> olarak dağıtılmıştır,
+  böylece <filename>cli/php.exe</filename> olmuştur. PHP 5'le başlayarak,
+  CLI ana dizinde <filename>php.exe</filename> adıyla dağıtılmıştır. CGI
+  sürümü <filename>php-cgi.exe</filename> olarak dağıtılmaktadır.
+ </para>
+
+ <para>
+  PHP 5'den beri, <filename>php-win.exe</filename> isimli yeni bir dosya
+  dağıtılmaktadır. Bu CLI sürümü ile aynıdır, fakat php-win herhangi çıktı
+  vermez, bu nedenle konsol desteklemez (ekranda "dos penceresi" görünmez).
+  Bu yaklaşım php-gtk ile benzerlik gösterir. <option
+  role="configure">--enable-cli-win32</option> ile yapılandırılması gerekir.
+ </para>
+
+ <note>
+  <title>Bende hangi SAPI var?</title>
+  <para>
+    Kabuktan, <command>php -v</command> yazımı <filename>php</filename> CGI
+    mı CLI mi olduğunu söyler. Ayrıca <function>php_sapi_name</function>
+    işlevine ve <constant> PHP_SAPI</constant> sabitine bakınız.
+  </para>
+ </note>
+
+ <note>
+  <para>
+    PHP 4.3.2'de bir Unix kılavuz (man) sayfası  eklendi. Bunu kabuk
+    ortamınıza <command>man php</command> yazarak görüntüleyebilirsiniz.
+  </para>
+ </note>
+
+ <para>
+  <literal>CLI SAPI</literal>'nin diğer <literal>SAPI</literal>'lerden
+  dikkate değer farklılıkları:
+  <itemizedlist>
+   <listitem>
+    <para>
+	    <literal>CGI SAPI</literal>'den farklı olarak, çıktıya hiçbir başlık
+      yazılmaz.
+    </para>
+    <para>
+	    <literal>CGI SAPI</literal> HTTP başlıklarını önlemek için bir yol
+      sunsa da, <literal>CLI SAPI</literal>'de onları etkinleştirecek
+      eşdeğer bir seçenek yoktur.
+    </para>
+    <para>
+	    CLI öntanımlı olarak sessiz kipte başlar, <option>-q</option> ve
+      <option>--no-header</option> seçenekleri eski CGI betiklerinin
+      kullanımına uyumluluk için tutulmaktadır.
+    </para>
+    <para>
+	    Çalışma dizinini betiğinki ile aynı yapmaz. (<option>-C</option> ve
+      <option>--no-chdir</option> seçenekleri uyumluluk için tutulmaktadır)
+    </para>
+    <para>
+	    Düz metin hata iletileri (HTML biçimlendirmesi yok).
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+	    Kabuk ortamında birşey ifade etmedikleri için <literal>CLI
+      SAPI</literal> tarafından geçersiz kılınan bazı &php.ini; yönergeleri
+      vardır:
+    </para>
+    <para>
+     <table>
+      <title>Geçersiz kılınan &php.ini; yönergeleri</title>
+      <tgroup cols="3">
+       <thead>
+        <row>
+         <entry>Yönerge</entry>
+         <entry><literal>CLI SAPI</literal> öntanımlı değeri</entry>
+         <entry>Yorum</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><link linkend="ini.html-errors">html_errors</link></entry>
+         <entry>&false;</entry>
+         <entry>
+		      Hata iletileri <literal>HTML</literal> etiketleri ile
+          karıştırılmışken, kabukta bunları okumak oldukça zor olacağı için
+          bu yönerge öntanımlı olarak &false; değerlidir.
+         </entry>
+        </row>
+        <row>
+         <entry><link linkend="ini.implicit-flush"
+         >implicit_flush</link></entry>
+         <entry>&true;</entry>
+         <entry>
+		      <function>print</function>, <function>echo</function> ve
+          arkadaşlarından gelen çıktıların önbellekte tutulmadan hemen
+          çıktıya yazılması istenir. Eğer standart çıktıyı ertelemek veya
+          işlemek isterseniz <link linkend="ref.outcontrol">çıktı
+          önbellekleme</link> kullanabilirsiniz.
+         </entry>
+        </row>
+        <row>
+         <entry><link linkend="ini.max-execution-time"
+         >max_execution_time</link></entry>
+         <entry>0 (sınırsız)</entry>
+         <entry>
+		      Kabuk ortamlarında PHP kullanımının sonsuz olasılığı olduğu için,
+          azami işletim süresi sınırsız olarak belirtilmiştir. HTML üretmek
+          için yazılan uygulamalar genellikle çok çabuk işletilse de, kabuk
+          uygulamaları daha fazla işletim zamanı harcama eğilimindedirler.
+         </entry>
+        </row>
+        <row>
+         <entry><link linkend="ini.register-argc-argv"
+         >register_argc_argv</link></entry>
+         <entry>&true;</entry>
+         <entry>
+         <para>
+		      Bu ayar &true; olduğu için <literal>CLI SAPI</literal>deki
+          <emphasis>argc</emphasis> (uygulamaya aktarılan değiştirge sayısı)
+          ve <emphasis>argv</emphasis> (gerçek değiştirgeler dizisi)
+          değerlerine her zaman erişebilirsiniz.
+         </para>
+         <para>
+		      PHP 4.3.0'dan beri, <literal>CLI SAPI</literal> kullanırken
+          <varname>$argc</varname> ve <varname>$argv</varname> PHP
+          değişkenleri uygun değerlerle doldurulur ve kaydedilir. Bu
+          sürümden önce, bu değişkenlerin yaratılışı <link
+          linkend="ini.register-globals">register_globals</link> PHP
+          yönergesi değerinin <emphasis>on</emphasis> olmasını gerektiren
+          <literal>CGI</literal> ve modül sürümlerindeki gibi davranırdı.
+          Sürüme ve register_globals ayarına bakmaksızın
+          <varname>$_SERVER</varname> veya
+          <varname>$HTTP_SERVER_VARS</varname> üzerinden kullanabilirsiniz.
+          Örnek: <varname>$_SERVER['argv']</varname>
+         </para>
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </table>
+    </para>
+    <note>
+     <para>
+	    Bu yönergeler &php.ini; yapılandırma dosyasından başka bir değerle
+      ilklendirilemezler. Bu bir sınırlamadır çünkü bu öntanımlı değerler
+      bütün yapılandırma dosyaları çözümlendikten sonra uygulanırlar. Fakat,
+      çalışma anında bunların değerleri değişirilebilir (bu yönergeler için
+      birşey ifade etmez, örn. <link linkend="ini.register-argc-argv"
+      >register_argc_argv</link>).
+     </para>
+    </note>
+   </listitem>
+   <listitem>
+    <para>
+	    Kabuk ortamında kolay çalışmak için aşağıdaki sabitler tanımlanmıştır:
+     <table>
+      <title>CLI'ye özel Sabitler</title>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Sabit</entry>
+         <entry>Açıklama</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><constant>STDIN</constant></entry>
+         <entry>
+          <para>
+		        <literal>stdin</literal>'e açılmış bir akımdır. Aşağıdaki örnek
+            akımı açıp geleni kaydeder:
+         <programlisting role="php">
+<![CDATA[
+<?php
+
+$stdin = fopen('php://stdin', 'r');
+
+?>
+]]>
+         </programlisting>
+		      Eğer <literal>stdin</literal>'den tek satır okumak istenirse şu
+          kullanılabilir:
+         <programlisting role="php">
+<![CDATA[
+<?php
+$line = trim(fgets(STDIN));     //  STDIN'den bir satır okur
+fscanf(STDIN, "%d\n", $number); // STDIN'den sayı okur
+?>
+]]>
+         </programlisting>
+         </para></entry>
+        </row>
+        <row>
+         <entry><constant>STDOUT</constant></entry>
+         <entry><para>
+		      <literal>stdout</literal>'a açılmış bir akımdır. Aşağıdaki örnek
+          akımı açıp gideni kaydeder:
+         <programlisting role="php">
+<![CDATA[
+<?php
+
+$stdout = fopen('php://stdout', 'w');
+
+?>
+]]>
+         </programlisting>
+         </para></entry>
+        </row>
+        <row>
+         <entry><constant>STDERR</constant></entry>
+         <entry>
+          <para>
+		        <literal>stderr</literal>'e açılmış bir akımdır. Aşağıdaki örnek
+            akımı açıp çıktıyı kaydeder:
+           <programlisting role="php">
+<![CDATA[
+<?php
+
+$stderr = fopen('php://stderr', 'w');
+
+?>
+]]>
+           </programlisting>
+          </para>
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </table>
+    </para>
+    <para>
+	  Yukarıda verilene göre, örneğin <literal>stderr</literal> için bir akım
+    açmanız gerekmez, ancak akım kaynağı yerine sabit kullanabilirsiniz:
+     <programlisting role="shell">
+<![CDATA[
+php -r 'fwrite(STDERR, "stderr\n");'
+]]>
+     </programlisting>
+	    Betik sonlandığında PHP özdevinimli olarak akımları kapattığı için
+      sizin ayrıca kapatmanız gerekmez.
+    </para>
+    <note>
+     <para>
+	    Bu sabitler, PHP betiğinin <literal>stdin</literal>'den okunması
+      halinde mevcut değildir.
+     </para>
+    </note>
+   </listitem>
+   <listitem>
+    <para>
+	    <literal>CLI SAPI</literal> geçerli dizini betiğin işletildiği dizine
+      <emphasis role="strong">değiştirmez</emphasis>!
+    </para>
+    <informalexample>
+     <para>
+	 <literal>CGI SAPI</literal> farkını gösteren örnek:
+     </para>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// deneme.php isimli basit deneme uygulamamız
+echo getcwd(), "\n";
+?>
+]]>
+     </programlisting>
+     <para>
+	    <literal>CGI</literal> sürümününü kullanınca, çıktı şöyle olur:
+     </para>
+     <screen>
+<![CDATA[
+$ pwd
+/tmp
+
+$ php -q bir_dizin/deneme.php
+/tmp/bir_dizin
+]]>
+     </screen>
+     <para>
+	    Bu açıkça gösteriyor ki PHP geçerli dizinini betiğin çalıştığı dizine
+      değiştiriyor.
+     </para>
+     <para>
+	    <literal>CLI SAPI</literal> kullanımı sonucu:
+     </para>
+     <screen>
+<![CDATA[
+$ pwd
+/tmp
+
+$ php -f bir_dizin/deneme.php
+/tmp
+]]>
+     </screen>
+     <para>
+	    Bu, PHP'de kabuk araçları yazarken daha fazla esneklik imkanı verir.
+     </para>
+    </informalexample>
+    <note>
+     <para>
+	    <literal>CGI SAPI</literal> bu <literal>CLI SAPI</literal> davranışını
+      komut satırından çalışırken <option>-C</option> seçeneği ile destekler.
+     </para>
+    </note>
+   </listitem>
+  </itemizedlist>
+ </para>
+ <para>
+  PHP çalıştırılabiliri tarafından desteklenen komut satırı seçenekleri
+  listesi istenirse PHP <option>-h</option> seçeneği ile çalıştırılarak
+  sorgulanabilir:
+  <screen>
+<![CDATA[
+Kullanım: php [seçenekler] [-f] <dosya> [--] [değiştirgeler...]
+  php [seçenekler] -r <kod> [--] [değiştirgeler...]
+  php [seçenekler] [-B <başlangıç_kodu>] -R <kod> [-E <bitiş_kodu>] [--] [değiştirgeler...]
+  php [seçenekler] [-B <başlangıç_kodu>] -F <dosya> [-E <bitiş_kodu>] [--] [değiştirgeler...]
+  php [seçenekler] -- [değiştirgeler...]
+  php [seçenekler] -a
+
+  -a               Etkileşimli çalışır
+  -c <yol>|<dosya> php.ini dosyası bu dizinde aranır
+  -n               Hiçbir php.ini dosyası kullanılmayacak
+  -d foo[=bar]     'bar' değerli bir foo INI girdisi tanımlar
+  -e               Hata ayıklayıcı/profilci için genişletilmiş bilgi üretir
+  -f <dosya>       <dosya>'yı çözümler ve çalıştırır
+  -h               Bu yardım iletisini gösterir
+  -i               PHP bilgisi
+  -l               Sadece söz dizimi denetimi (lint)
+  -m               Modül olarak derlenenleri gösterir
+  -r <kod>         PHP <kod>unu <?..?> betik etiketleri olmadan çalıştırır
+  -B <başlangıç_kodu>  PHP <başlangıç_kodu>nu girdi satırlarından önce
+                   çalıştırır
+  -R <kod>         PHP <kod>unu her girdi satırı için çalıştırır
+  -F <dosya>       Her girdi satırı için <dosya>yı çözümler ve çalıştırır
+  -E <bitiş_kodu>  PHP <bitiş_kodu>nu bütün girdi satırlarını işledikten
+                   sonra çalıştırır
+  -H               Harici araçlardan aktarılan bütün değiştirgeleri gizler
+  -s               Kaynağı renklendirilmiş söz dizimi ile gösterir
+  -v               Sürüm bilgilerini gösterir
+  -w               Kaynağı boşluklar ve yorumlardan arındırılmış olarak
+                   gösterir
+  -z <dosya>       <dosya> Zend eklentisini yükler
+
+  değiştirgeler... Betiğe aktarılan değiştirgeler. Eğer betik stdin'den
+                   okunuyorsa veya ilk değiştirge - ile başlıyorsa
+                   -- değiştirgeler kullanın
+
+  --ini            Yapılandırma dosyası isimlerini gösterir
+
+  --rf <isim>      <isim> işlevi hakkında bilgi gösterir
+  --rc <isim>      <isim> sınıfı hakkında bilgi gösterir
+  --re <isim>      <isim> eklentisi hakkında bilgi gösterir
+  --ri <isim>      <isim> eklentisi için yapılandırmayı gösterir
+]]>
+  </screen>
+ </para>
+ <para>
+  <literal>CLI SAPI</literal> çalıştırmak istediğiniz PHP kodunu getirmek
+  için üç farklı yola sahiptir:
+  <orderedlist>
+   <listitem>
+    <para>
+	    PHP'ye belli bir dosyayı çalıştırmasını söyleyerek.
+    </para>
+    <informalexample>
+     <screen>
+<![CDATA[
+php ornek_betik.php
+
+php -f ornek_betik.php
+]]>
+     </screen>
+    </informalexample>
+    <para>
+	    Her iki yolla da (<option>-f</option> seçeneğini olsun olmasın)
+      <filename>ornek_betik.php</filename> dosyası çalıştırılır. Çalıştırmak
+      için herhangi bir dosyayı seçebilirsiniz - PHP betikleriniz
+      <literal>.php</literal> uzantısı ile bitmek zorunda değildir,
+      istediğiniz herhangi bir isim ve uzantıya sahip olabilirler.
+    </para>
+    <note>
+     <para>
+	    Eğer betiklerinize değiştirgeler aktarmanız gerekirse
+      <option>-f</option> seçeneğini kullandığınızda ilk değiştirge olarak
+      <literal>--</literal> aktarmanız gerekir.
+     </para>
+    </note>
+   </listitem>
+   <listitem>
+    <para>
+	    Doğrudan komut satırında işletmek üzere PHP kodunu aktararak.
+    </para>
+    <informalexample>
+     <screen>
+<![CDATA[
+php -r 'print_r(get_defined_constants());'
+]]>
+     </screen>
+    </informalexample>
+    <para>
+	    Kabuk değişken değişimi ve tırnak kullanımı için özel bir çaba
+      sarfetmek gerekir.
+    </para>
+    <note>
+     <para>
+      Örneği dikkatle okuyunuz, hiçbir başlangıç veya bitiş etiketi yok!
+      <option>-r</option> seçeneği bunlara ihtiyaç duymaz. Bunların
+      kullanımı çözümleme hatasına yol açar.
+      </para>
+    </note>
+   </listitem>
+   <listitem>
+    <para>
+	    Çalıştırılacak PHP kodunu standart girdiden
+      (<literal>stdin</literal>) yollamak suretiyle.
+    </para>
+    <para>
+	    Bu, PHP kodunu devingen olarak oluşturma ve bunu çalıştırma yeteneği
+      sağlar. Örneğin:
+    </para>
+    <informalexample>
+     <screen>
+<![CDATA[
+$ bir_uygulama | bir_suzgec | php | sort -u > nihai_sonuc.txt
+]]>
+     </screen>
+    </informalexample>
+   </listitem>
+  </orderedlist>
+  Kodu çalıştırmak için bu üç yol birlikte kullanılamaz.
+ </para>
+ <para>
+  Her kabuk uygulamasındaki gibi, PHP çalıştırılabiliri bir takım
+  değiştirgeler alabildiği gibi PHP betiğiniz de değiştirgeler alabilir.
+  Betiğinize aktarabileceğiniz değiştirge sayısı PHP tarafından
+  sınırlandırılmamıştır (kabukta aktarılabilecek karakter sayısı sınırlıdır;
+  genellikle bu sınıra ulaşmazsınız). Betiğinize aktarılan değiştirgeler
+  <varname>$argv</varname> küresel dizisinde bulunur. Sıfır indisi her zaman
+  betik adını içerir (PHP kodu standart girdiden veya <option>-r</option>
+  komut satırı seçeneğiyle çalıştıysa betik adı <literal>-</literal> olur).
+  İkinci kayıtlı küresel değişken <varname>$argc</varname>'dir ve
+  <varname>$argv</varname> dizisindeki eleman sayısını içerir (betiğe
+  aktarılan değiştirge sayısını <emphasis role="strong">değil</emphasis>).
+ </para>
+ <para>
+  Betiğinize aktarmak istediğiniz değiştirgeler <literal>-</literal>
+  karakteriyle başlamadığı sürece, özel bir şeye dikkat etmeniz gerekmez.
+  Betiğinize <literal>-</literal> ile başlayan bir değiştirge aktarımı sorun
+  yaratır çünkü PHP bunu kendisinin işlemesi gerektiğini düşünecektir. Bunu
+  önlemek için, değiştirge listesi ayracı olan <literal>--</literal>
+  kullanın, bunu izleyen her değiştirge ellenmeden betiğinize aktarılır.
+ </para>
+ <informalexample>
+  <screen>
+<![CDATA[
+# Bu verilen kodu çalıştırmaz fakat PHP kullanımını gösterir
+$ php -r 'var_dump($argv);' -h
+Usage: php [options] [-f] <file> [args...]
+[...]
+
+# Bu '-h' değiştirgesini betiğinize aktarır ve
+# PHP'nin değiştirgeyi görmesini önler
+$ php -r 'var_dump($argv);' -- -h
+array(2) {
+  [0]=>
+  string(1) "-"
+  [1]=>
+  string(2) "-h"
+}
+]]>
+  </screen>
+ </informalexample>
+ <para>
+  Kabuk betikleri için PHP farklı bir yoldan kullanılabilir. İlk satırı
+  <literal>#!/usr/bin/php</literal> ile başlayan bir betik yazabilirsiniz.
+  Bunu takip eden satırlara başlangıç ve bitiş etiketlerine sahip normal PHP
+  kodunuzu yerleştirebilirsiniz. Dosyanın çalıştırma izinlerini
+  ayarladığınızda (örn. <command>chmod +x deneme</command>) betiğiniz normal
+  bir kabuk veya perl betiği gibi işletilir.
+ </para>
+ <example>
+  <title>- PHP betiğini kabuk betiği olarak çalıştırmak</title>
+  <programlisting role="php">
+<![CDATA[
+#!/usr/bin/php
+<?php
+var_dump($argv);
+?>
+]]>
+  </programlisting>
+  <para>
+    Geçerli dizindeki bu dosyanın isminin <filename>deneme</filename>
+    olduğunu varsayarsak, aşağıdakini yapabiliriz:
+  </para>
+  <screen>
+<![CDATA[
+$ chmod +x deneme
+$ ./deneme -h -- foo
+array(4) {
+  [0]=>
+  string(6) "./deneme"
+  [1]=>
+  string(2) "-h"
+  [2]=>
+  string(2) "--"
+  [3]=>
+  string(3) "foo"
+}
+]]>
+  </screen>
+ </example>
+ <para>
+  Gördüğünüz gibi, bu durumda betiğinize <literal>-</literal> ile başlayan
+  değiştirge aktarırken hiçbir şeye dikkat etmeniz gerekmez.
+ </para>
+ <para>
+  Uzun seçenekler PHP 4.3.3'den beri mevcuttur.
+  <table>
+   <title>Komut satırı seçenekleri</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>Seçenek</entry>
+      <entry>Uzun Seçenek</entry>
+      <entry>Açıklama</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>-a</entry>
+      <entry>--interactive</entry>
+      <entry>
+       <para>
+	      PHP'yi etkileşimli çalıştırır. Eğer PHP'yi <link
+        linkend="ref.readline">Readline</link> eklentisi ile derlerseniz
+        (Windows'ta yoktur), tamamlama özelliği olan (örneğin bir değişken
+        adını yazmaya başlayıp TAB tuşuna basınca PHP adı tamamlar), ok
+        tuşlarıyla erişebileceğiniz bir komut satırı geçmişi olan güzel bir
+        kabuğunuz olur. Komut satırı geçmişi
+        <filename>~/.php_history</filename> dosyasında saklanır.
+       </para>
+       <note>
+        <para>
+         <link linkend="ini.auto-prepend-file">auto_prepend_file</link> ve
+         <link linkend="ini.auto-append-file">auto_append_file</link>
+         yoluyla içerilen dosyalar bu kipte çözümlenir fakat bazı
+         sınırlamalarla - örneğin işlevler çağrılmadan önce tanımlanmak
+         zorundadır.
+        </para>
+       </note>
+       <note>
+        <para>
+         Eğer PHP CLI etkileşimli kipte kullanılıyorsa <link
+         linkend="language.oop5.autoload">Özdevinimli Nesne Yükleme</link>
+         bulunmaz.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-c</entry>
+      <entry>--php-ini</entry>
+      <entry>
+       <para>
+	      Bu seçenek &php.ini; dosyasının aranacağı dizini veya özel bir
+        <literal>INI</literal> dosyasını (adı &php.ini; olmak zorunda
+        değildir) belirtebilir. Örneğin:
+       </para>
+       <para><informalexample>
+        <screen>
+<![CDATA[
+$ php -c /ozel/dizin/ ornek_betik.php
+
+$ php -c /ozel/dizin/ozel-dosya.ini ornek_betik.php
+]]>
+        </screen>
+       </informalexample></para>
+       <para>
+	      Eğer bu seçeneği belirtmezseniz, dosya <link
+        linkend="configuration.file">öntanımlı dizinler</link>de aranır.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-n</entry>
+      <entry>--no-php-ini</entry>
+      <entry>
+       <para>
+	      &php.ini;yi görmezden gel. Bu seçenek PHP 4.3.0'dan beri vardır.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-d</entry>
+      <entry>--define</entry>
+      <entry>
+       <para>
+	      Bu seçenek &php.ini;de izin verilen yapılandırma yönergelerinden
+        herhangi birine özel değer atamanıza imkan verir. Söz dizimi:
+        <screen>
+<![CDATA[
+-d ayar_yönergesi[=değer]
+]]>
+        </screen>
+       </para>
+       <para><informalexample>
+        <para>
+		      Örnekler (satırlar okunabilirlik açısından kaydırılmıştır):
+        </para>
+        <screen>
+<![CDATA[
+# Değer kısmını atlamak yapılandırma yönergesini "1" yapar
+$ php -d max_execution_time
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(1) "1"
+
+# Boş değer aktarınca yapılandırma yönergesinine "" atanır
+php -d max_execution_time=
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(0) ""
+
+# Yapılandırma yönergesine '=' karakterinden sonra aktarılan değer atanır
+$  php -d max_execution_time=20
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(2) "20"
+$  php
+        -d max_execution_time=herhangi_bir_sey
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(15) "herhangi_bir_sey"
+]]>
+        </screen>
+       </informalexample></para>
+      </entry>
+     </row>
+     <row>
+      <entry>-e</entry>
+      <entry>--profile-info</entry>
+      <entry>
+       <para>
+	      Hata ayıklayıcı/profilci için kullanılmak üzere genişletilmiş bilgi kipini etkinleştirir.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-f</entry>
+      <entry>--file</entry>
+      <entry>
+       <para>
+	      <option>-f</option> seçeneğiyle verilen dosya adını çözümler ve
+        çalıştırır. Bu seçenek isteğe bağlıdır; verilmese de olur. Sadece
+        çalıştırılacak dosya adını belirtmek yeterlidir.
+       </para>
+       <note>
+        <para>
+          Betiklere değiştirge aktarmak için ilk değiştirge
+          <literal>--</literal> olmalıdır, aksi halde PHP bunları PHP
+          seçeneği olarak yorumlar.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-h ve -?</entry>
+      <entry>--help ve --usage</entry>
+      <entry>
+	      Bu seçenekle, komut satırı seçenekleri tek satırlık açıklamalarıyla
+        listelenir.
+      </entry>
+     </row>
+     <row>
+      <entry>-i</entry>
+      <entry>--info</entry>
+      <entry>
+	      Bu komut satırı seçeneği <function>phpinfo</function> işlevini
+        çağırır ve sonuçları yazdırır. Eğer PHP doğru çalışmıyorsa,
+        <command>php -i</command> komutunu kullanmanız ve bilgi
+        tablolarından önce herhangi bir hata iletisi yazdırılmış mı bakmanız
+        tavsiye edilir. CGI kipini kullanırken çıktının
+        <literal>HTML</literal> biçiminde olacağına ve bu nedenle çok büyük
+        olacağına dikkat ediniz.
+      </entry>
+     </row>
+     <row>
+      <entry>-l</entry>
+      <entry>--syntax-check</entry>
+      <entry>
+       <para>
+	      Bu seçenek verilen PHP kodunun sadece söz dizimini denetlemek için
+        uygun bir yol sağlar. Başarı halinde, <literal>No syntax errors
+        detected in &lt;filename&gt;</literal> metni standart çıktıya
+        yazılır ve kabuk dönüş kodu <literal>0</literal> olur. Başarısızlık
+        halinde, iç çözümleyici hatasına ilaveten <literal>Errors parsing
+        &lt;filename&gt;</literal> metni standart çıktıya yazılır ve kabuk
+        dönüş kodu <literal>-1</literal> olur.
+       </para>
+       <para>
+	      Bu seçenek ölümcül hataları bulamaz (tanımlanmamış işlevler gibi).
+        Eğer ölümcül hataları da denetlemek isterseniz <option>-f</option>
+        seçeneğini kullanın.
+       </para>
+       <note>
+        <para>
+		      Bu seçenek <option>-r</option> seçeneği ile birlikte kullanılamaz.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-m</entry>
+      <entry>--modules</entry>
+      <entry>
+       <para><informalexample>
+        <para>
+		      Bu seçeneğin kullanımı ile PHP yerleşik (ve yüklü) PHP ve Zend
+          modüllerini listeler:
+        </para>
+        <screen>
+<![CDATA[
+$ php -m
+[PHP Modules]
+xml
+tokenizer
+standard
+session
+posix
+pcre
+overload
+mysql
+mbstring
+ctype
+
+[Zend Modules]
+]]>
+        </screen>
+       </informalexample></para>
+      </entry>
+     </row>
+     <row>
+      <entry>-r</entry>
+      <entry>--run</entry>
+      <entry>
+       <para>
+	      Bu seçenek PHP'nin komut satırından çalıştırılmasına izin verir. PHP
+        başlangıç ve bitiş etiketleri (<literal>&lt;?php</literal> ve
+        <literal>?&gt;</literal>) <emphasis
+        role="strong">gerekmez</emphasis> ve eğer bulunurlarsa çözümleme
+        hatasına neden olurlar.
+       </para>
+       <note>
+        <para>
+		      PHP'nin bu şekilde kullanımı halinde kabuk tarafından yapılan
+          komut satırı değişken değişimleri ile çakışmamak için özen
+          göstermek gerekir.
+        </para>
+        <informalexample>
+         <para>
+          Çözümleme hatasını gösteren örnek
+         </para>
+         <screen>
+<![CDATA[
+$ php -r "$foo = get_defined_constants();"
+Command line code(1) : Parse error - parse error, unexpected '='
+]]>
+         </screen>
+        </informalexample>
+        <para>
+		      Buradaki sorun sh/bash kabuklarının çift tırnak
+          <literal>"</literal> kullanıldığında bile değişken değişimi
+          yapmalarından kaynaklanır. <varname>$foo</varname> değişkeni
+          kabukta tanımlanmış olmayacağı için, PHP'ye çalıştırılmak üzere
+          aktarılan kodda hiçbir şey olarak yorumlanacaktır:
+        </para>
+        <informalexample>
+         <screen>
+<![CDATA[
+$ php -r " = get_defined_constants();"
+]]>
+         </screen>
+         <para>
+		      Doğru yol tek tırnak <literal>'</literal> kullanımıdır. Tek tırnak
+          içindeki değişkenler sh/bash tarafından dönüştürülmezler.
+         </para>
+         <screen>
+<![CDATA[
+$ php -r '$foo = get_defined_constants(); var_dump($foo);'
+array(370) {
+  ["E_ERROR"]=>
+  int(1)
+  ["E_WARNING"]=>
+  int(2)
+  ["E_PARSE"]=>
+  int(4)
+  ["E_NOTICE"]=>
+  int(8)
+  ["E_CORE_ERROR"]=>
+  [...]
+]]>
+         </screen>
+        </informalexample>
+        <para>
+		      Eğer sh/bash haricinde bir kabuk kullanıyorsanız, daha farklı
+          sorunlarla karşılaşabilirsiniz. Bu gibi durumlarda <link
+          xlink:href="&url.php.bugs;">&url.php.bugs;</link> adresinde hata
+          raporu açmaktan çekinmeyiniz. Kabuk değişkenlerini kodunuza almaya
+          çalıştığınızda veya önceleme için ters bölü kullanımında
+          sıkıntılar yaşayabilirsiniz.
+        </para>
+       </note>
+       <note>
+        <para>
+         <option>-r</option> seçeneği <emphasis>CLI</emphasis> SAPI'de
+         bulunur, <emphasis>CGI</emphasis> SAPI'de bulunmaz.
+        </para>
+       </note>
+       <note>
+        <para>
+		      Bazı yapılandırma yönergeleri (örn. <link
+          linkend="ini.auto-prepend-file">auto_prepend_file</link> ve <link
+          linkend="ini.auto-append-file">auto_append_file</link>) bu kipte
+          görmezden gelinir.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-B</entry>
+      <entry>--process-begin</entry>
+      <entry>
+       <para>
+	      Standart girdi işlenmeden çalıştırılacak PHP kodudur. PHP 5'de
+        eklenmiştir.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-R</entry>
+      <entry>--process-code</entry>
+      <entry>
+       <para>
+	      Her girdi satırı için işletilecek PHP kodudur.  PHP 5'de eklenmiştir.
+       </para>
+       <para>
+	      Bu kipte iki özel değişken bulunur:
+        <varname>$argn</varname> ve <varname>$argi</varname>.
+        <varname>$argn</varname> PHP'nin o anda işlediği satırı içerirken,
+        <varname>$argi</varname> satır numarasını içerir.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-F</entry>
+      <entry>--process-file</entry>
+      <entry>
+       <para>
+	      Her girdi satırı için işletilecek PHP dosyasıdır.  PHP 5'de
+        eklenmiştir.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>-E</entry>
+      <entry>--process-end</entry>
+      <entry>
+       <para>
+	      Girdi işlendikten sonra işletilecek PHP kodudur. PHP 5'de
+        eklenmiştir.
+       </para>
+       <para><example>
+        <title>- Bir projedeki satır sayısını saymak için
+        <option>-B</option>, <option>-R</option> ve <option>-E</option>
+        seçeneklerinin kullanımı</title>
+        <screen>
+<![CDATA[
+$ find projem | php -B '$l=0;' -R '$l += count(@file($argn));' -E 'echo "Toplam Satır Sayısı: $l\n";'
+Toplam Satır Sayısı: 37328
+]]>
+        </screen>
+       </example></para>
+      </entry>
+     </row>
+     <row>
+      <entry>-s</entry>
+      <entry>--syntax-highlight ve --syntax-highlighting</entry>
+      <entry>
+       <para>
+	      Renklendirilmiş söz dizimi ile kaynak gösterimi.
+       </para>
+       <para>
+	      Bu seçenek dosyayı çözümlemek için içsel yöntemleri kullanır ve
+        renklendirilmiş bir <literal>HTML</literal> sürümü üreterek standart
+        çıktıya yazar. Bütün yaptığı <literal>HTML</literal> başlıkları
+        olmadan <literal>&lt;code&gt; [...] &lt;/code&gt;</literal>
+        <literal>HTML</literal> etiketlerinden oluşan bir blok üretmektir.
+       </para>
+       <note>
+        <para>
+		      Bu seçenek <option>-r</option> seçeneği ile birlikte çalışmaz.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-v</entry>
+      <entry>--version</entry>
+      <entry>
+       <para><informalexample>
+        <para>
+		      PHP, PHP SAPI ve Zend sürümlerini standart çıktıya yazar. Örneğin:
+        </para>
+        <screen>
+<![CDATA[
+$ php -v
+PHP 5.3.0alpha3-dev (cli) (built: Nov 13 2008 18:20:00)
+Copyright (c) 1997-2008 The PHP Group
+Zend Engine v2.3.0, Copyright (c) 1998-2008 Zend Technologies
+]]>
+        </screen>
+       </informalexample></para>
+      </entry>
+     </row>
+     <row>
+      <entry>-w</entry>
+      <entry>--strip</entry>
+      <entry>
+       <para>
+	      Kaynağı boşluklar ve yorumlardan arındırılmış olarak gösterir.
+       </para>
+       <note>
+        <para>
+		      Bu seçenek <option>-r</option> seçeneği ile birlikte çalışmaz.
+        </para>
+       </note>
+      </entry>
+     </row>
+     <row>
+      <entry>-z</entry>
+      <entry>--zend-extension</entry>
+      <entry>
+       <para>
+	      Zend eklentisini yükler. Eğer sadece dosya ismi verilirse, PHP bu
+        eklentiyi sisteminizde geçerli öntanımlı kütüphane yolundan
+        yüklemeye çalışır (Linux sistemlerde genellikle
+        <filename>/etc/ld.so.conf</filename> dosyasında belirtilir). Dosya
+        adı tam yol bilgisi ile aktarılırsa sistem kütüphanesi arama yolu
+        kullanılmaz. Bir dizin bilgisiyle göreceli bir dosya ismi kullanımı
+        PHP'ye sadece geçerli dizine göreceli eklentinin yüklenmesini söyler.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry></entry>
+      <entry>--ini</entry>
+      <entry>
+       <para>
+	      Yapılandırma dosya isimlerini ve taranan dizinleri gösterir. PHP
+        5.2.3'den beri mevcuttur.
+        <example>
+         <title><literal>--ini</literal> örneği</title>
+         <programlisting role="shell">
+<![CDATA[
+$ php --ini
+Configuration File (php.ini) Path: /usr/dev/php/5.2/lib
+Loaded Configuration File:         /usr/dev/php/5.2/lib/php.ini
+Scan for additional .ini files in: (none)
+Additional .ini files parsed:      (none)
+]]>
+         </programlisting>
+        </example>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>--rf</entry>
+      <entry>--rfunction</entry>
+      <entry>
+       <para>
+	      Verilen işlev veya sınıf yöntemi hakkında bilgi gösterir (örneğin,
+        değiştirge adlarını ve sayısını). PHP 5.1.2'den beri vardır.
+       </para>
+       <para>
+	      Bu seçenek sadece PHP <link linkend="language.oop5.reflection"
+        >Yansıtma</link> desteği ile derlendiyse mevcuttur.
+       </para>
+       <para>
+        <example>
+         <title>- Temel <literal>--rf</literal> kullanımı</title>
+         <programlisting role="shell">
+<![CDATA[
+$ php --rf var_dump
+Function [ <internal> public function var_dump ] {
+
+  - Parameters [2] {
+    Parameter #0 [ <required> $var ]
+    Parameter #1 [ <optional> $... ]
+  }
+}
+]]>
+         </programlisting>
+        </example>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>--rc</entry>
+      <entry>--rclass</entry>
+      <entry>
+       <para>
+	      Verilen sınıf hakkında bilgi gösterir (sabitler, özellikler ve
+        yöntemler listesi). PHP 5.1.2'den beri vardır.
+       </para>
+       <para>
+	      Bu seçenek sadece PHP <link linkend="language.oop5.reflection"
+        >Yansıtma</link> desteği ile derlendiyse mevcuttur.
+       </para>
+       <para>
+        <example>
+         <title><literal>--rc</literal> örneği</title>
+         <programlisting role="shell">
+<![CDATA[
+$ php --rc Directory
+Class [ <internal:standard> class Directory ] {
+
+  - Constants [0] {
+  }
+
+  - Static properties [0] {
+  }
+
+  - Static methods [0] {
+  }
+
+  - Properties [0] {
+  }
+
+  - Methods [3] {
+    Method [ <internal> public method close ] {
+    }
+
+    Method [ <internal> public method rewind ] {
+    }
+
+    Method [ <internal> public method read ] {
+    }
+  }
+}
+]]>
+         </programlisting>
+        </example>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>--re</entry>
+      <entry>--rextension</entry>
+      <entry>
+       <para>
+	      Verilen eklenti hakkında bilgi gösterir (&php.ini; seçenekleri,
+        tanımlı işlevler, sabitler ve sınıflar listesi). PHP 5.1.2'den beri
+        vardır.
+       </para>
+       <para>
+	      Bu seçenek sadece PHP <link linkend="language.oop5.reflection"
+        >Yansıtma</link> desteği ile derlendiyse mevcuttur.
+       </para>
+       <para>
+        <example>
+         <title><literal>--re</literal> örneği</title>
+         <programlisting role="shell">
+<![CDATA[
+$ php --re json
+Extension [ <persistent> extension #19 json version 1.2.1 ] {
+
+  - Functions {
+    Function [ <internal> function json_encode ] {
+    }
+    Function [ <internal> function json_decode ] {
+    }
+  }
+}
+]]>
+         </programlisting>
+        </example>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>--ri</entry>
+      <entry>--rextinfo</entry>
+      <entry>
+       <para>
+	      Verilen eklenti için yapılandırma bilgisini gösterir
+        (<function>phpinfo</function> ile aynı bilgiyi döndürür). PHP
+        5.2.2'den beri vardır. Çekirdek yapılandırma bilgisi "main" eklenti
+        adı kullanılarak bulunabilir.
+       </para>
+       <para>
+        <example>
+         <title><literal>--ri</literal> örneği</title>
+         <programlisting role="shell">
+<![CDATA[
+$ php --ri date
+
+date
+
+date/time support => enabled
+"Olson" Timezone Database Version => 2008.9
+Timezone Database => internal
+Default timezone => Europe/Helsinki
+
+Directive => Local Value => Master Value
+date.timezone => no value => no value
+date.default_latitude => 31.7667 => 31.7667
+date.default_longitude => 35.2333 => 35.2333
+date.sunset_zenith => 90.583333 => 90.583333
+date.sunrise_zenith => 90.583333 => 90.583333
+]]>
+         </programlisting>
+        </example>
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </para>
+
+ <para>
+  PHP çalıştırılabiliri HTTP sunucusundan tamamen bağımsız olarak PHP
+  betikleri çalıştırmak için kullanılabilir. Eğer Unix sistemi
+  üzerindeyseniz, PHP betiğinizin başına özel bir satır eklemeli ve
+  dosyanızı çalıştırılabilir yapmalısınız; böylece sistem betiğinizi hangi
+  programın çalıştıracağını bilir. Windows üzerinde <literal>.php</literal>
+  dosyalarına çift tıklama seçeneği ile <filename>php.exe</filename>
+  ilişkilendirebilir veya betiği PHP üzerinden çalıştıracak bir yığın
+  dosyası yapabilirsiniz. Unix'de çalışması için betiğe eklenen ilk satır
+  Windows'da sorun çıkarmaz, böylece platformdan bağımsız programlar
+  yazabilirsiniz. Örnek basit bir komut satırı PHP programı aşağıdaki gibi
+  olabilir.
+ </para>
+ <para>
+  <example>
+   <title>- Komut satırından çalıştırılması planlanan betik (betik.php)
+   </title>
+   <programlisting role="php">
+<![CDATA[
+#!/usr/bin/php
+<?php
+
+if ($argc != 2 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
+?>
+Bu tek seçenekli bir komut satırı PHP betiğidir.
+
+  Kullanımı:
+  <?php echo $argv[0]; ?> <secenek>
+
+  <secenek> yazdırmak istediğiniz bir kelime olabilir.
+  --help, -help, -h,
+  veya -? seçenekleriyle, bu yardımı alabilirsiniz.
+
+<?php
+} else {
+    echo $argv[1];
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Yukarıdaki betikte, bu dosyanın PHP tarafından çalıştırılması gerektiğini
+  belirten özel bir ilk satır kullandık. Burada CLI sürümü ile çalışıyoruz,
+  böylece HTTP başlık çıktıları olmayacak. PHP ile komut satırı uygulamaları
+  yazarken kullanabileceğiniz iki değişken vardır: <varname>$argc</varname>
+  ve <varname>$argv</varname>. Birincisi değiştirge sayısından bir
+  fazlasıdır (çalışan betiğin adı). İkincisi değiştirgeleri içeren bir
+  dizidir, sıfır numarayla başlar ve ilk elemanında betik adını içerir
+  (<varname>$argv[0]</varname>).
+ </para>
+ <para>
+  Yukarıdaki programda birden farklı sayıda değiştirge olup olmadığını
+  kontrol ettik. Ayrıca eğer değiştirge <option>--help</option>,
+  <option>-help</option>, <option>-h</option> veya <option>-?</option> ise
+  yardım iletisini yazdırdık ve betik adını devingen olarak yazdırdık. Eğer
+  bazı başka değiştirgeler aldıysak yazdırdık.
+ </para>
+ <para>
+  Eğer yukarıdaki betiği Unix üzerinde çalıştırmak isterseniz betiği
+  çalıştırılabilir yapmalı ve <command>betik.php echothis</command> veya
+  <command>betik.php -h</command> ile çağırmalısınız. Windows'da bu iş için
+  bir yığın dosyası yapabilirsiniz:
+ </para>
+ <para>
+  <example>
+   <title>- Bir komut satırı PHP betiği çalıştırmak için yığın dosyası
+   (betik.bat)</title>
+   <programlisting role="shell">
+<![CDATA[
+@C:\php\php.exe betik.php %1 %2 %3 %4
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Yukarıdaki programı <filename>betik.php</filename> olarak adlandırdığınız
+  ve <filename>C:\php\php.exe</filename> içinde CLI'nin
+  <filename>php.exe</filename> olduğu varsayılarak bu yığın dosyası sizin
+  eklediğiniz seçeneklerle çalışacaktır: <command>betik.bat
+  echothis</command> veya <command>betik.bat -h</command>.
+ </para>
+ <para>
+   PHP'deki komut satırı uygulamalarını iyileştirmek için kullanabileceğiniz
+   işlevlerle ilgili bilgi için <link linkend="ref.readline"
+   >Readline</link> eklentisinin belgesine bakınız.
+ </para>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
