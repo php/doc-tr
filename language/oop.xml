@@ -1,0 +1,1112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.71 Maintainer: nilgun Status: ready -->
+ <chapter xml:id="language.oop" xmlns="http://docbook.org/ns/docbook">
+  <title>Sınıflar ve nesneler (PHP 4)</title>
+
+  <sect1 xml:id="keyword.class">
+   <title><code>class</code> sözcüğü</title>
+   <para>
+    Bir sınıf, değişkenlerden ve bu değişkenlerle çalışan işlevlerden oluşan
+    bir bütündür. Değişkenler <code>var</code> anahtar sözcüğüyle
+    belirtilir, işlevler ise <code>function</code> ile tanımlanır. Bir sınıf
+    şöyle bir söz dizimi ile tanımlanır:
+   </para>
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Sepet {
+    var $mallar;  // Sepetteki mallar
+
+    // $malnum numaralı $adet adet malı sepete ekle
+
+    function mal_ekle($malnum, $adet) {
+        $this->mallar[$malnum] += $adet;
+    }
+
+    // $malnum numaralı $adet adet malı sepetten sil
+
+    function mal_sil($malnum, $adet) {
+        if ($this->mallar[$malnum] > $adet) {
+            $this->mallar[$malnum] -= $adet;
+            return true;
+        } elseif ($this->mallar[$malnum] == $adet) {
+            unset($this->mallar[$malnum]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    Bu örnekte, sepetteki malları içeren bir ilişkisel dizi ile sepete
+    malları ekleyip çıkarmak için iki işlevden oluşan Sepet sınıfı
+    tanımlanmaktadır.
+   </para>
+
+   <warning>
+    <simpara>
+     Bir sınıf tanımını birden fazla dosyaya yayamayacağınız gibi yöntem
+     bildirimi dışında birden fazla PHP bloğuna da bölemezsiniz. Aşağıdaki
+     örnek çalışmayacaktır:
+    </simpara>
+    <para>
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class Deneme {
+?>
+<?php
+    function dene() {
+        print 'TAMAM';
+    }
+}
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+    <simpara>
+     Ancak, buna izin verilir:
+    </simpara>
+    <para>
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class Deneme {
+    function dene() {
+        ?>
+        <?php
+        print 'TAMAM';
+    }
+}
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </warning>
+
+   <simpara>
+    Aşağıdaki Dikkat bölümleri PHP 4 içindir.
+   </simpara>
+
+   <caution>
+    <simpara>
+     <literal>stdClass</literal> ismi Zend tarafından yerleşik sınıf ismi
+     olarak ayrılmıştır. <literal>stdClass</literal> ismini kendi
+     sınıflarınızda kullanamazsınız.
+    </simpara>
+   </caution>
+
+   <caution>
+    <simpara>
+      <literal>__sleep</literal> ve <literal>__wakeup</literal> işlev
+      isimleri PHP sınıfları için sihirlidir. Bunlarla ilgili sihirli
+      işlevselliğe ihtiyacınız olmadığı sürece bu işlev isimlerini
+      sınıflarınızın içinde kullanamazsınız. Daha ayrıntılı bilgi için
+      belgenin devamına bakınız.
+    </simpara>
+   </caution>
+
+   <caution>
+    <simpara>
+      PHP, __ ile başlayan tüm işlev isimlerini kendi yerleşik işlev
+      isimleri için ayırmıştır. PHP'de özellikle belgelenmiş sihirli
+      işlevselliğe ihtiyacınız olmadığı sürece böyle işlev isimleri
+      kullanmanız önerilmez.
+    </simpara>
+   </caution>
+
+   <simpara>
+    PHP 4'te <code>var</code> değişkenlerinin sadece sabitlerle
+    ilklendirilmesine izin verilir. Değişkenleri sabit olmayan değerlerle
+    ilklendirmek isterseniz, sınıf bir nesne olarak örneklendiği anda
+    kendiliğinden çağrılan bir ilklendirici işlev üzerinden bunu
+    yapabilirsiniz. Bu ilklendirici işleve kurucu işlev denir (aşağıya
+    bakınız).
+   </simpara>
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Sepet {
+    /* Bunların hiçbiri PHP 4'te çalışmaz. */
+    var $bugun = date("Y-m-d");
+    var $ad = $ilkad;
+    var $sahibi = 'Fred ' . 'Jones';
+    /* Sabit değer içeren diziler çalışır. */
+    var $mallar = array("VCR", "TV");
+}
+
+/* Bu iş böyle yapılır. */
+class Sepet {
+    var $bugun;
+    var $ad;
+    var $sahibi;
+    var $mallar = array("VCR", "TV");
+
+    function Sepet() {
+        $this->bugun = date("Y-m-d");
+        $this->ad = $GLOBALS['ilkad'];
+        /* ve saire. . . */
+    }
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Sınıflar veri türleridir, yani asıl değişkenlerin örüntüsüdürler. Bu tür
+    bir değişkeni <code>new</code> işleci ile oluşturabilirsiniz.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sepet = new Sepet;
+$sepet->mal_ekle("10", 1);
+
+$diger_sepet = new Sepet;
+$diger_sepet->mal_ekle("0815", 3);
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bu örnekte, Sepet sınıfından <varname>$sepet</varname> ve
+    <varname>$diger_sepet</varname> diye iki nesne oluşturulmakta ve
+    <varname>$sepet</varname> nesnesinin <varname>mal_ekle</varname> işlevi
+    ile <varname>$sepet</varname>'e "10" numaralı malzemeden 1 adet,
+    <varname>$diger_sepet</varname>'e de "0815" numaralı malzemeden 3 adet
+    eklenmektedir.
+   </para>
+
+   <para>
+    <varname>$sepet</varname> ve <varname>$diger_sepet</varname>
+    nesnelerinin ikisi de mal_ekle ve mal_sil işlevleri ile mallar
+    değişkenine sahiptir. Bunlar isimleri aynı olsa da birbirlerinden
+    bağımsız işlev ve değişkenlerdir. Nesneleri, bir dosya sisteminin
+    dizinleri olarak düşünebilirsiniz. Bir dosya sisteminde ayrı ayrı
+    dizinlerde <filename>BENi.OKU</filename> adında iki farklı dosyanız
+    olabilir. Bu dosyalara kök dizinden ayrı ayrı erişmek isterseniz
+    dosyaların tam yollarını yazmanız gerekir. Tıpkı bunun gibi PHP'de de
+    bir nesne işlevini çağırmak için istediğiniz işlevin tam yolunu yazmanız
+    gerekir. İşlemi PHP'ye tercüme edersek: Kök dizin, küresel alana; dosya
+    yolu ayracı, <literal>-&gt;</literal> ayracına karşılıktır. Dolayısıyla,
+    <varname>$sepet-&gt;mallar</varname> ile
+    <varname>$diger_sepet-&gt;mallar</varname> iki ayrı değişkendir. Burada
+    şuna dikkat edin: Değişkenin ismi
+    <varname>$sepet-&gt;mallar</varname>'dır,
+    <varname>$sepet-&gt;$mallar</varname> değildir. PHP
+    <varname>$sepet-&gt;$mallar</varname> dizgesini $ imli iki değişken ismi
+    olarak ele alır.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// tek $ imiyle, doğru
+$sepet->mallar = array("10" => 1);
+
+// $sepet->$mallar, $sepet->"" haline gelir, geçersiz
+$sepet->$mallar = array("10" => 1);
+
+// $sepet->$ogeler, $sepet->mallar haline gelir,
+// istenen bu olmasa da yorum olarak doğrudur
+$ogeler = 'mallar';
+$cart->$ogeler = array("10" => 1);
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bir sınıf tanımı içinde, betiğinizin neresinden hangi nesne ismiyle bu
+    sınıfın örnekleneceğini bilemezsiniz. Yani, Sepet sınıfının yazıldığı
+    sırada bu sınıfın <varname>$sepet</varname> veya
+    <varname>$diger_sepet</varname> ya da başka bir isimle örnekleneceği
+    kararını henüz vermemişsinizdir.  Bu bakımdan, Sepet sınıfının içinde
+    <varname>$sepet-&gt;mallar</varname> diye bir değişken ismi
+    kullanamazsınız. Sınıfın kendi işlev ve değişkenlerine erişirken bu
+    amaçla 'benim', 'geçerli nesne' anlamında <varname>$this</varname> sözde
+    değişkeni kullanılır. Bu bakımdan '<code>$this->mallar[$malnum] +=
+    $adet;</code>' deyimi, "(benim) mallar dizimin $malnum elemanına $adet
+    değerini ekle" veya "geçerli nesnenin mallar dizisinin $malnum elemanına
+    $adet değerini ekle" olarak okunabilir.
+   </para>
+
+   <note>
+    <para>
+     <varname>$this</varname> sözde değişkeni sınıfın kendi yöntemi duruk
+     olarak çağrıldığı takdirde tanımlı değildir. Ancak bu,
+     "<varname>$this</varname>, bir yöntem başka bir nesnenin içinden duruk
+     olarak çağrıldığında tanımlıdır." tarzında anlaşılmamalıdır. Böyle bir
+     durumda <varname>$this</varname>'in değeri çağrıldığı nesne olacaktır.
+     Bunu bir örnekle pekiştirelim:
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class A
+{
+    function foo()
+    {
+        if (isset($this)) {
+            echo '$this tanımlı (';
+            echo get_class($this);
+            echo ")\n";
+        } else {
+            echo "\$this tanımsız.\n";
+        }
+    }
+}
+
+class B
+{
+    function bar()
+    {
+        A::foo();
+    }
+}
+
+$a = new A();
+$a->foo();
+A::foo();
+$b = new B();
+$b->bar();
+B::bar();
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+$this tanımlı (A)
+$this tanımsız.
+$this tanımlı (B)
+$this tanımsız.
+]]>
+      </screen>
+     </informalexample>
+    </para>
+   </note>
+
+   <note>
+    <para>
+      Sınıflar ve nesnelerle çalışırken kullanışlı olabilen bazı işlevler
+      vardır. Bunları <link linkend="ref.classobj">Sınıf/Nesne
+      İşlevleri</link> bölümünde bulabilirsiniz.
+    </para>
+   </note>
+  </sect1>
+
+  <sect1 xml:id="keyword.extends">
+   <title><code>extends</code> sözcüğü</title>
+
+   <para>
+    Çoğunlukla başka başka sınıflar içinde benzer değişkenler ve işlevler
+    kullanmak gerekir. Aslında, belli projelerin ihtiyaçlarına göre
+    uyarlanabilecek genel bir sınıf tanımınız olsa fena olmazdı. Bunu
+    sağlamak için, sınıflar başka sınıfları genişleterek tanımlanabilir.
+    Genişletilmiş veya türetilmiş sınıflar ana sınıfla ortak değişken ve
+    işlevlere (aslında bunlar kalıtsal niteliklerdir) ek olarak kendi işlev
+    ve değişkenleri olan sınıflardır. Miras alınan değişken ve işlevleri
+    tanımsız yapmak mümkün değildir. Bir türetilmiş sınıf daima tek bir ana
+    sınıfa bağımlıdır, yani çoklu kalıtım desteklenmemektedir. Sınıflar
+    <code>extends</code> anahtar sözcüğü kullanılarak türetilirler.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Sahipli_Sepet extends Sepet {
+    var $sahibi;
+
+    function sahip_ata ($isim) {
+        $this->sahibi = $isim;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bu örnekte, Sepet sınıfının tüm değişken ve işlevlerine ek olarak
+    <varname>$sahibi</varname> değişkenine ve sahip_ata işlevine sahip
+    Sahipli_Sepet sınıfı tanımlanmaktadır. Böylece sahipli bir sepet
+    oluşturabilir ve sepetleri sahibine göre biraraya toplayabilirsiniz.
+    Ayrıca, normal sepetin işlevlerini sahipli sepette de kullanabilirsiniz:
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ssepet = new Sahipli_Sepet; // sahipli bir sepet oluşturalım
+$ssepet->sahip_ata("enis");  // sepetin sahibi
+print $ssepet->sahibi;       // sepet sahibinin ismini basar
+$ssepet->mal_ekle("10", 1);  // (işlevsellik Sepet sınıfının mirasıdır)
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Buna ebeveyn-çocuk ilişkisi de denir. İlk oluşturduğunuz sınıfa ebeveyn
+    sınıf dersek, <code>extends</code> sözcüğünü kullanarak ondan
+    türettiğiniz sınıflar çocuk sınıflar olur. Bu yeni çocuk sınıfları başka
+    çocuk sınıfları (yani ilk sınıfın torunlarını) türetmek için
+    kullanabilirsiniz.
+   </para>
+   <note>
+    <para>
+     Sınıfların kullanılmadan önce tanımlanmış olmaları gerekir.
+     <literal>Sahipli_Sepet</literal> sınıfını <literal>Sepet</literal>
+     sınıfından türetmek için önce <literal>Sepet</literal> sınıfını
+     tanımlamanız gerekir.  <literal>Kurumsal_Sahipli_Sepet</literal>
+     sınıfını <literal>Sahipli_Sepet</literal> sınıfından türetmek için de
+     önce <literal>Sahipli_Sepet</literal> sınıfını tanımlamanız gerekir.
+     Kısaca: Sınıfların tanımlanma sırası önemlidir.
+    </para>
+   </note>
+  </sect1>
+
+  <sect1 xml:id="language.oop.constructor">
+   <title>Kurucular</title>
+
+   <para>
+    Kurucular, <code>new</code> sözcüğünü kullanarak bir sınıfın yeni bir
+    örneğini oluşturduğunuzda özdevinimli olarak çağrılan işlevlerdir.
+    Sınıfla aynı isme sahip olan işlev kurucu işlev olur. Bir sınıfın
+    kurucusu yoksa ama ebeveyn sınıfın varsa ebeveynin kurucusu çağrılır.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Hediyeli_Sepet extends Sepet {
+    function Hediyeli_Sepet() {
+        $this->mal_ekle("10", 1);
+    }
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bu örnekte, <code>new</code> sözcüğünü kullanarak her örnek
+    oluşturuşunda sepete "10" numaralı malzemeden 1 adet eklemek suretiyle
+    nesneyi ilklendiren bir kurucu içeren Hediyeli_Sepet sınıfı Sepet
+    sınıfından türetilmektedir. Kurucular değiştirge alabilir ve hatta daha
+    kullanışlı olması için bu değiştirgeler seçimlik bile olabilir. Sınıfı
+    değiştirgesiz kullanmayı sağlamak üzere kurucunun tüm değiştirgeleri
+    öntanımlı değerler sağlanarak seçimlik yapılabilir:
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Kuruculu_Sepet extends Sepet {
+    function Kuruculu_Sepet($mal = "10", $adet = 1) {
+        $this->mal_ekle ($mal, $adet);
+    }
+}
+
+// hediyeli sepetle aynı.
+$normal_sepet = new Kuruculu_Sepet;
+
+// özel sepet...
+$ozel_sepet = new Kuruculu_Sepet("20", 17);
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Kurucuda oluşan hataların çıktılanmasını önlemek için
+    <literal>@</literal> işlecini <literal>@new</literal> biçeminde
+    kullanabilirsiniz.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class A
+{
+    function A()
+    {
+        echo "A'nın kurucusuyum.\n";
+    }
+
+    function B()
+    {
+        echo "A sınıfının B adında sıradan bir işleviyim.\n";
+        echo "Ben A'nın kurucusu değilim.\n";
+    }
+}
+
+class B extends A
+{
+}
+
+// B()'yi kurucu olarak çağır
+$b = new B;
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    A sınıfının B() işlevi ister istemez (böyle olsun istenmemesine rağmen)
+    B sınıfının kurucusu haline gelir. PHP 4 işlevin B sınıfının içinde mi
+    tanımlandığına yoksa miras mı alındığına bakmaz.
+   </para>
+
+   <caution>
+    <simpara>
+     PHP 4 ebeveyn sınıfın kurucusunu çocuk sınıftan özdevinimli olarak
+     çağırmaz. Sınıfın ebeveyninin kurucusuna yapacağı çağrıları tanımlamak
+     size bırakılmıştır.
+    </simpara>
+   </caution>
+
+   <para>
+    Yıkıcılar, bir nesne <function>unset</function> ile veya basitçe etki
+    alanı dışına çıkarak yokedildiğinde özdevinimli olarak çağrılan
+    işlevlerdir. PHP'de yıkıcılar yoktur. Yıkıcı işlev etkisi elde etmek
+    için <function>register_shutdown_function</function> işlevini
+    kullanabilirsiniz.
+   </para>
+  </sect1>
+
+ <sect1 xml:id="keyword.paamayim-nekudotayim"><!-- :-) -->
+   <title>Etki Alanı Çözünürlük İşleci (<literal>::</literal>)</title>
+
+   <caution>
+    <simpara>
+     Aşağıdakiler sadece PHP 4 ve sonrası için geçerlidir.
+    </simpara>
+   </caution>
+
+   <para>
+    Ebeveyn sınıfın işlev ve değişkenlerine atıf yapmak veya henüz
+    örneklenmemişken bir sınıfın işlevlerini çağırmak bazen gerekebilir. Bu
+    amaçla :: işleci kullanılır.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class A {
+    function misal() {
+        echo "Ben özgün A::misal() işleviyim.<br />\n";
+    }
+}
+
+class B extends A {
+    function misal() {
+        echo "Ben B::misal() olarak yeniden tanımlandım.<br />\n";
+        A::misal();
+    }
+}
+
+// A sınıfının örneği yok. Şunu basar:
+// Ben özgün A::misal() işleviyim.<br />
+A::misal();
+
+// B sınıfının bir nesnesini oluşturalım.
+$b = new B;
+
+// Şunlar basılır
+//   Ben B::misal() olarak yeniden tanımlandım.<br />
+//   Ben özgün A::misal() işleviyim.<br />
+$b->misal();
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bu örnekte, A sınıfının misal() işlevi çağrılmaktadır. Fakat A sınıfının
+    bir nesnesi olmadığından işlevi $a->misal() ve benzeriyle çağıramayız.
+    Bunun yerine misal() işlevini bir 'sınıf işlevi' olarak, yani bir sınıf
+    örneğinin değil sınıfın kendi işlevi olarak, çağırırız.
+   </para>
+
+   <para>
+    Sınıf işlevlerinin olmasına karşın sınıf değişkenleri yoktur. Aslında
+    çağrı sırasında bir nesne dahi yoktur. Bu bakımdan, bir sınıf işlevi
+    hiçbir nesne değişkenini kullanamaz (fakat yerel ve küresel değişkenleri
+    kullanabilir) ve <varname>$this</varname> de hepsinde kullanılamayabilir.
+   </para>
+
+   <para>
+    Yukarıdaki örnekte B sınıfı misal() işlevini yeniden tanımlamaktadır. A
+    sınıfındaki özgün tanım geçersiz kılındığından, yeni işlev içinden ::
+    işleci A::misal() biçeminde kullanılarak açıkça çağrılmadıkça B
+    sınıfından erişilebilir olmayacaktır. Aslında, çağrıyı (sonraki bölümde
+    göreceğiniz gibi) parent::misal() biçeminde yapmak daha uygundur.
+   </para>
+
+   <para>
+    Geçerli bir nesnenin olduğu ve bu nesnenin de nesne değişkenlerinin
+    olduğu bağlamda bir nesne işlevi içinde <varname>$this</varname> sözde
+    değişkenini ve diğer nesne değişkenlerini kullanabilirsiniz.
+   </para>
+
+ </sect1>
+
+ <sect1 xml:id="keyword.parent">
+   <title><code>parent</code> sözcüğü</title>
+
+  <para>
+   Kod yazarken ebeveyn sınıfların işlev ve değişkenlerini kullanmanız
+   gerekebilir. Türetilmiş sınıfınızı temiz tutmak veya ebeveyn sınıfın
+   kodunu özelleştirmek istediğiniz durumlar buna birer örnektir.
+  </para>
+
+  <para>
+   Ebeveyn sınıfın sayıl ismini kullanmak yerine, özel
+   <literal>parent</literal> ismini kullanarak sınıfınızın
+   <literal>extends</literal> bildiriminde belirtilen ebeveyn sınıfın ismine
+   atıf yapabilirsiniz. Böylelikle, ebeveyn sınıfın ismini birden fazla
+   yerde kullanmamış olursunuz. Kalıtsal ağacınızı gerçeklenimin ileri
+   safhalarında değiştirmek ihtiyacı duyarsanız sınıfınızın sadece
+   <literal>extends</literal> bildiriminde değişiklik yaparak bunu kolayca
+   yapabilirsiniz.
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class A {
+    function misal() {
+        echo "Adım A::misal() ve temel işlevselliği sağlarım.<br />\n";
+    }
+}
+
+class B extends A {
+    function misal() {
+        echo "Adım B::misal() ve ek işlesellik sağlarım.<br />\n";
+        parent::misal();
+    }
+}
+
+$b = new B;
+
+// A::misal() işlevini de çağıracak olan B::misal() işlevini çağırır
+$b->misal();
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </sect1>
+
+ <sect1 xml:id="language.oop.serialization">
+  <title>Nesneleri Dizgeleştirme - Oturum nesneleri</title>
+
+  <para>
+   <function>serialize</function> işlevi PHP'de saklanabilen her değerin
+   bayt dizisi gösterimini içeren bir dizge ile döner. Bu dizgeden tekrar
+   özgün değeri elde etmek için <function>unserialize</function> işlevi
+   kullanılır. Bir nesnenin dizgeleştirilerek kaydedilmesi halinde sınıfın
+   ismi ve nesne içindeki tüm değişkenler kaydedilecek fakat nesnenin
+   işlevleri kaydedilmeyecektir.
+  </para>
+
+  <para>
+   Bir nesnenin <function>unserialize</function> ile geri alınabilmesi için
+   bu nesnenin oluşturulduğu sınıfın tanımlı olması gerekir. Örneğin,
+   sayfa1.php dosyasında A sınıfının <varname>$a</varname> nesnesini
+   dizgeleştirdiğinizde <varname>$a</varname> nesnesinin içerdiği tüm
+   değişkenlerin değerleri ile A sınıfının ismini kaydetmiş olursunuz. Bu
+   dizgeyi sayfa2.php içinde yeniden nesneleştirmek isterseniz A sınıfının
+   sayfa2.php içinde tanımlı olması gerekir. Bunu A sınıfının tanımını ayrı
+   bir dosyada tutup bu dosyayı sayfa1.php ve sayfa2.php dosyalarına dahil
+   ederek kolayca gerçekleştirebilirsiniz.
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// sınıfa.inc:
+
+  class A {
+      var $bir = 1;
+
+      function bir_göster() {
+          echo $this->bir;
+      }
+  }
+
+// sayfa1.php:
+
+  include("sınıfa.inc");
+
+  $a = new A;
+  $s = serialize($a);
+  // $s dizgesini sayfa2.php'nin bulabileceği bir yere koyalım
+  $fp = fopen("depo", "w");
+  fwrite($fp, $s);
+  fclose($fp);
+
+// sayfa2.php:
+
+  // yeniden nesneleştirme bunun içerilmesini gerektirir
+  include("sınıfa.inc");
+
+  $s = implode("", @file("depo"));
+  $a = unserialize($s);
+
+  // artık $a nesnesinin bir_göster işlevini kullanabiliriz
+  $a->bir_göster();
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Oturumları kullanıyorsanız ve nesneleri kaydetmek için
+   <function>session_register</function> işlevini kullanıyorsanız, her PHP
+   sayfasının sonunda bu nesneler özdevinimli olarak dizgeleştiriler ve
+   sonraki sayfalarda yine özdevinimli olarak nesneleştirilirler. Yani, bu
+   nesnelerin sayfalarınızda bir kere görünmesi oturumunuzun birer parçası
+   haline gelmeleri için yeterlidir.
+  </para>
+
+  <para>
+   Bu bakımdan, hepsini bütün sayfalarda kullanmayacak olsanız bile bu tür
+   kayıtlı nesnelerin sınıf tanımlarını her sayfaya mutlaka dahil etmenizi
+   öneririz. Bunu yapmazsanız ve bir nesnenin dizgesi sınıf tanımı
+   olmaksızın nesneleştirilirse sınıfla ilişkisi kaybolur ve hiçbir işlevi
+   olmayan <classname>__PHP_Incomplete_Class_Name</classname> sınıfının bir
+   nesnesi haline gelerek işe yaramaz hale gelir.
+  </para>
+
+  <para>
+   Dolayısıyla, yukarıdaki örnekteki <varname>$a</varname> nesnesini,
+   <literal>session_register("a")</literal> işleviyle bir oturumun parçası
+   haline getirirseniz <literal>sınıfa.inc</literal> dosyasını sadece
+   sayfa1.php ve sayfa2.php dosyalarına değil oturumun tüm dosyalarına dahil
+   etmeniz gerekir.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.oop.magic-functions">
+  <title><code>__sleep</code> ve <code>__wakeup</code> sihirli işlevleri
+  </title>
+
+  <para>
+   <function>serialize</function> işlevi sınıfınızın
+   <literal>__sleep</literal> adında sihirli bir işlev içerip içermediğine
+   bakar. Varsa, her dizgeleleştirme öncesi bu işlev çalıştırılır. Bu
+   işlevin nesneyi temizleyip, dizgeleştirilecek nesnenin tüm değişken
+   isimlerini içeren bir dizi döndürmesi beklenir. Eğer işlev dizgeleştirme
+   sonucunda  &null;'dan başka birşey döndürmüyorsa bir E_NOTICE çıktılanır.
+  </para>
+
+  <para>
+   <literal>__sleep</literal> işlevinden beklenen, askıdaki veriyi teslim
+   etmesi ve bazı temizlik işlemleri yapmasıdır. İşlev, tamamen kaydedilmesi
+   gereken çok büyük nesneler için de ayrıca kullanışlıdır.
+  </para>
+
+  <para>
+   <function>unserialize</function> işlevi ise tersine
+   <literal>__wakeup</literal> adında bir sihirli işlevin varlığına
+   bakacaktır. Varsa, bu işlev nesnenin sahip olduğu özkaynakların hepsini
+   yeniden oluşturacaktır.
+  </para>
+
+  <para>
+    <literal>__wakeup</literal> işlevinden beklenen, nesneleştirme sırasında
+    kaybedilen veritabanı bağlantılarını yeniden oluşturmak ve diğer
+    ilklendirmeleri yeniden yapmaktır.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.oop.newref">
+   <title>Kurucuların içinde Gönderimler</title>
+   <para>
+    Gönderimlerin kurucular içinde kullanımı beklenmedik sonuçlar
+    doğurabilir. Bu öğretici tarzı bölümde bu sorunlardan nasıl
+    kaçınabileceğinizden bahsedilecektir.
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    function Foo($isim) {
+        // $küreselatıf küresel dizisi içinde bir gönderim oluşturalım
+        global $küreselatıf;
+        $küreselatıf[] = &$this;
+        // aktarılan değere ismi atayalım
+        $this->isimAta($isim);
+        // ve çıktılayalım
+        $this->isimGöster();
+    }
+
+    function isimGöster() {
+        echo "<br />", $this->isim;
+    }
+
+    function isimAta($isim) {
+        $this->isim = $isim;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+  </para>
+
+   <para>
+    <literal>=</literal> işleci kullanılarak bir kopya olarak oluşturulan
+    <varname>$bar1</varname> ile <literal>=&amp;</literal> işleci
+    kullanılarık gönderimli oluşturulan <varname>$bar2</varname> arasındaki
+    farklara bakalım...
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$bar1 = new Foo('kurucu içinde atandı');
+$bar1->isimGöster();
+$küreselatıf[0]->isimGöster();
+
+/* çıktısı:
+kurucu içinde atandı
+kurucu içinde atandı
+kurucu içinde atandı */
+
+$bar2 =& new Foo('kurucu içinde atandı');
+$bar2->isimGöster();
+$küreselatıf[1]->isimGöster();
+
+/* çıktısı:
+kurucu içinde atandı
+kurucu içinde atandı
+kurucu içinde atandı */
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    Görünürde bir fark yok gibi ama aslında çok önemli bir fark var:
+    <varname>$bar1</varname> ve <varname>$küreselatıf[0]</varname>
+    gönderimli olmadıkları gibi aynı değişkenler de değiller. Bunun sebebi
+    <code>new</code> işleminin öntanımlı olarak bir gönderim değil bir kopya
+    döndürmesidir.
+    <note>
+     <simpara>
+      Gönderim yerine kopya döndürmekle bir başarım kaybı ortaya çıkmaz (PHP
+      4'ten beri). Aksine, gönderim yerine kopyayla çalışmak çoğunlukla daha
+      bile iyidir, bunun sebebi gönderim oluşturmak için harcanan zamana
+      karşın kopya oluşturma işleminin sanal olarak hiç vakit almayışıdır
+      (büyük bir nesne veya dizi içermemesi ve bunların ardışık olarak
+      birbirlerini değiştirmemesi şartıyla, aksi takdirde gönderim kullanmak
+      daha akıllıca olur).
+     </simpara>
+    </note>
+    Yukarıda yazılanları bir örnekle pekiştirelim:
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// ismi değiştirip ne olacağını görelim
+// $bar1 ve $küreselatıf[0]'ın isimlerinin değişeceğini beklersiniz...
+$bar1->isimAta('dışardan atandı');
+
+// evvelce bahsedildiği gibi bir kayıp yok
+$bar1->isimGöster();
+$küreselatıf[0]->isimGöster();
+
+/* çıktısı:
+dışardan atandı
+kurucu içinde atandı */
+
+// şimdi $bar2 ile $küreselatıf[1] arasındaki farkı görelim
+$bar2->isimAta('dışardan atandı');
+
+// şansa bakın ki, sadece eşit değil aynı zamanda $bar2->isim
+// ve $küreselatıf[1]->isim aynılar.
+$bar2->isimGöster();
+$küreselatıf[1]->isimGöster();
+
+/* çıktısı:
+dışardan atandı
+dışardan atandı */
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+   Son bir örnekle daha iyi anlamaya çalışalım:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class A {
+    function A($i) {
+        $this->değer = $i;
+        // neden bir gönderime ihtiyacımız olmadığını gösterelim
+        $this->b = new B($this);
+    }
+
+    function createRef() {
+        $this->c = new B($this);
+    }
+
+    function değerGöster() {
+        echo "<br />",get_class($this),' sınıfı: ',$this->değer;
+    }
+}
+
+
+class B {
+    function B(&$a) {
+        $this->a = &$a;
+    }
+
+    function değerGöster() {
+        echo "<br />",get_class($this),' sınıfı: ',$this->a->değer;
+    }
+}
+
+// * imli satırda istenmeyen bir sonuca yol açan basit kopya
+// kullanma sebebimizi anlamaya çalışalım
+$a =& new A(10);
+$a->createRef();
+
+$a->değerGöster();
+$a->b->değerGöster();
+$a->c->değerGöster();
+
+$a->değer = 11;
+
+$a->değerGöster();
+$a->b->değerGöster(); // *
+$a->c->değerGöster();
+
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+A sınıfı: 10
+B sınıfı: 10
+B sınıfı: 10
+A sınıfı: 11
+B sınıfı: 11
+B sınıfı: 11
+]]>
+     </screen>
+    </informalexample>
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.oop.object-comparison">
+   <title>Nesne Karşılaştırma</title>
+  <para>
+   PHP 4'te, nesneler çok basit şekilde karşılaştırılırlar: İki nesne
+   örneği, aynı özniteliklere ve değerlere sahipseler ve aynı sınıfın
+   örnekleriyseler eşittirler. Nesneler aynılık (<literal>===</literal>)
+   işleciyle karşılaştırılırken de aynı kurallar uygulanır.
+  </para>
+  <para>
+   Aşağıdaki kodu çalıştırdığımızı varsayalım:
+   <example>
+    <title>- PHP 4'te nesne karşılaştırma örneği</title>
+    <programlisting role='php'>
+<![CDATA[
+<?php
+function bool2str($bool) {
+    if ($bool === false) {
+            return 'FALSE';
+    } else {
+            return 'TRUE';
+    }
+}
+
+function compareObjects(&$o1, &$o2) {
+    echo 'o1 == o2 : '.bool2str($o1 == $o2)."\n";
+    echo 'o1 != o2 : '.bool2str($o1 != $o2)."\n";
+    echo 'o1 === o2 : '.bool2str($o1 === $o2)."\n";
+    echo 'o1 !== o2 : '.bool2str($o1 !== $o2)."\n";
+}
+
+class Bayrak {
+    var $bayrak;
+
+    function Bayrak($bayrak=true) {
+            $this->bayrak = $bayrak;
+    }
+}
+
+class DeğiştirilebilirBayrak extends Bayrak {
+
+    function turnOn() {
+        $this->bayrak = true;
+    }
+
+    function turnOff() {
+        $this->bayrak = false;
+    }
+}
+
+$o = new Bayrak();
+$p = new Bayrak(false);
+$q = new Bayrak();
+
+$r = new DeğiştirilebilirBayrak();
+
+echo "Aynı değiştirgelerle oluşturulmuş örnekleri karşılaştıralım.\n";
+compareObjects($o, $q);
+
+echo "\nFarklı değiştirgelerle oluşturulmuş örnekleri karşılaştıralım.\n";
+compareObjects($o, $p);
+
+echo "\nBir ebeveyn sınıf örneğini bir alt sınıfınki ile karşılaştıralım.\n";
+compareObjects($o, $r);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Aynı değiştirgelerle oluşturulmuş örnekleri karşılaştıralım.
+o1 == o2 : TRUE
+o1 != o2 : FALSE
+o1 === o2 : FALSE
+o1 !== o2 : TRUE
+
+Farklı değiştirgelerle oluşturulmuş örnekleri karşılaştıralım.
+o1 == o2 : FALSE
+o1 != o2 : TRUE
+o1 === o2 : FALSE
+o1 !== o2 : TRUE
+
+Bir ebeveyn sınıf örneğini bir alt sınıfınki ile karşılaştıralım.
+o1 == o2 : FALSE
+o1 != o2 : TRUE
+o1 === o2 : FALSE
+o1 !== o2 : TRUE
+]]>
+    </screen>
+   </example>
+   Çıktı, yukarıda verdiğimiz karşılaştırma kuralını doğrulamaktadır. Aynı
+   sınıfın sadece özniteliklerinin değerleri aynı olan örnekleri eşit ve
+   aynı kabul edilirler.
+  </para>
+  <para>
+   Bileşik nesnelerde de aynı karşılaştırma kuralları uygulanır. Aşağıdaki
+   örnekte, <classname>Bayrak</classname> nesnelerinden oluşan bir ilişkisel
+   diziyi saklayan bir taşıyıcı sınıf oluşturulmaktadır.
+   <example>
+    <title>- PHP 4'te bütünleşik nesnelerin karşılaştırılması</title>
+    <programlisting role='php'>
+<![CDATA[
+<?php
+class BayrakAta {
+    var $set;
+
+    function BayrakAta($bayrakDizisi = array()) {
+        $this->set = $bayrakDizisi;
+    }
+
+    function bayrakEkle($isim, $bayrak) {
+        $this->set[$isim] = $bayrak;
+    }
+
+    function bayrakSil($isim) {
+        if (array_key_exists($isim, $this->set)) {
+            unset($this->set[$isim]);
+        }
+    }
+}
+
+
+$u = new BayrakAta();
+$u->bayrakEkle('bayrak1', $o);
+$u->bayrakEkle('bayrak2', $p);
+$v = new BayrakAta(array('bayrak1'=>$q, 'bayrak2'=>$p));
+$w = new BayrakAta(array('bayrak1'=>$q));
+
+echo "\nu(o,p) ve v(q,p) birleşik nesneleri\n";
+compareObjects($u, $v);
+
+echo "\nu(o,p) ve w(q)\n";
+compareObjects($u, $w);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+u(o,p) ve v(q,p) birleşik nesneleri
+o1 == o2 : TRUE
+o1 != o2 : FALSE
+o1 === o2 : FALSE
+o1 !== o2 : TRUE
+
+u(o,p) ve w(q)
+o1 == o2 : FALSE
+o1 != o2 : TRUE
+o1 === o2 : FALSE
+o1 !== o2 : TRUE
+]]>
+    </screen>
+   </example>
+  </para>
+ </sect1>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
