@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<appendix xml:id="transports" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Desteklenen Soket Aktarımlarının Listesi</title>
+ <para>
+  <function>fsockopen</function> ve <function>stream_socket_client</function>
+  gibi akım temelli soket işlevlerini kullanmak için PHP'nin yerleşik olarak
+  sahip olduğu URL tarzı soket aktarımları aşağıda liste halinde verilmiştir.
+  Bu aktarımlar <link linkend="ref.sockets">Soket Eklentisi</link>ne
+  uygulanmaz.
+ </para>
+
+ <para>
+  Kurulu PHP sürümünüzün desteklediği aktarımları listelemek için
+  <function>stream_get_transports</function> işlevini kullanabilirsiniz.
+ </para>
+
+ <section xml:id="transports.inet">
+  <title>Genel Ağ Alanı: TCP, UDP, SSL ve TLS</title>
+  <simpara>
+   PHP 4, PHP 5, PHP 6. <literal>ssl://</literal> ve
+   <literal>tls://</literal> PHP 4.3.0'dan beri, <literal>sslv2://</literal>
+   ve <literal>sslv3://</literal> ise PHP 5.0.2'den beri desteklenmektedir.
+  </simpara>
+
+  <note>
+   <simpara>
+    Hiçbir aktarım belirtilmezse <literal>tcp://</literal> öntanımlıdır.
+   </simpara>
+  </note>
+
+  <itemizedlist>
+   <listitem><simpara><literal>127.0.0.1</literal></simpara></listitem>
+   <listitem><simpara><literal>fe80::1</literal></simpara></listitem>
+   <listitem><simpara><literal>mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>tcp://127.0.0.1</literal></simpara></listitem>
+   <listitem><simpara><literal>tcp://fe80::1</literal></simpara></listitem>
+   <listitem><simpara><literal>tcp://mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>udp://mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>ssl://mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>sslv2://mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>sslv3://mesela.dom</literal></simpara></listitem>
+   <listitem><simpara><literal>tls://mesela.dom</literal></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+   Genel Ağ Alanının soketleri bir hedef adrese ek olara bir port numarası
+   gerektirirler. <function>fsockopen</function> işlevi için bu ikinci bir
+   değiştirge ile belirtilir, dolayısıyla port numarasının IP adresiyle
+   birlikte bir aktarım URLsi olarak biçimlenmesine gerek kalmaz.
+   <function>stream_socket_client</function> ve ilgili diğer işlevler için
+   ise geleneksel URL gösterimi kullanılır, yani port numarası
+   aktarım URL'sinin sonuna iki nokta imi ile eklemlenir.
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><literal>tcp://127.0.0.1:80</literal></simpara></listitem>
+   <listitem><simpara><literal>tcp://[fe80::1]:80</literal></simpara></listitem>
+   <listitem><simpara><literal>tcp://mesela.dom:80</literal></simpara></listitem>
+  </itemizedlist>
+
+  <note>
+   <title>Port numaralı IPv6 adresleri</title>
+   <simpara>
+    Dikkat ederseniz, yukarıdaki örneklerden ikincisinde IPv6 adresi köşeli
+    ayraçlarını arasına alınmıştır (<literal>[fe80::1]</literal>). Bunun
+    sebebi IPv6 adresin iki noktalı ayraçlarının, port numarasını eklemleyen
+    iki nokta iminden ayırd edilmesini sağlamaktır.
+   </simpara>
+  </note>
+
+  <simpara>
+   <literal>ssl://</literal> ve <literal>tls://</literal> aktarımları (sadece
+   PHP openssl desteği ile derlenmişse vardırlar) <literal>tcp://</literal>
+   aktarımının SSL şifrelemeli uzantılarıdır. OpenSSL desteği PHP 4.3.0
+   sürümünden beri PHP içinde duruk olarak derlenmekte ise de PHP 5.0.0'dan
+   itibaren duruk olarak derlenebildiği gibi modül olarak da
+   derlenebilmektedir.
+  </simpara>
+
+  <simpara>
+   <literal>ssl://</literal> aktarımı, uzak konağın yetenek ve tercihlerine
+   bağlı olarak SSL V2 veya SSL V3 bağlantısı kurmaya çalışacaktır. SSL V2
+   veya SSL V3 bağlantı istekleri <literal>sslv2://</literal> ve
+   <literal>sslv3://</literal> biçeminde açıkça belirtilebilir.
+  </simpara>
+ </section>
+
+ <section xml:id="transports.unix">
+  <title>Unix Alanı: Unix ve UDG</title>
+  <simpara>
+   <literal>unix://</literal> ve (PHP 5'ten beri) <literal>udg://</literal>.
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><literal>unix:///tmp/mysock</literal></simpara></listitem>
+   <listitem><simpara><literal>udg:///tmp/mysock</literal></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+   <literal>unix://</literal> aktarımı Unix alanında bir soket akımı
+   bağlantısına erişim sağlar. <literal>udg://</literal> ise aynı sokete UDP
+   protokolü kullanılarak erişim sağlar.
+  </simpara>
+
+  <simpara>
+   Unix alanı soketleri, Genel Ağ soketlerinin tersine bir port numarası
+   gerektirmezler. Bu durumda <function>fsockopen</function> işlevinin
+   <parameter>portnum</parameter> değiştirgesine 0 atanmalıdır.
+  </simpara>
+ </section>
+
+</appendix>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
