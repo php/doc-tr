@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.7 Maintainer: behzat Status: wip -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.7 Maintainer: behzat Status: ready -->
 <!-- CREDITS: faruk -->
 <!-- splitted from ./en/functions/apache.xml, last change in rev 1.2 -->
 <refentry xml:id="function.apache-note" xmlns="http://docbook.org/ns/docbook">
@@ -12,13 +12,18 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>dizgi</type><methodname>apache_note</methodname>
-   <methodparam><type>dizgi</type><parameter>note_name</parameter></methodparam>
-   <methodparam choice="opt"><type>dizgi</type><parameter>note_value</parameter></methodparam>
+   <type>string</type><methodname>apache_note</methodname>
+   <methodparam><type>string</type><parameter>not_adı</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>not_değeri</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>apache_note</function> isteğin <literal>not</literal>larını alan 
-   Apache'ye özel bir fonksiyondur.
+   Bu işlev Apache'nin <literal>table_get</literal> ve <literal>table_set</literal> işlevleri
+   için bir sarmalayıcıdır. Bir istek sırasında var olan not tablosunu düzenler. Tablonun
+   amacı Apache modüllerinin iletişimini sağlamaktır.
+  </para>
+  <para>
+   <function>apache_note</function> işlevinin ana kullanım amacı aynı istek dahilinde bir
+   modülden diğerine bilgi aktarmaktır.
   </para>
  </refsect1>
 
@@ -27,18 +32,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>note_name</parameter></term>
+     <term><parameter>not_adı</parameter></term>
      <listitem>
       <para>
-       Not'un adı.
+       Notun adı.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>note_value</parameter></term>
+     <term><parameter>not_değeri</parameter></term>
      <listitem>
       <para>
-       Not'un değeri.
+       Notun değeri.
       </para>
      </listitem>
     </varlistentry>
@@ -49,14 +54,78 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Eğer bir argüman ile çağrılırsa <literal>note_name</literal> notunun 
-   o anki değerini döndürür. Eğer iki argüman ile çağrılırsa 
-   <literal>note_name</literal> notunun değerini <literal>note_value</literal> 
-   olarak atar ve <literal>note_name</literal> notunun önceki değerini 
-   döndürür.
-   Eğer not alınamıyorsa &false; döndürür.
+    Tek değiştirge ile çağrılırsa <literal>not_adı</literal> notunun
+    o anki değerini döndürür. Eğer iki değiştirge ile çağrılırsa
+    <literal>not_değeri</literal> değerini <literal>not_adı</literal> notuna atar ve
+    <literal>not_adı</literal> notunun önceki değerini döndürür. Eğer işlem başarısız olursa
+    &false; döner.
   </para>
  </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>PHP ve Perl arasında bilgi aktarımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+apache_note('name', 'Fredrik Ekengren');
+
+// Perl betiğini çağıralım
+virtual("/perl/bir_betik.pl");
+
+$result = apache_note("resultdata");
+?>
+]]>
+    </programlisting>
+    <programlisting role="perl">
+<![CDATA[
+# Apache istek nesnesini alalım
+my $r = Apache->request()->main();
+
+# Aktarılan veriyi alalım
+my $name = $r->notes('name');
+
+# bir takım işlemler...
+
+# Sonucu PHP'ye geri aktaralım
+$r->notes('resultdata', $result);
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- access.log dosyasındaki oturum değerleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+apache_note('sessionID', session_id());
+
+?>
+]]>
+    </programlisting>
+    <programlisting role="apache">
+<![CDATA[
+# "%{sessionID}n" can be used in the LogFormat directive
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>virtual</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file

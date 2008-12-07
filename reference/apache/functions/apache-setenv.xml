@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.12 Maintainer: behzat Status: wip -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.12 Maintainer: behzat Status: ready -->
 <!-- CREDITS: faruk -->
 <!-- splitted from ./en/functions/apache.xml, last change in rev 1.7 -->
 <refentry xml:id="function.apache-setenv" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>apache_setenv</refname>
-  <refpurpose>Bir Apache alt işlem değişkeni atar</refpurpose>
+  <refpurpose>Bir Apache ortam değişkeni atar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>boole</type><methodname>apache_setenv</methodname>
-   <methodparam><type>dizgi</type><parameter>değişken</parameter></methodparam>
-   <methodparam><type>dizgi</type><parameter>değer</parameter></methodparam>
-   <methodparam choice="opt"><type>boole</type><parameter>walk_to_top</parameter></methodparam>
+   <type>bool</type><methodname>apache_setenv</methodname>
+   <methodparam><type>string</type><parameter>değişken</parameter></methodparam>
+   <methodparam><type>string</type><parameter>değer</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>tepe_seviye</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>apache_setenv</function> <parameter>değişken</parameter>'in değerini 
-   Apache çevre değişkeni olarak atar.
+   <function>apache_setenv</function> işlevi <parameter>değişken</parameter>
+   ile belirtilen Apache ortam değişkeninin değerini atar.
   </para>
   <note>
    <para>
-    Apache çevre değişkeni atarken <link linkend="reserved.variables.server">$_SERVER</link> 
-    içindeki benzer değişkenin değeri değişmez.
+    Apache ortam değişkeni atanırken ilgili <varname>$_SERVER</varname>
+    değişkeninde bir değişiklik olmaz.
    </para>
   </note>
  </refsect1>
@@ -50,10 +50,11 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>walk_to_top</parameter></term>
+     <term><parameter>tepe_seviye</parameter></term>
      <listitem>
       <para>
-       Tüm Apache katmanlarına etkili üst seviye değişken atamak için kullanılır.
+       Değişkenin tüm Apache katmanlarına kullanılabilen tepe seviyeye
+       atanıp atanmayacağını belirler.
       </para>
      </listitem>
     </varlistentry>
@@ -72,11 +73,12 @@
   &reftitle.examples;
   <para>
    <example>
-   <title><function>apache_setenv</function> kullanarak bir Apache çevre değişkeni atamak</title>
+   <title>- <function>apache_setenv</function> ile bir Apache ortam
+   değişkenini atamak</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-apache_setenv("EXAMPLE_VAR", "Example Value");
+apache_setenv("EXAMPLE_VAR", "Örnek değer");
 ?>
 ]]>
     </programlisting>
@@ -88,10 +90,10 @@ apache_setenv("EXAMPLE_VAR", "Example Value");
   &reftitle.notes;
   <note>
    <para>
-    <function>apache_setenv</function> can be paired up with
-    <function>apache_getenv</function> across separate pages or for setting
-    variables to pass to Server Side Includes (.shtml) that have been
-    included in PHP scripts.
+    <function>apache_setenv</function> işlevi
+    <function>apache_getenv</function> işlevi ile ayrı sayfalar arasında
+    veya PHP betiklerinde içerilmiş SSI sayfalarına (.shtml) aktarılacak
+    değişkenlere değer atamak için eşleştirilebilir
    </para>
   </note>
  </refsect1>

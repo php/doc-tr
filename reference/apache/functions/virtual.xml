@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.16 Maintainer: behzat Status: wip -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.16 Maintainer: behzat Status: ready -->
 <!-- CREDITS: faruk -->
 <!-- splitted from ./en/functions/apache.xml, last change in rev 1.20 -->
 <refentry xml:id="function.virtual" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>virtual</refname>
-  <refpurpose>Bir apache alt isteği gerçekleştirir</refpurpose>
+  <refpurpose>Bir Apache alt isteği gerçekleştirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>boole</type><methodname>virtual</methodname>
-   <methodparam><type>dizgi</type><parameter>dosya adı</parameter></methodparam>
+   <type>bool</type><methodname>virtual</methodname>
+   <methodparam><type>string</type><parameter>dosya_adı</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>virtual</function> mod_include'da ki &lt;!--#include virtual...--&gt; 
-   yönergesinin dengi olan Apache'ye özel bir fonksiyondur. 
-   Bir Apche alt isteği gerçekleştirir. 
-   Apache'ye CGI betikleri ya da .shtml dosyaları veyahut Apache'nin yorumlasını 
-   istediğiniz herhangi birşeyi kullanırken kullanışlıdır. 
-   CGI betikleri için betiğin geçerli CGI başlıkları üretmesi gerektiğini unutmayınız. 
-   Bu genellikle betiğin bir Content-type başlığı üretmesi demektir.
+   <function>virtual</function> işlevi, mod_include'da ki <literal>&lt;!--#include virtual...--&gt;</literal> komutuna eşdeğer Apache'ye özgü bir işlevdir. Bir Apache alt isteği gerçekleştirir. Apache'ye CGI betikleri ya da .shtml dosyalarını veya Apache'nin yorumlamasını istediğiniz herhangi birşey için kullanışlıdır. CGI betiklerinin geçerli CGI başlıklarını üretmelerinin gerekliliğini unutmayınız. Betiğin en azından bir Content-type başlığı üretmesi gerekir.
   </para>
   <para>
-   Bir alt istek çalıştırmak için bekleyen başlıklar dahil olmak üzere 
-   tüm belleğin yok edilmiş ve gezgine gönderilmiş olması gereklidir.
+   Bir alt istek çalıştırmak için tüm tamponlar tarayıcıya boşaltılıp sonlandırılırlar ve bu arada bekleyen başlıklar da gönderilir.
   </para>
   &apache.req.module;
  </refsect1>
@@ -36,10 +29,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dosya adı</parameter></term>
+     <term><parameter>dosya_adı</parameter></term>
      <listitem>
       <para>
-       Fiili komutu yerine getirecek dosyanın adı.
+       Apache <code>virtual</code> komutunun çalıştıracağı dosya.
       </para>
      </listitem>
     </varlistentry>
@@ -50,7 +43,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarı halinde fiili komutu icra eder, hata halinde &false; döndürür.
+   Başarı halinde <code>virtual</code> komutu çalıştırılır, hata halinde &false; döndürür.
   </para>
  </refsect1>
 
@@ -69,8 +62,8 @@
       <row>
        <entry>4.0.6</entry>
        <entry>
-        Bu fonksiyon PHP dosyaları üzerinde kullanılabilir. Ancak 
-        <function>include</function> ya da <function>require</function> 
+        Bu işlev PHP dosyalarında kullanılabilir. Ancak
+        <function>include</function> ya da <function>require</function>
         kullanmak daha yerinde olacaktır.
        </entry>
       </row>
@@ -80,19 +73,38 @@
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <function>apache_note</function> işlevindeki örneği bakınız.
+  </para>
+ </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
   <warning>
    <para>
-    Sorgu dizgisi dahil edilen dosyaya geçilebilir. 
-    Ancak <varname>$_GET</varname> değişkeni ana betikten koyalanır ve sadece 
-    <varname>$_SERVER['QUERY_STRING']</varname> değişkeni geçilen sorgu 
-    dizgisi ile doldurulur. 
-    Sorgu dizgisi Apache 2 kullanılırken geçilebilir. 
-    İstek yapılan dosya Apache'nin erişim kayıtlarında gösterilmez.
+    Sorgu dizgisi dahil edilen dosyaya aktarılabilir, ancak <varname>$_GET</varname> değişkeni ana betikten kopyalanır ve sadece
+    <varname>$_SERVER['QUERY_STRING']</varname> değişkeni aktarılacak sorgu
+    dizgisi ile doldurulur. Sorgu dizgesi sadece Apache 2 kullanılırken aktarılabilir.
+    İstek yapılan dosya Apache'nin erişim günlüklerinde gösterilmez.
    </para>
   </warning>
+ <note>
+   <para>
+    İstek dosyasında atanan ortam değişkenleri çağrı betiğine görünür değildir.
+   </para>
+  </note>
   &note.apache.nsapi-module;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>apache_note</function></member>
+   </simplelist>
+  </para>
  </refsect1>
 </refentry>
 
