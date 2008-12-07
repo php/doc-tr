@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.10 Maintainer: aydin Status: wip -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.10 Maintainer: aydin Status: ready -->
 <!-- CREDITS: sezer -->
 <refentry xml:id="function.bzopen" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bzopen</refname>
-  <refpurpose>Bzip2 sıkıştırılmış dosya açar</refpurpose>
+  <refpurpose>Bzip2 sıkıştırmalı bir dosyayı açar</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>resource</type><methodname>bzopen</methodname>
-   <methodparam><type>dizgi</type><parameter>dosyaadı</parameter></methodparam>
-   <methodparam><type>dizgi</type><parameter>mod</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dosyaadı</parameter></methodparam>
+   <methodparam><type>string</type><parameter>kip</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>bzopen</function> bzip2 (.bz2) türündeki dosyaları okuma ve yazma amaçlı açar,
-   gerekirse yeni dosya yaratır.
+   <function>bzopen</function> bzip2 (.bz2) türündeki dosyaları okuma ve yazma amacıyla açar.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -27,16 +26,15 @@
      <term><parameter>dosyaadı</parameter></term>
      <listitem>
       <para>
-       Açılacak dosyanın adı. Varolan bir bzip2 dosyası veya yeni bir dosya olabilir.
+       Açılacak dosyanın adı.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>mod</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
-       <function>fopen</function> fonksiyonuna benzer olarak çalışır. (sadece okuma amaçlı ise 'r',
-       sadece yazma amaçlı ise 'w' (UYARI: varolan dosyanızı siler), vb. İlgili yere bakınız.).
+       <function>fopen</function> işlevinin kip değiştirgesi gibidir (sadece okuma amaçlı ise 'r', sadece yazma amaçlı ise 'w', vb.).
       </para>
      </listitem>
     </varlistentry>
@@ -46,22 +44,21 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Eğer dosya açma işlemi başarılamazsa <function>bzopen</function> geriye &false; bildirir. Aksi
-   takdirde yeni açılan dosyaya ait bir bzip2 dosya imleci bildirir.
+   Eğer dosya açma işlemi başarılamazsa <function>bzopen</function> geriye &false; döndürür. Aksi takdirde yeni açılan dosyaya ait bir bzip2 dosya tanıtıcısı döndürür.
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title><function>bzopen</function> örneği</title>
+    <title>- <function>bzopen</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
 $dosya = '/tmp/abc.bz2';
 
-$bz = bzopen($file, 'r') or die("Belirtilen dosya $dosya açılamadı.");
+$bz = bzopen($file, 'r') or die("Belirtilen $dosya dosyası açılamadı.");
 
 bzclose($bz);
 

@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.11 Maintainer: aydin Status: wip -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.11 Maintainer: aydin Status: ready -->
 <!-- CREDITS: sezer -->
 <refentry xml:id="function.bzread" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bzread</refname>
-  <refpurpose>Bzip2 dosya okuma</refpurpose>
+  <refpurpose>Bzip2 dosyasını ikil olarak okur</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>dizi</type><methodname>bzread</methodname>
-   <methodparam><type>kaynak</type><parameter>bz</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <type>string</type><methodname>bzread</methodname>
+   <methodparam><type>resource</type><parameter>bz</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>uzunluk</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>bzread</function> verilen bzip2 dosya imlecinden bilgi okur.
+   <function>bzread</function>, bzip2 dosya tanıtıcısı verilen dosyayı okur.
   </para>
   <para>
-   Okuma işlemi belirtilen bilgi uzunluğuna <parameter>uzunluk</parameter> (açılmış halde) eriştiği zaman
-   veya dosya sonuna varıldığı zaman (EOF) sona erer. Bu fonksiyon satır sonunu önemsemez, ikilik (binary) bilgi için kullanılabilir.
+    Sıkıştırıması açılmış veri belirtilen <parameter>uzunluk</parameter>
+    baytlık uzunluğa eriştiği zaman veya dosya sonuna varıldığı zaman okuma
+    işlemi sona erer.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -30,8 +31,8 @@
      <term><parameter>bz</parameter></term>
      <listitem>
       <para>
-       Dosya imleci. Gerçek ve varolan bir dosya olmalı, <function>bzopen</function>
-       fonksiyonu tarafından bildirilen bir değer olmalıdır.
+       Dosya tanıtıcısı. Geçerli ve <function>bzopen</function>
+       işlevi tarafından açılmış bir dosyayı göstermelidir.
       </para>
      </listitem>
     </varlistentry>
@@ -39,31 +40,31 @@
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       Eğer belirtilmemişse, <function>bzread</function> her seferinde en fazla
-       1024 bayt (açılmış halde) okuyarak geri dönecektir
+       Eğer belirtilmemişse, <function>bzread</function> her seferinde 1024
+       baytlık sıkıştırması açılmış veri okuyacaktır.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </para> 
+  </para>
  </refsect1>
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geriye açılmış haldeki bilgiyi veya hata durumunda &false; bildirir.
+   Sıkıştırması açılmış veriyi veya hata durumunda &false; döndürür.
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title><function>bzread</function> örneği</title>
+    <title>- <function>bzread</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
 $dosya = '/tmp/foo.bz2';
-$bz = bzopen($dosya, 'r') or die("Belirtilen dosya $dosya açılamadı.");
+$bz = bzopen($dosya, 'r') or die("Belirtilen $dosya dosyası açılamadı.");
 
 $acilmis_icerik = '';
 while (!feof($bz)) {

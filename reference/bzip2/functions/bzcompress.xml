@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.11 Maintainer: aydin Status: wip -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.11 Maintainer: aydin Status: ready -->
 <!-- CREDITS: sezer -->
 <refentry xml:id="function.bzcompress" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bzcompress</refname>
-  <refpurpose>Verilen dizgiyi bzip2 olarak sıkıştırır</refpurpose>
+  <refpurpose>Verilen dizgiyi bzip2 kodlamalı olarak sıkıştırır</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>karma</type><methodname>bzcompress</methodname>
-   <methodparam><type>dizgi</type><parameter>kaynak</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>parcabuyukluk</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>iskatsayisi</parameter></methodparam>
+   <type>mixed</type><methodname>bzcompress</methodname>
+   <methodparam><type>string</type><parameter>kaynak</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>blokboyu</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>katsayı</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>bzcompress</function> verilen dizgiyi bzip2 türünde sıkıştırır ve
-   geri yeni bir dizgi bildirir.
+   bzip2 kodlu veri olarak döndürür.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -28,32 +28,33 @@
      <term><parameter>kaynak</parameter></term>
      <listitem>
       <para>
-       Sıkıştırılacak dizgi
+       Sıkıştırılacak dizgi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>parcabuyukluk</parameter></term>
+     <term><parameter>blokboyu</parameter></term>
      <listitem>
       <para>
-       Bu sıkıştırma esnasında kullanılacak parca buyuklugunu belirtir.
-       Bu değer 1 ile 9 arasinda olmalıdır ve buna göre 9 değeri en iyi sıkıştırmayı
-       sağlar ancak daha yavaştır ve 1 en düşük sıkıştırmayı sağlar ancak daha hızlıdır.
-       <parameter>parcabuyukluk</parameter> temel değeri 4&apos;tür.
+        Sıkıştırma esnasında kullanılacak blok boyu belirtilir. Bu değer 1
+        ile 9 arasında olmalıdır. 9 değeri en iyi sıkıştırmayı sağlamakla
+        birlikte daha fazla özkaynak kullanır. Öntanımlı
+        <parameter>blokboyu</parameter> değeri 4&apos;tür.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>iskatsayisi</parameter></term>
+     <term><parameter>katsayı</parameter></term>
      <listitem>
       <para>
        Bu değer verilen sıkıştırma aşamasının en kötü senaryo durumunda nasıl
        davranacağını belirtir. (Sık tekrarlı, asimetrik) Bu değer 0 ile
-       250 arasında değişir. 0 özel durum için ayrılmıştır. Temel değeri 30&apos;dur.
+       250 arasında değişir. 0 özel durum için ayrılmıştır. Öntanımlı değeri
+       30&apos;dur.
       </para>
       <para>
-       <parameter>iskatsayisi</parameter> degerinden bağımsız olarak, fonksiyonun çıktısı sabit
-       kalır. Başarım etkisi olabilir.
+       <parameter>katsayı</parameter> değerinden bağımsız olarak, üretilen
+       çıktı aynı olur.
       </para>
      </listitem>
     </varlistentry>
@@ -63,15 +64,14 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Sıkıştırılmış dizgi veya hata oluştuysa tamsayı olarak hata numarası. Bu fonksiyon boş kaynak bilgi için dahi
-   tamsayı olmayan bir bilgi bildireceğinden, bildirilen değerin tamsayı olup olmadığına bakılması hata olup olmadığını
-   anlamak için yeterlidir.
+   Bir hata oluşmamışsa sıkıştırılmış dizgi ile aksi takdirde hata numarası
+   ile döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
-   <title>Bilgi sıkıştırma</title>
+   <title>- Veri sıkıştırma</title>
    <programlisting role="php">
 <![CDATA[
 <?php

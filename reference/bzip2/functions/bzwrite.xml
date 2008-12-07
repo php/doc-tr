@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.7 Maintainer: aydin Status: wip -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.7 Maintainer: aydin Status: ready -->
 <!-- CREDITS: sezer -->
 <refentry xml:id="function.bzwrite" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bzwrite</refname>
-  <refpurpose>Bzip2 dosya yazma</refpurpose>
+  <refpurpose>Bzip2 dosyasını ikil olarak yazar</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>bzwrite</methodname>
-   <methodparam><type>kaynak</type><parameter>bz</parameter></methodparam>
-   <methodparam><type>dizgi</type><parameter>bilgi</parameter></methodparam>
-   <methodparam choice="opt"><type>tamsayı</type><parameter>uzunluk</parameter></methodparam>
+   <type>integer</type><methodname>bzwrite</methodname>
+   <methodparam><type>resource</type><parameter>bz</parameter></methodparam>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>uzunluk</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>bzwrite</function> verilen dizgiyi sıkıştırarak belirtilen bzip2 dosya
-   imlecinin gösterdiği dosyaya yazar.
-   Bu fonksiyon satır sonunu önemsemez, ikilik (binary) bilgi için kullanılabilir.
+    <function>bzwrite</function> verilen dizgeyi sıkıştırarak belirtilen
+    bzip2 akımına yazar.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -29,16 +28,16 @@
      <term><parameter>bz</parameter></term>
      <listitem>
       <para>
-       Dosya imleci. Gerçek ve varolan bir dosya olmalı, <function>bzopen</function>
-       fonksiyonu tarafından bildirilen bir değer olmalıdır.
+       Dosya tanıtıcı. Geçerli ve <function>bzopen</function>
+       işlevi tarafından açılmış bir dosyayı göstermelidir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>bilgi</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Yazılacak bilgi
+       Yazılacak veri.
       </para>
      </listitem>
     </varlistentry>
@@ -46,8 +45,10 @@
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       Eğer belirtilmişse, yazma işlemi belirtilen <parameter>uzunluk</parameter>
-       erişilince (açılmış halde) veya verilen <parameter>bilgi</parameter> sonuna gelinmişse sona erer.
+        Eğer belirtilmişse, belirtilen <parameter>uzunluk</parameter> bayta
+        erişilince (açılmış halde) veya belirtilen
+        <parameter>veri</parameter>'nin sonuna gelinmişse yazma işlemi sona
+        erer.
       </para>
      </listitem>
     </varlistentry>
@@ -57,26 +58,26 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geriye yazılan bayt sayısını bildirir, hata durumunda &false; bildirir.
+    Yazılan baytların sayısı ile veya hata durumunda &false; ile döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title><function>bzwrite</function> örneği</title>
+    <title>- <function>bzwrite</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
 $str = 'bu yazıyı sıkıştırıp yazalım';
-$bz = bzopen('abc.bz2', 'w');
+$bz = bzopen('/tmp/abc.bz2', 'w');
 bzwrite($bz, $str, strlen($str));
 bzclose($bz);
 
 ?>
 ]]>
-    </programlisting> 
+    </programlisting>
    </example>
   </para>
  </refsect1>
