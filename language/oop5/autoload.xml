@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.6 $ -->
+<!-- $Revision: 1.7 $ -->
 <!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.autoload" xmlns="http://docbook.org/ns/docbook">
@@ -25,6 +25,20 @@
    dolayısıyla ölümcül hata ile sonuçlanır.
    </para>
   </note>
+  <note>
+   <para>
+    PHP CLI'yi <link linkend="features.commandline">etkileşimli kipte</link>
+    kullanıyorsanız özdevinimli yükleme kullanılamayacaktır.
+   </para>
+  </note>
+  <note>
+   <para>
+    Sınıf ismini <function>call_user_func</function> gibi bir işlevde kullanırsanız
+    <literal>../</literal> gibi bazı tehlikeli karakterler içerebilir. Böyle işlevlerde
+    kullanıcı girdilerini kullanmamanız ya da en azından girdiyi
+    <function>__autoload</function> ile doğrulamanızı öneririz.
+   </para>
+  </note>
   <para>
    <example>
     <title>- Özdevinimli yükleme örneği</title>
@@ -43,6 +57,31 @@ function __autoload($class_name) {
 
 $obj  = new MyClass1();
 $obj2 = new MyClass2();
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- Başka bir özdevinimli yükleme örneği</title>
+    <para>
+     Bu örnek <literal>DenemeA</literal> arayüzünü yüklemeye çalışır.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function __autoload($isim) {
+    var_dump($isim);
+}
+
+class Fan implements DenemeA {
+}
+
+/*
+string(5) "DenemeA"
+
+Fatal error: Interface 'DenemeA' not found in ...
+*/
 ?>
 ]]>
     </programlisting>
