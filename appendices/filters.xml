@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.16 Maintainer: nilgun Status: ready -->
+<appendix xml:id="filters" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Kullanılabilir Süzgeçlerin Listesi</title>
+ <para>
+  Burada, <function>stream_filter_append</function> işlevi ile kullanmak için
+  birkaç yerleşik akım süzgecinden oluşan bir liste yer almaktadır. Kurulu
+  PHP sürümünüz burada yer alan süzgeçlerden daha fazla (veya daha az)
+  süzgece sahip olabilir.
+ </para>
+
+ <para>
+  <function>stream_filter_append</function>
+  ve <function>stream_filter_prepend</function> işlevleri arasındaki hafif
+  bakışımsızlık oluşu dikkat çekicidir. Her PHP akımı, veriyi daha verimli
+  bir şekilde işlemek amacıyla dosya sisteminden veya başka kaynaklardan
+  aldığı veri bloklarını saklamak için küçük bir <emphasis>okuma
+  tamponu</emphasis> içerir. Veri, kaynağından akımın dahili tamponuna
+  çekilir çekilmez PHP uygulamasının veriyi okuyup okumayacağına bağlı olarak
+  ekli süzgeçler üzerinden işleme sokulur. Veri okuma tamponundayken bir
+  süzgeç verinin ardına <emphasis>eklendiği</emphasis> anda, veri sanki
+  doğrudan tampondan çekiliyormuş gibi gösterilerek bu süzgeç tarafından
+  işlenmeye başlanır. Bununla birlikte, eğer süzgeç tampondaki verinin ardına
+  değil de önüne eklenirse tampondaki veri süzgeç tarafından işlenmez. Bunun
+  yerine kaynaktan verinin sonraki bloğunun gelmesini bekler.
+ </para>
+
+ <para>
+  Kurulu PHP sürümünüzde bulunan süzgeçlerin bir listesini
+  <function>stream_get_filters</function> işlevi ile alabilirsiniz.
+ </para>
+
+ <section xml:id="filters.string">
+  <title>Dizge Süzgeçleri</title>
+
+  <simpara>
+    Bu süzgeçlerin her biri tam olarak isminde yazan işlemi yaparlar ve
+    karşılığı olan yerleşik PHP dizge işleme işlevinin davranışını
+    sergilerler. Belli bir süzgeçle ilgili ayrıntılı bilgi edinmek için
+    ilgili işlevin kılavuz sayfasına bakınız.
+  </simpara>
+
+  <simpara>
+   <literal>string.rot13</literal>
+   (PHP 4.3.0 ve sonrası). Bu süzgecin kullanımı, tüm akım verisinin
+   <function>str_rot13</function> işlevi ile işlenmesine eşdeğerdir.
+  </simpara>
+  <example>
+   <title>- <code>string.rot13</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'string.rot13');
+fwrite($fp, "Bu bir denemedir.\n");
+/* Çıktısı:  Oh ove qrarzrqve.  */
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <literal>string.toupper</literal>
+   (PHP 5.0.0 ve sonrası). Bu süzgecin kullanımı, tüm akım verisinin
+   <function>strtoupper</function> işlevi ile işlenmesine eşdeğerdir.
+  </simpara>
+  <example>
+   <title>- <code>string.toupper</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'string.toupper');
+fwrite($fp, "Bu küçük bir denemedir.\n");
+/* Çıktısı:  BU KüçüK BIR DENEMEDIR.   */
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <literal>string.tolower</literal>
+   (PHP 5.0.0 ve sonrası). Bu süzgecin kullanımı, tüm akım verisinin
+   <function>strtolower</function> işlevi ile işlenmesine eşdeğerdir.
+  </simpara>
+  <example>
+   <title>- <code>string.tolower</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'string.tolower');
+fwrite($fp, "Bu küçük bir denemedir.\n");
+/* Çıktısı:  bu küçük bir denemedir..   */
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <literal>string.strip_tags</literal>
+   (PHP 5.0.0 ve sonrası). Bu süzgecin kullanımı, tüm akım verisinin
+   <function>strip_tags</function> işlevi ile işlenmesine eşdeğerdir.
+   Değiştirge olarak şu iki biçimden birini kabul eder: Ya
+   <function>strip_tags</function> işlevinin ikinci değiştirgesindeki gibi
+   bir etiket listesi içeren bir dizi ya da etiket isimlerinden oluşan bir
+   dizi.
+  </simpara>
+  <example>
+   <title>- <code>string.strip_tags</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'string.strip_tags', STREAM_FILTER_WRITE, "<b><i><u>");
+fwrite($fp, "<b>kalın metin</b> <h1>1. seviyeden bir başlık</h1> haline getirilir\n");
+fclose($fp);
+/* Çıktısı: <b>kalın metin</b> 1. seviyeden bir başlık haline getirilir */
+
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'string.strip_tags', STREAM_FILTER_WRITE, array('b','i','u'));
+fwrite($fp, "<b>kalın metin</b> <h1>1. seviyeden bir başlık</h1> haline getirilir\n");
+fclose($fp);
+/* Çıktısı: <b>kalın metin</b> 1. seviyeden bir başlık haline getirilir */
+?>
+]]>
+   </programlisting>
+  </example>
+
+ </section>
+
+ <section xml:id="filters.convert">
+  <title>Dönüşüm Süzgeçleri</title>
+
+  <simpara>
+   <literal>string.*</literal> süzgeçleri gibi, the
+   <literal>convert.*</literal> süzgeçleri de isimlerinde yazan eylemleri
+   gerçekleştirirler. Dönüşüm süzgeçleri PHP 5.0.0'da eklenmiştir. Belli bir
+   süzgeçle ilgili ayrıntılı bilgi edinmek için ilgili işlevin kılavuz
+   sayfasına bakınız.
+  </simpara>
+
+  <simpara>
+   <literal>convert.base64-encode</literal> ve
+   <literal>convert.base64-decode</literal>. Bu süzgeçlerin kullanımı, tüm
+   akım verisinin sırasıyla <function>base64_encode</function> veya
+   <function>base64_decode</function> işlevi ile işlenmesine eşdeğerdir.
+   <literal>convert.base64-encode</literal> süzgeci değiştirgelerin bir
+   ilişkisel dizi olarak belirtilmesini destekler.
+
+   Eğer <parameter>line-length</parameter> değiştirgesi verilmişse base64
+   çıktı, her biri <parameter>line-length</parameter> baytlık parçalara
+   bölünür. Eğer <parameter>line-break-chars</parameter> değiştirgesi
+   verilmişse çıktının her parçası belirtilen karakterle sınırlanır. Bu
+   değiştirgeler <function>base64_encode</function> işlevinin
+   <function>chunk_split</function> ile birlikte kullanımına eşdeğer bir
+   etkiye sebep olur.
+  </simpara>
+  <example>
+   <title>- <code>convert.base64-encode</code> ve
+   <code>convert.base64-decode</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'convert.base64-encode');
+fwrite($fp, "Bu bir denemedir.\n");
+echo "\n";
+fclose($fp);
+/* Çıktısı:  QnUgYmlyIGRlbmVtZWRpci4K */
+
+$param = array('line-length' => 8, 'line-break-chars' => "\r\n");
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'convert.base64-encode', STREAM_FILTER_WRITE, $param);
+fwrite($fp, "Bu bir denemedir.\n");
+echo "\n";
+fclose($fp);
+/* Çıktısı:   QnUgYmly
+          :   IGRlbmVt
+          :   ZWRpci4K   */
+
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'convert.base64-decode');
+fwrite($fp, "QnUgYmlyIGRlbmVtZWRpci4K");
+echo "\n";
+fclose($fp);
+/* Çıktısı:  Bu bir denemedir.  */
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <literal>convert.quoted-printable-encode</literal> ve
+   <literal>convert.quoted-printable-decode</literal>. Bu süzgeçlerden kod
+   çözme (decode) ile ilgili olanın kullanımı, tüm akım verisinin
+   <function>quoted_printable_decode</function> işlevi ile işlenmesine
+   eşdeğerdir. <literal>convert.quoted-printable-encode</literal> işlevine
+   eşdeğer bir süzgeç yoktur.
+   <literal>convert.quoted-printable-encode</literal> süzgeci
+   değiştirgelerinin bir ilişkisel dizi olarak verilmesini destekler.
+   <literal>convert.base64-encode</literal> süzgecinin değiştirgelerine ek
+   olarak, <parameter>binary</parameter> ve
+   <parameter>force-encode-first</parameter> değiştirgelerini de destekler.
+   <literal>convert.quoted-printable-encode</literal> süzgeci, kodlanmış
+   veriden yararlı yükü ayırmak için bir ipucu olarak sadece
+   <parameter>line-break-chars</parameter> değiştirgesini destekler.
+  </simpara>
+  <example>
+   <title>- <code>convert.quoted-printable-encode</code> ve
+   <code>convert.quoted-printable-decode</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'convert.quoted-printable-encode');
+fwrite($fp, "Bu küçük bir denemedir.\n");
+/* Çıktısı:  Bu k=C3=BC=C3=A7=C3=BCk bir denemedir.=0A  */
+
+$fp = fopen('php://output', 'w');
+stream_filter_append($fp, 'convert.quoted-printable-decode');
+fwrite($fp, "Bu k=C3=BC=C3=A7=C3=BCk bir denemedir.=0A");
+/* Çıktısı:  Bu küçük bir denemedir.
+*/
+?>
+]]>
+   </programlisting>
+  </example>
+ </section>
+
+ <section xml:id="filters.compression">
+  <title>Sıkıştırma Süzgeçleri</title>
+
+  <simpara>
+    <link linkend="wrappers.compression">Sıkıştırma Sarmalayıcıları</link>
+    yerel dosya sisteminde <literal>gzip</literal> ve <literal>bz2</literal>
+    uyumlu dosyalar oluşturabilmelerine rağmen ne ağ akımlarına sıkıştırma
+    uygulayabilir ne de sıkıştırılmış ağ akımlarının sıkıştırmasını
+    açabilirler. Bunu sağlamak için, akım kaynaklarına herhangi bir anda bir
+    sıkıştırma süzgeci uygulanabilir.
+  </simpara>
+
+  <note>
+   <simpara>
+    Sıkıştırma süzgeçleri <code>gzip</code> gibi komut satırı uygulamaları
+    tarafından kullanılan dosya baş uç ve ayak uçlarını üretmezler. Sadece
+    sıkıştırılmış veri akımlarının yararlı yükünü sıkıştırıp açarlar.
+   </simpara>
+  </note>
+
+  <simpara>
+   <literal>zlib.deflate</literal> (sıkıştırma) ve
+   <literal>zlib.inflate</literal> (açma) süzgeçleri <link
+   xlink:href="&url.rfc;1951">RFC 1951</link>'de tanımlanan sıkıştırma
+   yöntemlerini gerçekler. <literal>deflate</literal> (sıkıştırma) süzgeci,
+   aktarılan üç değiştirgeyi bir ilişkisel dizi olarak kabul eder.
+
+   <parameter>level</parameter> değiştirgesi sıkıştırmanın derecesini (1-9)
+   belirler. Büyük numaralar, küçüklerine göre genelde daha küçük yararlı yük
+   oluşturmasına rağmen daha uzun işlem zamanına gerektirirler. Ayrıca iki
+   özel sıkıştırma seviyesi daha mevcuttur: 0 (hiç sıkıştırma yapılmaz) ve -1
+   (zlib yerleşik öntanımlısı; şimdilik 6).
+
+   <parameter>window</parameter> değiştirgesinin değeri, sıkıştırma döngüsü
+   pencere genişliğinin 2 tabanına göre logaritmasıdır. Yüksek değerler
+   (yukarda 15'e -- 32768 bayta kadar) daha büyük bellek tüketimi
+   karşılığında daha çok sıkıştırma sağlarken, düşük değerler (aşağıda 9'a --
+   512 bayta kadar) daha az bellek tüketimi karşılığında daha az sıkıştırma
+   sağlar. Öntanımlı  <parameter>window</parameter> genişliği şimdilik
+   <constant>15</constant>'tir.
+
+   <parameter>memory</parameter> değiştirgesinin değeri ne kadar bellek
+   ayrılacağını belirleyen bir katsayıdır. Geçerli değerler 1'den (en az
+   bellek ayırma) 9'a (en çok bellek ayırma) kadardır. Bu bellek ayırma
+   işlemi sadece hızı etkiler, üretilen yararlı yükün boyutuna etkisi yoktur.
+  </simpara>
+
+  <note>
+   <simpara>
+    Sıkıştırma seviyesi en çok kullanılan değiştirge olduğundan bir dizi
+    elemanı olarak belirtilebildiği gibi tek başına basit bir değiştirge
+    olarak da  belirtilebilmektedir.
+   </simpara>
+  </note>
+
+  <simpara>
+    <literal>zlib.*</literal> sıkıştırma süzgeçleri,  <link
+    linkend="ref.zlib">zlib</link> desteği etkin olduğu takdirde PHP'nin
+    <literal>5.1.0</literal> sürümünden beri kullanılabilmektedir. Ayrıca,
+    <link xlink:href="&url.pecl.package;zlib_filter">zlib_filter</link>
+    (<link xlink:href="&url.pecl;">PECL</link> paketinden) kurulu olduğu
+    takdirde <literal>5.0.x</literal> sürümlerine de geriye dönük
+    uyarlanabilmektedir. Bu süzgeçler PHP 4'te kullanılamamaktadır.
+  </simpara>
+
+  <example>
+   <title>- <code>zlib.deflate</code> ve <code>zlib.inflate</code> örneği
+   </title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$params = array('level' => 6, 'window' => 15, 'memory' => 9);
+
+$özgün_metin = "Bu bir denemedir.\nBu sadece bir denemedir.\nBu önemli bir dizge değildir.\n";
+echo "Özgün metin " . strlen($özgün_metin) . " karakter uzunluktadır.\n";
+
+$fp = fopen('test.deflated', 'w');
+stream_filter_append($fp, 'zlib.deflate', STREAM_FILTER_WRITE, $params);
+fwrite($fp, $özgün_metin);
+fclose($fp);
+
+echo "Sıkıştırılmış dosya ".filesize('test.deflated')." bayt uzunluktadır.\n";
+echo "Özgün metin:\n";
+/* veriyi bir yere aktarmadan sıkıştırmayı açmak için
+   readfile ve zlib.inflate kullanalım  */
+readfile('php://filter/zlib.inflate/resource=test.deflated');
+
+/* Üretilen çıktı:
+
+Özgün metin 75 karakter uzunluktadır.
+Sıkıştırılmış dosya 57 bayt uzunluktadır.
+Özgün metin:
+Bu bir denemedir.
+Bu sadece bir denemedir.
+Bu önemli bir dizge değildir.
+ */
+
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>- Basit bir <code>zlib.deflate</code> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$özgün_metin = "Bu bir denemedir.\nBu sadece bir denemedir.\nBu önemsiz bir dizgedir.\n";
+echo "Özgün metin ".strlen($özgün_metin)." karakter uzunluktadır.\n";
+
+$fp = fopen('test.deflated', 'w');
+/* Buradaki "6" sıkıştırma seviyesinin 6 olduğunu göstermektedir */
+stream_filter_append($fp, 'zlib.deflate', STREAM_FILTER_WRITE, 6);
+fwrite($fp, $özgün_metin);
+fclose($fp);
+
+echo "Sıkıştırılmış dosya ".filesize('test.deflated')." bayt uzunluktadır.\n";
+
+/* Üretilen çıktı:
+
+Özgün metin 69 karakter uzunluktadır.
+Sıkıştırılmış dosya 45 bayt uzunluktadır.
+
+ */
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <literal>bzip2.compress</literal> ve <literal>bzip2.decompress</literal>
+   süzgeçleri yukarıda açıklanan <literal>zlib</literal> süzgeçleriyle aynı
+   anlamda çalışırlar.
+
+   <literal>bzip2.compress</literal> süzgeci bir ilişkisel dizinin elemanları
+   olarak iki değiştirge kabul eder:
+
+   <parameter>blocks</parameter> değiştirgesi, çalışma alanı için ayrılacak
+   belleğin 100 kbaytlık katları olarak 1'den 9'a kadar bir tamsayıdır.
+
+   <parameter>work</parameter> değiştirgesi de bir tamsayı olup, son çare
+   olarak daha yavaş fakat daha güvenilir bir yönteme başvurmadan önce normal
+   bir sıkıştırma yöntemine ne kadar çaba harcanacağını belirten 0'dan 250'ye
+   kadar bir değerdir. Bu değiştirge sadece hız üzerinde etkilidir. Bu
+   ayardan ne sıkıştırılmış çıktının boyu ne de bellek kullanımı etkilenir. 0
+   değeri bzip kütüphanesinin yerleşik öntanımlısının kullanılacağı anlamına
+   gelir.
+
+   <literal>bzip2.decompress</literal> süzgeci tek bir değiştirge kabul eder.
+   Ya sıradan bir mantıksal değer ya da <parameter>small</parameter>
+   anahtarlı tek elemanı olan bir ilişkisel dizidir.
+
+   <parameter>small</parameter> değiştirgesine &true; değerinin atanması,
+   bzip2 kütüphanesinin sıkıştırmayı açmak için hız pahasına en az belleği
+   ayıracağı anlamına gelir.
+  </simpara>
+
+  <simpara>
+    <literal>bzip2.*</literal> sıkıştırma süzgeçleri, <link
+    linkend="ref.bzip2">bz2</link> desteği etkin olduğu takdirde PHP'nin
+    <literal>5.1.0</literal> sürümünden beri kullanılabilmektedir. <link
+    xlink:href="&url.pecl.package;bz2_filter">bz2_filter</link> (<link
+    xlink:href="&url.pecl;">PECL</link> paketindeki) kurulu olduğu takdirde
+    <literal>5.0.x</literal> sürümlerinde geriye dönük olarak
+    kullanılabilmektedir. Bu süzgeçler PHP 4'te kullanılamazlar.
+  </simpara>
+
+  <example>
+   <title>- <code>bzip2.compress</code> ve <code>bzip2.decompress</code>
+   örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$param = array('blocks' => 9, 'work' => 0);
+
+echo "Özgün dosya " . filesize('LICENSE') . " bayt uzunluktadır.\n";
+
+$fp = fopen('LICENSE.compressed', 'w');
+stream_filter_append($fp, 'bzip2.compress', STREAM_FILTER_WRITE, $param);
+fwrite($fp, file_get_contents('LICENSE'));
+fclose($fp);
+
+echo "Sıkıştırılmış dosya " . filesize('LICENSE.compressed') . " bayt uzunluktadır.\n";
+
+/* Üretilen çıktı:
+
+Özgün dosya 3288 bayt uzunluktadır.
+Sıkıştırılmış dosya 1488 bayt uzunluktadır.
+
+ */
+?>
+]]>
+   </programlisting>
+  </example>
+ </section>
+
+ <section xml:id="filters.encryption">
+  <title>Şifreleme Süzgeçleri</title>
+
+  <simpara>
+   <literal>mcrypt.*</literal> ve <literal>mdecrypt.*</literal> süzgeçleri
+   libmcrypt kullanarak bakışımlı şifreleme ve şifre çözme yaparlar. Her iki
+   süzgeç ailesi de <literal>mcrypt.şifreismi</literal> biçeminde <link
+   linkend="ref.mcrypt">mcrypt eklentisinde</link> kullanılan algoritmaları
+   desteklerler; buradaki <parameter>şifreismi</parameter>
+   <function>mcrypt_module_open</function> işlevine aktarıldığı şekliyle
+   şifrenin ismidir. Ayrıca, aşağıdaki beş süzgeç değiştirgesi de
+   kullanılabilmektedir:
+  </simpara>
+
+  <para>
+   <table>
+    <title>mcrypt süzgeç değiştirgeleri</title>
+    <tgroup cols="4">
+     <thead>
+      <row>
+       <entry>Değiştirge</entry>
+       <entry>Gereklilik</entry>
+       <entry>Öntanımlı</entry>
+       <entry>Örnek değerler</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>mode</entry>
+       <entry>seçimlik</entry>
+       <entry>cbc</entry>
+       <entry>cbc, cfb, ecb, nofb, ofb, stream</entry>
+      </row>
+      <row>
+       <entry>algorithms_dir</entry>
+       <entry>seçimlik</entry>
+       <entry>ini_get('mcrypt.algorithms_dir')</entry>
+       <entry>Algoritma modüllerinin yeri</entry>
+      </row>
+      <row>
+       <entry>modes_dir</entry>
+       <entry>seçimlik</entry>
+       <entry>ini_get('mcrypt.modes_dir')</entry>
+       <entry>Kip modüllerinin yeri</entry>
+      </row>
+      <row>
+       <entry>iv</entry>
+       <entry>gerekli</entry>
+       <entry>yok</entry>
+       <entry>Genelde 8, 16 veya 32 baytlık ikil veri.  Şifreye bağlı.</entry>
+      </row>
+      <row>
+       <entry>key</entry>
+       <entry>gerekli</entry>
+       <entry>yok</entry>
+       <entry>Genelde 8, 16 veya 32 baytlık ikil veri.  Şifreye bağlı.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <example>
+   <title>- 3DES kullanarak şifreli dosya çıktılama</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$passphrase = 'Anahtar Parolam';
+
+/* Çoğaltılabilen iv/key çiftine insanlarca
+ * okunabilecek bir anahtar parolası yazalım
+ */
+$iv = substr(md5('iv'.$passphrase, true), 0, 8);
+$key = substr(md5('pass1'.$passphrase, true) .
+               md5('pass2'.$passphrase, true), 0, 24);
+$opts = array('iv'=>$iv, 'key'=>$key);
+
+$fp = fopen('gizli-dosya.enc', 'wb');
+stream_filter_append($fp, 'mcrypt.tripledes', STREAM_FILTER_WRITE, $opts);
+fwrite($fp, 'Gizli mi gizli gipgizli veri');
+fclose($fp);
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>- Şifreli dosyanın okunması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$passphrase = 'Anahtar Parolam';
+
+/* Çoğaltılabilen iv/key çiftine insanlarca
+ * okunabilecek bir anahtar parolası yazalım
+ */
+$iv = substr(md5('iv'.$passphrase, true), 0, 8);
+$key = substr(md5('pass1'.$passphrase, true) .
+               md5('pass2'.$passphrase, true), 0, 24);
+$opts = array('iv'=>$iv, 'key'=>$key);
+
+$fp = fopen('gizli-dosya.enc', 'rb');
+stream_filter_append($fp, 'mdecrypt.tripledes', STREAM_FILTER_WRITE, $opts);
+$data = rtrim(stream_get_contents($fp));
+fclose($fp);
+
+echo $data;
+?>
+]]>
+   </programlisting>
+  </example>
+
+ </section>
+
+</appendix>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
