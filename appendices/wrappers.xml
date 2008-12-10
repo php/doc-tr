@@ -1,0 +1,1463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.80 Maintainer: nilgun Status: ready -->
+<appendix xml:id="wrappers" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Desteklenen Protokollerin ve Sarmalayıcıların Listesi</title>
+ <para>
+  Bu bölümde <function>fopen</function> ve <function>copy</function> gibi
+  dosya sistemi işlevleri ile kullanmak için PHP'nin sahip olduğu URL tarzı
+  yerleşik çeşitli protokollerin bir listesi verilmiştir. Bu sarmalayıcılara
+  ek olarak PHP 4.3.0'dan itibaren PHP betiklerini ve
+  <function>stream_wrapper_register</function> işlevini kullanarak kendi
+  sarmalayıcılarınızı yazabileceksiniz.
+ </para>
+ <para>
+  Bağlamsal seçeneklerin listesini <xref linkend="context"/> bölümünde
+  bulabilirsiniz.
+ </para>
+
+ <section xml:id="wrappers.file">
+  <title>Dosya Sistemi</title>
+  <simpara>PHP'nin tüm sürümleri. PHP 5.0.0'dan itibaren doğrudan
+  <filename>file://</filename> kullanarak.</simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>/path/to/file.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>relative/path/to/file.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>fileInCwd.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>C:/path/to/winfile.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>C:\path\to\winfile.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>\\smbserver\share\path\to\winfile.ext</filename></simpara></listitem>
+   <listitem><simpara><filename>file:///path/to/file.ext</filename></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+    <emphasis>Dosya sistemi</emphasis> PHP'de kullanılan öntanımlı
+    sarmalayıcı olup yerel dosya sistemini temsil eder. Bir göreli (bir
+    Windows sürücü harfi, /, \, \\ ile başlamayan) yol belirtildiğinde, yol
+    geçerli çalışma dizinine göre ele alınır. Çoğu durumda geçerli dizin,
+    betik tarafından değiştirilmediği takdirde betik dosyasının bulunduğu
+    dizindir. PHP'nin komut satırından kullanımında bu dizin öntanımlı
+    olarak betiğin çağrıldığı dizindir.
+  </simpara>
+
+  <simpara>
+    <function>fopen</function>, <function>file_get_contents</function>,
+    <literal>include_path</literal> gibi bazı işlevlerle seçimlik olarak
+    göreli yollar da arama yollarına dahil edilebilir.
+  </simpara>
+
+  <para>
+   <table>
+    <title>Sarmalayıcının özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuma ve yazmaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function>desteği</entry>
+       <entry>Var</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+ <section xml:id="wrappers.http">
+  <title>HTTP ve HTTPS</title>
+   <simpara>PHP 4, PHP 5, PHP 6. <filename>https://</filename> PHP 4.3.0'dan itibaren var.</simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>http://mesela.dom</filename></simpara></listitem>
+   <listitem><simpara><filename>http://mesela.dom/dosya.php?dgt1=deg1&amp;dgt2=deg2</filename></simpara></listitem>
+   <listitem><simpara><filename>http://kullanici:parola@mesela.dom</filename></simpara></listitem>
+   <listitem><simpara><filename>https://mesela.dom</filename></simpara></listitem>
+   <listitem><simpara><filename>https://mesela.dom/dosya.php?dgt1=deg1&amp;dgt2=deg2</filename></simpara></listitem>
+   <listitem><simpara><filename>https://kullanici:parola@mesela.dom</filename></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+    HTTP GET yöntemini kullanarak HTTP 1.0 üzerinden dosya ve özkaynaklara
+    salt okunur erişime izin verilir. İsme dayalı sanal konaklardan istek
+    yapmak için bir <literal>Host:</literal> başlığı gönderilir. Akım
+    bağlamında veya ini dosyanızda <link linkend="ini.user-agent"
+    >user_agent</link> yönergesini yapılandırdığınız takdirde tarayıcı
+    bilgisi de istek başlıklarına dahil edilir.
+  </simpara>
+  &warn.ssl-non-standard;
+  <simpara>
+   Yönlendirmeler PHP'nin 4.0.5 sürümünden beri desteklenmektedir. Eğer daha
+   eski sürümlerden birini kullanıyorsanız, URL'nin sonuna bölü çizgisi
+   eklemeniz gerekecek. Tüm yönlendirmeler yapıldıktan sonra, belgenizin
+   geldiği özkaynağın adresini bilmek önemliyse, akımdan dönen yanıt
+   başlıkları üzerinde bazı işlemler yapmanız gerekecektir:
+  </simpara>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$url = 'http://www.mesela.dom/sayfa_yonlendirme.php';
+
+$fp = fopen($url, 'r');
+
+/* PHP 4.3.0 öncesinde stream_get_meta_data()
+   yerine $http_response_header kullanılır  */
+$meta_veri = stream_get_meta_data($fp);
+foreach($meta_veri['wrapper_data'] as $cevap) {
+
+  /* Yönlendirildik mi? */
+  if (substr(strtolower($cevap), 0, 10) == 'location: ') {
+    /* yönlendirildiğimiz yere göre $url'yi güncelleyelim */
+    $url = substr($cevap, 18);
+  }
+
+}
+
+?>
+]]>
+   </programlisting>
+  </informalexample>
+  <simpara>
+    Akımdan gelen başlıklar <varname>$http_response_header</varname>
+    değişkeninde saklanıp belgenin gövdesine (body) erişime izin verilir.
+    PHP 4.3.0'dan beri, başlıklara <function>stream_get_meta_data</function>
+    işlevi ile erişilebilmektedir.
+  </simpara>
+  <simpara>
+    HTTP bağlantıları salt okunurdur; HTTP özkaynaklarına veri yazamaz veya
+    dosya kopyalayamazsınız.
+  </simpara>
+  <note>
+   <simpara>
+    HTTPS, PHP 4.3.0'ten itibaren (derleme sırasında OpenSSL desteği
+    vermişseniz) desteklenmektedir.
+   </simpara>
+  </note>
+  <para>
+   <table>
+    <title>Sarmalayıcının özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <para>
+   Özel başlıklar 5. sürüm öncesinde <literal>user_agent</literal> INI
+   yönergesinin bir yan etkisi olarak bir HTTP isteği ile
+   gönderilebiliyordu. Bunun için <literal>user_agent</literal> yönergesine
+   geçerli bir dizge (<literal>PHP/&lt;sürüm&gt;</literal> öntanımlıdır)
+   atayıp ardına satırbaşı/satırsonu çiftini ve ek başlıkları ekleyip
+   gönderebilirsiniz. Bu yöntem PHP 4 ve sonrasında çalışır.
+  </para>
+  <para>
+   <example>
+    <title>- HTTP isteğinde özel başlıkların gönderilmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+ini_set('user_agent', "PHP\r\nX-OzelBaslik: Filanca");
+
+$fp = fopen('http://mesela.dom/index.php', 'r');
+?>
+]]>
+    </programlisting>
+    <para>Bu işlem aşağıdaki başlıkların gönderilmesi ile sonuçlanır:</para>
+    <screen>
+<![CDATA[
+GET /index.php HTTP/1.0
+Host: mesela.dom
+User-Agent: PHP
+X-OzelBaslik: Filanca
+]]>
+    </screen>
+   </example>
+  </para>
+ </section>
+
+ <section xml:id="wrappers.ftp">
+  <title>FTP ve FTPS</title>
+  <simpara>PHP 4, PHP 5, PHP 6.  <filename>ftps://</filename> PHP 4.3.0'dan
+  itibaren var.</simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>ftp://mesela.dom/pub/dosya.txt</filename></simpara></listitem>
+   <listitem><simpara><filename>ftp://kullanici:parola@mesela.dom/pub/dosya.txt</filename></simpara></listitem>
+   <listitem><simpara><filename>ftps://mesela.dom/pub/dosya.txt</filename></simpara></listitem>
+   <listitem><simpara><filename>ftps://kullanici:parola@mesela.dom/pub/dosya.txt</filename></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+    FTP üzerinden mevcut dosyaların okunmasına ve yeni dosyaların
+    oluşturulmasına izin verilir. Eğer sunucu edilgen FTP kipini
+    desteklemiyorsa bağlantı başarısız olacaktır.
+  </simpara>
+  <simpara>
+    Dosyaları okumak veya yazmak amacıyla açabilirsiniz fakat ikisini aynı
+    anda yapamazsınız. Eğer uzak dosya FTP sunucuda mevcutsa ve yazmak
+    amacıyla açmaya çalışıyorsanız fakat <literal>overwrite</literal>
+    bağlamsal seçeneğini belirtmediyseniz bağlantı başarısız olacaktır. Eğer
+    mevcut bir dosyaya FTP üzerinden yazmanız gerekiyorsa bağlam içinde
+    <literal>overwrite</literal> seçeneğini belirtin ve dosyayı yazmak için
+    açın. Bu amaçla <link linkend="ref.ftp">FTP eklentisini</link> de
+    kullanabilirsiniz.
+  </simpara>
+  <note>
+   <title>Ekleme</title>
+   <simpara>
+    PHP 5.0.0'dan itibaren <literal>ftp://</literal> sarmalayıcısı üzerinden
+    dosya eklenebilmektedir. Daha önceki sürümlerde bu işlem başarısızlıkla
+    sonuçlanıyordu.
+   </simpara>
+  </note>
+  <simpara>
+   <filename>ftps://</filename> PHP 4.3.0'dan beri kullanılabilmektedir; FTP
+   sunucusuyla güvenli bağlantı kurmaya çalışması dışında
+   <filename>ftp://</filename> sarmalayıcısı ile aynıdır. Eğer sunucuda SSL
+   desteği yoksa son çare olarak şifresiz normal FTP bağlantısı denenir.
+  </simpara>
+  <note>
+   <simpara>
+    FTPS, PHP 4.3.0'dan beri, PHP'yi OpenSSL desteğiyle derlemişseniz
+    desteklenebilmektedir.
+   </simpara>
+  </note>
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>PHP 4</entry>
+       <entry>PHP 5</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var (sadece yeni dosyalar)</entry>
+       <entry>Var (<parameter>overwrite</parameter> ile yeni ve mevcut
+       dosyalar)</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>
+        PHP 5.0.0 ve sonrası: Sadece <function>filesize</function>,
+        <function>filetype</function>, <function>file_exists</function>,
+        <function>is_file</function> ve <function>is_dir</function>.
+        PHP 5.1.0 ve sonrası: <function>filemtime</function>.
+       </entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+ <section xml:id="wrappers.php">
+  <title>PHP girdi/çıktı akımları</title>
+
+  <itemizedlist>
+   <listitem><simpara><filename>php://stdin</filename></simpara></listitem>
+   <listitem><simpara><filename>php://stdout</filename></simpara></listitem>
+   <listitem><simpara><filename>php://stderr</filename></simpara></listitem>
+   <listitem><simpara><filename>php://output</filename></simpara></listitem>
+   <listitem><simpara><filename>php://input</filename></simpara></listitem>
+   <listitem><simpara><filename>php://filter</filename>
+   (PHP 5.0.0'dan beri kullanılabilmektedir.)</simpara></listitem>
+   <listitem><simpara><filename>php://memory</filename>
+   (PHP 5.1.0'dan beri kullanılabilmektedir.)</simpara></listitem>
+   <listitem><simpara><filename>php://temp</filename>
+   (PHP 5.1.0'dan beri kullanılabilmektedir.)</simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+    <filename>php://stdin</filename>, <filename>php://stdout</filename> ve
+    <filename>php://stderr</filename> sarmalayıcıları, PHP sürecinin ilgili
+    girdi/çıktı akımlarına erişime izin verir. Akım bir dosya tanıtıcısının
+    çoğullanmış bir gönderimini kullanır, dolayısıyla
+    <filename>php://stdin</filename>'i açıp sonra da kapatırsanız sadece
+    kendi dosya tanıtıcınızı kapatmış olursunuz;
+    <constant>STDIN</constant>'e gönderimli asıl akım bundan etkilenmez. PHP
+    5.2.1'e kadar PHP bu konuda hatalı bir davranış sergilemekteydi. Böyle
+    eski sürümlerden birini kullanıyorsanız, bu sarmalayıcıları kullanmak
+    yerine <constant>STDIN</constant>, <constant>STDOUT</constant> ve
+    <constant>STDERR</constant> sabitlerini kullanarak akımları kendiniz
+    açın.
+  </simpara>
+  <simpara>
+    <filename>php://output</filename> sarmalayıcısı
+    <function>print</function> ve <function>echo</function> işlevlerini
+    kullanıyormuşçasına çıktı tamponuna yazmayı mümkün kılar.
+  </simpara>
+  <simpara>
+    <filename>php://input</filename> sarmalayıcısı ham POST verisini okumaya
+    imkan verir. Aynı işi yapan <varname>$HTTP_RAW_POST_DATA</varname>'ya
+    göre belleğe daha az bağımlıdır ve herhangi bir özel &php.ini;
+    yönergesine ihtiyaç duymaz. <filename>php://input</filename>
+    sarmalayıcısı
+   <literal>enctype="multipart/form-data"</literal> ile kullanılamaz.
+  </simpara>
+  <simpara>
+   <filename>php://stdin</filename> ve
+   <filename>php://input</filename> salt okunur iken,
+   <filename>php://stdout</filename>,
+   <filename>php://stderr</filename> ve
+   <filename>php://output</filename> salt yazılırdır.
+  </simpara>
+
+  <simpara>
+    <filename>php://filter</filename> sarmalayıcısı, akımın açılışı
+    sırasında süzme uygulamalarına olanak vermek üzere tasarlanmış bir temel
+    sarmalayıcı çeşididir. İçeriği okunmadan önce akıma bir süzgeç uygulama
+    fırsatı bulunmayan yerlerde <function>readfile</function>,
+    <function>file</function> ve <function>file_get_contents</function> gibi
+    hepsi bir arada dosya işlevleri ile kullanışlıdır.
+  </simpara>
+  <simpara>
+    <filename>php://filter</filename> sarmalayıcısı aşağıdaki değiştirgeleri
+    kendi yolunun parçaları olarak ele alır:
+  </simpara>
+  <itemizedlist>
+   <listitem>
+    <para>
+     <literal>/resource=&lt;süzülecek akım&gt;</literal>
+     (<emphasis>zorunlu</emphasis>)  Bu değiştirge,
+     <filename>php://filter</filename> belirtiminizin sonuna eklemlenmeli ve
+     süzmek istediğiniz akımı hedeflemelidir.
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+/* Hiçbir süzgeç belirtilmediğinden buna eşdeğerdir:
+ * readfile("http://mesela.dom");
+ */
+readfile("php://filter/resource=http://mesela.dom");
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <literal>/read=&lt;okuma zincirine uygulanacak süzgeç
+     listesi&gt;</literal> (<emphasis>seçimlik</emphasis>). Bu değiştirge
+     boru (<literal>|</literal>) karakterinin ayraç olarak kullanıldığı bir
+     süzgeç isimleri listesi alır.
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+/* mesela.dom içeriğinin tamamını büyük harflerle çıktılayacaktır */
+readfile("php://filter/read=string.toupper/resource=http://mesela.dom");
+
+/* Bu da aynı işi yapar fakat ayrıca ROT13 kodlar */
+readfile("php://filter/read=string.toupper|string.rot13/resource=http://mesela.dom");
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <literal>/write=&lt;yazma zincirine uygulanacak süzgeç
+     listesi&gt;</literal> (<emphasis>seçimlik</emphasis>).Bu değiştirge
+     boru (<literal>|</literal>) karakterinin ayraç olarak kullanıldığı bir
+     süzgeç isimleri listesi alır.
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+/* "Merhaba Dünya" dizgesini rot13 süzgecinden geçirip
+   sonucu çalışma dizininde misal.txt dosyasına yazar.  */
+file_put_contents("php://filter/write=string.rot13/resource=misal.txt","Merhaba Dünya");
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </listitem>
+   <listitem>
+    <simpara>
+     <literal>/&lt;her iki zincire uygulanacak süzgeç listesi&gt;</literal>
+     (<emphasis>seçimlik</emphasis>). Hem okuma hem de yazma zincirlerine
+     (hangisi uygunsa) uygulanmak üzere başına özellikle
+     <literal>read=</literal> veya <literal>write=</literal>
+     yerleştirilmemiş süzgeç listesi.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <simpara>
+    <filename>php://memory</filename> sarmalayıcısı veriyi bellekte saklar.
+    <filename>php://temp</filename> sarmalayıcısı da benzerini yapar ama
+    belli bir bellek miktarı aşıldığında (öntanımlı 2MB'tır) veriyi saklamak
+    için geçici bir dosya kullanır.
+  </simpara>
+  <simpara>
+    <filename>php://temp</filename> sarmalayıcısı aşağıdaki değiştirgeleri
+    kendi yolunun parçaları olarak ele alır:
+  </simpara>
+  <itemizedlist>
+   <listitem>
+    <para>
+     <literal>/maxmemory:&lt;bayt sayısı&gt;</literal>
+     (<emphasis>seçimlik</emphasis>). Bu değiştirge (verinin geçici bir
+     dosyaya taşınmaması için) öntanımlı bellek sınırını değiştirmeye yarar.
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$beşMB = 5 * 1024 * 1024;
+$fp = fopen("php://temp/maxmemory:$beşMB", 'r+');
+
+fputs($fp, "Merhaba\n");
+
+// ne yazılmış bakalım
+rewind($fp);
+echo stream_get_contents($fp);
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   <table>
+    <title>
+     Sarmalayıcı Özellikleri (<literal>php://filter</literal> için, süzülen
+     sarmalayıcının özelliklerine bakın.)
+    </title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><link linkend="ini.allow-url-include">allow_url_include</link>
+       tarafından sınırlanma</entry>
+       <entry>Sadece
+        <literal>php://input</literal>,
+        <literal>php://stdin</literal>,
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>.
+       </entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Sadece
+        <literal>php://stdin</literal>,
+        <literal>php://input</literal>,
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>.
+       </entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Sadece
+        <literal>php://stdout</literal>,
+        <literal>php://stderr</literal>,
+        <literal>php://output</literal>,
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>.
+       </entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Sadece
+        <literal>php://stdout</literal>,
+        <literal>php://stderr</literal>,
+        <literal>php://output</literal>,
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>. (Yazmaya eşdeğer)
+       </entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Sadece
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>.
+       </entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Sadece
+        <literal>php://memory</literal> ve
+        <literal>php://temp</literal>.
+       </entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+ <section xml:id="wrappers.compression">
+  <title>Sıkıştırma Akımları</title>
+  <simpara>
+    <filename>zlib:</filename> PHP 4.0.4 - PHP 4.2.3 (sadece fopencookie'li
+    sistemler)
+  </simpara>
+  <simpara>
+    <filename>compress.zlib://</filename> ve
+    <filename>compress.bzip2://</filename> PHP 4.3.0'dan itibaren var.
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>zlib:</filename></simpara></listitem>
+   <listitem><simpara><filename>compress.zlib://</filename></simpara></listitem>
+   <listitem><simpara><filename>compress.bzip2://</filename></simpara></listitem>
+  </itemizedlist>
+
+  <simpara>
+   <filename>zlib:</filename> sarmalayıcısı, akımın
+   <function>fread</function> ve diğer dosya sistemi işlevleri ile
+   kullanılabilmesi dışında <function>gzopen</function> işlevi gibi çalışır.
+   Bu sarmalayıcı, içinde ':' bulunan dosya isimleri ile kullanıldığında
+   belirsizliğe yol açtığından PHP 4.3.0'dan itibaren yerine
+   <filename>compress.zlib://</filename> sarmalayıcısının kullanılması
+   önerilmektedir.
+  </simpara>
+
+  <simpara>
+   <filename>compress.zlib://</filename> ve
+   <filename>compress.bzip2://</filename> sarmalayıcıları sırayla
+   <function>gzopen</function> ve <function>bzopen</function> işlevlerine
+   denk olmaları dışında benzerdirler ve fopencookie desteği bulunmayan
+   sistemlerde bile çalışırlar.
+  </simpara>
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>
+        Yok. Sıkıştırılmış dosyaları durumlamak için normal
+        <literal>file://</literal> sarmalayıcısı kullanılır.
+       </entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>
+        Yok. Sıkıştırılmış dosyaları silmek için normal
+        <literal>file://</literal> sarmalayıcısı kullanılır.
+       </entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+  <para>
+   <filename>zip:</filename> sarmalayıcısı <link linkend="ref.zip">ZIP
+   eklentisi</link> ile gelir.
+  </para>
+ </section>
+
+ <section xml:id="wrappers.data">
+  <title>Data (RFC 2397)</title>
+  <simpara>
+   <filename>data:</filename> (<link xlink:href="&url.rfc;2397">RFC
+   2397</link>) akım sarmalayıcısı PHP 5.2.0'dan itibaren var.
+  </simpara>
+
+  <example>
+   <title>- <literal>data://</literal> içeğinin basılması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// "PHP'yi seviyorum." basar
+echo file_get_contents('data://text/plain;base64,UEhQJ3lpIHNldml5b3J1bS4K');
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>- Ortam türünü öğrenmek</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$fp   = fopen('data://text/plain;base64,', 'r');
+$meta = stream_get_meta_data($fp);
+
+// "text/plain" basar
+echo $meta['mediatype'];
+?>
+]]>
+   </programlisting>
+  </example>
+
+
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Restricted by <link linkend="ini.allow-url-include"
+       >allow_url_include</link></entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+ <section xml:id="wrappers.glob">
+  <title>Glob</title>
+  <simpara>
+   <filename>glob:</filename> akım sarmalayıcısı PHP 5.3.0'dan itibaren var.
+  </simpara>
+
+  <example>
+   <title>- Temel kullanım</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// ext/spl/examples/ dizinindeki *.php dosyalarını
+// tarayıp dosya isimlerini ve boyutlarını basalım
+$it = new DirectoryIterator("glob://ext/spl/examples/*.php");
+foreach($it as $f) {
+    printf("%s: %.1FK\n", $f->getFilename(), $f->getSize()/1024);
+}
+?>
+]]>
+   </programlisting>
+   <screen>
+<![CDATA[
+tree.php: 1.0K
+findregex.php: 0.6K
+findfile.php: 0.7K
+dba_dump.php: 0.9K
+nocvsdir.php: 1.1K
+phar_from_dir.php: 1.0K
+ini_groups.php: 0.9K
+directorytree.php: 0.9K
+dba_array.php: 1.1K
+class_tree.php: 1.8K
+]]>
+   </screen>
+  </example>
+
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><link linkend="ini.allow-url-include">allow_url_include</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+
+ <section xml:id="wrappers.ssh2">
+  <title>Güvenli Kabuk 2</title>
+  <simpara>
+   <filename>ssh2.shell://</filename>
+   <filename>ssh2.exec://</filename>
+   <filename>ssh2.tunnel://</filename>
+   <filename>ssh2.sftp://</filename>
+   <filename>ssh2.scp://</filename>
+   PHP 4.3.0'dan itibaren var (PECL).
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>ssh2.shell://kull:parola@mesela.dom:22/xterm</filename></simpara></listitem>
+   <listitem><simpara><filename>ssh2.exec://kull:parola@mesela.dom:22/usr/local/bin/somecmd</filename></simpara></listitem>
+   <listitem><simpara><filename>ssh2.tunnel://kull:parola@mesela.dom:22/192.168.0.1:14</filename></simpara></listitem>
+   <listitem><simpara><filename>ssh2.sftp://kull:parola@mesela.dom:22/path/to/filename</filename></simpara></listitem>
+  </itemizedlist>
+
+  <note>
+   <title>Bu sarmalayıcı öntanımlı olarak etkin değildir.</title>
+   <simpara>
+    <filename>ssh2.*://</filename> sarmalayıcılarını kullanabilmek için
+    <link xlink:href="&url.pecl;">PECL</link> sitesinden temin edeceğiniz
+    <link xlink:href="&url.pecl.package;ssh2">SSH2</link> eklentisini
+    kurmalısınız.
+   </simpara>
+  </note>
+
+  <simpara>
+    Geleneksel URI ile oturum açma ayrıntılarına ek olarak ssh2
+    sarmalayıcıları URL'nin konak ismi bölümündeki bağlantı özkaynağını yok
+    sayarak açık bağlantıları yeniden kullanabilir.
+  </simpara>
+
+  <example>
+   <title>- Etkin bağlantıda bir akımın açılması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$oturum = ssh2_connect('mesela.dom', 22);
+ssh2_auth_pubkey_file($oturum, 'birisi', '/home/birisi/.ssh/id_rsa.pub',
+                                         '/home/birisi/.ssh/id_rsa',
+                                         'parolası');
+$stream = fopen("ssh2.tunnel://$oturum/kabuk.mesela.dom:1234", 'r');
+?>
+]]>
+   </programlisting>
+  </example>
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="6">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>ssh2.shell</entry>
+       <entry>ssh2.exec</entry>
+       <entry>ssh2.tunnel</entry>
+       <entry>ssh2.sftp</entry>
+       <entry>ssh2.scp</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var (Sunucu desteklerse)</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Yok</entry>
+       <entry>Var</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <para>
+   <table>
+    <title>Bağlamsal seçenekler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>İsim</entry>
+       <entry>Kullanım</entry>
+       <entry>Öntanımlı</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>session</literal></entry>
+       <entry>Önceden bağlanılmış yeniden kullanılacak ssh2 özkaynağı</entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><literal>sftp</literal></entry>
+       <entry>Önceden ayrılmış yeniden kullanılacak sftp özkaynağı</entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><literal>methods</literal></entry>
+       <entry>Kullanılacak anahtar değişimi, konak anahtarı, şifre,
+       sıkıştırma ve MAC yöntemleri</entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><literal>callbacks</literal></entry>
+       <entry></entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>username</literal></entry>
+       <entry>Bağlantı için kullanılacak kullanıcı ismi</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>password</literal></entry>
+       <entry>Kimlik doğrulamakta kullanılacak parola</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>pubkey_file</literal></entry>
+       <entry>Kimlik doğrulamakta kullanılacak genel anahtar dosyası</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>privkey_file</literal></entry>
+       <entry>Kimlik doğrulamakta kullanılacak gizli anahtar dosyası</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>env</literal></entry>
+       <entry>Atanacak ortam değişkenlerini içeren ilişkisel dizi</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>term</literal></entry>
+       <entry>Bir pty ayırırken istenecek uçbirim öykünüm türü</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>term_width</literal></entry>
+       <entry>Bir pty ayırırken istenecek uçbirimin genişliği</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>term_height</literal></entry>
+       <entry>Bir pty ayırırken istenecek uçbirimin yüksekliği</entry>
+       <entry></entry>
+      </row>
+      <row>
+       <entry><literal>term_units</literal></entry>
+       <entry>term_width ve term_height için kullanılacak birimler</entry>
+       <entry><constant>SSH2_TERM_UNIT_CHARS</constant></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+
+ </section>
+
+ <section xml:id="wrappers.audio">
+  <title>İşitsel Akımlar</title>
+  <simpara>
+    <filename>ogg://</filename> PHP 4.3.0'dan itibaren var (PECL).
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>ogg://sesdosyasi.ogg</filename></simpara></listitem>
+   <listitem><simpara><filename>ogg:///bir/yol/sesdosyasi.ogg</filename></simpara></listitem>
+   <listitem><simpara><filename>ogg://http://mesela.dom/bir/yol/sesakimi.ogg</filename></simpara></listitem>
+  </itemizedlist>
+
+  <note>
+   <title>Bu sarmalayıcı öntanımlı olarak etkin değildir</title>
+   <simpara>
+    <filename>ogg://</filename> sarmalayıcısını kullanmak için <link
+    xlink:href="&url.pecl;">PECL</link> sitesinden temin edeceğiniz <link
+    xlink:href="&url.pecl.package;oggvorbis">OGG/Vorbis</link> eklentisini
+    kurmalısınız.
+   </simpara>
+  </note>
+
+  <simpara>
+    <filename>ogg://</filename> sarmalayıcısı kullanılarak okumak için
+    açılan dosyalar, OGG/Vorbis kodeki kullanılarak kodlanmış sıkıştırılmış
+    işitsel veri olarak ele alınırlar. Benzer şekilde,
+    <filename>ogg://</filename> sarmalayıcısı kullanılarak yazmak için
+    açılan dosyalar, sıkıştırılmış işitsel veri olarak yazılırlar.
+    <function>stream_get_meta_data</function> işlevi okumak için açılmış bir
+    OGG/Vorbis dosyası üzerinde kullanıldığı takdirde, akım hakkında çeşitli
+    ayrıntılar döndürür:
+    <parameter>vendor</parameter> (satıcı etiketi),
+    <parameter>comments</parameter> (çeşitli açıklamalar),
+    <parameter>channels</parameter> (kanal sayısı),
+    <parameter>rate</parameter> (örnekleme hızı),
+    ve kodlama hızı aralığını belirleyen:
+    <parameter>bitrate_lower</parameter> (en düşük bit hızı),
+    <parameter>bitrate_upper</parameter> (en yüksek bit hızı),
+    <parameter>bitrate_nominal</parameter> (nominal bit hızı) ve
+    <parameter>bitrate_window</parameter> (bit hızı penceresi?).
+  </simpara>
+
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+  <para>
+   <table>
+    <title>Bağlamsal seçenekler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>İsim</entry>
+       <entry>Kullanım</entry>
+       <entry>Öntanımlı</entry>
+       <entry>Kip</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>pcm_mode</literal></entry>
+       <entry>Okuma sırasında uygulanacak PCM kodlaması şunlardan biridir:
+        <constant>OGGVORBIS_PCM_U8</constant>,
+        <constant>OGGVORBIS_PCM_S8</constant>,
+        <constant>OGGVORBIS_PCM_U16_BE</constant>,
+        <constant>OGGVORBIS_PCM_S16_BE</constant>,
+        <constant>OGGVORBIS_PCM_U16_LE</constant> ve
+        <constant>OGGVORBIS_PCM_S16_LE</constant>.
+        (8 veya 16 bit, signed veya unsigned (işaretli veya işaretsiz), big
+        veya little endian (bayt sıralaması büyük veya küçük sonlu)
+       </entry>
+       <entry>OGGVORBIS_PCM_S16_LE</entry>
+       <entry>Okuma</entry>
+      </row>
+      <row>
+       <entry><literal>rate</literal></entry>
+       <entry>
+        Girdi verisinin örnekleme hızı, Hz cinsinden.
+       </entry>
+       <entry>44100</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>bitrate</literal></entry>
+       <entry>
+        Bir tamsayı olarak verildiğinde kodlanacağı sabit bit hızı
+        (16000'den 131072'ye kadar); bir gerçek sayı olarak verildiğinde
+        kullanılacak değişken bit hızı kalitesi (-1.0 ile 1.0 arasında)
+       </entry>
+       <entry>128000</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>channels</literal></entry>
+       <entry>
+        Kodlanacak işitsel kanalların sayısı; genellikle  1 (Mono) veya 2
+        (Stereo). 16'ya kadar çıkabilir.
+       </entry>
+       <entry>2</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>comments</literal></entry>
+       <entry>
+        İz başlığına kodlanacak dizge değerlerinden oluşan bir dizi.
+       </entry>
+       <entry/>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+
+ <section xml:id="wrappers.expect">
+  <title>Süreçle Etkileşim Akımları</title>
+  <simpara>
+    <filename>expect://</filename> PHP 4.3.0'dan itibaren var (PECL).
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>expect://komut</filename></simpara></listitem>
+  </itemizedlist>
+
+  <note>
+   <title>Bu sarmalayıcı öntanımlı olarak etkin değildir</title>
+   <simpara>
+    <filename>expect://</filename> sarmalayıcısını kullanmak için <link
+    xlink:href="&url.pecl;">PECL</link> sitesinden temin edeceğiniz <link
+    xlink:href="&url.pecl.package;expect">Expect</link> eklentisini
+    kurmalısınız.
+   </simpara>
+  </note>
+
+  <simpara>
+   <filename>expect://</filename> sarmalayıcısı ile açılan akımlar PTY
+   üzerinden süreçlerin stdio, stdout ve stderr akımlarına erişirler.
+  </simpara>
+
+  <para>
+   <table>
+    <title>Sarmalayıcı Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link>
+       tarafından sınırlanma</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuyup yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </section>
+
+</appendix>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
