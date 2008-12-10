@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.3 Maintainer: volkan Status: wip -->
-<!-- CREDITS: sezer -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.3 Maintainer: sezer Status: ready -->
 <!-- splitted from ./index.xml, last change in rev 1.66 -->
   <chapter xml:id="security.hiding" xmlns="http://docbook.org/ns/docbook">
    <title>PHP'yi gizlemek</title>
    <para>
-    Bazı şeyleri gizleyerek güvenlik sağlama girişimleri en alt düzeydeki çabalardır.
-    Ancak yine de varolan güvenlik özellikleri üzerine ek bir tabaka güvenlik sağlayabilir.
-    But in some cases, every little bit of extra security is desirable.
+    Bazı şeyleri gizleyerek güvenlik sağlama girişimleri en alt düzeydeki
+    çabalardır. Ancak bazı durumlarda en küçük güvenlik arttırıcı önlem bile
+    yararlı olabilir.
    </para>
    <para>
-    Örneğin sunucunuzdaki PHP özelliklerini gösteren ayarı kapatmanız, genel
-    tarama yaparak PHP sunucusu arayan bir kırıcıyı sizden uzak tutabilir. Bu ayarı
-    &php.ini; ayarlar dosyasında 'expose_php = off' yaparak gerçekleştirebilirsiniz.
-    Kesin olmasa da daha ayrıntılı araştıran bir kırıcı yine de sunucunuzda
-    PHP olduğunu bulabilir, ancak bu ek uğraşı ister.
+    Bir kaç basit teknikle PHP'yi gizleyebilir, sisteminizin zayıflıklarını
+    keşfetmeye çalışan bir saldırganı belki de yavaşlatabilirsiniz. &php.ini;
+    dosyanızda <code>expose_php = off</code> yaparak bir saldırganın
+    erişebileceği bilgiyi en aza indirebilirsiniz.
    </para>
    <para>
-    Başka bir yol da sunucudaki başka türdeki dosyaları PHP kodu olarak ayarlamak
-    ve bu şekilde kullanıcının ek bilgier edinmesini engellemektir. Bu ayar Apache sunucusunda
-    &htaccess; dosyasından veya genel Apache ayar dosyasından yapılabilir. (httpd.conf)
-    Böylece PHP yerine sanki başka bir dil kullanıyor gibi gözükebilirsiniz:
+    Başka bir yol da HTTP sunucusuna PHP kodu olarak başka dosya uzantıları
+    belirtmektir. Bu işlem Apache yapılandırma dosyasında veya .htaccess
+    dosyalarında yapılabilir. Yanıltıcı dosya uzantılarını şöyle
+    kullanabilirsiniz:
     <example>
-     <title>Başka bir dil olarak gösterme</title>
+     <title>- PHP'yi başka bir dil olarak göstermek</title>
      <programlisting role="apache-conf">
 <![CDATA[
-# PHP yerine başka bir dil
-AddType application/x-httpd-php .asp .aspx .pl .jsp
+# PHP kodlarını başka bir dilin kodları gibi gösterelim
+AddType application/x-httpd-php .asp .py .pl
 ]]>
      </programlisting>
     </example>
-    veya tamamen gizleme:
+      Veya tamamen gizleyelim:
     <example>
-     <title>Bilinmeyen bir sistem gibi gösterme</title>
+     <title>- PHP uzantısı olarak bilinmeyen bir uzantı kullanmak</title>
      <programlisting role="apache-conf">
 <![CDATA[
-# PHP'yi bilinmeyen bir uzantida çalıştır
+# PHP kodunu türü bilinmeyen bir dosya gibi gösterelim
 AddType application/x-httpd-php .hop .yep
 ]]>
      </programlisting>
     </example>
-    veya sabit HTML gibi göstermek, tabiki bu şekilde PHP olmayan .html
-    dosyalarınızın da analiz edileceğini ve sunucuya biraz ek yük geleceğini unutmayın:
+      Ya da HTML kodu gibi gösterek gizleyelim. Ancak tüm HTML dosyalarını PHP
+      işleyeceği için bu bir miktar başarım kaybına sebep olur:
     <example>
-     <title>Using HTML types for PHP extensions</title>
+     <title>- PHP uzantısı olarak HTML uzantılarını kullanmak</title>
      <programlisting role="apache-conf">
 <![CDATA[
-# Tüm HTML dosyalarını PHP programı olarak çalıştır
+# Tüm PHP kodu HTML kodu gibi görünsün
 AddType application/x-httpd-php .htm .html
 ]]>
      </programlisting>
     </example>
-    Tabiki bu değişikliklerin çalışması için dosyalarınızın .php uzantılarını
-    değiştirip belirttiğiniz uzantıya çevirmeniz gerekecektir. Dosya adı değiştirme
-    zorunluluğu bu alt düzey güvenlik önleminin size çıkardığı zorluktur diyebiliriz.
+      Bunun verimli çalışması için tüm PHP dosyalarınızın uzantılarını
+      yukardaki uzantılarla değiştirmeniz gerekir. Dosya adı değiştirme
+      zorunluluğu için bu alt düzey güvenlik önleminin size çıkardığı bir
+      zorluktur diyebiliriz.
    </para>
   </chapter>
 

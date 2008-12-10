@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.4 Maintainer: volkan Status: wip -->
-<!-- CREDITS: sezer -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.4 Maintainer: sezer Status: ready -->
 <!-- splitted from ./index.xml, last change in rev 1.66 -->
   <chapter xml:id="security.apache" xmlns="http://docbook.org/ns/docbook">
    <title>Apache'ye modül olarak kurulum</title>
    <simpara>
-    PHP'yi Apache içinde modül olarak kurduğunuzda, sistemde Apache'yi
-    çalıştıran kullanıcın haklarına sahip olur. Genellikle bu kullanını
-    'nobody' kullanıcısıdır. Bu durumun güvenlik konusunda çeşitli etkileri
-    olabilir. Örneğin: PHP ile bir bir dosyayı okumanız veya ek şifre gerektirmeyen
-    bir veritabanına erişim gerekliyse, Apache kullanıcısının bu dosyaya
-    erişim hakkı olması gerekir. Bundan dolayı da başka bir uygulama
-    Apache kullanıcı olarak çalışarak aynı şeyi yetkisiz olarak yapabilir.
-
-    Bu demektir ki aynı kullanıcı haklarıyla çalışan benzeri bir uygulama,
-    dosyaları okuyabilir, silebilir ve veritabanına ulaşabilir. Bu gibi risklerden
-    korunmak için bu tip uygulamaları şifre koruması altına almanız faydalı olur.
-
-    LDAP, &htaccess; dosyaları veya uygulamanızda yazacağınız ek kodlar ile
-    erişimin kısıtlanması ve yetkilendirilmesi mümkündür.
+    PHP bir Apache modülü olarak kullanıldığında Apache kullanıcısının (Apache
+    yapılandırma dosyasında user yönergesine bakın) yetkilerini miras alır. Bu
+    kullanıcı genellikle  'nobody' kullanıcısı olur fakat bunun güvenlikle ve
+    kimlik doğrulama ile ilgili olumsuz etkileri olabilir. Örneğin PHP'yi bir
+    veritabanına erişmek için kullanıyorsanız ve bu veritabanına yerleşik
+    olarak erişim izniniz yoksa "nobody" kullanıcısına bu veritabanına erişim
+    izni vermek zorunda kalırsınız. Bu, kötücül bir betiğin bir kullanıcı ismi
+    ve parola belirtmeksizin veritabanına erişebilmesi ve değişiklik
+    yapabilmesi anlamına gelir. Bir ağ örümceğinin veritabanı yönetici
+    sayfasına rast gelmesi ve tüm veritabanınızı yok etmesi çok mümkündür. Bu
+    gibi durumlardan Apache kimlik doğrulaması ile korunabileceğiniz gibi
+    LDAP, .htaccess dosyaları, vs. kullanarak kendi erişim modelinizi
+    tasarlayabilir ve bu kodu PHP betiklerinize dahil edebilirsiniz.
    </simpara>
    <simpara>
-    Güvenliğin sağlanması, PHP'nin tamamen etkisiz hale getirilmesi, dosya yazma,
-    veritabanı erişiminin kısıtlanması demek değildir. Bunlar sağlanırsa
-    güvenli bir işlem ortamı oluşmuş olabilir ancak PHP özellikleri kaybolmuş olur.
+    Güvenliğin sağlanması, PHP'nin tamamen etkisiz hale getirilmesi, dosya
+    yazma, veritabanı erişiminin kısıtlanması demek değildir. Bunlar sağlanırsa
+    güvenli bir işlem ortamı oluşmuş olabilir ancak PHP özellikleri kaybolmuş
+    olur.
    </simpara>
    <simpara>
-    Buna zıt olarak Apache'yi kök kullanıcı(root) olarak çalıştırmak, PHP kullanımı
-    ve yetisini sınırsız arttırmasına rağmen çok riskli ve gereksizdir.
+    Sık yapılan bir güvenlik hatası Apache'yi root kullanıcısının aidiyetinde
+    çalıştırmak veya Apache'nin yeteneklerini başka yollarla arttırmaktır.
    </simpara>
    <simpara>
-    Kök kullanıcı yetkileriyle çalışan Apache sunucu kötü kullanıma uygunsa çok tehlikelidir.
-    Yetkisiz kişiler sisteme, veritabanınıza ve kullanıcı bilgilerine ulaşabilir.
-    Daha kötüsü bu bilgileri silebilir ve yedekleme sisteminiz yoksa bu büyük bir kayıp olabilir.
-    Daha da kötüsü yetkisiz kişiler sisteme truva atı yerleştirip yaptığınız tüm
-    işlemleri uzun süre bir ajan gibi izleyebilir. Önemli hiçbir bilgi olmasa
-    dahi sisteminizin güvenliğini sağlayınız.
+    Apache kullanıcısının yetkilerini root seviyesine yükseltmek, oldukça
+    tehlikeli olup sistemin tamamını tehlikeye atmak demektir. Dolayısıyla,
+    güvenlik profesyoneli olmayanların sudo veya chroot yapmayı ya da
+    Apache'yi root olarak başka bir şekilde çalıştırmayı düşünmemesi gerekir.
    </simpara>
    <simpara>
-    PHP bazı çözümleri de ihtiva etmektedir. Mesela
-    <link linkend="ini.open-basedir">open_basedir</link> ayarı ile PHP'den erişilebilecek
-    dizinleri tanımlayabilirsiniz. Ayrıca Apache erşim bölgesi tanımlayarak İnternet
-    sayfalarının belirli bir alanda sınırlandırılması, diğer sistem dizinlerine erişmesi
-    engellenebilir.
+    PHP bazı basit çözümler içermektedir. Örneğin, <link
+    linkend="ini.open-basedir">open_basedir</link> kullanarak PHP tarafından
+    kullanımına izin verilen dizinlere erişimi denetleyebilir ve
+    kısıtlayabilirsiniz. Ayrıca, sadece Apache'nin erişimine açık bölgeler
+    tanımlayabilir, kullanıcılara ve sisteme ait dosyalara erişimi
+    kısıtlayabilirsiniz.
    </simpara>
   </chapter>
 

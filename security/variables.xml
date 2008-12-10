@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.5 Maintainer: volkan Status: wip -->
-<!-- CREDITS: sezer -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.5 Maintainer: sezer Status: ready -->
 <!-- splitted from ./index.xml, last change in rev 1.66 -->
 <chapter xml:id="security.variables" xmlns="http://docbook.org/ns/docbook">
  <title>Kullanıcıdan Gelen Bilgi</title>
  <para>
   PHP de yazılmış bir uygulamanın en zayıf noktası, dilin kendisinde olan bir
-  sorun değil, yazılan uygulamanın bazı varsayımlara dayanarak güvenliği göz önünde bulundurmamasıdır.
-  Bundan dolayı bir uygulama yazarken güvenliğe önem vermeli ve kullanıcıdan gelen bilginin varsayıma dayanmadan
+  sorun değil, yazılan uygulamanın bazı varsayımlara dayanarak güvenliği göz
+  önünde bulundurmamasıdır. Bundan dolayı bir uygulama yazarken güvenliğe
+  önem vermeli ve kullanıcıdan gelen bilginin varsayıma dayanmadan
   denetlenmesini sağlamasınız.
   <example>
-   <title>Tehlikeli Değişken Kullanımı</title>
+   <title>- Tehlikeli Değişken Kullanımı</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-// kullanıcıya ait klasörü silelim... Veya bir başka kişininki de silinebilir mi?
-unlink ($form_degiskeni);
+// kullanıcının ev dizininden bir dosyayı silelim...
+// acaba başka birininkini mi silecek?
+unlink ($fena_veri);
 
-// Girişle ilgili kayıt tutalım... Veya sistem /etc/passwd dosyasına mı yazar?
-fwrite ($fp, $form_degiskeni);
+// Girişle ilgili kayıt tutalım...
+// acaba /etc/passwd dosyasına mı yazacak?
+fwrite ($fp, $fena_veri);
 
-// Gelen listeleme komutunu çalıştıralım... Veya tüm dosyaları silecek bir 'rm -rf' veya 'deltree' komutu mu?
-exec ($form_degiskeni);
+// Denemek için birşeyler çalıştıralım...
+// acaba tüm dosyaları silecek bir 'rm -rf' komutu mu?
+exec ($fena_veri);
 
 ?>
 ]]>
@@ -30,14 +33,15 @@ exec ($form_degiskeni);
   </example>
  </para>
  <para>
-  Kod yazarken her zaman yazdıklarınızı dikkatlice inceleyip, kullanıcıdan gelen
-  bilgilerin doğru ve tam şekilde kontrol edilip onaylandıgına emin olmanız gereklidir.
-  Bu kontrol işlemi de yeni kod satırları eklenerek uygunluk denetimi yapılarak sağlanır.
-  Kullanıcıdan gelen bilgiyi alıp işleme koyduğunuz her durumda kendinize şu soruları sorabilirsiniz:
+  Kod yazarken her zaman yazdıklarınızı dikkatlice inceleyip, kullanıcıdan
+  gelen bilgilerin doğru ve tam şekilde denetlenip onaylandığına emin olmanız
+  gerekir. Kullanıcıdan gelen bilgiyi alıp işleme koyduğunuz her durumda
+  kendinize şu soruları sorabilirsiniz:
   <itemizedlist>
    <listitem>
     <simpara>
-     Uygulama benim istemediğim dosyalara erişim, değişiklik veya silme imkanı veriyor mu?
+     Bu betik benim istemediğim dosyalara erişim, değişiklik veya silme
+     imkanı veriyor mu?
     </simpara>
    </listitem>
    <listitem>
@@ -47,12 +51,13 @@ exec ($form_degiskeni);
    </listitem>
    <listitem>
    <simpara>
-     Uygulama amacı dışında başka bir amaç için kullanılabilir mi?
+     Bu betik başka bir amaç için kullanılabilir mi?
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     Bu uygulama sistemde varolan başka uygulamalarla kötü amaçlı kullanılabilir mi?
+     Bu betik sistemde varolan başka betiklerle birlikte kötü amaçlı
+     kullanılabilir mi?
     </simpara>
    </listitem>
    <listitem>
@@ -63,22 +68,20 @@ exec ($form_degiskeni);
   </itemizedlist>
  </para>
  <para>
-  Yaptığınız projenin uygunluğuna göre kod yazmadan önce ve yazarken bu soruları
-  sık sık kendinize sormanız, proje bittiğinde değerlendirme yapıp değişiklikler yapmanızdan
-  çok daha faydalı olacaktır. Bu sayade proje tasarımını güvenlik düşünülerek yapmış olacak
-  ve daha sonra güvenlik dolayısıyla ciddi değişiklikler yapma zorunluluğunuz ortadan kalkacaktır.
-  Güvenliğe vereceğiniz öncelikli önem, daha sonra yapacağınız ve güvenliği riske atacak
-  değişikliklerden çok daha faydalıdır.
+  Yaptığınız projenin uygunluğuna göre kod yazmadan önce ve yazarken bu
+  soruları sık sık kendinize sormanız, proje bittiğinde değerlendirme yapıp
+  değişiklikler yapmanızdan çok daha faydalı olacaktır. Bu sayede proje
+  tasarımını güvenlik düşünülerek yapmış olacak ve daha sonra güvenlik
+  dolayısıyla ciddi değişiklikler yapma zorunluluğunuz ortadan kalkacaktır.
+  Güvenliğe vereceğiniz öncelikli önem, daha sonra yapacağınız ve güvenliği
+  riske atacak değişikliklerden çok daha faydalıdır.
  </para>
  <para>
-  Eski PHP sürümlerinde açık olan 'register_globals' ayarı güvenlik gereğiyle
-  artık kapatılmıştır. Ancak diğer güvenlik ayarı olan 'magic_quotes' bu satırlar
-  yazılırken hala açık olarak sunulmaktadır ve kafanızı karıştırabilir. Bu ayarları
-  anlayıp kapattıktan sonra kodlamaya başlamanız daha faydalı olabilir.
-  
-  Hata bildirim fonksiyonu 'error_reporting(E_ALL)' kullanımı, aynı zamanda uyarıları
-  da göstereceği için kodunuzda sorun olup olmadığı hakkında bilgi verebilir. Tabiki geliştirme
-  aşamasında açacağınız bu ayarları uygulamanız faaliyete geçince kapatmalısınız.
+  Belirtilen bir değişkenin değerini, kaynağı veya geçerliliği bozacağını
+  düşündüğünüz register_globals, magic_quotes ve benzeri ayarlarları
+  kapatmanız iyi olabilir. Hata bildirim kipi 'error_reporting(E_ALL)'
+  kullanımı, aynı zamanda uyarıları da göstereceği için kodunuzda sorun olup
+  olmadığı hakkında daha iyi bilgi verebilir.
  </para>
 </chapter>
 

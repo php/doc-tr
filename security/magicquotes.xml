@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.10 Maintainer: volkan Status: wip -->
-<!-- CREDITS: sezer -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.11 Maintainer: sezer Status: ready -->
   <chapter xml:id="security.magicquotes" xmlns="http://docbook.org/ns/docbook">
    <title>Sihirli Tırnak</title>
-   &warn.deprecated.removed-6-0-0;
+    &warn.deprecated.feature-5-3-0.removed-6-0-0;
    <para>
-    Sihirli Tırnak özel karakterlerin önüne otomatik olarak çıkış karakteri konması ve
-    bu şekilde bütünlüğünün korunmasıdır. Bu özellik kullanıcıdan gelen bilgiyi değiştirebilir,
-    veritabanı işlemlerinde de değişiklik yapabilir. Bundan dolayı bazı karışıklıklara
-    sebep olduğu için kullanılmaması tavsiye edilir. Bu özelliği kapatıp çıkış karakterlerini
-    kendiniz ilgili fonksiyonları çağırarak yapabilirsiniz.
+    Sihirli Tırnaklar, PHP betiklerine gelen veriyi sihirli bir şekilde
+    önceleyen bir işlemdir. Kodlamayı sihirli tırnakları kullanmadan yapıp bu
+    işlemi çalışma anına bırakmak gerektiğinde de tercih edilebilir.
    </para>
 
    <sect1 xml:id="security.magicquotes.what">
-    <title>Sihirli Tırnak nedir?</title>
+    <title>Sihirli Tırnaklar nedir?</title>
     <para>
-     Açık olduğunda tüm <literal>'</literal> (tek tırnak), <literal>"</literal>
-     (çift tırnak), <literal>\</literal> (ters taksim) and <literal>NULL</literal> (YOKLUK)
-     karakterierinin önüne otomatik olarak ters taksim karakteri eklenir. Bu işlem
-     <function>addslashes</function> fonksiyonunun yaptığı işle aynıdır.
+     Etkin olduğunda, <literal>'</literal> (tek tırnak), <literal>"</literal>
+     (çift tırnak), <literal>\</literal> (tersbölü) ve
+     <literal>NULL</literal> karakterlerinin önüne özdevinimli olarak bir
+     tersbölü imi getirilir. Bu işlem <function>addslashes</function>
+     işlevinin yaptığı işle aynıdır.
     </para>
     <para>
-     Toplam üç adet sihirli tırnal ayarı vardır:
+     Toplam üç adet sihirli tırnak yönergesi vardır:
     </para>
     <itemizedlist>
      <listitem>
@@ -30,12 +28,11 @@
        <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
       </simpara>
       <simpara>
-       Bu ayar HTTP bilgi isteği (GET, POST, ve COOKIE bilgileri) ile ilgilidir. Çalışma zamanlı
-       olarak değiştirilmez, uygulamanız çalışmadan önce, yani konfigürasyon dosyasında değiştirmelisiniz.
-       Temel değeri <emphasis>on</emphasis> yani açıktır.
+        HTTP istek verisini (GET, POST ve COOKIE) etkiler. Çalışma anında
+        ayarlanamaz ve öntanımlı değeri <emphasis>on</emphasis>'dur.
       </simpara>
       <simpara>
-       Ayrıca <function>get_magic_quotes_gpc</function> sayfasına bakınız.
+       Ayrıca bakınız: <function>get_magic_quotes_gpc</function>.
       </simpara>
      </listitem>
      <listitem>
@@ -43,14 +40,14 @@
        <link linkend="ini.magic-quotes-runtime">magic_quotes_runtime</link>
       </simpara>
       <simpara>
-       Açık olduğunda bilgi getiren çoğu fonksiyonda etki eder ve özel karakterlere ters taksim
-       kullanılarak çıkış uygulanır. Veritabanı fonksiyonları da dahil olmak
-       üzere dış kaynaktan bilgi getiren fonksiyonlar bundan etkilenir.
-       Çalışma zamanlı olarak değiştirilebilir. Temel değeri <emphasis>off</emphasis> yani kapalıdır.
+       Etkin olduğunda, veritabanları ve metin dosyaları dahil, bir dış
+       kaynaktan veri döndüren çoğu işlev veriyi tersbölü imiyle
+       önceleyecektir. Çalışma anında ayarlanabilir ve öntanımlı değeri
+       <emphasis>off</emphasis> yani kapalıdır.
       </simpara>
       <simpara>
-       Ayrıca <function>set_magic_quotes_runtime</function> ve
-       <function>get_magic_quotes_runtime</function> sayfalarına bakınız.
+       Ayrıca bakınız: <function>set_magic_quotes_runtime</function> ve
+       <function>get_magic_quotes_runtime</function>.
       </simpara>
      </listitem>
      <listitem>
@@ -58,122 +55,130 @@
        <link linkend="ini.magic-quotes-sybase">magic_quotes_sybase</link>
       </simpara>
       <simpara>
-       Açık olduğunda tek tırnak karakterine çıkış işlemi yapılırken ters taksim değil,
-       yine tek tırnak karakteri kullanılır. Açık olduğunda <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
-       ayarını da etkile ve üzerinde önem kazanır.
-       Eğer her iki ayar da açıksa, sadece tek tırnak karakterleri <literal>''</literal>
-       olarak ayarlanacak, çift tırnak, ters taksim ve NULL (YOKLUK) olduğu gibi kalacak ve çıkış işlemi
-       uygulanmayacaktır.
+       Etkin olduğunda tek tırnak karakterini öncelerken tersbölü değil yine
+       bir tek tırnak kullanılır. Değeri on olduğunda, <link
+       linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> ayarını
+       geçersiz kılar. Yani her iki yönerge de etkin olduğunda tek tırnaklar
+       <literal>''</literal> biçeminde öncelenir. Çift tırnaklar, tersbölüler
+       ve NULL'lar öncelenmeden bırakılır.
       </simpara>
       <simpara>
-       Ayrıca <function>ini_get</function> fonksiyonuna bakıp bu ayarların değerlerini nasıl kontrol edeceğinizi öğrenin.
+       Ayrıca bir yönergenin değerinin alınması ile ilgili olarak
+       <function>ini_get</function> işlevine de bakınız.
       </simpara>
      </listitem>
     </itemizedlist>
    </sect1>
 
    <sect1 xml:id="security.magicquotes.why">
-    <title>Neden Sihirli Tırnak kullanılır?</title>
+    <title>Sihirli Tırnaklar Neden Kullanılır?</title>
     <itemizedlist>
      <listitem>
       <simpara>
-       Yeni başlayanlar için faydalı olabilir. (Yine de pek tavsiye edilmez)
+       Yeni başlayanlar için faydalıdır.
       </simpara>
       <simpara>
-       Sihirli tırnak PHP&apos;yi daha kolay kullanmak, güvenliğini sağlamak amacıyla
-       eklenmiştir. Ancak bu kullanılsa dahi <link linkend="security.database.sql-injection">SQL Enjeksiyon</link>
-       riski azalmış olsa dahi hala vardır.
+       Sihirli tırnaklar, PHP'de yeni kod yazmaya başlayanlardan kaynaklanan
+       tehlikeleri bertaraf etmeye yardımcı olması için gerçeklenmiştir.
+       Ancak sihirli tırnaklar etkin olsa dahi <link
+       linkend="security.database.sql-injection">SQL Enjeksiyon</link>
+       riski düşük de olsa hala vardır.
       </simpara>
      </listitem>
      <listitem>
       <simpara>
-       Kolaylık
+       Elverişlilik.
       </simpara>
       <simpara>
-       Veritabanına bilgi eklerken sihirli tırnak özelliği otomatik olarak <function>addslashes</function>
-       fonksiyonunu tüm $_GET, $_POST ve $_COOKIE bilgi dizilerine uygular.
+       Veritabanına bilgi eklerken sihirli tırnak özelliği özdevinimli olarak
+       tüm GET, POST ve COOKIE verisine <function>addslashes</function>
+       işlevini uygular.
       </simpara>
      </listitem>
     </itemizedlist>
    </sect1>
 
    <sect1 xml:id="security.magicquotes.whynot">
-    <title>Neden Kullanılmamalıdır?</title>
+    <title>Sihirli Tırnaklar Neden Kullanılmamalıdır?</title>
     <itemizedlist>
      <listitem>
       <simpara>
-       Uyumluluk
+       Taşınabilirlik.
       </simpara>
       <simpara>
-       Bu özelliğin açık veya kapalı olması tüm uygulamanızın davranışını değiştirir.
-       <function>get_magic_quotes_gpc</function> tüm bilgileri farklı hale getirebilir.
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       Başarım
-      </simpara>
-      <simpara>
-       Her gelen bilginin veritabanına eklenmesi veya kullanılması şart değildir. Ancak
-       sihirli tırnak tüm bilgiyi sanki kullanılacak gibi çıkış işlemine sokar.
-       Bundan dolayı sihirli tırnak yerine <function>addslashes</function> kullanarak
-       kontrolü elinizde tutunuz.
-      </simpara>
-      <simpara>
-       PHP ile gelen konfigürasyon dosyası <filename>php.ini-dist</filename> bu özelliği
-       açık bırakmış olabilir. Ancak tavsiye edilen dosya <filename>php.ini-recommended</filename>
-       bu özelliği kapalı tutar ve bu dosyayı kullanmanız tavsiye edilir. Ayrıca varolan konfigürasyon
-       dosyanızı da değiştirip bu özelliği kapatabilirsiniz.
+        Bu özelliğin açık veya kapalı olmasının taşınabilirliği etkilediği
+        varsayılır. Böyle bir durumun varlığını
+        <function>get_magic_quotes_gpc</function> ile denetledikten sonra
+        kodlamayı buna uygun yapın.
       </simpara>
      </listitem>
      <listitem>
       <simpara>
-       Uygunsuzluk
+       Başarım.
       </simpara>
       <simpara>
-       Her bilginin çıkış işlemine tabi tutulması gerekli değildir. Bundan dolayı bazen
-       gereksiz bilgiler de değişir ve zarar görür. Örneğin yazı göndermeye yarayan bir
-       formda birçok tırnak ve çift tırnak görülebilir. Ancak bu bilgiler e-posta ile
-       gönderilecekse değişikliğe ve çıkış işlemine hiç gerek yoktur. Bu durumda
-       <function>stripslashes</function> fonksiyonunu kullanıp ters çıkış işlemi yapmak
-       zorunda kalırsınız.
+        Bir veritabanına yerleştirilen her veri parçası öncelenmediğinden,
+        tüm bu verinin öncelenmeye çalışılması başarım kaybına sebep olur. Bu
+        bakımdan (<function>addslashes</function> gibi) önceleme işlevlerinin
+        çalışma anında çağrılması daha verimli olur.
+      </simpara>
+      <simpara>
+       <filename>php.ini-dist</filename> bu yönergeleri öntanımlı olarak
+       etkin kılsa da <filename>php.ini-recommended</filename> bunu etkisiz
+       kılar. İkincisinin sebebi tamamen başarım ile ilgilidir.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Elverişsizlik.
+      </simpara>
+      <simpara>
+       Tüm verinin öncelenmesi gerekmediğinden, gerekmediği halde verinin
+       öncelenmiş olduğunu görmek çoğunlukla can sıkıcıdır. Örneğin bir
+       formdan gönderilen epostada bir sürü \' görmek. Bu durumu düzeltmek
+       için aşırı miktarda <function>stripslashes</function> işlevi kullanmak
+       gerekebilir.
       </simpara>
      </listitem>
     </itemizedlist>
    </sect1>
 
    <sect1 xml:id="security.magicquotes.disabling">
-    <title>Sihirli Tırnak Kapatılması</title>
+    <title>Sihirli Tırnakların İptali</title>
     <para>
-     Belirtilen <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
-     çalışma zamanlı olarak değiştirilemez, bu sebeple konfigürasyon dosyasından değiştirilmesi gerekir.
-     Yani <function>ini_set</function> fonksiyonu bu ayara etki etmez.
+     <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> yönergesi
+     sadece sistem seviyesinde etkisiz kılınabilir, çalışma anında yapılamaz.
+     Başka bir deyişle,  <function>ini_set</function> işlevi bir seçenek
+     değildir.
     </para>
     <para>
      <example>
-      <title>Konfigürasyondan değiştirme</title>
+      <title>- Sihirli tırnakların sunucu taraflı iptali</title>
       <para>
-       Aşağıda &php.ini; içinde <literal>Off</literal> kapatmaya yönelik bir örnek verilmiştir.
-       Daha fazla detay için kılavuzun <link linkend="configuration.changes">Konfigürasyon ayarlarını değiştirme</link> bölümüne bakınız.
+       Aşağıdaki örnekte &php.ini; içinde bu yönergelere değer olarak
+       <literal>Off</literal> atanmaktadır. Bu konuda daha ayrıntılı bilgi
+       edinmek için <link linkend="configuration.changes">Yapılandırma
+       ayarlarının değiştirilmesi</link> bölümüne bakınız.
       </para>
       <screen>
 <![CDATA[
-; Magic quotes
+; Sihirli tırnakların iptali
 ;
 
-; Magic quotes for incoming GET/POST/Cookie data.
+; Gelen GET/POST/Cookie verisi için sihirli tırnaklar
 magic_quotes_gpc = Off
 
-; Magic quotes for runtime-generated data, e.g. data from SQL, from exec(), etc.
+; Çalışma anında üretilen (SQL veya exec() kaynaklı) veri için
 magic_quotes_runtime = Off
 
-; Use Sybase-style magic quotes (escape ' with '' instead of \').
+; Sybase-tarzı sihirli tırnak kullanımı (' yerine \' değil '').
 magic_quotes_sybase = Off
 ]]>
       </screen>
       <para>
-       Eğer sunucuda konfigürasyon dosyasına erişim ve değişiklik mümkün değilse, Apache kullanıcıları için
-       <filename>.htaccess</filename> dosyası kullanımı mümkündür. Mesela:
+        Eğer sunucuda yapılandırma dosyasına erişim ve değişiklik mümkün
+        değilse, <filename>.htaccess</filename> kullanmak da bir seçenektir.
+        Örnek:
       </para>
       <screen>
 <![CDATA[
@@ -183,15 +188,16 @@ php_flag magic_quotes_gpc Off
      </example>
     </para>
     <para>
-     Her konfigürasyona uyumlu yazılım geliştirme amacıyla sunucu ayarlarının
-     değişmesinin mümkün olmadığı durumlar için aşağıda <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
-     ayarının nasıl kapalı gibi işleme konduğunu gösteren bir örnek verilmiştir.
-     Bu yol fevkalade verimsizdir ve hantaldır ancak yazılan kodun sihirli tırnak
-     ayarına bağlı olmaması amaçlanıyorsa kullanılabilir.
+     Taşınabilir kod (her ortamda çalışan kod) yazmaya yönelik olarak,
+     ayarların sunucu seviyesinde değiştirilmesi mümkün değilse <link
+     linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> yönergesi
+     örnekteki gibi çalışma anında etkisiz kılınabilir. Bu yol fevkalade
+     verimsizdir ancak uygun yönergeleri başka bir yerden atamaya tercih
+     edilir.
     </para>
     <para>
      <example>
-      <title>Çalışma zamanlı olarak sihirli tırnak kapatma</title>
+      <title>- Sihirli tırnakların çalışma anında iptali</title>
       <programlisting role="php">
 <![CDATA[
 <?php
