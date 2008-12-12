@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.9 Maintainer: behzat Status: ready -->
+<refentry xml:id="function.date-sunset" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>date_sunset</refname>
+  <refpurpose>
+   Verilen gün ve konum için günbatımı zamanını döndürür
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>date_sunset</methodname>
+   <methodparam><type>int</type><parameter>zamandamgası</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>biçim</parameter></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter>enlem</parameter></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter>boylam</parameter></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter>başucu</parameter></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter>gmt_farkı</parameter></methodparam>
+   </methodsynopsis>
+   <para>
+    <function>date_sunset</function> işlevi, verilen gün
+    (<parameter>zamandamgası</parameter>) ve konum için günbatımı zamanını
+    döndürür.
+   </para>
+  </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>zaman damgası</parameter></term>
+     <listitem>
+      <para>
+       Günbatımı zamanı alınacak günün  <parameter>zamandamgası</parameter>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>biçim</parameter></term>
+     <listitem>
+      <para>
+       <table>
+        <title><parameter>biçim</parameter> sabitleri</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>sabit</entry>
+           <entry>açıklama</entry>
+           <entry>örnek</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>SUNFUNCS_RET_STRING</entry>
+           <entry>Sonucu dizge olarak döndürür.</entry>
+           <entry>16:46</entry>
+          </row>
+          <row>
+           <entry>SUNFUNCS_RET_DOUBLE</entry>
+           <entry>Sonucu gerçek sayı olarak döndürür.</entry>
+           <entry>16.78243132</entry>
+          </row>
+          <row>
+           <entry>SUNFUNCS_RET_TIMESTAMP</entry>
+           <entry>Sonucu tamsayı (zaman damgası) olarak döndürür.</entry>
+           <entry>1095034606</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>enlem</parameter></term>
+     <listitem>
+      <para>
+       Kuzey yarımküre öntanımlıdır. Güney yarımküre için negatif değer girin.
+       Ayrıca bakınız: <literal>date.default_latitude</literal>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>boylam</parameter></term>
+     <listitem>
+      <para>
+       Doğu yarımküre öntanımlıdır. Batı yarımküre için negatif değer girin.
+       Ayrıca bakınız: <literal>date.default_longitude</literal>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>başucu</parameter></term>
+     <listitem>
+      <para>
+       Öntanımlı: <literal>date.sunrise_zenith</literal>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>gmt_farkı</parameter></term>
+     <listitem>
+      <para>
+       Saat cinsinden belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+
+   &date.timezone.errors.description;
+
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+
+      &date.timezone.errors.changelog;
+
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarılı olduğunda, <parameter>biçim</parameter> değiştirgesiyle
+   belirlenen biçemde gün batımı zamanını, başarız olduğunda &false; değerini
+   döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>date_sunset</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+/* İstanbul, Türkiye için günbatımı zamanı hesabı
+Enlem: 41.01 Kuzey
+Boylam: 28.58 Doğu
+Başucu ~= 90
+saat farkı: +2 GMT
+*/
+
+echo date("D M d Y"). ', günbatımı: ' .date_sunset(time(), SUNFUNCS_RET_STRING, 41.01, 28.58, 90, 2);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Thu Dec 11 2008, günbatımı: 16:33
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>date_sunrise</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
