@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.23 Maintainer: nilgun Status: ready -->
+<chapter xml:id="install.pecl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>PECL eklentilerinin kurulması</title>
+
+ <sect1 xml:id="install.pecl.intro">
+  <title>PECL Kurulumları Hakkında</title>
+  <simpara>
+    <link xlink:href="&url.pecl;">PECL</link>, <link
+    xlink:href="&url.php.pear;">PEAR</link> üzerinden kullanılabililen bir
+    PHP eklentileri deposudur. Kılavuzun bu bölümü PECL eklentilerinin nasıl
+    edinileceği ve nasıl kurulacağını göstermek için tasarlanmıştır.
+  </simpara>
+  <simpara>
+    Bu talimatlarda, PHP kaynak kodunun
+    <literal>/php/kaynak/dizininiz/</literal> altında bulunduğu ve PECL
+    eklentisinin isminin <literal>eklenti</literal> olduğu varsayılacaktır.
+    Hazırlıklarınızı buna göre yapın. Bu talimatlarda ayrıca, <link
+    xlink:href="&url.php.pear.cli;">pear komutu</link>nu kullanmayı
+    bildiğiniz varsayılacaktır. PEAR kılavuzundaki <literal>pear</literal>
+    komutu ile ilgili bilgiler <literal>pecl</literal> komutu için de
+    geçerlidir.
+  </simpara>
+  <simpara>
+    Burada genel olarak eklentinin paylaşımlı olarak derlenmesi, kurulması ve
+    yüklenmesi üzerinde durulacaktır. Sonraki bölümlerde açıklanan yöntemler
+    eklentiyi nasıl derleyip kuracağınızla ilgili çeşitli talimatlar içerir,
+    fakat bunları sizin yerinize özdevinimli olarak yüklemezler. Eklentiler
+    bir <link linkend="ini.extension">extension</link> yönergesi eklenerek
+    yüklenebilirler. Bunun için &php.ini; dosyasını veya
+    <function>dl</function> işlevini kullanabilirsiniz.
+  </simpara>
+  <simpara>
+    PHP modüllerini derlerken, derleme için gerekli araçların (autoconf,
+    automake, libtool gibi) birbirleriyle en uyumlu sürümlerini kullanıyor
+    olmak önemlidir. Gerekli araçlar ve bunların gerekli sürümleriyle ilgili
+    ayrıntılı bilgiyi  <link xlink:href="&url.php.anoncvs;">Anonim CVS
+    Talimatları</link> sayfasında bulabilirsiniz.
+  </simpara>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.downloads">
+  <title>PECL Eklentilerinin İndirilmesi</title>
+  <simpara>
+    PECL eklentilerini indirmek için çeşitli seçenekler vardır:
+  </simpara>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+      <literal>pecl install eklenti</literal> komutu eklenti kodunu
+      özdevinimli olarak indirir, dolayısıyla ayrı bir indirme işlemine gerek
+      kalmaz.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link xlink:href="&url.pecl;">&url.pecl;</link>
+    </simpara>
+    <simpara>
+      PECL sitesi, PHP Geliştirme Ekibi tarafından önerilen farklı eklentiler
+      hakkında bilgiler içerir. Burada bulunan bilgilerden bazıları:
+      ChangeLog dosyaları, dağıtım notları, gereksinimler ve benzeri
+      ayrıntılar.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+      <literal>pecl download eklenti</literal> komutu
+    </simpara>
+    <simpara>
+      PECL sitesinine dağıtım listesinde bulunan eklentileri indirip kurmak
+      için <link xlink:href="&url.php.pear.cli;">pecl komutu</link>
+      kullanılabilir. İstenen sürümler ayrıca belirtilebilir.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <acronym>CVS</acronym>
+    </simpara>
+    <simpara>
+      Çoğu PECL eklentisi ayrıca <acronym>CVS</acronym>'de de bulunmaktadır.
+      CVS içeriğini tarayıcınızla <link xlink:href="&url.php.cvs;pecl/"
+      >&url.php.cvs;pecl/</link> adresinde inceleyebilirsiniz. Eklentileri
+      doğrudan <acronym>CVS</acronym>'den indirmek için sırayla aşağıdaki
+      komutları verebilirsiniz. <emphasis>cvsread</emphasis> kullanıcısının
+      parolası <emphasis>phpfi</emphasis>'dir.
+    </simpara>
+    <para>
+     <screen>
+$ cvs -d:pserver:cvsread@cvs.php.net:/repository login
+$ cvs -d:pserver:cvsread@cvs.php.net:/repository co pecl/eklenti
+     </screen>
+    </para>
+   </listitem>
+   <listitem>
+    <simpara>
+      Windows için
+    </simpara>
+    <simpara>
+     Windows kullanıcıları derlenmiş PECL çalıştırılabilirlerini
+     <emphasis>Windows PECL paketi</emphasis> olarak <link
+     xlink:href="&url.php.downloads;">PHP İndirme</link> sayfasından
+     indirerek veya bir <link xlink:href="&url.php.snapshots;">PECL Gecelik
+     Dağıtımı</link> indirerek ya da <link xlink:href="&url.pecl.win;"
+     >PECL4WIN</link> sitesinden bir eklenti DLL'si indirerek edinebilirler.
+     PHP'yi Windows altında derlemek için <link
+     linkend="install.windows.building">Kaynak paketten derleme</link>
+     bölümüne bakınız.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.windows">
+  <title>Bir PHP Eklentisinin Kurulumu</title>
+  <para>
+    Windows'ta bir PHP eklentisini yüklemenin iki yolu vardır: Ya eklentiyi
+    PHP içinde derlersiniz ya da DLL olarak yüklersiniz. Derlenmiş bir
+    eklentiyi yüklemek en kolay ve en çok tercih edilen yoldur.
+  </para>
+  <para>
+    Bir eklentiyi yüklemek için sisteminizde o eklentinin ".dll" dosyasının
+    bulunması gerekir. Tüm eklentiler özdevinimli olarak belirli aralıklarla
+    PHP Grubu tarafından derlenirler (bunları indirmek için sonraki bölüme
+    bakınız).
+  </para>
+  <para>
+    Bir eklentiyi PHP içinde derlemek için <link
+    linkend="install.windows.building">Kaynak kod paketinden derleme</link>
+    belgesine bakınız.
+  </para>
+  <para>
+    Bir eklentiyi tek başına (yani bir DLL olarak) derlemek için  <link
+    linkend="install.windows.building">Kaynak kod paketinden derleme</link>
+    belgesine bakınız. Eğer DLL dosyası ne PHP dağıtımınızda ne de PECL
+    sitesinde mevcutsa, eklentiyi kullanmaya başlamadan önce derlemek zorunda
+    kalabilirsiniz.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.windows.find">
+  <title>Bir eklenti nereden bulunur?</title>
+  <para>
+    PHP eklentileri genellikle "php_*.dll" biçeminde isimlendirilirler
+    (yıldız iminin yerine eklentinin ismi gelir) ve "PHP\ext" (PHP 4'te
+    "PHP\extensions") dizini altında bulunurlar.
+  </para>
+  <para>
+    PHP, geliştiricilerin büyük çoğunluğunca en faydalı bulunan eklentilerle
+    birlikte gelir. Bunlara "çekirdek" eklentiler adı verilir.
+  </para>
+  <para>
+    Bununla birlikte, çekirdek eklentilerle sağlanmamış bir işlevselliğe
+    ihtiyaç duyarsanız, PECL sitesinde bakabilirsiniz. PHP Eklentileri Halk
+    Kütüphanesi (PECL -  PHP Extension Community Library) bir PHP Eklentileri
+    deposu olup PHP eklentilerinin geliştirilmesi ve indirilmesi için
+    barındırma oluşumlarını ve bilinen tüm eklentilerin bir dizinini içerir.
+  </para>
+  <para>
+    Kendi kullanımınız için bir eklenti geliştiriyorsanız PECL'de
+    barındırılmasını isteyebilirsiniz, böylece ihtiyaçları aynı olan
+    başkaları da eklentinizden yararlanabilir. Bunun bazı olumlu yan etkileri
+    de vardır: Geribildirim, teşekkür, hata bildirimi, hatta düzeltme ve yama
+    alma şansınız olur. Eklentinizi barındırılmak üzere PECL'ye göndermeden
+    önce lütfen &url.pecl.submit; adresini ziyaret ediniz.
+  </para>
+
+  <sect2 xml:id="install.pecl.windows.which">
+   <title>Hangi eklenti indirilecek?</title>
+   <para>
+    <emphasis>Çoğu zaman her DLL'nin çok sayıda sürümü vardır:</emphasis>
+    <itemizedlist>
+     <listitem>
+      <simpara>
+        Farklı sürüm numaraları (en azından ilk iki sayı tutmalı)
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+        Farklı evre güvenceli olanlar
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+        Farklı işlemciler için olanlar (x86, 64 bit...)
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+        Farklı hata ayıklama seçenekli olanlar
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>vs.</literal>
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    Şunu aklınızdan çıkarmayın: Eklenti ayarlarınız kullandığınız PHP
+    çalıştırılabilirinin ayarları ile aynı olmalıdır. Aşağıdaki PHP betiği
+    PHP ayarlarınızın tamamını size söyleyecektir:
+    <screen>
+<![CDATA[
+<?php
+phpinfo();
+?>
+]]>
+    </screen>
+   </para>
+   <para>
+    Ya da komut satırından şunu çalıştırın:
+    <screen>
+<![CDATA[
+sürücü:\\dizin\yolu\php\executable\php.exe -i
+]]>
+    </screen>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="install.pecl.windows.loading">
+   <title>Bir eklentinin yüklenmesi</title>
+   <para>
+    Bir PHP eklentisini yüklemenin en bilinen yolu eklentiyi
+    <filename>php.ini</filename> dosyasına eklemektir. Dikkatli incelerseniz
+    <filename>php.ini</filename> dosyanızda bir çok eklentinin zaten ekli
+    olduğunu görürsünüz. Eklentiyi etkin kılmak için tek yapacağınız
+    eklentinin belirtildiği satırın başındaki noktalı virgülü silmek
+    olacaktır.
+    <screen>
+<![CDATA[
+;extension=php_eklenti.dll
+]]>
+    </screen>
+    <screen>
+<![CDATA[
+extension=php_eklenti.dll
+]]>
+    </screen>
+   </para>
+   <para>
+    Bununla birlikte, bazı HTTP sunucuları, PHP çalıştırılabilirinin yanına
+    konmuş php.ini dosyasını kullanmadıklarından eklentinizi
+    göremeyebilirler. HTTP sunucunuzun kullandığı
+    <filename>php.ini</filename> dosyasının bulunduğu yeri
+    <function>phpinfo</function> işlevini kullanarak öğrenebilirsiniz:
+    <screen>
+<![CDATA[
+Configuration File (php.ini) Path 	C:\WINDOWS
+]]>
+    </screen>
+    <screen>
+<![CDATA[
+Loaded Configuration File 	C:\Program Files\PHP\5.2\php.ini
+]]>
+    </screen>
+   </para>
+   <para>
+    Eklentiyi etkin kıldıktan sonra  <filename>php.ini</filename> dosyanızı
+    kaydedin ve HTTP sunucunuzu yeniden başlattıktan sonra tekrar
+    <function>phpinfo</function> çıktısına bakın. Yeni eklentiyi artık kendi
+    bölümünde görüyor olmanız gerekir.
+   </para>
+  </sect2>
+
+  <sect2 xml:id="install.pecl.windows.problemsolving">
+   <title>Sorunların çözümlenmesi</title>
+   <para>
+    Eğer eklenti <function>phpinfo</function> çıktısında görünmüyorsa sorunun
+    kaynağını bulmak için günlük dosyalarınıza bakmalısınız.
+   </para>
+   <para>
+    PHP'yi komut satırından kullanıyorsanız (CGI), eklenti yükleme hatasını
+    doğrudan ekranda görebilirsiniz.
+   </para>
+   <para>
+    PHP'yi bir HTTP sunucusu ile kullanıyorsanız günlük dosyalarının yeri ve
+    biçemi kullandığınız yazılıma göre değişir. Günlüklerin yerini bulmak
+    için kullandığınız HTTP sunucusunun belgelerine bakınız.
+   </para>
+   <para>
+    Sorunların çoğu DLL dosyasının yeri ile ilgilidir.
+    <literal>php.ini</literal> içindeki "<link linkend="ini.extension-dir"
+    >extension_dir</link>" yönergesinin değeri ile derleme sırasında yapılan
+    ayarlar arasında bir tutarsızlık olabilir.
+   </para>
+   <para>
+    Eğer sorun derleme sırasında yapılan ayarlarla uyumsuzluktan
+    kaynaklanıyorsa muhtemelen indirdiğiniz DLL dosyasını doğru yere
+    koymamışsınız demektir. Eklentiyi doğru ayarlarla tekrar indirmeyi
+    deneyin. Bunu yaptıktan sonra tekrar <function>phpinfo</function>
+    çıktısına bakmayı unutmayın.
+   </para>
+  </sect2>
+
+ </sect1>
+
+ <sect1 xml:id="install.pecl.pear">
+  <title>Paylaşımlı PECL eklentilerinin <code>pecl</code> komutu ile
+  derlenmesi</title>
+  <simpara>
+   PECL, paylaşımlı PHP eklentilerinin oluşturulmasını kolaylaştırır. <link
+   xlink:href="&url.php.pear.cli;">pecl komutunu</link> şöyle
+   kullanabilirsiniz:
+  </simpara>
+  <para>
+   <screen>
+$ pecl install eklenti
+   </screen>
+  </para>
+  <simpara>
+    Bu komutla <emphasis>eklenti</emphasis>nin kaynak kodu indirilecek,
+    derlenecek ve <filename>eklenti.so</filename> adıyla <link
+    linkend="ini.extension-dir">extension_dir</link> yönergesinde belirtilen
+    dizine kurulacaktır. Böylece <filename>eklenti.so</filename> &php.ini;
+    üzerinden yüklenebilir duruma gelmiş olacaktır.
+  </simpara>
+  <simpara>
+    Öntanımlı olarak, <literal>pecl</literal> komutu, <literal>alfa</literal>
+    veya <literal>beta</literal> olarak imlenmiş paketleri kurmaz. Eklentinin
+    henüz <literal>kararlı</literal> bir sürümü yoksa,
+    <literal>beta</literal> sürümü şöyle kurabilirsiniz:
+  </simpara>
+  <para>
+   <screen>
+$ pecl install eklenti-beta
+   </screen>
+  </para>
+  <para>
+    Ayrıca belli bir sürümü şu şekilde kurabilirsiniz:
+  </para>
+  <para>
+   <screen>
+$ pecl install eklenti-0.1
+   </screen>
+  </para>
+  <note>
+   <para>
+    Eklentiyi &php.ini; dosyasında etkin kıldıktan sonra değişikliklerin
+    etkin olması için HTTP sunucunuzu (hizmetini) yeniden başlatın.
+   </para>
+  </note>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.phpize">
+  <title>Paylaşımlı PECL eklentilerinin <code>phpize</code> ile derlenmesi
+  </title>
+  <simpara>
+    <literal>pecl</literal> komutu ile kurulumun mümkün olmadığı durumlar
+    olabilir. Bir güvenlik duvarı arkasındasınızdır veya eklentinin PECL
+    uyumlu paketi yoktur ya da henüz dağıtılmamış CVS sürümünü kurmak
+    istiyorsunuzdur, vs. Böyle bir eklentinin derleme işlemini daha alt
+    seviye derleme araçlarını kullanarak kendiniz gerçekleştirebilirsiniz.
+  </simpara>
+  <simpara>
+    Bir PHP eklentisini derleme işlemine hazırlamak için
+    <literal>phpize</literal> komutu kullanılır. Aşağıdaki örnekte,
+    eklentinin kaynak kod paketinin <filename>eklenti</filename> dizininde
+    bulunduğu varsayılmıştır:
+  </simpara>
+  <para>
+   <screen>
+<![CDATA[
+$ cd eklenti
+$ phpize
+$ ./configure
+$ make
+# make install
+]]>
+   </screen>
+  </para>
+  <simpara>
+    Başarılı bir kurulum sonucunda eklenti PHP <link
+    linkend="ini.extension-dir">eklentileri dizinine</link>
+    <filename>eklenti.so</filename> adıyla yerleştirilir. Eklentiyi etkin
+    kılmak için &php.ini; dosyanıza bir
+    <literal>extension=eklenti.so</literal> satırı eklemeniz gerekecektir.
+  </simpara>
+  <simpara>
+    Eğer sisteminizde <literal>phpize</literal> komutu yoksa ve RPM gibi
+    önceden derlenmiş paketleri kullanabiliyorsanız,
+    <literal>phpize</literal> komutunu ve PHP eklentilerini derlemek için
+    gerekli başlık dosyalarını içermesi muhtemel uygun bir PHP
+    <literal>devel</literal> sürümünü kurmanız gerekebilir.
+  </simpara>
+  <simpara>
+    Komutun kullanım bilgilerini görmek için <literal>phpize --help</literal>
+    komutunu verin.
+  </simpara>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.static">
+  <title>PECL eklentilerinin PHP içinde duruk olarak derlenmesi</title>
+  <simpara>
+    Bazen bir PECL eklentisini PHP çalıştırılabilirinin içinde duruk olarak
+    derlemeniz gerekebilir. Bunu yapmak için eklentiyi
+    <filename>/php/kaynak/dizininiz/ext/</filename> dizinine yerleştirmeniz
+    ve PHP kaynak paketinin <code>configure</code> betiğini yeniden
+    çalıştırmanız gerekir.
+  </simpara>
+  <para>
+   <screen>
+<![CDATA[
+$ cd /php/kaynak/dizininiz/ext
+$ pecl download eklenti
+$ gzip -d < eklenti.tgz | tar -xvf -
+$ mv eklenti-x.x.x eklenti
+]]>
+   </screen>
+  </para>
+  <simpara>
+   Bu işlemin sonucunda eklenti şöyle bir dizinin altına yerleştirilmiş
+   olacaktır:
+  </simpara>
+  <para>
+   <screen>
+    /php/kaynak/dizininiz/ext/eklenti
+   </screen>
+  </para>
+  <simpara>
+    Artık PHP kaynak paketinin <code>configure</code> betiğini yeniden
+    oluşturup PHP'yi her zamanki gibi derleyebilirsiniz:
+  </simpara>
+  <para>
+   <screen>
+$ cd /php/kaynak/dizininiz/
+$ rm configure
+$ ./buildconf --force
+$ ./configure --help
+$ ./configure --with-eklenti --enable-baskabireklenti --with-filanca
+$ make
+$ make install
+   </screen>
+  </para>
+  <note>
+   <simpara>
+    <code>buildconf</code> betiğini çalıştırabilmek için autoconf 2.13 ve
+    automake 1.4+ paketlerinin sisteminizde kurulu olması gerekir (daha yeni
+    autoconf sürümleri de çalışır ama onlar desteklenmemektedir).
+   </simpara>
+  </note>
+  <simpara>
+    <literal>--enable-eklenti</literal> seçeneğinin mi yoksa
+    <literal>--with-eklenti</literal> seçeneğinin mi kullanılacağı eklentiye
+    bağlıdır. Genellikle harici kütüphanelere ihtiyacı olmayan eklentiler
+    <literal>--enable</literal> seçeneğini kullanırlar. Hangisinin
+    kullanılacağından emin olmak için <code>buildconf</code>'tan sonra şunu
+    çalıştırın:
+  </simpara>
+  <para>
+   <screen>
+$ ./configure --help | grep eklenti
+   </screen>
+  </para>
+ </sect1>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
