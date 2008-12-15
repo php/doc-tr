@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
+   <sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Unix sistemler ve Apache 2.0</title>
+    <para>
+     Bu bölüm Unix sistemlerde PHP'nin Apache 2.0'a kurulumu hakkında
+     bilgiler ve ipuçları içerir.
+    </para>
+
+    &warn.apache2.compat;
+
+    <para>
+     Apache 2.0 HTTP Sunucusu hakkında temel bir bilgi edinmek için mutlaka
+     <link xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Sürüm 2.0
+     Belgeleri</link>ne bakmanızı öneririz.
+    </para>
+
+    &install.snippet.apache2.compat;
+
+    <para>
+     <link xlink:href="&url.apache;">Apache 2.0</link>'ın en son sürümünü ve
+     buna uygun PHP sürümünü yukarıda bahsedilen yerlerden indirebilirsiniz.
+     Bu kısa kılavuz Apache 2.0 ve PHP hakkında sadece temel bilgi sağlar.
+     Daha ayrıntılı bilgi edinmek için <link
+     xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Belgeleri</link>ne
+     bakınız. Kurulum talimatlarının sürüm numaralarından ötürü geçerliliğini
+     yitirmemesi için sürüm numaraları 'NN' şeklinde belirtilmiştir, siz
+     bunların yerine kurduğunuz sürümün sürüm numarasını yazacaksınız.
+    </para>
+    <example>
+     <title>- PHP'nin Paylaşımlı Apache 2 Modülü olarak kurulumu</title>
+     <screen>
+<![CDATA[
+1.  gzip -d httpd-2_0_NN.tar.gz
+2.  tar xvf httpd-2_0_NN.tar
+3.  gunzip php-NN.tar.gz
+4.  tar -xvf php-NN.tar
+5.  cd httpd-2_0_NN
+6.  ./configure --enable-so
+7.  make
+8.  make install
+
+    Böylece standart prefork MPM'si ve yüklenebilir modül desteği ile Apache
+    2.0.NN /usr/local/apache2 altına kurulmuş oldu. Kurulumu denemek için
+    Apache HTTP sunucusunu normal yollardan başlatabilirsiniz. Örnek:
+    /usr/local/apache2/bin/apachectl start
+    PHP yapılandırmasıyla çalıştırmak üzere şimdilik sunucuyu durduralım:
+    /usr/local/apache2/bin/apachectl stop.
+
+9.  cd ../php-NN
+
+10. Artık PHP'yi yapılandırabiliriz. Hangi eklentilerin etkin olacağını
+    belirten çeşitli seçenekleri kullanarak PHP'yi özelleştirebilirsiniz.
+    Olası seçeneklerin listesini görmek için ./configure --help komutunu
+    kullanın. Bu örnekte Apache 2 ve MySQL ile basit bir yapılandırmaya
+    gideceğiz. Sizde apxs farklı bir yere kurulmuş olabilir, hatta ismi apxs2
+    bile olabilir.
+
+      ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql
+
+11. make
+12. make install
+
+    Eğer kurulumdan sonra yapılandırmanızı değiştirmek isterseniz sadece son
+    üç adımı yinelemeniz yeterli olacaktır. Yeni modülün etkin olabilmesi
+    için Apache'yi yeniden başlatmanız gerekir. Apache'yi yeniden derlemeniz
+    gerekmez.
+
+    Aksi özellikle belirtilmedikçe 'make install' ile phpize gibi çeşitli PHP
+    araçları, PEAR, PHP CLI ve bir takım başka şeylerin de kurulumu yapılır.
+
+13. php.ini dosyanızı yapılandırın:
+
+    cp php.ini-dist /usr/local/lib/php.ini
+
+    PHP seçeneklerini ayarlamak için .ini dosyanızı düzenleyebilirsiniz. .ini
+    dosyanızın başka bir yerde durmasını istiyorsanız, 10. şıkta
+    --with-config-file-path=/başka/bir/yer seçeneği ile dosyanız için başka
+    bir yer belirtebilirsiniz.
+
+    php.ini-dist yerine php.ini-recommended (dağıtımın standart .ini dosyası
+    yerine önerilen yapılandırmalar dosyasını) kullanmayı tercih ederseniz,
+    değişiklik listesini okumayı ihmal etmeyin, çünkü bunlar PHP'nin
+    davranışını etkileyecektir.
+
+
+14. PHP modülünün yüklenmesi için httpd.conf dosyasını düzenlemelisiniz.
+    LoadModule yönergesinin değeri PHP modülünün sistemdeki yerini
+    göstermelidir. Yukarıdaki 'make install' bunu sizin yerinize yapmıştır
+    ama emin olmak için siz yine de bir bakın.
+
+    PHP 4 için:
+
+      LoadModule php4_module modules/libphp4.so
+
+    PHP 5 için:
+
+      LoadModule php5_module modules/libphp5.so
+
+15. Apache'ye belli dosya uzantılarını PHP uzantıları olarak ele almasını
+    söyleyin. Örneğin, .php uzantılı dosyaları Apache'nin PHP dosyaları
+    olarak ele almasını isteyebiliriz. Apache AddType yönergesini kullanmamak
+    suretiyle, PHP tarafından çalıştırılmak üzere istismar.php.jpg gibi
+    dosyaların oluşturulması ve yüklenmesi gibi tehlikeli durumlardan
+    kaçınmak isteyebilirsiniz. Biz örnek olsun diye .phtml uzantısını
+    ekledik. Başka uzantıları da buraya ekleyebilirsiniz. Bunları aralarında
+    boşluk bırakarak aynı satıra yazabilirsiniz.
+
+      <FilesMatch \.php$>
+          SetHandler application/x-httpd-php
+      </FilesMatch>
+
+    Veya .php, .php2, .php3, .php4, .php5, .php6 ve .phtml gibi dosyalar
+    dışında hiçbir dosyanın PHP tarafından çalıştırılmamasını şöyle
+    sağlayabilirsiniz:
+
+      <FilesMatch "\.ph(p[2-6]?|tml)$">
+          SetHandler application/x-httpd-php
+      </FilesMatch>
+
+    PHP kaynak kodlarını renklendirilmiş olarak göstermek için .phps
+    uzantısını da yapılandırmanıza ekleyebilirsiniz. Bu, şöyle yapılır:
+
+      <FilesMatch "\.phps$">
+          SetHandler application/x-httpd-php-source
+      </FilesMatch>
+
+16. Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
+    başlatmanız yetecektir:
+
+      /usr/local/apache2/bin/apachectl start
+
+          - VEYA -
+
+      service httpd restart
+
+]]>
+
+      </screen>
+     </example>
+    <para>
+     Yukarıdaki adımları izleyerek PHP'nin bir <literal>SAPI</literal> modülü
+     olarak çalıştığı bir Apache 2 HTTP sunucusuna sahip olursunuz. Apache ve
+     PHP için şüphesiz birçok farklı yapılandırma seçeneği vardır.
+     Yapılandırma seçeneklerinin listesi için her kaynak ağacında
+     <command>./configure --help</command> çalıştırabilirsiniz. Eğer Apache
+     2'nin çok evreli MPM'lerinden birini derlemek isterseniz
+     <filename>worker</filename> veya <filename>perchild</filename> MPM
+     modülünü etkin kılabililirsiniz. Bunu yapmak için 6. şıkta derleme
+     seçeneklerinize <option role="configure">--with-mpm=worker</option> veya
+     <option role="configure">--with-mpm=perchild</option> seçeneğini
+     ekleyebilirsiniz. Bunu yapmadan önce, bunun olası sonuçları hakkında
+     bilgi sahibi olmaya, azından ne gibi etkilerinin olacağını anlamaya
+     çalışın. Bu konuda daha ayrıntılı bilgi edinmek için Apache HTTP
+     sunucusunun belgelerinden <link xlink:href="&url.apache2.mpm;">Çok
+     Süreçlilik Modülleri (MPM'ler)</link> belgesini okuyunuz.
+    </para>
+    <note>
+     <para>
+      İçerik dili uzlaşımı kullanmak isterseniz
+      <link linkend="faq.installation.apache.multiviews">Apache MultiViews
+      SSS</link>'ine bakınız.
+     </para>
+    </note>
+    <note>
+     <para>
+      Apache'nin çok evreli bir sürümünü kurabilmek için sisteminizin
+      evreleri desteklemesi gerekir. Aynı durum PHP'nin deneysel Zend Thread
+      Safety (ZTS) motoru için de geçerlidir. Şüphesiz, evre desteği olmayan
+      eklentiler de kullanılamayacaktır. Bu bakımdan Apache'yi standart
+      <filename>prefork</filename> MPM'si ile derlemenizi öneriyoruz.
+     </para>
+    </note>
+   </sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

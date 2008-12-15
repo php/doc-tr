@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.5 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="install.unix.debian" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Debian GNU/Linux Kurulum Bilgileri</title>
+ <para>
+  Bu bölüm Unix sistemlerde PHP'nin <link xlink:href="&url.debian;">Debian
+  GNU/Linux</link> kurulumu hakkında bilgiler ve ipuçları içerir.
+ </para>
+
+ <sect2 xml:id="install.unix.debian.apt">
+  <title>APT kullanımı</title>
+   <simpara>
+    Debian'ın paket yönetim sistemini kullanarak PHP kaynak kodunu indirip
+    kendinizin derlemesi PHP kurulumu için en basit ve en kolay yöntemdir.
+    Linux üzerine yazılım kurulumu hakkında bilgi sahibiyseniz, elbette
+    derlemeyi kendiniz de yapabilirsiniz.
+   </simpara>
+   <simpara>
+    İlk vereceğiniz karar Apache 1.3.x mi yoksa Apache 2.x mi kuracağınızla
+    ilgili olacaktır. İlgili paketler sırasıyla libapache-mod-php* ve
+    libapache2-mod-php* isimlerini taşırlar. Aşağıdaki adımlar Apache 1.3.x
+    kurulumuna göre düzenlenmiştir. Bu belge yazıldığı sırada henüz resmi PHP
+    5 Debian paketleri ortada yoktu. Bu bakımdan aşağıdaki adımlar PHP4
+    kurulumu yapacaktır.
+   </simpara>
+   <simpara>
+    PHP, Debian'da CGI veya CLI olarak mevcuttur ve sırayla php4-cgi ve
+    php4-cli isimlerini alırlar. Bunlara da ihtiyacınız varsa aşağıdaki
+    adımlara bunların paket isimlerini de ekleyin. Kurmak isteyebileceğiniz
+    diğer bir özel paket php4-pear'dır. En düşük seviyede PEAR kurulumu ile
+    <command>pear</command> komut satırı aracını içerir.
+   </simpara>
+   <simpara>
+    Debian'ın kararlı dağıtımında bulunandan daha yeni veya resmi Debian
+    paket deposunda olmayan PHP modüllerine ihtiyaç duyarsanız önce <link
+    xlink:href="&url.apt-get;">http://www.apt-get.org/</link> sitesini
+    araştırmalısınız. Bu tür paketleri bulabileceğiniz depolardan biri de
+    <link xlink:href="http://www.dotdeb.org/">Dotdeb</link>'dir. Bu gayrı
+    resmi depo <link xlink:href="mailto:gui@php.net">Guillaume Plessis</link>
+    tarafından sağlanmakta ve PHP4 ve PHP5'in en son sürümlerinin Debian
+    paketlerini içermektedir. Bu depoyu kullanmak için
+    <filename>/etc/apt/sources.lists</filename> dosyanıza aşağıdaki iki
+    satırı ekledikten sonra <command>apt-get update</command> komutunu
+    çalıştırınız:
+   </simpara>
+   <example>
+    <title>- Dotdeb deposu ile ilgili iki satır</title>
+    <programlisting role="shell">
+<![CDATA[
+deb http://packages.dotdeb.org stable all
+deb-src http://packages.dotdeb.org stable all
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    Dikkate alacağınız son şey paketlerinizin güncel olup olmadığıdır. Son
+    zamanlarda güncelleme yapmadıysanız, herşeyden önce bir <command>apt-get
+    update</command> yapın. Böylece Apache ve PHP paketlerinin en güncel
+    kararlı sürümlerini kullanabilesiniz.
+   </simpara>
+   <simpara>
+    Artık herşey yerli yerine oturduğuna göre aşağıdaki örneği izleyerek
+    Apache ve PHP'yi kurabilirsiniz:
+   </simpara>
+   <example xml:id="install.unix.debian.apt.example">
+    <title>- Apache 1.3 ile Debian Kurulum Örneği</title>
+    <programlisting role="shell">
+<![CDATA[
+# apt-get install libapache-mod-php4
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    APT, özdevinimli olarak Apache 1.3 için PHP 4 modülünü ve bunların
+    birlikte çalışması için bağımlı olduğu paketleri kuracak ve PHP'yi
+    etkinleştirecektir. Eğer kurulum sırasında Apache yeniden başlatılmamışsa
+    bunu kendiniz yapmalısınız:
+   </simpara>
+   <example xml:id="install.unix.debian.apt.example2">
+    <title>- PHP 4 kurulduktan sonra Apache'nin durdurulması ve yeniden
+    başlatılması</title>
+    <programlisting role="shell">
+<![CDATA[
+# /etc/init.d/apache stop
+# /etc/init.d/apache start
+]]>
+    </programlisting>
+   </example>
+ </sect2>
+ <sect2 xml:id="install.unix.debian.config">
+  <title>Yapılandırma üzerinde daha iyi denetim</title>
+   <simpara>
+    Bir önceki bölümde PHP sadece çekirdek modüllerle kurulmuştu. Sizin
+    istediğiniz bu olmayabilir ve çok geçmeden MySQL, cURL, GD ve benzeri
+    modülleri etkinleştirme ihtiyacı duyabilirsiniz.
+   </simpara>
+   <simpara>
+    PHP'yi kaynak paketinden kendiniz derlediyseniz, modülleri
+    <command>configure</command> betiği üzerinden etkinleştirmeniz
+    gerekecektir. APT ile sadece ihtiyacınız olan modülleri kurabilirsiniz.
+    Bunlar 'php4-*' (veya 'php5-*') biçiminde isimlendirilirler.
+   </simpara>
+   <example xml:id="install.unix.debian.config.example">
+    <title>- Ek PHP paketlerinin listesinin alınması</title>
+    <programlisting role="shell">
+<![CDATA[
+# dpkg -l 'php4-*'
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    Bu komutun çıktısından da görebileceğiniz gibi, (php4-cgi, php4-cli ve
+    php4-pear gibi özel paketler dışında) kurabileceğiniz çok sayıda PHP
+    modülü vardır. Listeyi dikkatlice inceleyip ihtiyacınız olanları seçin.
+    Seçtiğiniz modülün bağımlı olduğu kütüphaneler varsa, APT onları da
+    özdevinimli olarak kuracaktır.
+   </simpara>
+   <simpara>
+    MySQL, cURL ve GD destekli PHP kurulumunu seçerseniz vereceğiniz komut
+    şuna benzer olacaktır:
+   </simpara>
+   <example xml:id="install.unix.debian.config.example2">
+    <title>- MySQL, cURL ve GD destekli PHP kurulumu</title>
+    <programlisting role="shell">
+<![CDATA[
+# apt-get install php4-mysql php4-curl php4-gd
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    APT özdevinimli olarak farklı  &php.ini;
+    (<filename>/etc/php4/apache/php.ini</filename>,
+    <filename>/etc/php4/cgi/php.ini</filename> ve benzeri) dosyalarına uygun
+    satırları ekleyecektir.
+   </simpara>
+   <example xml:id="install.unix.debian.config.example3">
+    <title>- MySQL, cURL ve GD'yi PHP'de etkin kılacak satırlar</title>
+    <programlisting role="shell">
+<![CDATA[
+extension=mysql.so
+extension=curl.so
+extension=gd.so
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    Bu modülleri etkin kılmak için tek yapacağınız Apache'yi durdurup yeniden
+    başlatmaktır.
+   </simpara>
+ </sect2>
+ <sect2 xml:id="install.unix.debian.faq">
+  <title>Bilinen sorunlar</title>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Bir betiğin sonucu yerine betiğin PHP kaynak kodlarını görüyorsanız, APT
+     muhtemelen Apache 1.3 yapılandırmanıza
+     <filename>/etc/apache/conf.d/php4</filename> dizinini eklememiştir.
+     Lütfen <filename>/etc/apache/httpd.conf</filename> dosyanızda aşağıdaki
+     satırların bulunmasını sağladıktan sonra Apache'yi durdurup yeniden
+     başlatın:
+    </simpara>
+   <example xml:id="install.unix.debian.faq.example">
+    <title>- PHP 4'ü Apache altında etkin kılan satır</title>
+    <programlisting role="shell">
+<![CDATA[
+# Include /etc/apache/conf.d/
+]]>
+    </programlisting>
+   </example>
+   </listitem>
+   <listitem>
+    <simpara>
+     Bir modülü kurduğunuz halde betiğinizde onunla ilgili işlevler işlerini
+     yapmıyorsa &php.ini; dosyanızda eklenti ile ilgili satırın mevcut olup
+     olmadığına bakın. Bunun yanında, debconf yapılandırmasındaki bir
+     sorundan dolayı APT, modülün kurulumunu başarıyla tamamlayamamış da
+     olabilir.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
