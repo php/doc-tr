@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="install.unix.openbsd" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>OpenBSD Kurulum Bilgiler</title>
+ <para>
+  Bu bölüm PHP'nin <link xlink:href="&url.openbsd;">OpenBSD 3.6</link>
+  sistemlere kurulumu hakkında bilgiler ve ipuçları içerir.
+ </para>
+ <sect2 xml:id="install.unix.openbsd.packages">
+  <title>İkil Paketlerin Kullanımı</title>
+   <simpara>
+    PHP'yi OpenBSD üzerine kurmak için ikil paketlerin kullanımı en basit ve
+    önerilen bir yoldur. Temel paket, modül paketlerinden ayrıdır ve her modül
+    paketi diğerlerinden bağımsız olarak kurulup kaldırılabilir. İhtiyaç
+    duyacağınız dosyaları OpenBSD CD'nizde veya FTP sitesinde bulabilirsiniz.
+   </simpara>
+   <simpara>
+    İhtiyacınız olan ana paket <filename>php4-core-4.3.8.tgz</filename> olup,
+    temel motoru (artı gettext ve iconv) içerir. Modül paketleri ise
+    <filename>php4-mysql-4.3.8.tgz</filename> veya
+    <filename>php4-imap-4.3.8.tgz</filename> gibi isimler alırlar. Bu
+    modülleri &php.ini; dosyanızda etkin ve etkisiz kılmak için
+    <command>phpxs</command> komutuna ihtiyacınız olacak.
+   </simpara>
+   <example xml:id="install.unix.openbsd.ports.example">
+    <title>- OpenBSD Paket Kurulum Örneği</title>
+    <programlisting role="shell">
+<![CDATA[
+# pkg_add php4-core-4.3.8.tgz
+# /usr/local/sbin/phpxs -s
+# cp /usr/local/share/doc/php4/php.ini-recommended /var/www/conf/php.ini
+  (add in mysql)
+# pkg_add php4-mysql-4.3.8.tgz
+# /usr/local/sbin/phpxs -a mysql
+  (add in imap)
+# pkg_add php4-imap-4.3.8.tgz
+# /usr/local/sbin/phpxs -a imap
+  (remove mysql as a test)
+# pkg_delete php4-mysql-4.3.8
+# /usr/local/sbin/phpxs -r mysql
+  (install the PEAR libraries)
+# pkg_add php4-pear-4.3.8.tgz
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+   OpenBSD'deki ikil paketler hakkında ayrıntılı bilgi edinmek için  <link
+   xlink:href="&url.openbsd.packages;">packages(7)</link> kılavuz sayfasını
+   okuyunuz.
+   </simpara>
+ </sect2>
+ <sect2 xml:id="install.unix.openbsd.ports">
+  <title>Portların Kullanımı</title>
+  <simpara>
+   Ayrıca, PHP'yi kaynak paketinden  <link
+   xlink:href="&url.openbsd.ports;">port ağacı</link>nı kullanarak da
+   derleyebilirsiniz. Ancak, bu sadece OpenBSD üzerinde tecrübeli
+   kullanıcılar için önerilebilecek bir yoldur. PHP4 portu iki alt dizine
+   ayrılır: çekirdek ve eklentiler. Eklentilerin bulunduğu dizin desteklenen
+   tüm PHP modülleri için alt paketler üretir. Bu modüllerden üretilmesini
+   istemedikleriniz için <command>no_*</command> FLAVOR'unu kullanınız.
+   Örneğin imap modülünün derlenmeden geçilmesi için FLAVOR'a
+   <command>no_imap</command> atayınız.
+  </simpara>
+ </sect2>
+ <sect2 xml:id="install.unix.openbsd.faq">
+  <title>Bilinen Sorunlar</title>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Apache'nin öntanımlı kurulumu bir <link
+     xlink:href="&url.openbsd.chroot;">chroot(2)</link> hücresinde çalışır,
+     böylece PHP betiklerinin <filename>/var/www</filename> altındaki
+     dosyalara erişmesi engellenir. Bu bakımdan PHP oturum dosyalarının
+     saklanması için ya <filename>/var/www/tmp</filename> diye bir dizine ya
+     da başka bir oturum arayüzü kullanmaya ihtiyacınız olacaktır. Buna ek
+     olarak, veritabanı soketlerinin de hücre içine yerleştirilmesi veya
+     <filename>localhost</filename> arayüzünü dinlemesi gerekir. Ağ işlevleri
+     kullanıyorsanız, <filename>/etc</filename> dizinindeki
+     <filename>/etc/resolv.conf</filename> ve
+     <filename>/etc/services</filename> gibi dosyaların
+     <filename>/var/www/etc</filename> dizinine taşınması gerekecektir.
+     OpenBSD PEAR paketi özdevinimli olarak doğru chroot dizinlerine kurulur
+     dolayısıyla onun için özel bir değişiklik yapmak gerekmez. OpenBSD
+     üzerinde Apache hakkında daha ayrıntılı bilgi edinmek için <link
+     xlink:href="&url.openbsd.apachefaq;">OpenBSD SSS</link>'sine bakınız.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link xlink:href="&url.gd;">gd</link> için OpenBSD 3.6 paketi
+     XFree86'nın kurulu olmasını gerektirir. X11 için gereken bazı yazı tipi
+     özelliklerini istemiyorsanız bunun yerine
+     <filename>php4-gd-4.3.8-no_x11.tgz</filename> paketini kurunuz.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </sect2>
+
+ <sect2 xml:id="install.unix.openbsd.older">
+  <title>Eski Dağıtımlar</title>
+  <simpara>
+   OpenBSD'nin eski dağıtımları PHP'yi duruk ilintili derlemek için FLAVORS
+   sistemini kullanırlar. Bu yöntemle ikil paketleri üretmek zor olduğundan
+   artık bu yol önerilmemektedir. İsterseniz hala eski port ağaçlarını
+   kullanabilirsiniz fakat OpenBSD ekibi tarafından artık
+   desteklenmemektedirler. Bu konuda fikirleriniz varsa port'un şu anki
+   sürdürücüsü: Anil Madhavapeddy (avsm at openbsd dot org).
+  </simpara>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
