@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: nilgun Status: ready -->
+   <sect1 xml:id="install.unix.sun" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Sun Solaris'te Sun, iPlanet ve Netscape Sunucuları</title>
+    <para>
+     Bu bölümde, PHP'nin Sun Solaris üzerinde Sun Java Sistem, Sun ONE,
+     iPlanet ve Netscape HTTP Sunucusu kurulumlarına özgü bilgilere ve
+     ipuçlarına yer verilmiştir.
+    </para>
+    <para>
+     PHP 4.3.3'ten itibaren PHP betikleri <link linkend="ref.nsapi">NSAPI
+     modülü</link> ile kullanılarak <link
+     linkend="install.unix.sun.specialpages">özel dizin listeleri ve hata
+     sayfaları</link> üretebilebilmektedir. Apache uyumluluğu sağlamak için
+     ek işlevler de mevcuttur. Mevcut HTTP sunucuları desteği hakkında bilgi
+     edinmek için <link linkend="install.unix.sun.notes">alt istekler</link>
+     ile ilgili bölümü okuyunuz.
+    </para>
+    <para>
+     Netscape Girişimci Sunucusu (NES) için PHP yapılandırması hakkında daha
+     ayrıntılı bilgiyi
+     <link xlink:href="&url.netscape.nsapi;">&url.netscape.nsapi;</link>
+     adresinde bulabilirsiniz.
+    </para>
+
+    <para>
+     PHP'yi Sun Java Sistem, Sun ONE, iPlanet ve Netscape HTTP sunucularında
+     derlemek için, kurulum dizinini <link
+     linkend="configure.with-nsapi">--with-nsapi=[DiZiN]</link> seçeneği ile
+     belirtin; öntanımlı dizin: <filename
+     class="directory">/opt/netscape/suitespot/</filename>. Ayrıca
+     <filename>/php-xxx-version/sapi/nsapi/nsapi-readme.txt</filename>
+     dosyasını da okuyun.
+    </para>
+    <para>
+     <orderedlist>
+      <listitem>
+       <para>
+        Aşağıdaki paketleri <link xlink:href="&url.sun.freeware;">
+        &url.sun.freeware;</link> veya başka bir siteden indirip
+        kurabilirsiniz:
+        <simplelist>
+         <member><filename>autoconf-2.13</filename></member>
+         <member><filename>automake-1.4</filename></member>
+         <member><filename>bison-1_25-sol26-sparc-local</filename></member>
+         <member><filename>flex-2_5_4a-sol26-sparc-local</filename></member>
+         <member><filename>gcc-2_95_2-sol26-sparc-local</filename></member>
+         <member><filename>gzip-1.2.4-sol26-sparc-local</filename></member>
+         <member><filename>m4-1_4-sol26-sparc-local</filename></member>
+         <member><filename>make-3_76_1-sol26-sparc-local</filename></member>
+         <member>
+          <filename>mysql-3.23.24-beta</filename> (mysql desteği istiyorsanız)
+         </member>
+         <member><filename>perl-5_005_03-sol26-sparc-local</filename></member>
+         <member><filename>tar-1.13</filename> (GNU tar)</member>
+        </simplelist>
+       </para>
+      </listitem>
+      <listitem>
+       <simpara>
+        PATH ortam değişkeninde gerekli dizinlerin bulunduğundan emin olun (
+        <literal>PATH=.:/usr/local/bin:/usr/sbin:/usr/bin:/usr/ccs/bin</literal>)
+        ve <userinput>export PATH</userinput> ile sisteminizde kullanılabilir
+        olmasını sağlayın.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <userinput>gunzip php-x.x.x.tar.gz</userinput>
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <userinput>tar xvf php-x.x.x.tar</userinput>
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        Bu işlem sonucunda oluşan PHP dizinine geçin:
+        <userinput>cd ../php-x.x.x</userinput>
+       </simpara>
+      </listitem>
+      <listitem>
+       <para>
+        Netscape sunucunuz
+        <filename class="directory">/opt/netscape/suitespot/</filename>
+        dizininde kurulu değilse, aşağıdaki seçeneğe bulunduğu yeri yazın:
+        <programlisting role="shell">
+<![CDATA[
+./configure --with-mysql=/usr/local/mysql \
+            --with-nsapi=/opt/netscape/suitespot/ \
+            --enable-libgcc
+]]>
+        </programlisting>
+       </para>
+      </listitem>
+      <listitem>
+       <simpara>
+        Bir <command>make</command> ve ardından <command>make install</command>
+        yapın.
+       </simpara>
+      </listitem>
+     </orderedlist>
+    </para>
+    <para>
+     Temel kurulum bitip ilgili benioku dosyalarını da okuduktan sonra bir
+     kaç adımlık yapılandırma işlemi kalmış olacak.
+    </para>
+    <formalpara>
+     <title>Sun/iPlanet/Netscape için Yapılandırma Talimatları</title>
+     <para>
+      Öncelikle, sunucunun bütün paylaşımlı kütüphaneleri bulabilmesi için
+      bazı dizinleri <varname>LD_LIBRARY_PATH</varname> ortam değişkenine
+      eklemeniz gerekebilir. Bunun yapılacağı en uygun yer HTTP sunucunuzu
+      başlatan betiktir. Bu betik genellikle,  <filename
+      class="directory">/bir/yol/server/https-sunucuismi/start</filename>
+      gibi bir dosyadır. HTTP sunucunuzun <filename
+      class="directory">/bir/yol/server/https-sunucuismi/config/</filename>
+      dizininde yer alan yapılandırma dosyalarını da düzenlemeniz gerekecek.
+      <orderedlist>
+       <listitem>
+        <para>
+         Aşağıdaki satırı <filename>mime.types</filename> dosyasına ekleyin
+         (bunu yönetim sunucusunda yapabilirsiniz):
+         <screen>
+<![CDATA[
+type=magnus-internal/x-httpd-php exts=php
+]]>
+         </screen>
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <filename>magnus.conf</filename> (&gt;= 6 sürümü sunucular için) veya
+         <filename>obj.conf</filename> (&lt; 6 sürümü sunucular için)
+         dosyalarını düzenlemek için açın ve aşağıdaki satırları
+         <literal>mime types init</literal> satırının sonrasına ekleyin.
+         shlib (paylaşımlı kütüphane) sisteminize göre değişiklik
+         gösterebilir, genellikle
+         <filename>/opt/netscape/suitespot/bin/libphp4.so</filename> gibi bir
+         dosyadır.
+         <programlisting>
+<![CDATA[
+Init fn="load-modules" funcs="php4_init,php4_execute,php4_auth_trans" shlib="/opt/netscape/suitespot/bin/libphp4.so"
+Init fn="php4_init" LateInit="yes" errorString="PHP ilklendirilemedi!" [php_ini="/bir/yol/php.ini"]
+]]>
+         </programlisting>
+         (PHP &gt;= 4.3.3) <literal>php_ini</literal> değiştirgesi isteğe
+         bağlı olsa da oraya HTTP sunucunuzun yapılandırma dizininde bulunan
+         &php.ini; dosyanızı yerleştirebilirsiniz.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <filename>obj.conf</filename> dosyasındaki öntanımlı nesneyi
+         yapılandırın (<filename>vserver.obj.conf</filename> dosyasında sanal
+         sunucu sınıfları [sürüm 6.0+] için):
+         <programlisting>
+<![CDATA[
+<Object name="default">
+.
+.
+.
+.#DiKKAT: Bu satır tüm 'ObjectType' satırlarından sonra ve
+.#        tüm 'AddLog' satırlarından önce yer almalıdır.
+Service fn="php4_execute" type="magnus-internal/x-httpd-php" [inikey=value inikey=value ...]
+.
+.
+</Object>
+]]>
+         </programlisting>
+         (PHP &gt;= 4.3.3) Bazı özel &php.ini; değerlerini ek değiştirgeler
+         olarak ekleyebilirsiniz, örneğin <literal>php4_execute</literal>
+         çağrısı bağlamına özgü
+         <literal>docroot=&quot;/bir/yol/docroot&quot;</literal> atamasını
+         yapabilirsiniz. Mantıksal ini yönergeleri için lütfen
+         <literal>&quot;On&quot;,&quot;Off&quot;,...</literal> değil (çünkü
+         doğru çalışmayacaktır), 0 ve 1 değerlerini kullanınız. Örneğin,
+         <literal>zlib.output_compression=&quot;On&quot;</literal> yerine
+         <literal>zlib.output_compression=1</literal> yazın.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Bu sadece, içinde PHP betiklerinden başka dosya bulunmayan (bir
+         <filename class="directory">cgi-bin</filename> dizini gibi) bir
+         dizini yapılandırmak istediğiniz takdirde gerekir :
+         <programlisting>
+<![CDATA[
+<Object name="x-httpd-php">
+ObjectType fn="force-type" type="magnus-internal/x-httpd-php"
+Service fn=php4_execute [inikey=value inikey=value ...]
+</Object>
+]]>
+         </programlisting>
+         Bundan sonra, Yönetim sunucusunda bir dizini yapılandırıp ona
+         <literal>x-httpd-php</literal> MIME türünü atayabilirsiniz. Bu
+         dizindeki tüm dosyalar PHP tarafından çalıştırılacağından oradaki
+         dosyaların uzantılarını .html olarak değiştirip PHP kullanıldığını
+         gizleyebilirsiniz.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Kimlik doğrulama ayarları: PHP kimlik doğrulaması diğer kimlik
+         doğrulamalarıyla kullanılamaz. Bu işlem tamamen PHP betikleriniz
+         üzerinden geçer. PHP kimlik doğrulamasını sunucunun tamamı için
+         yapılandırmak isterseniz aşağıdaki satırı öntanımlı nesnenize
+         ekleyiniz:
+         <programlisting>
+<![CDATA[
+<Object name="default">
+AuthTrans fn=php4_auth_trans
+.
+.
+.
+</Object>
+]]>
+         </programlisting>
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         PHP kimlik doğrulamasını tek bir dizin için kullanmak istiyorsanız
+         şunu ekleyin:
+         <programlisting>
+<![CDATA[
+<Object ppath="d:\kimlik\dogrulaması\yapilacak\dizin\*">
+AuthTrans fn=php4_auth_trans
+</Object>
+]]>
+         </programlisting>
+        </para>
+       </listitem>
+      </orderedlist>
+     </para>
+    </formalpara>
+    <note>
+     <para>
+      PHP'nin kullanacağı yığıt boyutu HTTP sunucusunun yapılandırmasına
+      bağlıdır. Çok büyük PHP betiklerinin çalışmaması halinde Yönetim
+      sunucusundan (&quot;MAGNUS EDITOR&quot; bölümünden) boyutu arttırmanızı
+      öneririz.
+     </para>
+    </note>
+
+   <sect2 xml:id="install.unix.sun.phpini">
+    <title>CGI ortamı ve php.ini dosyasında önerilen değişiklikler</title>
+    <para>
+     Bir Sun JSWS/Sun ONE WS/iPlanet/Netscape sunucusu çok evreli bir HTTP
+     sunucusu olarak çalıştığı takdirde PHP betiklerinin yazımı özel bir
+     dikkat gerektirir. Bunun sebebi, tüm isteklerin aynı süreç uzayında
+     (HTTP sunucusunun kendi uzayı) çalışması ve bu uzayın (ortam
+     değişkenlerince) tek bir ortama sahip olmasıdır.
+     <literal>PATH_INFO</literal>, <literal>HTTP_HOST</literal> gibi CGI
+     ortam değişkenlerini almak isterseniz, bunu <function>getenv</function>
+     işlevli eski PHP yöntemleriyle veya benzer yollarla
+     (<varname>$_ENV</varname> gibi küresellerle) yapmaya çalışmak doğru
+     değildir. Geçerli CGI değişkenleri olmaksızın sadece çalışan HTTP
+     sunucusunun ortamını alırsınız!
+    </para>
+    <note>
+     <para>
+      Soru: Ortamda neden (geçersiz) CGI değişkenleri var?
+     </para>
+     <para>
+      Yanıt: Bunun sebebi, HTTP sunucusu sürecini Yönetim sunucusundan
+      başlatmanız ve başlatma betiğinin bir CGI betiği olarak
+      çalışmasıdır (yönetim sunucusu içinde bir CGI betiği!!).
+      Başlatılan HTTP sunucusunun bazı CGI ortam değişkenlerine sahip
+      olmasının sebebi budur. HTTP sunucusunu yönetim sunucusunun dışında
+      çalıştırırsanız bunun sebebini daha iyi anlarsınız. HTTP sunucusunu
+      root kullanıcısı olarak komut satırından kendiniz başlatın ve ortamda
+      artık CGI tarzı ortam değişkenlerinin bulunmadığını görün.
+     </para>
+    </note>
+    <para>
+     CGI değişkenlerini doğru yöntemle almak için betiklerinizde değişiklik
+     yapmalısınız. PHP 4'te bu işlem için <varname>$_SERVER</varname> süper
+     küreselini kullanabilirsiniz. <varname>$HTTP_HOST</varname> gibi
+     değişkenleri kullanan eski betikleriniz varsa &php.ini; içinde
+     <literal>register_globals=On</literal> yaptıktan başka değişken sırasını
+     da değiştirin (önemli: Artık ortama ihtiyacınız olmayacağından
+     <literal>&quot;E&quot;</literal>yi silin):
+     <programlisting>
+<![CDATA[
+variables_order = "GPCS"
+register_globals = On
+]]>
+     </programlisting>
+    </para>
+   </sect2>
+
+   <sect2 xml:id="install.unix.sun.specialpages">
+    <title>Özel dizin listeleri ve hata sayfaları (PHP &gt;= 4.3.3)</title>
+    <para>
+     <literal>"404 Not Found"</literal> ve benzeri durumlarda hata sayfaları
+     üretimi için PHP'yi kullanabilirsiniz. Üzerine yazmak istediğiniz her
+     hata sayfası için <filename>obj.conf</filename> dosyasındaki nesneye
+     aşağıdaki satırı ekleyiniz:
+     <programlisting>
+<![CDATA[
+Error fn="php4_execute" code=XXX script="/bir/yol/betik.php" [inikey=value inikey=value...]
+]]>
+     </programlisting>
+     Burada <literal>XXX</literal>,  HTTP hata kodudur. Sizinkiyle çelişen
+     başka <literal>Error</literal> yönergeleri varsa onları silin. Tüm
+     hatalar için hep aynı sayfayı kullanacaksanız <literal>code</literal>
+     değiştirgesini belirtmeyin. Betiğiniz hata kodunu
+     <varname>$_SERVER['ERROR_TYPE']</varname> ile alacaktır.
+    </para>
+    <para>
+     Bir diğer olanak, özel yapım dizin listeleri üretimidir. Dizin içeriğini
+     gösteren bir PHP betiği yazdıktan sonra, <filename>obj.conf</filename>
+     dosyasında öntanımlı
+     <literal>type=&quot;magnus-internal/directory&quot;</literal> Service
+     satırını şöyle değiştirin:
+     <programlisting>
+<![CDATA[
+Service fn="php4_execute" type="magnus-internal/directory" script="/bir/yol/betik.php" [inikey=value inikey=value...]
+]]>
+     </programlisting>
+     Hata sayfaları ve dizin listeleri için özgün yol ve dönüşmüş yol
+     <varname>$_SERVER['PATH_INFO']</varname> ve
+     <varname>$_SERVER['PATH_TRANSLATED']</varname> değişkenlerinden
+     alınabilir.
+    </para>
+   </sect2>
+
+   <sect2 xml:id="install.unix.sun.notes">
+    <title><function>nsapi_virtual</function> ve alt istekler (PHP &gt;= 4.3.3)</title>
+    <para>
+     NSAPI modülü, HTTP sunucusunda alt istekler yapmak ve sonuçları bir
+     sayfaya yerleştirmek için artık <function>nsapi_virtual</function>
+     işlevine sahiptir (rumuz: <function>virtual</function>). Bu işlev NSAPI
+     kütüphanesinin bazı belgelenmemiş özelliklerini kullanır. Unix üzerinde
+     modül özdevinimli olarak gerekli işlevlerin varlığını araştırır ve
+     kullanılabilecekse kullanır. Aksi takdirde,
+     <function>nsapi_virtual</function> iptal edilir.
+    </para>
+    <note>
+     <para>
+      ÖNEMLİ: <function>nsapi_virtual</function> desteği DENEYSEL'dir!!!
+     </para>
+    </note>
+   </sect2>
+  </sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

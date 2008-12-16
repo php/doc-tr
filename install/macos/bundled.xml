@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.4 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="install.macosx.bundled" xmlns="http://docbook.org/ns/docbook">
+ <title>Paketlenmiş PHP Kullanımı</title>
+ <simpara>
+  OS X'in 10.0.0 sürümünden itibaren PHP Meklerde standart hale geldi. PHP'yi
+  öntanımlı HTTP sunucusunda etkin kılmak için Apache yapılandırma dosyası
+  <filename>httpd.conf</filename>'ta bir kaç satırı etkin duruma getirmek
+  gerekir, bunun yanında <acronym>CGI</acronym> ve/veya
+  <acronym>CLI</acronym> öntanımlı olarak etkin (Terminal programından
+  kolayca erişilebilir) kılınabilir.
+ </simpara>
+ <simpara>
+  Aşağıdakı talimatları kullanarak PHP'yi etkin kılmak demek çabucak bir
+  yerel geliştirme ortamına sahip olmak demektir. Daima PHP'nin en yeni
+  sürümünü kullanmanızı <emphasis>hararetle öneririz</emphasis>. Gelişimi
+  sürmekte olan çoğu yazılım gibi yeni sürümlerde eski hatalar sürekli
+  düzeltilmekte ve yeni özellikler eklenmektedir. Ayrıntılar için MAC OS X
+  kurulum belgelerine bakınız. Aşağıdaki talimatların ayrıntı düzeyi
+  başlangıç düzeyinde bir kullanıcıya göre olup öntanımlı ayarlarla çalışmak
+  üzere düzenlenmiştir. Daha yeni sürümlerin derlenmesi veya daha yeni
+  paketlerin kurulması tüm kullanıcılara tavsiye edilmektedir.
+ </simpara>
+ <simpara>
+  Standard kurulum türü mod_php kullanmak olup Mac OS X üzerinde Apache HTTP
+  Sunucusu için mod_php'yi etkin kılmak (öntanımlı HTTP sunucusuna Sistem
+  Tercihlerinden erişilebilir) amacıyla şu adımlar izlenmelidir:
+ </simpara>
+ <para>
+  <orderedlist>
+   <listitem>
+    <simpara>
+     Apache yapılandırma dosyasını bulup açın. Öntanımlı olarak yeri:
+     <filename>/etc/httpd/httpd.conf</filename>
+    </simpara>
+    <simpara>
+     Bu dosyanın sahibi <literal>root</literal> olduğundan ve öntanımlı
+     olarak onun özelinde olduğundan <literal>Finder</literal> veya
+     <literal>Spotlight</literal> kullanarak dosyayı bulmak zor olabilir.
+    </simpara>
+    <note>
+     <simpara>
+      Dosyayı açmanın tek yolu Terminal'de <literal>nano</literal> gibi Unix
+      temelli bir metin düzenleyici kullanmaktır. Dosyanın sahibi root
+      olduğundan dosyayı (root olarak) açmak için
+      <literal>Terminal</literal>'de <literal>sudo</literal> komutunu
+      kullanmalıyız (root parolası istenecektir):
+      <literal>sudo nano /etc/httpd/httpd.conf</literal>
+     </simpara>
+     <simpara>
+      Önemli nano komutları: <literal>^w</literal> (arama),
+      <literal>^o</literal> (kayıt), and <literal>^x</literal> (çıkış).
+      Burada <literal>^</literal> imi, Ctrl tuşu anlamındadır.
+     </simpara>
+    </note>
+   </listitem>
+   <listitem>
+    <para>
+     Bir metin düzenleyici ile aşağıdaki satırların başlarındaki # imlerini
+     kaldırın (bu iki satır genelde birarada değildir, onları arayıp
+     bulmalısınız):
+     <screen>
+<![CDATA[
+# LoadModule php5_module libexec/httpd/libphp5.so
+
+# AddModule mod_php5.c
+]]>
+     </screen>
+      Konuma/yola dikkat. PHP'yi gelecekte tekrar derlerseniz yukarıdaki
+      dosyaların yerine yenilerini koymayı unutmayın. Yoksa bu satırları
+      tekrar açıklama haline getirmelisiniz.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     PHP olarak yorumlanacak uzantıları belirleyiniz (örnekler: .php .html
+     ve .inc)
+    </para>
+    <para>
+     (Mac Panther'den itibaren) <filename>httpd.conf</filename> dosyasında
+     bulunan aşağıdaki deyimden dolayı PHP etkin kılındığı anda
+     <filename>.php</filename> uzantılı dosyalar özdevinimli olarak PHP
+     tarafından yorumlanır.
+     <screen>
+<![CDATA[
+<IfModule mod_php5.c>
+    # php etkinse, .php ve .phps dosyalarını yorumlasın isteriz.
+    AddType application/x-httpd-php .php
+    AddType application/x-httpd-php-source .phps
+
+    # Çoğu kullanıcı index.php'yi ister
+    <IfModule mod_dir.c>
+        DirectoryIndex index.html index.php
+    </IfModule>
+</IfModule>
+]]>
+     </screen>
+    </para>
+    <note>
+     <para>
+      OS X 10.5 (Leopard) öncesinde, PHP 5 yerine PHP 4 kullanılırdı;
+      dolayısıyla yukarıdaki 5'leri 4'lere çevirmeniz gerekir.
+     </para>
+    </note>
+   </listitem>
+   <listitem>
+    <simpara>
+     DirectoryIndex yönergesinde belirtilen öntanımlı dizin içerik dosyasının
+     yüklendiğinden emin olun.
+    </simpara>
+    <simpara>
+     Bu ayrıca <filename>httpd.conf</filename> içinde de atanır. Bu amaçla
+     genellikle <filename>index.php</filename> ve
+     <filename>index.html</filename> kullanılır. PHP'nin varlığını sınayan
+     yukarıdakı satırlardan dolayı öntanımlı olarak
+     <filename>index.php</filename> etkindir. Gerekirse bu ayarı kendinize
+     göre değiştirin.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Ya &php.ini; dosyasının yerini ayarlayın ya da öntanımlıyı kullanın
+    </simpara>
+    <simpara>
+     Mac OS X üzerindeki öntanımlı yeri genellikle
+     <filename>/usr/local/php/php.ini</filename> olup
+     bir <function>phpinfo</function> işlev çağrısı da yerini gösterecektir.
+     Eğer bir &php.ini; kullanılmamışsa, PHP öntanımlı değerleri
+     kullanacaktır. <link linkend="faq.installation.phpini">php.ini'yi
+     bulmak</link> için SSS'ye bakabilirsiniz.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <literal>DocumentRoot</literal>'u belirleyip ayarlayın.
+    </simpara>
+    <simpara>
+     Bu, HTTP sunucusunun belge kök dizinidir. Bu dizindeki dosyalar HTTP
+     sunucusu tarafından sunulur. Dolayısıyla PHP dosyaları da tarayıcıya
+     gönderilmeden önce PHP tarafından yorumlanır. Genelde öntanımlı belge
+     kök dizini <filename>/Library/WebServer/Documents</filename> olup
+     <filename>httpd.conf</filename> dosyasında belirtilmesi gerekir. Ayrıca,
+     her kullanıcının kendi öntanımlı belge kök dizini vardır:
+     <filename>/Users/kullanıcı/Sites</filename>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Bir <function>phpinfo</function> dosyası oluşturun
+    </simpara>
+    <para>
+     <function>phpinfo</function> işlevi PHP ile ilgili bilgileri gösterir.
+     Aşağıdaki içeriğe sahip bir dosyayı belge kök dizininde oluşturun:
+     <programlisting role="php">
+<![CDATA[
+<?php phpinfo(); ?>
+]]>
+     </programlisting>
+    </para>
+   </listitem>
+   <listitem>
+    <simpara>
+     Apache'yi yeniden başlatın ve yukarıdaki PHP dosyasını yükleyin
+    </simpara>
+    <simpara>
+     Apache'yi başlatmak için ya kabukta <literal>sudo apachectl
+     graceful</literal> komutunu verin ya da OS X Sistem Tercihlerinden
+     "Kişisel HTTP Sunucusu" seçeneğini durdurup başlatın. Öntanımlı olarak,
+     yerel dosyaları tarayıcıya yüklemek için şöyle bir URL kullanılır:
+     <filename>http://localhost/info.php</filename>. Kullanıcı dizinizdeki
+     belge kök dizinini kullanarak bunu şöyle yapabilirsiniz:
+     <filename>http://localhost/~kullanıcı/info.php</filename>
+    </simpara>
+   </listitem>
+  </orderedlist>
+ </para>
+ <simpara>
+  <acronym>CLI</acronym> (veya eski sürümlerde <acronym>CGI</acronym>)
+  çalıştırılabilirinin ismi <filename>php</filename> olup genellikle
+  bulunduğu yer <filename>/usr/bin/php</filename>'dir. PHP kılavuzunun <link
+  linkend="features.commandline">komut satırı</link> bölümünü okuyun ve
+  Terminal'i açıp PHP çalıştırılabilirinin sürümünü öğrenmek için
+  <literal>php -v</literal> komutunu çalıştırın. <function>phpinfo</function>
+  işlevine yapılacak bir çağrı da bu bilgiyi gösterecektir.
+ </simpara>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
