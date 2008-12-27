@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.53 Maintainer: nilgun Status: ready -->
+ <chapter xml:id="faq.installation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Kurulum</title>
+  <titleabbrev>Kurulum</titleabbrev>
+
+  <para>
+   Bu bölüm, kurulum sırasında sık rastlanan sorunlarla ilgili sorular ve
+   çözümlerden derlenmiştir. PHP hemen hemen tüm işletim sistemlerine
+   kurulabilmekte ve hemen her HTTP sunucusu ile çalışabilmektedir.
+  </para>
+  <para>
+   PHP'yi kurmak için <xref linkend="install"/> bölümündeki talimatları
+   izleyin.
+  </para>
+
+  <qandaset>
+   <qandaentry xml:id="faq.installation.apache2">
+    <question>
+     <para>
+      Apache 2'yi çok evreli bir MPM ile üretim ortamında neden
+      kullanmamalıyım?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP üçüncü parti kütüphaneler kullanılarak muhtelif HTTP uygulamaları
+      geliştirmeyi sağlayan bir yapıştırıcıdır. PHP'nin esnekliği ve gücü
+      üzerinde çalıştığı platformun gücü ve kararlılığı ile sınırlıdır.
+      Çalışmak için bir işletim sistemine, HTTP sunucusuna ve 3. parti
+      modüllere ihtiyaç duyar ve bunlar arasında bir yapıştırıcı gibi
+      davranır. Bunlardan biri çalışmasını durdurursa sorunu saptayıp çabucak
+      çözümlemeniz gerekir. PHP'nin üzerinde çalıştığı ortamı, birbirlerinden
+      bağımsız çalışma evreleri, tamamen ayrı bellek bölümleri ve her istek
+      için ayrı bir çalışma alanı ile daha da karmaşıklaştırırsanız, PHP'nin
+      hamuru bir bulamaca dönüşebilir.
+     </para>
+     <para>
+      Mutlaka çok evreli bir MPM kullanmak zorundaysanız, PHP'nin kendi
+      bellek uzayında çalışmasını sağlayan FastCGI yapılandırması bir çözüm
+      olabilir.
+     </para>
+     <para>
+      Ancak, çok evreli MPM kullanımı Windows sistemler için bir sorun teşkil
+      etmez çünkü bu platform üzerinde çalışan çoğu kütüphane zaten çok
+      evreli kullanımı desteklemektedir.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phpini">
+    <question>
+     <para>
+      Unix/Windows: &php.ini; dosyamın yerini bulamıyorum!
+     </para>
+    </question>
+    <answer>
+     <para>
+      Öntanımlı olarak Unix üzerindeki yeri
+      <filename>/usr/local/lib</filename> dizinidir. Çoğu kişi bu dosyanın
+      yerini derleme sırasında <link
+      linkend="configure.with-config-file-path">--with-config-file-path</link>
+      seçeneğini kullanarak değiştirmektedir. Siz de isterseniz dosyanın
+      yerini şöyle değiştirebilirsiniz:
+      <programlisting role="shell">
+--with-config-file-path=/etc
+      </programlisting>
+      Böylece kaynak paketindeki <filename>php.ini-dist</filename> dosyası
+      <filename>/etc/php.ini</filename> olarak kurulur ve üzerinde
+      istediğiniz değişiklikleri yapabilirsiniz.
+     </para>
+      <programlisting role="shell">
+--with-config-file-scan-dir=YOL
+      </programlisting>
+     <para>
+      Windows'ta &php.ini; dosyasının öntanımlı yeri Windows dizinidir.
+      Apache HTTP sunucusu kullanıyorsanız  &php.ini; önce Apache'nin kurulum
+      dizininde aranır (örn, <filename>c:\program files\apache
+      group\apache</filename>). Bu yer aynı makinede çalışan farklı Apache
+      sürümleri için farklı yerlerde olabilir.
+     </para>
+     <para>
+      Ayrıca bakınız:
+      <link linkend="configuration.file">Yapılandırma Dosyası</link>.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.nodata">
+    <question>
+     <para>
+      Unix: PHP'yi kurdum, fakat her belge yükleyişimde 'Document Contains No
+      Data'! (Belge hiç veri içermiyor!) şeklinde bir ileti alıyorum. Ne
+      yapmalıyım?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Muhtemelen PHP'nin bazı sorunları var ve core dosyası dökümlüyor
+      olmalı. Bu durumda, sunucunuzun günlük kayıt dosyalarına bakıp sorunu
+      küçük bir deney ortamında üretmeye çalışın. 'gdb' kullanmayı
+      biliyorsanız, hata raporunuzda sorun hakkında geliştiricilere çok
+      yardımcı olacak bir hata izleme çıktısı sağlayabilirsiniz. PHP'yi bir
+      Apache modülü olarak kullanıyorsanız şunları yapmayı deneyin:
+      <itemizedlist>
+       <listitem>
+        <para>
+         httpd sürecini durdurun
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         gdb httpd
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         httpd süreçlerini durdurun
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         &gt; run -X -f /bir/yol/httpd.conf
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Ardından soruna sebep olan adresi tarayıcınızla açın.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         &gt; run -X -f /bir/yol/httpd.conf
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Bir core dosyası dökümleniyorsa gdb size bunun sebebini
+         söyleyecektir.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Şunu yazın: bt
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Hata raporunuza bu geriye doğru hata izleme bilgisini eklemeli ve
+         raporu <link xlink:href="&url.php.bugs;">&url.php.bugs;</link>
+         adresinden göndermelisiniz.
+        </para>
+       </listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      Eğer betiğinizde düzenli ifade işlevlerini
+      (<function>preg_match</function> ve benzerleri) kullanıyorsanız, PHP'yi
+      ve Apache'yi aynı düzenli ifade paketiyle derlediğinizden emin
+      olmalısınız. PHP ve Apache 1.3.x için bu özdevinimli olarak gerçekleşir.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.processing">
+    <question>
+     <para>
+      Unix: PHP'yi RPM'leri kullanarak kurdum, fakat Apache, PHP sayfalarını
+      işlemiyor! Ne yapmalıyım?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Hem Apache hem de PHP'yi RPM paketlerinden kurduğunuz varsayımıyla
+      &httpd.conf; dosyanıza aşağıdaki satırların tamamını veya bir kısmını
+      ekleyin veya başlarındaki # imlerini silip o satırları etkin kılın:
+      <programlisting role="apache-conf">
+<![CDATA[
+# Ek Modüller
+AddModule mod_php.c
+AddModule mod_php.c
+AddModule mod_perl.c
+
+# Ek Modüller
+LoadModule php_module         modules/mod_php.so
+LoadModule php5_module        modules/libphp5.so     # PHP 5 için
+LoadModule perl_module        modules/libperl.so
+]]>
+      </programlisting>
+      Ve sunucu genelinde geçerli olacak şekilde veya PHP'nin etkin olacağı
+      sanal konak bölümünde şu satırı ekleyin:
+      <programlisting role="apache-conf">
+<![CDATA[
+AddType application/x-httpd-php .php
+]]>
+      </programlisting>
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.frontpage">
+    <question>
+     <para>
+      Unix: Apache'yi FrontPage eklenti yamasıyla yamadım ve hemen ardından
+      PHP çalışmaz hale geldi. PHP, Apache FrontPage eklentileriyle uyumlu
+      değil mi?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP, FrontPage eklentileriyle gayet güzel çalışır. Sorun, FrontPage
+      yamasının PHP'nin de çalıştığı veri yapılarını değiştirmesidir. FP
+      yamasını uyguladıktan sonra PHP'yi yeniden derleyerek (make clean;
+      make) sorunu çözebilirsiniz.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.blankscreen">
+    <question>
+     <para>
+      Unix/Windows: PHP'yi kurdum, fakat PHP betiğine tarayıcımla erişmeye
+      çalıştığımda boş bir sayfa alıyorum.
+     </para>
+    </question>
+    <answer>
+     <para>
+      Tarayıcınıza 'Sayfa kaynağını göster' derseniz PHP betiğinizin kaynak
+      koduna bakarak sorunun kaynağını bulabilirsiniz. Yani, HTTP sunucusu
+      betiği yorumlasın diye PHP'ye göndermemiştir. Sunucu yapılandırmasında
+      birşeyler yanlış gitmiş olabilir. PHP kurulum talimatlarını tekrar
+      uygulayarak sunucu kurulumunuzu tekrar gözden geçirin.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.500error">
+    <question>
+     <para>
+      Unix/Windows: PHP'yi kurdum, fakat PHP betiğine tarayıcımla erişmeye
+      çalıştığımda sunucudan 500 hatası alıyorum.
+     </para>
+    </question>
+    <answer>
+     <para>
+      Sunucu PHP'yi çalıştırmaya uğraşırken birşeyler yanlış gitmiş. Hataları
+      görmek için komut satırından PHP çalıştırılabilirinin (Windows'ta
+      <filename>php.exe</filename>) bulunduğu dizine geçip  <command>php
+      -i</command> komutunu verin. Eğer PHP çalışırken bir sorun ortaya
+      çıkıyorsa ne yapılması gerektiği ile ilgili ipuçları içeren bir hata
+      iletisi gösterilir. Eğer ekranı dolduran bir dolu HTML kodu alıyorsanız
+      (bu, <function>phpinfo</function> işlevinin çıktısıdır) PHP düzgün
+      çalışıyor demektir. Bu durumda sunucu yapılandırmanızı tekrar gözden
+      geçirmeniz gerekir.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.undefinedsyms">
+    <question>
+     <para>
+      Bazı işletim sistemleri: PHP'yi hatasız kurdum fakat Apache'yi
+      başlatmak istediğimde tanımsız simge hataları aldım:
+      <programlisting role="shell">
+[mybox:user /src/php4] root# apachectl configtest
+ apachectl: /usr/local/apache/bin/httpd Undefined symbols:
+  _compress
+  _uncompress
+      </programlisting>
+     </para>
+    </question>
+    <answer>
+     <para>
+      Bu sorun PHP'nin kendisi ile değil, MySQL istemci kütüphanesi ile
+      ilgilidir. Derleme sırasında <option role="configure"
+      >--with-zlib</option> seçeneğini kullansaydınız bu sorun çıkmayacaktı.
+      Bu konudan MySQL SSS'sinde de bahsedilmiştir.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.cgierror">
+    <question>
+     <para>
+      Windows: PHP'yi kurdum fakat tarayıcımla bir PHP betiğine erişmek
+      istediğimde şöyle bir hata alıyorum:
+      <screen>
+cgi error:
+ The specified CGI application misbehaved by not
+ returning a complete set of HTTP headers.
+ The headers it did return are:
+      </screen>
+     </para>
+    </question>
+    <answer>
+     <para>
+      Hata iletisi PHP'nin hiçbir şey çıktılamadan başarısız olduğu anlamına
+      gelmektedir. Hataları görmek için komut satırından PHP
+      çalıştırılabilirinin (Windows'ta <filename>php.exe</filename>)
+      bulunduğu dizine geçip  <command>php -i</command> komutunu verin. Eğer
+      PHP çalışırken bir sorun ortaya çıkıyorsa ne yapılması gerektiği ile
+      ilgili ipuçları içeren bir hata iletisi gösterilir. Eğer ekranı
+      dolduran bir dolu HTML kodu alıyorsanız (bu,
+      <function>phpinfo</function> işlevinin çıktısıdır) PHP düzgün çalışıyor
+      demektir.
+     </para>
+     <para>
+      PHP komut satırından düzgün çalışıyorsa betiğe tarayıcınızla tekrar
+      erişmeyi deneyin. Yine aynı hatayı alıyorsanız sorun şunlardan biri
+      olabilir:
+     </para>
+     <itemizedlist>
+      <listitem>
+       <simpara>
+        Yüklemeye çalıştığınız PHP betiği, <filename>php.exe</filename>,
+        <filename>php4ts.dll</filename>, &php.ini; veya PHP eklentileri gibi
+        bazı dosyaların izinleri anonim internet kullanıcısının
+        <literal>ISUR_&lt;makineadı&gt;</literal> bunlara erişebilmesine izin
+        vermiyordur.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        Betik dosyası mevcut değildir (veya belge kök dizinine göre sizin
+        düşündüğünüz yerde değildir). IIS kullanıyorsanız, İnternet
+        Hizmetleri Yöneticisinde betik eşlemlerini ayarlarken 'dosya mevcut
+        mu diye bir bakıver' kutusunu işaretlemek suretiyle bu hatayı
+        yakalayabilirsiniz. Betik dosyasının mevcut olmaması durumunda sunucu
+        bu hata yerine bir 404 hatası döndürecektir. IIS kullanmanın size ek
+        bir yararı daha olacak: Betik dosyanız üzerinde NTLanMan izinlerine
+        dayalı olarak gerekli kimlik doğrulaması da yapılacaktır.
+       </simpara>
+      </listitem>
+     </itemizedlist>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phpandiis">
+    <question>
+     <para>
+      Windows: Tüm talimatları izlememe rağmen PHP ile IIS'yi birlikte
+      çalıştıramadım!
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP betiğini çalıştıracak kullanıcıların
+      <filename>php.exe</filename>'yi çalıştırabilecek izinlere sahip olup
+      olmadığına bakın! IIS bunun için kurulumda eklenen bir anonim kullanıcı
+      kullanır. Bu kullanıcının  <filename>php.exe</filename>'yi çalıştıracak
+      izne sahip olması gerekir. Ayrıca, kimlik doğrulaması gerektiren
+      kullanıcıların da <filename>php.exe</filename>'yi çalıştıracak izne
+      sahip olması gerekir. Ve IIS4'e PHP'nin bir betik yorumlayıcı olduğunu
+      da belirtmeniz gerekir. Ek olarak,  <link
+      linkend="faq.installation.forceredirect">bu SSS'yi de</link> okumanızı
+      öneririz.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.forceredirect">
+    <question>
+     <para>
+       PHP'yi IIS, PWS, OmniHTTPD veya Xitami ile CGI olarak çalıştırırken şu
+       hatayı alıyorum: <literal>Security Alert! PHP CGI
+       cannot be accessed directly.</literal>.
+     </para>
+    </question>
+    <answer>
+     <para>
+      <link linkend="ini.cgi.force-redirect">cgi.force_redirect</link>
+      yönergesine <literal>0</literal> atamalısınız. Öntanımlı değeri
+      <literal>1</literal> olup, &php.ini; dosyasında bulunduğu satırın
+      başında bir <literal>;</literal> varsa o noktalı virgülü silmeniz
+      gerekir.
+     </para>
+     <para>
+      Öntanımlı değer <literal>1</literal> olduğundan değişikliği doğru
+      &php.ini; dosyasında yaptığınızdan %100 emin olmalısınız. Daha
+      ayrıntılı bilgi için <link linkend="faq.installation.findphpini">bu
+      SSS'ye</link> bakınız.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.findphpini">
+    <question>
+     <para>
+      Hangi &php.ini; dosyasının okunduğunu nasıl anlayacağım? Yaptığım
+      değişikliklerin bir etkisi olmuyor gibi gözüküyor.
+     </para>
+    </question>
+    <answer>
+     <para>
+      &php.ini; dosyanızın PHP tarafından okunduğundan emin olmak için
+      <function>phpinfo</function> çağrısı yapmanız gerekir. Sayfanın başına
+      yakın bir yerlerde hangi dosyanın okunduğu bilgisini
+      <literal>Configuration File (php.ini)</literal> altında görebilirsiniz.
+      Böylece dosyayı nereye koyacağınızı bilirsiniz. Eğer listede sadece bir
+      dizin varsa &php.ini; dosyanızı bu dizine koymalısınız. &php.ini;
+      dosyanız listede gösterilen dizinlerden birindeyse okunacak demektir.
+     </para>
+     <para>
+      Eğer &php.ini; okunuyor ve siz PHP'yi bir modül olarak
+      çalıştırıyorsanız &php.ini; dosyanızda değişiklik yaptıktan sonra HTTP
+      sunucunuzu yeniden başlatmayı unutmayınız.
+     </para>
+     <para>
+      Ayrıca bakınız: <function>php_ini_loaded_file</function>.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.addtopath">
+    <question>
+     <para>
+      PHP dizinimi Windows'ta  <varname>PATH</varname> değişkenine nasıl
+      eklerim?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Windows NT, 2000, XP ve 2003'te:
+      <itemizedlist>
+       <listitem><para>
+        Denetim Masasına gidip Sistem simgesini açın (Başlat -&gt; Ayarlar
+        -&gt; Denetim Masası -&gt; Sistem veya Windows XP/2003 için sadece
+        Başlat -&gt; Denetim Masası -&gt; Sistem).
+       </para></listitem>
+       <listitem><para>
+        Gelişmiş sekmesine gidin.
+       </para></listitem>
+       <listitem><para>
+        'Ortam Değişkenleri' düğmesine tıklayın.
+       </para></listitem>
+       <listitem><para>
+        'Sistem Değişkenleri' panosuna bakın.
+       </para></listitem>
+       <listitem><para>
+        Path girdisini bulun (bulmak için listeyi kaydırmanız gerekebilir)
+       </para></listitem>
+       <listitem><para>
+        Path girdisine çift tıklayın.
+       </para></listitem>
+       <listitem><para>
+        Satırın sonuna bir ';' koyup PHP dizini ekleyin (örnek:
+        <literal>;C:\php</literal>).
+       </para></listitem>
+       <listitem><para>
+        Tamam düğmesine tıklayın ve bilgisayarınızı yeniden başlatın.
+       </para></listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      Windows 98/Me sistemlerinde ise <filename>autoexec.bat</filename>
+      dosyanızı düzenlemeniz gerekecektir:
+      <itemizedlist>
+       <listitem><para>
+        Notepad'i açın (Başlat -&gt; Çalıştır ve notepad yazıp enter tuşuna
+        basın)
+       </para></listitem>
+       <listitem><para>
+        <filename>C:\autoexec.bat</filename> dosyasını açın.
+       </para></listitem>
+       <listitem><para>
+        PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;..... satırını bulup satırın
+        sonuna şunu ekleyin: <literal>;C:\php</literal>.
+       </para></listitem>
+       <listitem><para>
+        Dosyayı kaydedin ve bilgisayarınızı yeniden başlatın.
+       </para></listitem>
+      </itemizedlist>
+     </para>
+     <note>
+      <simpara>
+       <varname>PATH</varname> değişkeninde yaptığınız değişikliklerin
+       uygulanmasını istiyorsanız yukarıdaki işlemleri yaptıktan sonra
+       bilgisayarınızı yeniden başlatmayı unutmayınız.
+      </simpara>
+     </note>
+     <para>
+      PHP kılavuzunda, dosyaların  Windows sistem dizinine kopyalanması salık
+      verilebilir. Bunun sebebi bu dizinin (<filename>C:\Windows</filename>,
+      <filename>C:\WINNT</filename>, vs.) öntanımlı olarak sistem PATH
+      değişkeninde bulunmasıdır. Windows sistem dizinine dosya kopyalamak
+      sorunlara yol açması sebebiyle uzun zamandır önerilmemektedir.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phprc">
+    <question>
+     <para>
+      Windows üzerinde PHP'nin &php.ini; dosyasını kullanabilmesini nasıl
+      sağlarım?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Bunu yapmanın çeşitli yolları vardır. Apache kullanıyorsanız kurulumla
+      ilgili talimatları izleyin (<link
+       linkend="install.windows.apache1">Apache 1</link>, <link
+       linkend="install.windows.apache2">Apache 2</link>), aksi takdirde
+       <varname>PHPRC</varname> ortam değişkenini atamanız gerekecek:
+     </para>
+     <para>
+      Windows NT, 2000, XP ve 2003 üzerinde:
+      <itemizedlist>
+       <listitem><para>
+        Denetim Masasına gidip Sistem simgesini açın (Başlat -&gt; Ayarlar
+        -&gt; Denetim Masası -&gt; Sistem veya Windows XP/2003 için sadece
+        Başlat -&gt; Denetim Masası -&gt; Sistem).
+       </para></listitem>
+       <listitem><para>
+        Gelişmiş sekmesine gidin.
+       </para></listitem>
+       <listitem><para>
+        'Ortam Değişkenleri' düğmesine tıklayın.
+       </para></listitem>
+       <listitem><para>
+        'Sistem Değişkenleri' panosuna bakın.
+       </para></listitem>
+       <listitem><para>
+         Click on 'Yeni' düğmesine tıklayın ve değişken ismi olarak 'PHPRC',
+         değer olarak da &php.ini; dosyanızın bulunduğu yeri yazın (örnek:
+         <literal>C:\php</literal>)
+       </para></listitem>
+       <listitem><para>
+        Tamam düğmesine tıklayın ve bilgisayarınızı yeniden başlatın.
+       </para></listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      Windows 98/Me sistemlerinde ise <filename>autoexec.bat</filename>
+      dosyanızı düzenlemeniz gerekecektir:
+      <itemizedlist>
+       <listitem><para>
+        Notepad'i açın (Başlat -&gt; Çalıştır ve notepad yazıp enter tuşuna
+        basın)
+       </para></listitem>
+       <listitem><para>
+        <filename>C:\autoexec.bat</filename> dosyasını açın.
+       </para></listitem>
+       <listitem><para>
+        Dosyanın sonuna şu satırı ekleyin: <literal>set
+        PHPRC=C:\php</literal> (burada <literal>C:\php</literal> yerine
+        &php.ini; dosyanızın bulunduğu dizini yazın). Belirttiğiniz dizinin
+        boşluk karakteri içermemesine dikkat ediniz. Örneğin, PHP'yi
+        <filename>C:\Program Files\PHP</filename> altına kurduysanız bunu
+        <filename>C:\PROGRA~1\PHP</filename> şeklinde belirtmelisiniz.
+       </para></listitem>
+       <listitem><para>
+        Dosyayı kaydedin ve bilgisayarınızı yeniden başlatın.
+       </para></listitem>
+      </itemizedlist>
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.apache.multiviews">
+    <question>
+     <para>
+      PHP ile Apache içerik dili uzlaşımını kullanmak (MultiViews seçeneği)
+      mümkün mü?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP'yi dosya uzantıları ile ilişkilendirirseniz herşey düzgün çalışır.
+      Bu SSS'de PHP dosyalarını uzantısız ilişkilendirdiğinizi ve içerik
+      uzlaşımında PHP dosyalarının uzantılarına bakılmaksızın seçilmesini
+      istediğinizi varsayacağız. Bu durumda, <literal>AddType
+      application/x-httpd-php .php</literal> yerine şunları yazın:
+      <programlisting role="apache-conf">
+<![CDATA[
+# PHP 4
+AddHandler php-script php
+AddType text/html php
+
+# PHP 5
+AddHandler php5-script php
+AddType text/html php
+]]>
+     </programlisting>
+     Bu çözüm PHP'nin bir modül olarak çalıştığı Apache 1'de
+     <literal>php-script</literal> yakalanmayacağından çalışmayacaktır.
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.requestmethods">
+    <question>
+     <para>
+      PHP'nin GET ve POST istekleri dışında istekleri işleme sokmaması
+      sağlanabilir mi?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Hayır. PHP,  CONNECT gibi her istek yöntemiyle çalışabilir. Doğru yanıt
+      durumu <function>header</function> ile gönderilebilir. Eğer sadece GET
+      ve POST yöntemlerinin işleme sokulmasını istiyorsanız bunu Apache
+      yapılandırmanızda şöyle sağlayabilirsiniz:
+      <programlisting role="apache-conf">
+<![CDATA[
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>
+]]>
+     </programlisting>
+     </para>
+    </answer>
+   </qandaentry>
+
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
