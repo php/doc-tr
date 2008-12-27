@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="control-structures.continue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title><literal>continue</literal></title>
+ <simpara>
+  <literal>continue</literal> deyimi döngü yapılarının içinde kullanılır.
+  Bu deyim kullanıldığında, döngünün kalan kısmı atlanır ve
+  sonraki yineleme başlatılır.
+ </simpara>
+ <note>
+  <simpara>
+    PHP'de <link linkend="control-structures.switch">switch</link> deyimi
+    <literal>continue</literal> deyiminin kullanılabileceği döngülerden
+    biri olarak kabul edilmektedir.
+  </simpara>
+ </note>
+ <simpara>
+  <literal>continue</literal> deyimi ile seçime bağlı sayısal bir değer
+  kullanılarak, atlama işleminin kaç seviye üstteki döngüye kadar
+  uygulanacağı belirtilebilir.
+ </simpara>
+ <para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+while (list($key, $value) = each($arr)) {
+    if (!($key % 2)) { // tek sayıları atla
+        continue;
+    }
+    do_something_odd($value);
+}
+
+$i = 0;
+while ($i++ < 5) {
+    echo "Dış<br />\n";
+    while (1) {
+        echo "&nbsp;&nbsp;Orta<br />\n";
+        while (1) {
+            echo "&nbsp;&nbsp;İç<br />\n";
+            continue 3;
+        }
+        echo "Bu hiçbir zaman çıktı vermez.<br />\n";
+    }
+    echo "Bundan da çıktı alamazsınız.<br />\n";
+}
+?>
+]]>
+   </programlisting>
+   </informalexample>
+  </para>
+  <para>
+    <literal>continue</literal> deyiminden sonra noktalı virgül konmazsa
+    bu durum karışıklığa yol açabilir. Yapmamanız gereken ile ilgili bir
+    örnek:
+  </para>
+  <para>
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+for ($i = 0; $i < 5; ++$i) {
+    if ($i == 2)
+        continue
+    print "$i\n";
+}
+?>
+]]>
+    </programlisting>
+    <para>
+     Şu biçimde bir çıktı almayı bekleyebilirsiniz:
+    </para>
+    <screen>
+<![CDATA[
+0
+1
+3
+4
+]]>
+    </screen>
+    <para>
+     Ancak çıktı şu şekilde olacaktır:
+    </para>
+    <screen>
+<![CDATA[
+2
+]]>
+    </screen>
+    <para>
+      Bunun sebebi <function>print</function> işlevinden dönen
+      değerin <literal>int(1)</literal> olması ve bu dönen değerin
+      PHP tarafından yukarıda bahsedilen seçime sağlı sayısal değer
+      olarak algılanmasıdır.
+    </para>
+   </informalexample>
+  </para>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="control-structures.switch" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title><literal>switch</literal></title>
+ <simpara>
+  <literal>switch</literal> deyimi, aynı ifade içersinde yer alan bir dizi
+  IF deyimine benzer. Birçok durumda, aynı değişkeni (ya da ifadeyi)
+  birden çok değerle karşılaştırmak ve her karşılaştırmanın sonucunu
+  ayrı bir kod parçası çalıştırarak değerlendirmek istersiniz. İşte bu,
+  <literal>switch</literal> deyiminin varlık sebebidir.
+ </simpara>
+ <note>
+  <simpara>
+    Başka bazı dillerden farklı olarak, <link
+    linkend="control-structures.continue">continue</link> deyimi
+    <literal>switch</literal> ile uygulanabilir ve
+    <literal>break</literal> ile benzerlik gösterir. Bir döngü içerisinde
+    <literal>switch</literal> kullandıysanız ve kodun yürütülmesine
+    dıştaki döngünün sonraki yinelemeden devam etmesini istiyorsanız,
+    <literal>continue 2</literal> kullanabilirsiniz.
+  </simpara>
+ </note>
+ <note>
+  <para>
+    <literal>switch</literal> ve <literal>case</literal>
+    <link linkend="types.comparisions-loose">gevşek karşılaştırma</link>
+    yapar.
+  </para>
+ </note>
+ <para>
+  Aşağıdaki iki örnek aynı şeyi yazmanın iki farklı yolunu göstermektedir.
+  Birincisi bir dizi <literal>if</literal> ve  <literal>elseif</literal>
+  deyiminin kullanımını, ikincisi ise <literal>switch</literal> deyiminin
+  kullanımını örneklemektedir:
+  <example>
+   <title>- <code>switch</code> yapısı</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+if ($i == 0) {
+    echo "i eşittir 0";
+} elseif ($i == 1) {
+    echo "i eşittir 1";
+} elseif ($i == 2) {
+    echo "i eşittir 2";
+}
+
+switch ($i) {
+case 0:
+    echo "i eşittir 0";
+    break;
+case 1:
+    echo "i eşittir 1";
+    break;
+case 2:
+    echo "i eşittir 2";
+    break;
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title>- <code>switch</code> ile dizge kullanımı</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch ($i) {
+case "elma":
+    echo "i bir elmadır";
+    break;
+case "çikolata":
+    echo "i bir çikolatadır";
+    break;
+case "kek":
+    echo "i bir kektir";
+    break;
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Hatalardan kaçınmak için <literal>switch</literal> deyiminin nasıl
+  çalıştığını anlamak önemlidir. <literal>switch</literal> deyimi satır
+  satır ele alınır (aslında deyim deyim). Başlangıçta, hiçbir kod
+  çalıştırılmaz. Yalnızca <literal>switch</literal> ifadesiyle birlikte
+  verilen değer ile uyuşan <literal>case</literal> deyimi bulunduğunda PHP
+  ilgili deyimleri çalıştırmaya başlar. PHP <literal>switch</literal>
+  bloğu sonlanana kadar ya da ilk <literal>break</literal> deyimi ile
+  karşılaşıncaya kadar çalışmasına devam eder. Bir case bloğunun sonuna
+  <literal>break</literal> koymazsanız, PHP sonraki
+  <literal>case</literal> deyiminden kodları çalıştırmaya devam eder.
+  Örnek:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch ($i) {
+case 0:
+    echo "i eşittir 0";
+case 1:
+    echo "i eşittir 1";
+case 2:
+    echo "i eşittir 2";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  Burada, <varname>$i</varname> 0'a eşit ise, PHP tüm
+  <literal>echo</literal> deyimlerini çalıştıracaktır!
+  <varname>$i</varname> 1'e eşit ise, PHP son iki <literal>echo</literal>
+  deyimini çalıştıracaktır! Beklediğiniz sonucu ('i eşittir 2' metninin
+  görüntülenmesi) yalnızca <varname>$i</varname> 2'ye eşitse almanız
+  mümkün olacaktır. Bu durumun oluşmaması için, <literal>break</literal>
+  deyimini kullanmayı unutmamanız önemlidir (yine de, bazı durumlarda
+  <literal>break</literal> deyimini kullanmak istemeyebilirsiniz).
+ </simpara>
+ <simpara>
+  Bir <literal>switch</literal> deyiminde, koşul yalnızca bir defa
+  sorgulanır ve sonuç her bir <literal>case</literal> deyimi ile
+  karşılaştırılır. Bir <literal>elseif</literal> deyiminde ise, koşul
+  tekrar sorgulanır. Kullanmak istediğiniz koşul basit bir karşılaştırma
+  işleminden daha karmaşıksa ve/veya bir döngü içerisindeyse,
+  <literal>switch</literal> kullanmak daha hızlı olabilir.
+ </simpara>
+ <para>
+  <literal>case</literal> bloğu kod içermeyebilir ve amacı yalnızca
+  denetimi bir sonraki <literal>case</literal> bloğuna geçirmek olabilir.
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch ($i) {
+case 0:
+case 1:
+case 2:
+    echo "i 3'ten küçüktür ama negatif değildir";
+    break;
+case 3:
+    echo "i eşittir 3";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+   <literal>default</literal> durumu özel bir durumdur. Bu durum diğer
+   hiçbir <literal>case</literal> ile uyuşmayan değerler için kullanılır ve
+   en sonda yer almalıdır. Örneğin:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch ($i) {
+case 0:
+    echo "i eşittir 0";
+    break;
+case 1:
+    echo "i eşittir 1";
+    break;
+case 2:
+    echo "i eşittir 2";
+    break;
+default:
+    echo "i ne 0, ne 1 ne de 2'ye eşittir";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  <literal>case</literal> ifadesi bir basit tür olarak
+  değerlendirilebilecek herhangi bir tür olabilir; yani, tam sayı
+  (<type>integer</type>), gerçel sayı (<type>float</type>) veya dizge
+  (<type>string</type>) olabilir. Diziler (<type>array</type>) ya da
+  nesneler (<type>object</type>), bir basit türe indirgenmedikleri sürece
+  kullanılamazlar.
+ </para>
+ <para>
+  İki noktalı sözdizimi <literal>switch</literal> deyimi için de
+  desteklenmektedir. Daha fazla bilgi için, <link
+  linkend="control-structures.alternative-syntax">Denetim yapıları için
+  diğer söz dizimi</link> bölümünü inceleyebilirsiniz.
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch ($i):
+case 0:
+    echo "i eşittir 0";
+    break;
+case 1:
+    echo "i eşittir 1";
+    break;
+case 2:
+    echo "i eşittir 2";
+    break;
+default:
+    echo "i ne 0, ne 1 ne de 2'ye eşittir;
+endswitch;
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  <literal>case</literal>’ten sonraki iki nokta yerine aşağıdaki gibi
+  deyim sonunda noktalı virgül kullanmak da mümkündür:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+switch($içecek)
+{
+    case 'su';
+    case 'süt';
+    case 'ayran';
+        echo 'İyi seçim';
+    default;
+        echo 'Lütfen yeniden seçiniz...';
+    break;
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

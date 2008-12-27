@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="control-structures.foreach" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title><literal>foreach</literal></title>
+ <para>
+  PHP 4 ile birlikte Perl ve bazı diğer dillerde mevcut olan
+  <literal>foreach</literal> yapısı da kullanıma sunulmuştur. Bu deyim
+  diziler üzerinde yineleme yapmayı kolaylaştırmaktadır.
+  <literal>foreach</literal> yalnızca diziler için kullanılabilir; farklı
+  veri türünde veya ilklendirilmemiş bir değişken ile kullanmak
+  istediğinizde hata verir. İki sözdizimi mevcuttur; ikincisi birinciden
+  biraz daha kullanışlıdır:
+  <informalexample>
+   <programlisting>
+<![CDATA[
+foreach (dizi_ifadesi as $değer)
+    deyim
+foreach (dizi_ifadesi as $isim => $değer)
+    deyim
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  İlk sözdizimi <literal>dizi_ifadesi</literal> ile belirtilen dizinin
+  üzerinde döngü oluşturur. Her yinelemede, sırası gelen elemanın değeri
+  <literal>$değer</literal> değişkenine atanır ve dizi göstericisi bir
+  arttırılır (böylece bir sonraki yinelemede dizinin bir sonraki elemanına
+  bakılması sağlanmış olur).
+ </simpara>
+ <simpara>
+  İkinci yöntem de aynı şeyi yapar, ek olarak her yinelemede sırası gelen
+  elemanın anahtarı <literal>$isim</literal> değişkenine atanır.
+ </simpara>
+ <simpara>
+  PHP 5'den itibaren, <link linkend="language.oop5.iterations">nesneleri
+  yinelemek</link> mümkün olmuştur.
+ </simpara>
+ <para>
+  <note>
+   <para>
+    <literal>foreach</literal> ilk çalışmaya başladığında, dizi
+    göstericisi özdevinimli olarak ilk elemanı gösterecek biçimde
+    sıfırlanır. Bu sebeple, <literal>foreach</literal> deyiminden önce
+    <function>reset</function> işlevini çalıştırmanıza gerek yoktur.
+   </para>
+  </note>
+ </para>
+ <para>
+  <note>
+   <para>
+    Dizi <link linkend="language.references">gönderimli</link> olmadıkça,
+    <literal>foreach</literal> dizinin kendisi üzerinde değil, bir kopyası
+    üzerinde çalışır. Bundan dolayı özgün dizi göstericisi değiştirilmez
+    ve döndürülen dizi elemanı üzerinde yapılan değişiklikler özgün diziye
+    yansıtılmaz.
+   </para>
+  </note>
+ </para>
+ <para>
+  PHP 5'den itibaren, <literal>$değer</literal> değişkeninin önüne &amp;
+  koyarak dizi elemanları üzerinde kolayca değişiklik yapılabilmektedir.
+  Bu kullanımla değeri kopyalamak yerine kendisine bir <link
+  linkend="language.references">gönderim</link> yapılması sağlanır.
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array(1, 2, 3, 4);
+foreach ($dizi as &$değer) {
+    $value = $değer * 2;
+}
+// $dizi artık array(2, 4, 6, 8) olmuştur
+unset($değer); // son eleman da işlendiğine göre gönderimi kaldıralım
+?>
+]]>
+   </programlisting>
+  </informalexample>
+  Bu durum yalnızca yinelenen diziye gönderim yapılabiliyorsa
+  mümkündür (örneğin, bir değişkense).
+ </para>
+ <warning>
+  <para>
+    <literal>$değer</literal> gönderim için kullanıldığından
+    <literal>foreach</literal> döngüsünün sonunda son dizi elemanına
+    gönderimli olarak kalır, bu bakımdan döngünün sonunda bu gönderimin
+    <function>unset</function> işlevi kullanılarak kaldırılması önerilir.
+  </para>
+ </warning>
+ <para>
+  <note>
+   <para>
+    <literal>foreach</literal>, hata iletilerinin '@' kullanılarak
+    gözardı edilmesi özelliğini desteklemez.
+   </para>
+  </note>
+ </para>
+ <para>
+  Aşağıdaki iki döngünün aynı işi yaptığını farkedeceksiniz:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array("bir", "iki", "üç");
+reset($dizi);
+while (list(, $değer) = each($dizi)) {
+    echo "Değer: $değer<br />\n";
+}
+
+foreach ($dizi as $değer) {
+    echo "Değer: $değer<br />\n";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+  Aşağıdakiler de işlevsel olarak aynıdır:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array("bir", "iki", "üç");
+reset($dizi);
+while (list($isim, $değer) = each($dizi)) {
+    echo "Anahtar: $isim; Değer: $değer<br />\n";
+}
+
+foreach ($dizi as $isim => $değer) {
+    echo "Anahtar: $isim; Değer: $değer<br />\n";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  Değişik kullanımlara örnekler:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* foreach örneği 1: yalnızca değer */
+
+$a = array(1, 2, 3, 17);
+
+foreach ($a as $v) {
+   echo "\$a değişkeninin şu anki değeri: $v.\n";
+}
+
+/* foreach örneği 2: değer (örnek olması için anahtar
+ *  ile birlikte yazdırılmıştır) */
+
+$a = array(1, 2, 3, 17);
+
+$i = 0; /* yalnızca örnekleme için */
+
+foreach ($a as $v) {
+    echo "\$a[$i] => $v.\n";
+    $i++;
+}
+
+/* foreach örneği 3: anahtar ve değer */
+
+$a = array(
+    "bir" => 1,
+    "iki" => 2,
+    "üç"  => 3,
+    "on yedi" => 17
+);
+
+foreach ($a as $k => $v) {
+    echo "\$a[$k] => $v.\n";
+}
+
+/* foreach örneği 4: çok boyutlu diziler */
+$a = array();
+$a[0][0] = "a";
+$a[0][1] = "b";
+$a[1][0] = "y";
+$a[1][1] = "z";
+
+foreach ($a as $v1) {
+    foreach ($v1 as $v2) {
+        echo "$v2\n";
+    }
+}
+
+/* foreach örneği 5: devingen diziler */
+
+foreach (array(1, 2, 3, 4, 5) as $v) {
+    echo "$v\n";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

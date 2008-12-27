@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="control-structures.declare" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title><literal>declare</literal></title>
+ <para>
+  <literal>declare</literal> yapısı bir kod bloğunun çalıştırılması
+  esnasında uygulanacak yönergeleri belirlemek için kullanılır.
+  <literal>declare</literal> yapısının sözdizimi diğer akış denetim
+  yapılarının söz dizimi ile benzerdir:
+  <informalexample>
+   <programlisting>
+<![CDATA[
+declare (yönerge)
+    deyim
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  <replaceable>yönerge</replaceable> bölümü, <literal>declare</literal>
+  bloğunun davranışını belirlemek için kullanılır. Şimdilik yalnızca iki
+  yönerge kullanılabilmektedir: <literal>ticks</literal> yönergesi (Daha
+  fazla bilgi edinmek için aşağıya, <link
+  linkend="control-structures.declare.ticks">ticks</link> yönergesine
+  bakınız.) ve <literal>encoding</literal> yönergesi.
+ </para>
+ <note>
+  <simpara>
+   <literal>encoding</literal> yönergesi PHP 5.3.0'da eklenmiştir.
+  </simpara>
+ </note>
+ <para>
+  <literal>declare</literal> bloğunun <replaceable>deyim</replaceable>
+  bölümünün nasıl çalıştırılacağı ve çalışma esnasındaki yan etkilerinin
+  ne olacağı <replaceable>yönerge</replaceable> bölümünde belirtilen
+  yönergeye bağlı olabilir.
+ </para>
+ <para>
+  <literal>declare</literal> bloğu kendinden sonra gelen tüm kodu
+  etkilemesi için genel betik kapsamında da kullanılabilir. Bununla
+  birlikte, <literal>declare</literal> bloğu dahil edilen bir dosyanın
+  içindeyse ebeveyn dosya bundan etkilenmez.
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// aşağıdaki iki örnek aynıdır:
+
+// bunu kullanabilirsiniz:
+declare(ticks=1) {
+    // betiğin tamamı burada
+}
+
+// ya da bunu kullanabilirsiniz:
+declare(ticks=1);
+    // betiğin tamamı burada
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+
+ <sect2 xml:id="control-structures.declare.ticks">
+  <title><code>ticks</code></title>
+  <caution>
+   <simpara>
+    PHP 5.3.0'dan itibaren <literal>ticks</literal> kullanımı
+    önerilmemektedir ve PHP 6.0.0'da kaldırılacaktır.
+   </simpara>
+  </caution>
+ <para>
+  Bir "tik", <literal>declare</literal> bloğu içersinde çözümleyici
+  tarafından çalıştırılan her <varname>N</varname> deyimde bir ortaya
+  çıkan bir olaydır. <varname>N</varname> değeri,
+  <literal>declare</literal> bloğunun <replaceable>yönerge</replaceable>
+  bölümünde <code>ticks=<varname>N</varname></code> kullanılarak
+  belirtilir.
+ </para>
+ <para>
+  Her tik ile oluşturulacak eylem
+  <function>register_tick_function</function> işlevi ile belirtilir. Daha
+  ayrıntılı bilgi için aşağıdaki örneğe bakınız. Her tik için birden fazla
+  olayın oluşabileceğini gözardı etmeyiniz.
+ </para>
+ <para>
+  <example>
+   <title>- PHP kodunun bir bölümünün profili</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Çağrıldığında zamanı kaydeden bir işlev
+function profile($dump = FALSE)
+{
+    static $profile;
+
+    // Profilde saklanmış zamanı döndürür, sonra siler
+    if ($dump) {
+        $temp = $profile;
+        unset($profile);
+        return $temp;
+    }
+
+    $profile[] = microtime();
+}
+
+// Tik eylemcisini belirtelim
+register_tick_function("profile");
+
+// Declare bloğundan önce işlevi ilklendirelim
+profile();
+
+// Bir kod bloğu çalıştır, her iki deyimde bir tik oluştur
+declare(ticks=2) {
+    for ($x = 1; $x < 50; ++$x) {
+        echo similar_text(md5($x), md5($x*$x)), "<br />;";
+    }
+}
+
+// Profilcide saklanan veriyi göster
+print_r(profile(TRUE));
+?>
+]]>
+   </programlisting>
+  </example>
+    Örnekte, 'declare' bloğu içindeki alt seviye deyimler çalıştırılarak
+    ve her çalıştırılan iki deyimden sonra zaman kaydedilerek bloğun
+    içindeki PHP kodunun profili çıkarılmaktadır. Bu bilgi incelenerek,
+    kod içinde yavaşlamaya sebep olan bölümlerin saptanmasında
+    kullanılabilir. Bu işlem başka yöntemler kullanılarak da yapılabilir,
+    ancak tikleri kullanmak daha basit ve kullanışlı bir yöntemdir.
+ </para>
+ <simpara>
+  Tikler hata ayıklama, basit çok görevliliği gerçekleme, artalanda G/Ç
+  işlemleri ve benzeri amaçlar için oldukça uygundur.
+ </simpara>
+ <simpara>
+  Ayrıca, <function>register_tick_function</function> ve
+  <function>unregister_tick_function</function> işlevlerini de inceleyin.
+ </simpara>
+ </sect2>
+ <sect2 xml:id="control-structures.declare.encoding">
+  <title><code>encoding</code></title>
+  <para>
+    Her betiğin karakter kodlaması betiğin başında
+    <literal>encoding</literal> yönergesi ile belirtilebilir.
+  <example>
+   <title>- Betik için kodlama belirtmek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+declare(encoding='ISO-8859-1');
+// kodlar burada
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <caution>
+   <simpara>
+    İsim alanları ile birlikte kullanıldığında, tek geçerli sözdizimi
+    <literal>declare(encoding='...');</literal> olup, buradaki
+    <literal>...</literal> kodlama değeridir.
+    <literal>declare(encoding='...') {}</literal> sözdizimi isim alanları
+    ile birlikte kullanıldığında bir çözümleme hatası ile sonuçlanacaktır.
+   </simpara>
+  </caution>
+  <para>
+    Karakter kodlaması bildirim değeri, PHP,
+    <literal>--enable-zend-multibyte</literal> yapılandırma seçeneği ile
+    derlenmediği takdirde PHP 5.3'te yoksayılır. PHP 6.0'da
+    <literal>encoding</literal> yönergesi, dosya oluşturulurken hangi
+    kodlamanın kullanıldığını tarayıcıya bildirmek için kullanılır. Meşru
+    değerler, UTF-8 gibi karakter kodlaması isimleridir.
+  </para>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

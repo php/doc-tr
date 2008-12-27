@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="control-structures.for" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title><literal>for</literal></title>
+ <para>
+  <literal>for</literal> döngüsü, PHP'deki en karmaşık döngü yapısıdır.
+  C'deki karşılığıyla aynı biçimde çalışır. <literal>for</literal>
+  döngüsünün sözdimi:
+  <informalexample>
+   <programlisting>
+<![CDATA[
+for (ifade1; ifade2; ifade3)
+    deyim
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  İlk ifade (<varname>ifade1</varname>) döngünün en başında bir kereliğine
+  koşulsuz olarak çalıştırılır.
+ </simpara>
+ <simpara>
+  Her yinelemenin başında <varname>ifade2</varname> yeniden
+  değerlendirilir. Bu ifadeden &true; sonucu elde edilirse, döngüye devam
+  edilir ve döngünün etki alanındaki deyimler çalıştırılır. Bu ifadeden
+  &false; sonucu elde edildiğinde etki alanındaki deyimler
+  çalıştırılmaksızın döngü sonlandırılır.
+ </simpara>
+ <simpara>
+  <varname>ifade3</varname> ise her yinelemenin sonunda çalıştırılır.
+ </simpara>
+ <simpara>
+  Bu ifadelerin herbirini boş bırakmak da mümkündür.
+  <varname>ifade2</varname>nin boş olması, döngünün sonsuza kadar
+  çalıştırılacağı anlamına gelir (PHP, C'deki gibi bu durumu &true; olarak
+  değerlendirir). Döngülerden genellikle bir şarta bağlı olarak <link
+  linkend="control-structures.break"><literal>break</literal></link>
+  deyimi ile çıkmak isteyeceğiniz düşünüldüğünde, bu durum düşündüğünüz
+  kadar kullanışsız değildir.
+ </simpara>
+ <para>
+  Aşağıdaki örnekleri ele alalım. Hepsi de 1'den 10'a kadar sayıları
+  görüntülemektedir:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* örnek 1 */
+
+for ($i = 1; $i <= 10; $i++) {
+    echo $i;
+}
+
+/* örnek 2 */
+
+for ($i = 1; ; $i++) {
+    if ($i > 10) {
+        break;
+    }
+    echo $i;
+}
+
+/* örnek 3 */
+
+$i = 1;
+for (; ; ) {
+    if ($i > 10) {
+        break;
+    }
+    echo $i;
+    $i++;
+}
+
+/* örnek 4 */
+
+for ($i = 1, $j = 0; $i <= 10; $j += $i, print $i, $i++);
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  Elbette, kullandığımız ilk örnek en güzel örnek olarak gözükmektedir (ya
+  da belki dördüncü örnek), ancak birçok durumda <literal>for</literal>
+  döngüsü içerisinde boş ifadeler kullanmayı oldukça kullanışlı
+  bulabilirsiniz.
+ </simpara>
+ <para>
+    PHP, <link
+    linkend="control-structures.alternative-syntax">iki noktalı
+    sözdizimi</link>ni <literal>for</literal> döngüleri için de
+    desteklemektedir.
+  <informalexample>
+   <programlisting>
+<![CDATA[
+for (ifade1; ifade2; ifade3):
+    deyimler
+    ...
+endfor;
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  Çoğu kullanıcının yaptığı gibi diziler üzerindeki yinelemeleri şöyle
+  yapabilirsiniz:
+ </simpara>
+ <para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/*
+ * Diziye baştan bir kaç veri atıp daha sonra
+ * döngü içinde verilerde değişiklik yapacağız.
+ */
+$bizimkiler = Array(
+        Array('isim' => 'Ali', 'tuz' => 856412),
+        Array('isim' => 'Veli', 'tuz' => 215863)
+        );
+
+for($i = 0; $i < sizeof($bizimkiler); ++$i)
+{
+    $bizimkiler[$i]['tuz'] = rand(000000, 999999);
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <simpara>
+  Sorun ikinci ifadede gizlidir. Her yinelemede dizinin boyutları yeniden
+  hesaplandığından kod yavaş çalışabilir. Örnekte boyut değişmediğinden
+  dizi boyutunu önce bir değişkene atıp ifadede bu değişken kullanılarak
+  kod en iyilenebilir. Aşağıdaki bunun yapılışı örneklenmiştir:
+ </simpara>
+ <para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$bizimkiler = Array(
+        Array('isim' => 'Ali', 'tuz' => 856412),
+        Array('isim' => 'Veli', 'tuz' => 215863)
+        );
+
+for($i = 0, $size = sizeof($bizimkiler); $i < $size; ++$i)
+{
+    $bizimkiler[$i]['salt'] = rand(000000, 999999);
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
