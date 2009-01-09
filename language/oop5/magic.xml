@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.6 $ -->
-<!-- EN-Revision: 1.20 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.7 $ -->
+<!-- EN-Revision: 1.21 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
   <para>
-   <literal>__construct</literal>, <literal>__destruct</literal>
+   <link linkend="language.oop5.decon"><literal>__construct</literal>,
+   <literal>__destruct</literal></link>
    (bak: <link linkend="language.oop5.decon">Kurucular ve Yıkıcılar</link>),
-   <literal>__call</literal>, <literal>__callStatic</literal>,
-   <literal>__get</literal>, <literal>__set</literal>,
+   <link linkend="language.oop5.overloading.methods"><literal>__call</literal>,
+   <literal>__callStatic</literal></link>,
+   <link linkend="language.oop5.overloading.members"><literal>__get</literal>,
+   <literal>__set</literal>,
    <literal>__isset</literal>, <literal>__unset</literal>
    (bak: <link linkend="language.oop5.overloading">Aşırı yükleme</link>),
-   <literal>__sleep</literal>, <literal>__wakeup</literal>,
-   <literal>__toString</literal>, <literal>__set_state</literal> ve
-   <link linkend="language.oop5.cloning">__clone</link> işlev isimleri PHP
+   <link linkend="language.oop5.magic.sleep"><literal>__sleep</literal>,
+   <literal>__wakeup</literal></link>,
+   <link linkend="language.oop5.magic.tostring"><literal>__toString</literal></link>,
+   <link linkend="language.oop5.magic.invoke"><literal>__invoke</literal></link>,
+   <link linkend="language.oop5.magic.set-state"><literal>__set_state</literal></link> and
+   <link linkend="language.oop5.cloning"><literal>__clone</literal></link>
+   işlev isimleri PHP
    sınıflarında sihirli işlemler yaparlar. İşlevlerinize sihirli bir
    işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
    ismi olarak kullanamazsınız.
@@ -142,6 +149,43 @@ Merhaba
     nesneleri <literal>__toString</literal> yöntemi olmaksızın dizgeye dönüştürme
     işlemi <constant>E_RECOVERABLE_ERROR</constant> hatasına yol açmaktadır.
    </para>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.magic.invoke">
+   <title><literal>__invoke</literal></title>
+   <para>
+    <literal>__invoke</literal> yöntemi, bir betik bir nesneyi bir işlev
+    olarak çağırmaya çalışırsa çağrılır.
+   </para>
+   <note>
+    <para>
+     Bu özellik PHP 5.3.0'dan beri mevcuttur.
+    </para>
+   </note>
+   <example>
+    <title>- <literal>__invoke</literal> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class CallableClass {
+  function __invoke($x) {
+    var_dump($x);
+  }
+}
+$obj = new CallableClass;
+$obj(5);
+var_dump(is_callable($obj));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+int(5)
+bool(true)
+]]>
+    </screen>
+   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.set-state">
