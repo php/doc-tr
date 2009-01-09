@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.23 Maintainer: mustafa Status: ready -->
+<refentry xml:id="function.mysql-affected-rows" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>mysql_affected_rows</refname>
+  <refpurpose>Önceki MySQL işleminde etkilenen satırların sayısını al
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>mysql_affected_rows</methodname>
+   <methodparam choice="opt"><type>resource</type><parameter>bağlantı_belirteci</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>bağlantı_belirteci</parameter> ile ilişkili son INSERT, UPDATE,
+   REPLACE veya DELETE sorgusundan etkilenen satır sayısını döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    &mysql.linkid.description;
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Son sorgunun başarılı olması durumunda etkilenen satırların sayısını
+   döndürür; başarısız olması durumunda -1 döndürür.
+  </para>
+  <para>
+   Eğer son sorgu, WHERE şartı içermeyen bir DELETE sorgusuysa, tablodaki
+   bütün kayıtlar silinmiş demektir, ancak bu işlev MySQL'in 4.1.2'den önceki
+   sürümlerinde 0 döndürür.
+  </para>
+  <para>
+   UPDATE'i kullanırken, MySQL yeni değerleri eski değerleri ile aynı olan
+   sütunları düzeltmez. Bu da <function>mysql_affected_rows</function>'un
+   muhtemelen uyan tüm satırların değil, sadece sorgu sonucu gerçekten
+   düzeltilen satırların sayısını döndürmesine neden olur.
+  </para>
+  <para>
+   REPLACE ifadesi aynı birincil anahtara sahip olan kayıtları siler, daha
+   sonra yeni kaydı girer. Bu işlev silinen kayıtların sayısı artı girilen
+   kayıtların sayısını döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>mysql_affected_rows</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$link = mysql_connect('localhost', 'mysql_user', 'mysql_password');
+if (!$link) {
+    die('Bağlanamadı: ' . mysql_error());
+}
+mysql_select_db('mydb');
+
+/* bu silinen kayıtların gerçek sayısını döndürmeli */
+mysql_query('DELETE FROM mytable WHERE id < 10');
+printf("Silinen kayıtlar: %d\n", mysql_affected_rows());
+
+/* WHERE şartıyla asla true olmaz, 0 döndürmeli */
+mysql_query('DELETE FROM mytable WHERE 0');
+printf("Silinen kayıtlar: %d\n", mysql_affected_rows());
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Silinen kayıtlar: 10
+Silinen kayıtlar: 0
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Hareket kullananılan <function>mysql_affected_rows</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$link = mysql_connect('localhost', 'mysql_user', 'mysql_password');
+if (!$link) {
+    die('Bağlanamadı: ' . mysql_error());
+}
+mysql_select_db('mydb');
+
+/* Kayıtları güncelle */
+mysql_query("UPDATE mytable SET used=1 WHERE id < 10");
+printf ("Güncellenen kayıtlar: %d\n", mysql_affected_rows());
+mysql_query("COMMIT");
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Güncellenen kayıtlar: 10
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <title>Hareketler</title>
+   <para>
+    Eğer hareketleri kullanıyorsanız <function>mysql_affected_rows</function>
+    işlevini INSERT, UPDATE veya DELETE sorgunuzdan sonra, ama COMMIT'den önce
+    kullanmalısınız.
+   </para>
+  </note>
+  <note>
+   <title>SELECT Deyimleri</title>
+   <para>
+    Bir SELECT sorgusundan döndürülen satırların sayısını almak için,
+    <function>mysql_num_rows</function> işlevini kullanmak mümkündür.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mysql_num_rows</function></member>
+    <member><function>mysql_info</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
