@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.2 Maintainer: nilgun Status: ready -->
+<chapter xml:id="mbstring.overload" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>İşlevlerin Aşırı Yüklenme Özelliği</title>
+ <para>
+  Genellikle, çalışan bir PHP uygulamasını çok baytlı bir ortamda çalışır duruma
+  getirmek çoğu kişiye zor gelir. Bu durum genellikle çok baytlı kodlanmış
+  dizgelerle düzgün şekilde çalışamayan <function>substr</function> gibi standart
+  dizge işlevleriyle yazılmış PHP uygulamalarında karşımıza çıkar.
+ </para>
+ <para>
+  Mbstring modülü, bir uyglamayı çok baytlı ortamlarda çalışır duruma getirmek
+  için kod değişikliği yapılmaksızın standart dizge işlevlerinin çok baytlı
+  taydaşlarının yerini almasını sağlayan 'işlevlerin aşırı yüklenme' özelliğini
+  destekler. Örneğin, eğer aşırı yükleme etkin kılınmışsa
+  <function>substr</function> işlevi yerine <function>mb_substr</function> işlevi
+  çağrılır. Bu özellik, çoğu durumda, sadece tek baytlı karakter kodlamasını
+  destekleyen uygulamaların çok baytlı karakter kodlaması kullanılan ortamlara
+  kolayca uyarlanmasını sağlar.
+ </para>
+ <para>
+  İşlevlerin aşırı yüklenmesini sağlamak için &php.ini; dosyasında
+  <literal>mbstring.func_overload</literal> yönergesine, aşırı yüklenecek işlev
+  sınıflarını belirten bit maskelerinden oluşan bir değerin atanması gerekir.
+  <function>mail</function> işlevini aşırı yüklemek için 1, dizge işlevleri için
+  2, düzenli ifade işlevleri için 4 girmek gerekir. Örneğin, yönergeye 7 değeri
+  atanırsa bu üç sınıfa ait işlevler aşırı yüklenecektir. Aşırı yüklenebilen
+  işlevler aşağıda listelenmiştir.
+  <table>
+   <title>Aşırı yüklenebilen işlevler</title>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>mbstring.func_overload değeri</entry>
+      <entry>özgün işlev</entry>
+      <entry>aşırı yükleyen işlev</entry>
+     </row>
+   </thead>
+   <tbody>
+     <row>
+      <entry>1</entry>
+      <entry><function>mail</function></entry>
+      <entry><function>mb_send_mail</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>strlen</function></entry>
+      <entry><function>mb_strlen</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>strpos</function></entry>
+      <entry><function>mb_strpos</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>strrpos</function></entry>
+      <entry><function>mb_strrpos</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>substr</function></entry>
+      <entry><function>mb_substr</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>strtolower</function></entry>
+      <entry><function>mb_strtolower</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>strtoupper</function></entry>
+      <entry><function>mb_strtoupper</function></entry>
+     </row>
+     <row>
+      <entry>2</entry>
+      <entry><function>substr_count</function></entry>
+      <entry><function>mb_substr_count</function></entry>
+     </row>
+     <row>
+      <entry>4</entry>
+      <entry><function>ereg</function></entry>
+      <entry><function>mb_ereg</function></entry>
+     </row>
+     <row>
+      <entry>4</entry>
+      <entry><function>eregi</function></entry>
+      <entry><function>mb_eregi</function></entry>
+     </row>
+     <row>
+      <entry>4</entry>
+      <entry><function>ereg_replace</function></entry>
+      <entry><function>mb_ereg_replace</function></entry>
+     </row>
+     <row>
+      <entry>4</entry>
+      <entry><function>eregi_replace</function></entry>
+      <entry><function>mb_eregi_replace</function></entry>
+     </row>
+     <row>
+      <entry>4</entry>
+      <entry><function>split</function></entry>
+      <entry><function>mb_split</function></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </para>
+ <note>
+  <para>
+   Dizin bağlamında yapılandırmalarda işlevlerin aşırı yüklenme özelliğinin
+   kullanılması önerilmez. Çünkü, bu özelliğin üretim ortamında kullanılabilecek
+   kararlılığa sahip olduğu henüz onaylanmamıştır; bu bakımdan önceden
+   kestirilemeyen bazı davranışlarla karşılaşmak olasıdır.
+  </para>
+ </note>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
