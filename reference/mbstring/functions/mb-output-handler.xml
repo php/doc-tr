@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.8 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.mb-output-handler" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>mb_output_handler</refname>
+  <refpurpose>Çıktı tamporundaki karakter kodlamasını dönüştüren geriçağırım
+  işlevi</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>mb_output_handler</methodname>
+   <methodparam><type>string</type><parameter>içerik</parameter></methodparam>
+   <methodparam><type>int</type><parameter>durum</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>mb_output_handler</function> bir <function>ob_start</function>
+   geriçağırım işlevidir. <function>mb_output_handler</function> işlevi çıktı
+   tamponundaki karakterlerin dahili karakter kodlamasını HTTP çıktısı
+   karakter kodlamasına dönüştürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>içerik</parameter></term>
+     <listitem>
+      <para>
+       Çıktı tamponunun içeriği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>durum</parameter></term>
+     <listitem>
+      <para>
+       Çıktı tamponunun durumu.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dönüştürülen dizge.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.1.0</entry>
+       <entry>
+        <para>
+         Bu işlev artık aşağıdaki koşullar sağlandığı takdirde charset HTTP
+         başlığını eklemektedir:
+        </para>
+        <para>
+         <itemizedlist>
+          <listitem>
+           <simpara>
+            <function>header</function> işlevi kullanılarak
+            <literal>Content-Type</literal> başlığı tanımlanmazsa.
+           </simpara>
+          </listitem>
+          <listitem>
+           <simpara>
+            Öntanımlı MIME türü <literal>text/</literal> ile başlarsa.
+           </simpara>
+          </listitem>
+          <listitem>
+           <simpara>
+            <link linkend="ini.mbstring.http-input">mbstring.http_input</link>
+            değeri <literal>pass</literal> değilse.
+           </simpara>
+          </listitem>
+         </itemizedlist>
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>mb_output_handler</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+mb_http_output("UTF-8");
+ob_start("mb_output_handler");
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    PHP 4.3.0 ve sonrası ile, bir resim verisi gibi bir ikil veriyi PHP
+    betiğinizden göndermek isterseniz bu veriyi istemciye göndermeden önce
+    <function>header</function> işlevini kullanarak Content-Type: başlığını
+    (örneğin, header("Content-Type: image/png") olarak) göndermelisiniz.
+    Content-Type: başlığı gönderilmişse karakter kodlaması dönüşümü uygulanmaz.
+   </para>
+   <para>
+    <function>header</function> işlevini kullanılarak 'Content-Type: text/*'
+    gönderilmişse gönderilen verinin metin olarak ele alınacağını ve karakter
+    kodlaması ayarlarına uygun olarak karakter kodlaması dönüşümü yapılacağını
+    unutmayın.
+   </para>
+   <para>
+    PHP 4.2.x ve öncesi ile, bir resim verisi gibi bir ikil veriyi PHP
+    betiğinizden göndermek isterseniz çıktı kodlamasına
+    <function>mb_http_output</function> işlevini kullanarak &quot;pass&quot;
+    değerini atamalısınız.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>ob_start</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
