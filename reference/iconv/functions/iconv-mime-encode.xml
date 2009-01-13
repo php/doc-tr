@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.16 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.iconv-mime-encode" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>iconv_mime_encode</refname>
+  <refpurpose>Bir <literal>MIME</literal> başlık alanı tertipler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>iconv_mime_encode</methodname>
+   <methodparam><type>string</type><parameter>alan_adı</parameter></methodparam>
+   <methodparam><type>string</type><parameter>alan_değeri</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>tercihler</parameter><initializer>NULL</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Örnekteki gibi, geçerli bir <literal>MIME</literal> başlık alanını bir
+   dizge olarak tertipleyip döndürür:
+   <screen>
+<![CDATA[
+Subject: Re: PHP =?utf-8?q?=C3=87eviri?= Grubu
+]]>
+   </screen>
+   Bu örnekte, "Subject" alan ismi, "Re: PHP =?utf-8?..." ise alanın değeridir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>alan_adı</parameter></term>
+     <listitem>
+      <para>
+       Alan ismi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>alan_değeri</parameter></term>
+     <listitem>
+      <para>
+       Alanın değeri.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tercihler</parameter></term>
+     <listitem>
+      <para>
+       İsteğe bağlı <parameter>tercihler</parameter> değiştirgesinde
+       yapılandırma öğelerini içeren bir dizi belirterek
+       <function>iconv_mime_encode</function> işlevinin davranışını
+       belirleyebilirsiniz. Desteklenen öğeler aşağıda listelenmiştir. Öğe
+       isimlerinin harf büyüklüğüne duyarlı oluşuna dikkat ediniz.
+       <table>
+        <title><function>iconv_mime_encode</function> tarafından desteklenen
+        yapılandırma öğeleri</title>
+        <tgroup cols="5">
+         <thead>
+          <row>
+           <entry>Öğe</entry>
+           <entry>Tür</entry>
+           <entry>Açıklama</entry>
+           <entry>Öntanımlı değer</entry>
+           <entry>Örnek</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>scheme</entry>
+           <entry><type>string</type></entry>
+           <entry>
+            Alan değerinin kodlanmasında kullanılacak yöntemi belirler. Bu
+            öğenin değeri "B" veya "Q" olabilir. "B" <literal>base64</literal>
+            kodlama şemasını, "Q" ise <literal>quoted-printable</literal>
+            kodlama şemasını betimler.
+           </entry>
+           <entry>B</entry>
+           <entry>B</entry>
+          </row>
+          <row>
+           <entry>input-charset</entry>
+           <entry><type>string</type></entry>
+           <entry>
+            <parameter>alan_adı</parameter> ve
+            <parameter>alan_değeri</parameter> değiştirgeleri için girdi
+            karakter kümesini belirler. Belirtilmezse,
+            <link linkend="iconv.configuration">iconv.internal_encoding</link>
+            INI yönergesinin değerinin kullanılacağı varsayılır.
+           </entry>
+           <entry>
+            <link linkend="iconv.configuration">iconv.internal_encoding</link>
+           </entry>
+           <entry>ISO-8859-1</entry>
+          </row>
+          <row>
+           <entry>output-charset</entry>
+           <entry><type>string</type></entry>
+           <entry>
+            <literal>MIME</literal> başlığını tertiplemekte kullanılacak
+            karakter kümesini belirler. Belirtilmezse,
+            <literal>input-charset</literal> kullanılır.
+           </entry>
+           <entry>
+            <link linkend="iconv.configuration">iconv.internal_encoding</link>
+           </entry>
+           <entry>UTF-8</entry>
+          </row>
+          <row>
+           <entry>line-length</entry>
+           <entry><type>integer</type></entry>
+           <entry>
+            Başlık satırının azami uzunluğunu belirler.
+            <link xlink:href="&url.rfc;2822">RFC2822 - Genel Ağ İleti
+            Biçemi</link> belirtimine göre, bu değerden daha uzun bir başlık
+            alanı satırı, en uzunu bu kadar baytlık satırlar halinde katlanır.
+            Belirtilmezse, satır uzunluğu 76 karakterle sınırlanır.
+           </entry>
+           <entry>76</entry>
+           <entry>996</entry>
+          </row>
+          <row>
+           <entry>line-break-chars</entry>
+           <entry><type>string</type></entry>
+           <entry>
+            Uzun başlık alanlarına satır katlama uygulandığında satır sonlarına
+            eklenecek dizgeyi belirler. Belirtilmezse, "\r\n"
+            (<literal>CR</literal> <literal>LF</literal>) öntanımlıdır.
+            Bu öğenin <literal>input-charset</literal> değerinden bağımsız
+            olarak daima bir ASCII dizge olarak ele alınacağına dikkat ediniz.
+           </entry>
+           <entry>\r\n</entry>
+           <entry>\n</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarı durumunda kodlanmış <literal>MIME</literal> alanı, aksi takdirde
+   &false; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>iconv_mime_encode</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$preferences = array(
+    "input-charset" => "ISO-8859-1",
+    "output-charset" => "UTF-8",
+    "line-length" => 76,
+    "line-break-chars" => "\n"
+);
+$preferences["scheme"] = "Q";
+// Sonucu: "Subject: =?UTF-8?Q?Pr=C3=BCfung_Pr=C3=BCfung?="
+echo iconv_mime_encode("Subject", "Pr�fung Pr�fung", $preferences);
+
+$preferences["scheme"] = "B";
+// Sonucu: "Subject: =?UTF-8?B?UHLDvGZ1bmcgUHLDvGZ1bmc=?="
+echo iconv_mime_encode("Subject", "Pr�fung Pr�fung", $preferences);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imap_binary</function></member>
+    <member><function>mb_encode_mimeheader</function></member>
+    <member><function>imap_8bit</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
