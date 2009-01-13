@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.9 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.mb-detect-order" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>mb_detect_order</refname>
+  <refpurpose>Karakter kodlaması algılama sırasını tanımlar/döndürür
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>mb_detect_order</methodname>
+   <methodparam choice="opt"><type>mixed</type><parameter>kodlama_listesi</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>kodlama_listesi</parameter> ile belirtilen özdevinimli karakter
+   kodlaması algılama sırasını tanımlar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>kodlama_listesi</parameter></term>
+     <listitem>
+      <para>
+       <parameter>kodlama_listesi</parameter> bir dizi veya karakter
+       kodlamalarının virgül ayraçlı listesi ya da "auto" olarak belirtilir.
+       Değer olarak "auto" belirtilirse sıralama "ASCII, JIS, UTF-8, EUC-JP,
+       SJIS" olur.)
+      </para>
+      <para>
+       <parameter>kodlama_listesi</parameter> belirtilmezse karakter kodlaması
+       algılama sırasını içeren bir dizi döner.
+      </para>
+      <para>
+       Bu ayar, <function>mb_detect_encoding</function> ve
+       <function>mb_send_mail</function> işlevini etkiler.
+      </para>
+      <para>
+       <literal>mbstring</literal> şimdilik aşağıdaki kodlama algılama
+       süzgeçlerini gerçeklemiştir. Bu kodlamalarla ilgili geçersiz bir bayt
+       dizilimine rastlanırsa kodlama algılaması başarısız olur.
+      </para>
+      <simpara>
+       <literal>UTF-8</literal>, <literal>UTF-7</literal>,
+       <literal>ASCII</literal>,
+       <literal>EUC-JP</literal>,<literal>SJIS</literal>,
+       <literal>eucJP-win</literal>, <literal>SJIS-win</literal>,
+       <literal>JIS</literal>, <literal>ISO-2022-JP</literal>
+      </simpara>
+      <para>
+       Bir <literal>ISO-8859-*</literal> karakter kodlamasını,
+       <literal>mbstring</literal> daima <literal>ISO-8859-*</literal> olarak
+       algılar.
+      </para>
+      <para>
+       <literal>UTF-16</literal>, <literal>UTF-32</literal>,
+       <literal>UCS2</literal> ve <literal>UCS4</literal> için algılama daima
+       başarısız olacaktır.
+      </para>
+      <para>
+       <example>
+        <title>- Kullanışsız algı sırası örneği</title>
+        <programlisting>
+<![CDATA[
+; Daima ISO-8859-1 olarak algılanır
+detect_order = ISO-8859-1, UTF-8
+
+; Daima UTF-8 olarak algılanır, çünkü UTF-8 diğerlerini de kapsar
+detect_order = UTF-8, ASCII, UTF-7
+]]>
+        </programlisting>
+       </example>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>mb_detect_order</function> örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Algı sırasını virgül ayraçlı liste olarak verelim */
+mb_detect_order("eucjp-win,sjis-win,UTF-8");
+
+/* Algı sırasını dizi olarak verelim */
+$dizi[] = "ASCII";
+$dizi[] = "JIS";
+$dizi[] = "EUC-JP";
+mb_detect_order($dizi);
+
+/* Geçerli algı sırasını görelim */
+echo implode(", ", mb_detect_order());
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mb_internal_encoding</function></member>
+    <member><function>mb_http_input</function></member>
+    <member><function>mb_http_output</function></member>
+    <member><function>mb_send_mail</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
