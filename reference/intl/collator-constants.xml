@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: haluk Status: ready -->
+<section xml:id="intl.collator-constants" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ &reftitle.constants;
+ <para>
+  <variablelist>
+   <varlistentry>
+    <term>
+     <constant>Collator::FRENCH_COLLATION</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Dizgenin geri planındaki farklı aksanlara göre dizgeleri sıralar. Bu
+      öznitelik Fransızca yerellerde ve bir kaç başka yerelde özdevinimli
+      olarak etkindir. Kullanıcılar normalde bu özniteliği açıkça
+      etkinleştirme ihtiyacı duymazlar. Bu özniteliğe <emphasis>On</emphasis>
+      değeri atamanın başarım açısından bir bedeli vardır fakat sıralama
+      anahtarının uzunluğu tesirsizdir. Olası değerler şunlardır:
+      <simplelist>
+       <member><constant>Collator::ON</constant></member>
+       <member><constant>Collator::OFF</constant>(öntanımlı)</member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+     <para>
+      <example>
+       <title>- FRENCH_COLLATION kuralları</title>
+       <para>
+        <simplelist>
+         <member>F=OFF cote &lt; coté &lt; côte &lt; côté </member>
+         <member>F=ON cote &lt; côte &lt; coté &lt; côté</member>
+        </simplelist>
+       </para>
+      </example>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::ALTERNATE_HANDLING</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Alternate özniteliği, UCA'da değişken karakterler denen karakterleri
+      (boşluk karakterleri, noktalama imleri ve simgeler) denetim altında
+      tutmak için kullanılır. Eğer bu özniteliğe
+      <emphasis>NonIgnorable</emphasis> (N) değeri atanırsa bu karakterler
+      arasındaki farklar harfler arasındaki farklarla aynı önemdedir. Eğer
+      <emphasis>Shifted</emphasis> (S) atanırsa bu karakterler çok düşük
+      önemde olurlar. <emphasis>Shifted</emphasis> değeri çoğunlukla
+      <emphasis>Strength</emphasis> (etki seviyesi) ile birlikte Dördüncüllüğü
+      (Quaternary) belirtmekte kullanılır. Böyle bir durumda, boşluk
+      karakterleri, noktalama imleri ve simgelerin dizgeleri karşılaştırırken
+      hesaba katılabilmesi için dizgelerin tüm diğer şeyler (temel harfler,
+      aksanlar ve harf büyüklüğü) bakımından eşdeğer olmaları gerekir. Eğer
+      özniteliğe <emphasis>Shifted</emphasis> atanmazsa üçüncül (Tertiary) ve
+      dördürcül (Quaternary) etki seviyeleri arasında hiçbir fark yoktur. Daha
+      fazla bilgi ve örnekler için
+      <link xlink:href="&url.icu.uca;#Variable_Weighting">UCA</link>
+      sitesindeki Variable_Weighting konusuna bakınız. Özniteliğin
+      değerlerinin basitçe <emphasis>On</emphasis> ve <emphasis>Off</emphasis>
+      olmamasının sebebi gelecekte başka değerlerin eklenebilecek olmasıdır.
+      UCA seçeneği Blanked üçüncül etki seviyesi ile ifade edilir ve
+      özniteliğe <emphasis>Shifted</emphasis> atanır. Çoğu yerel için
+      <emphasis>NonIgnorable</emphasis> öntanımlıdır. Eğer
+      <emphasis>Shifted</emphasis> seçilirse ve noktalama dışında birbirinin
+      aynı çok sayıda dizge varsa işlem daha yavaş olabilir; etki seviyesi
+      ayrıca arttırılmadıkça sıralama anahtarı uzunluğu tesirsiz olacaktır.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::NON_IGNORABLE</constant>(öntanımlı)</member>
+       <member><constant>Collator::SHIFTED</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+     <para>
+      <example>
+       <title>- ALTERNATE_HANDLING kuralları</title>
+       <para>
+        <simplelist>
+         <member>
+         S=3, A=N di Silva &lt; Di Silva &lt; diSilva &lt; U.S.A. &lt; USA
+         </member>
+         <member>
+         S=3, A=S di Silva = diSilva &lt; Di Silva &lt; U.S.A. = USA
+         </member>
+         <member>
+         S=4, A=S di Silva &lt; diSilva &lt; Di Silva &lt; U.S.A. &lt; USA
+         </member>
+        </simplelist>
+       </para>
+      </example>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::CASE_FIRST</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Case_First özniteliği, dizgeler arasında başka farkların olmadığı
+      durumda büyük harflerin küçük harflerden önce mi yoksa sonra mı
+      olacağını belirler. Olası değerler, büyük harflerin önce geleceğini
+      belirten <emphasis>Uppercase_First</emphasis> (U), küçük harlerin önce
+      olacağını belirten <emphasis>Lowercase_First</emphasis> (L) değerlerine
+      ilaveten standart <emphasis>Default</emphasis> ve
+      <emphasis>Off</emphasis> değerleridir. Sonuçları bakımından Off ve
+      Lowercase_First arasında hemen hemen hiç fark yoktur. Bu bakımdan
+      kullanıcılar genelde Lowercase_First kullanmazlar, sadece Off veya
+      Uppercase_First kullanırlar. X ve L arasındaki farkların ayrıntıları ile
+      ilgilenen kullanıcılar Karşılaştırma Özelleştirmesini incelemelidirler.
+      L veya U belirtmenin dizge karşılaştırma başarımında etkisi olmaz, fakat
+      sıralama anahtarı uzunluğunu etkiler.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::OFF</constant>(öntanımlı)</member>
+       <member><constant>Collator::LOWER_FIRST</constant></member>
+       <member><constant>Collator::UPPER_FIRST</constant></member>
+       <member><constant>Collator:DEFAULT</constant></member>
+      </simplelist>
+     </para>
+     <para>
+      <example>
+       <title>- CASE_FIRST kuralları</title>
+       <para>
+        <simplelist>
+         <member>C=X or C=L "china" &lt; "China" &lt; "denmark" &lt;
+         "Denmark"</member>
+         <member>C=U "China" &lt; "china" &lt; "Denmark" &lt;
+         "denmark"</member>
+        </simplelist>
+       </para>
+      </example>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::CASE_LEVEL</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Case_Level özniteliği harf büyüklüğünü değil aksanları yoksaymak için
+      kullanılır. Böyle bir durumda, etki seviyesine (Strength)
+      <emphasis>Primary</emphasis> ve Case_Level özniteliğine
+      <emphasis>On</emphasis> atanır. Çoğu yerelde <emphasis>On</emphasis>
+      öntanımlıdır ve bu değerin küçük bir dizge karşılaştırma başarımı ve
+      sıralama anahtarı ektisi vardır.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::OFF</constant>(öntanımlı)</member>
+       <member><constant>Collator::ON</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+     <para>
+      <example>
+       <title>- CASE_LEVEL kuralları</title>
+       <para>
+        <simplelist>
+         <member>S=1, E=X role = Role = rôle</member>
+         <member>S=1, E=O role = rôle &lt; Role</member>
+        </simplelist>
+       </para>
+      </example>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::NORMALIZATION_MODE</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Normalleştirme ayarı, karşılaştırmada metnin tamamen normalleştirilip
+      normalleştirilmeyeceğini belirler. Değeri off olsa bile (çoğu yerel için
+      öntanımlıdır) ortak kullanımda gösterildiği haliyle metin doğru olarak
+      karşılaştırılacaktır (Ayrıntılar için UTN #5'e bakınız). Sadece, meşru
+      sırada olmayan aksan imleri sorun çıkarır. Özniteliğe
+      <emphasis>On</emphasis> atanmışsa, olası tüm metin girdiler için en iyi
+      sonuçlar garanti edilir ve normalleştirme gerektiren dizilimlerin
+      sıklığına bağlı olarak orta seviyede bir dizge karşılaştırma başarımı
+      maliyeti vardır. Sıralama anahtarı uzunluğu üzerinde önemli bir etkisi
+      yoktur. Eğer girdi metninin NFD veya NFKD normallaştirme şekillerinden
+      birinde olduğu biliniyorsa bu normalleştirme seçeneğini etkin kılmaya
+      gerek yoktur.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::OFF</constant>(öntanımlı)</member>
+       <member><constant>Collator::ON</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::STRENGTH</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      ICU Karşılaştırma hizmeti çok seviyeli karşılaştırmayı destekler
+      (bunlara seviye (level) dendiği gibi tesir derecesi de (Strength)
+      denir). Bu seviyeler sayesinde ICU, dizgeleri yerel uzlaşımlara bağlı
+      olarak hassas bir şekilde sıralar. Bununla birlikte, metin içinde dizge
+      araması, seviyelerin seçilerek devreye sokulmasına izin verilerek
+      çeşitli eşleşme koşullarıyla gerçekleştirilebilir. Daha ayrıntılı bilgi
+      edinmek için  <function>collator_set_strength</function> işlevine
+      bakınız.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::PRIMARY</constant></member>
+       <member><constant>Collator::SECONDARY</constant></member>
+       <member><constant>Collator::TERTIARY</constant>(öntanımlı)</member>
+       <member><constant>Collator::QUATERNARY</constant></member>
+       <member><constant>Collator::IDENTICAL</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::HIRAGANA_QUATERNARY_MODE</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      JIS x 4061 ile uyumluluk Hiragana ve Katakana karakterler arasında ayrım
+      sağlayacak ek seviyeler gerektirir. Eğer standartla uyumluluk gerekirse
+      bu özniteliğe <emphasis>On</emphasis> atanmalı ve seviye olarak
+      Quaternary (dördüncül) kullanılmalıdır. Bu, sıralama anahtarı uzunluğunu
+      ve dizge karşılaştırma başarımını etkiler.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::OFF</constant>(öntanımlı)</member>
+       <member><constant>Collator::ON</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::NUMERIC_COLLATION</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <para>
+      Etkin kılınırsa bu öznitelik, rakamlardan oluşan altdizgelerin sayısal
+      değerleri için bir karşılaştırma anahtarı üretir. Bu, sıralamada '2''den
+      sonra '100' almanın bir yoludur.
+     </para>
+     <para>
+      Olası değerler:
+      <simplelist>
+       <member><constant>Collator::OFF</constant>(default)</member>
+       <member><constant>Collator::ON</constant></member>
+       <member><constant>Collator::DEFAULT_VALUE</constant></member>
+      </simplelist>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::DEFAULT_VALUE</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::PRIMARY</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::SECONDARY</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::TERTIARY</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::DEFAULT_STRENGTH</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::QUATERNARY</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::IDENTICAL</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::OFF</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::ON</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::SHIFTED</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::NON_IGNORABLE</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::LOWER_FIRST</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <constant>Collator::UPPER_FIRST</constant>
+     (<type>integer</type>)
+    </term>
+    <listitem>
+     <simpara>
+
+     </simpara>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </para>
+</section>
