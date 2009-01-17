@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.6 Maintainer: haluk Status: ready -->
+<refentry xml:id="function.grapheme-extract" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>grapheme_extract</refname>
+  <refpurpose>UTF-8 kodlanmış bir metin tamponundan öntanımlı sesletim
+  kümelerinden oluşan bir dizilimi döndürür</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>Yordamsal kullanım</para>
+  <methodsynopsis>
+   <type>string</type><methodname>grapheme_extract</methodname>
+   <methodparam><type>string</type><parameter>samanlık</parameter></methodparam>
+   <methodparam><type>int</type><parameter>boyut</parameter></methodparam>
+   <methodparam choice='opt'><type>int</type><parameter>birim</parameter></methodparam>
+   <methodparam choice='opt'><type>int</type><parameter>başlangıç</parameter></methodparam>
+   <methodparam choice='opt'><type>int</type><parameter role="reference">sonraki</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   UTF-8 kodlanmış bir metin tamponundan öntanımlı sesletim kümelerinden oluşan
+   bir dizilimi döndürür.
+  </para>
+  </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>samanlık</parameter></term>
+     <listitem>
+      <para>
+       Aramanın yapılacağı dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>boyut</parameter></term>
+     <listitem>
+      <para>
+       Döndürülecek azami <parameter>birim</parameter> sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>birim</parameter></term>
+     <listitem>
+      <para>
+       <parameter>boyut</parameter> değiştirgesini oluşturacak birim türü:
+      </para>
+      <simplelist>
+        <member>GRAPHEME_EXTR_COUNT (öntanımlı) -
+        <parameter>boyut</parameter>, döndürülecek öntanımlı sesletim kümesi
+        sayısıdır.</member>
+        <member>GRAPHEME_EXTR_MAXBYTES - <parameter>boyut</parameter>,
+        döndürülecek azami bayt sayısıdır.</member>
+        <member>GRAPHEME_EXTR_MAXCHARS - <parameter>boyut</parameter>,
+        döndürülecek UTF-8 karakterlerin azami sayısıdır.</member>
+      </simplelist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>başlangıç</parameter></term>
+     <listitem>
+      <para>
+       Bayt cinsinden aramanın başlatılacağı konum. Belirtildiği takdirde,
+       sıfır veya <parameter>samanlık</parameter> uzunluğuna eşit veya daha
+       küçük bir pozitif tamsayı olmalıdır. <parameter>başlangıç</parameter>
+       bir UTF-8 karakterin ilk baytı değilse, sonraki karakterin ilk baytına
+       taşınır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sonraki</parameter></term>
+     <listitem>
+      <para>
+       Sonraki aramanın başlangıç konumu. Çağrı sonunda dönen dizgenin son
+       karakterinden sonraki ilk baytın konumu olacaktır.
+      </para>
+     </listitem>
+    </varlistentry>
+
+   </variablelist>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Belirtilen <parameter>başlangıç</parameter> konumunda başlayıp,
+   <parameter>boyut</parameter> ve <parameter>birim</parameter>
+   değiştirgelerine göre uzunluğu belirlenen bir öntanımlı sesletim kümesini
+   içeren bir dizge ile döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- <function>grapheme_extract</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$char_a_ring_nfd = "a\xCC\x8A";      // 'å' (U+00E5) normalleştirme biçimi "D"
+$char_o_diaeresis_nfd = "o\xCC\x88"; // 'ö' (U+00F6) normalleştirme biçimi "D"
+
+print urlencode(grapheme_extract( $char_a_ring_nfd . $char_o_diaeresis_nfd, 1,
+                                  GRAPHEME_EXTR_COUNT, 2));
+
+?>
+]]>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
+<![CDATA[
+o%CC%88
+]]>
+  </screen>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>grapheme_substr</function></member>
+     <member>
+      <link xlink:href="&uri.unicode.graphemes;">
+       Unicode Text Segmentation: Grapheme Cluster Boundaries
+      </link>
+     </member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

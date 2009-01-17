@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.5 Maintainer: haluk Status: ready -->
+<refentry xml:id="function.grapheme-substr" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>grapheme_substr</refname>
+  <refpurpose>Bir alt dizge döndürür</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>Yordamsal kullanım</para>
+  <methodsynopsis>
+   <type>int</type><methodname>grapheme_substr</methodname>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
+   <methodparam choice='opt'><type>int</type><parameter>uzunluk</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Bir alt dizge döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Aramanın yapılacağı dizge. Geçerli bir UTF-8 dizgesi olmalıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>başlangıç</parameter></term>
+     <listitem>
+      <para>
+       Sesletim birimi cinsinden döndürülecek dizgenin başlangıç konumu.
+       <parameter>başlangıç</parameter> negatifse, dönen dizgenin başlangıç
+       konumu <parameter>dizge</parameter>'nin sonundan itibaren sayılır,
+       değilse <parameter>dizge</parameter>'nin başlangıcından itibaren
+       sıfırdan başlayarak sayılır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>uzunluk</parameter></term>
+     <listitem>
+      <para>
+       Sesletim birimi cinsinden döndürülecek dizgenin uzunluğu. Eğer
+       <parameter>uzunluk</parameter> pozitifse, dizgenin başından itibaren
+       <parameter>başlangıç</parameter>'ıncı konumdan başlayan (dizgenin
+       uzunluğuna bağlı olarak) en fazla <parameter>uzunluk</parameter> sayıda
+       sesletim birimi döner. Eğer dizge, <parameter>başlangıç</parameter>
+       sayıda sesletim birimi içermiyorsa veya ancak bu kadar sesletim birimi
+       içeriyorsa işlev &false; döndürür. Eğer <parameter>uzunluk</parameter>
+       negatifse, döndürülecek dizgenin son sesletim birimi, dizgenin sonundan
+       itibaren <parameter>uzunluk</parameter>'uncu sesletim birimi olur. Eğer
+       <parameter>başlangıç</parameter> da negatifse, dizgenin sonundan
+       itibaren önce <parameter>başlangıç</parameter> birim sayılıp
+       döndürülecek dizgenin son sesletim birimine ulaşılır sonra da bu
+       konumdan itibaren sayılan <parameter>uzunluk</parameter>'uncu birim
+       döndürülecek dizgenin ilk sesletim birimi olur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir dizge parçası.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- <function>grapheme_substr</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+$char_a_ring_nfd = "a\xCC\x8A";      // 'å' (U+00E5) normalleştirme biçimi "D"
+$char_o_diaeresis_nfd = "o\xCC\x88"; // 'ö' (U+00F6) normalleştirme biçimi "D"
+
+print urlencode(grapheme_substr( "ao" . $char_a_ring_nfd . "bc" .
+                                 $char_o_diaeresis_nfd . "O", 2, -1 ));
+?>
+]]>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
+<![CDATA[
+a%CC%8Abco%CC%88
+]]>
+  </screen>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>grapheme_extract</function></member>
+    <member><function>grapheme_extractB</function></member>
+    <member>
+     <link xlink:href="&uri.unicode.graphemes;">
+      Unicode Text Segmentation: Grapheme Cluster Boundaries
+     </link>
+    </member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
