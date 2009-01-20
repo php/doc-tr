@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: nilgun Status: ready -->
+<refentry xml:id="intldateformatter.islenient" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>IntlDateFormatter::isLenient</refname>
+  <refname>datefmt_is_lenient</refname>
+  <refpurpose>IntlDateFormatter esnek çözümleme mi yapıyor diye bakar
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>
+   Nesne yönelimli kullanım
+  </para>
+   <methodsynopsis>
+   <type>bool</type><methodname>IntlDateFormatter::isLenient</methodname>
+      <void />
+   </methodsynopsis>
+  <para>
+   Yordamsal kullanım
+  </para>
+  <methodsynopsis>
+   <type>bool</type><methodname>datefmt_is_lenient</methodname>
+  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Kalıpla tam olarak eşleşmeyen girdilerin yorumlanmasında çözümleyicinin
+   esnek mi yoksa katı mı davrandığına bakar.
+  </para>
+  </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>biçemleyici</parameter></term>
+     <listitem>
+      <para>
+       Biçemleyici nesne.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Çözümleyici esnekse &true; değilse &false;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+   <example>
+    <title>- <function>datefmt_is_lenient</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
+        IntlDateFormatter::FULL, 'Europe/Istanbul',
+        IntlDateFormatter::GREGORIAN  ,"dd/mm/yyyy");
+echo "Biçemleyici esnek mi?: ";
+if( $fmt->isLenient() ){
+        echo('EVET');
+}else{
+        echo('HAYIR');
+}
+datefmt_parse($fmt,"35/13/1971");
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
+        datefmt_parse($fmt,"35/13/1971");
+if( intl_get_error_code() !=0 ){
+        echo "\n Hata iletisi: ".intl_get_error_message();
+        echo "\n Hata kodu: ".intl_get_error_code();
+}
+datefmt_set_lenient($fmt,false);
+echo "\nYeni biçemleyici esnek mi?: ";
+if( $fmt->isLenient() ){
+        echo('EVET');
+}else{
+        echo('HAYIR');
+}
+datefmt_parse($fmt,"35/13/1971");
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
+        datefmt_parse($fmt,"35/13/1971");
+if( intl_get_error_code() !=0 ){
+        echo "\n Hata iletisi: ".intl_get_error_message();
+        echo "\n Hata kodu: ".intl_get_error_code()."\n";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- Nesne yönelimli kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
+        IntlDateFormatter::FULL, 'Europe/Istanbul',
+        IntlDateFormatter::GREGORIAN,"dd/mm/yyyy"  );
+echo "Biçemleyici esnek mi?: ";
+if( $fmt->isLenient() ){
+        echo('EVET');
+}else{
+        echo('HAYIR');
+}
+$fmt->parse("35/13/1971");
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
+        $fmt->parse("35/13/1971");
+if( intl_get_error_code() !=0 ){
+        echo "\n Hata iletisi: ".intl_get_error_message();
+        echo "\n Hata kodu: ".intl_get_error_code();
+}
+
+$fmt->setLenient(FALSE);
+echo "\nYeni biçemleyici esnek mi?: ";
+if( $fmt->isLenient() ){
+        echo('EVET');
+}else{
+        echo('HAYIR');
+}
+$fmt->parse("35/13/1971");
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .$fmt->parse("35/13/1971");
+if( intl_get_error_code() !=0 ){
+        echo "\n Hata iletisi: ".intl_get_error_message();
+        echo "\n Hata kodu: ".intl_get_error_code()."\n";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+     &example.outputs;
+     <screen>
+         <![CDATA[
+Biçemleyici esnek mi?: EVET
+ '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: 34467180
+Yeni biçemleyici esnek mi?: HAYIR
+ '35/13/1971' çözümlenmeye çalışılıyor. Sonuç:
+ Hata iletisi: Date parsing failed: U_PARSE_ERROR
+ Hata kodu: 9
+]]>
+     </screen>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+    <simplelist>
+    <member><function>datefmt_set_lenient</function></member>
+    <member><function>datefmt_create</function></member>
+    </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
