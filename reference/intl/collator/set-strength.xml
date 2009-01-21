@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.2 Maintainer: nilgun Status: ready -->
+<refentry xml:id="collator.setstrength" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>Collator::setStrength</refname>
+  <refname>collator_set_strength</refname>
+  <refpurpose>Sıralamanın seviyesini ayarlar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>Nesne yönelimli kullanım</para>
+  <methodsynopsis>
+   <type>bool</type>
+   <methodname>Collator::setStrength</methodname>
+   <methodparam><type>int</type><parameter>nitelik</parameter></methodparam>
+  </methodsynopsis>
+  <para>Yordamsal kullanım</para>
+  <methodsynopsis>
+   <type>bool</type>
+   <methodname>collator_set_strength</methodname>
+   <methodparam><type>Collator</type><parameter>karşılaştırıcı</parameter></methodparam>
+   <methodparam><type>int</type><parameter>seviye</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <link xlink:href="&url.icu.home;">ICU</link> Karşılaştırma Hizmeti çok
+   seviyeli karşılaştırmayı destekler.
+   Bu sınıflandırma sayesinde ICU dizgeleri sıralamayı yerel uzlaşımlara uygun
+   olarak daha büyük hassasiyetle yerine getirir. Bununla birlikte,
+   seviyelerin seçmeli olarak devreye sokulabilmesi sayesinde metin içinde bir
+   dizgenin aranması çeşitli eşleşme koşullarıyla yapılabilir.
+  </para>
+  <para>
+   <orderedlist>
+    <listitem>
+     <para>
+      <emphasis>Birincil seviye</emphasis>:
+      Bu genel olarak, temel karakterler arasındaki farkları ("a" &lt; "b"
+      gibi) ifade etmek için kullanılır. Bu en güçlü farktır. Örneğin
+      sözlükler bu temel karakterlere göre farklı bölümlere ayrılırlar. Buna
+      ayrıca 1. seviyeden nitelik adı verilir.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis>İkincil seviye</emphasis>:
+      Karakterlerdeki aksanlar ikincil farklar olarak ele alınır (örneğin,
+      "as" &lt; "às" &lt; "at") Dile bağlı olarak harfler arasındaki diğer
+      farklar da ikincil farklar olarak ele alınabilir. Dizgelerin içinde
+      herhangi bir yerde birincil dereceden bir farkın varlığında ikincil
+      seviyeden bir fark yoksayılır.  Buna ayrıca 2. seviyeden nitelik adı
+      verilir.
+      <note>
+       <para>
+        Bazı dillerde (Danca gibi) bazı aksanlı karakterler temel karakterler
+        olarak ele alınırlar. Bununla birlikte çoğu dilde aksanlı bir karakter
+        aynı harfin aksansız olanına göre ikinci dereceden bir farktan başka
+        bir şey değildir.
+       </para>
+      </note>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis>Üçüncül seviye</emphasis>:
+      Büyük ve küçük harfler arasındaki farklar üçüncül seviyeden
+      farklardandır (örneğin, "ao" &lt; "Ao" &lt; "aò"). Buna ek olarak, bir
+      harfin büyük veya küçük harflisinin temel karakterlerden farkları da
+      ("A" ve " " gibi) üçüncül seviyedendir.  Bu farklara diğer bir örnek de
+      büyük ve küçük Kana arasındaki farktır. Dizgelerin içinde
+      herhangi bir yerde bir birincil veya ikincil seviyeden farkın varlığında
+      üçüncül seviyeden bir fark yoksayılır.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis>Dördüncül seviye</emphasis>:
+      13. seviyede, noktalama yoksayıldığında (Noktalamanın Yoksayılması'na
+      bakınız), noktalamalı ve noktalamasız sözcükleri ayırmakta ek bir seviye
+      kullanılabilir (örneğin, "ab" &lt; "a-b" &lt; "aB"). Bu fark, birinci,
+      ikincil veya üçüncül seviyeden farkların varlığında yoksayılır. Bu, 4.
+      seviyeden nitelik olarak da bilinir. Dördüncül seviye sadece,
+      noktalamanın yok sayılması gerekliyse veya bir Japonca metin işleniyorsa
+      kullanılmalıdır (Hiragana işlemi'ne bakınız).
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis>Eş seviye</emphasis>:
+      Diğer tüm seviyelerin eşitliğinde eşitliği bozmak için eş seviye
+      kullanılır. NFD biçimindeki her dizgenin Unicode kod değerleri, 14.
+      seviyede fark bulunmayan durumda, bu seviyede karşılaştırılır. Örneğin
+      İbranice şive imleri sadece bu seviyede ayrımsanır. Bu seviye gereksiz
+      yere kullanılmamalı, iki dizge arasındaki sadece kod değerleri
+      arasındaki farklar gibi oldukça nadir durumlarda
+      kullanılmalıdır. Bu seviyenin kullanımı, esasen, hem arttırımlı
+      karşılaştırma hem de sıralama anahtarı üretiminde (sıralama anahtarı
+      uzunluğunu arttırması gibi) başarımı azaltır. Bu, 5.
+      seviyeden nitelik olarak da bilinir.
+     </para>
+    </listitem>
+   </orderedlist>
+  </para>
+  <para>
+   Örneğin, bazıları, metin içinde arama yaparken aksanlı karakterleri veya
+   aksanlı karakterleri ve büyük/küçük harf farklarını yoksaymayı seçebilirler.
+   Hemen hemen tüm karakterler ilk üç seviyeye göre ayrımsanabilir ve bu
+   bakımdan çoğu yerelde üçüncül (Tertiary) seviye öntanımlıdır. Bununla
+   birlikte, Alternate özniteliğine Shifted atanırsa, boşluk ve noktalama
+   karakterleri ve simgeler diğer taraftan yoksayılmadıkça bunlar arasındaki
+   eşitlikleri bozmak için dördüncül (Quaternary) seviye kullanılabilir.
+   Karakterler arasında çok hassas ayrım gerekliyse, eş (Identical) seviye de
+   kullanılabilir. (Örneğin, Matematiksel Kalın Küçük A ile Matematiksel Eğik
+   Küçük A arasındaki ayrımı sadece eş seviye sağlayabilir.) Bununla birlikte,
+   üçüncül ve eş seviyelerden daha yüksek seviyelerin kullanımı belirgin
+   şekilde daha uzun sıralama anahtarları ve eş dizgeler arasında daha yavaş
+   karşılaştırma başarımı ile sonuçlanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>coll</parameter></term>
+     <listitem>
+      <para>
+       <classname>Collator</classname> nesnesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seviye</parameter></term>
+     <listitem>
+      <para>Atanacak seviye.</para>
+      <para>
+       Olası değerler:
+       <itemizedlist>
+        <listitem>
+         <para>
+          <constant>Collator::PRIMARY</constant>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>Collator::SECONDARY</constant>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>Collator::TERTIARY</constant>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>Collator::QUATERNARY</constant>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>Collator::IDENTICAL</constant>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>Collator::DEFAULT</constant>
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>collator_set_strength</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$arr  = array( 'aò', 'Ao', 'ao' );
+$coll = collator_create( 'en_US' );
+
+// Diziyi öntanımlı seviyeyle sıralayalım.
+collator_sort( $coll, $arr );
+var_export( $arr );
+
+// Diziyi birincil seviyeyle sıralayalım.
+collator_set_strength( $coll, Collator::PRIMARY );
+collator_sort( $coll, $arr );
+var_export( $arr );
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array (
+  0 => 'ao',
+  1 => 'Ao',
+  2 => 'aò',
+)
+array (
+  0 => 'aò',
+  1 => 'Ao',
+  2 => 'ao',
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="intl.collator-constants">
+    <classname>Collator</classname> sabitleri</link></member>
+    <member><function>collator_get_strength</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ indent-tabs-mode:nil
+ sgml-parent-document:nil
+ sgml-default-dtd-file:"../../../../manual.ced"
+ sgml-exposed-tags:nil
+ sgml-local-catalogs:nil
+ sgml-local-ecat-files:nil
+ End:
+ vim600: syn=xml fen fdm=syntax fdl=2 si
+ vim: et tw=78 syn=sgml
+ vi: ts=1 sw=1
+-->
