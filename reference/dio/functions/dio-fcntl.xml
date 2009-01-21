@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.dio-fcntl" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>dio_fcntl</refname>
+  <refpurpose>Belirtilen dosya tanıtıcısı üzerinde komut çalıştırır
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>dio_fcntl</methodname>
+   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
+   <methodparam><type>int</type><parameter>komut</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>dio_fcntl</function> işlevi, <parameter>dt</parameter> dosya
+   tanıtıcısı üzerinde <parameter>komut</parameter> ile belirtilen işlemi
+   yapar. Bazı komutların gerektirdiği ek değiştirgeler
+   <parameter>değiştirgeler</parameter> değiştirgesinde belirtilebilir.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dt</parameter></term>
+     <listitem>
+      <para>
+       <function>dio_open</function> işlevinden dönmüş bir dosya tanıtıcısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>komut</parameter></term>
+     <listitem>
+      <para>
+       Aşağıdaki işlemlerden biri belirtilebilir:
+       <itemizedlist>
+        <listitem>
+         <para>
+          <constant>F_SETLK</constant> - Dosya kilidi tanımlar veya siler.
+          Kilit başka bir süreç tarafından tutulmuşsa işlev -1 ile döner.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>F_SETLKW</constant> - <constant>F_SETLK</constant> gibidir,
+          farklı olarak, kilit başka bir süreç tarafından tutulmuşsa kilit
+          serbest kalıncaya kadar bekler.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>F_GETLK</constant> - Birileri kilidin tutulmasını
+          engelliyorsa <function>dio_fcntl</function> işlevi (yukarıda
+          açıklandığı gibi) bir ilişkisel dizi ile döner. Hiçbir engelleme
+          anahtarı yoksa "tür" olarak <constant>F_UNLCK</constant> atanır.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>F_DUPFD</constant> - <parameter>değiştirgeler</parameter>
+          değerine eşit veya büyük dosya tanıtıcılarından en küçük
+          numaralısını bulur ve bunu döndürür.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>F_SETFL</constant> - Dosya tanıtıcılarının seçeneklerini
+          <parameter>değiştirgeler</parameter> ile belirtilen değere ayarlar;
+          bunlar, <constant>O_APPEND</constant>,
+          <constant>O_NONBLOCK</constant> veya <constant>O_ASYNC</constant>
+          olabilir. <constant>O_ASYNC</constant> kullanmak için <link
+          linkend="ref.pcntl">PCNTL</link> eklentisini kullanmanız gerekir.
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+       <parameter>değiştirgeler</parameter> bir ilişkisel dizi olup,
+       <parameter>komut</parameter> olarak <constant>F_SETLK</constant> veya
+       <constant>F_SETLLW</constant> belirtildiğinde aşağıdaki anahtarlar belirtilebilir:
+       <itemizedlist>
+        <listitem>
+         <para>
+          "start" - kilidin başlangıç konumu
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          "length" - kilitli alanın boyu; sıfır, dosyanın sonuna kadar
+          demektir.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          "wenth" - l_start'ın göreli olduğu yer:
+          <constant>SEEK_SET</constant>, <constant>SEEK_END</constant> ve
+          <constant>SEEK_CUR</constant> olabilir.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          "type" - kilit türü: <constant>F_RDLCK</constant> (okuma kilidi),
+          <constant>F_WRLCK</constant> (yazma kilidi) veya
+          <constant>F_UNLCK</constant> (kilidi aç) olabilir.
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   C çağrısının sonucu ile döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir kilidin atanması ve silinmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$fd = dio_open('/dev/ttyS0', O_RDWR);
+
+if (dio_fcntl($fd, F_SETLK, Array("type"=>F_WRLCK)) == -1) {
+   // dosya tanıtıcısı kilitli görünüyor
+   echo "Kilit kaldırılamadı. Başka bir süreç tarafından tutuluyor.";
+} else {
+   echo "Kilit başarıyla atandı/silindi";
+}
+
+dio_close($fd);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.no-windows;
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
