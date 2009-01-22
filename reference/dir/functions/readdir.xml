@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<!-- splitted from ./en/functions/dir.xml, last change in rev 1.2 -->
+<refentry xml:id="function.readdir" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>readdir</refname>
+  <refpurpose>Dizinden bir girdinin ismini okur</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>readdir</methodname>
+   <methodparam choice="opt"><type>resource</type><parameter>dizin_tanıtıcısı</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Dizindeki sonraki dosyanın ismi ile döner. Dosya isimleri dosya sisteminde
+   saklandıkları sıra ile döndürülür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizin_tanıtıcısı</parameter></term>
+     <listitem>
+      <para>
+       <function>opendir</function> işlevinden dönmüş bir dizin tanıtıcısı.
+       Belirtilmezse <function>opendir</function> tarafından açılan son dizin
+       kullanılır.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarılı olduğunda dosya ismi ile aksi takdirde &false; değeriyle döner.
+  </para>
+  &return.falseproblem;
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir dizin içeriğinin listelenmesi</title>
+    <para>
+     Aşağıdaki örnekte dönen değerin mantıksal &false; olup olmadığına (bak:
+     <link linkend="language.operators.comparison">Karşılaştırma
+     İşleçleri</link>) özellikle bakılmakta oluşuna dikkat ediniz. Eğer
+     dizgesel olarak baksaydık ismi mantıksal &false; olarak
+     değerlendirilebilecek bir dosya (örneğin "0") döngünün durmasına yol
+     açardı.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// 4.0.0-RC2 sürümüne kadar !== işlecinin kullanılamadığına dikkat edin
+
+if ($dizin = opendir('/bir/dizin/dosyalar')) {
+    echo "Dizin tanıtıcısı: $dizin\n";
+    echo "Dizin içeriği:\n";
+
+    /* Dizin içeriğini taramak için doğru yöntem. */
+    while (false !== ($dosya = readdir($dizin))) {
+        echo "$dosya\n";
+    }
+
+    /* Dizin içeriğini taramak için YANLIŞ yöntem. */
+    while ($dosya = readdir($dizin)) {
+        echo "$dosya\n";
+    }
+
+    closedir($dizin);
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <literal>.</literal> ve <literal>..</literal> girdileri
+    ayıklanarak dizin içeriğinin listelenmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+if ($dizin = opendir('.')) {
+    while (false !== ($dosya= readdir($dizin))) {
+        if ($dosya != "." && $dosya != "..") {
+            echo "$dosya\n";
+        }
+    }
+    closedir($dizin);
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>is_dir</function></member>
+    <member><function>glob</function></member>
+    <member><function>opendir</function></member>
+    <member><function>scandir</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
