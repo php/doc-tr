@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.realpath">
+ <refnamediv>
+  <refname>realpath</refname>
+  <refpurpose>Normalleştirilmiş mutlak dosya yolunu döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>realpath</methodname>
+   <methodparam><type>string</type><parameter>yol</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>realpath</function> işlevi tüm sembolik bağları genişletir ve
+   '/./', '/../' gösterimlerini çözümleyip belirtilen
+   <parameter>yol</parameter>'a bir '/' ekler ve normalleştirilmiş mutlak dosya
+   yolu olarak döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>yol</parameter></term>
+     <listitem>
+      <para>
+       Sınanacak dosya yolu.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarı durumunda normalleştirilmiş mutlak dosya yolunu döndürür. Sonuç
+   hiçbir sembolik bağ, '/./' veya '/../' bileşenlerini içermez.
+  </para>
+  <para>
+   Başarısızlık durumunda, örneğin dosya mevcut olmadığında
+   <function>realpath</function> &false; ile döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        5.3.0 öncesinde, *BSD sistemlerde sadece sonuncu
+        <parameter>yol</parameter> bileşeninin mevcut olmaması durumunda
+        <function>realpath</function> başarısız olmaz.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>realpath</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+chdir('/var/log/');
+echo realpath('./../../etc/passwd');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+/etc/passwd
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Windows'ta <function>realpath</function></title>
+    <para>
+     Windows'ta <function>realpath</function> Unix tarzı dosya yolunu
+     Windows tarzı dosya yoluna dönüştürür.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo realpath('/windows/system32');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+C:\WINDOWS\System32
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>basename</function></member>
+    <member><function>dirname</function></member>
+    <member><function>pathinfo</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
