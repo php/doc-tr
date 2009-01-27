@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.33 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-ini-file">
+ <refnamediv>
+  <refname>parse_ini_file</refname>
+  <refpurpose>Bir yapılandırma dosyasını çözümler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>parse_ini_file</methodname>
+   <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>bölümleri_işle</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tarama_kipi</parameter><initializer>INI_SCANNER_NORMAL</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>parse_ini_file</function> işlevi <parameter>dosyaismi</parameter>
+   ile belirtilen yapılandırma dosyasını yükler ve içindeki ayarları bir
+   ilişkisel dizi içinde döndürür.
+  </para>
+  <para>
+   Belirtilen dosyanın yapısı &php.ini; dosyasının yapısıyla aynı olmalıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dosyaismi</parameter></term>
+     <listitem>
+      <para>
+       Çözümlenecek yapılandırma dosyası.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>bölümleri_işle</parameter></term>
+     <listitem>
+      <para>
+       Bu değiştirgeye &true; atanırsa bölüm isimlerini ve içerdikleri
+       ayarları içeren çok boyutlu bir dizi döner. Değiştirgenin öntanımlı
+       değeri &false;'tır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tarama_kipi</parameter></term>
+     <listitem>
+      <para>
+       Değeri <constant>INI_SCANNER_NORMAL</constant> (öntanımlıdır) veya
+       <constant>INI_SCANNER_RAW</constant> olabilir. Eğer
+       <constant>INI_SCANNER_RAW</constant> belirtilirse seçenek değerleri
+       çözümlenmez.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarısızlık durumunda &false; aksi takdirde ayarları bir ilişkisel dizi
+   içinde döndürür.
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        İsteğe bağlı <parameter>tarama_kipi</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.2.7</entry>
+       <entry>
+        Sözdizimi hatasında boş bir dizi yerine &false; döndürülmeye başlandı.
+       </entry>
+      </row>
+      <row>
+       <entry>5.2.4</entry>
+       <entry>
+        Sayılardan oluşan anahtarlar ve bölüm isimleri artık PHP <link
+        linkend="language.types.integer">tamsayıları</link> olarak
+        değerlendirilmeye başlanmıştır. Bu bakımdan 0 ile başlayanlar
+        sekizlik, 0x ile başlayanlar onaltılık tabanda değerlendirilir.
+       </entry>
+      </row>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        Çift tırnak içine alınmış değerler satırsonu karakterleri içerebilir.
+       </entry>
+      </row>
+      <row>
+       <entry>4.2.1</entry>
+       <entry>
+        Bu işlev &safemode; ve <link linkend="ini.open-basedir">open_basedir</link>
+        yönergelerinden etkilenir olmuştur.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <filename>misal.ini</filename> içeriği</title>
+    <programlisting>
+<![CDATA[
+; Bu bir yapılandırma dosyası örneğidir.
+; php.ini içinde ';' ile başlayan satırlar açıklamadır.
+
+[ilk_bölüm]
+bir = 1
+yedi = 7
+hayvan = AT
+
+[ikinci_bölüm]
+yol = "/usr/local/bin"
+URL = "http://localhost/~kullanici"
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- <function>parse_ini_file</function> örneği</title>
+    <para>
+     INI dosyası içinde <link linkend="language.constants">sabitler</link> de
+     çözümlenebilir, bu bakımdan <function>parse_ini_file</function> işlevini
+     çalıştırmadan önce bir sabiti bir ini değeri olarak tanımlamışsanız, bu
+     sabit de sonuca dahil edilir. Sadece ini değerleri değerlendirmeye
+     alınır. Örnek:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+define('AT', 'Doru at');
+
+// Bölümleri çözümlemeyelim
+$ini_dizisi = parse_ini_file("misal.ini");
+print_r($ini_dizisi);
+
+// Bölümleri de çözümleyelim
+$ini_dizisi = parse_ini_file("misal.ini", true);
+print_r($ini_dizisi);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Array
+(
+    [bir] => 1
+    [yedi] => 7
+    [hayvan] => Doru at
+    [yol] => /usr/local/bin
+    [URL] => http://localhost/~kullanici
+)
+Array
+(
+    [ilk_bölüm] => Array
+        (
+            [bir] => 1
+            [yedi] => 7
+            [hayvan] => Doru at
+        )
+
+    [ikinci_bölüm] => Array
+        (
+            [yol] => /usr/local/bin
+            [URL] => http://localhost/~kullanici
+        )
+
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bu işlev &php.ini; dosyasıyla hiçbir şey yapmaz. Betiğinizi
+    çalıştırdığınızda zaten işlenir. Bu işlevi sadece kendi uygulamanızın
+    yapılandırma dosyasını okumak için kullanabilirsiniz.
+   </para>
+  </note>
+  <note>
+   <para>
+    INI dosyasındaki bir değer harf ve rakamların haricinde karakterler
+    içeriyorsa bu değeri çift tırnak (") imlerinin arasına almalısınız.
+   </para>
+  </note>
+  <note>
+   <simpara>
+    INI dosyalarında anahtar olarak kullanılmaması gereken anahtar sözcükler
+    vardır; null, yes, no, true ve false bunlardan bazılarıdır. null, no ve
+    false değerleri "" olarak, yes ve true ise "1" olarak sonuçlanır.
+    <literal>{}|&amp;~![()"</literal> karakterleri anahtar içinde hiçbir yerde
+    kullanılamaz ve değer olarak da özel bir anlama sahiptirler.
+   </simpara>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>parse_ini_string</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
