@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.28 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.file">
+ <refnamediv>
+  <refname>file</refname>
+  <refpurpose>Dosya içeriğinin tamamını bir diziye okur</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>file</methodname>
+   <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Dosyanın tamamını bir dizi içinde döndürür.
+  </para>
+  <note>
+   <para>
+    Dosya içeğini bir dizge olarak döndürmek için
+    <function>file_get_contents</function> işlevini kullanabilirsiniz.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dosyaismi</parameter></term>
+     <listitem>
+      <para>
+       Dosya yolu.
+      </para>
+      &tip.fopen-wrapper;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       İsteğe bağlı bu değiştirgede şu sabitlerden bir veya daha fazlasını
+       belirtebilirsiniz:
+       <variablelist>
+        <varlistentry>
+         <term>
+          <constant>FILE_USE_INCLUDE_PATH</constant>
+         </term>
+         <listitem>
+          <simpara>
+           Dosya <link linkend="ini.include-path">include_path</link>
+           yönergesinde belirtilen yollarda aranır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <constant>FILE_IGNORE_NEW_LINES</constant>
+         </term>
+         <listitem>
+          <simpara>
+           Her dizi elemanının sonuna satırsonu karakteri eklenmez.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <constant>FILE_SKIP_EMPTY_LINES</constant>
+         </term>
+         <listitem>
+          <simpara>
+           Boş satırlar atlanır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <constant>FILE_TEXT</constant>
+         </term>
+         <listitem>
+          <simpara>
+           İçerik UTF-8 kodlu döndürülür. Özel bir bağlam oluşturarark farklı
+           bir kodlama belirtebilirsiniz. Bu seçenek PHP 6'dan itibaren
+           mevcuttur ve <constant>FILE_BINARY</constant> ile birlikte
+           kullanılamaz.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <constant>FILE_BINARY</constant>
+         </term>
+         <listitem>
+          <simpara>
+           İçerik ikil veri olarak okunur. Bu öntanımlıdır ve
+           <constant>FILE_TEXT</constant> ile birlikte kullanılamaz. Bu
+           seçenek PHP 6'dan itibaren mevcuttur.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>bağlam</parameter></term>
+     <listitem>
+      <para>
+       <function>stream_context_create</function> işlevi ile oluşturulmuş bir
+       bağlam özkaynağı.
+      </para>
+      <para>
+       &note.context-support;
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dosyayı bir dizi olarak döndürür. Dizinin her elemanı dosyanın bir satırına
+   karşılıktır ve satırsonu karakterleri ayrılmaz. Başarısızlık durumunda
+   işlev &false; döndürür.
+  </para>
+  <note>
+   <para>
+    <constant>FILE_IGNORE_NEW_LINES</constant> sabiti kullanılmadığı sürece
+    dizinin her elemanı bir satırsonu karakteri içerecektir. Bu satırsonu
+    karakterlerinden kurtulmak isterseniz <function>rtrim</function> işlevini
+    kullanabilirsiniz.
+   </para>
+  </note>
+  &note.line-endings;
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>6.0.0</entry>
+       <entry>
+        <constant>FILE_TEXT</constant> ve <constant>FILE_BINARY</constant>
+        seçenekleri desteği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        <parameter>bağlam</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        PHP 5.0.0 öncesinde <parameter>seçenekler</parameter> değiştirgesi
+        sadece <link linkend="ini.include-path">include_path</link>
+        yönergesinde belirtilen yolları kapsardı ve daima 1 ile
+        etkinleştirilirdi.
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <function>file</function> işlevi veriyi ikil kipte okur oldu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>file</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Dosyayı bir diziye aktaralım. Bu örnekte HTTP üzerinden
+// bir URL sayesinde HTML içeriği okuyacağız.
+$lines = file('http://www.example.com/');
+
+// Diziyi döngüye sokarak HTML kaynağını satır
+// numaralarıyla birlikte gösterelim.
+foreach ($lines as $line_num => $line) {
+    echo "Satır #<b>{$line_num}</b>: " . htmlspecialchars($line) . "<br />\n";
+}
+
+// Diğer bir örnek olarak bir HTML sayfayı bir dizgeye aktaracağız.
+// Bunun için file_get_contents() işlevine de bakınız.
+$html = implode('', file('http://www.example.com/'));
+
+// PHP 5'ten itibaren isteğe bağlı seçenekler
+// değiştirgesini kullanabiliriz
+$trimmed = file('somefile.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &warn.ssl-non-standard;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>readfile</function></member>
+    <member><function>fopen</function></member>
+    <member><function>fsockopen</function></member>
+    <member><function>popen</function></member>
+    <member><function>file_get_contents</function></member>
+    <member><function>include</function></member>
+    <member><function>stream_context_create</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

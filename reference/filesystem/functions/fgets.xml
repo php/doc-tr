@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fgets">
+ <refnamediv>
+  <refname>fgets</refname>
+  <refpurpose>Dosya tanıtıcısından bir satır döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>fgets</methodname>
+   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen dosya tanıtıcısından bir satır döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dt</parameter></term>
+     <listitem>
+      &fs.validfp.all;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>uzunluk</parameter></term>
+     <listitem>
+      <para>
+       <parameter>uzunluk</parameter> - 1 bayt okununca bir satırsonu
+       karakterinde veya dosya sonunda (hangisi önce vuku bulursa) okuma
+       işlemi durur. Bir uzunluk belirtilmezse akımdan okuma işlemi satırın
+       sonuna erişilinceye kadar sürdürülür.
+      </para>
+      <note>
+       <para>
+        PHP 4.3.0'a kadar, uzunluk belirtilmediğinde satır uzunluğu 1024 bayt
+        kabul edilirdi. Bir dosyadaki satırların büyük çoğunluğu 8KB'tan
+        büyükse, azami bir uzunluk belirtmek betiğiniz için daha verimli
+        olabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dosya tanıtıcısı <parameter>dt</parameter> ile belirtilen bir dosyadan
+   <parameter>uzunluk</parameter> - 1 baytlık veriyi bir dizge içinde döndürür.
+  </para>
+  <para>
+   Bir hata oluşursa &false; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <function>fgets</function> dosyaları ikil kipte okumaya başladı.
+       </entry>
+      </row>
+      <row>
+       <entry>4.2.0</entry>
+       <entry>
+        <parameter>uzunluk</parameter> değiştirgesi isteğe bağlı oldu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir dosyanın satır satır okunması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dt = @fopen("/tmp/inputfile.txt", "r");
+if ($dt) {
+    while (!feof($dt)) {
+        $tampon = fgets($dt, 4096);
+        echo $tampon;
+    }
+    fclose($dt);
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.line-endings;
+  <note>
+   <para>
+    <function>fgets</function> işlevinin 'C' dilindeki anlamlandırılmasını
+    bilenler dosya sonu karakterinin (EOF) döndürülüşü ile ilgili farka dikkat
+    etmelidir.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>fgetss</function></member>
+    <member><function>fread</function></member>
+    <member><function>fgetc</function></member>
+    <member><function>stream_get_line</function></member>
+    <member><function>fopen</function></member>
+    <member><function>popen</function></member>
+    <member><function>fsockopen</function></member>
+    <member><function>stream_set_timeout</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

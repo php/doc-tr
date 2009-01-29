@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.20 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fscanf">
+ <refnamediv>
+  <refname>fscanf</refname>
+  <refpurpose>Bir dosyadaki girdiyi belli bir biçeme göre çözümler
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>fscanf</methodname>
+   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
+   <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter role="reference">...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>fscanf</function> işlevi, girdisini <parameter>dt</parameter> ile
+   ilişkili bir dosyadan alması ve bu girdiyi belirtilen
+   <parameter>biçem</parameter>'e göre yorumlaması dışında
+   <function>sscanf</function> işlevine benzer. Biçemin açıklaması için
+   <function>sprintf</function> işlevinin belgesine bakınız.
+  </para>
+  <para>
+   Biçem dizgesindeki boşluk karakterleri girdi akımındaki boşluk
+   karakterleri ile eşleşir. Yani, biçem dizgesindeki bir sekme karakteri (\t)
+   girdi dizgesindeki tek bir boşluk karakteri (" ") ile eşleşebilir.
+  </para>
+  <para>
+   Her <function>fscanf</function> çağrısı dosyadan tek bir satır okur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dt</parameter></term>
+     <listitem>
+      &fs.file.pointer;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>biçem</parameter></term>
+     <listitem>
+      <para>
+       Biçem dizgesi <function>sprintf</function> işlevinin belgesinde
+       açıklandığı gibi belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>...</parameter></term>
+     <listitem>
+      <para>
+       İsteğe bağlı atanmış değerler.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bu işleve sadece iki değiştirge aktarılırsa çözümlenen değerler bir dizi
+   olarak döndürülür. Aksi takdirde, eğer isteğe bağlı değiştirgeler
+   aktarılırsa işlev atanan değerlerin sayısı ile döner. İsteğe bağlı değerler
+   gönderimli aktarılmalıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        Bu sürümden önce, dosyadan okunun baytların azami sayısı 512 idi (veya
+        ilk satırsonu karakterine kadardı; hangisi önce vuku bulursa). Fakat
+        şimdi satırlar keyfi uzunlukta okunup taranabilmektedir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>fscanf</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dt = fopen("kişiler.txt", "r");
+while ($kişiselveri = fscanf($dt, "%s\t%s\t%s\n")) {
+    list ($isim, $meslek, $ülkekodu) = $kişiselveri;
+    //... değerlerle yapılan işlemler
+}
+fclose($dt);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- kişiler.txt içeriği</title>
+    <programlisting role="txt">
+<![CDATA[
+avni      avanak        tr
+varyemez  işadamı       us
+tenten    gezgin        fr
+zagor     kahraman      ca
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>fread</function></member>
+    <member><function>fgets</function></member>
+    <member><function>fgetss</function></member>
+    <member><function>sscanf</function></member>
+    <member><function>printf</function></member>
+    <member><function>sprintf</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

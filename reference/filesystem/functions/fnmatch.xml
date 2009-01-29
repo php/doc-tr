@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fnmatch">
+ <refnamediv>
+  <refname>fnmatch</refname>
+  <refpurpose>Dosya ismi belirtilen kalıpla eşleşiyor mu diye bakar
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>fnmatch</methodname>
+   <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>fnmatch</function> işlevi, belirtilen
+   <parameter>dizge</parameter>'nin belirtilen dosya kalıbı ile eşleşip
+   eşleşmediğine bakar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+   <variablelist>
+    <varlistentry>
+     <term><parameter>kalıp</parameter></term>
+     <listitem>
+      <para>
+       Kabuk dosya ismi kalıbı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Sınanacak dizge. İşlev özellikle dosya isimleri için yararlı olsa da
+       sıradan dizgeler için de kullanılabilir.
+      </para>
+      <para>
+       Ortalama bir kullanıcı, kabuk dosya ismi kalıplarını veya bunların en
+       basit biçimleri olan <literal>'?'</literal> ve <literal>'*'</literal>
+       karakterlerini kullanabilir. Bu bakımdan, programcı olmayan
+       kullanıcılar için <function>preg_match</function> yerine
+       <function>fnmatch</function> kullanımı daha uygun olabilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+        Belirtilebilecek seçenekler:
+      </para>
+      <table>
+        <title><function>fnmatch</function> işlevinin
+        <parameter>seçenekler</parameter> değiştirgesinde
+        belirtilebilecek seçenekler</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry><parameter>Seçenek</parameter></entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><literal>FNM_FILE_NAME</literal></entry>
+           <entry>
+            / karakteri dosya isimlerinde özel olarak ele alınır. Bu seçenek
+            etkinse, <parameter>kalıp</parameter>,
+            <parameter>dizge</parameter> içindeki <literal>/</literal>
+            karakteri ile eşleşemez. Eşleştirmenin tek yolu
+            <parameter>kalıp</parameter> dizgesinin <literal>/</literal>
+            karakterini içermesidir.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_PATHNAME</literal></entry>
+           <entry>
+            Bu POSIX.2 ile gelen bir <literal>FNM_FILE_NAME</literal> takma
+            ismidir.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_PERIOD</literal></entry>
+           <entry>
+            <para>
+             <literal>.</literal> karakteri dosya isimlerinin başında ise özel
+             olarak ele alınır. Bu seçenek etkinse ve <literal>.</literal>
+             karakteri <parameter>dizge</parameter> dizgesinin ilk karakteri
+             ise kalıp ile eşleşemez.
+            </para>
+            <para>
+             <literal>FNM_PERIOD</literal> ve <literal>FNM_FILE_NAME</literal>
+             birlikte belirtilmişse, <literal>.</literal> karakterinin
+             <parameter>dizge</parameter> dizgesinin başında olmasının yanında
+             <literal>/</literal> karakterini izlediği durumda da eşleşme
+             sağlanır. (Kabuk <literal>FNM_PERIOD</literal> ve
+             <literal>FNM_FILE_NAME</literal> seçeneklerini dosya isimleriyle
+             eşleşme ararken birlikte kullanır.)
+            </para>
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_NOESCAPE</literal></entry>
+           <entry>
+            <simpara>
+             \ karakteri kalıplarda özel olarak ele alınmaz. Normalde, \
+             kendinden sonraki karakteri önceler; bu seçenek etkinse bu
+             özellik kapatılır, böylece sadece kendisiyle eşleşebilir.
+             Önceleme etkin olduğunda, \? kalıbı sadece ? karakteri ile
+             eşleşir, çünkü kalıp içindeki soru işareti sıradan bir karakter
+             gibi işlem görür.
+            </simpara>
+            <simpara>
+             Eğer <literal>FNM_NOESCAPE</literal> seçeneği etkinse,
+             \ sıradan bir karakterdir.
+            </simpara>
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_LEADING_DIR</literal></entry>
+           <entry>
+            <simpara>
+             <parameter>dizge</parameter> içinde <literal>/</literal>
+             karakterini izleyen karakterler yoksayır; başka bir deyişle
+             <parameter>kalıp</parameter> dizgesi <parameter>dizge</parameter>
+             dizisinin başındaki bir dizin ismi mi diye bakılır.
+            </simpara>
+            <simpara>
+             Bu seçenek etkinse, <code>foo*</code> ya da <code>foobar</code>
+             bir kalıp olarak <code>foobar/frobozz</code> dizgesi ile eşleşir.
+            </simpara>
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_CASEFOLD</literal></entry>
+           <entry>
+            <parameter>dizge</parameter> ile <parameter>kalıp</parameter>
+            karşılaştırılırken harf büyüklüğüne bakılmaz.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>FNM_EXTMATCH</literal></entry>
+           <entry>
+            <para>
+             Normal kalıplardan başka ksh'da bahsedilen ek kalıplar da
+             tanınır. Aşağıdaki listedeki
+             <parameter>kalıp-listesi</parameter>, | karakterinin ayraç olarak
+             kullanıldığı bir kalıp listesidir.
+            </para>
+            <variablelist><varlistentry>
+              <term>?(<parameter>kalıp-listesi</parameter>)</term>
+              <listitem><simpara>
+               <parameter>kalıp-listesi</parameter> ile belirtilen kalıplar
+               girdi dizgesiyle hiç eşleşmeyebilir ya da bir kere eşleşebilir.
+              </simpara></listitem>
+            </varlistentry><varlistentry>
+              <term>*(<parameter>kalıp-listesi</parameter>)</term>
+              <listitem><simpara>
+               <parameter>kalıp-listesi</parameter> ile belirtilen kalıplar
+               girdi dizgesiyle hiç eşleşmeyebilir ya da defalarca eşleşebilir.
+              </simpara></listitem>
+            </varlistentry><varlistentry>
+              <term>+(<parameter>kalıp-listesi</parameter>)</term>
+              <listitem><simpara>
+               <parameter>kalıp-listesi</parameter> ile belirtilen kalıplar
+               girdi dizgesiyle ya en azından bir kere ya da defalarca
+               eşleşebilir.
+              </simpara></listitem>
+            </varlistentry><varlistentry>
+              <term>@(<parameter>kalıp-listesi</parameter>)</term>
+              <listitem><simpara>
+               <parameter>kalıp-listesi</parameter> ile belirtilen kalıplar
+               girdi dizgesiyle sadece bir kere eşleşebilir.
+              </simpara></listitem>
+            </varlistentry><varlistentry>
+              <term>!(<parameter>kalıp-listesi</parameter>)</term>
+              <listitem><simpara>
+               <parameter>kalıp-listesi</parameter> ile belirtilen kalıplar
+               girdi dizgesiyle hiç eşleşmiyorsa eşleşme sağlanmış demektir.
+              </simpara></listitem>
+            </varlistentry></variablelist>
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Eşleşme sağlanmışsa &true; aksi takdirde &false;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir renk isminin bir kabuk dosya kalıbıyla eşleştirilmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+if (fnmatch("*gr[ae]y", $color)) {
+  echo "some form of gray ...";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    Bu işlev şimdilik Windows ve POSIX uyumlu olmayan diğer sistemlerde
+    kullanılamamaktadır.
+   </para>
+  </warning>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>glob</function></member>
+    <member><function>preg_match</function></member>
+    <member><function>sscanf</function></member>
+    <member><function>printf</function></member>
+    <member><function>sprintf</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.clearstatcache">
+ <refnamediv>
+  <refname>clearstatcache</refname>
+  <refpurpose>Dosya durum önbelleğini temizler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>clearstatcache</methodname>
+   <methodparam choice="opt"><type>bool</type><parameter>gerçek_yol_belleğini_temizle</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Aşağıda verilen etkilenen işlevler listesindeki işlevlerden başka
+   <function>stat</function> veya <function>lstat</function> işlevini
+   kullanırsanız PHP işlemi hızlandırmak için bu işlevlerin döndürdüğü bilgiyi
+   önbelleğe alır. Bununla birlikte belli durumlarda önbellekteki bilgiyi
+   temizlemek ihtiyacını duyabilirsiniz. Örneğin hep aynı dosyanın varlığını
+   sınayan bir betik için dosyanın işlem sırasında silinmesi veya değişmesi
+   tehlikesi varsa durum önbelleğini temizlememeyi seçebilirsiniz. Bu gibi
+   durumlarda, PHP'nin dosya hakkında önbelleğe aldığı bilgiyi temizlemek için
+   <function>clearstatcache</function> işlevini kullanabilirsiniz.
+  </para>
+  <para>
+   PHP'nin mevcut olmayan dosyalar hakkında önbellekte bilgi saklamadığına
+   dikkat ediniz. Bu bakımdan, varolmayan bir dosya üzerinde
+   <function>file_exists</function> işlevini çağırırsanız, siz dosyayı
+   oluşturana kadar işlev &false; döndürecektir. Siz dosyayı oluşturduktan
+   sonra dosyayı silseniz bile işlev &true; döndürecektir. Bunun yanında,
+   <function>unlink</function> işlevi önbelleği özdevinimli olarak
+   temizleyecektir.
+  </para>
+  <note>
+   <para>
+    Bu işlev belli dosya isimleri hakkında bilgiyi önbelleğe alır; dolayısıyla
+    aynı dosya üzerinde çok sayıda işlem yapıyorsanız ve bu dosya hakkındaki
+    bilgilerin önbellekte saklanmaması gerekiyorsa tek ihtiyacınız
+    <function>clearstatcache</function> çağrısı yapmak olacaktır.
+   </para>
+  </note>
+  <para>
+   Önbelleklemeden etkilenen işlevler:
+   <function>stat</function>,
+   <function>lstat</function>,
+   <function>file_exists</function>,
+   <function>is_writable</function>,
+   <function>is_readable</function>,
+   <function>is_executable</function>,
+   <function>is_file</function>,
+   <function>is_dir</function>,
+   <function>is_link</function>,
+   <function>filectime</function>,
+   <function>fileatime</function>,
+   <function>filemtime</function>,
+   <function>fileinode</function>,
+   <function>filegroup</function>,
+   <function>fileowner</function>,
+   <function>filesize</function>,
+   <function>filetype</function> ve
+   <function>fileperms</function>.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>gerçek_yol_belleğini_temizle</parameter></term>
+     <listitem>
+      <para>
+       Öntanımlı değeri &false;'tır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dosyaismi</parameter></term>
+     <listitem>
+      <para>
+       Belirtilen dosya için gerçek yol önbelleğini sadece
+       <parameter>gerçek_yol_belleğini_temizle</parameter> değiştirgesine
+       &true; atandığı takdirde temizleyecektir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        İsteğe bağlı <parameter>gerçek_yol_belleğini_temizle</parameter>
+        ve <parameter>dosyaismi</parameter> değiştirgeleri eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>clearstatcache</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$file = 'output_log.txt';
+
+function get_owner($file)
+{
+    $stat = stat($file);
+    $user = posix_getpwuid($stat['uid']);
+    return $user['name'];
+}
+
+$format = "UID @ %s: %s\n";
+
+printf($format, date('r'), get_owner($file));
+
+chown($path, 'ross');
+printf($format, date('r'), get_owner($file));
+
+clearstatcache();
+printf($format, date('r'), get_owner($file));
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+UID @ Sun, 12 Oct 2008 20:48:28 +0100: root
+UID @ Sun, 12 Oct 2008 20:48:28 +0100: root
+UID @ Sun, 12 Oct 2008 20:48:28 +0100: ross
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
