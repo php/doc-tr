@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.serialize" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>serialize</refname>
+  <refpurpose>Bir değerin saklanabilir bir gösterimini üretir
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+   <methodsynopsis>
+    <type>string</type><methodname>serialize</methodname>
+    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+   </methodsynopsis>
+  <para>
+   Bir değerin saklanabilir bir gösterimini üretir.
+  </para>
+  <para>
+   PHP değerlerini, yapısını ve türünü kaybetmeden saklamak veya aktarmak için
+   kullanışlıdır.
+  </para>
+  <para>
+   Böyle bir değerden tekrar özgün değeri elde etmek için
+   <function>unserialize</function> işlevini kullanın.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>değer</parameter></term>
+     <listitem>
+      <para>
+       Dizgeleştirilecek değer. <function>serialize</function> işlevi,
+       <type>resource</type> türü hariç her türü dizgeleştirebilir. Hatta
+       kendine gönderimli dizileri bile dizgeleştirebilirsiniz.
+       Dizgeleştirdiğiniz dizi veya nesnelerin içindeki döngüsel gönderimler
+       bile saklanabilir. Bunlar dışında kalan gönderimler kaybedilir.
+      </para>
+      <para>
+       PHP nesneleri dizgeleştirirken önce <link
+       linkend="language.oop5.magic">__sleep</link> üye işlevi çağrılmaya
+       çalışılır. Bu işlem, nesneye dizgeleştirme öncesinde bir takım
+       temizlikler yapabilmesi imkanını tanır. Benzer şekilde,
+       <function>unserialize</function> kullanılarak nesne özgün durumuna
+       getirilirken <link linkend="language.oop5.magic">__wakeup</link> üye
+       işlevi çağrılmaya çalışılır.
+      </para>
+      <note>
+       <para>
+        Nesnenin özel üyelerinin isimlerinin önünde sınıf ismi, protected
+        üyelerin isimlerinin önünde ise bir '*' bulunur. İsimlerin başına
+        getirilen bu değerler her iki tarafta null baytlarla ifade edilirler.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Belirtilen değerin herhangi bir yerde saklanabilecek, akımlar üzerinden
+   aktarılabilen bir gösterimini döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>serialize</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// $session_data, geçerli kullanıcı için oturum bilgisini
+// içeren çok boyutlu bir dizi içerir. İsteğin sonunda bu diziyi bir
+// veritabanında saklamak için serialize() işlevini kullanacağız.
+
+$conn = odbc_connect("webdb", "php", "chicken");
+$stmt = odbc_prepare($conn,
+      "UPDATE sessions SET data = ? WHERE id = ?");
+$sqldata = array (serialize($session_data), $_SERVER['PHP_AUTH_USER']);
+if (!odbc_execute($stmt, &$sqldata)) {
+    $stmt = odbc_prepare($conn,
+     "INSERT INTO sessions (id, data) VALUES(?, ?)");
+    if (!odbc_execute($stmt, &$sqldata)) {
+        /* Birşeyler yanlış gitmiş.. */
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.0.7</entry>
+       <entry>
+        Nesne dizgeleştirme işlemi tamamen gerçeklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>4.0.0</entry>
+       <entry>
+        Bir nesnenin dizgeleştirmesi yapılırken artık yöntemler kaybedilmiyor.
+        Daha fazla bilgi için <link linkend="language.oop.serialization">
+        Nesneleri Dizgeleştirme</link> bölümüne bakınız.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    PHP'nin yerleşik nesnelerini dizgeleştirmek mümkün değildir.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>unserialize</function></member>
+    <member><link linkend="language.oop.serialization">
+    Nesneleri Dizgeleştirme</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
