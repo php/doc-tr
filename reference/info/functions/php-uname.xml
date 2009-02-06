@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.15 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.php-uname" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>php_uname</refname>
+  <refpurpose>PHP'nin çalıştığı işletim sistemi hakkında bilgi döndürür
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>php_uname</methodname>
+   <methodparam choice="opt"><type>string</type><parameter>kip</parameter><initializer>"a"</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>php_uname</function> işlevi PHP'nin üzerndi çalıştığı işletim
+   sistemi hakkında bilgi döndürür. İşletim sisteminin sadece ismini öğrenmek
+   isterseniz <constant>PHP_OS</constant> sabitini kullanabilirsiniz; fakat bu
+   sabiti kullanırken, sabitin, PHP'nin <emphasis>derlendiği</emphasis>
+   işletim sistemi adını içereceğini unutmayın.
+  </para>
+  <para>
+   Unix üzerinde, üzerinde çalışılan işletim sistemi saptanamazsa PHP'nin
+   üzerinde derlendiği işletim sistemi bilgisi gösterilir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>kip</parameter></term>
+     <listitem>
+      <para>
+       <parameter>kip</parameter> döndürülecek bilgi çeşidini belirtmek için
+       kullanılan tek bir karakter içerebilir. Olası değerler:
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          <literal>'a'</literal>: Bu öntanımlıdır.
+          <literal>"s n r v m"</literal> kiplerinin hepsini içerir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>'s'</literal>: işletim sisteminin ismi.
+          Örnek: <literal>FreeBSD</literal>.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>'n'</literal>: Konak ismi.
+          Örnek: <literal>localhost.example.com</literal>.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>'r'</literal>: Dağıtım ismi.
+          Örnek: <literal>5.1.2-RELEASE</literal>.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>'v'</literal>: Sürüm bilgisi. İşletim sistemine göre
+          değişiklik gösterir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>'m'</literal>: Makine türü. Örnek: <literal>i386</literal>.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bilgiyi bir dizge olarak döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>php_uname</function> örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo php_uname();
+echo PHP_OS;
+
+/* Bazı olası çıktılar:
+Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
+Linux
+
+FreeBSD localhost 3.2-RELEASE #15: Mon Dec 17 08:46:02 GMT 2001
+FreeBSD
+
+Windows NT XN1 5.1 build 2600
+WINNT
+*/
+
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    echo 'Bu sunucu Windows üzerinde!';
+} else {
+    echo 'Bu sunucu Windows üzerinde değil!';
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   İşinizi yarayacak bazı <link linkend="language.constants.predefined">
+   öntanımlı PHP sabitleri</link> vardır. Örneğin:
+  </para>
+   <example>
+    <title>- İşletim sistemine göre bazı sabit örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// *nix
+echo DIRECTORY_SEPARATOR; // /
+echo PHP_SHLIB_SUFFIX;    // so
+echo PATH_SEPARATOR;      // :
+
+// Win*
+echo DIRECTORY_SEPARATOR; // \
+echo PHP_SHLIB_SUFFIX;    // dll
+echo PATH_SEPARATOR;      // ;
+?>
+]]>
+    </programlisting>
+   </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>phpversion</function></member>
+    <member><function>php_sapi_name</function></member>
+    <member><function>phpinfo</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
