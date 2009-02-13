@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.12 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.assert" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>assert</refname>
+  <refpurpose>Belirtilen savı sınar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>assert</methodname>
+   <methodparam><type>mixed</type><parameter>sav</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>assert</function> işlevi belirtilen
+   <parameter>sav</parameter>'ı sınar ve sonuç &false; ise uygun eylemi
+   gerçekleştirir.
+  </para>
+  <para>
+   <parameter>sav</parameter> bir dizge olarak verilmişse işlev tarafından PHP
+   kodu olarak değerlendirilir. Savın bir dizge olarak belirtilmesinin
+   getirisi, sav sınama kapalı olduğu zaman daha az yük oluşması ve sav
+   başarısız olduğunda iletilerin  <parameter>sav</parameter> ifadesini
+   içerebilmeleridir. Yani, sav olarak bir mantıksal ifade aktardığınız
+   takdirde, bu koşul ifadesi <function>assert_options</function> işlevi ile
+   tanımladığınız eylemci işleve bir değiştirge olarak gösterilmez, eylemci
+   işlev çağrılmadan önce koşul ifadesi bir dizgeye, mantıksal &false; değeri
+   ise boş bir dizgeye dönüştürülür.
+  </para>
+  <para>
+   Savlar sadece bir hata ayıklama aracı olarak kullanılmalıdır. Bazı
+   programlama hatalarının olmadığını belirten veya bir eklenti işlevi gibi
+   belli özelliklerin veya belli sistem sınırlamalarının ve özelliklerinin
+   varlığını sınayan koşul ifadelerinin her zaman &true; dönmesini gerektiren
+   kararlılık denetimleri için de kullanabilirsiniz.
+  </para>
+  <para>
+   Savlar, girdi değiştirgelerinin sınanması gibi normal çalışma anı işlemleri
+   için kullanılmamalıdır. Ana kural olarak, bir kararlılık denetimini etkin
+   kılmaksızın kodunuz düzgün olarak çalışabilmelidir.
+  </para>
+  <para>
+   <function>assert</function> işlevinin davranışı
+   <function>assert_options</function> işlevi ile veya bu işlevin kılavuz
+   sayfasında açıklanan INI ayarları ile yapılandırılabilir.
+  </para>
+  <para>
+   <function>assert_options</function> işlevi ve/veya ASSERT_CALLBACK
+   yapılandırma yönergesi ile bir savın başarısızlığı halinde çalışacak bir
+   geriçağırım işlevi belirtilebilir.
+  </para>
+  <para>
+   <function>assert</function> geriçağırım işlevleri, özellikle özdevinimli
+   deneme ortamları oluşturulurken yararlı olur. Çünkü bunlar, savın oluştuğu
+   yer bilgisi yanında sava aktarılan kodun da yakalanmasını kolaylaştırırlar.
+   Bu bilgi başka yöntemlerle yakalanabilirse de savların kullanımı bu işlemin
+   daha kolay ve çabuk olmasını sağlar.
+  </para>
+  <para>
+   Geriçağırım işlevinin üç değiştirge kabul etmesi gerekir. İlk değiştirge
+   savın başarısız olduğu dosyayı, ikinci değiştirge savın başarısız olduğu
+   satırı, üçüncü değiştirge ise başarısız olan ifadeyi (1, "iki" gibi
+   herhangi bir değer belirtilebilir) içerir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>sav</parameter></term>
+     <listitem>
+      <para>
+       İddia.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Sav yanlışsa &false; değilse &true;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Başarısız bir savın özel bir işlevle ele alınması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Savı etkin ve sessiz kılalım
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// Savın başarısızlığı halinde çalışacak işlevimiz
+function savcı($dosya, $satır, $ifade)
+{
+    echo "<hr>Sav geçersiz:
+        Dosya: '$dosya'<br />
+        Satır: '$satır'<br />
+          Kod: '$ifade'<br /><hr />";
+}
+
+// Geriçağırım işlevimizi belirtelim
+assert_options(ASSERT_CALLBACK, 'savcı');
+
+// Başarısız olmasını umarak bir sav ileri sürelim
+assert('mysql_query("")');
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>assert_options</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

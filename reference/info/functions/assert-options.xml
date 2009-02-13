@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.assert-options" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>assert_options</refname>
+  <refpurpose>Çeşitli kararlılık denetim seçeneklerini açar/kapar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>assert_options</methodname>
+   <methodparam><type>int</type><parameter>seçenek</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değer</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>assert</function> işlevi için çeşitli denetim seçeneklerini
+   tanımlar veya mevcut değerlerini sorgular.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>seçenek</parameter></term>
+     <listitem>
+      <para>
+       <table>
+        <title>Sav Seçenekleri</title>
+        <tgroup cols="4">
+         <thead>
+          <row>
+           <entry>Seçenek</entry>
+           <entry>INI değiştirgesi</entry>
+           <entry>Öntanımlı</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>ASSERT_ACTIVE</entry>
+           <entry>assert.active</entry>
+           <entry>1</entry>
+           <entry><function>assert</function> değerlendirmesi etkin
+           kılınır.</entry>
+          </row>
+          <row>
+           <entry>ASSERT_WARNING</entry>
+           <entry>assert.warning</entry>
+           <entry>1</entry>
+           <entry>Her başarısız sav için bir PHP uyarısı çıktılanır</entry>
+          </row>
+          <row>
+           <entry>ASSERT_BAIL</entry>
+           <entry>assert.bail</entry>
+           <entry>0</entry>
+           <entry>Savın başarısızlığı halinde çalışma durdurulur.</entry>
+          </row>
+          <row>
+           <entry>ASSERT_QUIET_EVAL</entry>
+           <entry>assert.quiet_eval</entry>
+           <entry>0</entry>
+           <entry>
+            Sav ifadesinin değerlendirilmesi sırasında hata raporlama
+            kapatılır.
+           </entry>
+          </row>
+          <row>
+           <entry>ASSERT_CALLBACK</entry>
+           <entry>assert.callback</entry>
+           <entry>(&null;)</entry>
+           <entry>Savın başarısızlığı halinde çağrılacak kullanıcı işlevi.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değer</parameter></term>
+     <listitem>
+      <para>
+       Seçenek için isteğe bağlı yeni değer.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Hata oluşursa &false;, aksi takdirde belirtilen seçeneğin özgün değeri
+   döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+   <title>- <function>assert_options</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Sav başarısızlıklarında çalışacak işlevimiz
+function assert_failure()
+{
+  echo 'İddia geçersiz';
+}
+
+// Sınama işlevimiz
+function test_assert($parameter)
+{
+  assert(is_bool($parameter));
+}
+
+// Sav seçeneklerini atayalım
+assert_options(ASSERT_ACTIVE,	true);
+assert_options(ASSERT_BAIL, 	true);
+assert_options(ASSERT_WARNING, 	false);
+assert_options(ASSERT_CALLBACK, 'assert_failure');
+
+// Başarısız olmasını umarak bir sav ileri sürelim
+test_assert(1);
+
+// ASSERT_BAIL true olduğundan buraya asla gelinmez
+echo 'Buraya gelinmemesi gerekir';
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>assert</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
