@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.18 Maintainer: nilgun Status: ready -->
+<!-- splitted from ./en/functions/exec.xml, last change in rev 1.28 -->
+  <refentry xml:id='function.proc-open' xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+    <refname>proc_open</refname>
+    <refpurpose>Bir komutu çalıştırır ve G/Ç için bir dosya tanıtıcı açar
+    </refpurpose>
+   </refnamediv>
+   <refsect1 role="description">
+    &reftitle.description;
+     <methodsynopsis>
+      <type>resource</type><methodname>proc_open</methodname>
+      <methodparam><type>string</type><parameter>komut</parameter></methodparam>
+      <methodparam><type>array</type><parameter>tanıtıcılar</parameter></methodparam>
+      <methodparam><type>array</type><parameter role="reference">borular</parameter></methodparam>
+      <methodparam choice="opt"><type>string</type><parameter>dizin</parameter></methodparam>
+      <methodparam choice="opt"><type>array</type><parameter>ortam</parameter></methodparam>
+      <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter></methodparam>
+     </methodsynopsis>
+    <para>
+     <function>proc_open</function> işlevi, program çalıştırma konusunda daha
+     geniş denetim imkanı sağlaması dışında <function>popen</function> gibidir.
+    </para>
+   </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>cmd</parameter></term>
+     <listitem>
+      <para>
+       Çalıştırılacak komut.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tanıtıcılar</parameter></term>
+     <listitem>
+      <para>
+       İndisli bir dizi olup, indisler tanıtıcı numaralarını, değerler ise
+       PHP'nin çocuk süreçlere bu tanıtıcıları nasıl aktaracağını gösterir. 0
+       indisi, standart girdi; 1 indisi, standart çıktı; 2 indisi ise standart
+       hata içindir.
+      </para>
+      <para>
+       Her eleman şunları içerebilir:
+       <simplelist>
+        <member>Sürece aktarılacak boruyu tanımlayan bir dizi. İlk eleman
+        tanıtıcı türü, ikincisi belirtilen türde bir seçenektir. Geçerli
+        türler: <literal>pipe</literal> (ikinci eleman sürece okuma ucunu
+        aktaran <literal>r</literal> veya yazma ucunu aktaran
+        <literal>w</literal> olabilir) ve <literal>file</literal> (ikinci
+        eleman bir dosya ismidir).
+        </member>
+        <member>
+         Gerçek bir dosya tanıtıcısına karşılık gelen bir akım özkaynağı
+         (örneğin, <constant>STDIN</constant>, bir soket, açılmış bir dosya
+         gibi).
+        </member>
+       </simplelist>
+      </para>
+      <para>
+       Dosya tanıtıcıları 0, 1 ve 2 ile sınırlı değildir; çocuk sürece
+       aktarılmak üzere herhangi bir dosya tanıtıcı belirtebilirsiniz.
+       Böylece, betiğiniz diğer betiklerin arasında bir yardımcı süreç olarak
+       çalışabilir. Bu özellikle, güvenlikle ilgili konularda PGP, GPG ve
+       openssl gibi programlara anahtar parolasını aktarmak için
+       kullanışlıdır. Ayrıca, bu programlar tarafından yardımcı dosya
+       tanıtıcılarıyla sağlanan durum bilgisini okumak için de kullanışlıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>borular</parameter></term>
+     <listitem>
+      <para>
+       PHP'nin oluşturduğu boru uçlarına karşılık gelen dosya tanıtıcılarını
+       içeren indisli bir dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizin</parameter></term>
+     <listitem>
+      <para>
+       Komutun ilk çalıştırılacağı dizin. İlk çalıştırma dizini <emphasis
+       role="strong">mutlak</emphasis> bir dosya yolu olabileceği gibi
+       öntanımlı çalışma dizinini kullanmak isterseniz &null; da olabilir.
+       Öntanımlı çalıştırma dizini PHP sürecinin çalıştırıldığı dizindir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ortam</parameter></term>
+     <listitem>
+      <para>
+       Çalıştırılacak komutun ortamına aktarılacak ortam değişkenleri dizisi.
+       PHP süreci ile aynı ortamı kullanmak isterseniz &null;
+       belirtebilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Ek seçenekler belirtme imkanı sunar. Olası seçenekler:
+       <simplelist>
+        <member>
+         <literal>suppress_errors</literal> (sadece windows): Değer olarak
+         &true; belirtilirse bu işlev tarafından üretilen hatalar baskılanır.
+        </member>
+        <member>
+         <literal>bypass_shell</literal> (sadece windows): Değer olarak
+         &true; belirtilirse <literal>cmd.exe</literal> kabuğu es geçilir.
+        </member>
+        <member>
+         <literal>context</literal>: Dosyaları açarken kullanılan
+         (<function>stream_context_create</function> ile oluşturulmuş) akım
+         bağlamı
+        </member>
+        <member>
+         <literal>binary_pipes</literal>: Borular, normal olarak
+         <function>stream_encoding</function> ile değil ikil kipte açılır.
+        </member>
+       </simplelist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Süreci ifade eden bir özkaynak döner. Bu özkaynak ile işiniz bittiğinde
+   <function>proc_close</function> ile serbest bırakmalısınız. Hata durumunda
+   işlev &false; döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>6.0.0</entry>
+       <entry>
+        <parameter>seçenekler</parameter> değiştirgesinin olası seçeneklerine
+        <literal>context</literal> ve <literal>binary_pipes</literal>
+        seçenekleri eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.2.1</entry>
+       <entry>
+        <parameter>seçenekler</parameter> değiştirgesinin olası seçeneklerine
+        <literal>bypass_shell</literal> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        <parameter>dizin</parameter>, <parameter>ortam</parameter> ve
+        <parameter>seçenekler</parameter> değiştirgeleri eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>proc_open</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$tanıtıcılar = array(
+   0 => array("pipe", "r"),  // stdin, alt sürecin okuyacağı borudur
+   1 => array("pipe", "w"),  // stdout, alt sürecin yazacağı borudur
+   2 => array("file", "/tmp/hatalar", "a") // stderr çıktısı bu dosyaya yazılır
+);
+
+$dizin = '/tmp';
+$ortam = array('bir_seçenek' => 'aeiou');
+
+$süreç = proc_open('php', $tanıtıcılar, $borular, $dizin, $ortam);
+
+if (is_resource($süreç)) {
+    // $borular artık şöyledir:
+    // 0 => alt sürecin std. girdisine yazmak için tanıtıcı
+    // 1 => alt sürecin std. çıktısını okumak için tanıtıcı
+    // Hata çıktıları varsa /tmp/hatalar dosyasına yazılacak
+
+    fwrite($borular[0], '<?php print_r($_ENV); ?>');
+    fclose($borular[0]);
+
+    echo stream_get_contents($borular[1]);
+    fclose($borular[1]);
+
+    // Bir kısır döngü oluşmaması için proc_close işlevini
+    // çağırmadan önce açık boruların kapatılması hayati önemdedir.
+    $dönen_değer = proc_close($süreç);
+
+    echo "komut $dönen_değer değerini döndürdü\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Array
+(
+    [bir_seçenek] => aeiou
+    [PWD] => /tmp
+    [SHLVL] => 1
+    [_] => /usr/local/bin/php
+)
+komut 0 değerini döndürdü
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note><title>Windows uyumluluğu</title>
+   <para>
+    2 (strerr) tanıtıcısı hariç, tanıtıcılar çocuk süreçlere kalıtım yoluyla
+    aktarılırlar, fakat Windows mimarisi dosya tanıtıcılarını düşük seviyeli
+    tanıtıcılarla ilişkilendirmediğinden çocuk süreç bu tanıtıcılara erişemez.
+    stdin, stdout ve stderr beklendiği gibi çalışır.
+   </para>
+  </note>
+  <note>
+   <para>
+    Eğer ihtiyacınız tek yönlü bir boru ise kullanımı daha kolay olan
+    <function>popen</function> işlevini kullanın.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>popen</function></member>
+    <member><function>exec</function></member>
+    <member><function>system</function></member>
+    <member><function>passthru</function></member>
+    <member><function>stream_select</function></member>
+    <member><link linkend="language.operators.execution">Çalıştırma
+    İşleci</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
