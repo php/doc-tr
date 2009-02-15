@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.9 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ereg-replace">
+ <refnamediv>
+  <refname>ereg_replace</refname>
+  <refpurpose>Düzenli ifadeye göre dizgede değişiklik yapar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>ereg_replace</methodname>
+   <methodparam><type>string</type><parameter>şablon</parameter></methodparam>
+   <methodparam><type>string</type><parameter>yenisi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>
+   Bu işlev <parameter>dizge</parameter> dizgesi içinde
+   <parameter>şablon</parameter> düzenli ifadesini arar ve eşleşen metnin
+   yerine <parameter>yenisi</parameter>'ni yerleştirir.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>şablon</parameter></term>
+     <listitem>
+      <para>
+       Bir POSIX gelişkin düzenli ifadesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yenisi</parameter></term>
+     <listitem>
+      <para>
+       Eğer <parameter>şablon</parameter> parantezli gruplar içeriyorsa
+       <parameter>yenisi</parameter> değiştirgesi
+       <literal>\\<replaceable>rakam</replaceable></literal> biçeminde bir
+       dizge içerebilir. Burada rakam, parantezli grubun şablonun solundan
+       itibaren kaçıncı grup olduğunu gösterir. <literal>\\0</literal> değeri
+       dizgenin tamamınına karşılıktır. Böyle 9 alt dizge belirtilebilir.
+       Parantezler iç içe olabilir, bu durumda aç parantezler sayılır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Girdi dizgesi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Değiştirilen dizgeyi döndürür. Dizge ile eşleşme sağlanamamışsa dizgenin
+   kendisini değiştirmeden döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   Örneğin, aşağıdaki kod parçası üç kere "This was a test" basacaktır.
+  </para>
+  <para>
+   <example>
+    <title>- <function>ereg_replace</function> örneği - 1</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$string = "This is a test";
+echo str_replace(" is", " was", $string);
+echo ereg_replace("( )is", "\\1was", $string);
+echo ereg_replace("(( )is)", "\\2was", $string);
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Burada dikkat edilmesi gereken, <parameter>yenisi</parameter>
+   değiştirgesinde bir tamsayı belirtirseniz beklenmedik sonuçlar alabilecek
+   olmanızdır. Bunun sebebi, <function>ereg_replace</function> işlevinin
+   sayıyı sıradan bir karakter değeri olarak yorumlaması ve buna göre
+   davranmasıdır. Örnek:
+  </para>
+  <para>
+   <example>
+    <title>- <function>ereg_replace</function> örneği - 2</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Bu beklendiği gibi çalışmaz. */
+$num = 4;
+$string = "This string has four words.";
+$string = ereg_replace('four', $num, $string);
+echo $string;   /* Çıktısı: 'This string has   words.' */
+
+/* Bu çalışır. */
+$num = '4';
+$string = "This string has four words.";
+$string = ereg_replace('four', $num, $string);
+echo $string;   /* Çıktısı: 'This string has 4 words.' */
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- URL'den bağlantı oluşturma</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]",
+                     "<a href=\"\\0\">\\0</a>", $text);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <tip>
+   <para>
+    Perl uyumlu düzenli ifade sözdizimini kullanan
+    <function>preg_replace</function> işlevi çoğu durumda
+    <function>ereg_replace</function> işlevinden daha hızlıdır.
+   </para>
+  </tip>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>ereg</function></member>
+    <member><function>eregi</function></member>
+    <member><function>eregi_replace</function></member>
+    <member><function>str_replace</function></member>
+    <member><function>preg_match</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

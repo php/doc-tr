@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.spliti">
+ <refnamediv>
+  <refname>spliti</refname>
+  <refpurpose>Belirtilen dizgeyi harf büyüklüğüne duyarsız olarak düzenli
+  ifadeye göre dizi elemanlarına böler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>spliti</methodname>
+   <methodparam><type>string</type><parameter>şablon</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sınır</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen dizgeyi harf büyüklüğüne duyarsız düzenli ifadeye göre dizi
+   elemanlarına böler.
+  </para>
+  <para>
+   Harfleri eşleştirirken harf büyüklüğünü dikkate almaması dışında
+   <function>split</function> işlevi ile aynıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>şablon</parameter></term>
+     <listitem>
+      <para>
+       Harf büyüklüğüne duyarsız düzenli ifade.
+      </para>
+      <para>
+       Düzenli ifadelere özgü karakterlerden birine göre bölme yapmak
+       isterseniz o karakteri öncelemeniz gerekir. Eğer
+       <function>spliti</function> işlevinin (veya bu konu ile ilgili diğer
+       düzenli ifade işlevlerinin) tuhaf şeyler yaptığını düşünüyorsanız, PHP
+       dağıtımının <filename>regex/</filename> alt dizininde bulunan
+       <filename>regex.7</filename> kılavuz sayfasını okuyunuz.  Bir kılavuz
+       sayfası olması nedeniyle kabukta <command>man
+       /usr/local/src/regex/regex.7</command> komutunu vererek dosyayı
+       okuyabilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Girdi dizgesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sınır</parameter></term>
+     <listitem>
+      <para>
+       Bu değiştirge belirtilmişse, son elemanında
+       <parameter>dizge</parameter>'nin kalanını içermek üzere en fazla
+       <parameter>sınır</parameter> sayıda eleman içeren bir dizi dönecektir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Her elemanında, <parameter>dizge</parameter> dizgesinin, sınırları harf
+   büyüklüğüne duyarsız <parameter>şablon</parameter> düzenli ifadesine göre
+   belirlenen, alt dizgelerini içeren bir dizi döner.
+  </para>
+  <para>
+   <parameter>şablon</parameter> ile eşleşen <replaceable>n</replaceable> alt
+   dizge varsa dönen dizi <literal><replaceable>n</replaceable>+1</literal>
+   eleman içerecektir. Örneğin, <parameter>şablon</parameter> ile eşleşen
+   hiçbir alt dizge yoksa, işlev tek elemanlı bir dizi döndürecektir. Bu durum
+   <parameter>dizge</parameter> dizgesinin boş olduğu durumda da geçerlidir.
+   Bir hata oluşursa işlev &false; döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   Bu örnekte, dizge 'a' harfi ayraç olarak kullanılarak ayrıştırılmaktadır:
+   <example>
+    <title>- <function>spliti</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$string = "aBBBaCCCADDDaEEEaGGGA";
+$chunks = spliti ("a", $string, 5);
+print_r($chunks);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+  [0] =>
+  [1] => BBB
+  [2] => CCC
+  [3] => DDD
+  [4] => EEEaGGGA
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>preg_split</function></member>
+    <member><function>split</function></member>
+    <member><function>explode</function></member>
+    <member><function>implode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
