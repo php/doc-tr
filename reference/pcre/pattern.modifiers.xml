@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.16 Maintainer: haluk Status: ready -->
+<!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
+<article xml:id="reference.pcre.pattern.modifiers" xmlns="http://docbook.org/ns/docbook">
+ <title>Düzenli ifadeler için kullanılabilecek değiştiriciler</title>
+ <titleabbrev>Şablon Değiştiricileri</titleabbrev>
+  <para>
+   Mevcut olası PCRE değiştiricileri aşağıda listelenmiştir. Yaylı ayraçlar
+   içinde belirtilen isimler bu değiştiricilerin dahili PCRE isimleridir.
+   Değiştiricilerdeki boşluklar va satırsonu karakterleri yok sayılır, diğer
+   karakterler ise hataya sebep olur.
+  </para>
+  <para>
+   <blockquote>
+    <variablelist>
+     <varlistentry>
+      <term><emphasis>i</emphasis> (PCRE_CASELESS)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olursa şablondaki harfler hem küçük hem de büyük
+        harflerle eşleşir.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>m</emphasis> (PCRE_MULTILINE)</term>
+      <listitem>
+       <simpara>
+        PCRE öntanımlı olarak, eşleşmeye konu dizgeyi karakterlerden oluşan
+        tek bir satır olarak ele alır (satırsonu karakter ile bitmese bile).
+        "Satır başlangıcıyla eşleşme işleci" olan ^ karakteri dizgenin
+        başlangıcıyla, "satır sonuyla eşleşme işleci" olan $ karakteri ise
+        dizgenin sonu ile veya (<emphasis>D</emphasis> değiştiricisi
+        belirtilmedikçe) satırı sonlandıran satırsonu karakterinin öncesiyle
+        eşleşir. Bu. Perl'de de böyledir.
+       </simpara>
+       <simpara>
+        Bu değiştiricinin etkin olduğu durumda, satır başı ve satır sonu ile
+        eşleşme işleçleri, dizgenin başı ve sonu ile eşleşmenin yanında
+        satırsonu karakterinin (sırasıyla) sonrası ve öncesiyle de eşleşir. Bu
+        değiştirici Perl'in \m değiştiricisine eşdeğerdir. Eğer eşleşmeye konu
+        dizge "satırsonu karakteri "\n" içermiyorsa veya şablonda ^ veya $
+        işleçleri kullanılmamışsa bu değiştiricinin bir etkisi olmayacaktır.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>s</emphasis> (PCRE_DOTALL)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda şablondaki nokta işleci, satırsonu
+        karakteri dahil tüm karakterlerle eşleşir. Etkin olmadığı takdirde
+        satırsonu karakterleri dışlanır. Bu değiştirici Perl'ün \s
+        değiştiricisine eşdeğerdir. [^a] gibi olumsuz bir sınıf, bu
+        değiştiriciden bağımsız olarak daima satırsonu karateriyle eşleşir.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>x</emphasis> (PCRE_EXTENDED)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda şablondaki boşluk karakterleri,
+        öncelenmedikçe veya bir karakter sınıfı içinde yer almadıkça tamamen
+        yoksayıldıkları gibi, bir karakter sınıfının dışında öncelenMEmiş bir
+        # ve sonraki satırsonu karakteri arasındaki karakterlerin tamamı ile
+        satırsonu karakteri de yoksayılır. Bu değiştirici Perl'ün \x
+        değiştiricisine eşdeğerdir ve karmaşık şablonların içine açıklamalar
+        konmasını mümkün kılar. Ancak, bunun sadece veri karakterlerine
+        uygulanmakta oluşuna dikkat ediniz. Boşluk karakterleri, bir şablonda
+        özel karakter dizilimlerinin içinde bulunamazlar; örneğin, bir koşullu
+        alt şablon başlatan (?( dizilimi içinde bulunamazlar.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>e</emphasis> (PREG_REPLACE_EVAL)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda, <function>preg_replace</function>
+        işlevi sonuç dizgesini PHP kodu olarak değerlendirerek normal geriye
+        gönderim ikameleri yapar ve sonucu arama dizgesiyle değiştirmek için
+        kullanır. İkameli geriye gönderimlerdeki tek ve çift tırnaklarla
+        tersbölü ve NULL karakterleri tersbölülerle öncelenir.
+       </simpara>
+       <para>
+        Bu değiştiriciyi sadece <function>preg_replace</function> kullanır;
+        diğer PCRE işlevleri bu değiştiriciyi yok sayar.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>A</emphasis> (PCRE_ANCHORED)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda, şablon demirlemeye zolanır yani,
+        şablon eşleşmeye konu dizgenin sadece başlangıcı ile eşleşmeye
+        zorlanır. Bu etki, şablonun içindeki oluşumlarla da sağlanabilir ve
+        Perl'de bunu yapmanın başka yolu yoktur.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>D</emphasis> (PCRE_DOLLAR_ENDONLY)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda, şablondaki dolar işleci eşleşmeye konu
+        dizgenin sadece sonu ile eşleşir. Bu değiştirici olmaksızın dolar
+        işleci, satır sonlandıran karakter satırsonu karakteri olduğu takdirde
+        sonuncu satır sonu karakterinin (daha öncekilerin değil) hemen öncesi
+        ile eşleşir. <emphasis>m</emphasis> değiştiricisi etkin olduğunda bu
+        değiştirici yok sayılır. Perl'de bu değiştiricinin eşdeğeri yoktur.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>S</emphasis></term>
+      <listitem>
+       <simpara>
+        Bir şablon defalarca eşleştirilmeye çalışılıyorsa, eşleşme için
+        harcanan zamanı kısaltmak için çözümlemeye harcanan zamanı arttırmak
+        en iyi çözümdür. Bu değiştirici etkin olduğunda ek çözümlemeler
+        yapılır. Halihazırda bu sadece, şablonu tek bir başlangıç karakteriyle
+        eşleşmeye zorlayan demirli şablonlar hariçindeki şablonlar için
+        yararlı olmaktadır.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>U</emphasis> (PCRE_UNGREEDY)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici etkin olduğunda, niceleyicilerin tamahkarlığını tersine
+        çevirir. Böylece, ardlarına bir "?" konmadıkça niceleyiciler öntanımlı
+        olarak tamahkar olmazlar. Bu değiştirici Perl ile uyumlu değildir.
+        Ayrıca, <link linkend="regexp.reference.internal-options">değiştirici
+        şablon içinde</link> de (?U ile) etkin kılılınabileceği gibi
+        niceleyicinin ardına bir soru işareti konarak da
+        (<literal>.*?</literal> gibi) bu sağlanabilir.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>X</emphasis> (PCRE_EXTRA)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici PCRE'nin Perl ile uyumlu olmayan bir işlevselliğini açıp
+        kapamakta kullanılır. Bir şablonda tersbölü ile öncelenmiş bir
+        karakter özel bir anlama sahip değilse hataya sebep olur. Bu davranış,
+        gelecekteki yorumlamalar için böyle tasarlanmıştır. Perl'de öntanımlı
+        olarak, özel anlamı olmayan tersbölü ile öncelenmiş karakterler
+        kendileri olarak ele alınırlar. Bu değiştiriciden etkilenen  bir
+        değiştirici henüz yoktur.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>J</emphasis> (PCRE_INFO_JCHANGED)</term>
+      <listitem>
+       <simpara>
+        (?J) dahili seçenek ayarı yerel PCRE_DUPNAMES seçeneğini değiştirerek
+        isimlerin alt şablonlarda tekrarlanmasını mümkün kılar.
+       </simpara>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><emphasis>u</emphasis> (PCRE_UTF8)</term>
+      <listitem>
+       <simpara>
+        Bu değiştirici PCRE'nin Perl ile uyumlu olmayan bir işlevselliğini
+        etkin kılarak şablon dizgelerinin karakter kodlamasının UTF-8
+        olduğunun varsayılmasını sağlar. Bu değiştirici Unix türevlerinde PHP
+        4.1.0'dan beri, win32'de  PHP 4.2.3'ten beri kullanılabilmektedir.
+        Şablonun UTF-8 olarak geçerliliği ise  PHP 4.3.5 sürümünden beri
+        denetlenmektedir.
+       </simpara>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </blockquote>
+  </para>
+</article>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
