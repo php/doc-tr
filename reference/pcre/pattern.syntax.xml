@@ -1,0 +1,1648 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.25 Maintainer: nilgun Status: ready -->
+<!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
+<chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook">
+ <title>PCRE düzenli ifade sözdizimi</title>
+ <titleabbrev>Şablon Sözdizimi</titleabbrev>
+
+   <section xml:id="regexp.reference">
+    <title>Ayrıntılı olarak Düzenli İfadeler</title>
+    <section xml:id="regexp.introduction">
+     <title>Giriş</title>
+     <para>
+      PCRE tarafından desteklenen düzenli ifadelerin sözdizimi ve anlamları
+      aşağıda açıklanmıştır. Düzenli ifadeler ayrıca Perl belgelerinde ve pek
+      çok kitapta bol sayıda örneklerle açıklanmıştır. O'Reilly tarafından
+      yayınlanan Friedl'ın  "Mastering  Regular  Expressions" kitabı (ISBN
+      1-56592-257-3) oldukça ayrıntılıdır. Buradaki açıklamalar bir başvuru
+      kılavuzu niteliğindedir.
+     </para>
+     <para>
+      Bir düzenli ifade eşleştirileceği dizgeye soldan sağa uygulanan bir
+      şablondur. Çoğu karakter bir şablonun içinde sadece kendilerini ifade
+      ederler ve şablonun eşleştirildiği dizgedeki karşılıkları ile
+      eşleşirler. Önemsiz bir örnek olarak <literal>The quick brown
+      fox</literal> şablonu kendisiyle aynı olan dizgeyle eşleşecektir.
+     </para>
+    </section>
+    <section xml:id="regexp.reference.meta">
+     <title>Düzenli ifade İşleçleri</title>
+     <para>
+      Düzenli ifadelerin gücü, şablon içinde yinelemeler ve ikameler içerme
+      yeteneğinden kaynaklanır. Bunlar şablon içinde <emphasis>düzenli ifade
+      işleçleri</emphasis> adı verilen ve özel bir şekilde yorumlanan ancak
+      doğrudan kendileriyle eşleşmeyen karakterlerle kodlanırlar.
+     </para>
+     <para>
+      İki ayrı işleç ailesi vardır: Köşeli ayraçların içindekiler ve
+      dışındakiler. Köşeli ayraçların dışındaki işleçler şunlardır:
+      <variablelist>
+       <varlistentry>
+        <term><emphasis>\</emphasis></term>
+        <listitem><simpara>çeşitli kullanımları olan genel önceleme
+        karakteri</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>^</emphasis></term>
+        <listitem><simpara>konu başlangıcıyla eşleşme işleci (satır kipinde
+        veya çok satırlı kipte)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>$</emphasis></term>
+        <listitem><simpara>konu sonuyla eşleşme işleci (satır kipinde veya
+        çok satırlı kipte)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>.</emphasis></term>
+        <listitem><simpara>(öntanımlı olarak) satırsonu hariç herhangi bir
+        karakterle eşleşme işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>[</emphasis></term>
+        <listitem><simpara>Karakter sınıfı tanımı başlatma
+        işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>]</emphasis></term>
+        <listitem><simpara>Karakter sınıfı tanımı bitirme
+        işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>|</emphasis></term>
+        <listitem><simpara>VEYA işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>(</emphasis></term>
+        <listitem><simpara>alt şablon başlatma işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>)</emphasis></term>
+        <listitem><simpara>alt şablon bitirme işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>?</emphasis></term>
+        <listitem><simpara>"(" işlecinin anlamını genişletir; 0 veya 1 kere
+        eşleşir; eşleşme miktarını asgarileştirir</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>*</emphasis></term>
+        <listitem><simpara>0 veya daha fazlasıyla eşleşme
+        işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>+</emphasis></term>
+        <listitem><simpara>1 veya daha fazlasıyla eşleşme
+        işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>{</emphasis></term>
+        <listitem><simpara>Yineleme başlatma işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>}</emphasis></term>
+        <listitem><simpara>Yineleme bitirme işleci </simpara></listitem>
+       </varlistentry>
+      </variablelist>
+
+      Köşeli ayraçların içinde kalan kısım "karakter sınıfı" adını alır.
+      Bir karakter sınıfı içinde özel anlamı olan işleçler şunlardır:
+
+      <variablelist>
+       <varlistentry>
+        <term><emphasis>\</emphasis></term>
+        <listitem><simpara>genel önceleme karakteri</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>^</emphasis></term>
+        <listitem><simpara>sınıfın ilk karakteri olduğu takdirde sınıfla eşleşmeme işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>-</emphasis></term>
+        <listitem><simpara>karakter aralığı işleci</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>]</emphasis></term>
+        <listitem><simpara>karakter sınıfı bitirme işleci</simpara></listitem>
+       </varlistentry>
+      </variablelist>
+
+      Aşağıdaki bölümlerde bu işleçler ayrı ayrı açıklanmıştır.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.backslash">
+     <title>Tersbölü</title>
+     <para>
+      Tersbölü karakterinin çeşitli kullanımları vardır.
+      <emphasis>Tersbölünün ilk kullanım çeşidinde</emphasis>, bir harfin
+      veya bir rakamın soluna konmuşsa karakterin özel anlamını kaldırır;
+      karakter sınıflarının içinde ve dışında bir önceleme karakteri olarak
+      iş görür.
+     </para>
+     <para>
+      Örneğin, şablonunuzun "*" karakteri ile eşleşmesini isterseniz, şablonu
+      "\*" biçiminde yazmalısınız. Tersbölü karakterinin öncelediği karakter
+      bir düzenli ifade işleci olsun ya da olmasın yorumu değişmeyecek, daima
+      öncelediği karakter kendisiyle eşleşecektir. Sonuç olarak, önceleme
+      işleci harf veya rakam olmayan karakterlerle de güvenle
+      kullanılabilmektedir. Özellikle, bir tersbölü karakteri ile eşleşme
+      sağlamak için "\\" yazmalısınız.
+     </para>
+     <note>
+      <para>
+       Tek ve çift tırnaklı PHP <link linkend="language.types.string.syntax">
+       dizgeleri</link> içinde tersbölü karakteri özel olarak ele alınır. Bir
+       \ ile eşleşen \\ düzenli ifadesi, PHP kodu içinde "\\\\" veya '\\\\'
+       olarak belirtilmelidir.
+      </para>
+     </note>
+     <para>
+      Bir şablon <link linkend="reference.pcre.pattern.modifiers">
+      PCRE_EXTENDED</link> seçeneği ile derlenmişse kalıp içindeki (bir
+      karakter sınıfının dışında kalan) boşluk karakterleri ve bir karakter
+      sınıfının dışındaki bir "#" karakteri ile sonraki satırsonu karakteri
+      arasındaki karakterler yok sayılır. Bir boşluk veya "#" karakterini
+      şablonun parçası haline getirmek için, karakter tersbölü ile öncelenir.
+     </para>
+     <para>
+      <emphasis>Tersbölü karakterinin ikinci kullanımı</emphasis>,
+      basılamayan karakterleri şablon içinde görünür kılmak içindir. İkil
+      sıfırın şablonu sonlandırması dışında basılamayan karakterlerin
+      görünümü ile ilgili bir kısıtlama yoktur. Fakat, bir şablon, bir metni
+      düzenleyerek hazırlanıyorsa aşağıdaki önceleme dizilimlerini kullanmak,
+      ifade ettikleri ikil karakterleri kullanmaktan daha kolaydır:
+     </para>
+     <para>
+      <variablelist>
+       <varlistentry>
+        <term><emphasis>\a</emphasis></term>
+        <listitem><simpara>sesli uyarı, yani BEL karakteri (onaltılık 07)
+        </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\cx</emphasis></term>
+        <listitem><simpara>"CTRL-x"; buradaki x yerine herhangi bir
+        karakter konabilir</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\e</emphasis></term>
+        <listitem><simpara>kaçış karakteri (onaltılık 1B)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\f</emphasis></term>
+        <listitem><simpara>sayfa ileri (onaltılık 0C)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\n</emphasis></term>
+        <listitem><simpara>satırsonu (onaltılık 0A)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\r</emphasis></term>
+        <listitem><simpara>satırbaşı (onaltılık 0D)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\t</emphasis></term>
+        <listitem><simpara>sekme (onaltılık 09)</simpara></listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\xhh</emphasis></term>
+        <listitem><simpara>onaltılık kodu hh olan karakter</simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\ddd</emphasis></term>
+        <listitem><simpara>sekizlik kodu ddd olan karakter veya bir geriye
+        gönderim</simpara></listitem>
+       </varlistentry>
+      </variablelist>
+     </para>
+    <para>
+     "<literal>\cx</literal>" diziliminin en hassas etkisi şöyledir:
+     "<literal>x</literal>" bir küçük harf ise büyük harfe dönüştürülür ve
+     karakterin 6. biti (onaltılık 40) evrilir. Böylece,
+     "<literal>\cz</literal>" dizilimi onaltılık 1A haline gelirken
+     "<literal>\c{</literal>" onaltılık 3B ve "<literal>\c;</literal>"
+     onaltılık 7B haline gelir.
+    </para>
+    <para>
+     "<literal>\x</literal>" dizilimden sonra en fazla iki onaltılık rakam
+     okunur (harfler büyük veya küçük olabilir). <emphasis>UTF-8
+     kipinde</emphasis>, "<literal>\x{...}</literal>" gösterimine izin
+     verilir; kaşlı ayraçların arasına yazılan onaltılık sayı UTF-8
+     karakterin kodu olarak yorumlanır. Özgün onaltılık önceleme dizilimi
+     <literal>\xhh</literal>, eğer karakterin kodu 127'den büyükse iki
+     baytlık bir UTF-8 karakteri ile eşleşecektir.
+    </para>
+    <para>
+     "<literal>\0</literal>" dizilimden sonra en fazla iki sekizlik rakam
+     okunur. Her iki durumda da, iki rakamdan azı varsa olanlar kullanılır.
+     Böylece, "<literal>\0\x\07</literal>" dizilimi iki ikil sıfırdan sonra
+     bir BEL karakteri olarak yorumlanır. Eğer sekizlik gösterimin hemen
+     ardından sekizlik rakam olarak yorumlanabilecek bir karakter geliyorsa
+     ilk sıfırdan sonra mutlaka iki sekizlik rakam kullanın.
+    </para>
+    <para>
+     Tersbölünün hemen ardından 0 haricinde bir rakam gelmesi durumunda durum
+     biraz karışır. Bir karakter sınıfının dışında, PCRE o rakamı ve diğer
+     rakamları bir onluk sayı olarak okur. Eğer sayı 10'dan küçükse veya
+     evvelce belirtilmiş yakalayan alt şablonlar varsa dizilimin tamamı bir
+     geriye gönderim olarak  ele alınır. İkinci durumun nasıl çalıştığı
+     aşağıda parantezli alt şablonların açıklamasında anlatılmıştır.
+    </para>
+    <para>
+     Bir karakter sınıfının içinde veya evvelinde yakalayan alt şablonlar
+     bulunmayan 9'dan büyük bir onluk sayı varlığında PCRE tersbölüden sonra
+     en fazla üç sekizlik rakam okur ve değerin en önemsiz 8 bitinden tek bir
+     bayt üretir. Daha sonraki rakamlar karakterlerin kendileri olarak ele
+     alınır. Örnekler:
+    </para>
+    <para>
+     <variablelist>
+      <varlistentry>
+       <term><emphasis>\040</emphasis></term>
+       <listitem><simpara>Boşluk karakterini ifade etmenin bir başka yolu.
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\40</emphasis></term>
+       <listitem>
+        <simpara>
+         40'tan az yakalayan alt şablon varlığında bu da aynısı.
+        </simpara>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\7</emphasis></term>
+       <listitem><simpara>Daima geriye gönderim olarak yorumlanır.
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\11</emphasis></term>
+       <listitem>
+        <simpara>
+         Duruma göre, bir geriye gönderim olabileceği gibi sekme karakteri
+         olarak da yorumlanabilir.
+        </simpara>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\011</emphasis></term>
+       <listitem><simpara>Daima bir sekme karakteridir</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\0113</emphasis></term>
+       <listitem><simpara>Sekme karakterinden sonra "3" var.
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\113</emphasis></term>
+       <listitem>
+        <simpara>
+         Sekizlik kodu 113 olan karakter (99'dan fazla geriye gönderim
+         olamayacağı için).
+        </simpara>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\377</emphasis></term>
+       <listitem><simpara>Tamamı 1 bitten oluşan bir bayt.
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\81</emphasis></term>
+       <listitem>
+        <simpara>
+         Duruma göre, bir geriye gönderim olabileceği gibi ikil sıfırın
+         ardından gelen "8" ve "1" karakterleri de olabilir.
+        </simpara>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+    <para>
+     100'den büyük sekizlik değerlerin başına sıfır konmamalıdır, çünkü üç
+     sekizlik rakamdan fazlası sekizlik sayının rakamları olarak ele
+     alınmamaktadır.
+    </para>
+    <para>
+     Tek bir bayt değerini tanımlayan tüm dizilimler karakter sınıflarının
+     içinde de dışında da kullanılabilir. Ek olarak, bir karakter sınıfının
+     içinde, "<literal>\b</literal>" dizilimi bir tersbölü karakteri
+     (onaltılık 08) olarak yorumlanır. Karakter sınıfının dışında ise anlamı
+     farklıdır (aşağıya bakınız).
+    </para>
+    <para>
+     <emphasis>Tersbölünün üçüncü kullanımı</emphasis> soysal karakter
+     türlerini belirtmek içindir:
+    </para>
+    <para>
+     <variablelist>
+      <varlistentry>
+       <term><emphasis>\d</emphasis></term>
+       <listitem><simpara>Herhangi bir onluk rakam</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\D</emphasis></term>
+       <listitem><simpara>Bir onluk rakam olmayan herhangi bir karakter
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\h</emphasis></term>
+       <listitem><simpara>Herhangi bir yatay boşluk karakteri (PHP 5.2.4'ten
+       beri)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\H</emphasis></term>
+       <listitem><simpara>Bir yatay boşluk karakteri olmayan herhangi bir
+       karakter (PHP 5.2.4'ten beri)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\s</emphasis></term>
+       <listitem><simpara>Herhangi bir boşluk karakteri</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\S</emphasis></term>
+       <listitem><simpara>Bir boşluk karakteri olmayan herhangi bir karakter
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\v</emphasis></term>
+       <listitem><simpara>Herhangi bir düşey boşluk karakteri (PHP 5.2.4'ten
+       beri)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\V</emphasis></term>
+       <listitem><simpara>Bir düşey boşluk karakteri olmayan herhangi bir
+       karakter (PHP 5.2.4'ten beri)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\w</emphasis></term>
+       <listitem><simpara>Herhangi bir "sözcük" karakteri
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\W</emphasis></term>
+       <listitem><simpara>Bir "sözcük" karakteri olmayan herhangi bir
+       karakter</simpara></listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+    <para>
+     Her önceleme dizilimi çifti karakter kümesinin tamamını iki ayrı küme
+     haline getirir. Belirtilen her karakter sadece ve sadece bir çift ile
+     eşleşir.
+    </para>
+    <para>
+     Bir "sözcük" karakteri herhangi bir harf, rakam veya alt çizgi karakteri
+     olabilir, yani, bir Perl sözcüğünün parçası olabilen her karakter bir
+     "sözcük" karakteri olabilir. Harflerin ve rakamların tanımı PCRE'nin
+     karakter tablosu tarafından denetlenir ve eşleştirme yerele özgü
+     yapılıyorsa bu tanım değişebilir. Örneğin "tr" yerelindeki 128'den büyük
+     karakter koduna sahip "çğıöşü" gibi karakterler <literal>\w</literal>
+     ile eşleşir.
+    </para>
+    <para>
+     Karakter türündeki bu dizilimler karakter sınıflarının içinde veya
+     dışında bulunabilir. Her biri uygun türdeki bir karakterle eşleşir. Eğer
+     karakter eşleştirmesinde eşleşmeye konu dizgenin sonuna gelinmişse
+     hiçbir karakter eşleşmeyeceğinden işlem başarısız olacaktır.
+    </para>
+    <para>
+     <emphasis>Tersbölünün dördüncü kullanımı</emphasis> bazı basit tezleri
+     belirtmek içindir. Bir tez, eşleşmeye konu dizgenin hiçbir karakterini
+     harcamaksızın belli bir noktada yerine getirilmesi gereken bir koşul
+     belirtir. Daha karmaşık tezler için alt şablonların kullanımı aşağıda
+     açıklanmıştır. Tez işleçleri şunlardır:
+    </para>
+    <para>
+     <variablelist>
+      <varlistentry>
+       <term><emphasis>\b</emphasis></term>
+       <listitem><simpara>Sözcük sınırlarıyla eşleşme işleci
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\B</emphasis></term>
+       <listitem><simpara>Sözcük içi eşleşme işleci</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\A</emphasis></term>
+       <listitem><simpara>Eşleşmeye konu dizgenin başlangıcı ile eşleşme
+       işleci (çok satırlı kipten bağımsız)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\Z</emphasis></term>
+       <listitem>
+        <simpara>
+         Eşleşmeye konu dizgedeki satırsonu karakterinin öncesiyle
+         eşleşme işleci (çok satırlı kipten bağımsız)
+        </simpara>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\z</emphasis></term>
+       <listitem><simpara>Eşleşmeye konu dizgenin sonu ile eşleşme işleci
+       (çok satırlı kipten bağımsız)</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\G</emphasis></term>
+       <listitem><simpara>eşleşmeye konu dizgede eşleşme başlangıcını
+       belirtme işleci</simpara></listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+    <para>
+     Bu tez işleçleri "<literal>\b</literal>" hariç karakter sınıfları içinde
+     görünmezler. "<literal>\b</literal>" işleci karakter sınıfları içinde
+     özel bir anlama sahiptir ve tersbölü karaterini simgeler.
+    </para>
+    <para>
+     Eşleşmeye konu dizge içinde geçerli karakterin <literal>\w</literal>
+     işleci ile ve önceki karakterin <literal>\W</literal> işleci ile
+     eşleştiği nokta sözcük sınırının başlangıcını; geçerli karakterin
+     <literal>\W</literal> işleci ile ve önceki karakterin
+     <literal>\w</literal> işleci ile eşleştiği nokta ise sözcük sınırının
+     bitişini belirler.
+    </para>
+    <para>
+     <literal>\A</literal>, <literal>\Z</literal> ve
+     <literal>\z</literal> tez işleçleri, seçeneklerle belirlenen şekilde
+     dizgenin en başı ve dizgenin en sonu ile eşleşen geleneksel şapka ve
+     dolar imli işleçlerden (aşağıda açıklanmıştır) farklı olup
+     <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+     veya <link linkend="reference.pcre.pattern.modifiers">
+     PCRE_DOLLAR_ENDONLY</link> seçeneğinden etkilenmezler.
+     <literal>\Z</literal> ile <literal>\z</literal> arasındaki fark
+     <literal>\Z</literal> işlecinin dizgenin son karakteri olan satırsonu
+     karakterinin öncesiyle eşleşmesi, <literal>\z</literal> işlecinin ise
+     sadece dizge sonu ile eşleşmesidir.
+    </para>
+    <para>
+     <literal>\G</literal> savı, sadece, geçerli eşleşme konumu eşleşmenin
+     başlangıç noktasında (<function>preg_match</function> işlevinin
+     <parameter>başlangıç</parameter> değiştirgesi ile belirtilen noktada)
+     olduğu takdirde doğru olacaktır. <parameter>başlangıç</parameter>
+     sıfırdan farklı olduğu durumda <literal>\G</literal> işleci
+     <literal>\A</literal> işlecinden farklıdır. PHP'nin 4.3.3 sürümünden
+     beri kullanılabilmektedir.
+    </para>
+    <para>
+     PHP 4.3.3'ten beri, <literal>\Q</literal> ve <literal>\E</literal>
+     işleçleri şablon içindeki düzenli ifade işleçlerini geçersiz kılmak
+     için kullanılabilmektedir. Örneğin, <literal>\w+\Q.$.\E$</literal>
+     düzenli ifadesi dizge sonuna demirlenmiş <literal>.$.</literal>
+     karakterleriyle ve bunların öncesindeki bir veya daha fazla sayıda
+     sözcük karakteriyle eşleşecektir.
+    </para>
+    <para>
+     <literal>\K</literal> işleci PHP'nin 5.2.4 sürümünden beri eşleşme
+     başlangıcını sıfırlamak için kullanılabilmektedir. Örneğin,
+     <literal>foo\Kbar</literal> şablonu, "foobar" ile eşleşir, fakat "bar"
+     ile eşleştiğini raporlar. <literal>\K</literal> işlecinin kullanımı
+     zaten eşleştirilmiş alt dizge ile etkileşmez. Örneğin,
+     <literal>(foo)\Kbar</literal> şablonu "foobar" ile eşleşirken eşleşen
+     ilk alt dizge "foo" olacaktır.
+    </para>
+    </section>
+
+    <section xml:id="regexp.reference.unicode">
+     <title>Unicode Karakterlerinin Özellikleri</title>
+     <para>
+      PHP 4.4.0 ve 5.1.0 sürümlerinde, <emphasis>UTF-8 kipi</emphasis>
+      seçildiğinde soysal karakter türleriyle eşleşen üç düzenli ifade işleci
+      daha devreye girmiştir. Bunlar:
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><emphasis>\p{xx}</emphasis></term>
+       <listitem><simpara>xx özelliğine sahip bir karakter
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\P{xx}</emphasis></term>
+       <listitem><simpara>xx özelliği olmayan bir karakter
+       </simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><emphasis>\X</emphasis></term>
+       <listitem><simpara>bir genişletilmiş Unicode dizilimi
+       </simpara></listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      Yukarıda <literal>xx</literal> ile belirtilen özellik isimleri Unicode
+      genel sınıf özellikleriyle sınırlıdır.  Belirtilen her karakter, belli
+      bir özelliğin iki harflik kısaltmasındaki harflerle aynı olmak
+      zorundadır. Perl ile uyumluluk için, olumsuzlama işleci kaşlı ayraç ile
+      özellik kısaltmasının ilk harfi arasına konmalıdır. Örneğin,
+      <literal>\p{^Lu}</literal> şablonu <literal>\P{Lu}</literal> ile
+      aynıdır.
+     </para>
+     <para>
+      Eğer <literal>\p</literal> veya <literal>\P</literal> ile tek bir harf belirtilirse bu harfle başlayan tüm özellikleri ifade edecektir. Böyle bir durumda, olumsuzlama işleci kullanılmayacaksa kaşlı ayraçların kullanımı isteğe bağlıdır. Yani, bu iki örnek aynı etkiye sahiptir:
+     </para>
+     <literallayout>
+      \p{L}
+      \pL
+     </literallayout>
+     <table>
+      <title>Desteklenen özellik kodları</title>
+      <tgroup cols="2">
+       <tbody>
+        <row><entry><literal>C</literal></entry><entry>Diğer</entry></row>
+        <row><entry><literal>Cc</literal></entry><entry>Denetim</entry></row>
+        <row><entry><literal>Cf</literal></entry><entry>Biçem</entry></row>
+        <row><entry><literal>Cn</literal></entry><entry>Atanmamış
+        </entry></row>
+        <row><entry><literal>Co</literal></entry><entry>Özel kullanım
+        </entry></row>
+        <row rowsep="1"><entry><literal>Cs</literal></entry><entry>İkame
+        </entry></row>
+        <row><entry><literal>L</literal></entry><entry>Harf</entry></row>
+        <row><entry><literal>Ll</literal></entry><entry>Küçük harf
+        </entry></row>
+        <row><entry><literal>Lm</literal></entry><entry>Değiştirici harf
+        </entry></row>
+        <row><entry><literal>Lo</literal></entry><entry>Diğer harf
+        </entry></row>
+        <row><entry><literal>Lt</literal></entry><entry>Başlık harfi
+        </entry></row>
+        <row rowsep="1"><entry><literal>Lu</literal></entry><entry>Büyük harf
+        </entry></row>
+        <row><entry><literal>M</literal></entry><entry>İm</entry></row>
+        <row><entry><literal>Mc</literal></entry><entry>Boşluk imi
+        </entry></row>
+        <row><entry><literal>Me</literal></entry><entry>Kapsama imi
+        </entry></row>
+        <row rowsep="1"><entry><literal>Mn</literal></entry><entry>Boşluk
+        bırakmama imi</entry></row>
+        <row><entry><literal>N</literal></entry><entry>Sayı</entry></row>
+        <row><entry><literal>Nd</literal></entry><entry>Onluk sayı
+        </entry></row>
+        <row><entry><literal>Nl</literal></entry><entry>Harf numarası
+        </entry></row>
+        <row rowsep="1"><entry><literal>No</literal></entry><entry>Diğer sayı
+        </entry></row>
+        <row><entry><literal>P</literal></entry><entry>Noktalama</entry></row>
+        <row><entry><literal>Pc</literal></entry><entry>Bağlayıcı noktalama
+        </entry></row>
+        <row><entry><literal>Pd</literal></entry><entry>Tire imi</entry></row>
+        <row><entry><literal>Pe</literal></entry><entry>Kapama imi
+        </entry></row>
+        <row><entry><literal>Pf</literal></entry><entry>Sonlandırma imi
+        </entry></row>
+        <row><entry><literal>Pi</literal></entry><entry>Başlatma imi
+        </entry></row>
+        <row><entry><literal>Po</literal></entry><entry>Diğer noktalama
+        </entry></row>
+        <row rowsep="1"><entry><literal>Ps</literal></entry><entry>Açma imi
+        </entry></row>
+        <row><entry><literal>S</literal></entry><entry>Simge</entry></row>
+        <row><entry><literal>Sc</literal></entry><entry>Para simgesi
+        </entry></row>
+        <row><entry><literal>Sk</literal></entry><entry>Değiştirici simge
+        </entry></row>
+        <row><entry><literal>Sm</literal></entry><entry>Matematiksel simge
+        </entry></row>
+        <row rowsep="1"><entry><literal>So</literal></entry><entry>Diğer simge
+        </entry></row>
+        <row><entry><literal>Z</literal></entry><entry>Ayraç</entry></row>
+        <row><entry><literal>Zl</literal></entry><entry>Satır ayracı
+        </entry></row>
+        <row><entry><literal>Zp</literal></entry><entry>Paragraf ayracı
+        </entry></row>
+        <row><entry><literal>Zs</literal></entry><entry>Boşluk ayracı
+        </entry></row>
+       </tbody>
+      </tgroup>
+     </table>
+     <para>
+      "Greek" veya "InMusicalSymbols" gibi ek özellikler PCRE tarafından
+      desteklenmemektedir.
+     </para>
+     <para>
+      Harf büyüklüğüne duyarsız eşleşme belirtilmesi bu önceleme
+      dizilimlerini etkilemez. Örneğin, <literal>\p{Lu}</literal> şablonu
+      daima sadece büyük harflerle eşleşecektir.
+     </para>
+     <para>
+      <literal>\X</literal> işleci, bir ek Unicode dizilimi biçimindeki
+      herhangi bir Unicode karakteri ile işleşir.  <literal>\X</literal>
+      işleci <literal>(?>\PM\pM*)</literal> şablonuna eşdeğerdir.
+     </para>
+     <para>
+      Yani, bir im olmayan karakteri izleyen sıfır veya daha fazla sayıda im
+      karakteri ile eşleşir ve bu dizilim bir atomik grup olarak ele alınır
+      (aşağıya bakın). İm karaterleri genellikle kendilerinden önceki
+      karakterleri etkileyen aksanlardır.
+     </para>
+     <para>
+      Unicode özelliğine sahip karakterlerle eşleşme hızlı değildir, çünkü
+      PCRE on beş binden fazla karakter içeren bir kümeyi araştırmak
+      zorundadır. <literal>\d</literal> ve <literal>\w</literal> gibi
+      geleneksel işleçlerin PCRE'de Unicode özelliklerini kullanmamasının
+      sebebi budur.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.circudollar">
+     <title>Şapka ve Dolar İmi</title>
+     <para>
+      Bir karakter sınıfının dışında, öntanımlı eşleşme kipinde, şapka imi,
+      eğer geçerli eşleşme noktası eşleşmeye konu dizgenin başlangıcındaysa
+      doğru sonuç veren bir savdır. Bir karakter sınıfının içinde ise tamamen
+      farklı bir anlama sahiptir (aşağıya bakın).
+     </para>
+     <para>
+      Şapka imi, eğer şablon olasılıklar içeriyorsa şablonun ilk karakteri
+      olmak zorunda değildir, fakat eşleşmenin istendiği her olasılığın ilk
+      karakteri olmak zorundadır. Eğer tüm olasılıklar bir şapka imi ile
+      başlıyorsa, yani şablon eşleşmeye konu dizgenin daima başlangıcıyla
+      eşleştirilmeye çalışılıyorsa buna, dizge başlangıcına demirlenmiş
+      şablon denir. (Bir şablonun demirlenmesine sebep olan başka oluşumlar da
+      olabilir.)
+     </para>
+     <para>
+      Dolar imi, eğer geçerli eşleşme noktası eşleşmeye konu dizgenin
+      sonundaysa veya dizgenin (öntanımlı olarak) son karakteri olan
+      satırsonu karakterinin hemen öncesindeyse doğru sonuç veren bir savdır.
+      Dolar imi, eğer şablon olasılıklar içeriyorsa şablonun son karakteri
+      olmak zorunda değildir, fakat eşleşmenin istendiği her olasılığın son
+      karakteri olmak zorundadır. Dolar iminin bir karakter sınıfının içinde
+      özel bir anlamı yoktur.
+     </para>
+     <para>
+      Derleme veya eşleştirme sırasında
+      <link linkend="reference.pcre.pattern.modifiers">
+      PCRE_DOLLAR_ENDONLY</link> seçeneğini etkin kılarak dolar iminin
+      eşleşmeye konu dizgenin daima sonu ile eşleşmesi sağlanacak şekilde
+      anlamı değiştirilebilir. Bu seçeneğin atanmış olması \Z tezinin
+      anlamını etkilemeyecektir.
+     </para>
+     <para>
+      Şapka ve dolar imlerinin anlamları
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+      seçeneği (çok satırlı kip) etkin kılınarak değiştirilebilir. Bu
+      durumda, şapka imi eşleşmeye konu dizge içindeki "\n" karakterinin
+      hemen sonrasıyla, dolar imi ise hemen öncesiyle eşleşecektir. Örneğin,
+      aksi belirtilmedikçe, <code>/^abc$/</code> şablonu çok satırlı kipte
+      "def\nabc" dizgesiyle eşleşecektir. Sonuç olarak, tek satırlık kipte,
+      tüm olasılıkların şapka imi ile başlaması sebebiyle dizge başlangıcına
+      demirlenmiş şablonlar çok satırlı kipte dizge başlangıcına demirlenmiş
+      olmazlar. Eğer
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+      seçeneği etkinse
+      <link linkend="reference.pcre.pattern.modifiers">
+      PCRE_DOLLAR_ENDONLY</link> seçeneği yoksayılır.
+     </para>
+     <para>
+      \A, \Z ve \z tezlerinin eşleşmeye konu dizgenin başlangıcı ve sonu ile
+      eşleşmek amacıyla her iki kipte de kullanılabileceğine dikkat ediniz.
+      Eğer bir şablondaki tüm olasılıklar \A ile başlıyorsa,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+      seçeneği etkin olsun olmasın, şablon daima dizgenin başlangıcına
+      demirlenmiş olacaktır.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.dot">
+     <title>Nokta</title>
+     <para>
+     Bir nokta imi, bir karakter sınıfının dışında, eşleşmeye konu dizge
+     içindeki herhangi bir tek karakterle eşleşecektir; bu karakterlere
+     basılamayan karakterler de dahildir, ancak (öntanımlı olarak) satırsonu
+     karakteri ile eşleşmeyecektir. Eğer
+     <link linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link>
+     seçeneği etkin kılınmışsa nokta imleri satırsonu karakterleri ile de
+     eşleşecektir. Nokta imi değerlendirilirken şapka ve dolar imlerinden
+     bağımsız olarak ele alınır; tek ilişki her ikisinin de satırsonu
+     karakteriyle olan ilişkileridir. Nokta iminin bir karakter sınıfı içinde
+     özel bir anlamı yoktur.
+     </para>
+     <para>
+      <emphasis>\C</emphasis> işleci tek bir bayt ile eşleşme için
+      kullanılabilir. Nokta imi <emphasis>UTF-8 kipinde</emphasis> çok baytlı
+      bir karakterin bütün baytları ile eşleşeceğinden tek bir baytla eşleşme
+      isteniyorsa \C işleci önem kazanacaktır.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.squarebrackets">
+     <title>Köşeli Ayraçlar</title>
+     <para>
+      Bir karakter sınıfı [ köşeli ayracıyla ] köşeli ayracı arasına alınarak
+      tanımlanır. Bir karakter sınıfı içinde ] köşeli ayracının özel bir
+      anlamı yoktur, ancak bir karakter sınıfı içinde kullanılması gerekliyse
+      sınıfın (varsa, şapka iminden sonraki) ilk üyesi olmak zorundadır, yoksa
+      bir tersbölüyle öncelenmesi gerekir.
+     </para>
+     <para>
+      Bir karakter sınıfı eşleşmeye konu dizgenin içindeki tek bir karakterle
+      eşleşir; sınıfın ilk üyesi bir şapka imi olmadıkça, eşleşen karakterin
+      karakter sınıfının üyesi olması yeterlidir; aksi takdirde eşleşen
+      karakterin sınıfın bir üyesi olmaması gerekir. Eğer şapka iminin bir
+      karakter sınıfının üyesi olması gerekliyse, ya sınıfın ilk üyesi
+      olmamalı ya da bir tersbölü ile öncelenmelidir.
+     </para>
+     <para>
+      Örneğin, [aeıioöuü] sınıfı herhangi bir küçük sesli ile eşleşirken
+      [^aeıioöuü] sınıfı herhangi bir küçük sessizle eşleşecektir. Yalnız
+      şuna dikkat edin: Karakter sınıfının başlangıcındaki şapka imi, sadece
+      sınıfı olumsuzlayan bir gösterim uzlaşımıdır. Bir tez işleci değildir;
+      eşleşmeye konu dizge içindeki karakterleri yine de tüketmeye devam eder
+      ve dizgenin sonuna gelindiğinde başarısız olur.
+     </para>
+     <para>
+      Harf büyüklüğüne duyarsız eşleşme etkinken, sınıf içindeki herhangi bir
+      harf, hem büyük hem de küçük harfi simgeleyecektir. Örneğin, harf
+      büyüklüğüne duyarsız eşleşme etkinken [aeiou] sınıfı "A" veya "a" ile
+      eşleşirken, [^aeiou] sınıfı harf büyüklüğüne duyarlılık etkin kılınmış
+      gibi sadece "A" ile eşleşmeyecektir.
+     </para>
+     <para>
+      Satırsonu karakteri,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link>
+      veya
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+      seçeneği atanmış olsun ya da olmasın karakter sınıfları içinde asla
+      özel bir anlamda ele alınmaz. [^a] gibi bir sınıf daima bir satırsonu
+      karakteri ile eşleşecektir.
+     </para>
+     <para>
+      Tire imi, bir karakter sınıfı içinde bir aralık belirtmek için
+      kullanılabilir. Örneğin, [d-m] sınıfı, d ve m dahil ikisi arasında
+      kalan herhangi bir karakterle eşleşecektir. Eğer bir tire iminin
+      sınıfın bir üyesi olması gerekliyse, ya bir aralık belirteci olarak
+      değerlendirilmeyeceği bir yere (başa veya sona) konmalı ya da tersbölü
+      ile öncelenmelidir.
+     </para>
+     <para>
+      Bir "]" karakterinin kendisi olarak bir aralığın son karakteri olması
+      mümkün değildir. Örneğin, [W-]46] şablonu içindeki sınıf "W" ve "-"
+      karakterlerinden oluşacak, dolayısıyla sadece "W46]" veya "-46]"
+      dizgesiyle eşleşecektir. Halbuki, "]" karakteri bir tersbölü ile
+      öncelenseydi, [W-\]46] şablonu içindeki sınıf "W" ve "]" dahil arada
+      kalan tüm karakterlerle eşleşecekti. Sınıf içinde "]" karakterini
+      tersbölü ile öncelemek yerine karakterin sekizlik veya onaltılık
+      gösterimleri de kullanılabilirdi.
+     </para>
+     <para>
+      Aralıklar ASCII harmanlama dizilimleri olarak çalışabildiği gibi
+      örneğin, [\000-\037] şeklinde sayısal olarak belirtilmiş karakterler
+      içinde kullanılabilir. Eğer harflerden oluşan bir aralık belirtilmişse
+      ve harf büyüklüğüne duyarsız eşleşme yapılıyorsa aralık, içerdiği bir
+      harfin hem büyüğüyle hem de küçüğüyle eşleşecektir. Örneğin [W-c]
+      aralığı harf büyüklüğüne duyarsız olarak [][\^_`wxyzabc] dizgesiyle
+      eşleşir. Eğer "tr" yereli kullanılıyorsa, [\xc6-\xcb] aralığı hem büyük
+      hem de küçük Ç ile eşleşir.
+     </para>
+     <para>
+      \d, \D, \s, \S, \w ve \W karakter türleri de bir karakter sınıfı içinde
+      kullanılabilir ve sınıfa eşleştikleri karakterleri eklerler. Örneğin,
+      [\dABCDEF] sınıfı herhangi bir onaltılık rakam ile eşleşecektir. Şapka
+      karakteri, küçük harfli işleçlerle sağlanandan daha sınırlı bir kümeyi
+      belirtmek için büyük harfli işleçlerle kullanılabilir. Örneğin, [^\W_]
+      sınıfı alt çizgi imi hariç herhangi bir harf veya rakam ile
+      eşleşecektir.
+     </para>
+     <para>
+      Bir karakter sınıfının başlangıcında belirtildiğinde \,  -,  ^
+      karakterleri ve sonlandırıcı ] karakteri, karakter sınıfı içinde özel
+      bir anlama sahip değildir, ancak öncelenmiş olmaları da bir sorun
+      teşkil etmezdi. Şablon sonlandırıcı daima özeldir ve bir ifade içinde
+      kullanıldığında daima öncelenmesi gerekir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.verticalbar">
+     <title>Boru Karakteri</title>
+     <para>
+      Boru karakteri bir şablon içinde olasılıkları ayırmak için kullanılır.
+      Örneğin, <literal>Hasan|Hüseyin</literal> şablonu hem "Hasan" hem de
+      "Hüseyin" ile eşleşir. Olasılıkların sayısı ile ilgili bir sınırlama
+      yoktur ve boş bir dizge ile eşleşen bir boş olasılık da belirtilebilir.
+      Eşleştirme soldan sağa doğru yapılır ve ilk eşleşen kullanılır. Eğer
+      olasılıklar bir alt şablonun içindeyse (aşağıya bakınız), başarılı bir
+      eşleşme için alt şablonun içindeki olasılıklardan biri ve ana şablonun
+      kalanının eşleşmesi gerekir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.internal-options">
+     <title>Dahili Seçeneklerin Ayarlanması</title>
+     <para>
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_CASELESS</link>,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link>,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_UNGREEDY</link>,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTRA</link>,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+      ve PCRE_DUPNAMES seçenekleri bir şablonun içinden Perl seçenek harfleri
+      "(?" ve ")" arasında kullanılarak değiştirilebilir. Seçenek harfleri
+      şunlardır:
+
+      <table>
+       <title>Dahili seçenek harfleri</title>
+       <tgroup cols="2">
+        <tbody>
+         <row>
+          <entry><literal>i</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_CASELESS</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>m</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_MULTILINE</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>s</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_DOTALL</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>x</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_EXTENDED</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>U</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_UNGREEDY</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>X</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_EXTRA</link> için</entry>
+         </row>
+         <row>
+          <entry><literal>J</literal></entry>
+          <entry><link linkend="reference.pcre.pattern.modifiers">
+          PCRE_INFO_JCHANGED</link> için</entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </para>
+     <para>
+      Örneğin, (?im) dizilimi harf büyüklüğüne duyarsız, çok satırlı
+      eşleşmeyi etkin kılar. Seçenekleri etkisiz hale getirmek için bu
+      harflerin önüne bir tire imi konabilir. Örneğin, (?im-sx) dizilimi,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_CASELESS</link> ve
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
+      seçeneklerini etkin,
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link> ve
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+      seçeneklerini ise etkisiz kılar. Eğer bir harf tire iminin hem
+      öncesinde hem de sonrasında görünüyorsa onunla ilgili seçenek tanımsız
+      olur.
+     </para>
+     <para>
+      Üst seviyeden bir seçenek değişikliği varsa (yani değişiklik bir alt
+      şablon içinde değilse), değişiklik şablonun kalanına uygulanacaktır. Bu
+      bakımdan, <literal>/ab(?i)c/</literal> şablonu sadece "abc" ve "abC"
+      dizgeleri ile eşleşecektir. Bu işlem PHP 4.3.3 ile dağıtılan PCRE
+      4.0'dan itibaren bu şekilde uygulanmaktadır. Daha önceki sürümlerde
+      <literal>/ab(?i)c/</literal> şablonu <literal>/abc/i</literal> olarak
+      uygulanırdı (yani, "ABC" ve "aBc" ile eşleşirdi).
+     </para>
+     <para>
+      Değişiklik bir alt şablonun içinde yapılırsa etkisi farklı olur. Bu
+      davranış Perl 5.005'ten itibaren geçerlidir. Bir alt şablon içindeki
+      seçenek değişiklikleri sadece alt şablonun kalanını etkileyecektir. Bu
+      bakımdan <literal>(a(?i)b)c</literal> şablonu abc ve aBc dizgelerinden
+      başka bir dizgeyle eşleşmez
+      (<link linkend="reference.pcre.pattern.modifiers">PCRE_CASELESS</link>
+      seçeneğinin şablon genelinde kullanılmadığı varsayılıyor). Yani, bir
+      şablonun farklı yerlerinde farklı seçenekler farklı ayarlarla
+      kullanılabilir. Olasılıklardan birinde yapılmış bir seçenek değişikliği
+      sonraki diğer olasılıklar için de geçerli olacaktır. Örneğin,
+      <literal>(a(?i)b|c)</literal> şablonu "ab", "aB", "c" ve "C"
+      dizgeleriyle eşleşecektir. Bunun sebebi, seçenek ayarlarının
+      etkilerinin derleme sırasında gözönüne alınmasıdır. Yoksa çok tuhaf
+      davranışlar ortaya çıkabilirdi.
+     </para>
+     <para>
+      Perl uyumlu seçeneklerde olduğu gibi, PCRE'ye özgü seçenekler olan
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_UNGREEDY</link>
+      ve <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTRA</link>
+      seçenekleri de sırayla U ve X karakterleri ile kullanılarak
+      değiştirilebilir. (?X) ayarı özel bir ayar olup, bir şablonda herhangi
+      bir ek özelliğin etkin kılınmasından önce kullanılmayı gerektirir.
+      Yapılacak en iyi şey en başa koymaktır.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.subpatterns">
+     <title>Alt Şablonlar</title>
+     <para>
+      Alt şablonlar yaylı ayraçlarla sınırlanır ve iç içe olabilirler. Bir
+      şablonun bir alt parçası iki şekilde kendini gösterir:
+    </para>
+    <para>
+     1. Bir olasılık kümesinden oluşabilir. Örneğin,
+        <literal>gel(enek|incik|)</literal> şablonu "gel", "gelenek" ve
+        "gelincik" sözcüklerinden biriyle eşleşecektir. Yaylı ayraçlar
+        olmasaydı "gelenek", "incik" ve boş bir dizge ile eşleşirdi.
+    </para>
+    <para>
+     2. Şablon grupları olarak görünebilir (aşağıya bakınız). Şablonun tamamı
+        eşleştiğinde, eşleşmeye konu dizgenin alt şablonla eşleşen parçası
+        <function>pcre_exec</function> işlevinin <emphasis>ovector</emphasis>
+        değiştirgesi üzerinden çağrıcıya aktarılır. Yakalayan alt şablon
+        sayısını tutturmak için grup açılışları soldan sağa doğru sayılır
+        (ilk  grup 1 olmak üzere).
+    </para>
+    <para>
+     Örneğin, "the red king" dizgesini <literal>the ((red|white)
+     (king|queen))</literal> şablonuyla eşleştirmek istersek "red king",
+     "red" ve "king" dizgeleri 1, 2 ve 3 olarak numaralanacaktır.
+    </para>
+    <para>
+     Aslında, salt yaylı ayraçları kullanarak bu iki işlevi yerine getirmek
+     her zaman yararlı olmaz. Çoğu zaman bir gruplama alt şablonu bir
+     yakalama gereksinimi olmaksızın kullanılır. Eğer açan yaylı ayracı
+     takiben bir "?:" dizilimi varsa bu alt şablon herhangi bir yakalama
+     yapmaz ve ardından gelen diğer yakalayan alt şablonların sayısında
+     hesaba katılmaz. Örneğin, "the  white  queen" dizgesini <literal>the
+     ((?:red|white) (king|queen))</literal> şablonu ile eşleştirmek istersek
+     "white queen" ve  "queen" alt dizgeleri 1 ve 2 olarak numaralanır.
+     Yakalayan alt şablonların azami sayısı 99, yakalayan ve yakalamayan alt
+     şablonların azami sayısı ise 200'dür.
+    </para>
+    <para>
+     Uygun bir kısaltma olarak, yakalamayan bir alt şablonun başlangıcında bir
+     seçenek ayarı gerekliyse seçenek harfleri "?" ile ":" arasına konabilir.
+     Dolayısıyla,
+    </para>
+
+    <literallayout>
+       (?i:saturday|sunday)
+       (?:(?i)saturday|sunday)
+    </literallayout>
+
+    <para>
+     şablonlarının ikisi de aynı dizgeyle eşleşecektir. Olasılıklar soldan
+     sağa değerlendirildiğinden ve seçenekler alt şablonun sonuna
+     ulaşılıncaya kadar sıfırlanmayacağından tek bir olasılık dahilindeki bir
+     seçenek ayarı sonraki olasılıkları da etkileyecektir, dolayısıyla
+     yukarıdaki şablonlar "Saturday" ve hatta "SUNDAY" ile de eşleşecektir.
+     </para>
+
+     <para>
+      PHP 4.3.3'ten beri bir alt şablonu
+      <literal>(?P&lt;ad&gt;şablon)</literal> ile isimlendirmek mümkündür.
+      Eşleşmeleri içeren dizi, numaralarına göre indislenmiş eşleşmelerin
+      yanısıra dizgelerine göre indislenmiş eşleşmeleri de içerecektir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.repetition">
+     <title>Yineleme</title>
+     <para>
+      Yineleme, aşağıdaki öğeleri takibeden niceleyicilerle belirtilir:
+
+      <itemizedlist>
+       <listitem><simpara>Tek bir karakter; öncelenmiş olabilir.
+       </simpara></listitem>
+       <listitem><simpara>Bir işleç olarak nokta.</simpara></listitem>
+       <listitem><simpara>Bir karakter sınıfı.</simpara></listitem>
+       <listitem><simpara>Bir geriye gönderim (sonraki bölüme bakınız).
+       </simpara></listitem>
+       <listitem><simpara>Ayraçlı bir alt şablon (bir sav ileri sürmedikçe;
+       aşağıya bakınız).</simpara></listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      Genel yineleme niceleyicileri, kaşlı ayraçlar arasına alınıp virgülle
+      ayrılmış olarak asgari ve azami miktarda eşleşme belirirler. Belirtilen
+      sayılar 65536'dan küçük olmalı ve ilk sayı ikincisine eşit veya ondan
+      küçük olmalıdır. Örneğin, <literal>z{2,4}</literal> şablonu "zz", "zzz"
+      veya "zzzz" ile eşleşecektir. Kapatan kaşlı ayraç özel bir karakter
+      değil, kendisidir. Eğer virgül konduğu halde ikinci niceleyici
+      verilmezse bir üst sınır olmayacaktır. Eğer ikinci niceleyici virgülsüz
+      olarak belirtilmemişse, tam olarak belirtilen sayıda eşleşme sağlanmaya
+      çalışılır. Dolayısıyla, <literal>[aeiou]{3,}</literal> şablonu en az üç
+      sesli harfle eşleşecektir. Ancak, <literal>\d{8}</literal> şablonu tam
+      olarak 8 rakamla eşleşecektir. Şayet birinci niceleyici belirtilmezse
+      veya kaşlı ayraçtan sonraki karakter bir rakam değilse kaşlı ayraç
+      sadece kendisiyle eşleşir. Örneğin, {,6} şablonu bir yineleyici değil,
+      dört karakterden oluşan sıradan bir dizgedir.
+     </para>
+     <para>
+      Bir yineleyici olarak {0} şablonuna izin verilir ve ifadenin, önceki öğe
+      ve niceleyici hiç yokmuş gibi davranmasına sebep olur.
+     </para>
+     <para>
+      Geriye uyumluluk adına, üç yineleyici türünün tek karakterlik
+      kısaltmalarına izin verilmektedir:
+
+      <table>
+       <title>Tek karakterlik yineleyiciler</title>
+       <tgroup cols="2">
+        <tbody>
+         <row>
+          <entry><literal>*</literal></entry>
+          <entry><literal>{0,}</literal> yineleyicisine eşdeğerdir.</entry>
+         </row>
+         <row>
+          <entry><literal>+</literal></entry>
+          <entry><literal>{1,}</literal> yineleyicisine eşdeğerdir.</entry>
+         </row>
+         <row>
+          <entry><literal>?</literal></entry>
+          <entry><literal>{0,1}</literal> yineleyicisine eşdeğerdir.</entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </para>
+     <para>
+      Hiçbir karakterle eşleşmeyen bir alt şablonu takibeden üst sınırsız bir
+      yineleyici belirterek sonsuz döngü oluşturmak mümkündür. Örnek:
+      <literal>(a?)*</literal>
+     </para>
+     <para>
+      Perl ve PCRE'nin önceki sürümleri böyle şablonların derlenmesi sırasında
+      hata verirdi. Ancak, bu şablonlar bazen yararlı olabildiklerinden artık
+      kabul edilmektedir, fakat hiçbir karakterle eşleşmeme durumunda döngü
+      bilinçli olarak kırılmaktadır.
+     </para>
+     <para>
+      Yineleyiciler öntanımlı olarak "tamahkar" olurlar. Yani, şablonun geri
+      kalanının başarısız olmasına sebep olmaksızın olabildiğince çok (azami
+      niceleyicisinin izin verdiği ölçüde) eşleşme yapmaya çalışır. Klasik bir
+      örnek olarak, C kodları arasındaki açıklamalarla eşleşme sorunları
+      verilebilir. Bu açıklamalar /* ve */ dizilimleri arasında bulunurlar ve
+      içlerinde birbirlerinden bağımsız olarak / ve * karakterleri
+      bulunabilir. Örneğin, <literal>/\*.*\*/</literal> şablonu
+      <literal>/* birinci açıklama */  bu açıklama değil  /* ikinci açıklama
+      */</literal> dizgesiyle eşleştirilmeye çalışıldığında başarısız
+      olunacaktır. Çünkü .* öğesinin tamahkarlığı yüzünden dizgenin tamamı ile
+      eşleşecektir.
+     </para>
+     <para>
+      Bununla birlikte, bir yineleyicinin ardına bir soru imi konursa,
+      tamahkarlığa son verilmiş olur ve olası en az sayıda eşleşme yapılmaya
+      çalışılır. Dolayısıyla, <literal>/\*.*?\*/</literal> şablonu C
+      açıklamaları ile beklendiği gibi eşleşir. Yineleyiciler, anlamları
+      değiştirilmediği sürece sadece tercih edilen sayıda eşleşme yapacaktır.
+      Soru imini, bir yineleyici olarak kendisinin sonrasına koymaktan
+      çekinmeyin. İki çeşit kullanımı olduğundan bazen
+      <literal>\d??\d</literal> örneğindeki gibi bir soru imi çifti olarak
+      görünür ve tercihan tek bir rakamla eşleşirse de şablonun kalanının
+      eşleşmesi için başka çare yoksa iki rakamla da eşleşir.
+     </para>
+     <para>
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_UNGREEDY</link>
+      seçeneği (Perl'de bulunmayan bir seçenektir) etkinse yineleyiciler
+      öntanımlı olarak tamahkar olmazlar, fakat bir yineleyiciyi takibeden bir
+      soru imi varsa o yineleyici tamahkarlık gösterebilir. Başka bir deyişle,
+      bu seçenek öntanımlı davranışı tersine çevirir.
+     </para>
+     <para>
+      <literal>+</literal> imi yineleyicilerin ardına konduğunda yineleyiciyi
+      bencilleştirir. Yani, şablonun kalanının başarısızlığı pahasına
+      olabildiğince çok eşleşme yapmaya çalışır. Bu bakımdan, örneğin,
+      <literal>.*abc</literal> şablonu "aabc" ile eşleştiği halde
+      <literal>.*+abc</literal> şablonu eşleşmeyecektir. Çünkü
+      <literal>.*+</literal> dizgenin tamamını yiyecektir. Bencil
+      yineleyiciler işlemi hızlandırmak için PHP 4.3.3'ten beri
+      kullanılabilmektedir.
+     </para>
+     <para>
+      Bir yaylı ayraçlı alt şablon, 1'den büyük bir asgari ve sınırlı bir
+      azami yineleme değeriyle nicelendiğinde derlenmiş şablon için asgari ve
+      azami değerlerin büyüklüklerine bağlı olarak daha fazla alan gerekir.
+     </para>
+     <para>
+      Eğer bir şablon, .* veya .{0,}  ile başlıyorsa ve (Perl'in /s seçeneğine
+      eşdeğer) <link
+      linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link>
+      seçeneği etkinse, noktanın satırsonu karakterleriyle eşleşmesini
+      sağlamak için, eşleşmeye konu dizgedeki karakterleri şablonun kalanı ile
+      eşleştirmek adına, şablon örtük olarak satırsonlarına demirlenir.
+      Dolayısıyla, ilkinden sonraki eşleşmeler için yineleme gereği kalmaz.
+      PCRE böyle bir şablonu \A ile öncelenmiş gibi ele alır. Eşleşmeye konu
+      dizgenin satırsonu karakterlerini içermediğinin bilindiği durumlarda,
+      demirleme işlemini dolaylı olarak belirtmek amacıyla ^ kullanmak veya
+      bu en iyilemeyi sağlamak için şablon .* ile başlatıldığı takdirde <link
+      linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link> seçeneğini
+      etkin kılmak akıllıca olur.
+     </para>
+     <para>
+      Bir yakalayan alt şablonun yinelenmesi durumunda, alt şablonun eşleştiği
+      alt dizge son yineleme ile eşleşen alt dizgedir. Örneğin,
+      <literal>(tweedle[dume]{3}\s*)+</literal> şablonu "tweedledum
+      tweedledee" dizgesiyle eşleştirilmeye çalışıldığında eşleşen alt dizge
+      "tweedledee" olur. Bununla birlikte, iç içe yakalayan alt şablonların
+      varlığında, alt şablonun eşleştiği alt dizge önceki yinelemelerle
+      eşleşen alt dizgeler olabilir. Örneğin, <literal>/(a|(b))+/</literal>
+      şablonu "aba" ile eşleştirilmeye çalışıldığında eşleşen ikinci alt dizge
+      "b" olur.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.back-references">
+     <title>Geriye Gönderimler</title>
+     <para>
+      Bir karakter sınıfının dışında, bir tersbölü ile öncelenmiş 0'dan büyük
+      bir sayı, şablonda kendinden önce yaylı ayraçlarla gruplanmış alt
+      şablonlar varsa, bunlar arasından kendisiyle ilgili yakalayan alt
+      şablona gönderim olarak ele alınır.
+     </para>
+     <para>
+      Ancak, tersbölüyü takibeden onluk sayı 10'dan küçükse, bu daima bir
+      geriye gönderim olarak ele alınır ve şablonun öncesinde bir yakalayan
+      alt şablon başlatan bundan daha az sayıda yaylı ayraç varsa işlem bir
+      hata ile sonuçlanır. Başka bir deyişle, 10'dan küçük numaralı yakalayan
+      alt şablonları kapatan ayraçların kendileriyle ilgili geriye
+      gönderimlerin öncesinde bulunma koşulu yoktur. Tersbölüyü takibeden
+      rakamların ele alınışları ile ilgili ayrıntılı bilgiyi
+      <link linkend="regexp.reference.backslash">Tersbölü</link> bölümünde
+      bulabilirsiniz.
+     </para>
+     <para>
+      Bir geriye gönderimin eşleştiği alt şablon olasılıklar içeriyorsa,
+      geriye gönderim, şablonun kalanının eşleştiği olasılıktan başka bir
+      olasılıkla eşleşmez. Yani,
+      <literal>(sens|respons)e and \1ibility</literal> şablonu, "sense and
+      sensibility" ve "response and  responsibility" ile eşleştiği halde
+      "sense  and  responsibility" ile eşleşmeyecektir. Harf büyüklüğüne
+      duyarlılık etkin olduğunda geriye gönderim de aynı duyarlılığa sahip
+      olacaktır. Örneğin, <literal>((?i)rah)\s+\1</literal> şablonunda,
+      yakalayan alt şablon özgün olarak harf büyüklüğüne duyarlı eşleştiği
+      halde bile "rah rah" ve "RAH RAH" ile eşleşecek ama "RAH rah" ile
+      eşleşmeyecektir.
+     </para>
+     <para>
+      Aynı alt şablon için birden fazla geriye gönderim olabilir. Bir
+      şablonun eşleşeceği bir dizge parçası yoksa onunla ilgili geriye
+      gönderimler daima başarısız olacaktır. Örneğin,
+      <literal>(a|(bc))\2</literal> şablonu "bc" yerine "a" ile başlayan bir
+      dizgeyle başarısız olacaktır. 99 ayrı geriye gönderim olabileceğinden
+      bir tersbölüyü takibeden tüm rakamlar olası bir geriye gönderim olarak
+      ele alınacaktır. Eğer alt şablon bir rakam karakteri ile devam ediyorsa
+      geri gönderimi sonlandırmak için bir ayraç karakteri gerekir. <link
+      linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+      seçeneği etkinse bu ayraç karakteri, boşluk karakteridir. Aksi takdirde
+      boş bir açıklama kullanmak gerekir.
+     </para>
+     <para>
+      Yaylı ayraçların içinde kullanılan bir geriye gönderim, ilgili alt
+      şablonun hemen ardından kullanılmışsa başarısız olacaktır. Bu bakımdan,
+      örneğin (a\1) şablonu hiçbir dizgeyle eşleşmeyecektir. Bununla
+      birlikte, böyle alt şablon içindeki geriye gönderimler bazı durumlarda
+      oldukça kullanışlı olabilir. Örneğin,
+      <literal>(a|b\1)+</literal> şablonu herhangi bir sayıda "a" veya "aba"
+      ya da "ababaa" ve benzeri dizgesiyle eşleşecektir. Alt şablonun her
+      yinelenişinde, geriye gönderim kendisiyle ilişkili alt dizge ile
+      eşleşecektir. Bunun çalışması için, ilk yinelemenin geriye gönderimle
+      eşleşmesi gerekli değildir. Bu, yukarıdaki gibi olasılık belirtimiyle
+      veya asgarisi sıfır olan bir yineleyici kullanılarak yapılabilir.
+     </para>
+
+     <para>
+      İsimli alt şablonlarla ilgili geriye gönderimler
+      <literal>(?P=isim)</literal> veya PHP 5.2.4 sürümünden beri ayrıca,
+      <literal>\k&lt;isim&gt;</literal>, <literal>\k'isim'</literal>,
+      <literal>\k{isim}</literal> veya <literal>\g{isim}</literal>
+      biçeminde olabilmektedir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.assertions">
+     <title>Tezler</title>
+     <para>
+      Bir tez, herhangi bir karakterin tüketilmediği bir eşleşme noktasının
+      öncesinde veya sonrasındaki karakterler üzerinde yapılacak bir sınama
+      belirtir. Basit savlar yukarıda da açıklandığı gibi \b,
+      \B,  \A,  \Z,  \z, ^ ve $ olarak kodlanabilir. Birden fazla alt
+      şablondan oluşan daha karmaşık savlar da düzenlenebilir. Bunların iki
+      çeşidi vardır: Eşleşmeye konu dizge içinde geçerli konumun öncesine
+      bakanlar ve sonrasına bakanlar.
+     </para>
+     <para>
+      Bir tez alt şablonu, eşleşme noktasının değişmesine sebep olmadığı
+      takdirde normal yollarla eşleşecektir. Eşleşme noktasının sonrasına
+      bakan tezler, olumlu savlar için  (?=  ile, olumsuz savlar için ise (?!
+      ile başlar. Örneğin, <literal>\w+(?=;)</literal> şablonu, ardına bir
+      noktalı virgül konmuş bir sözcükle eşleşecek, ancak ardında noktalı
+      virgül bulunmayan bir sözcükle eşleşmeyecektir.
+      <literal>foo(?!bar)</literal> şablonu ardında "bar" bulunmayan herhangi
+      bir "foo" ile eşleşecektir. Ancak, benzer şekilde,
+      <literal>(?!foo)bar</literal> şablonu, öncesinde "foo" dışında bir
+      dizge bulunan bir "bar" dizgesini bulamayacak; buna karşın, öncesinde
+      hiçbir şey bulunmayan, ilk "bar" dizgesini bulacaktır. Çünkü (?!foo)
+      savı, sonraki üç karakter "bar" olduğu takdirde daima doğru olacaktır.
+      Bu etkiyi geriye bakan bir savla da sağlamak mümkündür.
+     </para>
+     <para>
+      Eşleşme noktasının öncesine bakan tezler, olumlu savlar için (?&lt;=
+      ile, olumsuz savlar için ise (?&lt;! ile başlar. Örneğin,
+      <literal>(?&lt;!foo)bar</literal> şablonu öncesinde "foo" bulunmayan
+      bir "bar" dizgesiyle eşleşecektir. Geriye bakan bir savın içeriğinin
+      eşleşeceği dizgenin sabit uzunlukta olması gerekir.
+      <literal>(?&lt;=bullock|donkey)</literal> şablonu bu kurala uyarken
+      <literal>(?&lt;!dogs?|cats?)</literal> şablonu, derleme sırasında
+      hataya sebep olur. Farklı uzunlukta dizgelerle eşleşen geriye bakan
+      şablonlara sadece olasılıkların belirtildiği alt şablonun dışında izin
+      verilir. Bu kural, tüm olasılıkların aynı uzunlukta dizge ile
+      eşleşmesini gerektiren Perl 5.005 sürümünden farklıdır. Örneğin,
+      <literal>(?&lt;=ab(c|de))</literal> savına Perl 5.005 sürümünde izin
+      verilmez, çünkü üst seviye olasılıklar farklı uzunlukta dizgelerden
+      oluşur. Ancak, şablon,  <literal>(?&lt;=abc|abde)</literal> örneğindeki
+      gibi iki ayrı olasılığa bölünürse sorun çıkmaz. Geriye bakan savların
+      gerçekleniminde, her olasılık için, geçici olarak belli bir uzunlukta
+      geriye gidilip eşleşme denenir. Eğer, eşleşme noktasının öncesinde
+      yeteri sayıda karakter yoksa eşleşme ister istemez başarısız olur.
+      Geriye bakan savlar, dizge sonlarıyla eşleşmede, sadece bir kere
+      eşleşen alt şablonlarla birlikte kullanıldığında oldukça yararlıdır.
+      Böyle, sadece bir kere eşleşen alt şablon örneklerini <link
+      linkend="regexp.reference.onlyonce">Sadece bir kerelik alt şablonlar</link> bölümünde bulabilirsiniz.
+     </para>
+     <para>
+      Başarılı bir eşleşmede birden fazla sav bulunabilir. Örneğin,
+      <literal>(?&lt;=\d{3})(?&lt;!999)foo</literal> şablonu, öncesindeki üç
+      rakam "999" olmayan bir "foo" dizgesiyle eşleşecektir. Farkettiğiniz
+      gibi, her sav, eşleşmeye konu dizge içinde hep aynı noktaya bağımsız
+      olarak uygulanır. Yapılan ilk şey, önceki üç karakterin birer rakam olup
+      olmadığıdır. Ancak bundan sonra o üç rakamın "999" olup olmadığına
+      bakılır. Bu şablon, "foo" dizgesinin önündeki, ilk üç karakteri rakam
+      olan ve son üç karakteri "999" olmayan altı karakterle eşleşmez.
+      Örneğin, "123abcfoo" dizgesiyle eşleşme sağlanamayacaktır. İstenen
+      eşleşmeyi sağlamak için şablonun
+      <literal>(?&lt;=\d{3}...)(?&lt;!999)foo</literal> olarak düzenlenmesi
+      gerekir.
+     </para>
+     <para>
+      İlk sav için önce, "foo" dizgesini önceleyen altı karakterin ilk üçünün
+      rakam olup olmadığına bakılır. Sonra ikinci sav için altılının son üç
+      karakterinin "999" olup olmadığına bakılır.
+     </para>
+     <para>
+      Savlar çeşitli birleşimler oluşturacak şekilde iç içe düzenlenebilir.
+      Örneğin, <literal>(?&lt;=(?&lt;!foo)bar)baz</literal> şablonu öncesinde
+      "foo" ile öncelenmemiş "bar" dizgeleri bulunan "baz" dizgeleriyle
+      eşleşir. <literal>(?&lt;=\d{3}...(?&lt;!999))foo</literal> şablonu ise,
+      öncesinde 3 rakam ile öncelenmiş "999" içermeyen üç karakter bulunan
+      "foo" dizgeleriyle eşleşecektir.
+     </para>
+     <para>
+      Aynı savı bir kereden fazla kanıtlamanın bir anlamı olmadığından, sav
+      alt şablonları, yinelenemeyecekleri gibi yakalayan alt şablonlar da
+      olamazlar.  Sav alt şablonların içerdiği yakalayan alt
+      şablonlar, ana şablonun tümüne ait yakalayan alt şablonlar olarak
+      değerlendirilirler. Bununla birlikte, bu çeşit yakalayan alt şablonlar
+      sadece olumlu savlarda dışa taşınırlar, çünkü olumsuz savlarda dışa
+      taşınacak bir şey olmaz.
+     </para>
+     <para>
+      Savlar en fazla 200 yaylı ayraçlı alt şablon içerebilir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.onlyonce">
+     <title>Sadece bir kerelik alt şablonlar</title>
+     <para>
+      Yinelemeyi gerek asgarileştirirken gerekse azamileştirirken,  yineleme
+      sayısının her değiştirilişinde ana şablonun kalanının eşleştiğini
+      görmek için yapılan değerlendirmedeki başarısızlık normal olarak bu
+      işlemin yinelenmesine sebep olur. Eşleşmenin doğasını değiştirerek veya
+      şablonun yazarı numaralı eşleşmenin mümkün olmadığı noktayı biliyorsa
+      eşleşmenin vaktinden önce başarısız olmasını sağlamak suretiyle bazen
+      bunun olmasını engellemek yararlı olabilir.
+     </para>
+     <para>
+      \d+foo şablonunun <literal>123456bar</literal> satırına uygulandığını
+      varsayalım.
+     </para>
+     <para>
+      Eşleşterici, ilk altı rakamı eşleştirdikten sonra "foo" ile eşleşmenin
+      mümkün olmadığını görünce, eninde sonunda başarısız olmadan önce
+      şablonun \d+ parçasını önce 5 rakamla, sonra 4 rakamla, vb.
+      eşleştirmeyi dener. Sadece bir kerelik alt şablonlar, şablonun belli
+      bir parçasınının sadece bir kere eşleştirileceğini belirten alt
+      şablonlardır. Böylece eşleştirici "foo" ile ilk eşleştirme denemesinin
+      hemen ardından başarısız olur. Alt şablonun sözdizimi, aşağıdaki
+      örnekte olduğu gibi (?&gt; ile başlayan yaylı ayraçlı alt şablonların
+      özel bir çeşididir: <literal>(?&gt;\d+)bar</literal>
+     </para>
+     <para>
+      Eşleştiriciyi azami sayıda eşleşmeye kilitleyen bu çeşit alt şablonlar
+      bir kerelik eşleşme sağlarlar ve şablonun tamamını eşleştirmedeki ilk
+      başarısızlıkta şablonun geriye saymasını engellerler. Ancak, şablonun
+      diğer parçaları geriye saymayı gerektiriyorsa bu normal olarak çalışır.
+     </para>
+     <para>
+      Başka bir deyişle, bu tür bir alt şablon, eşleşmeye konu dizgenin belli
+      bir noktasına demirlemenin mümkün olduğu bir durumda tekil bir şablonun
+      eşleşeceği dizgeyle eşleşir.
+     </para>
+     <para>
+      Sadece bir kerelik alt şablonlar, yakalamayan alt şablonlardır.
+      Yukarıdaki örnekteki gibi basit durumlar, kalan herşeyin tüketilmesine
+      sebep olan bir yineleme azamileştirmesi olarak düşünülebilir. Bu
+      bakımdan, \d+ ve \d+? şablonlarının ikisi de şablonun kalanını
+      eşleştirmek için rakam sayısını ayarlamaya çalışırken, (?&gt;\d+)
+      şablonu rakam dizisinin tamamıyla sadece bir kere eşleşebilir.
+     </para>
+     <para>
+      Bu oluşum, şüphesiz keyfi olarak karmaşıklaştırılmış alt şablonlar
+      içerebilir ve bunlar iç içe olabilir.
+     </para>
+     <para>
+      Sadece bir kerelik alt şablonlar, dizge sonuyla etkili bir eşleşme
+      belirtmek için, geriye bakan sav alt şablonları ile birlikte
+      kullanılabilir. Eşleşmeyeceği uzun bir dizgeye uygulanacak, basit bir
+      şablon olarak <literal>abcd$</literal> şablonunu ele alalım. İşlem
+      soldan sağa doğru uygulanacağından, PCRE, eşleşmeye konu dizgedeki her
+      "a" için şablonun kalanıyla bir eşleşme arayacaktır. Eğer şablon,
+      <literal>^.*abcd$</literal> olarak belirtilirse, ilk olarak baştaki .*
+      dizgenin tamamıyla eşleşir, fakat bu başarısız olursa (dizgenin ardında
+      bir "a" bulunmaması durumu), önce son bir karakteri bütün dizgeyle
+      eşleştirmek için dizgede geriye gitmeye başlar, sonra bunu son iki
+      karakter için ve son üç için, vb. dener. Dolayısıyla, "a" için
+      dizgenin tamamıyla eşleşmeyi sağlayacak taramanın bu kez sağdan sola
+      sola uygulanmasından başka değişen bir şey olmayacaktır. Bununla
+      birlikte, şablon, <literal>^(?>.*)(?&lt;=abcd)</literal> olarak
+      yazılırsa .* için geriye doğru defalarca eşleştirme denemesi yerine,
+      dizgenin tamamıyla bir kerede eşleşme denenebilecektir. İkinci grupta
+      belirtilen geriye bakan sav, son dört karakterin üzerinde sadece bir
+      deneme yapacak, eğer eşleşme sağlanamazsa eşleştirici başarısız
+      olacaktır. Uzun dizgeler sözkonusu olduğunda bu yaklaşım işlem süresi
+      üzerinde önemli bir fark yaratacaktır.
+     </para>
+     <para>
+      Bir şablonun sınırsız sayıda yineleme içeren bir alt şablonu olması
+      durumunda şablonun tamamı için sınırsız sayıda eşleşme denenecek
+      demektir; eşleşme başarısızlığının çok uzun bir sürenin sonunda
+      alınmasından kaçınmanın tek yolu ne yazık ki, sadece bir kerelik alt
+      şablon kullanımıdır. <literal>(\D+|&lt;\d+>)*[!?]</literal> şablonu,
+      gerek hiç rakam bulunmaması gerekse rakamların &lt;> ile sarmalanması
+      durumunda, ardından ! veya ? belirtilmesi nedeniyle, sınırsız sayıda
+      alt dizge ile eşleşecektir. Eğer eşleşme olursa işlem çabucak
+      bitecektir. Bununla birlikte, şablon,
+      <literal>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</literal>
+      dizgesine uygulandığında başarısızlığın raporlanması çok uzun
+      zaman alacaktır. Bunun sebebi, dizgenin çok sayıda yolla iki yinelemeye
+      bölünebilmesi ve hepsinin denenmesidir. (Hem PCRE hem de Perl'in, tek
+      bir karakter kullanıldığında hızlı bir başarısızlığa izin vermesi
+      nedeniyle, örnekte sondaki tek karakter yerine [!?] kullanılmıştır. Bir
+      eşleşme için son tek karakterin varlığı gereklidir ve dizgede
+      bulunmazsa erken bir başarısızlık söz konusudur.) Eğer şablon,
+      <literal>((?>\D+)|&lt;\d+>)*[!?]</literal> olarak değiştirilirse, rakam
+      bulunmayan dizgeler bölünemeyecek ve başarısızlık çabucak
+      gerçekleşecektir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.conditional">
+     <title>Koşullu alt şablonlar</title>
+     <para>
+      Eşleşme sürecinin, bir savın veya önceki bir yakalayan alt şablonun
+      eşleşme sonucuna bağlı olarak, bir şablona koşullu olarak boyun eğmesi
+      veya iki olasılık arasında seçim yapabilmesi mümkündür. Koşullu alt
+      şablonların olası iki çeşidi şunlardır:
+     </para>
+
+     <literallayout>
+       (?(koşul)evet-şablonu)
+       (?(koşul)evet-şablonu|hayır-şablonu)
+     </literallayout>
+     <para>
+      Koşul sağlandığı takdirde evet-şablonu, aksi takdirde hayır-şablonu
+      uygulanır veya hiçbir şablon uygulanmaz. Koşullu alt şablonda ikiden
+      fazla olasılık varsa derleme sırasında hata oluşur.
+     </para>
+     <para>
+      İki çeşit koşul vardır. Eğer yaylı ayraçlar arasındaki metin rakamlardan
+      oluşuyorsa koşulun içerdiği sayıların önceki yakalayan alt şablonlarla
+      eşleşeceği varsayılır. Şablonu daha okunabilir kılmak için boşluk
+      karakterlerinin yok sayılmakta olduğunu
+      (<link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+      seçeneği) varsayarak boşluklarla üç parçaya bölünmüş şu şablonu ele
+      alalım: <literal>( \( )?    [^()]+    (?(1) \) )</literal>
+     </para>
+     <para>
+      İlk parça bir açan yaylı ayraç ile eşleşir ve karakter mevcut olduğu
+      takdirde bu, ilk yakalayan alt dizge olur. İkinci parça yaylı ayraç
+      olmayan bir veya daha fazla karakterle eşleşir. Üçüncü parça ise bir
+      koşullu alt şablon olarak, ilk yaylı ayraçlı grupla eşleşip
+      eşleşmediğine bakar; eşleşme varsa, yani eşleşmeye konu dizge bir açan
+      yaylı ayraç ile başlıyorsa, koşul doğrulanmış olur. Dolayısıyla
+      evet-şablonu çalıştırılır ve kapatan yaylı ayraç aranır. Aksi takdirde
+      şablon hiçbir şeyle eşleşmez. Başka bir deyişle, bu şablona göre açan
+      yaylı ayraçla başlayan bir dizge kapatan bir yaylı ayraçla bitebileceği
+      gibi bitmeyebilir de.
+     </para>
+     <para>
+      Eğer koşul olarak <literal>(R)</literal> dizgesi verilmişse, şablona
+      veya alt şablona ardışık bir çağrı yapılmış gibi ele alınır. "Üst
+      seviye" için koşul daima yanlış sonuç verir.
+     </para>
+     <para>
+      Eğer koşul rakamlardan veya (R) dizgerinden oluşmuyorsa, bir sav olarak
+      ele alınır.Olumlu veya olumsuz, ileriye veya geriye bakan bir sav
+      olabilir. Yine boşluk karakterlerinin yok sayılacağı varsayımıyla ikinci
+      satırında iki olasılık içeren şu şablonu ele alalım:
+     </para>
+
+     <literallayout>
+       (?(?=[^a-z]*[a-z])
+       \d{2}-[a-z]{3}-\d{2}  |  \d{2}-\d{2}-\d{2} )
+     </literallayout>
+     <para>
+      Koşul, ileriye bakan olumlu bir sav olup, isteğe bağlı olarak harf
+      olmayan karakterleri takibeden bir harf ile eşleşir. Başka bir deyişle,
+      eşleşmeye konu dizge içinde en azından bir harfin var olup olmadığına
+      bakar. Eğer bir harf varsa, eşleşmeye konu dizge ilk olasılıkla, aksi
+      takdirde ikinci olasılıkla eşleşir, Şablon, aaa'nın harfleri, dd'nin
+      rakamları ifade ettiği durumda dizgenin ya dd-aaa-dd ya da dd-dd-dd
+      dizilimiyle eşleşecektir.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.comments">
+     <title>Açıklamalar</title>
+     <para>
+      (?#  dizilimi sonraki kapatan yaylı ayraca kadar devam eden bir
+      açıklamanın başlangıcını belirtir. İç içe açıklamalara izin verilmez.
+      Açıklama olarak imlenmiş parçalar şablonun yorumlanan parçaları olarak
+      ele alınmazlar.
+    </para>
+    <para>Eğer
+     <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+     seçeneği etkinse, şablon içinde, bir karakter sınıfının dışındaki
+     öncelenmemiş bir # karakteri sonraki satırsonu karakterine kadar devam
+     eden bir açıklamanın başlangıcı olarak ele alınır.
+     </para>
+    </section>
+
+    <section xml:id="regexp.reference.recursive">
+     <title>İç içe şablonlar</title>
+     <para>
+      Sınırsız iç içe yaylı ayraçların kullanıldığı bir şablonu yaylı
+      ayraçlar arasındaki bir dizgeyle eşleştirme sorununu ele alalım.
+      Ardışık işlem haricinde yapılabilecek en iyi şey iç içe sabit bir
+      derinliğe kadar eşleşebilecek bir şablon kullanmaktır. Sabit olmayan
+      derinlikli iç içe şablonları işlemek mümkün değildir. Perl'in 5.6
+      sürümü, ardışık (iç içe) düzenli ifadelere izin veren deneysel bir
+      oluşuma sahiptir. Belli bir ardışıklık durumu için özel bir öğe, (?R)
+      öğesi sağlanmıştır. Bu PCRE şablonu yaylı ayraçlarla ilgili bu sorunu
+      çözmektedir: <literal>\( ( (?>[^()]+) | (?R) )* \)</literal>
+      (Boşlukların gözardı edilmesini sağlayan
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
+      seçeneğinin etkin olduğu varsayılmıştır.)
+     </para>
+     <para>
+      İlk eşleşme bir açan yaylı ayraçla olur. Sonraki eşleşme, ya yaylı
+      ayraçlar içine alınmamış bir dizi alt dizgeyle olur ya da şablonun
+      kendisi ardışık olarak (doğru olarak yaylı ayraçlar içine alınmış alt
+      dizgelerle) eşleşir. Ve son eşleşme bir kapatan yaylı ayraçla olur.
+     </para>
+     <para>
+      Örnek olarak verdiğimiz bu şablon sınırsız sayıda iç içe yineleme
+      içerir; dolayısıyla şablon, eşleşmeyeceği dizgelere uygulandığında,
+      yaylı ayraç içine alınmamış dizgelerle eşleşmek için sadece bir kerelik
+      alt şablonların kullanımı önem kazanır. Bu duruma bir örnek olarak çabuk
+      bir eşleşmemeyle sonuçlanan şu dizge verilebilir:
+      <literal>(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()</literal>
+     </para>
+     <para>
+      Bununla birlikte, sadece bir kerelik alt şablon kullanılmazsa eşleştirme
+      işlemi çok uzun sürecektir. Bunun sebebi, eşleşmeye konu dizgeyi çok
+      çeşitli şekillerde bölen + ve * yinelemelerinin olması ve bir
+      başarısızlık raporlamadan önce bunların hepsinin denenmesi gereğidir.
+     </para>
+     <para>
+      Herhangi bir yakalama alt şablonu için belirlenmiş değerler, alt şablon
+      değerinin atandığı ardışık işlemin en dış seviyesindeki değerlerdir.
+      Eğer yukardaki şablon, <literal>(ab(cd)ef)</literal> dizgesiyle
+      eşleştirilmeye çalışılırsa yakalanan ayraçlı değer, en üst seviyede
+      elde edilen son değer olan "ef" olur. Eğer başka yaylı ayraçlar da
+      eklenirse,
+      <literal>\( ( ( (?>[^()]+) | (?R) )* ) \)</literal> şablonu ile
+      yakalanan dizge, en üst seviye yaylı ayraçların içindeki "ab(cd)ef"
+      olur. Eğer bir şablonda 15'ten fazla yakalayan yaylı ayraç varsa, PCRE
+      ardışık bir işlem sırasında veriyi saklamak için pcre_malloc ile
+      ayırarak ve  işi bitince pcre_free ile serbest bırakarak fazladan
+      bellek sağlamak zorundadır. Eğer bu bellek ayrılamazsa, bir ardışık
+      işlem sırasında bellek yetersiz hatası vermek mümkün olmadığından
+      veriyi, sadece ilk 15 yakalayan yaylı ayraç için saklar.
+     </para>
+     <para>
+      PHP 4.3.3'ten beri, <literal>(?1)</literal>, <literal>(?2)</literal> ve
+      benzerleri ardışık alt şablonlarda da kullanılabilmektedir. Ayrıca,
+      <literal>(?P&gt;isim)</literal> veya <literal>(?P&amp;isim)</literal>
+      isimli alt şablonlarını da kullanmak mümkündür.
+     </para>
+     <para>
+      İsimli veya numararalı bir ardışık alt şablon gönderim sözdizimi,
+      gönderimde bulunduğu yaylı ayraçların dışında kullanılmışsa bir
+      programlama dilindeki bir alt yordam gibi işlem yapar. Önceki
+      örneklerden birinde, <literal>(sens|respons)e and \1ibility</literal>
+      şablonu  "sense and sensibility" ve "response and responsibility" ile
+      eşleşiyor, fakat "sense and responsibility" ile eşleşmiyordu. Eğer
+      <literal>(sens|respons)e and (?1)ibility</literal> şablonu kullanılmış
+      olsaydı diğer iki dizgeyle birlikte  "sense and responsibility" dizgesi
+      de eşleşecekti. Böyle gönderimlerin, yine de atıfta bulunduğu alt
+      şablondan sonra gelmesi gerekir.
+     </para>
+     <para>
+      Eşleşmeye konu dizgenin azami uzunluğu bir tamsayı değişkenin
+      tutabileceği en büyük pozitif tamsayı kadar olabilirse de PCRE ardışık
+      işlem yaparak sonsuz sayıda yinelemeyi ve alt şablonu işleyebilir. Bu
+      bakımdan, belli bir şablon tarafından işlenebilecek bir dizgenin
+      uzunluğunu sınırlayan şey aslında, kullanılabilecek yığıtın
+      büyüklüğüdür.
+     </para>
+
+    </section>
+
+    <section xml:id="regexp.reference.performances">
+     <title>Başarım</title>
+     <para>
+      Şablonların içindeki bazı ögeler diğerlerine göre daha verimli
+      olabilir. Örneğin, [aeiou] gibi bir karakter sınıfı, (a|e|i|o|u) gibi
+      bir olasılık kümesine göre daha verimlidir. Genelde, gerekli davranışı
+      sergileyen en basit oluşum normal olarak en verimli oluşumdur. Jeffrey
+      Friedl'ın kitabı, düzenli ifadelerin verimini arttırmak için en
+      iyilenmeleriyle ilgili bir çok inceleme içerir.
+     </para>
+     <para>
+      Bir şablon .* ile başlıyorsa ve <link
+      linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link> seçeneği
+      etkinse, şablon, sadece eşleşmeye konu dizgenin başlangıcı ile
+      eşleşebileceğinden, örtük olarak PCRE tarafından demirlenir. Bununla
+      birlikte, <link linkend="reference.pcre.pattern.modifiers">
+      PCRE_DOTALL</link> seçeneği etkin değilse, nokta işleci satırsonu
+      karakteri ile eşleşmeyeceğinden ve eşleşmeye konu dizge çok sayıda
+      satırsonu içeriyorsa şablon dizgenin başlangıcından başka diğer
+      satırsonu karakterlerinin sonrası ile de eşleşeceğinden PCRE bu en
+      iyilemeyi yapamaz. Örneğin, <literal>(.*) ikinci</literal> şablonu, ilk
+      yakalanan alt dizge "ve" olmak üzere "birinci\nve ikinci" dizgesiyle
+      eşleşir (\n satırsonu karakteridir). PCRE bunu yaparken, eşleşmeye konu
+      dizgedeki her satırsonu karakterinden sonra eşleşme başlatmayı
+      tekrarlamak zorundadır.
+     </para>
+     <para>
+      Böyle bir şablonu satırsonu karakteri içermeyen bir dizgeyle
+      eşleştirmek için kullanıyorsanız en iyi başarımı
+      <link linkend="reference.pcre.pattern.modifiers">PCRE_DOTALL</link>
+      seçeneğini etkin kılarak veya demirlemeyi açıkça belirtmek için şablonu
+      ^.*  ile başlatarak sağlayabilirsiniz. Bu, PCRE'yi her satırsonunda
+      eşleşmeyi yeni baştan başlatmaktan kurtarır.
+     </para>
+     <para>
+      İç içe sonsuz sayıda yineleme içeren şablonlara karşı dikkatli olun.
+      Kendileriyle eşleşmeyen bir dizgeye rastladıklarında sonuç almak çok
+      uzun sürebilir. Örneğin <literal>(a+)*</literal> şablonunu ele alalım.
+    </para>
+    <para>
+      Bu şablon "aaaa" dizgesiyle 33 farklı yolla eşleşir ve dizge uzadıkça
+      bu sayı büyük bir hızla artar. (* yinelemesi 0, 1, 2, 3, 4 kere eşleşir
+      ve sıfırdan farklı bütün durumlarda + yinelemeleri farklı kereler
+      eşleşebilir.) Şablonun kalanı böyle olduğu takdirde şablonun tamamıyla
+      eşleşme mümkün olmayacaktır. PCRE kural olarak olası her çeşit
+      yinelemeyi deneyeceğinden bu işlem oldukça uzun bir zaman alacaktır.
+    </para>
+    <para>
+      Şablonun ardına, <literal>(a+)*b</literal> şeklinde özel olmayan bir
+      karakter getirilmesi gibi basit çözümlerle bir en iyileme mümkündür.
+      Standart eşleştirme işlemlerine girişmeden önce, PCRE eşleşmeye konu
+      dizgenin sonlarına doğru bir "b" varlığını araştırır; bulamazsa, hemen
+      eşleşmenin başarısız olduğunu bildirir. Ancak böyle arda eklenebilecek
+      özel olmayan bir karakterin yokluğunda bu en iyileme kullanılamaz.
+      <literal>(a+)*\d</literal> şablonunun davranışını yukarıdaki şablonla
+      karşılaştırarak farkı görebilirsiniz. Birincisi sadece "a"lardan oluşan
+      bir satıra uygulandığında hemen her durumda daima anında başarısız
+      olurken ikincisinin başarısızlığı dizge 20 karakterden uzun olduğunda
+      farkedilebilecek kadar uzun bir süre sonra gerçekleşir.
+     </para>
+    </section>
+   </section>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
