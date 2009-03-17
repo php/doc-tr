@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.27 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.preg-match" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>preg_match</refname>
+  <refpurpose>Bir düzenli ifadeyi eşleştirmeye çalışır</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>preg_match</methodname>
+   <methodparam><type>string</type><parameter>şablon</parameter></methodparam>
+   <methodparam><type>string</type><parameter>konu</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">eşleşenler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>şablon</parameter> ile belirtilen düzenli ifadeyi eşleştirmek
+   için <parameter>konu</parameter> dizgesinde arama yapar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+   <variablelist>
+    <varlistentry>
+     <term><parameter>şablon</parameter></term>
+     <listitem>
+      <para>
+       Bir dizge olarak, aranacak şablon.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>konu</parameter></term>
+     <listitem>
+      <para>
+       Şablonla eşleşeceği düşünülen dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>eşleşmeler</parameter></term>
+     <listitem>
+      <para>
+       Belirtildiği takdirde sonuçları içerecek dizi.
+       <varname>$eşleşmeler[0]</varname> elemanı şablonun tamamıyla eşleşen
+       metni, <varname>$eşleşmeler[1]</varname> ve sonrakiler yakalayan yaylı
+       ayraçlı alt şablonlarla eşleşen alt dizgeleri içerir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Bu değiştirgede şu seçenekler belirtilebilir:
+      </para>
+       <variablelist>
+        <varlistentry>
+         <term><constant>PREG_OFFSET_CAPTURE</constant></term>
+         <listitem>
+          <simpara>
+           Bu seçenek etkin olduğunda, her eşleşme bulunduğunda sonraki arama
+           başlangıcı da döner. Bu seçenek dönen değerin bir dizi olmasına
+           sebep olur. Dönen dizinin her elemanı da birer dizi olup, alt
+           dizilerin <literal>0</literal> indisinde eşleşen dizge,
+           <literal>1</literal>  indisinde <parameter>konu</parameter>
+           içindeki başlangıç konumu bulunur.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>başlangıç</parameter></term>
+     <listitem>
+      <para>
+       <parameter>konu</parameter> dizgesinde aramanın başlatılacağı konum;
+       isteğe bağlı olup bayt cinsinden belirtilir.
+      </para>
+      <note>
+       <para>
+        <parameter>başlangıç</parameter> değiştirgesinin kullanımı,
+        <literal>substr($konu, $başlangıç)</literal> ile konu dizgede
+        belirtilen başlangıca göre işleve bir alt dizge aktarmaya eşdeğer
+        değildir. Çünkü, şablon, <emphasis>^</emphasis>,
+        <emphasis>$</emphasis>, <emphasis>(?&lt;=x)</emphasis> gibi savlar
+        içerebilir. Şu iki örneği karşılaştıralım:
+       </para>
+       <para>1. örnek:</para>
+        <informalexample>
+         <programlisting role="php">
+<![CDATA[
+<?php
+$subject = "abcdef";
+$pattern = '/^def/';
+preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, 3);
+print_r($matches);
+?>
+]]>
+         </programlisting>
+         &example.outputs;
+         <screen>
+<![CDATA[
+Array
+(
+)
+]]>
+         </screen>
+         <para>2. örnek:</para>
+         <programlisting role="php">
+<![CDATA[
+<?php
+$subject = "abcdef";
+$pattern = '/^def/';
+preg_match($pattern, substr($subject,3), $matches, PREG_OFFSET_CAPTURE);
+print_r($matches);
+?>
+]]>
+         </programlisting>
+          &example.outputs;
+         <screen>
+<![CDATA[
+Array
+(
+    [0] => Array
+        (
+            [0] => def
+            [1] => 0
+        )
+
+)
+]]>
+         </screen>
+        </informalexample>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <function>preg_match</function> işlevi <parameter>şablon</parameter> ile
+   eşleşme sayısını döndürür. Değer olarak, hiç eşleşme olmadığını belirtmek
+   üzere 0 veya eşleşme olduğunu belirtmeki üzere 1 döner; çünkü
+   <function>preg_match</function> ilk eşleşmeyi bulur bulmaz döner.
+   <function>preg_match_all</function> ise tersine,
+   <parameter>konu</parameter> dizgesinin sonuna kadar eşleşenleri arar. Bir
+   hata oluşması durumunda işlev &false; döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.3</entry>
+       <entry>
+        <parameter>başlangıç</parameter> değiştirgesi eklendi
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <constant>PREG_OFFSET_CAPTURE</constant> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <parameter>seçenekler</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Metin içinde "php" dizgesini bulmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Şablonun ardına konan "i" aramanın harf büyüklüğüne
+// duyarsız olacağını belirtir.
+if (preg_match("/php/i", "PHP bir betik dilidir.")) {
+    echo "Eşleşme sağlandı.";
+} else {
+    echo "Eşleşme sağlanamadı.";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- "cebir" sözcüğünü bulmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* \b işleci şablonun tam bir sözcükle eşleşeceğini belirtir,
+   yani "cebir" eşleşirken "cebirci", "cebirsel "eşleşmez.*/
+if (preg_match("/\bcebir\b/i", "Cebir en sevdiğim derstir.")) {
+    echo "Eşleşme var.";
+} else {
+    echo "Eşleşme yok.";
+}
+
+if (preg_match("/\bcebir\b/i", "Cebirci yazılı yapacak!")) {
+    echo "Eşleşme var.";
+} else {
+    echo "Eşleşme yok.";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir adresten alan ismini çekip almak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// adresten alan ismini alalım
+preg_match('@^(?:http://)?([^/]+)@i',
+    "http://www.php.net/index.html", $matches);
+$host = $matches[1];
+
+// alan adının son iki parçasını alalım
+preg_match('/[^.]+\.[^.]+$/', $host, $matches);
+echo "alan adı: {$matches[0]}\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+alan adı: php.net
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- İsimli alt şablon kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$dizge = 'mesela: 2008';
+
+preg_match('/(?<isim>\w+): (?<sene>\d+)/', $dizge, $eşleşmeler);
+
+print_r($eşleşmeler);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+(
+    [0] => mesela: 2008
+    [isim] => mesela
+    [1] => mesela
+    [sene] => 2008
+    [2] => 2008
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <tip>
+   <para>
+    Bir dizgeyi başka bir dizge ile eşleştirmek için bu işlevi değil, bu işi
+    daha hızlı yapan <function>strpos</function> veya
+    <function>strstr</function>işlevini kullanın.
+   </para>
+  </tip>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>preg_match_all</function></member>
+    <member><function>preg_replace</function></member>
+    <member><function>preg_split</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

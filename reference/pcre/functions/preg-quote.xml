@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.12 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.preg-quote" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>preg_quote</refname>
+  <refpurpose>Düzenli ifadelerin özel karakterlerini önceler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>preg_quote</methodname>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+  <methodparam choice="opt"><type>string</type><parameter>im</parameter><initializer>NULL</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>preg_quote</function> işlevi <parameter>dizge</parameter>
+   değiştirgesinde bulunan düzenli ifade özel karakterlerinin her birinin
+   önüne tersbölü karakteri yerleştirir. Düzenli ifade dizgesini çalışma
+   anında oluşturuyorsanız ve du dizgelerin özel karakterleri içerme olasılığı
+   varsa bu işlev çok işe yarar.
+  </para>
+  <para>
+   Özel düzenli ifade karakterleri şunlardır:
+   <literal>. \ + * ? [ ^ ] $ ( ) { } = ! &lt; &gt; | :</literal>
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Girdi dizgesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>im</parameter></term>
+     <listitem>
+      <para>
+       Belirtilmesi isteğe bağlı olup, gerekirse bu im de öncelenecektir. PCRE
+       işlevlerinin gerektirdiği imleri öncelemek için yararlıdır. / karakteri
+       en çok kullanılan imlerden biridir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Öncelenmiş dizge ile döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>preg_quote</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$keywords = '$40 for a g3/400';
+$keywords = preg_quote($keywords, '/');
+echo $keywords; // çıktısı: \$40 for a g3\/400
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir metnin içindeki bir kelimeyi vurgulamak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Bu örnekte, preg_quote($kelime),
+// düzenli ifade için özel anlama sahip
+// yıldız imlerini öncelemekte kullanılmıştır.
+
+$metin = "Bu kitabı bulmak çok *zor*.";
+$kelime = "*zor*";
+$metin = preg_replace ("/" . preg_quote($kelime) . "/",
+                          "<i>" . $kelime . "</i>",
+                          $metin);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.bin-safe;
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

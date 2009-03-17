@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.preg-replace-callback" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>preg_replace_callback</refname>
+  <refpurpose>Geriçağırım işlevi kullanarak düzenli ifadeye göre dizgede
+  değişiklik yapar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>preg_replace_callback</methodname>
+   <methodparam><type>mixed</type><parameter>şablon</parameter></methodparam>
+   <methodparam><type>callback</type><parameter>geriçağırım</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>konu</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sınır</parameter><initializer>-1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">sayı</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>yenisi</parameter> değiştirgesinin yerini bir
+   <parameter>geriçağırım</parameter> işlevinin alması dışında, davranış
+   bakımından <function>preg_replace</function> işlevine hemen hemen
+   eşdeğerdir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>şablon</parameter></term>
+     <listitem>
+      <para>
+       Aranacak şablon. Tek bir dizge olabileceği gibi çok sayıda dizge içeren
+       bir dizi de olabilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>geriçağırım</parameter></term>
+     <listitem>
+      <para>
+       <parameter>konu</parameter> dizgesiyle eşleşen elemanlardan oluşan bir
+       dizi ile çağrılıp yer değiştirilecek dizgeleri içeren bir dizi döndüren
+       bir geriçağırım işlevinin ismi.
+      </para>
+      <para>
+       Genellikle <parameter>geriçağırım</parameter> işlevi
+       <function>preg_replace_callback</function> işlevinin çağrısı sırasında
+       bir satıriçi işlev olarak kullanılır. Böyle bir durumda, geriçağırım
+       işlevi olarak bir anonim işlev oluşturmak amacıyla
+       <function>create_function</function> kullanılır. Böylece çağrı için
+       gereken tüm bilgi tek bir yerde toplanmış olur ve bir daha başka bir
+       yerde kullanılmayacak olan geriçağırım işlevi, işlev isimalanında
+       kalabalık etmez.
+      </para>
+      <para>
+       <example>
+        <title><function>preg_replace_callback</function> ve
+        <function>create_function</function></title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+/* Paragraf başlangıcındaki büyük harfi küçük harfe çevirmek
+   için bir Unix tarzı komut satırı uygulaması */
+$fp = fopen("php://stdin", "r") or die("std girdi okunamadı");
+while (!feof($fp)) {
+    $line = fgets($fp);
+    $line = preg_replace_callback(
+        '|<p>\s*\w|',
+        create_function(
+            // Buradaki tek tırnaklar önemli yoksa
+            // $ imlerini \$ olarak öncelemek gerekir.
+            '$matches',
+            'return strtolower($matches[0]);'
+        ),
+        $line
+    );
+    echo $line;
+}
+fclose($fp);
+?>
+]]>
+        </programlisting>
+       </example>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>konu</parameter></term>
+     <listitem>
+      <para>
+       Şablonun aranacağı yer değiştirmeye konu dizge veya dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sınır</parameter></term>
+     <listitem>
+      <para>
+       Her <parameter>konu</parameter> dizgesinde her şablon için olası azami
+       yer değiştirme sayısı. <literal>-1</literal> öntanımlıdır (sınırsız).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sayı</parameter></term>
+     <listitem>
+      <para>
+       Belirtildiği takdirde yapılan yer değiştirmelerin sayısı bu
+       değiştirgeye konur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <parameter>konu</parameter> değiştirgesi bir dizi ise
+   <function>preg_replace_callback</function> de bir dizi döndürür aksi
+   takdirde bir dizge döner.
+  </para>
+  <para>
+   Eşleşmeler bulunduğu takdirde yeni <parameter>konu</parameter> döner, aksi
+   takdirde bir hata oluşmamışsa <parameter>konu</parameter> değiştirilmeden
+   döndürülür; bir hata oluşmuşsa &null; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.1.0</entry>
+       <entry>
+        <parameter>sayı</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- 1. <function>preg_replace_callback</function> örneği</title>
+    <programlisting role='php'>
+<![CDATA[
+<?php
+// Bu metindeki 2002'yi 2003 yapacağız
+$metin = "Zafer Bayramı 30/08/2002 tarihinde olacak,\n";
+$metin.= "Cumhuriyet bayramı ise 29/10/2001 tarihinde idi.\n";
+// geriçağırım işlevi
+function gelecek_sene($eşleşenler)
+{
+  // normalde: $eşleşenler[0] eşleşmenin tamamını,
+  // $eşleşenler[1] (...) içindeki ilk altşablonla eşleşen kısmı,
+  // $eşleşenler[n] (...) içindeki n. altşablonla eşleşen kısmı içerir
+  return $eşleşenler[1].($eşleşenler[2]+1);
+}
+echo preg_replace_callback(
+            "|(\d{2}/\d{2}/)(\d{4})|",
+            "gelecek_sene",
+            $metin);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Zafer Bayramı 30/08/2003 tarihinde olacak,
+Cumhuriyet bayramı ise 29/10/2002 tarihinde idi.
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- 2. <function>preg_replace_callback</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = "plain [indent] deep [indent] deeper [/indent] deep [/indent] plain";
+
+function parseTagsRecursive($input)
+{
+
+    $regex = '#\[indent]((?:[^[]|\[(?!/?indent])|(?R))+)\[/indent]#';
+
+    if (is_array($input)) {
+        $input = '<div style="margin-left: 10px">'.$input[1].'</div>';
+    }
+
+    return preg_replace_callback($regex, 'parseTagsRecursive', $input);
+}
+
+$output = parseTagsRecursive($input);
+
+echo $output;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>preg_replace</function></member>
+    <member><function>create_function</function></member>
+    <member>&seealso.callback;</member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
