@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: aydin Status: ready -->
+<section xml:id="apc.configuration" xmlns="http://docbook.org/ns/docbook">
+ &reftitle.runtime;
+ &extension.runtime;
+ <para>
+  APC öntanımlı ayarları çoğu kurulum için yeterli olsa da daha fazla
+  başarım için aşağıdaki değiştirgelerde ince ayarlar yapmak gerekebilir.
+ </para>
+ <para>
+  Başlıca iki önemli ayara karar vermek gerekir. Birincisi, APC için ne kadar
+  paylaşımlı bellek ayıracaksınız, ikincisi APC&apos;nin her istekte dosya
+  değiştirilmiş mi diye bakmasını istiyor musunuz? Bu ayarların ini
+  yönergeleri sırası ile <literal>apc.shm_size</literal> ve
+  <literal>apc.stat</literal>&apos;dır.
+ </para>
+ <para>
+  Çalışır halde bir sunucuda, eklenti ile birlikte gelen
+  <literal>apc.php</literal> betiğini sunucunun belge kök dizinindeki bir yere
+  koymak ve tarayıcıdan çağırmak önbellek ile ilgili ayrıntılı bilgiler
+  sağlayacaktır. Eğer PHP kurulumunda GD desteği varsa grafikler de
+  görüntülenecektir. Denetlenmesi gereken ilk şey önbelleğe alınan
+  dosyalardır. Önbelleğin çalıştığını varsayar isek <literal>Önbellek tam
+  dolma sayısı</literal>'na dikkat etmek gerekir. Bu sayı önbelleğin dolup son
+  <literal>apc.ttl</literal> saniyede erişilmeyen girdilerin kaç kez zorla
+  temizlenmek zorunda kalındığını gösterir. Ayarlarınızı bu sayıyı küçüktecek
+  şekilde yapmanız gerekir. Eğer sürekli önbelleğinizi dolduruyor iseniz bu
+  önbellek başarımınızı kötü etkileyecektir. APC için daha fazla bellek
+  ayırmanız veya <literal>apc.filters</literal> kullanarak daha az betiği
+  önbelleğe almanız sorunu çözebilir.
+ </para>
+ <para>
+  <table>
+   <title>APC Yapılandırma Seçenekleri</title>
+   <tgroup cols="4">
+    <thead>
+     <row>
+      <entry>İsim</entry>
+      <entry>Öntanımlı değeri</entry>
+      <entry>Değişiklik yeri</entry>
+      <entry>Değişiklik bilgisi</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry><link linkend="ini.apc.enabled">apc.enabled</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 2'de PHP_INI_SYSTEM. APC &lt;= 3.0.12'de PHP_INI_ALL.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.shm-segments">apc.shm_segments</link>
+      </entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.shm-size">apc.shm_size</link></entry>
+      <entry>"30"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.optimization">apc.optimization</link>
+      </entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_ALL</entry>
+      <entry>APC 2'de PHP_INI_SYSTEM. APC 3.0.13 sürümünde çıkartılmıştır.
+      </entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.num-files-hint">apc.num_files_hint</link>
+      </entry>
+      <entry>"1000"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.user-entries-hint">
+      apc.user_entries_hint</link></entry>
+      <entry>"4096"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.ttl">apc.ttl</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.user-ttl">apc.user_ttl</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.gc-ttl">apc.gc_ttl</link></entry>
+      <entry>"3600"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.cache-by-default">
+      apc.cache_by_default</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_ALL</entry>
+      <entry>APC &lt;= 3.0.12'de PHP_INI_SYSTEM. APC 3.0.0&apos;dan beri
+      kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.filters">apc.filters</link></entry>
+      <entry>NULL</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.mmap-file-mask">apc.mmap_file_mask</link>
+      </entry>
+      <entry>NULL</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.slam-defense">apc.slam_defense</link>
+      </entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.file-update-protection">
+      apc.file_update_protection</link></entry>
+      <entry>"2"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.6&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.enable-cli">apc.enable_cli</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.7&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.max-file-size">apc.max_file_size</link>
+      </entry>
+      <entry>"1M"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.7&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.stat">apc.stat</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.10&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.write-lock">apc.write_lock</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.11&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.report-autofilter">
+      apc.report_autofilter</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.11&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.include-once-override">
+      apc.include_once_override</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.12&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.rfc1867">apc.rfc1867</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.13&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.rfc1867-prefix">apc.rfc1867_prefix</link>
+      </entry>
+      <entry>"upload_"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.rfc1867-name">apc.rfc1867_name</link>
+      </entry>
+      <entry>"APC_UPLOAD_PROGRESS"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.rfc1867-freq">apc.rfc1867_freq</link>
+      </entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.localcache">apc.localcache</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.14&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.localcache.size">
+      apc.localcache.size</link></entry>
+      <entry>"512"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.14&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.coredump-unmap">apc.coredump_unmap</link>
+      </entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.16&apos;dan beri kullanılabilmektedir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.stat-ctime">apc.stat_ctime</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.0.13&apos;den beri kullanılabilmektedir.</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+  &ini.php.constants;
+ </para>
+
+ &ini.descriptions.title;
+
+ <para>
+  <variablelist>
+   <varlistentry xml:id="ini.apc.enabled">
+    <term>
+     <parameter>apc.enabled</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+      APC&apos;yi etkisiz duruma getirmek için <literal>apc.enabled</literal>
+      0 olarak ayarlanabilir. Bu APC durağan bir şekilde PHP içine derlendi
+      ise özellikle yararlıdır, zaten bu şekilde derlendi ise etkisiz kılmanın
+      başka bir yolu yoktur (DSO olarak derlendi ise
+      <literal>php.ini</literal> içindeki ilgili <literal>extension</literal>
+      satırı çıkartılabilir).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.shm-segments">
+    <term>
+     <parameter>apc.shm_segments</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Derleyici önbelleği için ayrılan paylaşılan bellek bölümlerinin sayısı.
+      Eğer APC paylaşılan belleğin dışına taşıyorsa ve
+      <literal>apc.shm_size</literal> için sisteminizin
+      izin verdiği en yüksek değeri verdiyseniz bu değeri yükseltmeyi
+      deneyebilirsiniz.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.shm-size">
+    <term>
+     <parameter>apc.shm_size</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      MB olarak her bir paylaşılan bellek kesiminin boyutu.
+      Öntanımlı olarak bazı sistemler (çoğu BSD türevi dahil) paylaşılan
+      bellek kesimi için çok düşük sınırlara sahiptir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.optimization">
+    <term>
+     <parameter>apc.optimization</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Eniyileme seviyesi. Sıfır eniyilemeyi iptal eder, daha yüksek değerler
+      daha etkili eniyileme sağlar. Hız artışlarının pek fazla olmamasını
+      bekleyin, deneyseldir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.num-files-hint">
+    <term>
+     <parameter>apc.num_files_hint</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      HTTP sunucundan dahil edilecek veya istenecek bağımsız kaynak
+      dosyalarının sayısı ile ilgili bir "ipucu". Emin değilseniz sıfıra
+      ayarlayın veya ihmal edin; Bu ayar binlerce kaynak dosyası olan
+      sitelerde yararlıdır.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.user-entries-hint">
+    <term>
+     <parameter>apc.user_entries_hint</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Depolanacak kullanıcı önbellek değişkenlerinin sayısı ile ilgili bir
+      "ipucu" olup <link linkend="ini.apc.num-files-hint">
+      apc.num_files_hint</link>&apos;e benzer. Emin değilseniz sıfıra
+      ayarlayın veya ihmal edin.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.ttl">
+    <term>
+     <parameter>apc.ttl</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Bir önbellek girdisinin bellek yuvasında kullanılmadan kalma süresidir,
+      saniye olarak verilir. Sıfır olarak bırakmak eski girdilerin sürekli
+      olarak bellekte kalmasına ve yeni girdi alınmamasına neden olacaktır.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.user-ttl">
+    <term>
+     <parameter>apc.user_ttl</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Kullanıcı önbelek girdisinin bellek yuvasında kullanılmadan kalma
+      süresidir, saniye olarak verilir. Sıfır olarak bırakmak eski girdilerin
+      sürekli olarak bellekte kalmasına ve yeni girdi alınmamasına neden
+      olacaktır.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.gc-ttl">
+    <term>
+     <parameter>apc.gc_ttl</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Bir önbellek girdisinin çöp toplama listesinde kalabileceği sürenin
+      saniye cinsinden değeridir. Bu değer sunucu sürecinin önbelleklenmiş
+      kaynak dosyası çalıştırılırken ölmesi gibi bir hataya karşı emniyet
+      sağlar; eğer bu kaynak dosyası değiştirildi ise, eski sürüm için ayrılan
+      bellek bu TTL süresine erişilene kadar boşaltılmayacaktır. Bu özelliği
+      kapatmak için sıfır olarak ayarlayın.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.cache-by-default">
+    <term>
+     <parameter>apc.cache_by_default</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+       Öntanımlı olarak etkindir ("On"), fakat sadece olumlu süzgece uyan
+       dosyaların önbelleğe alınması için etkisiz ("Off") hale getirilerek,
+       <literal>apc.filters</literal> ile birlikte kullanılabilir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.filters">
+    <term>
+     <parameter>apc.filters</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+       Genişletilmiş POSIX düzenli ifadelerine uyan virgülle ayrılmış dizge
+       değerlerin listesidir. Eğer kaynak dosya adı, listedeki herhangi bir
+       kalıba uyarsa bu dosya önbelleğe alınmaz. Eşleştirme için include /
+       require işlevlerine aktarılmış olan dosya adı kullanılır, mutlak yol
+       kullanılmaz. Eğer deyimin ilk karakteri <literal>+</literal> ise,
+       süzgeç ile eşleşen dosyalar önbelleğe alınır, <literal>-</literal> ise
+       alınmaz. <literal>-</literal> öntanımlıdır, bu yüzden yazılmayabilir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.mmap-file-mask">
+    <term>
+     <parameter>apc.mmap_file_mask</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      Eğer <literal>--enable-mmap</literal> kullanılarak MMAP desteği ile
+      derlendiyse, mmap hafıza bölgesinin dosya mı yoksa paylaşımlı bellek
+      desteği ile mi hazırlandığını belirlemek için mmap modülüne aktarılacak
+      mktemp tarzı dosya maskesidir. Doğrudan dosya destekli mmap için
+      <literal>/tmp/apc.XXXXXX</literal>&apos;a benzer şekilde ayarlayın (tam
+      olarak 6 adet <literal>X</literal>). POSIX tarzı shm_open/mmap kullanmak
+      için dosya kalıbına <literal>.shm</literal> koyun. Örnek olarak
+      <literal>/apc.shm.XXXXXX</literal>. Ayrıca <literal>/dev/zero</literal>
+      şeklinde ayarlanarak, anonim mmap bellek için çekirdeğin
+      <literal>/dev/zero</literal> arabirimi kullanılabilir. Tanımsız olarak
+      bırakmak anonim mmap&apos;e zorlayacaktır.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.slam-defense">
+    <term>
+     <parameter>apc.slam_defense</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Çok yoğun sunucularda, sunucuyu başlattığınızda veya dosyaları
+      değiştirdiğinizde, aynı zamanda, aynı dosyayı önbelleğe almaya çalışan
+      birçok sürecin birbiriyle yarışmasına neden olabilirsiniz. Bu ayar
+      önbelleğe alınmamış bir dosya üzerinde süreçlerin es geçme yüzdesini
+      ayarlar. Diğer bir deyişle tek bir sürecin bir dosyayı önbelleğe almama
+      olasılığı olarak düşünebilirsiniz. Örnek olarak,
+      <literal>apc.slam_defense</literal>&apos;i <literal>75</literal>&apos;e
+      ayarlamak %75 olasılıkla sürecin önbellekleme yapmayacağını gösterir.
+      Bu yüzden yüksek değerler daha iyi savunma sağlar. Bu özelliği iptal
+      etmek için <literal>0</literal> olarak ayarlayın.
+     </para>
+     <para>
+      Sonraki sürümlerde <link linkend="ini.apc.write-lock">
+      apc.write_lock</link> ile değiştirilmiştir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.file-update-protection">
+    <term>
+     <parameter>apc.file_update_protection</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Etkin kullanılan bir HTML sunucusunda bir dosyayı değiştirdiğiniz zaman
+      bunu çok kısa atomik bir zaman diliminde yapmalısınız, geçici bir
+      dosyaya yazma işlemi yapılır ve hazır olduğunda özgün dosya adıyla
+      yeniden isimlendirilir (<literal>mv</literal>). Çoğu metin düzenleyici,
+      cp, tar ve diğer bu türden programlar bu şekilde çalışmaz. Metin
+      düzenleyicileri dosyayı düzenlerken, APC, dosyanın hazır olmayan
+      halinin, önbelleğe alınmasına yol açabilir.
+      <literal>apc.file_update_protection</literal> ayarı yeni dosyaların
+      önbelleklemesi üzerinde bir geciktirme sağlar. Varsayılan değeri 2
+      saniyedir. Bu dosyalara erişildiğinde, değişiklik zaman damgası
+      (<literal>mtime</literal>) 2 saniyeden küçükse önbelleğe
+      alınmayacakları anlamına gelir. Bu tür yarım yazılmış dosyalara erişen
+      ziyaretçiler uygulamalarda tuhaf durumlar ile karşılaşabilir, en
+      azından bu tuhaflıklar kalıcı değildir. Eğer dosyalarınızın
+      güncellemesini atomik zamanlama ile yaptığınızdan eminseniz, rsync bunu
+      doğru bir şekilde yapar, bu koruma mekanizmasını 0&apos;a ayarlayarak
+      kapatabilirsiniz. Eğer yüksek girdi-çıktı nedeniyle 2 saniyeden daha
+      uzun süren güncelleme süreçlerine sahipseniz bunu bir miktar arttırmak
+      isteyebilirsiniz.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.enable-cli">
+    <term>
+     <parameter>apc.enable_cli</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Çoğunlukla deneme ve hata arama için kullanılır. Bunu ayarlamak
+      PHP&apos;nin CLI sürümü için APC&apos;nin yetkilendirilmesini sağlar.
+      Normalde her CLI isteği için APC önbelleğinin yeniden oluşturulmasını
+      istemezsiniz, fakat çeşitli deneme senaryoları için APC&apos;nin kolay
+      bir şekilde yetkilendirilmesi yararlı olabilir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.max-file-size">
+    <term>
+     <parameter>apc.max_file_size</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+       Bu değerden daha büyük dosyaların önbelleğe alınmasını engeller,
+       varsayılan değeri 1M&apos;dır.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.stat">
+    <term>
+     <parameter>apc.stat</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Bu ayarı değiştirirseniz dikkatli olun, ayarın varsayılan durumunda
+      APC her istekte betik dosyasının değiştirilme durumu denetlenecektir.
+      Eğer betik değiştirildi ise yeni betiği işleyecek ve önbelleğe
+      alacaktır. Eğer bu ayarı etkisiz duruma getirirseniz APC betiği
+      değiştirilme durumu için denetlemeyecektir.  Bu da betik üzerindeki
+      değişikliklerin etkin olması için HTML sunucunuzu yeniden başlatmanızı
+      gerektirir. Ürün ortamında kullanılan bir sunucuda nadiren kod
+      değiştirmeleri yapılır, bu yüzden etkisiz duruma getirilmesi önemli
+      başarım artışlarına neden olabilir.
+     </para>
+     <para>
+      Betiğe dışardan dahil edilen (include/require) dosyalar için de bu
+      seçenek geçerlidir, fakat eğer göreli dosya yolları (Unix üzerinde / ile
+      başlamayan herhangi bir yol) kullanarak dahil ediyorsanız APC dosyayı
+      benzersiz olarak diğerlerinden ayırabilmek için denetlemek zorundadır.
+      Eğer mutlak yol kullanıyorsanız APC bu denetimi atlayacak ve dosya için
+      benzersiz tanımlayıcı olarak mutlak yolu kullanacaktır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.write-lock">
+    <term>
+     <parameter>apc.write_lock</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+      Yoğun sunucularda, sunucu başlatıldığında veya birçok dosya
+      değiştirildiğinde, bütün süreçlerinizin aynı dosyaları derleyip
+      önbelleğe almaya çalışması gibi bir durumla karşılabilirsiniz,
+      write_lock etkin durumda iken önbelleğe alınmamış bir betiği sadece bir
+      süreç işleyecektir diğer süreçler kilitli durumun açılmasını
+      beklemek yerine önbelleğe alınmamış bir betiği çalıştıracaklardır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.report-autofilter">
+    <term>
+     <parameter>apc.report_autofilter</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+       Erken/Geç bağlama konuları nedeni ile özdevinimli olarak hariç
+       bırakılan betiklerin raporlanmasını sağlar.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.include-once-override">
+    <term>
+     <parameter>apc.include_once_override</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+       <function>include_once</function> ve <function>require_once</function>
+       çağrılarında eniyileştirme sağlar ve pahalı sistem çağrılarının
+       kullanımından sakınır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.rfc1867">
+    <term>
+     <parameter>apc.rfc1867</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+      RFC1867 dosya yükleme aşamalarını kancalama yalnızca APC&apos;yi PHP
+      5.2.0 veya sonraki sürümlerde derlediyseniz geçerlidir. Etkin duruma
+      getirildiğinde, bir yükleme formunda dosya alanından önce
+      <literal>APC_UPLOAD_PROGRESS</literal> alanına rastlandığında
+      özdevinimli olarak upload_<emphasis>anahtar</emphasis> içeren bir
+      kullanıcı önbelleği oluşturulur. Burada <emphasis>anahtar</emphasis>,
+      form girdisindeki <literal>APC_UPLOAD_PROGRESS</literal>
+      elemanının değeridir.
+     </para>
+     <para>
+      Karşıya dosya yükleme izlemesi, evre korumalı değildir, bu yüzden yeni
+      yapılan yüklemeler bir önceki devam eden izlemeyi devre dışı bırakır.
+     </para>
+     <para>
+      <example>
+       <title>- Bir <parameter>apc.rfc1867</parameter> örneği</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+print_r(apc_fetch("upload_$_POST[APC_UPLOAD_PROGRESS]"));
+?>
+]]>
+       </programlisting>
+       &example.outputs.similar;
+       <screen>
+<![CDATA[
+Array
+(
+    [total] => 1142543
+    [current] => 1142543
+    [rate] => 1828068.8
+    [filename] => test
+    [name] => file
+    [temp_filename] => /tmp/php8F
+    [cancel_upload] => 0
+    [done] => 1
+)
+]]>
+       </screen>
+      </example>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.rfc1867-prefix">
+    <term>
+     <parameter>apc.rfc1867_prefix</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      rfc1867 karşıya dosya yükleme işlevselliğince üretilen kullanıcı
+      önbellek girdisi için kullanılacak anahtar öneki.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.rfc1867-name">
+    <term>
+     <parameter>apc.rfc1867_name</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      APC karşıya dosya yükleme aşamalarını etkin hale getiren gizli form
+      girdi adını ve kullanıcı önbellek sonekini bildirir.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.rfc1867-freq">
+    <term>
+     <parameter>apc.rfc1867_freq</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      Karşıya yükleme işlemleri için kullanıcı önbelleğinin güncellenme
+      sıklığını belirler. Toplam dosya boyutunun belirli bir yüzdesi ya da
+      bayt olarak boyut verilir. Boyuta seçime bağlı olarak kilobayt için
+      &apos;k&apos;, megabayt için &apos;m&apos;, gigabayt için &apos;g&apos;
+      son ekleri ile belirtilir (büyük veya küçük harf farketmez). Sıfır
+      olarak ayarlamak, mümkün olduğu kadar sık güncellenmesine neden olur
+      fakat bu yükleme işlemlerininin yavaşlamasına neden olabilir.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.localcache">
+    <term>
+     <parameter>apc.localcache</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+      Yerel işlemler için gölge önbelleği etkin hale getirir, bu kilitsiz
+      işlemler yaparak kilitlerden kaynaklanan çakışmaları azaltır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.localcache.size">
+    <term>
+     <parameter>apc.localcache.size</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Yerel işlemlerin gölge önbellek boyutu, yeteri kadar büyük bir değere
+      ayarlanmalıdır. Yaklaşık olarak <link
+      linkend="ini.apc.num-files-hint">apc.num_files_hint</link> değerinin
+      yarısı kadar.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.coredump-unmap">
+    <term>
+     <parameter>apc.coredump_unmap</parameter>
+     <type>boolean</type>
+    </term>
+    <listitem>
+     <para>
+      APC&apos;nin idaresi için, sinyal verildiği zaman çekirdek döküm
+      dosyaları yazan SIGSEGV gibi sinyallerin işlenmesini etkin kılar.
+      Bu sinyaller alındığı zaman, APC paylaşılan belleği kaldırarak çekirdek
+      döküm dosyasından yeniden oluşturmayı deneyecektir. Bu ayar ölümcül
+      sinyaller alındığı zaman büyük bir paylaşılan bellek alanı olan
+      sistemlerde istikrarı iyi yönde etkileyebilir.
+     </para>
+     <warning>
+      <para>
+	     Bu özelliğin tehlikeli olma olasılığı yüksektir. Ölümcül bir hata
+       meydana geldiğinde, paylaşılan belleği kaldırmak, belirsiz davranışlara
+       neden olabilir.
+      </para>
+     </warning>
+     <note>
+      <para>
+	     Bazı sistem çekirdekleri, çekirdek döküm dosyaları oluşturulurken,
+       çeşitli paylaşılan bellek bölümlerinin dökümünü görmezden gelecek
+       araçlar sağlasa da, bu uygulamalar önemli paylaşılan bellek bölümlerini
+       de görmezden gelebilir, Apache puan tahtası gibi.
+      </para>
+     </note>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.stat-ctime">
+    <term>
+     <parameter>apc.stat_ctime</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Düğümlerin değişmediğininden emin olmak için ctime kullanmak svn veya
+      rsync gibi programların neden olduğu sorunları engelleyebilir. APC
+      normalde sadece mtime ile denetim yapar.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </para>
+</section>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
