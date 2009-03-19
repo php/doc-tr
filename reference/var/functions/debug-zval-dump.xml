@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.10 Maintainer: nilgun Status: wip -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.debug-zval-dump" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>debug_zval_dump</refname>
@@ -66,16 +66,16 @@ debug_zval_dump(&$var1);
   <note>
    <title><literal>refcount</literal> hakkında</title>
    <para>
-    The <literal>refcount</literal> value returned by this function is
-    non-obvious in certain circumstances. For example, a developer might
-    expect the above example to indicate a <literal>refcount</literal> of
-    <literal>2</literal>. The third reference is created when actually
-    calling <function>debug_zval_dump</function>.
+    Bu işlevden döndürülen <literal>refcount</literal> değerinin ne olduğu
+    bazı durumlarda pek açık değildir. Örneğin bir geliştirici yukarıdaki
+    örneğin <literal>refcount</literal> değerinin <literal>2</literal>
+    olacağını bekleyebilirdi. Üçüncü gönderim aslında
+    <function>debug_zval_dump</function> çağrılırken oluşur.
    </para>
    <para>
-    This behavior is further compounded when a variable is not passed to
-    <function>debug_zval_dump</function> by reference. To illustrate, consider
-    a slightly modified version of the above example:
+    Bu davranış, bir değişken <function>debug_zval_dump</function> işlevine
+    gönderimli aktarılmadığı takdirde daha da karmaşıklaşır. Bunu göstermek
+    için yukardaki örneğin hafifçe değiştirilmiş bir sürümünü ele alalım:
    </para>
    <para>
     <example>
@@ -88,7 +88,7 @@ $var2 = '';
 
 $var2 =& $var1;
 
-debug_zval_dump($var1); // not passed by reference, this time
+debug_zval_dump($var1); // bu sefer gönderimli aktarmadık
 ?>
 ]]>
      </programlisting>
@@ -101,13 +101,12 @@ string(11) "Hello World" refcount(1)
     </example>
    </para>
    <para>
-    Why <literal>refcount(1)</literal>? Because a copy of <literal>$var1</literal> is
-    being made, when the function is called.
+    Neden <literal>refcount(1)</literal>? Çünkü <literal>$var1</literal>
+    değişkeni işlev çağrılırken kopyalandı.
    </para>
    <para>
-    This function becomes even <emphasis>more</emphasis> confusing when a
-    variable with a <literal>refcount</literal> of <literal>1</literal> is
-    passed (by copy/value):
+    Bu işlev, 1 <literal>refcount</literal>'lu bir değişken değeriyle
+    aktarıldığında işleri daha da karmaşıklaştırır:
    </para>
    <para>
     <example>
@@ -130,25 +129,24 @@ string(11) "Hello World" refcount(2)
     </example>
    </para>
    <para>
-    A <literal>refcount</literal> of <literal>2</literal>, here, is extremely
-    non-obvious. Especially considering the above examples. So what's
-    happening?
+    Buradaki <literal>2</literal>'lik <literal>refcount</literal> neredeyse
+    kesinlikle apaçık değildir. Özellikle yukarıdaki örnekler göz önüne
+    alınarak. Peki ne oluyor?
    </para>
    <para>
-    When a variable has a single reference (as did <literal>$var1</literal>
-    before it was used as an argument to <function>debug_zval_dump</function>),
-    PHP's engine optimizes the manner in which it is passed to a function.
-    Internally, PHP treats <literal>$var1</literal> like a reference (in that
-    the <literal>refcount</literal> is increased for the scope of this
-    function), with the caveat that <emphasis>if</emphasis> the passed reference
-    happens to be written to, a copy is made, but only at the moment of
-    writing. This is known as "copy on write."
+    Bir değişken tek bir gönderime sahipse
+    (<function>debug_zval_dump</function> işlevinde bir değiştirge olarak
+    kullanılmadan önce,  <literal>$var1</literal>'de olduğu gibi),  PHP
+    motoru, aktarılan gönderim yazılacaksa sadece yazma anında bir kopyasının
+    yapılacağı ikazıyla bunu bir işleve aktarılmış gibi eniyileştirir. Buna
+    "yazma sırasında kopyalama" denir.
    </para>
    <para>
-    So, if <function>debug_zval_dump</function> happened to write to its sole
-    parameter (and it doesn't), then a copy would be made. Until then, the
-    parameter remains a reference, causing the <literal>refcount</literal> to
-    be incremented to <literal>2</literal> for the scope of the function call.
+    Eğer <function>debug_zval_dump</function> işlevi kendi tek değiştirgesine
+    yazarsa (ki normalde yazmaz) bu durumda (bellekte bu parametre için) bir
+    kopya oluşturulur. O zamana kadar bu değiştirge bir gönderim olarak kalır
+    ve işlev çağrısının etki alanı içinde <literal>refcount</literal> değeri
+    <literal>2</literal>'ye yükseltilir.
    </para>
   </note>
  </refsect1>
@@ -158,8 +156,9 @@ string(11) "Hello World" refcount(2)
    <simplelist>
     <member><function>var_dump</function></member>
     <member><function>debug_backtrace</function></member>
-    <member><link linkend="language.references">References Explained</link></member>
-    <member><link xlink:href="&url.derick.references;">References Explained (by Derick Rethans)</link></member>
+    <member><link linkend="language.references">Gönderimlerle İlgili Herşey
+    </link></member>
+    <member><link xlink:href="&url.derick.references;">References Explained (Derick Rethans)</link></member>
    </simplelist>
   </para>
  </refsect1>
