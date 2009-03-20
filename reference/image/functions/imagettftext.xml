@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.31 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.imagettftext" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>imagettftext</refname>
+  <refpurpose>Metni resme TrueType yazı tipi ile yazar</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>imagettftext</methodname>
+   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <methodparam><type>float</type><parameter>boyut</parameter></methodparam>
+   <methodparam><type>float</type><parameter>açı</parameter></methodparam>
+   <methodparam><type>int</type><parameter>x</parameter></methodparam>
+   <methodparam><type>int</type><parameter>y</parameter></methodparam>
+   <methodparam><type>int</type><parameter>renk</parameter></methodparam>
+   <methodparam><type>string</type><parameter>yazıtipi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>metin</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen metni belirtilen TrueType yazı tipi ile belirtilen resme yazar.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    &gd.image.description;
+    <varlistentry>
+     <term><parameter>boyut</parameter></term>
+     <listitem>
+      <para>
+       Yazıtipi yüksekliği. Kullandığınız GD sürümüne bağlı olarak piksel
+       (GD1) veya punto (GD2) olarak belirtilmelidir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>açı</parameter></term>
+     <listitem>
+      <para>
+       Derece cinsinden açı. Soldan sağa yazılan bir metnin açısı 0 derecedir.
+       Daha büyük değerler yelkovanın ters yönünde belirtilmiş varsayılır.
+       Örneğin 90 derecelik bir metin aşağıdan yukarı doğru yazılır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>x</parameter></term>
+     <listitem>
+      <para>
+       <parameter>x</parameter> ve <parameter>y</parameter> ile belirtilen
+       koordinatlar ilk harfin taban noktasını (kabaca harfin sol alt köşesi)
+       tanımlar. Bu tanımlama, koordinatların harfin sol üst köşesini
+       tanımladığı <function>imagestring</function> işlevinden farklıdır.
+       Resmin sol üst köşesinin koordinatları 0, 0'dır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>y</parameter></term>
+     <listitem>
+      <para>
+       <parameter>x</parameter> değiştirgesine bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>renk</parameter></term>
+     <listitem>
+      <para>
+       Renk indisi. Negatif bir renk indisi kenar yumuşatmayı kapatır.
+       <function>imagecolorallocate</function> işlevine bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yazıtipi</parameter></term>
+     <listitem>
+      <para>
+       Kullanılacak TrueType yazıtipinin dosya yolu.
+      </para>
+      <para>
+       PHP'nin kullandığı GD kütüphanesi sürümüne bağlı olarak,
+       <emphasis><literal>/</literal> ile başlamayan bir dosya ismine
+       <literal>.ttf</literal> uzantısı eklenir</emphasis> ve kütüphane bu
+       dosya ismini kütüphanede tanımlı dizinlerde arar.
+      </para>
+      <para>
+       GD kütüphanesinin 2.0.18'den küçük sürümlerini kullanıyorsanız, farklı
+       yazıtipi dosyalarının aralarına noktalı virgül değil boşluk karakteri
+       koymalısınız. Bu kurala dikkat etmezseniz şöyle bir uyarı alırsınız:
+       <literal>Warning: Could not find/open font</literal> (Uyarı: Yazı tipi
+       bulunamadı veya açılamadı). Boşluk içeren dosya yollarının varlığında
+       bu sürümler için tek çözüm yazı tiplerinin boşluk içermeyen dosya
+       yollarına taşınmasıdır.
+      </para>
+      <para>
+       Yazı tiplerinin betikle aynı dizinde bulunduğu durumlarda herhangi bir
+       sorun çıkmaması için aşağıdaki çözüm kullanılabilir.
+       <programlisting role="php">
+<![CDATA[
+<?php
+// GD ortam değişkenini tanımlayalım
+putenv('GDFONTPATH=' . realpath('.'));
+
+// Kullanılacak yaza tipinin ismi (dikkat: .ttf uzantısı yok)
+$font = 'freesans';
+?>
+]]>
+       </programlisting>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>metin</parameter></term>
+     <listitem>
+      <para>
+       UTF-8 kodlanmış metin dizgesi.
+      </para>
+      <para>
+       Karakter numarası 127'den büyük karakterler için onluk karakter
+       numarası (&amp;#8364; şeklinde) belirtilebilir. Onaltılık gösterim
+       (&amp;#xA9; şeklinde) PHP 5.2.0 sürümünden beri desteklenmektedir.
+       UTF-8 kodlu metinler doğrudan aktarılabilir.
+      </para>
+      <para>
+       &amp;copy; gibi isimli öğeler desteklenmemektedir. Bu tür isimli
+       öğeleri UTF-8 dizgelerde kullanmak için PHP 5.0.0'dan itibaren
+       <function>html_entity_decode</function> işlevi ile dönüştürebilirsiniz.
+      </para>
+      <para>
+       Eğer yazı tipi tarafından desteklenmeyen bir karakter belirtirseniz
+       karakterin yerinde boş bir dikdörtgen görürsünüz.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Metin çerçevesinin dört köşesinin koordinatlarını içeren 8 elemanlı bir
+   dizi ile döner. Çerçevenin köşeleri dizide sırayla şunlardır: sol alt, sağ
+   alt, sağ üst, sol üst. Noktalar açıdan bağımsız olarak metne görelidir.
+   Yani, "sol üst" denince metne yatay olarak bakarkenki sol üst köşe
+   kastedilmektedir.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>imagettftext</function> örneği</title>
+    <para>
+     Bu örnek betik, içinde Arial yazı tipi ile siyah renkte (gri gölgeli)
+     "Testing..." yazılmış 400x30 piksellik beyaz bir PNG resmi üretecektir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// İçerik türünü belirtelim
+header('Content-type: image/png');
+
+// Resmi boş olarak oluşturalım
+$resim = imagecreatetruecolor(400, 30);
+
+// Renkleri tanımlayalım
+$beyaz = imagecolorallocate($resim, 255, 255, 255);
+$gri = imagecolorallocate($resim, 128, 128, 128);
+$siyah = imagecolorallocate($resim, 0, 0, 0);
+imagefilledrectangle($resim, 0, 0, 399, 29, $beyaz);
+
+// Metni tanımlayalım
+$metin = 'Testing...';
+// Buraya kendi dosya yolunuzu yazın
+$font = 'arial.ttf';
+
+// Metne gölge verelim
+imagettftext($resim, 20, 0, 11, 21, $gri, $font, $metin);
+
+// Metni ekleyelim
+imagettftext($resim, 20, 0, 10, 20, $siyah, $font, $metin);
+
+// imagejpeg()'ye göre daha temiz sonuç veren imagepng()'yi kullanalım
+imagepng($resim);
+imagedestroy($resim);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="en/reference/image/figures/imagettftext.png"/>
+     </imageobject>
+    </mediaobject>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bu işlev hem GD kütüphanesini hem de
+    <link xlink:href="&url.freetype;">FreeType</link> kütüphanesini gerektirir.
+   </para>
+  </note>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imagettfbbox</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
