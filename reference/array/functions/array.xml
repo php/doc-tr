@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.6 $ -->
-<!-- EN-Revision: 1.18 Maintainer: onurozgurozkan Status: wip -->
+<!-- $Revision: 1.7 $ -->
+<!-- EN-Revision: 1.18 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: faruk -->
 <refentry xml:id="function.array" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array</refname>
-  <refpurpose>Create an array</refpurpose>
+  <refpurpose>Bir dizi oluşturur</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
@@ -14,9 +14,8 @@
    <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Creates an array. Read the section on the
-   <link linkend="language.types.array">array type</link> for more information
-   on what an array is.
+   Bir dizi oluşturur. Diziler hakkında ayrıntılı bilgi edinmek için
+   <link linkend="language.types.array">array</link> türünün belgesine bakınız.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -27,16 +26,16 @@
      <term><parameter>...</parameter></term>
      <listitem>
       <para>
-       Syntax "index =&gt; values", separated by commas, define index
-       and values. index may be of type string or integer. When index is
-       omitted, an integer index is automatically generated, starting
-       at 0. If index is an integer, next generated index will
-       be the biggest integer index + 1. Note that when two identical
-       index are defined, the last overwrite the first.
+       Burada, "indis =&gt; değerler", sözdizimi virgüllerle ayrılarak indis ve
+       değerler tanımlanır. İndis <type>string</type> veya <type>integer</type>
+       türünde olabilir. İndis belirtilmezse 0'dan başlamak üzere özdevinimli
+       olarak üretilir. İndis olarak bir tamsayı belirtilirse üretilecek sonraki
+       indis, indis + 1 olacaktır. Eğer birbirinin aynı iki indis belirtilirse 
+       sonuncusu öncekini geçersiz kılar.
       </para>
       <para>
-       Having a trailing comma after the last defined array entry, while
-       unusual, is a valid syntax.
+       Son tanımlanan dizi elemanından sonra bir virgül konursa, yararsız
+       olmakla beraber sözdizimsel olarak geçerlidir.
       </para>
      </listitem>
     </varlistentry>
@@ -46,28 +45,27 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Returns an array of the parameters.  The parameters can be given
-   an index with the <literal>=&gt;</literal> operator.  Read the section
-   on the <link linkend="language.types.array">array type</link> for more
-   information on what an array is.
+   Değiştirgelerle tanımlanan diziyi döndürür. Değiştirgelerde
+   <literal>=&gt;</literal> işleci ile bir indis belirtilebilir. Diziler
+   hakkında daha ayrıntılı bilgi için <link linkend="language.types.array">
+   array</link> türünün belgesine bakınız.
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   The following example demonstrates how to create a
-   two-dimensional array, how to specify keys for associative
-   arrays, and how to skip-and-continue numeric indices in normal
-   arrays.
+   Aşağıdaki örnekte iki boyutlu bir dizinin nasıl oluşturulduğu, ilişkisel
+   bir dizide anahtarların nasıl belirtildiği ve normal dizilerde sayısal
+   indislerin nasıl atlanarak devam edileceği gösterilmiştir.
    <example>
-    <title><function>array</function> example</title>
+    <title>- <function>array</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $fruits = array (
-    "fruits"  => array("a" => "orange", "b" => "banana", "c" => "apple"),
-    "numbers" => array(1, 2, 3, 4, 5, 6),
-    "holes"   => array("first", 5 => "second", "third")
+    "meyveler"  => array("a" => "portakal", "b" => "muz", "c" => "elma"),
+    "numaralar" => array(1, 2, 3, 4, 5, 6),
+    "delikler"   => array("ilk", 5 => "ikinci", "üçüncü")
 );
 ?>
 ]]>
@@ -76,7 +74,7 @@ $fruits = array (
   </para>
   <para>
    <example>
-    <title>Automatic index with <function>array</function></title>
+    <title><function>array</function> ile özdevinimli indis üretimi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -103,14 +101,14 @@ Array
    </example>
   </para>
   <para>
-   Note that index '3' is defined twice, and keep its final value of 13.
-   Index 4 is defined after index 8, and next generated index (value 19)
-   is 9, since biggest index was 8.
+   Dikkat ederseniz, '3' indisi iki kere tanımlandı. Ancak son değer olan
+   13 saklandı. 4 indisi 8 indisinden sonra tanımlandı ve en büyük indis 8
+   olduğundan ondan sonra üretilen indis 9 oldu. 
   </para>
   <para>
-   This example creates a 1-based array.
+   Bu örnek 1 indisinden başlayan bir dizi oluşturuyor.
    <example>
-    <title>1-based index with <function>array</function></title>
+    <title>- İlk indisi 1 olan dizi üretimi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -133,16 +131,17 @@ Array
    </example>
   </para>
   <para>
-   As in Perl, you can access a value from the array inside double quotes.
-   However, with PHP you'll need to enclose your array between curly braces.
+   Perl'de olduğu gibi çift tırnak içine alınmış bir dizi içindeki bir değere
+   erişebilirsiniz. Ancak PHP'de diziyi kaşlı ayraçlar arasına almak zorunda 
+   değilsiniz.
    <example>
-    <title>Accessing an array inside double quotes</title>
+    <title>- Çift tırnak içine alınmış bir diziye erişim</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
 $foo = array('bar' => 'baz');
-echo "Hello {$foo['bar']}!"; // Hello baz!
+echo "Hello {$foo['bar']}!"; // Çıktısı: Hello baz!
 
 ?>
 ]]>
@@ -155,8 +154,8 @@ echo "Hello {$foo['bar']}!"; // Hello baz!
   <para>
    <note>
     <para>
-     <function>array</function> is a language construct used to
-     represent literal arrays, and not a regular function.
+     <function>array</function> normal bir işlev değil, dizileri
+     birebir göstermekte kullanılan bir dil oluşumudur.
     </para>
    </note>
   </para>
@@ -170,7 +169,7 @@ echo "Hello {$foo['bar']}!"; // Hello baz!
     <member><function>count</function></member>
     <member><function>range</function></member>
     <member><link linkend="control-structures.foreach">foreach</link></member>
-    <member>The <link linkend="language.types.array">array</link> type</member>
+    <member><link linkend="language.types.array">array</link> türü</member>
    </simplelist>
   </para>
  </refsect1>
