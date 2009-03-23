@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.8 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.imageistruecolor" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>imageistruecolor</refname>
+  <refpurpose>Bir resmin gerçek renkli olup olmadığını bulur</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>imageistruecolor</methodname>
+   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>imageistruecolor</function> işlevi belirtilen resmin bir gerçek
+   renkli resim olup olmadığına bakar.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    &gd.image.description;
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <parameter>resim</parameter> gerçek renkli ise &true; aksi takdirde &false; döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>imageistruecolor</function> ile resmin gerçek renkli
+    olup olmadığının saptanması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// $im bir resim tanıtıcısı olsun
+
+// Bakalım resim gerçek renkli miymiş?
+if(!imageistruecolor($im))
+{
+    // Değilse gerçek renkli yeni bir taslak oluşturalım
+    $tc = imagecreatetruecolor(imagesx($im), imagesy($im));
+
+    imagecopy($tc, $im, 0, 0, 0, 0, imagesx($im), imagesy($im));
+    imagedestroy($im);
+
+    $im = $tc;
+    $tc = NULL;
+}
+
+// Resim taslağıyla çalışmaya devam
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.gd.2;
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imagecreatetruecolor</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

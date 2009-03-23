@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imageloadfont">
+ <refnamediv>
+  <refname>imageloadfont</refname>
+  <refpurpose>Yeni bir bit eşlemli yazı tipi yükler</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>imageloadfont</methodname>
+   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>imageloadfont</function> işlevi bir kullanıcı tanımlı biteşlemli
+   yazı tipini yükler ve onun için bir tanıtıcı ile döner.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dosya</parameter></term>
+     <listitem>
+      <para>
+       İkil ve mimariye bağımlı biçemde yazı tipi dosyası. Yani, yazı tipi
+       dosyalarını PHP'nin çalıştığı makine ile aynı işlemciye (CPU) sahip bir
+       makinede üretmiş olmalısınız.
+      </para>
+      <para>
+       <table>
+        <title>Yazı tipi dosyası biçemleri</title>
+        <tgroup cols="3">
+         <thead>
+         <row>
+          <entry>bayt konumu</entry>
+          <entry>C veri türü</entry>
+          <entry>açıklama</entry>
+         </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>0-3</entry>
+           <entry>int</entry>
+           <entry>Yazı tipindeki karakterlerin sayısı.</entry>
+          </row>
+          <row>
+           <entry>4-7</entry>
+           <entry>int</entry>
+           <entry>
+            Yazı tipindeki ilk karakterin değeri (çoğunlukla boşluk
+            karakterinin kodu olan 32'dir).
+           </entry>
+          </row>
+          <row>
+           <entry>8-11</entry>
+           <entry>int</entry>
+           <entry>Her karakterin piksel olarak genişliği</entry>
+          </row>
+          <row>
+           <entry>12-15</entry>
+           <entry>int</entry>
+           <entry>Her karakterin piksel olarak yüksekliği</entry>
+          </row>
+          <row>
+           <entry>16-</entry>
+           <entry>char</entry>
+           <entry>
+            Karakter verisini içeren dizi; bir karakterin her pikseli için bir
+            bayt olmak üzere toplam (karakter_sayısı * genişlik * yükseklik)
+            bayt içerir.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Yerleşik yazı tipleri ile karışmaması için daima 5'ten büyük bir yazı tipi
+   tanıtıcısı ile döner. Bir hata oluşursa &false; döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>imageloadfont</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Yeni bir resim taslağı oluşturalım
+$im = imagecreatetruecolor(50, 20);
+$black = imagecolorallocate($im, 0, 0, 0);
+$white = imagecolorallocate($im, 255, 255, 255);
+
+// Artalan rengi beyaz olsun
+imagefilledrectangle($im, 0, 0, 49, 19, $white);
+
+// gd yazı tipini yükleyip 'Hello' yazalım
+$font = imageloadfont('./04b.gdf');
+imagestring($im, $font, 0, 0, 'Hello', $black);
+
+// Resmi tarayıcıya gönderelim
+header('Content-type: image/png');
+
+imagepng($im);
+imagedestroy($im);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imagefontwidth</function></member>
+    <member><function>imagefontheight</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

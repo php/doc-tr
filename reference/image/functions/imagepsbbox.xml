@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.15 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.imagepsbbox" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>imagepsbbox</refname>
+  <refpurpose>Bir PostScript Type1 yazı tipi ile yazılan bir metnin
+  çerçevesini döndürür</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>imagepsbbox</methodname>
+   <methodparam><type>string</type><parameter>metin</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>yazıtipi</parameter></methodparam>
+   <methodparam><type>int</type><parameter>boyut</parameter></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>array</type><methodname>imagepsbbox</methodname>
+   <methodparam><type>string</type><parameter>metin</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>yazıtipi</parameter></methodparam>
+   <methodparam><type>int</type><parameter>boyut</parameter></methodparam>
+   <methodparam><type>int</type><parameter>boşluk</parameter></methodparam>
+   <methodparam><type>int</type><parameter>sıkışıklık</parameter></methodparam>
+   <methodparam><type>float</type><parameter>açı</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Bir PostScript Type1 yazı tipi ile yazılan bir metnin çerçevesini döndürür.
+  </para>
+  <para>
+   Metin çerçevesi yazı tipi dosyasında bulunan karakter ölçüleri kullanılarak
+   hesaplanır. Ne yazık ki, hesaplanan değer metin resimde çizildiği zaman
+   elde edilen boyutta olmaz. 0 derece açı ile çizilen bir metne her yönde
+   birer pikselden daha fazla yer ayırmalısınız.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>metin</parameter></term>
+     <listitem>
+      <para>
+       Resme yazılacak metin.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yazıtipi</parameter></term>
+     <listitem>
+      <para>
+       <function>imagepsloadfont</function> tarafından döndürülen bir yazı tipi
+       özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>boyut</parameter></term>
+     <listitem>
+      <para>
+       Piksel olarak yazı tipi yüksekliği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>boşluk</parameter></term>
+     <listitem>
+      <para>
+       Bir yazı tipi içindeki bir boşluğun öntanımlı değerini belirtmek için
+       kullanılır. Bu miktar normal değere eklenir ve negatif olabilir. Bir em
+       karenin binde birine eşit karakter boşluk birimi cinsinden belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sıkışıklık</parameter></term>
+     <listitem>
+      <para>
+       Karakterler arasındaki boşluk miktarını belirtmek için kullanılır. Bu
+       miktar normal karakter genişliğine eklenir ve negatif olabilir. Bir em
+       karenin binde birine eşit karakter boşluk birimi cinsinden belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>açı</parameter></term>
+     <listitem>
+      <para>
+       Derece olarak açı.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Aşağıdaki elemanlardan oluşan bir dizi döner:
+   <informaltable>
+    <tgroup cols="2">
+     <tbody>
+      <row>
+       <entry>0</entry>
+       <entry>Sol kenarın X konumu</entry>
+      </row>
+      <row>
+       <entry>1</entry>
+       <entry>Üst kenarın Y konumu</entry>
+      </row>
+      <row>
+       <entry>2</entry>
+       <entry>Sağ kenarın X konumu</entry>
+      </row>
+      <row>
+       <entry>3</entry>
+       <entry>Alt kenarın Y konumu</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- <function>imagepsbbox</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Bir resim taslağı oluşturalım
+$im = imagecreatetruecolor(200, 200);
+
+// Renkleri ayarlayalım
+$siyah = imagecolorallocate($im, 0, 0, 0);
+$beyaz = imagecolorallocate($im, 255, 255, 255);
+
+// PostScript yazı tipini yükleyelim
+$font = imagepsloadfont('font.pfm');
+
+// Metnin çerçevesini hesaplatalım
+$bbox = imagepsbbox('Sample text is simple', $font, 12);
+
+// Metnin X ve Y konumlarını belirtelim
+$x = ($bbox[2] / 2) - 10;
+$y = ($bbox[3] / 2) - 10;
+
+// Metni resme yazalım
+imagepstext($im, 'Basit bir örnek metin', $font, 12, $siyah, $beyaz, $x, $y);
+
+// Resmi çıktılayıp belleği serbest bırakalım
+header('Content-type: image/png');
+
+imagepng($im);
+imagedestroy($im);
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.config.t1lib;
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imagepstext</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
