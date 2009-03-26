@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.register-shutdown-function" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>register_shutdown_function</refname>
+  <refpurpose>Betiğin işi bittiğinde çalıştırılacak işlevi tanımlar
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>register_shutdown_function</methodname>
+   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Betiğin işi bittiğinde çalıştırılacak kapatma işlevini
+   <parameter>işlev</parameter> olarak tanımlar.
+  </para>
+  <para>
+   <function>register_shutdown_function</function> her gerekişinde bir kere
+   olmak üzere defalarca çağrılabilir. Tanımlanan bir kapatma işlevinin içinde
+   <function>exit</function> çağrısı yapılırsa betik orada sonlanır ve başka
+   kapatma işlevi çağrılmaz.
+  </para>
+  <para>
+   PHP 4'ten beri <function>register_shutdown_function</function> işlevi
+   üzerinden kapatma işlevine ek değiştirgeler aktarılabilmektedir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>işlev</parameter></term>
+     <listitem>
+      <para>
+       Tanımlanacak kapatma işlevinin ismi.
+      </para>
+      <para>
+       Kapatma işlevleri isteğin parçası olarak çağrılmakta dolayısıyla
+       bunlardan çıktı göndermek mümkün olmaktadır. Kapatma işlevlerinin
+       içinde çıktı tamponlama ile veri işlemenin şimdilik bir yolu yoktur.
+      </para>
+      <para>
+       Kapatma işlevleri tüm açık çıktı tamponları kapandıktan sonra
+       çağrıldığından örneğin, <link linkend="ini.zlib.output-compression">
+       zlib.output_compression</link> etkin olsa bile çıktı sıkıştırılmaz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirge</parameter></term>
+     <listitem>
+      <para>
+       <function>register_shutdown_function</function> işlevi üzerinden
+       kapatma işlevine ek değiştirgeler aktarılabilmektedir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>...</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.1.0</entry>
+       <entry>
+        Apache altında, tanımlı kapatma işlevleri istek tamamlandıktan sonra
+        (çıktı tamponlarının gönderilmesi dahil) çağrılır. Dolayısıyla bir
+        daha <function>echo</function> veya <function>print</function>
+        kullanarak tarayıcıya bir şey gönderilemez veya
+        <function>ob_get_contents</function> kullanarak herhangi bir çıktı
+        tamponunun içeriği alınamaz.
+       </entry>
+      </row>
+      <row>
+       <entry>4.0.0</entry>
+       <entry>
+        Kapatma işlevine değiştirgelerini aktarmak mümkün oldu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>register_shutdown_function</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function kapat()
+{
+  // bu bizim kapatma işlevimiz.
+  // Burada betik sonlanmadan önce yapılacak
+  // son işlemleri gerçekleştiriyoruz.
+
+  echo 'Betik işini gerektiği gibi yaptı', PHP_EOL;
+}
+
+register_shutdown_function('kapat');
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Normal olarak tanımsız işlevler PHP'de ölümcül hatalara sebep olurlar,
+    fakat <function>register_shutdown_function</function> ile tanımlanmamış
+    bir işlev çağrıldığında sadece <constant>E_WARNING</constant> seviyesinde
+    bir hata çıktılanır. Ayrıca, PHP'ye özgü sebeplerle bu hata 0. satırda
+    <literal>Unknown</literal> olarak gösterilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    Apache gibi bazı HTTP sunucularında çalışma dizini kapatma işlevi içinde
+    değiştirilebilmektedir.
+   </para>
+  </note>
+  <note>
+   <para>
+    Kapatma işlevi betiğin işi bittiğinde çağrıldığından başlıklar zaten
+    gönderilmiş olur..
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="ini.auto-append-file">
+    auto_append_file</link></member>
+    <member><function>exit</function></member>
+    <member><link linkend="features.connection-handling">Bağlantı
+    yönetimi</link> bölümü</member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
