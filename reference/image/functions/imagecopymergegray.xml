@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.imagecopymergegray" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>imagecopymergegray</refname>
+  <refpurpose>Bir resmi kopyalar ve gri tonlama ile karıştırır</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>imagecopymergegray</methodname>
+   <methodparam><type>resource</type><parameter>hedef</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>kaynak</parameter></methodparam>
+   <methodparam><type>int</type><parameter>hdf_x</parameter></methodparam>
+   <methodparam><type>int</type><parameter>hdf_y</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kyn_x</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kyn_y</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kyn_gnş</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kyn_yks</parameter></methodparam>
+   <methodparam><type>int</type><parameter>oran</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>hedef</parameter> resmin <parameter>hdf_x</parameter>,
+   <parameter>hdf_y</parameter> noktasına <parameter>kaynak</parameter> resmin
+   <parameter>kyn_x</parameter>, <parameter>kyn_y</parameter>,
+   <parameter>kyn_gnş</parameter> ve <parameter>kyn_yks</parameter> ile
+   belirlenen parçasını kopyalar.
+  </para>
+  <para>
+   Kaynak pikselleri hedefe kopyalamadan önce gri tonlamaya dönüştürerek
+   kaynak resmin renk sıcaklığını koruması dışında
+   <function>imagecopymerge</function> işlevi ile aynıdır.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>hedef</parameter></term>
+     <listitem>
+      <para>
+       Hedef resmin tanıtıcısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kaynak</parameter></term>
+     <listitem>
+      <para>
+       Kaynak resmin tanıtıcısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>hdf_x</parameter></term>
+     <listitem>
+      <para>
+       Hedef resimdeki X koordinatı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>hdf_y</parameter></term>
+     <listitem>
+      <para>
+       Hedef resimdeki Y koordinatı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kyn_x</parameter></term>
+     <listitem>
+      <para>
+       Kaynak resimdeki X koordinatı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kyn_x</parameter></term>
+     <listitem>
+      <para>
+       Kaynak resimdeki Y koordinatı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kyn_gnş</parameter></term>
+     <listitem>
+      <para>
+       Kaynak resimdeki parça genişliği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kyn_yks</parameter></term>
+     <listitem>
+      <para>
+       Kaynak resimdeki parça yüksekliği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>oran</parameter></term>
+     <listitem>
+      <para>
+       0-100 arasında bir değer olup, iki resim bu şeffaflık oranına göre
+       karıştırılır. 0 değeri için hiçbir ek işlem yapılmaz. 100 için ise,
+       gerçek renkli resimlere alfa şeffaflatması uygulanırken paletli
+       resimlere <function>imagecopy</function> işlevindeki yaklaşım uygulanır.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>imagecopymergegray</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Resim örneklerini oluşturalım
+$dest = imagecreatefromgif('php.gif');
+$src = imagecreatefromgif('php.gif');
+
+// Kopyalayıp karıştıralım - Grilik = 20%
+imagecopymergegray($dest, $src, 10, 10, 0, 0, 100, 47, 20);
+
+// Resmi çıktılayıp belleği serbest bırakalım
+header('Content-Type: image/gif');
+imagegif($dest);
+
+imagedestroy($dest);
+imagedestroy($src);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
