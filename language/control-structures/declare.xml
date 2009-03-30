@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.1 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.2 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.declare" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>declare</literal></title>
  <para>
@@ -62,20 +62,18 @@ declare(ticks=1);
  </para>
 
  <sect2 xml:id="control-structures.declare.ticks">
-  <title><code>ticks</code></title>
-  <caution>
-   <simpara>
-    PHP 5.3.0'dan itibaren <literal>ticks</literal> kullanımı
-    önerilmemektedir ve PHP 6.0.0'da kaldırılacaktır.
-   </simpara>
-  </caution>
+  <title><code>Tikler</code></title>
  <para>
   Bir "tik", <literal>declare</literal> bloğu içersinde çözümleyici
-  tarafından çalıştırılan her <varname>N</varname> deyimde bir ortaya
-  çıkan bir olaydır. <varname>N</varname> değeri,
+  tarafından çalıştırılan her <varname>N</varname> tiklenebilir deyimde bir
+  ortaya çıkan bir olaydır. <varname>N</varname> değeri,
   <literal>declare</literal> bloğunun <replaceable>yönerge</replaceable>
   bölümünde <code>ticks=<varname>N</varname></code> kullanılarak
   belirtilir.
+ </para>
+ <para>
+  Her deyim tik sayımına dahil edilebilir değildir. Koşullu ifadeler ve
+  değiştirge ifadeleri bu tür deyimlerdendir.
  </para>
  <para>
   Her tik ile oluşturulacak eylem
@@ -85,55 +83,59 @@ declare(ticks=1);
  </para>
  <para>
   <example>
-   <title>- PHP kodunun bir bölümünün profili</title>
+   <title>- Tik kullanım örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-// Çağrıldığında zamanı kaydeden bir işlev
-function profile($dump = FALSE)
+
+declare(ticks=1);
+
+// Her tik deyimde bir çalıştırılacak işlev
+function tik_eylemci()
 {
-    static $profile;
-
-    // Profilde saklanmış zamanı döndürür, sonra siler
-    if ($dump) {
-        $temp = $profile;
-        unset($profile);
-        return $temp;
-    }
-
-    $profile[] = microtime();
+    echo "tik_eylemci() çağrıldı\n" ;
 }
 
 // Tik eylemcisini belirtelim
-register_tick_function("profile");
+register_tick_function("tik_eylemci");
 
-// Declare bloğundan önce işlevi ilklendirelim
-profile();
+$a = 1;
 
-// Bir kod bloğu çalıştır, her iki deyimde bir tik oluştur
-declare(ticks=2) {
-    for ($x = 1; $x < 50; ++$x) {
-        echo similar_text(md5($x), md5($x*$x)), "<br />;";
-    }
+if ($a > 0) {
+        $a += 2;
+        print($a);
 }
-
-// Profilcide saklanan veriyi göster
-print_r(profile(TRUE));
 ?>
 ]]>
    </programlisting>
   </example>
-    Örnekte, 'declare' bloğu içindeki alt seviye deyimler çalıştırılarak
-    ve her çalıştırılan iki deyimden sonra zaman kaydedilerek bloğun
-    içindeki PHP kodunun profili çıkarılmaktadır. Bu bilgi incelenerek,
-    kod içinde yavaşlamaya sebep olan bölümlerin saptanmasında
-    kullanılabilir. Bu işlem başka yöntemler kullanılarak da yapılabilir,
-    ancak tikleri kullanmak daha basit ve kullanışlı bir yöntemdir.
+   Aşağıdaki örnek yukarıdakine eşdeğerdir:
+  <example>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+function tik_eylemci()
+{
+    echo "tik_eylemci() çağrıldı\n" ;
+}
+
+$a = 1;
+tik_eylemci();
+
+if ($a > 0) {
+        $a += 2;
+        tik_eylemci();
+        print($a);
+        tik_eylemci();
+}
+tik_eylemci();
+
+?>
+]]>
+   </programlisting>
+  </example>
  </para>
- <simpara>
-  Tikler hata ayıklama, basit çok görevliliği gerçekleme, artalanda G/Ç
-  işlemleri ve benzeri amaçlar için oldukça uygundur.
- </simpara>
  <simpara>
   Ayrıca, <function>register_tick_function</function> ve
   <function>unregister_tick_function</function> işlevlerini de inceleyin.
