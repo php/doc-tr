@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.1 $ Maintainer: behzat Status: ready -->
+<!-- splitted from ./en/functions/datetime.xml, last change in rev 1.2 -->
+<refentry xml:id="function.mktime" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>mktime</refname>
+  <refpurpose>Bir tarih için Unix zaman damgasını döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>mktime</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>saat</parameter><initializer>date("H")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>dakika</parameter><initializer>date("i")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>saniye</parameter><initializer>date("s")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>ay</parameter><initializer>date("n")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>gün</parameter><initializer>date("j")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>yıl</parameter><initializer>date("Y")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>ysu_var</parameter><initializer>-1</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Verilen değiştirge düzenine göre Unix zaman damgasını döndürür. Bu zaman
+   damgası, Unix Zaman Başlangıcı (1 Ocak 1970 00:00:00 GMT) ile belirtilen
+   zaman arasında geçen süreyi uzun tamsayı türünde saniye olarak belirtir.
+  </para>
+  <para>
+   Değiştirgeler sağdan sola sıralıdır; böylece belirtilmeyen bir
+   değiştirge yerine yerel tarih ve zamana göre geçerli değerin kullanılması
+   sağlanmıştır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>saat</parameter></term>
+     <listitem>
+      <para>
+       Saat sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dakika</parameter></term>
+     <listitem>
+      <para>
+       Dakika sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>saniye</parameter></term>
+     <listitem>
+      <para>
+       Son dakikanın geçen saniye sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ay</parameter></term>
+     <listitem>
+      <para>
+       Ay sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>gün</parameter></term>
+     <listitem>
+      <para>
+       Gün sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yıl</parameter></term>
+     <listitem>
+      <para>
+	     Yıl sayısı, iki ya da dört hane olabilir. 0-69 değerleri arasında
+       olanlar 2000-2069 ile ve 70-100 arasındaki değerler ise 1970-2000
+       yıllarıyla eşleşir. Sistemlerdeki time_t türü 32 bit işaretli tamsayı
+       türüyle belirtilmiştir ve günümüzde çok kullanılmaktadır.
+       <parameter>yıl</parameter> değiştirgesi için geçerli aralık 1901 ve
+       2038 arasındadır. Bununla birlikte, PHP 5.1.0 sürümünden önce bu aralık
+       bazı sistemlerde 1970 ve 2038 arasında sınırlıydı (ör. Windows).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ysu_var</parameter></term>
+     <listitem>
+      <para>
+        Bu değiştirge, yaz saati uygulaması varsa 1'e yoksa 0'a ya da yaz
+        saati uygulması olup olmadığının bilinmediği durumlarda varsayılan
+        değere yani -1'e ayarlanmalıdır. Bilinmeyen durumlarda PHP bunu
+        çözümleyecektir. Bu beklenmeyen sonuçlara (fakat yanlış olmayan) neden
+        olur. Bazı zamanlarda, PHP çalışırken YSU etkinleştirildiğinde ya da
+        <parameter>ysu_var</parameter> değiştirgesi 1'e ayarlandığında zaman
+        geçersiz olur. Örneğin, eğer saat 2:00'de YSU etkinleştirilirse, 2:00
+        ve 3:00 arasındaki tüm zaman geçersiz olacak ve
+        <function>mktime</function> işlevi anlamsız (genellikle negatif)
+        bir değerle dönecektir. Bazı sistemlerde (ör. Solaris 8) YSU gece
+        yarısında etkinleşir. YSU etkinleştiğinde saat 0:30 ise,  saat bir
+        önceki günün 23:30'u olarak değerlendirilecektir.
+      </para>
+      <note>
+       <para>
+        PHP 5.1.0 sürümünden beri, bu değiştirgenin kullanılması
+        önerilmemektedir. Sonuç olarak, yerine yeni zaman dilimi özellikleri
+        kullanılmalıdır.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <function>mktime</function> işlevi verilen değiştirgelerden elde edilen Unix
+   zaman damgası döndürür. Eğer değiştirge geçersiz ise işlev &false;
+   değeriyle döner (PHP 5.1 sürümünden önce <literal>-1</literal> dönerdi).
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &date.timezone.errors.description;
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        Artık <function>mktime</function> işlevi,
+        <parameter>ysu_var</parameter> değiştirgesi kullanılırsa
+        <literal>E_DEPRECATED</literal> uyarısı vermektedir.
+       </entry>
+      </row>
+      <row>
+       <entry>5.1.0</entry>
+       <entry>
+        <parameter>ysu_var</parameter> değiştirgesinin kullanımı artık
+        önerilmemektedir. İşlev hata durumunda <literal>-1</literal> yerine,
+        &false; değeri döndürür olmuştur. İşlev, yıl, ay ve gün
+        değiştirgelerinde sıfır kabul edecek şekilde düzeltilmiştir.
+       </entry>
+      </row>
+
+      &date.timezone.errors.changelog;
+
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>mktime</function> örneği</title>
+    <para>
+     <function>mktime</function> işlevi tarih hesaplamaları ve
+     geçerlilik denetimi için kullanışlıdır. Aralık dışına çıkan değerleri
+     (ayın 32'si gibi) özdevinimli olarak doğru hesaplar. Örneğin, aşağıdaki
+     satırların üreteceği dizge "Jan-01-1998" olacaktır.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo date("M-d-Y", mktime(0, 0, 0, 12, 32, 1997));
+echo date("M-d-Y", mktime(0, 0, 0, 13, 1, 1997));
+echo date("M-d-Y", mktime(0, 0, 0, 1, 1, 1998));
+echo date("M-d-Y", mktime(0, 0, 0, 1, 1, 98));
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Gelecek ayın son günü</title>
+    <para>
+	   Verilen herhangi bir ayın son günü, gelecek ayın -1'inci değil 0'ıncı günü olarak ifade edilebilir. Aşağıdaki iki örnek de
+	   "2000 Şubat'ının son günü: 29" dizgesi üretilecektir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$songün = mktime(0, 0, 0, 3, 0, 2000);
+echo strftime("2000 Şubat'ının son günü: %d", $songün);
+$songün = mktime(0, 0, 0, 4, -31, 2000);
+echo strftime("2000 Şubat'ının son günü: %d", $songün);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <caution>
+   <para>
+	PHP 5.1.0 sürümünden önce, negatif zaman damgaları bilinen Windows sürümleri
+	altında ve diğer benzer sistemlerde desteklemiyordu. Bundan dolayı, geçerli
+	yılların aralığı 1970 ile 2038 arasında sınırlıydı.
+   </para>
+  </caution>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>gmmktime</function></member>
+    <member><function>date</function></member>
+    <member><function>time</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

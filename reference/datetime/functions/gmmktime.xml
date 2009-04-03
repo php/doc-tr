@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.12 Maintainer: behzat Status: ready -->
+<refentry xml:id="function.gmmktime" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>gmmktime</refname>
+  <refpurpose>Bir GMT tarihi için Unix zaman damgasını döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>gmmktime</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>saat</parameter><initializer>gmdate("H")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>dakika</parameter><initializer>gmdate("i")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>saniye</parameter><initializer>gmdate("s")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>ay</parameter><initializer>gmdate("n")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>gün</parameter><initializer>gmdate("j")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>yıl</parameter><initializer>gmdate("Y")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>ysu_var</parameter><initializer>-1</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Aktarılan değiştirgelerin bir GMT tarihini belirtmesi dışında tıpkı
+   <function>mktime</function> işlevi gibidir. <function>gmmktime</function>
+   işlevi kendi içinde <function>mktime</function> işlevini
+   kullanır ve sadece türetilen yerel zamanda geçerli zamanlar kullanılabilir.
+  </para>
+  <para>
+   <function>mktime</function> işlevindeki gibi, değiştirgeler
+   sağdan sola sıralıdır. Böylece belirtilmeyen değiştirge için
+   geçerli GMT zamanının kullanılabilmesi sağlanmıştır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>saat</parameter></term>
+     <listitem>
+      <para>
+       Saat
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dakika</parameter></term>
+     <listitem>
+      <para>
+       Dakika
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>saniye</parameter></term>
+     <listitem>
+      <para>
+       Saniye-
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>Ay</parameter></term>
+     <listitem>
+      <para>
+       Ay
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>Gün</parameter></term>
+     <listitem>
+      <para>
+       Gün
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>Yıl</parameter></term>
+     <listitem>
+      <para>
+       Yıl
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ysu_var</parameter></term>
+     <listitem>
+      <para>
+	     Değiştirgeler daima GMT zamanını temsil eder.
+       <parameter>ysu_var</parameter> değiştirgesinin sonuca etkisi yoktur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+  <type>integer</type> türünden Unix zaman damgası döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.1.0</entry>
+       <entry>
+		    PHP 5.1.0 sürümünden beri, <parameter>ysu_var</parameter>
+        değiştirgesinin kullanılması önerilmemektedir. Sonuç olarak, yerine
+        yeni zaman dilimi özellikleri kullanılmalıdır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Windows üzerinde <function>gmmktime</function> işlevi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+gmmktime(0, 0, 0, 1, 1, 1970); // GMT ve batıda geçerli, doğuda geçersiz
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mktime</function></member>
+    <member><function>date</function></member>
+    <member><function>time</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
