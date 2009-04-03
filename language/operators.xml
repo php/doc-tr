@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.6 $ -->
-<!-- EN-Revision: 1.131 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.7 $ -->
+<!-- EN-Revision: 1.135 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -379,8 +379,143 @@ $b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
     yaparlar. Eğer terimlerinden biri bir dizge ise bitsel işleç
     karakterlerin ASCII değerleri üzerinde işlem yapar.
    </simpara>
+
+   <table>
+    <title>Bitsel İşleçler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Örnek</entry>
+       <entry>İsim</entry>
+       <entry>Sonuç</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><userinput>$a &amp; $b</userinput></entry>
+       <entry>Ve</entry>
+       <entry>Hem $a hem de $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
+      </row>
+      <row>
+       <entry><userinput>$a | $b</userinput></entry>
+       <entry>Veya</entry>
+       <entry>$a veya $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
+      </row>
+      <row>
+       <entry><userinput>$a ^ $b</userinput></entry>
+       <entry>Ayrıcalıklı Veya</entry>
+       <entry>
+        Hem $a hem de $b'de 0 veya 1 olan bitler sonuçta 0, diğerleri 1
+        yapılır.
+       </entry>
+      </row>
+      <row>
+       <entry><userinput>~ $a</userinput></entry>
+       <entry>Değil</entry>
+       <entry>
+        $a'nın 0 olan bitleri 1, 1 olanları 0 yapılır.
+       </entry>
+      </row>
+      <row>
+       <entry><userinput>$a &lt;&lt; $b</userinput></entry>
+       <entry>Sola kaydırma</entry>
+       <entry>
+        $a'nın bitleri $b adım sola kaydırılır (her adım ikiyle çarpma
+        işlemine denktir).
+       </entry>
+      </row>
+      <row>
+       <entry><userinput>$a &gt;&gt; $b</userinput></entry>
+       <entry>Sağa kaydırma</entry>
+       <entry>
+        $a'nın bitleri $b adım sağa kaydırılır (her adım ikiye bölme
+        işlemine denktir).
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
    <para>
-    <informalexample>
+    <example>
+     <title>- Tamsayılar üzerinde bitsel işlemler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/*
+ * Üstteki bölümü yoksayın,
+ * çıktıyı iyileştirmek için biçemlemekten başka birşey yapmıyor.
+ */
+
+$format = '(%1$2d = %1$04b) = (%2$2d = %2$04b)'
+        . ' %3$s (%4$2d = %4$04b)' . "\n";
+
+echo <<<EOH
+ ---------     ---------  -- ---------
+   sonuç         değer    işl   dnm
+ ---------     ---------  -- ---------
+EOH;
+
+
+/*
+ * Örnekler burada.
+ */
+
+$değerler = array(0, 1, 2, 4, 8);
+$dnm = 1 + 4;
+
+echo "\n Bitsel VE \n";
+foreach ($değerler as $değer) {
+    $sonuç = $değer & $dnm;
+    printf($format, $sonuç, $değer, '&', $dnm);
+}
+
+echo "\n Bitsel Ayrıcalıklı VEYA \n";
+foreach ($değerler as $değer) {
+    $sonuç = $değer | $dnm;
+    printf($format, $sonuç, $değer, '|', $dnm);
+}
+
+echo "\n Bitsel Ayrıcalıklı VEYA (XOR) \n";
+foreach ($değerler as $değer) {
+    $sonuç = $değer ^ $dnm;
+    printf($format, $sonuç, $değer, '^', $dnm);
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+ ---------     ---------  -- ---------
+   sonuç         değer    işl   dnm
+ ---------     ---------  -- ---------
+ Bitsel VE
+( 0 = 0000) = ( 0 = 0000) & ( 5 = 0101)
+( 1 = 0001) = ( 1 = 0001) & ( 5 = 0101)
+( 0 = 0000) = ( 2 = 0010) & ( 5 = 0101)
+( 4 = 0100) = ( 4 = 0100) & ( 5 = 0101)
+( 0 = 0000) = ( 8 = 1000) & ( 5 = 0101)
+
+ Bitsel Ayrıcalıklı VEYA
+( 5 = 0101) = ( 0 = 0000) | ( 5 = 0101)
+( 5 = 0101) = ( 1 = 0001) | ( 5 = 0101)
+( 7 = 0111) = ( 2 = 0010) | ( 5 = 0101)
+( 5 = 0101) = ( 4 = 0100) | ( 5 = 0101)
+(13 = 1101) = ( 8 = 1000) | ( 5 = 0101)
+
+ Bitsel Ayrıcalıklı VEYA (XOR)
+( 5 = 0101) = ( 0 = 0000) ^ ( 5 = 0101)
+( 4 = 0100) = ( 1 = 0001) ^ ( 5 = 0101)
+( 7 = 0111) = ( 2 = 0010) ^ ( 5 = 0101)
+( 1 = 0001) = ( 4 = 0100) ^ ( 5 = 0101)
+(13 = 1101) = ( 8 = 1000) ^ ( 5 = 0101)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    <example>
+     <title>- Dizgeler üzerinde bitsel işlemler</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -400,64 +535,8 @@ echo "2" ^ 3; // 1 çıktılar
 ?>
 ]]>
      </programlisting>
-    </informalexample>
+    </example>
    </para>
-
-   <table>
-    <title>Bitsel İşleçler</title>
-    <tgroup cols="3">
-     <thead>
-      <row>
-       <entry>Örnek</entry>
-       <entry>İsim</entry>
-       <entry>Sonuç</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>$a &amp; $b</entry>
-       <entry>Ve</entry>
-       <entry>Hem $a hem de $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
-      </row>
-      <row>
-       <entry>$a | $b</entry>
-       <entry>Veya</entry>
-       <entry>$a veya $b'de 1 olan bitler sonuçta 1 yapılır.</entry>
-      </row>
-      <row>
-       <entry>$a ^ $b</entry>
-       <entry>Ayrıcalıklı Veya</entry>
-       <entry>
-        Hem $a hem de $b'de 0 veya 1 olan bitler sonuçta 0, diğerleri 1
-        yapılır.
-       </entry>
-      </row>
-      <row>
-       <entry>~ $a</entry>
-       <entry>Değil</entry>
-       <entry>
-        $a'nın 0 olan bitleri 1, 1 olanları 0 yapılır.
-       </entry>
-      </row>
-      <row>
-       <entry>$a &lt;&lt; $b</entry>
-       <entry>Sola kaydırma</entry>
-       <entry>
-        $a'nın bitleri $b adım sola kaydırılır (her adım ikiyle çarpma
-        işlemine denktir).
-       </entry>
-      </row>
-      <row>
-       <entry>$a &gt;&gt; $b</entry>
-       <entry>Sağa kaydırma</entry>
-       <entry>
-        $a'nın bitleri $b adım sağa kaydırılır (her adım ikiye bölme
-        işlemine denktir).
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </table>
    <warning>
     <para>
      32 bitlik sistemlerde 32 bitten fazla sağa kaydırma yapmayın. 32 bitten
@@ -770,7 +849,7 @@ $dosyam = @file ('var_olmayan_dosya') or
     die ("Dosya açılamadı: hata '$php_errormsg' değişkeninde kayıtlı");
 
 // İfadelerle çalışır ama işlevlerle çalışmaz:
-$value = @$cache[$key];
+$değer = @$cache[$key];
 // $key indisi mevcut değilse bir uyarı çıktılanır.
 
 ?>
