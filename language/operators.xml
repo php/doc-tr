@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.7 $ -->
-<!-- EN-Revision: 1.135 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.8 $ -->
+<!-- EN-Revision: 1.137 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -537,6 +537,396 @@ echo "2" ^ 3; // 1 çıktılar
      </programlisting>
     </example>
    </para>
+   <para>
+    <example>
+     <title>- Tamsayılarda bit kaydırma</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/*
+ * Bunlar örnektir.
+ */
+
+echo "\n--- POZİTİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---\n";
+
+$dgr = 4;
+$hane = 1;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'işaret bitinin kopyası sola kaydırıldı');
+
+$dgr = 4;
+$hane = 2;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane);
+
+$dgr = 4;
+$hane = 3;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'bitler sağa kaydırıldı');
+
+$dgr = 4;
+$hane = 4;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'yukarıdakiyle aynı; 0\'dan sonrası kaydırılamaz');
+
+
+echo "\n--- NEGATİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---\n";
+
+$dgr = -4;
+$hane = 1;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'işaret bitinin kopyası sola kaydırıldı');
+
+$dgr = -4;
+$hane = 2;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'bitler sağa kaydırıldı');
+
+$dgr = -4;
+$hane = 3;
+$snç = $dgr >> $hane;
+p($snç, $dgr, '>>', $hane, 'yukarıdakiyle aynı; -1\'dan sonrası kaydırılamaz');
+
+
+echo "\n--- POZİTİF TAMSAYILARDA SOLA BİT KAYDIRMA ---\n";
+
+$dgr = 4;
+$hane = 1;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane, 'sağ taraf sıfırlarla doldurulur');
+
+$dgr = 4;
+$hane = (PHP_INT_SIZE * 8) - 4;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane);
+
+$dgr = 4;
+$hane = (PHP_INT_SIZE * 8) - 3;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane, 'işaret bitleri dışa kaydırılır');
+
+$dgr = 4;
+$hane = (PHP_INT_SIZE * 8) - 2;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane, 'bitler sola kaydırıldı');
+
+
+echo "\n--- NEGATİF TAMSAYILARDA SOLA BİT KAYDIRMA ---\n";
+
+$dgr = -4;
+$hane = 1;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane, 'sağ taraf sıfırlarla doldurulur');
+
+$dgr = -4;
+$hane = (PHP_INT_SIZE * 8) - 3;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane);
+
+$dgr = -4;
+$hane = (PHP_INT_SIZE * 8) - 2;
+$snç = $dgr << $hane;
+p($snç, $dgr, '<<', $hane, 'işaret biti dahil, bitler soldan dışa kaydırıldı');
+
+
+/*
+ * Bundan sonrasını yoksayın; çıktıyı biçemlemekten başka bir şey yapmıyor.
+ */
+
+function p($snç, $dgr, $op, $hane, $ilt = '') {
+    $format = '%0' . (PHP_INT_SIZE * 8) . "b\n";
+
+    printf("İfade: %d = %d %s %d\n", $snç, $dgr, $op, $hane);
+
+    echo " Onluk:\n";
+    printf("  değer=%d\n", $dgr);
+    printf("  sonuç=%d\n", $snç);
+
+    echo " İkilik:\n";
+    printf('  değer=' . $format, $dgr);
+    printf('  sonuç=' . $format, $snç);
+
+    if ($ilt) {
+        echo " DİKKAT: $ilt\n";
+    }
+
+    echo "\n";
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs.32bit;
+     <screen>
+<![CDATA[
+
+--- POZİTİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---
+İfade: 2 = 4 >> 1
+ Onluk:
+  değer=4
+  sonuç=2
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000000010
+ DİKKAT: işaret bitinin kopyası sola kaydırıldı
+
+İfade: 1 = 4 >> 2
+ Onluk:
+  değer=4
+  sonuç=1
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000000001
+
+İfade: 0 = 4 >> 3
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000000000
+ DİKKAT: bitler sağa kaydırıldı
+
+İfade: 0 = 4 >> 4
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000000000
+ DİKKAT: yukarıdakiyle aynı; 0'dan sonrası kaydırılamaz
+
+
+--- NEGATİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---
+İfade: -2 = -4 >> 1
+ Onluk:
+  değer=-4
+  sonuç=-2
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=111111111111111111111111111110
+ DİKKAT: işaret bitinin kopyası sola kaydırıldı
+
+İfade: -1 = -4 >> 2
+ Onluk:
+  değer=-4
+  sonuç=-1
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=111111111111111111111111111111
+ DİKKAT: bitler sağa kaydırıldı
+
+İfade: -1 = -4 >> 3
+ Onluk:
+  değer=-4
+  sonuç=-1
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=111111111111111111111111111111
+ DİKKAT: yukarıdakiyle aynı; -1'dan sonrası kaydırılamaz
+
+
+--- POZİTİF TAMSAYILARDA SOLA BİT KAYDIRMA ---
+İfade: 8 = 4 << 1
+ Onluk:
+  değer=4
+  sonuç=8
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000001000
+ DİKKAT: sağ taraf sıfırlarla doldurulur
+
+İfade: 4611686018427387904 = 4 << 60
+ Onluk:
+  değer=4
+  sonuç=4611686018427387904
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=010000000000000000000000000000
+
+İfade: -9223372036854775808 = 4 << 61
+ Onluk:
+  değer=4
+  sonuç=-9223372036854775808
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=100000000000000000000000000000
+ DİKKAT: işaret bitleri dışa kaydırılır
+
+İfade: 0 = 4 << 62
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=000000000000000000000000000100
+  sonuç=000000000000000000000000000000
+ DİKKAT: bitler sola kaydırıldı
+
+
+--- NEGATİF TAMSAYILARDA SOLA BİT KAYDIRMA ---
+İfade: -8 = -4 << 1
+ Onluk:
+  değer=-4
+  sonuç=-8
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=111111111111111111111111111000
+ DİKKAT: sağ taraf sıfırlarla doldurulur
+
+İfade: -9223372036854775808 = -4 << 61
+ Onluk:
+  değer=-4
+  sonuç=-9223372036854775808
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=100000000000000000000000000000
+
+İfade: 0 = -4 << 62
+ Onluk:
+  değer=-4
+  sonuç=0
+ İkilik:
+  değer=111111111111111111111111111100
+  sonuç=000000000000000000000000000000
+ DİKKAT: işaret biti dahil, bitler soldan dışa kaydırıldı
+]]>
+     </screen>
+     &example.outputs.64bit;
+     <screen>
+<![CDATA[
+
+--- POZİTİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---
+İfade: 2 = 4 >> 1
+ Onluk:
+  değer=4
+  sonuç=2
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000010
+ DİKKAT: işaret bitinin kopyası sola kaydırıldı
+
+İfade: 1 = 4 >> 2
+ Onluk:
+  değer=4
+  sonuç=1
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000001
+
+İfade: 0 = 4 >> 3
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000000
+ DİKKAT: bitler sağa kaydırıldı
+
+İfade: 0 = 4 >> 4
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000000
+ DİKKAT: yukarıdakiyle aynı; 0'dan sonrası kaydırılamaz
+
+
+--- NEGATİF TAMSAYILARDA SAĞA BİT KAYDIRMA ---
+İfade: -2 = -4 >> 1
+ Onluk:
+  değer=-4
+  sonuç=-2
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=1111111111111111111111111111111111111111111111111111111111111110
+ DİKKAT: işaret bitinin kopyası sola kaydırıldı
+
+İfade: -1 = -4 >> 2
+ Onluk:
+  değer=-4
+  sonuç=-1
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=1111111111111111111111111111111111111111111111111111111111111111
+ DİKKAT: bitler sağa kaydırıldı
+
+İfade: -1 = -4 >> 3
+ Onluk:
+  değer=-4
+  sonuç=-1
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=1111111111111111111111111111111111111111111111111111111111111111
+ DİKKAT: yukarıdakiyle aynı; -1'dan sonrası kaydırılamaz
+
+
+--- POZİTİF TAMSAYILARDA SOLA BİT KAYDIRMA ---
+İfade: 8 = 4 << 1
+ Onluk:
+  değer=4
+  sonuç=8
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000001000
+ DİKKAT: sağ taraf sıfırlarla doldurulur
+
+İfade: 4611686018427387904 = 4 << 60
+ Onluk:
+  değer=4
+  sonuç=4611686018427387904
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0100000000000000000000000000000000000000000000000000000000000000
+
+İfade: -9223372036854775808 = 4 << 61
+ Onluk:
+  değer=4
+  sonuç=-9223372036854775808
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=1000000000000000000000000000000000000000000000000000000000000000
+ DİKKAT: işaret bitleri dışa kaydırılır
+
+İfade: 0 = 4 << 62
+ Onluk:
+  değer=4
+  sonuç=0
+ İkilik:
+  değer=0000000000000000000000000000000000000000000000000000000000000100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000000
+ DİKKAT: bitler sola kaydırıldı
+
+
+--- NEGATİF TAMSAYILARDA SOLA BİT KAYDIRMA ---
+İfade: -8 = -4 << 1
+ Onluk:
+  değer=-4
+  sonuç=-8
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=1111111111111111111111111111111111111111111111111111111111111000
+ DİKKAT: sağ taraf sıfırlarla doldurulur
+
+İfade: -9223372036854775808 = -4 << 61
+ Onluk:
+  değer=-4
+  sonuç=-9223372036854775808
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=1000000000000000000000000000000000000000000000000000000000000000
+
+İfade: 0 = -4 << 62
+ Onluk:
+  değer=-4
+  sonuç=0
+ İkilik:
+  değer=1111111111111111111111111111111111111111111111111111111111111100
+  sonuç=0000000000000000000000000000000000000000000000000000000000000000
+ DİKKAT: işaret biti dahil, bitler soldan dışa kaydırıldı
+]]>
+     </screen>
+    </example>
+  </para>
    <warning>
     <para>
      32 bitlik sistemlerde 32 bitten fazla sağa kaydırma yapmayın. 32 bitten
