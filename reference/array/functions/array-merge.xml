@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.23 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.array-merge" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_merge</refname>
+  <refpurpose>Belirtilen dizileri ardarda ekleyerek yeni bir dizi oluşturur
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_merge</methodname>
+   <methodparam><type>array</type><parameter>dizi1</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>dizi2</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen dizilerin elemanlarını bir öncekinin elemanlarının ardına
+   eklemek suretiyle yeni bir dizi oluşturur ve bu diziyi döndürür.
+  </para>
+  <para>
+   Eğer dizilerde aynı anahtara sahip elemanlar varsa sonraki dizinin elemanı
+   öncekinin yerine konur. Ancak, eğer diziler sayısal anahtarlar içeriyorsa
+   sonraki değer öncekinin üzerine yazılmaz, sona eklenir.
+  </para>
+  <para>
+   Eğer sadece bir dizi verilmişse ve dizi sayısal indisli ise indisler
+   yeniden oluşturulur.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizi1</parameter></term>
+     <listitem>
+      <para>
+       Diğerlerinin ardına ekleneceği dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizi2</parameter></term>
+     <listitem>
+      <para>
+       Kendinden öncekinin ardına eklenecek dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Elde edilen diziyi döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        <warning>
+         <para>
+          <function>array_merge</function> işlevinin davranışı PHP 5'te
+          değiştirildi. PHP 4'ün tersine, <function>array_merge</function>
+          artık sadece <type>array</type> türünde değiştirgeler kabul ediyor.
+          Diğer türleri de katıştırmak için tür dönüşümü uygulayabilirsiniz.
+          Ayrıntılar için aşağıdaki örneklere bakınız.
+         </para>
+         <para>
+          <example>
+           <title>- <function>array_merge</function> PHP 5 örneği</title>
+           <programlisting role="php">
+<![CDATA[
+<?php
+$ilk = 'foo';
+$son = array(1 => 'bar');
+$sonuç = array_merge((array)$ilk, (array)$son);
+print_r($sonuç);
+?>
+]]>
+           </programlisting>
+           &example.outputs;
+           <screen role="php">
+    <![CDATA[
+    Array
+    (
+        [0] => foo
+        [1] => bar
+    )
+]]>
+           </screen>
+          </example>
+         </para>
+        </warning>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>array_merge</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array1 = array("color" => "red", 2, 4);
+$array2 = array("a", "b", "color" => "green", "shape" => "trapezoid", 4);
+$result = array_merge($array1, $array2);
+print_r($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [color] => green
+    [0] => 2
+    [1] => 4
+    [2] => a
+    [3] => b
+    [shape] => trapezoid
+    [4] => 4
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Basit <function>array_merge</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi1 = array();
+$dizi2 = array(1 => "veri");
+$sonuç = array_merge($dizi1, $dizi2);
+?>
+]]>
+    </programlisting>
+    <para>
+     Sayısal anahtarların yeniden numaralanacağını unutmayın!
+    </para>
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [0] => veri
+)
+]]>
+    </screen>
+    <para>
+     Dizileri tamamen korumak ve önceki anahtarların üzerine yazılmasını
+     engellemek için bu işlevi kullanmak yerine dizileri birbirine
+     <literal>+</literal> işleci ile ekleyebilirsiniz:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi1 = array();
+$dizi2 = array(1 => "veri");
+$sonuç = $dizi1 + $dizi2;
+?>
+]]>
+    </programlisting>
+    <para>
+     Sayısal anahtarlar da korunacağından ilişkiler de korunmuş olur.
+    </para>
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [1] => data
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_merge_recursive</function></member>
+    <member><function>array_combine</function></member>
+    <member><link linkend="language.operators.array">dizi
+    İşleçleri</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

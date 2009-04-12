@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.23 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.array-multisort" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_multisort</refname>
+  <refpurpose>Çok sayıda diziyi veya çok boyutlu dizileri sıralar</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>array_multisort</methodname>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>array_multisort</function> işlevi çok sayıda diziyi bir kerede
+   sıralayabileceği gibi çok boyutlu bir diziyi bir veya daha fazla boyuta
+   göre de sıralayabilir.
+  </para>
+  <para>
+   İlişkisel (<type>string</type>) anahtarlar korunursa da sayısal indisler
+   yeniden oluşturulur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizi</parameter></term>
+     <listitem>
+      <para>
+       Sıralanacak dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirge</parameter></term>
+     <listitem>
+      <para>
+       Belirtildiği takdirde, önceki diziye uygulanmak üzere ya başka bir dizi
+       ya da şu seçeneklerden biri belirtilir:
+       <constant>SORT_ASC</constant> (artan sırada),
+       <constant>SORT_DESC</constant> (azalan sırada),
+       <constant>SORT_REGULAR</constant> (normal),
+       <constant>SORT_NUMERIC</constant> (sayısal),
+       <constant>SORT_STRING</constant> (dizgesel).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>...</parameter></term>
+     <listitem>
+      <para>
+       Ek <parameter>değiştirge</parameter>'ler.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Çok sayıda diziyi sıralamak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar1 = array(10, 100, 100, 0);
+$ar2 = array(1, 3, 2, 4);
+array_multisort($ar1, $ar2);
+
+var_dump($ar1);
+var_dump($ar2);
+?>
+]]>
+    </programlisting>
+    <para>
+     Bu örnekte sıralama sonrasında iki dizi arasındaki elemanlar yerlerine
+     göre birbirinin karşıtı olmak üzere ilk dizi  0, 10, 100, 100; ikinci
+     dizi 4, 1, 2, 3 içerir.
+    </para>
+    <screen>
+<![CDATA[
+array(4) {
+  [0]=> int(0)
+  [1]=> int(10)
+  [2]=> int(100)
+  [3]=> int(100)
+}
+array(4) {
+  [0]=> int(4)
+  [1]=> int(1)
+  [2]=> int(2)
+  [3]=> int(3)
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Çok boyutlu diziyi sıralamak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar = array(
+       array("10", 11, 100, 100, "a"),
+       array(   1,  2, "2",   3,   1)
+      );
+array_multisort($ar[0], SORT_ASC, SORT_STRING,
+                $ar[1], SORT_NUMERIC, SORT_DESC);
+var_dump($ar);
+?>
+]]>
+    </programlisting>
+    <para>
+     Bu örnekte sıralama sonrasında, ilk dizi "10", 100, 100, 11, "a" dizisine
+     dönüşecek (artan düzende dizgesel olarak sıralanır), ikinci dizi ise 1,
+     3, "2", 2, 1 değerlerini içerecektir (azalan düzende sayısal olarak
+     sıralanır) .
+    </para>
+    <screen>
+<![CDATA[
+array(2) {
+  [0]=> array(5) {
+    [0]=> string(2) "10"
+    [1]=> int(100)
+    [2]=> int(100)
+    [3]=> int(11)
+    [4]=> string(1) "a"
+  }
+  [1]=> array(5) {
+    [0]=> int(1)
+    [1]=> int(3)
+    [2]=> string(1) "2"
+    [3]=> int(2)
+    [4]=> int(1)
+  }
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Veritabanı sonuçlarının sıralanması</title>
+    <para>
+     Bu örnek için,  <varname>veri</varname> dizisindeki her eleman tablodaki
+     bir satıra karşılıktır.
+    </para>
+    <para>
+     Örnek veri:
+    </para>
+    <screen>
+<![CDATA[
+ bölüm |   baskı
+-------+--------
+    67 |       2
+    86 |       1
+    85 |       6
+    98 |       2
+    86 |       6
+    67 |       7
+]]>
+    </screen>
+    <para>
+     Dizi olarak <varname>veri</varname> dizisi kullanılmıştır. Aynı sonuç
+     <function>mysql_fetch_assoc</function> işlevini bir döngü içinde
+     kullanarak da elde edilebilir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$veri[] = array('bölüm' => 67, 'baskı' => 2);
+$veri[] = array('bölüm' => 86, 'baskı' => 1);
+$veri[] = array('bölüm' => 85, 'baskı' => 6);
+$veri[] = array('bölüm' => 98, 'baskı' => 2);
+$veri[] = array('bölüm' => 86, 'baskı' => 6);
+$veri[] = array('bölüm' => 67, 'baskı' => 7);
+?>
+]]>
+    </programlisting>
+    <para>
+     Bu örnekte <varname>bölüm</varname>'ü azalan <varname>baskı</varname>'yı
+     artan düzende sıralayacağız.
+    </para>
+    <para>
+     Satırlara karşılık gelen bir dizimiz var, fakat
+     <function>array_multisort</function> sütun dizileri gerektiriyor. Bu
+     nedenle sıralamayı yapmadan önce sütunları elde etmek için şu kodu
+     kullanacağız:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Sütun listelerini elde edelim
+foreach ($veri as $anahtar => $satır) {
+    $bölüm[$anahtar]  = $satır['bölüm'];
+    $baskı[$anahtar] = $satır['baskı'];
+}
+
+// bölüm'ü azalan, baskı'yı artan düzende sıralayalım ve
+// ortak bir anahtara göre sıralamak için $veri'yi son
+// değiştirge olarak ekleyelim
+array_multisort($bölüm, SORT_DESC, $baskı, SORT_ASC, $veri);
+?>
+]]>
+    </programlisting>
+    <para>
+     Veri kümemiz artık sıraya dizildi:
+    </para>
+    <screen>
+<![CDATA[
+bölüm | baskı
+------+------
+   98 |     2
+   86 |     1
+   86 |     6
+   85 |     6
+   67 |     2
+   67 |     7
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Harf büyüklüğüne duyarsız sıralama</title>
+    <para>
+     <constant>SORT_STRING</constant> ve <constant>SORT_REGULAR</constant>
+     seçenekleri harf büyüklüğüne duyarlı olup, büyük harf ile başlayan
+     dizgeler sıralamada küçük harfle başlayanlardan önce gelir.
+    </para>
+    <para>
+     Harf büyüklüğüne duyarsız sıralama yapmak için özgün dizinin önce küçük
+     harfli bir kopyası oluşturulur.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array('Alpha', 'atomic', 'Beta', 'bank');
+$küçük_harfli_dizi = array_map('strtolower', $array);
+
+array_multisort($küçük_harfli_dizi, SORT_ASC, SORT_STRING, $dizi);
+
+print_r($array);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => Alpha
+    [1] => atomic
+    [2] => bank
+    [3] => Beta
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>usort</function></member>
+    <member>&seealso.array.sorting;</member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
