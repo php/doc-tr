@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.8 $ -->
-<!-- EN-Revision: 1.137 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.9 $ -->
+<!-- EN-Revision: 1.140 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -376,8 +376,7 @@ $b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
    <title>Bitsel İşleçler</title>
    <simpara>
     Bitsel işleçler, bir tamsayının içindeki belli bitleri 0 ya da 1
-    yaparlar. Eğer terimlerinden biri bir dizge ise bitsel işleç
-    karakterlerin ASCII değerleri üzerinde işlem yapar.
+    yaparlar.
    </simpara>
 
    <table>
@@ -435,6 +434,25 @@ $b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
      </tbody>
     </tgroup>
    </table>
+   <para>
+    PHP'de bit kaydırma bir aritmetik işlemdir. Kaydırma sonucu her iki uçtan
+    da taşan bitler silinir. Sola kaydırmada sağdan eksilen bitler sıfırlarla
+    doldurulur, bu arada işaret biti soldan taşarak silinir, yani sola
+    kaydırmada terimin işareti korunmaz. Sağa kaldırmada ise işaret biti
+    yerinden oynatılmaz, yani sağa kaydırmada terimin işareti korunur.
+   </para>
+   <para>
+    Bir işlemin <link linkend="language.operators.precedence">öncelik</link>
+    almasını istiyorsanız yaylı ayraçları kullanın. Örneğin, <userinput>$a
+    &amp; $b == true</userinput> işleminde önce eşitlik sonra bitsel VE
+    uygulanırken <userinput>($a &amp; $b) == true</userinput> işleminde ise
+    önce bitsel VE sonra eşitlik uygulanır.
+   </para>
+   <para>
+    Veri türü dönüşümlerinde dikkatli olun. Eğer sol ve sağ taraf
+    değiştirgelerinin ikisi de dizge ise bitsel işleçler terimlerdeki
+    karakterlerin ASCII değerleri üzerinde işlem yapacaktır.
+   </para>
    <para>
     <example>
      <title>- Tamsayılar üzerinde bitsel işlemler</title>
@@ -931,8 +949,20 @@ function p($snç, $dgr, $op, $hane, $ilt = '') {
     <para>
      32 bitlik sistemlerde 32 bitten fazla sağa kaydırma yapmayın. 32 bitten
      daha geniş bir sayıyla sonuçlanacak şekilde sola kaydırma yapmayın.
+     PHP_INT_MAX'tan büyük sayılar üzerinde bitsel işlemler yapacaksanız gmp
+     eklentisindeki işlevleri kullanın.
     </para>
    </warning>
+   <para>
+    Ayrıca bakınız:
+    <function>pack</function>,
+    <function>unpack</function>,
+    <function>gmp_add</function>,
+    <function>gmp_or</function>,
+    <function>gmp_xor</function>,
+    <function>gmp_testbit</function>,
+    <function>gmp_clrbit</function>
+   </para>
   </sect1>
 
   <sect1 xml:id="language.operators.comparison">
