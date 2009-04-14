@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.9 $ -->
-<!-- EN-Revision: 1.140 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.10 $ -->
+<!-- EN-Revision: 1.141 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -452,6 +452,59 @@ $b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
     Veri türü dönüşümlerinde dikkatli olun. Eğer sol ve sağ taraf
     değiştirgelerinin ikisi de dizge ise bitsel işleçler terimlerdeki
     karakterlerin ASCII değerleri üzerinde işlem yapacaktır.
+   </para>
+   <para>
+    <informalexample>
+     <para>
+      <literallayout>
+PHP'nin error_reporting yönergesi gerçekte neler olup bittiğini göstermek
+için bitsel değerler kullanır. Sadece bilgilendirmeleri değil hataların
+tümünü görmek isterseniz php.ini dosyasında ilgili yere şunu yazın:
+<userinput>E_ALL &amp; ~E_NOTICE</userinput>
+      </literallayout>
+     </para>
+     <para>
+      <literallayout>
+Bu E_ALL için şöyle çalışır:
+<computeroutput>00000000000000000111011111111111</computeroutput>
+Keza E_NOTICE...
+<computeroutput>00000000000000000000000000001000</computeroutput>
+... ve <userinput>~</userinput> ile ters çevrilerek:
+<computeroutput>11111111111111111111111111110111</computeroutput>
+Son olarak, her iki değer üzerinde etkin bitleri bulmak için
+VE (&amp;) işlecini kullanır:
+<computeroutput>00000000000000000111011111110111</computeroutput>
+      </literallayout>
+     </para>
+     <para>
+      <literallayout>
+Bunu sağlamanın bir başka yolu da sadece bir değerde veya diğerinde etkin
+bitleri bulmak için XOR (<userinput>^</userinput>) kullanmaktır:
+<userinput>E_ALL ^ E_NOTICE</userinput>
+      </literallayout>
+     </para>
+    </informalexample>
+   </para>
+   <para>
+    <informalexample>
+     <para>
+      <literallayout>
+error_reporting yönergesi bitleri etkin kılmayı göstermek için de
+kullanılabilir. Sadece hataları ve kurtarılabilir göstermenin yolu:
+<userinput>E_ERROR | E_RECOVERABLE_ERROR</userinput>
+      </literallayout>
+     </para>
+     <para>
+      <literallayout>
+Bu işlem etkin bitleri almak için
+<computeroutput>00000000000000000000000000000001</computeroutput>
+ve
+<computeroutput>00000000000000000001000000000000</computeroutput>
+E_ERROR'ları üzerinde VEYA (<userinput>|</userinput>) işlecini kullanır:
+<computeroutput>00000000000000000001000000000001</computeroutput>
+      </literallayout>
+     </para>
+    </informalexample>
    </para>
    <para>
     <example>
