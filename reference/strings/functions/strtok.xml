@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.9 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strtok" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>strtok</refname>
+  <refpurpose>Dizgeyi bir dizgeciğe göre böler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>strtok</methodname>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ayraçlar</parameter></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>string</type><methodname>strtok</methodname>
+   <methodparam><type>string</type><parameter>ayraçlar</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>strtok</function> işlevi <parameter>dizge</parameter> dizgesini
+   <parameter>ayraçlar</parameter> dizgesindeki karakterleri ayraç olarak
+   kullanarak daha küçük dizgelere böler. Yani, "Bu örnek bir dizgedir"
+   dizgesini boşluk karakterini ayraç olarak kullanarak sözcüklerine
+   bölebilirsiniz.
+  </para>
+  <para>
+   Sadece ilk <function>strtok</function> çağrısında
+   <parameter>dizge</parameter> değiştirgesi belirtilir. Sonraki çağrılarda
+   sadece <parameter>ayraçlar</parameter> değiştirgesini kullanmak yeterlidir.
+   Baştan başlamak veya yeni dizgelerden birini ayrıştırmak için işlevi
+   <parameter>dizge</parameter> değiştirgesi ile çağırmak işlemi ilklendirmek
+   için yeterlidir. <parameter>ayraçlar</parameter> değiştirgesine birden
+   fazla ayraç koyabilirsiniz. Dizge belirtilen bu ayraçlardan ilk
+   rastladığıyla dizgeyi böler.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Daha küçük parçalara bölünecek dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ayraçlar</parameter></term>
+     <listitem>
+      <para>
+       Dizgeyi bölmek için kullanılacak ayraçlardan oluşan dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir dizge parçası.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>strtok</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$string = "This is\tan example\nstring";
+/* Sekme ve satırsonu karakterlerine göre dizgeyi bölelim */
+$tok = strtok($string, " \n\t");
+
+while ($tok !== false) {
+    echo "Word=$tok<br />";
+    $tok = strtok(" \n\t");
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   İşlevin boş bir parça bulunduğu durumdaki davranışı PHP 4.1.0'dan itibaren
+   değişmiştir. Eski davranış boş bir dizge döndürmekti. Yenisinde dizgenin o
+   parçası basitçe atlanmaktadır. Örnek:
+  </para>
+  <para>
+   <example>
+    <title>- Eski <function>strtok</function> davranışı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizge1  = strtok('/something', '/');
+$dizge2 = strtok('/');
+var_dump($dizge1, $dizge2);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+    string(0) ""
+    string(9) "something"
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>Yeni <function>strtok</function> davranışı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizge1  = strtok('/something', '/');
+$dizge2 = strtok('/');
+var_dump($dizge1, $dizge2);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+    string(9) "something"
+    bool(false)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+
+  &return.falseproblem;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>split</function></member>
+    <member><function>explode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
