@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.20 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.sprintf">
+ <refnamediv>
+  <refname>sprintf</refname>
+  <refpurpose>Biçemli bir dizge döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>sprintf</methodname>
+   <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>biçem</parameter> dizgesiyle biçemlenerek üretilmiş bir dizge
+   döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>biçem</parameter></term>
+     <listitem>
+      <para>
+       Biçem dizgesi sıfır veya daha fazla sayıda yönergeden oluşur:
+       Sıradan karakterler (<literal>%</literal> hariç) doğrudan çıktıya
+       kopyalanır. <emphasis>Dönüşüm belirtimleri</emphasis> ise her biri
+       kendi değiştirgesini alarak bir sonuç üretir.
+       <function>printf</function> işlevi bu bakımdan
+       <function>sprintf</function> işlevi gibidir.
+      </para>
+      <para>
+       Her dönüşüm belirtimi, önüne yüzde imi (<literal>%</literal>)
+       getirilmiş bir veya daha fazla sayıda, sırayla şu elemanlardan oluşur:
+       <orderedlist>
+        <listitem>
+         <simpara>
+          Bir sayı üzerinde kullanılmak üzere + veya - işareti konulmasını
+          sağlayan isteğe bağlı bir <emphasis>işaret belirteci</emphasis>.
+          Öntanımlı olarak, sayı negatifse sadece - imini koymak için
+          kullanılır. Bu belirteç PHP 4.3.0'dan itibaren pozitif sayılar için
+          + iminin konulmasını da sağlamaktadır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Doğru dizge uzunluğunu elde etmek amacıyla dolgu olarak kullanılacak
+          karakterin belirtilmesi için isteğe bağlı bir <emphasis>dolgu
+          belirteci</emphasis>. Bu bir boşluk karakteri olabileceği gibi
+          <literal>0</literal> karakteri de olabilir. Öntanımlı olarak
+          boşlukla dolgu yapılır. Bir dolgu karakteri daha belirtmek gerekirse
+          tek tırnak ile öncelenerek belirtilebilir. Örnekler için aşağıya
+          bakınız.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Sonucun sola mı yoksa sağa mı yanaştırılacağını belirtmek için
+          isteğe bağlı bir <emphasis>hizalama belirteci</emphasis>. Öntanımlı
+          olarak sağa hizalama yapılır; bir <literal>-</literal> karakteri
+          sola hizalama yapılmasını sağlar.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Dönüşümün en az kaç karakterle sonuçlanacağını belirten isteğe bağlı
+          bir sayı olarak bir <emphasis>genişlik belirteci</emphasis>.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Gerçek sayılarda ondalık hane sayısını belirtmek üzere isteğe bağlı
+          bir <emphasis>hassasiyet belirteci</emphasis>. Bu belirteç bir dizge
+          üzerinde kullanılırsa dizgenin içerebileceği azami karakter sayısını
+          belirtir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <para>
+          Değiştirge verisinin hangi türde ele alınacağını belirtmek için bir
+          <emphasis>tür belirteci</emphasis>.  Olası türler:
+          <simplelist>
+           <member>
+            <literal>%</literal> - Yüzde iminin kendisi. Bir değiştirge
+            gerektirmez.
+           </member>
+           <member>
+            <literal>b</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve bir ikil sayı olarak gösterilmesini sağlar.
+           </member>
+           <member>
+            <literal>c</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve bu ASCII değere sahip karakterin gösterilmesini
+            sağlar.
+           </member>
+           <member>
+            <literal>d</literal> -  Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve bir (işaretli) onluk sayı olarak gösterilmesini
+            sağlar.
+           </member>
+           <member>
+            <literal>e</literal> - Değiştirge bilimsel gösterimle ele alınır
+            (1.2e+2 gibi). Hassasiyet belirteci PHP 5.2.1'den beri ondalık
+            noktadan sonraki hane sayısını belirlemekte kullanılmaktadır.
+            Önceki sürümlerde (bir eksiğiyle) kıymetli hanelerin sayısı olarak
+            ele alınırdı.
+           </member>
+           <member>
+            <literal>u</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve bir işaretsiz onluk sayı olarak gösterilmesini
+            sağlar.
+           </member>
+           <member>
+            <literal>f</literal> - Değiştirgenin bir kayan noktalı sayı olarak
+            ele alınmasını ve bir gerçek sayı olarak (yerele bağlı)
+            gösterilmesini sağlar.
+           </member>
+           <member>
+            <literal>F</literal> - Değiştirgenin bir kayan noktalı sayı olarak
+            ele alınmasını ve bir gerçek sayı olarak (yerele bağlı olmaksızın)
+            gösterilmesini sağlar. PHP 4.3.10 ve PHP 5.0.3'ten beri
+            kullanılabilmektedir.
+           </member>
+           <member>
+            <literal>o</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve bir sekizlik sayı olarak gösterilmesini sağlar.
+           </member>
+           <member>
+            <literal>s</literal> - Değiştirge dizge olarak ele alınıp dizge
+            olarak gösterilir.
+           </member>
+           <member>
+            <literal>x</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve (küçük harfli) bir onaltılık sayı olarak
+            gösterilmesini sağlar.
+           </member>
+           <member>
+            <literal>X</literal> - Değiştirgenin bir tamsayı olarak ele
+            alınmasını ve (büyük harfli) bir onaltılık sayı olarak
+            gösterilmesini sağlar.
+           </member>
+          </simplelist>
+         </para>
+        </listitem>
+       </orderedlist>
+      </para>
+      <para>
+       Biçem dizgesi değiştirge numaralama ve yer değiştirme işlemlerini de
+       destekler. Örnek:
+       <example>
+        <title>- Değiştirge takaslama</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+$format = 'There are %d monkeys in the %s';
+printf($format, $num, $location);
+?>
+]]>
+        </programlisting>
+       </example>
+       Çıktısı, "There are 5 monkeys in the tree" olmalıdır.  Fakat biçem
+       dizgesini uluslararasılaştırma amacıyla ayrı bir dosyada tuttuğumuzu
+       varsayarak örneği şöyle oluşturursak asıl sorun ortaya çıkar:
+       <example>
+        <title>- Değiştirge takaslama</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+$format = 'The %s contains %d monkeys';
+printf($format, $num, $location);
+?>
+]]>
+        </programlisting>
+       </example>
+       İşte şimdi sorun var. Değiştirgelerin sırası biçem dizgesindeki sırayla
+       eşleşmiyor. Kodu olduğu gibi bırakıp biçem dizgesindeki belirtimlerin
+       sırasını değiştirebiliriz. Bu durumda biçem dizgesi şöyle olur:
+       <example>
+        <title>- Değiştirge takaslama</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+$format = 'The %2$s contains %1$d monkeys';
+printf($format, $num, $location);
+?>
+]]>
+        </programlisting>
+       </example>
+       Değiştirge sayısını arttırmadan biçem dizgesindeki belirtimlerin
+       sayısını arttırabiliriz:
+       <example>
+        <title>- Değiştirge takaslama</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+$format = 'The %2$s contains %1$d monkeys.
+           That\'s a nice %2$s full of %1$d monkeys.';
+printf($format, $num, $location);
+?>
+]]>
+        </programlisting>
+       </example>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>args</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>...</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <parameter>biçem</parameter> dizgesine göre biçemlendirilerek üretilen bir
+   dizge döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.0.6</entry>
+       <entry>
+        Değiştirge numaralama/takaslama desteği eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- Çeşitli <function>printf</function>örnekleri</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$n =  43951789;
+$u = -43951789;
+$c = 65; // ASCII 65 is 'A'
+
+// Dikkat: %%, sadece bir tane '%' basar
+printf("%%b = '%b'\n", $n); // ikil gösterim
+printf("%%c = '%c'\n", $c); // ascii karakteri basar; chr() ile aynı
+printf("%%d = '%d'\n", $n); // standart tamsayı gösterimi
+printf("%%e = '%e'\n", $n); // bilimsel gösterim
+printf("%%u = '%u'\n", $n); // pozitif tamsayının işaretsiz tamsayı gösterimi
+printf("%%u = '%u'\n", $u); // negatif tamsayının işaretsiz tamsayı gösterimi
+printf("%%f = '%f'\n", $n); // gerçek sayı gösterimi
+printf("%%o = '%o'\n", $n); // sekizlik gösterim
+printf("%%s = '%s'\n", $n); // dizge gösterimi
+printf("%%x = '%x'\n", $n); // küçük harfli onaltılık sayı gösterimi
+printf("%%X = '%X'\n", $n); // büyük harfli onaltılık sayı gösterimi
+
+printf("%%+d = '%+d'\n", $n); // pozitif tamsayı üzerinde işaret belirteci
+printf("%%+d = '%+d'\n", $u); // negatif tamsayı üzerinde işaret belirteci
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+%b = '10100111101010011010101101'
+%c = 'A'
+%d = '43951789'
+%e = '4.39518e+7'
+%u = '43951789'
+%u = '4251015507'
+%f = '43951789.000000'
+%o = '247523255'
+%s = '43951789'
+%x = '29ea6ad'
+%X = '29EA6AD'
+%+d = '+43951789'
+%+d = '-43951789'
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>- <function>printf</function> dizge belirtimleri</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$s = 'monkey';
+$t = 'many monkeys';
+
+printf("[%s]\n",      $s); // standart dizge
+printf("[%10s]\n",    $s); // boşluklarla sağa hizalanır
+printf("[%-10s]\n",   $s); // boşluklarla sola hizalanır
+printf("[%010s]\n",   $s); // 0'larla doldurma dizgelerde de çalışır
+printf("[%'#10s]\n",  $s); // '#' özel dolgu karakteri olarak kullanılır
+printf("[%10.10s]\n", $t); // 10 karakterlik sınırlamayla sola hizalama
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+[monkey]
+[    monkey]
+[monkey    ]
+[0000monkey]
+[####monkey]
+[many monke]
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>- <function>sprintf</function> ve sıfır dolgulu tamsayılar</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$isodate = sprintf("%04d-%02d-%02d", $year, $month, $day);
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title>- <function>sprintf</function> ve para biçemleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$money1 = 68.75;
+$money2 = 54.35;
+$money = $money1 + $money2;
+// echo $money çıktısı: "123.1"
+$formatted = sprintf("%01.2f", $money);
+// echo $formatted çıktısı: "123.10"
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title>- <function>sprintf</function> ve bilimsel gösterim</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$number = 362525200;
+
+echo sprintf("%.3e", $number); // 3.625e+8 çıktılar
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>printf</function></member>
+    <member><function>sscanf</function></member>
+    <member><function>fscanf</function></member>
+    <member><function>vsprintf</function></member>
+    <member><function>number_format</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
