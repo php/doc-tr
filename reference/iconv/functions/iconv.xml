@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.iconv" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>iconv</refname>
@@ -46,7 +46,7 @@
        yerleştirilir. <literal>//IGNORE</literal> dizgesini eklerseniz, çıktı
        kararakter kümesinde gösterilemeyen bir karakter saptandığında karakter
        yoksayılır. Bunların hiçbiri yapılmazsa, dönüşüm ilk kuraldışı
-       karakterde durdurulur.
+       karakterde durdurulur ve bir <constant>E_NOTICE</constant> üretilir.
       </para>
      </listitem>
     </varlistentry>
@@ -77,10 +77,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-echo iconv("ISO-8859-9", "UTF-8", "Orada, bir köy var uzakta...");
+$text = "Bu bir Euro simgesidir: '€'.";
+
+echo 'Original : ', $text, PHP_EOL;
+echo 'TRANSLIT : ', iconv("UTF-8", "ISO-8859-1//TRANSLIT", $text), PHP_EOL;
+echo 'IGNORE   : ', iconv("UTF-8", "ISO-8859-1//IGNORE", $text), PHP_EOL;
+echo 'Plain    : ', iconv("UTF-8", "ISO-8859-1", $text), PHP_EOL;
 ?>
 ]]>
     </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Original : Bu bir Euro simgesidir: '€'.
+TRANSLIT : Bu bir Euro simgesidir: 'EUR'.
+IGNORE   : Bu bir Euro simgesidir: ''.
+Plain    :
+Notice: iconv(): Detected an illegal character in input string in .\iconv-example.php on line 7
+This is the Euro symbol '
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
