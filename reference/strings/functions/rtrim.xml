@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.rtrim">
+ <refnamediv>
+  <refname>rtrim</refname>
+  <refpurpose>Dizgenin sonundaki boşlukları (veya diğer karakterleri) budar
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>rtrim</methodname>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>karakterler</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Bu işlev <parameter>dizge</parameter>'nin sonundaki boşlukları budar.
+  </para>
+  <para>
+   İkinci değiştirge olmaksızın <function>rtrim</function>
+   sadece aşağıdaki karakterleri budayacaktır:
+   <!-- sorted by importance. Printed 3 times: trim, ltrim, rtrim -->
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      " " (<acronym>ASCII</acronym> <literal>32</literal>
+      (<literal>0x20</literal>)), sıradan boşluk.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "\t" (<acronym>ASCII</acronym> <literal>9</literal>
+      (<literal>0x09</literal>)), sekme.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "\n" (<acronym>ASCII</acronym> <literal>10</literal>
+      (<literal>0x0A</literal>)), satırsonu.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "\r" (<acronym>ASCII</acronym> <literal>13</literal>
+      (<literal>0x0D</literal>)), satırbaşı.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "\0" (<acronym>ASCII</acronym> <literal>0</literal>
+      (<literal>0x00</literal>)), <literal>NUL</literal>-bayt.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara> <!-- not \v, since not supported by PHP -->
+      "\x0B" (<acronym>ASCII</acronym> <literal>11</literal>
+      (<literal>0x0B</literal>)), dikey sekme.
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Budanacak dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>karakterler</parameter></term>
+     <listitem>
+      <para>
+       Seçimlik olarak, <parameter>karakterler</parameter> değiştirgesi
+       kullanılarak budanacak karakterler belirlenebilir.
+       Basitçe budamak istediğiniz tüm karakterleri belirtin. Bir karakter
+       aralığını <literal>..</literal> kullanarak belirtebilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Budanmış dizge.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.1.0</entry>
+       <entry>
+        İsteğe bağlı <parameter>karakterler</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>rtrim</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$metin   = "\t\tBir kaç kelam :) ...  ";
+$ikil = "\x09Örnek dizge\x0A";
+$selam  = "Merhaba Dünya";
+var_dump($metin, $ikil, $selam);
+
+print "\n";
+
+$kırpık = rtrim($metin);
+var_dump($kırpık);
+
+$kırpık = rtrim($metin, " \t.");
+var_dump($kırpık);
+
+$kırpık = rtrim($selam, "aerMy");
+var_dump($kırpık);
+
+// $ikil'in başındaki ve sonundaki ASCII denetim karakterlerini budar
+// (0'dan 31'e kadar, 0 ve 31 dahil)
+$temiz = rtrim($ikil, "\x00..\x1F");
+var_dump($temiz);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(25) "            Bir kaç kelam :) ...  "
+string(14) "    Örnek dizge
+"
+string(14) "Merhaba Dünya"
+
+string(23) "            Bir kaç kelam :) ..."
+string(19) "            Bir kaç kelam :)"
+string(12) "Merhaba Dün"
+string(13) "    Örnek dizge"
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>trim</function></member>
+    <member><function>ltrim</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

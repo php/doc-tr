@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.money-format">
+ <refnamediv>
+  <refname>money_format</refname>
+  <refpurpose>Bir sayıyı para olarak biçemler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>money_format</methodname>
+   <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
+   <methodparam><type>float</type><parameter>sayı</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>money_format</function> işlevi belirtilen
+   <parameter>sayı</parameter>'nın para olarak biçemlenmiş sürümünü döndürür.
+   Bu gerçeklenimin bir defada sadece bir sayıyı dönüştürmesi dışında C
+   kütüphanesinin <function>strfmon</function> işlevinin yaptığını yapar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>biçem</parameter></term>
+     <listitem>
+      <para>
+       Biçem belirtimleri şu dizilimlerden oluşur:
+       <itemizedlist>
+        <listitem><para><literal>%</literal> karakteri</para></listitem>
+        <listitem><para>seçimlik seçenekler</para></listitem>
+        <listitem><para>seçimlik alan genişlikleri</para></listitem>
+        <listitem><para>seçimlik sol taraf hassasiyeti</para></listitem>
+        <listitem><para>seçimlik sağ taraf hassasiyeti</para></listitem>
+        <listitem><para>gerekli bir dönüşüm karakteri</para></listitem>
+       </itemizedlist>
+      </para>
+      <formalpara>
+       <title>Seçenekler</title>
+       <para>
+       Aşağıdaki seçeneklerden bir veya daha fazlası kullanılabilir:
+        <variablelist>
+         <varlistentry>
+          <term><literal>=</literal><replaceable>f</replaceable></term>
+          <listitem>
+           <para>
+            <literal>=</literal> iminden sonra gelen bir tek baytlık karakter
+            sayısal dolgu karakteri olarak kullanılır. Boşluk, öntanımlı dolgu
+            karakteridir.
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>^</literal></term>
+          <listitem>
+           <para>
+            Geçerli yerelde tanımlı binlik ayracını iptal eder.
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>+</literal> veya <literal>(</literal></term>
+          <listitem>
+           <para>
+            Pozitif ve negatif sayılar için biçemleme tarzını belirler.
+            <literal>+</literal> kullanılmışsa <literal>+</literal> ve
+            <literal>-</literal> için yereldeki eşdeğeri kullanılır.
+            <literal>(</literal> kullanılmışsa negatif miktarlar yaylı ayraç
+            içine alınır. Hiçbir şey belirtilmemişse <literal>+</literal>
+            öntanımlıdır.
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>!</literal></term>
+          <listitem>
+           <para>
+            Çıktı dizgesinde para biriminin bulunmamasını sağlar.
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>-</literal></term>
+          <listitem>
+           <para>
+            Belirtilmesi halinde bütün alanlar sola yanaştırılır (sağ tarafa
+            dolgu yapılır). Belirtilmemesi halinde (öntanımlı durum) alanlar
+            sağa yanaştırılır (sol tarafa dolgu yapılır).
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>Alan genişliği</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><replaceable>w</replaceable></term>
+          <listitem>
+           <para>
+            En küçük alan genişliğini belirten onluk bir rakam.
+            <literal>-</literal> seçeneği belirtilmedikçe alan sağa
+            yanaştırılır. Öntanımlı değer sıfırdır (0).
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>Sol taraf hassasiyeti</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>#</literal><replaceable>n</replaceable></term>
+          <listitem>
+           <para>
+            Ondalık ayracın sol tarafındaki hanelerin azami sayısı
+            (<replaceable>n</replaceable>). Normalde sayıları aynı sütun
+            genişliğinde alt alta dizerken belirtilenden daha az genişliğe
+            sahip sayılarda dolgu yapılması için kullanılır. Burada
+            belirtilenden daha geniş sayılara bu belirtim uygulanmaz.
+           </para>
+           <para>
+            <literal>^</literal> seçeneği ile binlik gruplama engellenmemişse
+            eklenen (varsa) dolgu karakterlerinin öncesine binlik ayracı
+            yerleştirilir. Binlik ayracı dolgu karakterlerine, 0 bile olsalar
+            uygulanmaz.
+           </para>
+           <para>
+            Hizalamak amacıyla pozitif ve negatif biçemlerin genişliklerini
+            eşitlemek için gerekirse, biçemli çıktıdaki sayıdan önceki veya
+            sonraki herhangi bir karaktere kadar (para birimi veya işaret
+            simgesi) boşluk karakteri doldurulur.
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>
+        Sağ taraf hassasiyeti
+       </title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>.</literal><replaceable>p</replaceable></term>
+          <listitem>
+           <para>
+            Ondalık ayracın sağındaki hane sayısı
+            (<replaceable>p</replaceable>). Eğer <replaceable>p</replaceable>
+            0 (sıfır) ise, ondalık ayraç ve sağındaki rakamlar yoksayılır. Sağ
+            taraf hassasiyeti olarak hiçbir şey belirtilmemişse geçerli
+            yereldeki kullanılır. Belirtilen genişlikten daha fazla sayıda
+            hane varsa bu haneler biçemleme öncesi yuvarlatılır.
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>
+        Dönüşüm karakterleri
+       </title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>i</literal></term>
+          <listitem>
+           <para>
+            Sayı yerelin uluslararası para birimine göre biçemlenir (örn, en_US
+            yereli için: USD 1,234.56).
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>n</literal></term>
+          <listitem>
+           <para>
+            Sayı yerelin ulusal para birimine göre biçemlenir (örn, de_DE
+            yereli için: DM1.234,56).
+           </para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>%</literal></term>
+          <listitem>
+           <para>
+            <literal>%</literal> karakteri döner.
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sayı</parameter></term>
+     <listitem>
+      <para>
+       Biçemlenecek sayı.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Biçemlenmiş dizge döner. Biçemlenen sayının önündeki veya ardındaki
+   karakterler değişmeden döner. <parameter>sayı</parameter> bir sayısal değer
+   değilse işlev &null; döndürür ve bir <constant>E_WARNING</constant>
+   çıktılar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <function>money_format</function> işlevi sadece sistem strfmon
+    yeteneklerine sahipse tanımlıdır. Örneğin Windows'ta
+    <function>money_format</function> kullanılamaz.
+   </para>
+  </note>
+  <note>
+   <para>
+    Yerelin <constant>LC_MONETARY</constant> sınıfı bu işlevin davranışını
+    etkiler. Bu bakımdan bu işlevi kullanmadan önce uygun bir yereli
+    öntanımlı yerel yapmak için <function>setlocale</function> işlevini
+    kullanın.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>money_format</function> örneği</title>
+    <para>
+     Bu işlevin neler yapabileceğini göstermek için farklı yereller
+     kullanacağız.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$number = 1234.56;
+
+// Amerikan yereli için uluslararası biçemi kullanalım
+setlocale(LC_MONETARY, 'en_US');
+echo money_format('%i', $number) . "\n";
+// USD 1,234.56
+
+// 2 ondalık haneli İtalyan ulusal biçemi
+setlocale(LC_MONETARY, 'it_IT');
+echo money_format('%.2n', $number) . "\n";
+// L. 1.234,56
+
+// Negatif sayı kullanımı
+$number = -1234.5672;
+
+// Negatif sayılar için () ve sol tarafı 10 hanelik
+// Amerikan ulusal biçemi
+setlocale(LC_MONETARY, 'en_US');
+echo money_format('%(#10n', $number) . "\n";
+// ($        1,234.57)
+
+// Yukarıdaki biçeme ek olarak sağ taraf için 2 hane
+// ve dolgu karakteri olarak '*' kullanımı;
+echo money_format('%=*(#10.2n', $number) . "\n";
+// ($********1,234.57)
+
+// Sola hizalı, 14 hane genişlikte, sol taraf hassasiyeti olarak 8,
+// sağ taraf hassasiyeti olarak 2 hanelik, binlik ayracı kullanmaksızın
+// Alman yereli için uluslararası biçemi kullanarak sayıyı biçemleyelim
+setlocale(LC_MONETARY, 'de_DE');
+echo money_format('%=*^-14#8.2i', 1234.56) . "\n";
+// DEM 1234,56****
+
+// Dönüşüm belirtiminin önüne ve ardına bir şeyler ekleyelim
+setlocale(LC_MONETARY, 'en_GB');
+$fmt = 'Son fiyat %i olur (%%10 indirim sonrası)';
+echo money_format($fmt, 1234.56) . "\n";
+// Son fiyat GBP 1,234.56 olur (%10 indirim sonrası)
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>setlocale</function></member>
+    <member><function>sscanf</function></member>
+    <member><function>sprintf</function></member>
+    <member><function>printf</function></member>
+    <member><function>number_format</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
