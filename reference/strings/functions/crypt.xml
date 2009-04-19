@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.crypt">
+ <refnamediv>
+  <refname>crypt</refname>
+  <refpurpose>Tek yönlü dizge şifrelemesi yapar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>crypt</methodname>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>tuz</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>crypt</function> işlevi standart Unix <abbrev>DES</abbrev>
+   şifreleme algoritmasını veya sistemdeki uygun algoritmalardan birini
+   kullanarak <parameter>dizge</parameter> dizgesinin şifrelenmiş sürümünü
+   döndürür.
+  </para>
+  <para>
+   Bazı işletim sistemleri birden fazla şifreleme türü destekler. Çoğunlukla
+   da standart DES şifrelemesinin yerini MD5 şifreleme algoritması alır.
+   Şifreleme türü <parameter>tuz</parameter> değiştirgesiyle tetiklenir. Tuz
+   kabul edecek şifreleme türlerini ve işlevin yeteneklerini PHP kurulum
+   sırasında saptar. <parameter>tuz</parameter> belirtilmemişse ve sistemin
+   öntanımlı şifreleme türü MD5 ise rasgele bir MD5 uyumlu bir tuz üretilir;
+   sistemin öntanımlı şifreleme türü MD5 değilse PHP öntanımlı olarak iki
+   karakterlik tuz üretir. PHP, <constant>CRYPT_SALT_LENGTH</constant>
+   sabitinde tuz uzunluğunu tanımlayarak, sistemde iki karakterlik mi yoksa
+   daha uzun bir tuz mu (en fazla 20) kullanıldığını belirtir.
+  </para>
+  <para>
+   Standart DES şifrelemesinde <function>crypt</function> işlevi tuz olarak
+   çıktının ilk iki karakterini döndürür. Ayrıca, dizgenin sadece ilk sekiz
+   karakterini kullanır, bu nedenle ilk sekiz karakteri aynı olan sekiz
+   karakterden daha uzun dizgeler için tuz aynı olduğu sürece hep aynı sonucu
+   üretir.
+  </para>
+  <simpara>
+   İşlevin çok sayıda şifreleme algoritması ile desteklendiği sistemlerde
+   aşağıdaki sabitler desteklenen şifreleme türüne göre 0 veya 1 değerini
+   alırlar:
+  </simpara>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_STD_DES</constant> - İki karakterlik tuz kullanan
+     standart DES şifrelemesi.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_EXT_DES</constant> - Dokuz karakterlik tuz kullanan
+     gelişkin DES şifrelemesi.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_MD5</constant> - $1$ ile başlayan on iki karakterlik MD5
+     şifrelemesi.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_BLOWFISH</constant> - $2$ veya $2a$ ile başlayan on altı
+     karakterlik Blowfish şifrelemesi.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+  <note>
+   <para>
+    PHP 5.3.0 ve sonrasında, PHP kendi gerçeklenimini içerir ve sistemde
+    desteği bulunmayan algoritmalar için bu gerçeklenimi kullanır.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Şifrelenecek dizge.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tuz</parameter></term>
+     <listitem>
+      <para>
+       Şifrelemeye göre değişen isteğe bağlı tuz dizgesi. Belirtilmediği
+       takdirde PHP, işlevin her çağrılışında rasgele bir tane üretir.
+      </para>
+      <para>
+       Eğer kendi tuzunuzu kullanacaksanız işlevi çağırmadan önce üretmiş
+       olmalısınız. İşlevi tekrar takrar çağırdığınız durumlarda bunun hem
+       görünürde hem de güvenlikte bazı etkileri olur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Şifrelenmiş dizge.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        PHP artık MD5, standart DES, gelişkin DES ve Blowfish şifreleme
+        algoritmaları için kendi gerçeklenimini içeriyor ve sistemde bu
+        algoritmalardan bulunmayanların yerine bu algoritmaları kullanıyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>crypt</function> örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$parola = crypt('parolam'); // Tuzu PHP üretsin
+
+/* Parola karşılaştırmasında, farklı şifreleme algoritmaları ile ilgili
+   sorunlardan kaçınmak için crypt() sonucunun tamamını tuz olarak işleve
+   aktarmalısınız. (Yukarıda belirtildiği gibi standart DES parola özetleri
+   2 karakterlik tuz kullanırken MD5 parola özetleri 12 karakterlik tuz
+   kullanır.) */
+if (crypt($kullanıcı _girdisi, $parola) == $parola) {
+   echo "Parola doğru!";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- htpasswd ile <function>crypt</function> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Parolayı tanmılayalım
+$parola = 'parolam';
+
+// Tuzu PHP üretsin ve bize parola özetini versin
+$hash = crypt($parola);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <function>crypt</function> işlevinin farklı şifreleme türleri ile
+    kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+if (CRYPT_STD_DES == 1) {
+    echo 'Standart DES: ' . crypt('rasmuslerdorf', 'rl') . "\n";
+}
+
+if (CRYPT_EXT_DES == 1) {
+    echo 'Gelişkin DES: ' . crypt('rasmuslerdorf', '_J9..rasm') . "\n";
+}
+
+if (CRYPT_MD5 == 1) {
+    echo 'MD5:          ' . crypt('rasmuslerdorf', '$1$rasmusle$') . "\n";
+}
+
+if (CRYPT_BLOWFISH == 1) {
+    echo 'Blowfish:     ' . crypt('rasmuslerdorf', '$2a$07$rasmuslerd...........$') . "\n";
+}
+?>
+]]>
+    </programlisting>
+     &example.outputs.similar;
+    <screen>
+<![CDATA[
+Standart DES: rl.3StKT.4T8M
+Gelişkin DES: _J9..rasmBYk8r9AiWNc
+MD5:          $1$rasmusle$rISCgZzpwk3UhDidwXvin0
+Blowfish:     $2a$07$rasmuslerd............nIdrcHdxcUxWomQX9j6kvERCFjTg7Ra
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <simpara>
+    <function>crypt</function> tek yönlü algoritma kullandığından tekrar özgün
+    dizgeyi elde etmenizi sağlayacak bir işlev yoktur.
+   </simpara>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>md5</function></member>
+    <member><link linkend="ref.mcrypt">Mcrypt</link> eklentisi</member>
+    <member><link xlink:href="http://belgeler.org/man/man3/man3-crypt.html">
+    crypt işlevinin Unix kılavuz sayfası</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
