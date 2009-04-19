@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<!-- splitted from ./en/functions/image.xml, last change in rev 1.78 -->
+<refentry xml:id="function.exif-read-data" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>exif_read_data</refname>
+  <refpurpose>Bir <acronym>JPEG</acronym> veya <acronym>TIFF</acronym>
+  resminden <acronym>EXIF</acronym> başlıklarını okur</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>exif_read_data</methodname>
+   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>bölümler</parameter><initializer>NULL</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>diziler</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>küçük_örnek</parameter><initializer>false</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>exif_read_data</function> işlevi bir <acronym>JPEG</acronym>
+   veya <acronym>TIFF</acronym> resminden <acronym>EXIF</acronym> başlıklarını
+   okur. Böylece sayısal kameralar tarafından üretilen temel veriler
+   okunabilir.
+  </para>
+  <para>
+   Exif başlıkları sayısal kameralar tarafından üretilen JPEG/TIFF resimlerde
+   bulunması için tasarlanmışlarsa da ne yazık ki, her sayısal kamera
+   imalatçısı resim başlıklarının elde edilmesi konusunda farklı yaklaşımlara
+   sahiptirler. Bu bakımdan bazı Exif başlıkları resim üzerinde mevcut
+   olmayabilir.
+  </para>
+  <para>
+   <literal>Height</literal> ve <literal>Width</literal> başlıkları
+   <function>getimagesize</function> işlevinin yaptığı gibi hesaplandığından
+   döndürülen başlığın birer parçası olmamalıdırlar. <literal>html</literal>
+   başlığı normal <acronym>HTML</acronym> içinde kullanılacak metnin
+   yükseklik/genişlik dizgesidir.
+  </para>
+  <para>
+   Bir Exif başlığı bir telif hakkı bilgisi içerdiği takdirde, bu iki değerden
+   oluşur. Çözüm Exif 2.10 standadıyla uyumsuz olup COMPUTED bölümü hem
+   <literal>Copyright.Photographer</literal> hem de
+   <literal>Copyright.Editor</literal> başlıklarını içerirken IFD0 bölümleri
+   iki giridiyi ayıran NULL karakterli bayt dizisini içerir. Eğer veri türü
+   yanlışsa sadece ilk girdi döner (Exif'in normal davranışı).  COMPUTED
+   bölümü ayrıca, <literal>Copyright</literal> dizgesini de içerir ve bu dizge
+   ya özgün telif hakkı dizgesini ya da fotoğraf ve eser düzenleyici telif
+   haklarını içeren dizgeyi içerir.
+  </para>
+  <para>
+   UserComment başlığı Copyright başlığı ile aynı sorunlara sahiptir. O da iki
+   değer saklayabilir. İlki kullanılan kodlama, ikincisi değerin kendisidir.
+   Bu durumda, IFD bölümü sadece kodlamayı ve bayt dizisini içerir.  COMPUTED
+   bölümü <literal>UserCommentEncoding</literal> ve
+   <literal>UserComment</literal> girdilerinin ikisini de saklar.
+   <literal>UserComment</literal> girdisi her iki durumda da mevcuttur,
+   dolayısıyla IFD0 bölümündeki değere tercihan kullanılmış olmalıdır.
+  </para>
+  <para>
+   <function>exif_read_data</function> işlevi ayrıca,  EXIF belirtimine (<link
+   xlink:href="&url.exifspec;">&url.exifspec;</link>, sayfa 20) uygun olarak
+   EXIF veri başlıklarını da doğrular.
+  </para>
+  <note>
+   <para>
+    Windows ME/XP bir kameraya bağlanırken Exif başlıklarını temizler. Daha
+    fazla bilgi için <link xlink:href="&url.winexif;">&url.winexif;</link>
+    adresine bakınız.
+   </para>
+  </note>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dosya</parameter></term>
+     <listitem>
+      <para>
+       Okunacak resim dosyasının ismi. Bir <acronym>URL</acronym> belirtilemez.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>bölümler</parameter></term>
+     <listitem>
+      <para>
+       Sonuç dizisinin üretiminde kullanılmak üzere dosyadaki başlıkların
+       virgül ayraçlı listesi. Belirtilen başlıkların hiçbiri bulunamazsa
+       işlev &false; döndürür.
+       <informaltable>
+        <tgroup cols="2">
+         <tbody>
+          <row>
+           <entry>FILE</entry>
+           <entry>FileName, FileSize, FileDateTime, SectionsFound (Dosyaİsmi,
+           DosyaBoyu, DosyaTarihiSaati, BölümlarVar)</entry>
+          </row>
+          <row>
+           <entry>COMPUTED</entry>
+           <entry>
+            html, Width, Height, IsColor (html, genişlik, yükseklik, Renklidir)
+            ve varsa başkaları.  Height ve Width,
+            <function>getimagesize</function> işlevinin yaptığı gibi
+            hesaplanır, dolayısıyla bunlar döndürülen başlığın parçaları
+            olmamalıdır. Ayrıca, html, normal <acronym>HTML</acronym> içinde
+            kullanılacak height/width dizgesidir.
+           </entry>
+          </row>
+          <row>
+           <entry>ANY_TAG</entry>
+           <entry>IFD0, EXIF, ... gibi bir yaftaya sahip her türlü bilgi
+           </entry>
+          </row>
+          <row>
+           <entry>IFD0</entry>
+           <entry>
+            IFD0'ın tüm yaftalanmış bilgisi. Normal resim
+            dosyalarında burada resim boyutu ve saire bulunur.
+           </entry>
+          </row>
+          <row>
+           <entry>THUMBNAIL</entry>
+           <entry>
+            Dosya ikinci bir IFD'ye sahipse resmin küçük bir örneğini içerdiği
+            varsayılır. Küçük resim örneği ile ilgili tüm veriler bu bölümde
+            saklanır.
+           </entry>
+          </row>
+          <row>
+           <entry>COMMENT</entry>
+           <entry>JPEG resimlerin açıklama başlıkları.</entry>
+          </row>
+          <row>
+           <entry>EXIF</entry>
+           <entry>
+            EXIF bölümü IFD0 bölümünün bir alt bölümüdür. Burada resim
+            hakkında çok daha fazla bilgi bulunur. Bu girdilerin çoğu sayısal
+            kamera ile ilgilidir.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </informaltable>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>diziler</parameter></term>
+      <listitem>
+      <para>
+       Her bölümün bir dizi haline getirilip getirilmeyeceğini belirler.
+       <literal>COMPUTED</literal>, <literal>THUMBNAIL</literal> ve
+       <literal>COMMENT</literal> bölümleri, diğer bölümlerle karışmaması için
+       daima bir dizi haline getirilirler.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>küçük_örnek</parameter></term>
+     <listitem>
+      <para>
+       &true; belirtilmişse küçük resim örneğinin kendisi okunur. Aksi
+       takdirde, sadece yaftalı veriler okunur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dönen değer bir dizi olup, dizi indisleri başlık isimlerini, değerler bu başlıklarla ilgili verileri içerir. Eğer hiçbir veri döndürülemezse
+   <function>exif_read_data</function> işlevi &false; döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        Diziler dahil gömülü tüm <acronym>IFD</acronym> verisi okunabilir oldu.
+        Ayrıca, gömülü küçük resim örneğinin <literal>THUMBNAIL</literal> alt
+        dizisinde döndürülebilmesi mümkün oldu. Ayrıca, dönen değerlerle
+        ilgili bir azami uzunluk artık söz konusu değil (bellek miktarı ile
+        sınırlı).
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        PHP <link linkend="ref.mbstring">mbstring</link> desteğine sahipse,
+        kullanıcı açıklamalarının kodlaması özdevinimli olarak
+        değiştirilebiliyor. Ayrıca, eğer kullanıcı açıklaması Unicode veya JIS
+        kodlaması kullanıyorsa kodlama  &php.ini; içindeki ayara uygun olarak
+        özdevinimli değiştirilebiliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        Eğer resim bir IFD0 verisi içeriyorsa COMPUTED bölümü artık, kıymetli
+        baytın başta olduğu bayt sıralamasının kullanıldığı (motorola) bayt
+        sıralaması için 1, diğeri (intel) için 0 değerini içeren bir
+        ByteOrderMotorola girdisine sahip. Eğer veri türü yanlışsa, COMPUTED
+        ve UserComment artık herhangi bir telif hakkı girdisi içermiyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>exif_read_data</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo "test1.jpg:<br />\n";
+$exif = exif_read_data('tests/test1.jpg', 'IFD0');
+echo $exif===false ? "<Başlık verisi bulunamadı.<br />\n" : "Resim başlıkları içeriyor<br />\n";
+
+$exif = exif_read_data('tests/test2.jpg', 0, true);
+echo "test2.jpg:<br />\n";
+foreach ($exif as $key => $section) {
+    foreach ($section as $name => $val) {
+        echo "$key.$name: $val<br />\n";
+    }
+}
+?>
+]]>
+    </programlisting>
+    <para>
+     Resim başlık bilgisi içermediğinden ilk çağrı başarısız olur.
+    </para>
+    &example.outputs.similar;
+    <screen role="php">
+<![CDATA[
+test1.jpg:
+Başlık verisi bulunamadı.
+test2.jpg:
+FILE.FileName: test2.jpg
+FILE.FileDateTime: 1017666176
+FILE.FileSize: 1240
+FILE.FileType: 2
+FILE.SectionsFound: ANY_TAG, IFD0, THUMBNAIL, COMMENT
+COMPUTED.html: width="1" height="1"
+COMPUTED.Height: 1
+COMPUTED.Width: 1
+COMPUTED.IsColor: 1
+COMPUTED.ByteOrderMotorola: 1
+COMPUTED.UserComment: Exif test image.
+COMPUTED.UserCommentEncoding: ASCII
+COMPUTED.Copyright: Photo (c) M.Boerger, Edited by M.Boerger.
+COMPUTED.Copyright.Photographer: Photo (c) M.Boerger
+COMPUTED.Copyright.Editor: Edited by M.Boerger.
+IFD0.Copyright: Photo (c) M.Boerger
+IFD0.UserComment: ASCII
+THUMBNAIL.JPEGInterchangeFormat: 134
+THUMBNAIL.JPEGInterchangeFormatLength: 523
+COMMENT.0: Comment #1.
+COMMENT.1: Comment #2.
+COMMENT.2: Comment #3end
+THUMBNAIL.JPEGInterchangeFormat: 134
+THUMBNAIL.Thumbnail.Height: 1
+THUMBNAIL.Thumbnail.Height: 1
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>exif_thumbnail</function></member>
+    <member><function>getimagesize</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
