@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.13 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/image.xml, last change in rev 1.78 -->
 <refentry xml:id="function.exif-read-data" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
@@ -39,23 +39,26 @@
   </para>
   <para>
    Bir Exif başlığı bir telif hakkı bilgisi içerdiği takdirde, bu iki değerden
-   oluşur. Çözüm Exif 2.10 standadıyla uyumsuz olup COMPUTED bölümü hem
-   <literal>Copyright.Photographer</literal> hem de
-   <literal>Copyright.Editor</literal> başlıklarını içerirken IFD0 bölümleri
-   iki giridiyi ayıran NULL karakterli bayt dizisini içerir. Eğer veri türü
-   yanlışsa sadece ilk girdi döner (Exif'in normal davranışı).  COMPUTED
-   bölümü ayrıca, <literal>Copyright</literal> dizgesini de içerir ve bu dizge
+   oluşur. Çözüm Exif 2.10 standadıyla uyumsuz olup <literal>COMPUTED</literal>
+   bölümü hem <literal>Copyright.Photographer</literal> hem de
+   <literal>Copyright.Editor</literal> başlıklarını içerirken
+   <acronym>IFD0</acronym> bölümleri iki girdiyi ayıran &null; karakterli bayt
+   dizisini içerir. Eğer veri türü yanlışsa sadece ilk girdi döner (Exif'in
+   normal davranışı).  <literal>COMPUTED</literal> bölümü ayrıca,
+   <literal>Copyright</literal> dizgesini de içerir ve bu dizge
    ya özgün telif hakkı dizgesini ya da fotoğraf ve eser düzenleyici telif
    haklarını içeren dizgeyi içerir.
   </para>
   <para>
-   UserComment başlığı Copyright başlığı ile aynı sorunlara sahiptir. O da iki
-   değer saklayabilir. İlki kullanılan kodlama, ikincisi değerin kendisidir.
-   Bu durumda, IFD bölümü sadece kodlamayı ve bayt dizisini içerir.  COMPUTED
+   <literal>UserComment</literal> yaftası <literal>Copyright</literal> yaftası
+   ile aynı sorunlara sahiptir. O da iki değer saklayabilir. İlki kullanılan
+   kodlama, ikincisi değerin kendisidir. Bu durumda, <literal>IFD</literal>
+   bölümü sadece kodlamayı ve bayt dizisini içerir. <literal>COMPUTED</literal>
    bölümü <literal>UserCommentEncoding</literal> ve
    <literal>UserComment</literal> girdilerinin ikisini de saklar.
    <literal>UserComment</literal> girdisi her iki durumda da mevcuttur,
-   dolayısıyla IFD0 bölümündeki değere tercihan kullanılmış olmalıdır.
+   dolayısıyla <literal>IFD0</literal> bölümündeki değere tercihan kullanılmış
+   olmalıdır.
   </para>
   <para>
    <function>exif_read_data</function> işlevi ayrıca,  EXIF belirtimine (<link
@@ -94,38 +97,42 @@
          <tbody>
           <row>
            <entry>FILE</entry>
-           <entry>FileName, FileSize, FileDateTime, SectionsFound (Dosyaİsmi,
-           DosyaBoyu, DosyaTarihiSaati, BölümlarVar)</entry>
+           <entry><literal>FileName</literal>, <literal>FileSize</literal>,
+           <literal>FileDateTime</literal>, <literal>SectionsFound</literal>
+           (Dosyaİsmi, DosyaBoyu, DosyaTarihiSaati, BölümlarVar)</entry>
           </row>
           <row>
            <entry>COMPUTED</entry>
            <entry>
-            html, Width, Height, IsColor (html, genişlik, yükseklik, Renklidir)
-            ve varsa başkaları.  Height ve Width,
+            <literal>html</literal>, <literal>Width</literal>,
+            <literal>Height</literal>, <literal>IsColor</literal> (html,
+            genişlik, yükseklik, Renklidir) ve varsa başkaları. 
+            <literal>Height</literal> ve <literal>Width</literal>,
             <function>getimagesize</function> işlevinin yaptığı gibi
             hesaplanır, dolayısıyla bunlar döndürülen başlığın parçaları
-            olmamalıdır. Ayrıca, html, normal <acronym>HTML</acronym> içinde
-            kullanılacak height/width dizgesidir.
+            olmamalıdır. Ayrıca, <literal>html</literal>, normal
+            <acronym>HTML</acronym> içinde kullanılacak height/width dizgesidir.
            </entry>
           </row>
           <row>
            <entry>ANY_TAG</entry>
-           <entry>IFD0, EXIF, ... gibi bir yaftaya sahip her türlü bilgi
+           <entry><literal>IFD0</literal>, <literal>EXIF</literal>, ... gibi bir
+           yaftaya sahip her türlü bilgi
            </entry>
           </row>
           <row>
            <entry>IFD0</entry>
            <entry>
-            IFD0'ın tüm yaftalanmış bilgisi. Normal resim
+            <literal>IFD0</literal>'ın tüm yaftalanmış bilgisi. Normal resim
             dosyalarında burada resim boyutu ve saire bulunur.
            </entry>
           </row>
           <row>
            <entry>THUMBNAIL</entry>
            <entry>
-            Dosya ikinci bir IFD'ye sahipse resmin küçük bir örneğini içerdiği
-            varsayılır. Küçük resim örneği ile ilgili tüm veriler bu bölümde
-            saklanır.
+            Dosya ikinci bir <literal>IFD</literal>'ye sahipse resmin küçük bir
+            örneğini içerdiği varsayılır. Küçük resim örneği ile ilgili tüm
+            veriler bu bölümde saklanır.
            </entry>
           </row>
           <row>
@@ -135,9 +142,9 @@
           <row>
            <entry>EXIF</entry>
            <entry>
-            EXIF bölümü IFD0 bölümünün bir alt bölümüdür. Burada resim
-            hakkında çok daha fazla bilgi bulunur. Bu girdilerin çoğu sayısal
-            kamera ile ilgilidir.
+            <literal>EXIF</literal> bölümü <literal>IFD0</literal> bölümünün bir
+            alt bölümüdür. Burada resim hakkında çok daha fazla bilgi bulunur.
+            Bu girdilerin çoğu sayısal kamera ile ilgilidir.
            </entry>
           </row>
          </tbody>
@@ -172,7 +179,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dönen değer bir dizi olup, dizi indisleri başlık isimlerini, değerler bu başlıklarla ilgili verileri içerir. Eğer hiçbir veri döndürülemezse
+   Dönen değer bir dizi olup, dizi indisleri başlık isimlerini, değerler bu
+   başlıklarla ilgili verileri içerir. Eğer hiçbir veri döndürülemezse
    <function>exif_read_data</function> işlevi &false; döndürür.
   </para>
  </refsect1>
@@ -203,7 +211,8 @@
        <entry>
         PHP <link linkend="ref.mbstring">mbstring</link> desteğine sahipse,
         kullanıcı açıklamalarının kodlaması özdevinimli olarak
-        değiştirilebiliyor. Ayrıca, eğer kullanıcı açıklaması Unicode veya JIS
+        değiştirilebiliyor. Ayrıca, eğer kullanıcı açıklaması
+        <literal>Unicode</literal> veya <literal>JIS</literal>
         kodlaması kullanıyorsa kodlama  &php.ini; içindeki ayara uygun olarak
         özdevinimli değiştirilebiliyor.
        </entry>
@@ -211,11 +220,13 @@
       <row>
        <entry>4.3.0</entry>
        <entry>
-        Eğer resim bir IFD0 verisi içeriyorsa COMPUTED bölümü artık, kıymetli
+        Eğer resim bir <literal>IFD0</literal> verisi içeriyorsa
+        <literal>COMPUTED</literal> bölümü artık, kıymetli
         baytın başta olduğu bayt sıralamasının kullanıldığı (motorola) bayt
         sıralaması için 1, diğeri (intel) için 0 değerini içeren bir
-        ByteOrderMotorola girdisine sahip. Eğer veri türü yanlışsa, COMPUTED
-        ve UserComment artık herhangi bir telif hakkı girdisi içermiyor.
+        <literal>ByteOrderMotorola</literal> girdisine sahip. Eğer veri türü
+        yanlışsa, <literal>COMPUTED</literal> ve <literal>UserComment</literal>
+        artık herhangi bir telif hakkı girdisi içermiyor.
        </entry>
       </row>
      </tbody>
