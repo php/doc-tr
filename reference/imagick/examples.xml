@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.8 Maintainer: nilgun Status: ready -->
+<chapter xml:id="imagick.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ &reftitle.examples;
+ <section xml:id="imagick.examples-1">
+  &reftitle.examples;
+  <para>
+   Imagick PHP'de resim işlemlerini nesne yönelimli arayüzü sayesinde oldukça
+   kolaylaştırır. Burada bir resmin küçük bir örneğinin nasıl elde edildiği
+   gösterilmiştir:
+   <example>
+    <title>- Imagick ile resim örneği (thumbnail) oluşturmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+header('Content-type: image/jpeg');
+
+$resim = new Imagick('resim.jpg');
+
+// Genişlik veya yükseklik olarak 0 verilmişse
+// enboy oranı korunur
+$resim->thumbnailImage(100, 0);
+
+echo $image;
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   Imagick'teki SPL ve nesne yönelimli özellikler kullanarak bir dizin
+   içindeki tüm resim dosyaları kolayca yeniden boyutlandırılabilir
+   (Büyük sayısal kamera resimlerini HTML sayfalarında izlenebilir
+   boyuta indirmek gibi). Temel verileri kaybetmek istemediğimizden bu
+   örnekte resize kullanıyoruz:
+   <example>
+    <title>- Bir dizindeki tüm JPG dosyalarının küçük örneklerinin elde
+    edilmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$resimler = new Imagick(glob('images/*.JPG'));
+
+foreach($resimler as $resim) {
+
+    // 0, resmin enboy oranına uyulmasını sağlar
+    $resim->thumbnailImage(1024,0);
+
+}
+
+$resimler->writeImages();
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Burada bir resmin yansımasının oluşturulması örneklenmiştir. Yansıtma için
+   resmin simetriği alınıp derece derece koyulaşan bir maske uygulanmıştır.
+   Hem özgün resim hem de simetriği aynı tuvalin üzerine yerleştirilmiştir.
+   <example>
+    <title>- Bir resmin yansımasının oluşturulması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Resmi okuyalım */
+$im = new Imagick("test.png");
+
+/* Resmin küçük örneğini oluşturalım */
+$im->thumbnailImage(200, null);
+
+/* Resme bir çerçeve çizgisi çizelim */
+$im->borderImage(new ImagickPixel("white"), 5, 5);
+
+/* Resmi kopyalayıp simetriğini alalım */
+$reflection = $im->clone();
+$reflection->flipImage();
+
+/* Yansımaya uygulanacak maskeyi oluşturalım */
+$gradient = new Imagick();
+
+/* Maske biraz büyük olmalı ve bir çerçevesi olmalı */
+$gradient->newPseudoImage($reflection->getImageWidth() + 10,
+        $reflection->getImageHeight() + 10, "gradient:transparent-black");
+
+/* Maskeyi yansımaya uygulayalım */
+$reflection->compositeImage($gradient, imagick::COMPOSITE_OVER, 0, 0);
+
+/* Biraz matlık ekleyelim. (ImageMagick 6.2.9 ve sonrası gerekir.) */
+$reflection->setImageOpacity( 0.3 );
+
+/* Boş bir tuval oluşturalım */
+$canvas = new Imagick();
+
+/* Tuval her iki resmi de tutacak kadar büyük olmalı */
+$width = $im->getImageWidth() + 40;
+$height = ($im->getImageHeight() * 2) + 30;
+$canvas->newImage($width, $height, new ImagickPixel("black"));
+$canvas->setImageFormat("png");
+
+/* Her iki resmi tuval üzerinde birleştirelim */
+$canvas->compositeImage($im, imagick::COMPOSITE_OVER, 20, 10);
+$canvas->compositeImage($reflection, imagick::COMPOSITE_OVER,
+        20, $im->getImageHeight() + 10);
+
+/* Resmi çıktılayalım */
+header("Content-Type: image/png");
+echo $canvas;
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="en/reference/imagick/figures/hello_world_reflection.png"/>
+     </imageobject>
+    </mediaobject>
+   </example>
+  </para>
+  <para>
+   Aşağıdaki örnekte çizim sırasında örüntülerle resmin nasıl kaplandığı
+   gösterilmiştir.
+   <example>
+    <title>- Metni bir örüntü ile kaplamak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+/* Yeni bir resim nesnesi oluşturalım */
+$im = new Imagick();
+
+/* Örüntü olarak kullanılacak yeni resmi oluşturalım. */
+$im->newPseudoImage(50, 50, "gradient:red-black");
+
+/* Bir çizim nesnesi oluşturalım */
+$draw = new ImagickDraw();
+
+/* Örüntüyü "gradient" ismiyle oluşturalım */
+$draw->pushPattern('gradient', 0, 0, 50, 50);
+
+/* Örüntüyle maskeyi birleştirelim */
+$draw->composite(Imagick::COMPOSITE_OVER, 0, 0, 50, 50, $im);
+
+/* Örüntüyü kapatalım */
+$draw->popPattern();
+
+/* "gradient" örüntüsü ile resmi kaplayalım */
+$draw->setFillPatternURL('#gradient');
+
+/* Yazı tipi boyu 52 olsun */
+$draw->setFontSize(52);
+
+/* Bir şeyler yazalım */
+$draw->annotation(20, 50, "Hello World!");
+
+/* Beyaz zemine sahip bir tuval oluşturalım */
+$canvas = new Imagick();
+$canvas->newImage(350, 70, "white");
+
+/* Çizimi tuvalin üzerine yerleştirelim */
+$canvas->drawImage($draw);
+
+/* Resme çerçeve olarak 1px kalınlığında siyah çizgi çizelim */
+$canvas->borderImage('black', 1, 1);
+
+/* Resmin dosya biçemi PNG olsun*/
+$canvas->setImageFormat('png');
+
+/* Resmi çıktılayalım */
+header("Content-Type: image/png");
+echo $canvas;
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="en/reference/imagick/figures/hello_world.png"/>
+     </imageobject>
+    </mediaobject>
+   </example>
+  </para>
+ </section>
+</chapter>
+
+
