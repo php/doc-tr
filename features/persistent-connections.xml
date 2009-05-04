@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.6 $ -->
+<!-- EN-Revision: 1.27 Maintainer: nilgun  Status: ready -->
+<!-- CREDITS: dirt -->
+ <chapter xml:id="features.persistent-connections" xmlns="http://docbook.org/ns/docbook">
+  <title>Kalıcı Bağlantılı Veritabanı Bağlantıları</title>
+
+  <simpara>
+   Kalıcı bağlantılar betiğinizin çalışması bittiğinde kapanmayan
+   bağlantılardır. Bir kalıcı bağlantı istendiğinde PHP evvelce açılmış
+   eşdeğer bir kalıcı bağlantı var mı diye bakar ve varsa onu kullanır. Yoksa
+   yeni bir bağlantı oluşturur. Bir 'eşdeğer' bağlantı, aynı konağa
+   (uygulanabildiği takdirde) aynı kullanıcı adı ve parola kullanılarak
+   açılmış bağlantıdır.
+  </simpara>
+  <simpara>
+   HTTP sunucuları hakkında tam bilgi sahibi olmayan kişiler ne yaptıklarını
+   bilmeden yükü yanlış kalıcı bağlantılara dağıtabilir ve bu yanlış
+   bağlantılarla çalışabilirler. Özellikle, size aynı bağlantı üzerinde
+   'kullanıcı oturumları' açma olanağını, verimli hareket işlemleri
+   kurulmasını ve başka birçok şeyi bir bütün halinde sağlamazlar. Aslında,
+   son derece net olarak, kalıcı bağlantılar, kalıcı olmayan bağlantılarla
+   mümkün olmayan işlevselliği size sağlayamazlar.
+  </simpara>
+  <para>
+   Neden?
+  </para>
+  <simpara>
+   Bu HTTP sunucusunun işi nasıl yaptığı ile ilgilidir. PHP'nin HTML
+   sayfalarını üretmek için HTTP sunucusunu üç şekilde kullanabilir.
+  </simpara>
+  <simpara>
+   İlk yöntem, PHP'yi bir CGI "sarmalayıcı" olarak kullanmaktır. Bu yolla,
+   HTTP sunucusundan her PHP sayfası isteğinde PHP yorumlayıcısının yeni bir
+   örneği oluşturulup yok edilir. Yorumlayıcı her istekten sonra yok
+   edildiğinden kazanılan özkaynaklar da (bir SQL veritabanı bağlantısı gibi)
+   kaybedilir. Bu durumda, kalıcı bağlantılar kullanarak da hiç bir şey
+   kazanamazsınız; çünkü özkaynaklar kalıcı olmayacaktır.
+  </simpara>
+  <simpara>
+   İkinci ve en çok kullanılan yöntem, PHP'yi çok süreçli bir sunucuda bir
+   modül olarak çalıştırmaktır. Bu olanak şimdilik sadece Apache HTTP sunucusu
+   ile mümkündür. Çok süreçli bir sunucu, işleri sayfaları sunmak olan bir çok
+   (alt) süreci denetimi altında tutan bir ana sürece sahiptir. Bir istemciden
+   bir istek geldiğinde, başka istemcilere hizmet sunmayan alt süreçlerden
+   birini bu isteğe tahsis eder. Eğer aynı istemci ikinci bir istek yaparsa bu
+   isteğe başka bir alt süreç yanıt verebilir. Kalıcı bir bağlantı açıldığında
+   SQL hizmeti isteği yapılan her sayfa isteği SQL sunucuya tahsis edilen aynı
+   bağlantıdan sunulur.
+  </simpara>
+  <simpara>
+   Son yöntem, PHP'yi çok evreli bir sunucuda bir eklenti olarak kullanmaktır.
+   PHP4 şimdilik, PHP'nin bir eklenti olarak kullanımına izin veren Netscape
+   FastTrack (iPlanet), Microsoft's Internet Information Server (IIS) ve
+   O'Reilly's WebSite Pro gibi çok evreli HTTP sunucularında ISAPI, WSAPI ve
+   (Windows üzerinde) NSAPI için destek vermektedir. Davranış esas olarak
+   ikinci yöntemde açıklanan çok süreçli yöntemle aynıdır.
+  </simpara>
+  <para>
+   Kalıcı bağlantılar ek bir işlevselliğe sahip değilseler bunlar neden tercih
+   ediliyorlar?
+  </para>
+  <simpara>
+   Yanıtı oldukça basittir: Verimlilik. SQL sunucunuza bağlantı açmak çok
+   masraflıysa kalıcı bağlantılar kurmak daha iyidir. Bu bedel gerçekte birçok
+   sebebe bağlı olabileceği gibi olmayabilir de. Bu, veritabanının, HTTP
+   sunucunun bulunduğu makinede olup olmamasından SQL sunucusunun makineye ne
+   kadar yük bindirdiğine kadar geniş bir yelpazede değerlendirilebilir. Son
+   değerlendirmede, eğer bu bedel yüksekse kalıcı bağlantıların büyük ölçüde
+   yardımı olacaktır. SQL sunucuya yapılan her bağlantı
+   isteğinde alt süreç sadece o sayfayı işleyeceği yerde, kalıcı bağlantı
+   durumunda her alt sürecin ömrü boyunca bir bağlantı krmasına olanak
+   tanınır. Yani, bir kalıcı bağlantı açmış her alt sürecin kendine ait bir
+   kalıcı bağlantısı vardır. Örneğin, SQl sunucunuza kalıcı bağlantı açan
+   betiğiniz 20 ayrı alt süreç çalıştırıyorsa alt süreç başına bir tane olmak
+   20 ayrı bağlantı var demektir.
+  </simpara>
+  <simpara>
+   Ancak şuna dikkat edin, bağlantı sayısı sınırlı bir veritabanını bu sınırın
+   üstünde kalıcı bağlantılarla kullanıyorsanız bunun bazı götürüleri olabilir.
+   Eğer veritabanınız aynı anda 16 bağlantılık bir sınıra sahipse ve çok
+   meşgul bir sunucu oturumunda 17 alt evre bağlantı açmaya çalışıyorsa biri
+   bunu başaramayacaktır. Eğer betiğinizde (sonsuz döngü gibi durumlarda)
+   bağlantıların kapatılmasına izin vermeyen hatalar varsa, veritabanı sadece
+   16 bağlantı ile hızla batağa saplanacaktır. Terkedilmiş ve boştaki
+   bağlantıların devreye sokulması hakkında bilgi edinmek için veritabanınızın
+   belgelerine bakınız.
+  </simpara>
+  <warning>
+   <simpara>
+    Kalıcı bağlantıları kullanırken hesaba katmanız gereken bir çok
+    yetersizlik vardır. Bunlardan biri, bir kalıcı bağlantı üzerinden tablo
+    kilitlemesi yapıyorsanız ve betiğiniz herhangi bir şekilde kilidi serbest
+    bırakamazsa aynı bağlantıyı kullanan sonraki betikler sonsuza kadar
+    engellenebilir ve bunun sonucu olarak HTTP sunucunuzu veya veritabanı
+    sunucunuzu yeniden başlatmak zorunda kalabilirsiniz. Bir diğer durumda,
+    hareketleri (transaction) kullanırken, bir hareket bloğu tamamlanmadan
+    betiğiniz çalışmasını bitirirse aynı bağlantıyı kullanan sonraki
+    betiklerin işleri başlarından aşacaktır. Her durumda, tablolarınızın
+    kilitlerini açmak ve hareketleri başa sarmak için
+    <function>register_shutdown_function</function> işlevini kullanarak bir
+    temizlik işlevi tanımlayabilirsiniz. Daha da  iyisi, tablo kilitleri veya
+    hareket blokları kullanan betiklerde kalıcı bağlantıları kullanmayarak bu
+    sorunlardan tamamiyle kurtulabilirsiniz.
+   </simpara>
+  </warning>
+  <simpara>
+   Özetle, kalıcı bağlantılar normal bağlantılarla bire bir eşleşecek şekilde
+   tasarlanmışlardır. Yani, betiğinizin davranışını değiştirmeden kalıcı
+   bağlantılar yerine <emphasis>her zaman</emphasis> kalıcı olmayan
+   bağlantılar kullanabilirsiniz. Bu, muhtemelen betiğinizin verimliliğini
+   etkileyecektir ama davranışında bir değişikliğe yol açmayacaktır!
+  </simpara>
+  <para>
+   Ayrıca bakınız: <function>fbsql_pconnect</function>,
+   <function>ibase_pconnect</function>, <function>ifx_pconnect</function>,
+   <function>ingres_pconnect</function>,
+   <function>msql_pconnect</function>, <function>mssql_pconnect</function>,
+   <function>mysql_pconnect</function>, <function>ociplogon</function>,
+   <function>odbc_pconnect</function>, <function>oci_pconnect</function>,
+   <function>pfsockopen</function>, <function>pg_pconnect</function> ve
+   <function>sybase_pconnect</function>.
+  </para>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
