@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.43 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.set-error-handler" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>set_error_handler</refname>
+  <refpurpose>Kullanıcı tanımlı bir hata eylemcisi bildirir</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>set_error_handler</methodname>
+   <methodparam><type>callback</type><parameter>hata_eylemci</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>hata_türü</parameter><initializer>E_ALL | E_STRICT</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Betikteki hatalarda devreye girmek üzere kullanıcı tanımlı bir işlev
+   (<parameter>hata_eylemci</parameter>) bildirir.
+  </para>
+  <para>
+   Bu işlev çalışma anında oluşan hatalardan kurtulmak için yapılacak
+   işlemleri tanımladığınız bir işlevi PHP'ye bildirmek için kullanılır.
+   Örneğin, verilerinizi veya dosyalarınızı temizlemek isterken işlemlerin
+   durmasına yol açacak bir hata oluştuğunda veya belli durumlar için
+   (<function>trigger_error</function> ile) bir hatayı tetiklemek gerektiğinde
+   PHP tarafından çağrılacak bir işlev tanımlayıp, bu işlevin ismini
+   <function>set_error_handler</function> ile PHP'ye bildirebilirsiniz.
+  </para>
+  <para>
+   Bu işlevin çağrılmasıyla PHP'nin standart hata eylemcisi tamamen devre
+   dışı kalacaktır. Bunu asla aklınızdan çıkarmayın.
+   <function>error_reporting</function> ayarları etkisiz olacak ve her durumda
+   sizin hata eylemciniz çağrılacaktır. Ancak,
+   <link linkend="ini.error-reporting">error_reporting</link> yönergesindeki
+   değeri hala okuyabilecek ve buna göre davranabileceksiniz. Özellikle şuna
+   dikkat edin: Eğer hataya sebep olan deyimin önüne bir
+   <link linkend="language.operators.errorcontrol">@ hata denetim
+   işleci</link> konmuşsa bu değer 0 olacaktır.
+  </para>
+  <para>
+   Ayrıca şunu da aklınızdan çıkarmayın: Gerektiği takdirde
+   <function>die</function> işlevi de sizin
+   sorumluluğunuzdadır. <parameter>hata_eylemci</parameter> işlevi döndükten
+   sonra betiğin çalışması, hataya sebep olan deyimden sonraki deyimden devam
+   edecektir.
+  </para>
+  <para>
+   Kullanıcı tanımlı bir işlev ile üzerinde herhangi bir işlem yapılamayacak
+   hatalar vardır, bunlar: <constant>E_ERROR</constant>,
+   <constant>E_PARSE</constant>, <constant>E_CORE_ERROR</constant>,
+   <constant>E_CORE_WARNING</constant>, <constant>E_COMPILE_ERROR</constant>,
+   <constant>E_COMPILE_WARNING</constant> ve
+   <function>set_error_handler</function> işlevinin çağrıldığı dosyada oluşan
+   <constant>E_STRICT</constant> hatalarının çoğu.
+  </para>
+  <para>
+   Eğer betik çalıştırılmadan önce oluşan hatalar varsa (karşıya dosya yükleme
+   sırasında oluşan hatalar gibi), bu gibi durumlar için bildirdiğiniz
+   <parameter>hata_eylemci</parameter> işlevi çağrılamayacaktır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>hata_eylemci</parameter></term>
+     <listitem>
+      <para>
+       Kullanıcının tanımlayacağı bu işlev iki değiştirge kabul etmelidir:
+       hata kodu ve hatayı açıklayan bir dizge. Bu iki değiştirgeden sonra
+       isteğe bağlı üç değiştirge daha kabul edilebilir: hatanın oluştuğu
+       dosya adı, hatanın oluştuğu satırın numarası ve hatanın oluştuğu bağlam
+       (hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir dizi).
+       <parameter>hata_eylemci</parameter> işlevinin söz dizimi:
+      </para>
+      <para>
+       <methodsynopsis>
+        <methodname><replaceable>hata_eylemci</replaceable></methodname>
+        <methodparam><type>int</type><parameter>hatano</parameter></methodparam>
+        <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
+        <methodparam choice="opt"><type>string</type><parameter>betik_adı</parameter></methodparam>
+        <methodparam choice="opt"><type>int</type><parameter>hata_satırı</parameter></methodparam>
+        <methodparam choice="opt"><type>array</type><parameter>hata_bağlamı</parameter></methodparam>
+       </methodsynopsis>
+       <variablelist>
+        <varlistentry>
+         <term><parameter>hatano</parameter></term>
+         <listitem>
+          <simpara>
+           Oluşan hatanın seviyesini içeren bir tamsayı. İlk değiştirge
+           olmalıdır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>ileti</parameter></term>
+         <listitem>
+          <simpara>
+           Hata iletisini içeren bir dizge. İkinci değiştirge olmalıdır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>betik_adı</parameter></term>
+         <listitem>
+          <simpara>
+           Hatanın oluştuğu betik dosyasının ismini bir dizge olarak içeren,
+           belirtilmesi isteğe bağlı üçüncü değiştirge.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>hata_satırı</parameter></term>
+         <listitem>
+          <simpara>
+           Hatanın oluştuğu deyimin satır numarasını bir tamsayı olarak içeren,
+           belirtilmesi isteğe bağlı dördüncü değiştirge.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>hata_bağlamı</parameter></term>
+         <listitem>
+          <simpara>
+           Hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir
+           diziyi kabul eden, belirtilmesi isteğe bağlı beşinci değiştirge.
+           Bu değiştirge, başka bir deyişle, hatanın tetiklendiği etki
+           alanında etkin değişkenleri içeren bir dizidir. İşlev bu
+           değişkenlerde bir değişiklik yapmamalıdır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+      </para>
+      <para>
+       İşlev &false; döndürdüğü takdirde normal hata eylemcisi kaldığı yerden
+       devam eder.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>hata_türü</parameter></term>
+     <listitem>
+      <para>
+       <parameter>hata_eylemci</parameter> işlevini tetikleyecek hatalar
+       sabitleriyle, <link linkend="ini.error-reporting">
+       error_reporting</link> yönergesine gösterilecek hataların değerleri
+       belirtilirken yapıldığı gibi bir bit maskesi olarak belirtilebilir. Bu
+       maskenin belirtilmediği durumda, <link linkend="ini.error-reporting">
+       error_reporting</link> yönergesinde belirtilen değere bakılmaksızın her
+       hatada <parameter>hata_eylemci</parameter> işlevi çağrılacaktır.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   (Varsa) Evvelce tanımlanmış hata eylemcisinin ismini bir dizge olarak
+   döndürür. Eğer yerleşik hata eylemcisi kullanılmışsa &null; döner. Ayrıca
+   belirtilen geriçağırım işlevinin geçersiz olduğu durumda da &null; döner.
+   Eğer evvelki hata eylemcisi bir sınıfın yöntemi ise bu sınıfın ve yöntemin
+   isimlerini içeren bir dizi döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.2.0</entry>
+       <entry>
+        <varname>$php_errormsg</varname> kullanılması durumunda hata eylemcisi
+        &false; döndürmelidir.
+       </entry>
+      </row>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        <parameter>hata_türü</parameter> değiştirgesi kullanılabilir oldu.
+       </entry>
+      </row>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <parameter>hata_eylemci</parameter> değiştirgesinde bir işlev ismi
+        yerine bir nesne başvurusu ve bir yöntem ismi içeren bir dizi
+        belirtebilmek mümkün oldu.
+       </entry>
+      </row>
+      <row>
+       <entry>4.0.2</entry>
+       <entry>
+        <parameter>hata_eylemci</parameter> işlevinin isteğe bağlı ek üç
+        değiştirge (betik ismi, satır numarası ve bağlam) kabul edebilmesi
+        mümkün oldu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>set_error_handler</function> ve
+    <function>trigger_error</function> ile hataların ele alınması</title>
+    <para>
+     Bu örnekte hatalar tetiklenerek oluşan dahili istisnaların kullanıcı
+     tanımlı bir işlev ile ele alınması gösterilmiştir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// hata eylemci işlevi
+function hataEylemcim($hatanum, $ileti, $betik, $satırnum)
+{
+    switch ($hatanum) {
+    case E_USER_ERROR:
+        echo "<b>HATA</b> [$hatanum] $ileti<br />\n";
+        echo "  $betik dosyasının $satırnum. satırında  ölümcül hata";
+        echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
+        echo "Çıkılıyor...<br />\n";
+        exit(1);
+        break;
+
+    case E_USER_WARNING:
+        echo "<b>UYARI</b> [$hatanum] $ileti<br />\n";
+        break;
+
+    case E_USER_NOTICE:
+        echo "<b>BİLGİ</b> [$hatanum] $ileti<br />\n";
+        break;
+
+    default:
+        echo "Bilinmeyen hata türü: [$hatanum] $ileti<br />\n";
+        break;
+    }
+
+    /* PHP'nin yerleşik hata eylemcisi çalışmasın */
+    return true;
+}
+
+// Hatanın oluşacağı işlev
+function scale_by_log($vect, $scale)
+{
+    if (!is_numeric($scale) || $scale <= 0) {
+        trigger_error("x <= 0 için log(x) tanımsız, scale = $scale verilmiş",
+                      E_USER_ERROR);
+    }
+
+    if (!is_array($vect)) {
+        trigger_error("Yanlış girdi, değerler dizi olarak verilmeliydi",
+                      E_USER_WARNING);
+        return null;
+    }
+
+    $temp = array();
+    foreach($vect as $pos => $value) {
+        if (!is_numeric($value)) {
+            trigger_error("$pos. değer bir sayı değil, 0 kullanılıyor",
+                          E_USER_NOTICE);
+            $value = 0;
+        }
+        $temp[$pos] = log($scale) * $value;
+    }
+
+    return $temp;
+}
+
+// kullanıcı tanımlı hata eylemcisini bildirelim
+$old_error_handler = set_error_handler("hataEylemcim");
+
+// Bazı hataları tetikleyelim.
+// Önce sayısal olmayan bir eleman içeren bir dizi tanımlayalım.
+echo "ilk durum; bir hata: sayı yerine dizge\n";
+$a = array(2, 3, "foo", 5.5, 43.3, 21.11);
+print_r($a);
+
+// burada ikinci hatayı üretiyoruz
+echo "----\nikinci durum - bir uyarı (b = log(PI) * a)\n";
+/* $pos. değer bir sayı değil, 0 kullanılıyor */
+$b = scale_by_log($a, M_PI);
+print_r($b);
+
+// Bir dizi yerine bir dizge aktarıp yine sorun çıkarıyoruz
+echo "----\nüçüncü durum - bir uyarı\n";
+/* Yanlış girdi, değerler dizi olarak verilmeliydi */
+$c = scale_by_log("not array", 2.3);
+var_dump($c); // NULL
+
+// Bu önemli bir hata; sıfır veya negatif bir sayının logaritması.
+echo "----\ndördüncü durum - ölümcül hata\n";
+/* x <= 0 için log(x) tanımsız, scale = $scale olmalıydı */
+$d = scale_by_log($a, -2.5);
+var_dump($d); // Bu satır hiç çalışmayacak.
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+ilk durum; bir hata: sayı yerine dizge
+Array
+(
+    [0] => 2
+    [1] => 3
+    [2] => foo
+    [3] => 5.5
+    [4] => 43.3
+    [5] => 21.11
+)
+----
+ikinci durum - bir uyarı (b = log(PI) * a)
+<b>BİLGİ</b> [1024] 2. değer bir sayı değil, 0 kullanılıyor<br />
+Array
+(
+    [0] => 2.2894597716988
+    [1] => 3.4341896575482
+    [2] => 0
+    [3] => 6.2960143721717
+    [4] => 49.566804057279
+    [5] => 24.165247890281
+)
+----
+üçüncü durum - bir uyarı
+<b>UYARI</b> [512] Yanlış girdi, değerler dizi olarak verilmeliydi<br />
+NULL
+----
+dördüncü durum - ölümcül hata
+<b>HATA</b> [256] x <= 0 için log(x) tanımsız, scale = -2.5 verilmiş<br />
+  php-dnm dosyasının 36. satırında  ölümcül hata, PHP 5.3.0beta2-dev
+  (Linux)<br />
+Çıkılıyor...<br />
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><classname>ErrorException</classname></member>
+    <member><function>error_reporting</function></member>
+    <member><function>restore_error_handler</function></member>
+    <member><function>trigger_error</function></member>
+    <member><link linkend="errorfunc.constants">Hata seviyesi
+    sabitleri</link></member>
+    <member>&seealso.callback;</member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
