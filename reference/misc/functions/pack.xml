@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.pack" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>pack</refname>
+  <refpurpose>Veriyi bir ikil dizge halinde paketler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>pack</methodname>
+   <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen değiştirgeleri belirtilen <parameter>biçem</parameter> biçeminde
+   bir ikil bir dizge olarak paketler.
+  </para>
+  <para>
+   Anafikir Perl'den alınmış olup, tüm biçemleme kodları Perl'deki gibi
+   çalışır. Ancak, biçemleme türleri aynı değildir, örneğin "u" biçemi Perl'de
+   yoktur.
+  </para>
+  <para>
+   Şuna dikkat edin: İşaretli ve işaretsiz değerler arasındaki ayrım sadece
+   <function>unpack</function> işlevini etkiler. <function>pack</function>
+   işlevi her ikisi için de aynı sonuçları üretir.
+  </para>
+  <para>
+   Ayrıca, şuna da dikkat edin: PHP, işaretli değerleri makineye bağımlı
+   tamsayı değerler olarak saklar. Eğer <type>float</type> türünde tam
+   hassasiyetle saklanamayacak kadar büyük bir işaretsiz tamsayı verirseniz
+   istenmeyen sonuçlar alabilirsiniz.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>biçem</parameter></term>
+     <listitem>
+      <para>
+       <parameter>biçem</parameter> dzgesi isteğe bağlı bir yineleme
+       değiştirgesi ile öncelenmiş biçem kodlarından oluşur. Yineleme
+       değiştirgesi bir tamsayı değer veya girdi verisinin sonuna kadar
+       yineleme belirten bir <literal>*</literal> olabilir. a, A, h, H için
+       yineleme sayısı, bir veri değiştirgesinden kaç karakter alındığını
+       belirtir. @ için yineleme sayısı ise, sonraki verinin konacağı mutlak
+       konumu belirtir. Bunlar dışında kalan herşey için yineleme sayısı,
+       sonuçlanan ikil dizgede paketlenmek üzere kaç tane veri argümanın
+       toplanacağını belirtir.
+      </para>
+      <para>
+       Şimdilik gerçeklenmiş biçemler:
+       <table>
+        <title><function>pack</function> biçem karakterleri</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Kod</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>a</entry>
+           <entry>NUL-dolgulu dizge</entry>
+          </row>
+          <row>
+           <entry>A</entry>
+           <entry>BOŞLUK dolgulu dizge</entry></row>
+          <row>
+           <entry>h</entry>
+           <entry>Onaltılık dizge, küçük dörtlü önce gelir</entry></row>
+          <row>
+           <entry>H</entry>
+           <entry>Onaltılık dizge, büyük dörtlü önce gelir</entry></row>
+          <row>
+           <entry>c</entry>
+           <entry>işaretli bayt</entry></row>
+          <row>
+           <entry>C</entry>
+           <entry>işaretsiz bayt</entry></row>
+          <row>
+           <entry>s</entry>
+           <entry>İşaretli kısa tamsayı (daima 16 bit olup, makine bayt
+           sıralamasındadır)</entry>
+          </row>
+          <row>
+           <entry>S</entry>
+           <entry>İşaretsiz kısa tamsayı (daima 16 bit olup, makine bayt
+           sıralamasındadır)</entry>
+          </row>
+          <row>
+           <entry>n</entry>
+           <entry>İşaretsiz kısa tamsayı (daima 16 bit olup, en kıymetli bayt
+           baştadır)</entry>
+          </row>
+          <row>
+           <entry>v</entry>
+           <entry>İşaretsiz kısa tamsayı (daima 16 bit olup, en kıymetsiz bayt
+           baştadır)</entry>
+          </row>
+          <row>
+           <entry>i</entry>
+           <entry>İşaretli tamsayı (boyut ve bayt sıralaması makineye bağlıdır)
+           </entry>
+          </row>
+          <row>
+           <entry>I</entry>
+           <entry>İşaretsiz tamsayı (boyut ve bayt sıralaması makineye
+           bağlıdır)</entry>
+          </row>
+          <row>
+           <entry>l</entry>
+           <entry>İşaretli uzun tamsayı (daima 32 bit olup, makine bayt
+           sıralamasındadır)</entry>
+          </row>
+          <row>
+           <entry>L</entry>
+           <entry>İşaretsiz uzun tamsayı (daima 32 bit olup, makine bayt
+           sıralamasındadır)</entry>
+          </row>
+          <row>
+           <entry>N</entry>
+           <entry>İşaretsiz uzun tamsayı (daima 32 bit olup, en kıymetli bayt
+           baştadır)</entry>
+          </row>
+          <row>
+           <entry>V</entry>
+           <entry>İşaretsiz uzun tamsayı (daima 32 bit olup, en kıymetsiz bayt
+           baştadır)</entry>
+          </row>
+          <row>
+           <entry>f</entry>
+           <entry>Tek hassasiyetli gerçek sayı - float (boyut ve gösterim
+           makineye bağlıdır)</entry>
+          </row>
+          <row>
+           <entry>d</entry>
+           <entry>Çift hassasiyetli gerçek sayı - double (boyut ve gösterim
+           makineye bağlıdır)</entry>
+          </row>
+          <row>
+           <entry>x</entry>
+           <entry>NUL bayt (0. karakter)</entry>
+          </row>
+          <row>
+           <entry>X</entry>
+           <entry>Bir baytlık yedek</entry>
+          </row>
+          <row>
+           <entry>@</entry>
+           <entry>Bir mutlak konuma kadar NUL dolgu</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Veriyi içeren bir ikil dizge döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>pack</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ikilveri = pack("nvc*", 0x1234, 0x5678, 65, 66);
+?>
+]]>
+    </programlisting>
+    <para>
+     Elde edilen ikil dizge 6 bayt uzunlukta olur ve sırayla 0x12, 0x34, 0x78,
+     0x56, 0x41, 0x42 baytlarını içerir.
+    </para>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>unpack</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
