@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.14 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-register">
+ <refnamediv>
+  <refname>session_register</refname>
+  <refpurpose>Geçerli oturuma bir veya daha fazla küresel değişkeni kaydeder
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>session_register</methodname>
+   <methodparam><type>mixed</type><parameter>isim</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>session_register</function> işlevi değişken sayıda değiştirge
+   kabul eder. Tek bir değişkenin ismini içeren bir dizge olabileceği gibi,
+   değişken isimlerini veya diğer dizileri içeren bir dizi olabilir. İşlev,
+   belirtilen her isim için aynı isimdeki bir küresel değişkeni oturum
+   değişkeni haline getirir.
+  </para>
+  <para>
+   Bir oturum değişkenini <varname>$_SESSION</varname>
+   veya <varname>$HTTP_SESSION_VARS</varname> (PHP &lt; 4.1.0) dizisinin bir
+   üyesi olarak da oluşturabilirsiniz.
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+//session_register() kullanımı artık önerilmiyor
+$barney = "Devasa pembe bir dinazor.";
+session_register("barney");
+
+// PHP 4.1.0'dan itibaren, $_SESSION tercih ediliyor
+$_SESSION["zim"] = "Başka bir gezegenden bir istilacı.";
+
+// Eski yol, $HTTP_SESSION_VARS kullanmaktı
+$HTTP_SESSION_VARS["spongebob"] = "O bir kare pantolon giyiyor.";
+?>
+]]>
+    </programlisting>
+   </informalexample>
+  </para>
+  <para>
+   Bu işlevden önce bir <function>session_start</function> çağrısı yapılmazsa
+   örtük olarak değiştirgesiz bir <function>session_start</function> çağrısı
+   çağrısı yapılır. <varname>$_SESSION</varname> kullanacaksanız bu davranışın
+   size bir faydası olmaz ve önce bir <function>session_start</function>
+   çağrısı yapmanız gerekir.
+  </para>
+  &warn.deprecated.function-5-3-0.removed-6-0-0;
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>isim</parameter></term>
+     <listitem>
+      <para>
+       Tek bir değişkenin ismini içeren bir dizge veya değişken isimlerinden
+       ve diğer dizilerden oluşan bir dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>...</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <caution>
+   <para>
+    Betiğinizin <link linkend="ini.register-globals">register_globals</link>
+    yönergesinin değerine aldırmaksızın çalışmasını isterseniz, bu işlev
+    yerine <varname>$_SESSION</varname> dizisini kullanmalısınız;
+    <varname>$_SESSION</varname> girdileri özdevinimli olarak oturum
+    değişkenleri haline gelirler. Betiğiniz
+    <function>session_register</function> işlevini kullanacaksa, <link
+    linkend="ini.register-globals">register_globals</link> PHP yönergesinin
+    değerinin <literal>On</literal> olmadığı yerlerde çalışmayacaktır.
+   </para>
+  </caution>
+  &note.registerglobals;
+  <caution>
+   <para>
+    Bu işlev bir <emphasis>küresel</emphasis> değişkeni kayıtlı hale getirir.
+    İşlevi bir oturum değişkenini kayıtlı duruma getirmek için kullanacaksanız
+    değişkeni önce <link linkend="language.variables.scope">
+    <command>global</command></link> anahtar sözcüğüyle veya
+    <varname>$GLOBALS[]</varname> dizisinde belirterek bir küresel değişken
+    haline getirmelisinz. Daha da iyisi özel oturum dizilerini kullanmaktır.
+   </para>
+  </caution>
+  <caution>
+   <para>
+    <varname>$_SESSION</varname> (veya <varname>$HTTP_SESSION_VARS</varname>)
+    dizisini kullanıyorsanız, <function>session_register</function>,
+    <function>session_is_registered</function> ve
+    <function>session_unregister</function> işlevlerini kullanmayın.
+   </para>
+  </caution>
+  <note>
+   <para>
+    <type>resource</type> türünden değişkenleri bir oturumun kayıtlı değişkeni
+    yapmak mümkün değildir. Örneğin, bir veritabanını bağlantısı oluşturup
+    bunun bağlantı kimliğini bir oturum değişkeninde saklayamazsınız. Çünkü
+    oturum tekrar oluşturulduğunda bu bağlantının geçerli kalacağı beklenemez.
+    Bir özkaynak döndüren PHP işlevleri, işlev tanımında
+    <literal>resource</literal> türünde bir değer döndüren işlevler olup
+    bunların bir listesi eklerdeki <link linkend="resource">Özkaynak
+    Türlerinin Listesi</link> bölümünde bulunabilir.
+   </para>
+   <para>
+    Eğer <varname>$_SESSION</varname> (veya PHP 4.0.6 ve öncesinde
+    <varname>$HTTP_SESSION_VARS</varname>) kullanılıyorsa, değerler
+    <varname>$_SESSION</varname> dizisine şöyle atanır:
+    <literal>$_SESSION['var'] = 'ABC';</literal>
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>session_is_registered</function></member>
+    <member><function>session_unregister</function></member>
+    <member><varname>$_SESSION</varname></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

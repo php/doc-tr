@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id='function.session-cache-expire'>
+ <refnamediv>
+  <refname>session_cache_expire</refname>
+  <refpurpose>Önbelleğe alınan oturumun ömrünü döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>session_cache_expire</methodname>
+   <methodparam choice="opt"><type>string</type><parameter>yeni_önbellek_ömrü</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>session_cache_expire</function> işlevi,
+   <link linkend="ini.session.cache-expire">
+   <literal>session.cache_expire</literal></link> yönergesinin değerini
+   döndürür.
+  </para>
+  <para>
+   Bu değer, isteğin başlangıcında <link linkend="ini.session.cache-expire">
+   <literal>session.cache_expire</literal></link> yönergesinin 180 dakikalık
+   öntanımlı değeriyle sıfırlanır. Bu bakımdan her istek için
+   <function>session_start</function> çağrısından önce bir
+   <function>session_cache_expire</function> çağrısı yapmanız gerekir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>yeni_önbellek_ömrü</parameter></term>
+     <listitem>
+      <para>
+       Belirtilmişse önbellekli oturumun ömrü bu değere ayarlanır.
+      </para>
+      <para>
+       <note>
+        <simpara>
+         <parameter>yeni_önbellek_ömrü</parameter> değeri, sadece
+         <link linkend="ini.session.cache-limiter">
+         <literal>session.cache_limiter</literal></link> yönergesine
+         <literal>nocache</literal>'den farklı bir değer atanmışsa eski
+         değerle değiştirilir.
+        </simpara>
+       </note>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <link linkend="ini.session.cache-expire">
+   <literal>session.cache_expire</literal></link> yönergesinin değerini
+   dakika cinsinden döndürür. Öntanımlı değer 180 dakikadır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>session_cache_expire</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+/* önbellek sınırlayıcıya 'private' atayalım */
+
+session_cache_limiter('private');
+$cache_limiter = session_cache_limiter();
+
+/* önbellek ömrünü 30 dakika yapalım */
+session_cache_expire(30);
+$ömür = session_cache_expire();
+
+/* oturumu başlatalım */
+
+session_start();
+
+echo "Önbellek sınırlayıcıya $cache_limiter kipi atandı.<br />";
+echo "Önbellekteki sayfalar $ömür dakika sonra zaman aşımına uğrayacak";
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="ini.session.cache-expire">
+    session.cache_expire</link></member>
+    <member><link linkend="ini.session.cache-limiter">
+    session.cache_limiter</link></member>
+    <member><function>session_cache_limiter</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
