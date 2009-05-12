@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.2 Maintainer: nilgun Status: ready -->
+<appendix xml:id="classobj.examples">
+ &reftitle.examples;
+ <para>
+  Bu örnekte, önce bir temel sınıf ve bu sınıfın bir türevini
+  tanımlayacağız. Temel sınıf, genel olarak bitkileri, yenebilir olup
+  olmadıkları ve renkleri ile tanımlayacak. <varname>Lahana</varname> alt
+  sınıfı, sebzeyi pişirmek için bir yöntem ile pişirilmiş olup olmadığını
+  bulan bir başka yöntem ekleyecek.
+ </para>
+ <para>
+  <example>
+   <title>sınıflar.inc</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// Üye özellikler ve yöntemlerle temel sınıf
+class Bitki {
+
+   var $yenir;
+   var $renk;
+
+   function Bitki($yenir, $renk="yeşil")
+   {
+       $this->yenir = $yenir;
+       $this->renk = $renk;
+   }
+
+   function yenir_mi()
+   {
+       return $this->yenir;
+   }
+
+   function ne_renk()
+   {
+       return $this->renk;
+   }
+
+} // Bitki sınıfının sonu
+
+// temel sınıfı türetelim
+class Lahana extends Bikti {
+
+   var $pişmiş = false;
+
+   function Lahana()
+   {
+       $this->Bitki(true, "yeşil");
+   }
+
+   function pişir()
+   {
+       $this->pişmiş = true;
+   }
+
+   function pişmiş_mi()
+   {
+       return $this->pişmiş;
+   }
+
+} // Lahana sınıfının sonu
+
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Bu sınıflardan iki nesne örnekleyip, ata sınıfları dahil bunlar hakkındaki
+  tüm bilgiyi çıktılayacağız. Ayrıca, değişkenlerin çıktılarını güzelleştirmek
+  için bazı ek işlevler tanımlayacağız.
+ </para>
+ <para>
+  <example>
+   <title>dnm.php</title>
+   <programlisting role="php">
+<![CDATA[
+<pre>
+<?php
+
+include "sınıflar.inc";
+
+// biçemleme işlevleri
+
+function print_vars($obj)
+{
+foreach (get_object_vars($obj) as $prop => $val) {
+    echo "\t$prop = $val\n";
+}
+}
+
+function print_methods($obj)
+{
+$arr = get_class_methods(get_class($obj));
+foreach ($arr as $method) {
+    echo "\t$method() işlevi\n";
+}
+}
+
+function class_parentage($obj, $class)
+{
+if (is_subclass_of($GLOBALS[$obj], $class)) {
+    echo "$obj nesnesinin ait olduğu sınıf: " . get_class($$obj);
+    echo ", alt sınıf ise: $class\n";
+} else {
+    echo "$obj nesnesi $class alt sınıfına ait değildir.\n";
+}
+}
+
+// 2 nesne örnekleyelim
+
+$sebze = new Bitki(true, "mavi");
+$tombul = new Lahana();
+
+// Nesne bilgilerini basalım
+echo "sebze: " . get_class($sebze) . " sınıfında\n";
+echo "tombul: " . get_class($tombul) . " sınıfında";
+echo ", ATA sınıfı " . get_parent_class($tombul) . "\n";
+
+// Sebze özelliklerini gösterelim
+echo "\nsebze: Özellikler\n";
+print_vars($sebze);
+
+// ve tompul yöntemleri
+echo "\ntombul: Yöntemler\n";
+print_methods($tombul);
+
+echo "\nEbeveynler:\n";
+class_parentage("tombul", "Lahana");
+class_parentage("tombul", "Bitki");
+?>
+</pre>
+]]>
+   </programlisting>
+   <para>
+    Yukarıdaki örnekte önemli şeylerden biri, <varname>$tombul</varname>
+    nesnesinin <classname>Lahana</classname> sınıfının bir örneği,
+    <classname>Lahana</classname> sınıfının ise <classname>Bitki</classname>
+    sınıfının ise bir alt sınıfı oluşudur. Bu bakımdan betiğin son kısmının
+    çıktısı şöyle olur:
+   </para>
+   <screen>
+<![CDATA[
+   [...]
+Ebeveynler:
+tombul nesnesi Lahana alt sınıfına ait değildir.
+tombul nesnesinin ait olduğu sınıf: Lahana, alt sınıf ise: Bitki
+
+]]>
+   </screen>
+  </example>
+ </para>
+</appendix>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
