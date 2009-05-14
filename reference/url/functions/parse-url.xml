@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.20 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.parse-url" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>parse_url</refname>
+  <refpurpose>Bir URL'yi bileşenlerine ayırır</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>parse_url</methodname>
+   <methodparam><type>string</type><parameter>url</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>bileşen</parameter><initializer>-1</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Bu işlev belirtilen URL'yi bileşenlerine ayırıp, bunları bir ilişkisel dizi
+   içinde döndürür.
+  </para>
+  <para>
+   Bu işlev, bir URL doğrulayıcı olarak kullanılmamalıdır. Yaptığı sadece
+   URL'yi aşağıda belirtilen parçalara ayırmaktır. URL'ler kısmi olarak da
+   kabul edilir. İşlev bunları en doğru şekilde bileşenlerine ayırmaya çalışır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>url</parameter></term>
+     <listitem>
+      <para>
+       Ayrıştırılacak URL. Geçersiz karakterlerin yerine <literal>_</literal>
+       konur.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>bileşen</parameter></term>
+     <listitem>
+      <para>
+       Belli bir URL bileşenini dizge olarak döndürmek isterseniz bu
+       değiştirgede şu sabitlerden birini belirtin:
+       <constant>PHP_URL_SCHEME</constant>,
+       <constant>PHP_URL_HOST</constant>, <constant>PHP_URL_PORT</constant>,
+       <constant>PHP_URL_USER</constant>, <constant>PHP_URL_PASS</constant>,
+       <constant>PHP_URL_PATH</constant>, <constant>PHP_URL_QUERY</constant>,
+       <constant>PHP_URL_FRAGMENT</constant>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Tehlikeli şekilde bozulmuş URL'lerde <function>parse_url</function> &false;
+   döndürebilir ve bir <constant>E_WARNING</constant> çıktılayabilir. Aksi
+   takdirde, şu bileşenleri bir ilişkisel dizi olarak döndürür (en az biri):
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">scheme</varname> - http:// gibi
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">host</varname> - konak ismi
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">port</varname> - port
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">user</varname> - kullanıcı
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">pass</varname> - parola
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">path</varname> - dosya yolu
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">query</varname> - sorgu; bir soru
+      (<literal>?</literal>) iminden sonra.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <varname remap="structfield">fragment</varname> - örgü;
+      <literal>#</literal> iminden sonra
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   <parameter>bileşen</parameter> değiştirgesinde bir sabit belirtilmişse bir
+   dizi yerine bir dizge döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.1.2</entry>
+       <entry><parameter>bileşen</parameter> değiştirgesi eklendi.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>parse_url</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$url = 'http://username:password@hostname/path?arg=value#anchor';
+
+print_r(parse_url($url));
+
+echo parse_url($url, PHP_URL_PATH);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [scheme] => http
+    [host] => hostname
+    [user] => username
+    [pass] => password
+    [path] => /path
+    [query] => arg=value
+    [fragment] => anchor
+)
+/path
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bu işlev göreli URL'lerle çalışmaz.
+   </para>
+  </note>
+  <note>
+   <para>
+    Bu işlev URI'leri değil, özellikle URL'leri ayrıştırmak için
+    tasarlanmıştır. Ancak, PHP'nin geriye uyumluluğu için
+    <literal>file://</literal> şeması için istisnai bir durum olarak
+    <literal>file:///</literal> şemasına da izin verilir. Bunun dışındaki
+    şemalar için bu uygulama geçersizdir.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>pathinfo</function></member>
+    <member><function>parse_str</function></member>
+    <member><function>http_build_query</function></member>
+    <member><function>dirname</function></member>
+    <member><function>basename</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
