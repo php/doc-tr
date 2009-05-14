@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.9 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.phpversion" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>phpversion</refname>
@@ -58,6 +58,45 @@ echo 'Çalışan PHP\'nin sürümü: ' . phpversion();
 // eklenti etkinse '2.0' gibi bir değer basar
 // eklenti etkin değilse hiçbir şey basılmaz
 echo phpversion('tidy');
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <constant>PHP_VERSION_ID</constant> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// PHP_VERSION_ID, PHP 5.2.7'den beri kullanılabilmektedir.
+// Kullandığınız sürüm daha düşükse taklit edin
+if(!defined('PHP_VERSION_ID'))
+{
+ $version = PHP_VERSION;
+
+ define('PHP_VERSION_ID',
+        ($version{0} * 10000 + $version{2} * 100 + $version{4}));
+}
+
+// PHP_VERSION_ID bir sayı olarak tanımlanır. PHP sürümü yükseldikçe
+// sayı büyür. Şu ifade ile tanımlanır:
+//
+// $version_id = $major_version * 10000 + $minor_version * 100 + $release_version;
+//
+// Artık PHP sürümlerinin özellikleri için PHP_VERSION_ID'ye bakabiliriz.
+// Kullandığınız PHP sürümü bir özelliği desteklemezse version_compare()
+// kullanmanız gerekmez. Örneğin 5.2.7 öncesi sürümlerden birini
+// kullanıyorsanız PHP_VERSION_* sabitlerini şöyle tanımlayabilirsiniz:
+
+if(PHP_VERSION_ID < 50207)
+{
+ define('PHP_MAJOR_VERSION',   $version{0});
+ define('PHP_MINOR_VERSION',   $version{2});
+ define('PHP_RELEASE_VERSION',   $version{4});
+
+ // ve böyle gider, ...
+}
 ?>
 ]]>
     </programlisting>
