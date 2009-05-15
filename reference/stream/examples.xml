@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<chapter xml:id="stream.examples">
+ &reftitle.examples;
+ <para>
+  <example>
+   <title>- Çok sayıda kaynaktan veri almak için
+   <function>file_get_contents</function> kullanımı</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* Yerel dosyayı /home/bar dizininden okuyalım */
+$localfile = file_get_contents("/home/bar/foo.txt");
+
+/* FILE sarmalayıcı kullanımı dışında yukarıdakine eşdeğerdir */
+$localfile = file_get_contents("file:///home/bar/foo.txt");
+
+/* Uzak dosyayı HTTP kullaranak www.example.com'dan okur */
+$httpfile  = file_get_contents("http://www.example.com/foo.txt");
+
+/* Uzak dosyayı HTTPS kullaranak www.example.com'dan okur */
+$httpsfile = file_get_contents("https://www.example.com/foo.txt");
+
+/* Uzak dosyayı FTP kullaranak ftp.example.com'dan okur */
+$ftpfile   = file_get_contents("ftp://user:pass@ftp.example.com/foo.txt");
+
+/* Uzak dosyayı FTPS kullaranak ftp.example.com'dan okur */
+$ftpsfile  = file_get_contents("ftps://user:pass@ftp.example.com/foo.txt");
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  <example>
+   <title>- Bir HTTPS sunucusundan bir POST isteği yapmak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* Post isteğini https://secure.example.com/form_action.php adresine gönderelim
+ * Dosyada "foo" and "bar" isimli form elemanları olsun.
+ */
+
+$sock = fsockopen("ssl://secure.example.com", 443, $errno, $errstr, 30);
+if (!$sock) die("$errstr ($errno)\n");
+
+$data = "foo=" . urlencode("Value for Foo") . "&bar=" . urlencode("Value for Bar");
+
+fwrite($sock, "POST /form_action.php HTTP/1.0\r\n");
+fwrite($sock, "Host: secure.example.com\r\n");
+fwrite($sock, "Content-type: application/x-www-form-urlencoded\r\n");
+fwrite($sock, "Content-length: " . strlen($data) . "\r\n");
+fwrite($sock, "Accept: */*\r\n");
+fwrite($sock, "\r\n");
+fwrite($sock, "$data\r\n");
+fwrite($sock, "\r\n");
+
+$headers = "";
+while ($str = trim(fgets($sock, 4096)))
+$headers .= "$str\n";
+
+echo "\n";
+
+$body = "";
+while (!feof($sock))
+$body .= fgets($sock, 4096);
+
+fclose($sock);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  <example>
+   <title>- Sıkıştırılmış bir dosyaya veri yazmak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* Bir dizge içeren sıkıştırılmış bir dosya oluşturalım.
+ * Dosya, compress.zlib akımı kullanılarak veya
+ * komut satırından 'gzip -d foo-bar.txt.gz' kullanılarak
+ * kodlaması açılıp okunabilir.
+ */
+$fp = fopen("compress.zlib://foo-bar.txt.gz", "wb");
+if (!$fp) die("Dosya oluşturulamadı.");
+
+fwrite($fp, "Bu bir denemedir.\n");
+
+fclose($fp);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+
+ <section xml:id='stream.streamwrapper.example-1'>
+  <title>Akım Sarmalayıcı olarak örnek bir sınıf tanımı</title>
+  <para>
+   Aşağıdaki örnekte, <function>fread</function> gibi standart dosya sistemi
+   akım işlevlerini kullanarak bir küresel değişkene okuma/yazma erişimini
+   mümkün kılan bir var:// sarmalayıcısı gerçeklenmiştir. $GLOBALS["foo"]
+   değişkenine veri yazma ve okuma işlemleri için "var://foo" URL'si
+   kullanılacaktır.
+  </para>
+  <para>
+   <example>
+    <title>- Küresel değişkenlere veri okuyup yazan bir akım</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class VariableStream {
+  var $position;
+  var $varname;
+
+  function stream_open($path, $mode, $options, &$opened_path)
+  {
+    $url = parse_url($path);
+    $this->varname = $url["host"];
+    $this->position = 0;
+
+    return true;
+  }
+
+  function stream_read($count)
+  {
+    $ret = substr($GLOBALS[$this->varname], $this->position, $count);
+    $this->position += strlen($ret);
+    return $ret;
+  }
+
+  function stream_write($data)
+  {
+    $left = substr($GLOBALS[$this->varname], 0, $this->position);
+    $right = substr($GLOBALS[$this->varname], $this->position + strlen($data));
+    $GLOBALS[$this->varname] = $left . $data . $right;
+    $this->position += strlen($data);
+    return strlen($data);
+  }
+
+  function stream_tell()
+  {
+    return $this->position;
+  }
+
+  function stream_eof()
+  {
+    return $this->position >= strlen($GLOBALS[$this->varname]);
+  }
+
+  function stream_seek($offset, $whence)
+  {
+    switch ($whence) {
+      case SEEK_SET:
+        if ($offset < strlen($GLOBALS[$this->varname]) && $offset >= 0) {
+          $this->position = $offset;
+          return true;
+        } else {
+          return false;
+        }
+        break;
+
+      case SEEK_CUR:
+        if ($offset >= 0) {
+          $this->position += $offset;
+          return true;
+        } else {
+          return false;
+        }
+        break;
+
+      case SEEK_END:
+        if (strlen($GLOBALS[$this->varname]) + $offset >= 0) {
+          $this->position = strlen($GLOBALS[$this->varname]) + $offset;
+          return true;
+        } else {
+          return false;
+        }
+        break;
+
+      default:
+        return false;
+    }
+  }
+}
+
+stream_wrapper_register("var", "VariableStream")
+    or die("Failed to register protocol");
+
+$myvar = "";
+
+$fp = fopen("var://myvar", "r+");
+
+fwrite($fp, "line1\n");
+fwrite($fp, "line2\n");
+fwrite($fp, "line3\n");
+
+rewind($fp);
+while (!feof($fp)) {
+    echo fgets($fp);
+}
+fclose($fp);
+var_dump($myvar);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+line1
+line2
+line3
+string(18) "line1
+line2
+line3
+"
+]]>
+    </screen>
+   </example>
+  </para>
+ </section>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
