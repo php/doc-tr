@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.22 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.stream-socket-server" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>stream_socket_server</refname>
+  <refpurpose>Bir Genel Ağ veya Unix alan sunucusu soketi oluşturur
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>resource</type><methodname>stream_socket_server</methodname>
+   <methodparam><type>string</type><parameter>yerel_soket</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">hatanum</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">ileti</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>STREAM_SERVER_BIND | STREAM_SERVER_LISTEN</initializer></methodparam>
+   <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <parameter>yerel_soket</parameter> üzerinde bir akım veya
+   verikatarı soketi oluşturur.
+  </para>
+  <para>
+   Bu işlev, <function>stream_socket_accept</function> kullanarak veri kabul
+   etmek üzere bir soket oluşturmaktan başka bir şey yapmaz.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>yerel_soket</parameter></term>
+     <listitem>
+      <para>
+       Oluşturulacak soketin türü standart URL biçemi kullanılarak belirtilir:
+       <literal>şema://hedef</literal>.
+      </para>
+      <para>
+       TCP ve UDP gibi Genel Ağ Alanı soketleri (<constant>AF_INET</constant>)
+       için, <parameter>uzak_soket</parameter>'in <literal>hedef</literal>
+       parçası bir konak ismi veya IP adresinden sonra gelen bir ikinokta imi
+       ve bir port numarasından oluşur. Unix alan soketleri için
+       <literal>hedef</literal> parçası ise dosya sistemi üstündeki bir soket
+       dosyasını göstermelidir.
+      </para>
+      <para>
+       Platforma bağlı olarak, Unix alan soketleri mevcut olmayabilir.
+       Kullanılabilecek aktarım çeşitlerinin listesi
+       <function>stream_get_transports</function> işlevi ile alınabilir.
+       Yerleşik aktarım türlerinin tam listesini <xref linkend="transports"/>
+       sayfasında bulabilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>hatanum</parameter></term>
+     <listitem>
+      <para>
+       Seçimlik <parameter>hatanum</parameter> ve <parameter>ileti</parameter>
+       değiştirgeleri belirtilmişse, bunlara <literal>socket()</literal>,
+       <literal>bind()</literal> ve <literal>listen()</literal> sistem
+       çağrılarında oluşan sistem seviyesindeki hatanın bilgisi atanır. Eğer
+       <parameter>hatanum</parameter> değiştirgesinde <literal>0</literal>
+       döndüğünde işlev &false; döndürmüşse hata, <literal>bind()</literal>
+       çağrısından önce oluşmuş demektir. Bu sorunla çoğunlukla soketin
+       ilklendirilmesi sırasında karşılaşılır. <parameter>hatanum</parameter>
+       ve <parameter>ileti</parameter> değiştirgelerinin daima gönderimli
+       aktarıldıklarına dikkat ediniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ileti</parameter></term>
+     <listitem>
+      <para>
+       <parameter>hatanum</parameter> değiştirgesinin açıklamasına bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Soket oluşturma seçeneklerinden oluşan bir bit maskesi. Öntanımlı
+       değer: <constant>STREAM_SERVER_BIND</constant>
+       | <constant>STREAM_SERVER_LISTEN</constant>.
+      </para>
+      <note>
+       <para>
+        UDP soketleri için, bu değiştirgeyle
+        <constant>STREAM_SERVER_BIND</constant> değerini aktarmalısınız.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>bağlam</parameter></term>
+     <listitem>
+      <para>
+       <function>stream_context_create</function> ile oluşturulmuş geçerli bir
+       bağlam özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir hata durumunda &false;, aksi takdirde oluşturulan soketi döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- TCP sunucu soketlerinin kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$socket = stream_socket_server("tcp://0.0.0.0:8000", $errno, $errstr);
+if (!$socket) {
+  echo "$errstr ($errno)<br />\n";
+} else {
+  while ($conn = stream_socket_accept($socket)) {
+    fwrite($conn, 'Yerel zaman: ' . date('n/j/Y g:i a') . "\n");
+    fclose($conn);
+  }
+  fclose($socket);
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Aşağıdaki örnekte, <function>stream_socket_client</function> işleviyle
+   ilgili örneklerden birinde yapılan bir zaman sorgusuna bir zaman
+   sunucusunun yanıt vermesi için neler yapıldığı gösterilmiştir.
+   <note>
+    <simpara>
+     Çoğu sistem, 1024'ten küçük portları oluşturmak için root yetkisine
+     ihtiyaç duyar.
+    </simpara>
+   </note>
+   <example>
+    <title>- UDP sunucu soketlerinin kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$socket = stream_socket_server("udp://127.0.0.1:1113", $errno, $errstr, STREAM_SERVER_BIND);
+if (!$socket) {
+    die("$errstr ($errno)");
+}
+
+do {
+    $pkt = stream_socket_recvfrom($socket, 1, 0, $peer);
+    echo "$peer\n";
+    stream_socket_sendto($socket, date("D M j H:i:s Y\r\n"), 0, $peer);
+} while ($pkt !== false);
+
+?>
+
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &ipv6.brackets;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>stream_socket_client</function></member>
+   <member><function>stream_set_blocking</function></member>
+   <member><function>stream_set_timeout</function></member>
+   <member><function>fgets</function></member>
+   <member><function>fgetss</function></member>
+   <member><function>fwrite</function></member>
+   <member><function>fclose</function></member>
+   <member><function>feof</function></member>
+   <member><link linkend="ref.curl">Curl eklentisi</link></member>
+  </simplelist>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
