@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.18 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.stream-select" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>stream_select</refname>
+  <refpurpose>Belirtilen akım dizisi üzerinde belirtilen zaman aşımı ile
+  select() sistem çağrısının eşdeğeri olarak çalışır</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>stream_select</methodname>
+   <methodparam><type>array</type><parameter role="reference">oku</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">yaz</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">dış</parameter></methodparam>
+   <methodparam><type>int</type><parameter>saniye</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>mikrosaniye</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>stream_select</function> işlevi akımları diziler halinde kabul
+   eder ve durumları değişinceye kadar bekler. Akımlar üzerinde işlem yapması
+   dışında <function>socket_select</function> işlevinin benzeridir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>oku</parameter></term>
+     <listitem>
+      <para>
+       <parameter>oku</parameter> dizisindeki akımlar için veri okunabilir
+       hale gelene kadar beklenir (daha doğrusu, okumanın engellenmediğini
+       görene kadar - özellikle de akım özkaynağının dosya sonunda olduğu,
+       <function>fread</function> işlevinin sıfır uzunlukta bir dizge
+       döndürdüğü duruma kadar).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yaz</parameter></term>
+     <listitem>
+      <para>
+       <parameter>yaz</parameter> dizisindeki akımlar için yazmanın
+       engellenmediği görülene kadar beklenir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dış</parameter></term>
+     <listitem>
+      <para>
+       <parameter>dış</parameter> dizisindeki akımlar için yüksek öncelikli
+       istisnai ("band dışı") veri gelinceye kadar beklenir.
+      </para>
+      <note>
+       <para>
+        <function>stream_select</function> dönerken
+        <parameter>oku</parameter>, <parameter>yaz</parameter> ve
+        <parameter>hariç</parameter> dizilerinde akım özkaynaklarının değişen
+        durumlarını belirten değişklikler yapılır.
+       </para>
+      </note>
+      <simpara>
+       <function>stream_select</function> işlevine bu dizilerin hepsini
+       aktarmak zorunda değilsiniz. Kullanmayacağınız dizileri ya boş bırakın
+       ya da dizi yerine &null; belirtin. Ayrıca, bu dizilerin gönderimli
+       aktarıldıklarını ve <function>stream_select</function> dönerken
+       bunlarda değişiklik yapılacağını da unutmayın.
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>saniye</parameter></term>
+     <listitem>
+      <para>
+       Son iki değiştirgenin toplamı <function>stream_select</function>
+       işlevinin dönmeden önce bekleyebileceği zaman aşımı süresini belirler.
+       Bu değiştirgelerin ikisine de <literal>0</literal> belirtilirse
+       <function>stream_select</function> veri için beklemeden akımların durum
+       bilgisiyle hemen dönecektir.
+      </para>
+      <para>
+       <parameter>saniye</parameter> değiştirgesinde &null; belirtilirse
+       <function>stream_select</function>, izlediği akımlardan birinde bir
+       olay vuku bulana kadar (veya sistem çağrısı bir sinyal ile durdurulana
+       kadar), gerekirse sonsuza kadar engellenebilir.
+      </para>
+      <warning>
+       <para>
+        Zaman aşımı olarak <literal>0</literal> belirtilmesi akımların anlık
+        durumlarının dönmesini sağlar. Ancak, işlevi sıfır zaman aşımı ile bir
+        döngüye sokmak çok fazla işlemci zamanı harcanacağından iyi bir fikir
+        değildir.
+       </para>
+       <para>
+        Bir kaç saniyelik bir zaman aşımı belirtmek ve bu arada diğer
+        denetimleri ve işlemleri yapmak daha iyidir. <literal>200000</literal>
+        mikrosaniyelik bir zaman aşımı betiğinizin işlemci kullanımını
+        düşürmenize yardımcı olacaktır.
+       </para>
+       <para>
+        Zaman aşımı değerinin beklenecek azami süreyi belirttiğini unutmayın.
+        <function>stream_select</function> işlevi istenen akımlar kullanıma
+        hazır olunca, sürenin bitmesini beklemeden dönecektir.
+       </para>
+      </warning>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>mikrosaniye</parameter></term>
+     <listitem>
+      <para>
+       <parameter>saniye</parameter> değiştirgesinin açıklamasına bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <function>stream_select</function> işlevi başarı durumunda değişikliğe
+   uğrayan akımların sayısını döndürür. Hiçbir olay vuku bulmadan zaman aşımı
+   dolmuşsa işlev <literal>0</literal> döndürebilir. Bir hata durumunda işlev
+   &false; döndürür ve bir uyarı çıktılanır (sistem çağrısı bir sinyal ile
+   kesilince de bu olur).
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>stream_select</function> örneği</title>
+    <para>
+     Bu örnekte <parameter>$oku1</parameter> ve <parameter>$oku2</parameter>
+     akımlarına okumak için bir veri gelmiş mi diye bakılmaktadır. Zaman aşımı
+     değeri <literal>0</literal> olduğundan işlev beklemeden dönmektedir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Oku dizisini hazırlayalım */
+$oku = array($oku1, $oku2);
+$yaz = NULL;
+$dış = NULL;
+if (false === ($değişen_akım_sayısı = stream_select($oku, $yaz, $dış, 0))) {
+    /* Hata durumunda yapılacaklar */
+} elseif ($değişen_akım_sayısı > 0) {
+    /* Akımların en azından birinde değişiklik olmuş  */
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Zend motorunun sınırlamalarından dolayı, gönderimli aktarılan bir
+    değiştirgeye doğrudan &null; belirtmek mümkün değildir. Bu nedenle &null;
+    değerini doğrudan değil, bir değişken veya bir ifade üzerinden belirtin:
+    <programlisting role="php">
+<![CDATA[
+<?php
+$d = NULL;
+stream_select($o, $y, $d, 0);
+?>
+]]>
+   </programlisting>
+   </para>
+  </note>
+  <note>
+   <para>
+    Hat durumlarını sınarken <literal>===</literal> işlecini kullanmanız
+    gerektiğini unutmayın. Çünkü işlev <literal>0</literal> döndürdüğünde
+    <literal>==</literal> işleci bunu &true; olarak değerlendirir. Örnek:
+   <programlisting role="php">
+<![CDATA[
+<?php
+$d = NULL;
+if (false === stream_select($o, $y, $d, 0)) {
+    echo "stream_select() başarısız oldu\n";
+}
+?>
+]]>
+   </programlisting>
+   </para>
+  </note>
+  <note>
+   <para>
+    Bir akıma okuma/yazma işlemi yapıyorsanız işlemek istediğiniz verinin
+    tamamını işleme sokabileceğiniz gibi bir kanıya kapılmayın. Bazen ilk
+    baytta işlem duruverir.
+   </para>
+  </note>
+  <note>
+   <para>
+    Windows uyumluluğu: Windows 98 altında, <function>proc_open</function>
+    işlevinden dönen bir boru üzerinde <function>stream_select</function>
+    kullanımı veri kaybına sebep olabilir.
+   </para>
+   <para>
+     Windows altında, <function>proc_open</function>
+    işlevinden dönen dosya tanıtıcıları üzerinde
+    <function>stream_select</function> kullanımı başarısız olabilir ve
+    &false; dönebilir.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>stream_set_blocking</function></member>
+  </simplelist>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
