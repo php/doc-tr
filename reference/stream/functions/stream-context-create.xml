@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.stream-context-create" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>stream_context_create</refname>
+  <refpurpose>Bir akım bağlamı oluşturur</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>resource</type><methodname>stream_context_create</methodname>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <parameter>seçenekler</parameter> ile bir akım bağlamı oluşturup
+   bağlam özkaynağını döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+        <parameter>seçenekler</parameter> dizisi, üyeleri
+        <literal>$seçenekler['sarmalayıcı']['seçenek'] = $değer</literal>
+        olan bir ilişkisel dizi olmalıdır.
+      </para>
+      <para>
+       Öntanımlı değer boş bir dizidir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+        <parameter>değiştirgeler</parameter> dizisi üyeleri
+        <literal>$değiştirgeler['değiştirge_adı'] = "değer";</literal>
+        olan bir ilişkisel dizi olmalıdır. Standart akım değiştirgelerinin
+        listesi için  <xref linkend="context.params"/> bölümüne bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Akım bağlamı özkaynağı.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        Seçimlik <parameter>değiştirgeler</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- <function>stream_context_create</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"Accept-language: en\r\n" .
+              "Cookie: foo=bar\r\n"
+  )
+);
+
+$context = stream_context_create($opts);
+
+/* Yukarıdaki başlıklarla www.example.com'a bir HTTP isteği gönderelim */
+$fp = fopen('http://www.example.com', 'r', false, $context);
+fpassthru($fp);
+fclose($fp);
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>stream_context_set_option</function></member>
+   <member><xref linkend="wrappers"/></member>
+   <member><xref linkend="context"/></member>
+  </simplelist>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

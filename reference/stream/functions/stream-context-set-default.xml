@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.stream-context-set-default" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>stream_context_set_default</refname>
+  <refpurpose>Akımları içeren öntanımlı bağlamı tanımlar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>resource</type><methodname>stream_context_set_default</methodname>
+   <methodparam><type>array</type><parameter>seçenekler</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>
+   Bir bağlam değiştirgesi olmadan çağrılan (<function>fopen</function>,
+   <function>file_get_contents</function> gibi) dosya işlevlerinde kullanılmak
+   üzere öntanımlı akım bağlamını tanımlar. Sözdizimi
+   <function>stream_context_create</function> ile aynıdır.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="parameters"><!-- {{{ -->
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Öntanımlı bağlam için atanacak seçenekler.
+      </para>
+      <note>
+       <para>
+        <parameter>seçenekler</parameter> dizisi, üyeleri
+        <literal>$seçenekler['sarmalayıcı']['seçenek'] = $değer</literal>
+        olan bir ilişkisel dizi olmalıdır.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="returnvalues"><!-- {{{ -->
+  &reftitle.returnvalues;
+  <para>
+   Öntanımlı akım bağlamı özkaynağı ile döner.
+  </para>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="examples"><!-- {{{ -->
+  &reftitle.examples;
+  <para>
+   <example xml:id="stream-context-set-default.example.basic"><!-- {{{ -->
+    <title>- <function>stream_context_set_default</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$default_opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"Accept-language: en\r\n" .
+              "Cookie: foo=bar",
+    'proxy'=>"tcp://10.54.1.39:8000"
+  )
+);
+
+$default = stream_context_set_default($default_opts);
+
+/* www.example.com için $default_opts ile belirtilen bağlam
+ * seçeneklerini kullanarak 10.54.1.39'daki vekil sunucuya
+ * normal bir GET isteği gönderelim.
+ */
+readfile('http://www.example.com');
+?>
+]]>
+    </programlisting>
+   </example><!-- }}} -->
+  </para>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="seealso"><!-- {{{ -->
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>stream_context_create</function></member>
+    <member><function>stream_context_get_default</function></member>
+    <member><xref linkend="wrappers"/></member>
+   </simplelist>
+  </para>
+ </refsect1><!-- }}} -->
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
