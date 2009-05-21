@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.1 Maintainer: haluk Status: ready -->
+<refentry xml:id="function.ziparchive-getstream" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>ZipArchive::getStream</refname>
+  <refpurpose>İsmi belirtilen girdi için dosya tanıtıcısı (salt okunur)
+  döndürür</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>resource</type><methodname>ZipArchive::getStream</methodname>
+   <methodparam><type>string</type><parameter>name</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   İsmi belirtilen girdi için dosya tanıtıcısı döndürür. Şimdilik sadece okuma
+   işlemleri desteklenmektedir.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>isim</parameter></term>
+     <listitem>
+      <para>
+       Kullanılacak girdinin ismi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarısızlık durumunda &false; aksi takdirde girdinin dosya tanıtıcısı
+   döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+    <example>
+     <title>- Girdi içeriğini <function>fread</function> ile alıp saklamak
+     </title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$content = '';
+$z = new ZipArchive();
+if ($z->open('test.zip')) {
+    $fp = $z->getStream('test');
+    if(!$fp) exit("olmadı\n");
+
+    while (!feof($fp)) {
+        $contents .= fread($fp, 2);
+    }
+
+    fclose($fp);
+    file_put_contents('t',$contents);
+    echo "bitti.\n";
+}
+?>
+]]>
+     </programlisting>
+    </example>
+    <example>
+     <title>- <function>fopen</function> ve zip akım sarmalayıcı kullanmak
+     dışında yukarıdaki ile aynı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('zip://' . dirname(__FILE__) . '/test.zip#test', 'r');
+if (!$fp) {
+    exit("açılamadı\n");
+}
+while (!feof($fp)) {
+    $contents .= fread($fp, 2);
+    echo "$contents\n";
+}
+fclose($fp);
+echo "bitti.\n";
+?>
+]]>
+     </programlisting>
+    </example>
+    <example>
+     <title>- Akım sarmalayıcı ve resim, XML işleviyle de
+       kullanılabilir</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$im = imagecreatefromgif('zip://' . dirname(__FILE__) . '/test_im.zip#pear_item.gif');
+imagepng($im, 'a.png');
+?>
+]]>
+     </programlisting>
+    </example>
+   </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
