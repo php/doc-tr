@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.6 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.yaz-es" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>yaz_es</refname>
+  <refpurpose>Bir ek hizmet isteği (<literal>Extended Service
+  Request</literal>) düzenler</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>yaz_es</methodname>
+   <methodparam>
+    <type>resource</type><parameter>id</parameter>
+   </methodparam>
+   <methodparam>
+    <type>string</type><parameter>tür</parameter>
+   </methodparam>
+   <methodparam>
+    <type>array</type><parameter>değiştirgeler</parameter>
+   </methodparam>
+  </methodsynopsis>
+  <para>
+   Bu işlev, bir ek hizmet isteği (<literal>Extended Service
+   Request</literal>) düzenler. Ek hizmetler, <literal>Record
+   Update</literal>, <literal>Item Order</literal>, veritabanı yönetimi, ve
+   benzerleri gibi çeşitli Z39.50 oluşumlarından oluşan bir ailedir.
+  </para>
+  <note>
+   <para>
+    Çoğu Z39.50 sunucusu ek hizmetleri desteklemez.
+   </para>
+  </note>
+  <para>
+   <function>yaz_es</function> işlevi, bir ek hizmek isteği paketi oluşturur
+   ve bunu bir işlem kuyruğuna yerleştirir. İstekleri sunucuya göndermek için
+   <function>yaz_wait</function> işlevini kullanın.
+   <function>yaz_wait</function> işini bitirdikten sonra  ek hizmet işleminin
+   sonucu bir <function>yaz_es_result</function> çağrısı ile alınmalıdır.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>id</parameter></term>
+     <listitem>
+      <para>
+       <function>yaz_connect</function> tarafından döndürülmüş bağlantı
+       özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tür</parameter></term>
+     <listitem>
+      <para>
+       Ek hizmetin türünü belirten bir dizge::
+       <literal>itemorder</literal> (Item Order),
+       <literal>create</literal> (Create Database),
+       <literal>drop</literal> (Drop Database),
+       <literal>commit</literal> (Commit Operation),
+       <literal>update</literal> (Update Record),
+       <literal>xmlupdate</literal> (XML Update). Her tür bir sonraki bölümde
+       belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+       Ek hizmet seçenekleri ile pakete özgü seçeneklerden oluşan bir dizi.
+       Seçenekler, ZOOM C'nin C arayüzündekilere eşdeğerdir. Bakınız:
+       <link xlink:href="&url.yaz.zoom.ext;">ZOOM Ek Hizmetleri</link>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- Kayıt Güncelleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$con = yaz_connect("myhost/database");
+$args = array (
+    "record" => "<gils><title>some title</title></gils>",
+    "syntax" => "xml",
+    "action" => "specialUpdate"
+);
+yaz_es($con, "update", $args);
+yaz_wait();
+$result = yaz_es_result($id);
+?>
+]]>
+   </programlisting>
+   </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>yaz_es_result</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

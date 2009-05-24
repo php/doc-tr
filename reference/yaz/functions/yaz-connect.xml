@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.yaz-connect" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>yaz_connect</refname>
+  <refpurpose>Bir Z39.50 sunucusuna bir bağlantı düzenler</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>yaz_connect</methodname>
+   <methodparam><type>string</type><parameter>zurl</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>seçenekler</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Bu işlev başarılı olduğu takdirde bir bağlantı özkaynağı, aksi takdirde
+   <literal>0</literal> döndürür.
+  </para>
+  <para>
+   <function>yaz_connect</function> işlevi bir Z39.50 sunucusuna bir bağlantı
+   düzenler. Bu işlev engellenmez ve bir bağlanttı kurmaya çalışmaz; sadece,
+   bir <function>yaz_wait</function> çağrısı tarafından işleme konulmak üzere
+   bir bağlantı için hazırlık yapar.
+  </para>
+  <note>
+   <para>
+    <link xlink:href="&url.yaz-proxy;">YAZ vekili</link> özgürce
+    kullanılabilecek bir Z39.50 vekilidir.
+   </para>
+  </note>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>zurl</parameter></term>
+     <listitem>
+      <para>
+       <replaceable>konut[:port][/veritabanı]</replaceable> biçeminde bir
+       dizge. <replaceable>port</replaceable> belirtilmezse 210 öntanımlıdır.
+       <replaceable>veritabanı</replaceable> belirtilmezse yerine
+       <literal>Default</literal> kullanılır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Bir dizge olarak belirtilirse Z39.50 V2 kimlik doğrulama dizgesi
+       (<literal>OpenAuth</literal>) olarak ele alınır.
+      </para>
+      <para>
+       Bir dizi belirtilirse dizi içeriği seçenekler olarak ele alınır. Olası
+       seçenekler:
+       <variablelist>
+        <varlistentry>
+         <term>user</term>
+         <listitem>
+          <para>Kimlik doğrulamada kullanılacak kullanıcı ismi.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>group</term>
+         <listitem>
+          <para>Kimlik doğrulamada kullanılacak grup ismi.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>password</term>
+          <listitem>
+           <para>
+            Kimlik doğrulamada kullanılacak parola.
+           </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>cookie</term>
+         <listitem>
+          <para>
+           Oturum çerezi (YAZ vekili).
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>proxy</term>
+         <listitem>
+          <para>
+           Bağlantı vekili (YAZ vekili).
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>persistent</term>
+         <listitem>
+          <para>
+           Mantıksal değer. &true; ise bağlantı kalıcıdır, &false; ise
+           değildir. Öntanımlı olarak bağlantılar kalıcıdır.
+          </para>
+          <note>
+           <para>
+            Bir kalıcı bağlantı açmışsanız, bağlantıyı sonradan bir
+            <function>yaz_close</function> çağrısı ile kapatamazsınız.
+           </para>
+          </note>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>piggyback</term>
+         <listitem>
+          <para>
+           Mantıksal değer. &true; ise arama için sırtlama (piggyback) etkin
+           olur, &false; ise olmaz. Öntanımlı olarak sırtlama etkindir.
+          </para>
+          <para>
+           Sırtlamanın etkin kılınması daha verimli olup, kayıtların ilk
+           alımında ağdaki gidip dönme süresinden kurtarır. Ancak bazı  Z39.50
+           sunucuları sırtlamayı desteklemez veya eleman kümesi isimlerini yok
+           sayar. Bu bakımdan bu seçenek etkin kılınmamalıdır.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>charset</term>
+         <listitem>
+          <para>Z39.50 dili ve
+           karater kümesi uzlaşımı için kullanılacak karakter kümesinin
+           belirtildiği bir dizge. <literal>ISO-8859-1</literal>,
+           <literal>UTF-8</literal>, <literal>UTF-16</literal> gibi dizgeler
+           belirtilebilir.
+          </para>
+          <para>
+           Çoğu Z39.50 sunucusu bu özelliği desteklemez (dolayısıyla yok
+           sayılır). Çoğu sunucu da sorgular ve iletiler için ISO-8859-1
+           kodlamasını kullanır. MARC21/USMARC kayıtları bu seçenekten
+           etkilenmez.
+          </para>
+         </listitem>
+        </varlistentry>
+
+        <varlistentry>
+         <term>preferredMessageSize</term>
+         <listitem>
+          <para>
+           Alım sırasında bir hedef tarafından döndürülen tüm kayıtların azami
+           bayt sayısını belirten bir tamsayı. Daha fazla bilgi için <link
+           xlink:href="&url.yaz.z3950.4;">Z39.50 standardına</link> bakınız.
+          </para>
+          <note>
+           <para>
+            Bu seçenek, PECL YAZ 1.0.5 ve sonrasında desteklenmektedir.
+           </para>
+          </note>
+         </listitem>
+        </varlistentry>
+
+        <varlistentry>
+         <term>maximumRecordSize</term>
+         <listitem>
+          <para>
+           Alım sırasında bir hedef tarafından döndürülen tek bir kaydın azami
+           bayt sayısını belirten bir tamsayı. Bu seçeneğe
+           <link xlink:href="&url.yaz.z3950.4;">Z39.50 standardında</link>
+           "Exceptional-record-size" olarak değinilmiştir.
+          </para>
+          <note>
+           <para>
+            Bu seçenek, PECL YAZ 1.0.5 ve sonrasında desteklenmektedir.
+           </para>
+          </note>
+         </listitem>
+        </varlistentry>
+
+       </variablelist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Hata oluşmuşsa &false; yoksa bir bağlantı özkaynağı döner.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.1.0</entry>
+       <entry>
+        <parameter>seçenekler</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>yaz_close</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
