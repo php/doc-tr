@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.23 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.xslt-process" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>xslt_process</refname>
+  <refpurpose>Bir <acronym>XSLT</acronym> dönüşümü gerçekleştirir</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>xslt_process</methodname>
+   <methodparam><type>resource</type><parameter>işlemci</parameter></methodparam>
+   <methodparam><type>string</type><parameter>xml_taşıyıcı</parameter></methodparam>
+   <methodparam><type>string</type><parameter>xsl_taşıyıcı</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>sonuç_taşıyıcı</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>taşıyıcılar</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>xslt_process</function> işlevi asıl dönüşümün yapıldığı işlevdir.
+   Dönüşüm için hemen hemen her tür girdi kaynağının (taşıyıcı) kullanımını
+   mümkün kılar. Bu değiştirge olarak belirtilen tamponlarla sağlanır.
+   Buradaki tampon kavramı <productname>Sablotron</productname>
+   <acronym>XSLT</acronym>işlemcisine özgüdür (şimdilik bunu destekleyen tek
+   <acronym>XSLT</acronym> işlemcidir). Girdi taşıyıcıları öntanımlı olarak
+   işlenecek dosyayı içeren (taşıyan) birer dosya ismidir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>işlemci</parameter></term>
+     <listitem>
+      <para>
+       <function>xslt_create</function> tarafından oluşturulmuş
+       bir <acronym>XSLT</acronym> işlemci özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>xml_taşıyıcı</parameter></term>
+     <listitem>
+      <para>
+       <acronym>XML</acronym> dosyasının yolu veya <acronym>XML</acronym>
+       değiştirgesi için yer tutucu.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>xsl_taşıyıcı</parameter></term>
+     <listitem>
+      <para>
+       <acronym>XSL</acronym> dosyasının yolu veya <acronym>XSL</acronym>
+       değiştirgesi için yer tutucu.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sonuç_taşıyıcı</parameter></term>
+     <listitem>
+      <para>
+       Öntanımlı olarak, dönüşümün sonucunda elde edilen belgeyi içeren
+       dosyanın ismidir. Bu değiştirgede &null; belirtilirse sonuç, işlevin
+       dönüş değeri olur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>taşıyıcılar</parameter></term>
+     <listitem>
+      <para>
+       Bir dizi olup, <acronym>XML</acronym> ve <acronym>XSLT</acronym>
+       değiştirgelerinde dosya ismi yerine bu dizinin anahtarları birer yer
+       tutucu olarak belirtilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+       XSLT belgesine aktarılacak üst düzey değiştirgeleri içeren dizi.
+       Bunlar, XSL dosyalarında <literal>&lt;xsl:param
+       name=&quot;değiştirge_ismi&quot;&gt;</literal> ifadeleriyle
+       erişilebilen değiştirgelerdir. Değiştirgeler UTF-8 ile kodlanmış,
+       <productname>Sablotron</productname> tarafından birer dizge olarak
+       işlenebilir değerler içermelidir. Başka bir deyişle,
+       <acronym>XSLT</acronym> belgeye değiştirge olarak işlenmek üzere bir
+       düğüm kümesi aktaramazsınız.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+  <para>
+   Taşıyıcılar, <parameter>taşıyıcılar</parameter> dizisi üzerinden de
+   aktarılabilir (örneklere bakınız).
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success; Sonuç taşıyıcısı olarak &null; belirtilirse, sonuç, işlevin
+   dönüş değeri olur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.0.6</entry>
+       <entry>
+        <parameter>xml_taşıyıcı</parameter> ve
+        <parameter>xsl_taşıyıcı</parameter> değiştirgelerinde artık XML
+        dizgeleri kabul edilmiyor. Sablotron'un 0.95 veya üstü sürümlerine XML
+        içeren bir dizgenin aktarılması artık bir parçalanma arızasına sebep
+        olmaktadır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <function>xslt_process</function> işlevi ile yapılan en basit dönüşüm türü,
+   bir <acronym>XML</acronym> dosyayı bir <acronym>XSLT</acronym> dosya ile
+   işleyip sonucu (<acronym>XML</acronym> veya <acronym>HTML</acronym> olarak)
+   üçüncü bir dosyaya yerleştirmektir. <productname>Sablotron</productname>
+   ile bunu yapmak çok kolaydır.
+  </para>
+  <example>
+   <title>- Bir <acronym>XML</acronym> dosyayı bir <acronym>XSLT</acronym>
+   dosya ile işleyip sonucu bir <acronym>XML</acronym> dosyaya yazmak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// Yeni bir XSLT işlemcisi ayıralım
+$xh = xslt_create();
+
+// Belgeyi dönüştürelim
+if (xslt_process($xh, 'örnek.xml', 'örnek.xsl', 'sonuç.xml')) {
+    echo "TAMAMDIR, örnek.xml, örnek.xsl tarafından sonuç.xml dosyasına ";
+    echo "dönüştürüldü. sonuç.xml dosyasının içeriği:\n<br />\n";
+    echo "<pre>\n";
+    readfile('sonuç.xml');
+    echo "</pre>\n";
+} else {
+    echo "OLMADI, örnek.xml, örnek.xsl tarafından sonuç.xml dosyasına ";
+    echo "dönüştürülemedi. Bunun sebebi: " . xslt_error($xh) . " ve ";
+    echo "hata kodu: " . xslt_errno($xh);
+}
+
+xslt_free($xh);
+
+?>
+]]>
+   </programlisting>
+  </example>
+  <para>
+   Bu önemli bir işlevsellik olsa da özellikle HTML sayfalarda sonuç doğrudan
+   gösterilmek istenir. Üçüncü değiştirgeye &null; belirterek
+   <acronym>XSLT</acronym> dönüşüm sonucunun bir dosya yerine doğrudan işlevin
+   dönüş değeri olarak çıktılanmasını sağlayabilirsiniz.
+  </para>
+  <para>
+   <example>
+   <title>- Bir <acronym>XML</acronym> dosyayı bir <acronym>XSLT</acronym>
+   dosya ile işleyip sonucu bir değişkene atamak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// Yeni bir XSLT işlemcisi ayıralım
+$xh = xslt_create();
+
+// Belgeyi dönüştürelim, sonucu $sonuç değişkeninde döndürelim
+$sonuç = xslt_process($xh, 'örnek.xml', 'örnek.xsl');
+if ($sonuç) {
+    echo "TAMAMDIR, örnek.xml, örnek.xsl tarafından dönüştürülüp \$sonuç ";
+    echo "değişkenine atandı. \$sonuç değişkeninin içeriği:\n<br />\n";
+    echo "<pre>\n";
+    echo $sonuç;
+    echo "</pre>\n";
+} else {
+    echo "OLMADI, örnek.xml, örnek.xsl tarafından dönüştürülemedi. ";
+    echo "Bunun sebebi: " . xslt_error($xh) . " ve hata kodu: ";
+    echo "xslt_errno($xh);
+}
+
+xslt_free($xh);
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Yukarıdaki örneklerde, XSLT dönüşümünün en basit ve en çok kullanılan iki
+   kullanımını gösterilmiştir. Ancak bazı durumlarda <acronym>XML</acronym>
+   içeriğin ve <acronym>XSLT</acronym> kodunun bir veritabanı veya soket
+   gibi harici kaynaklardan alınması gerekir. Bu gibi durumlarda,
+   <acronym>XML</acronym> ve/veya <acronym>XSLT</acronym> verisini bir
+   değişkene atamak zorunda kalabilirsiniz. Bu noktada
+   <acronym>XSLT</acronym>'nin "değiştirge" sözdizimi imdada koşar.
+   <acronym>XML</acronym> ve <acronym>XSLT</acronym> değiştirgelerinde dosya
+   ismi yerine 5. değiştirgedeki dizinin anahtarları birer "yer tutucu" olarak
+   belirtilir. Aşağıdaki örnekte bu durum örneklenmiştir.
+  </para>
+  <para>
+   <example>
+   <title>- Bir değişkendeki <acronym>XML</acronym> veriyi bir değişkendeki
+   <acronym>XSLT</acronym> kodlarıyla işleyip sonucu bir değişkene atamak
+   </title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// $xml ve $xsl, XML ve XSL veriyi içersin
+
+$taşıyıcılar = array(
+     '/_xml' => $xml,
+     '/_xsl' => $xsl
+);
+
+// Yeni bir XSLT işlemcisi ayıralım
+$xh = xslt_create();
+
+// Belgeyi dönüştürelim
+$sonuç = xslt_process($xh, 'arg:/_xml', 'arg:/_xsl', NULL, $taşıyıcılar);
+if ($sonuç) {
+    echo "TAMAMDIR, örnek.xml, örnek.xsl tarafından dönüştürülüp \$sonuç ";
+    echo "değişkenine atandı. \$sonuç değişkeninin içeriği:\n<br />\n";
+    echo "<pre>\n";
+    echo $sonuç;
+    echo "</pre>\n";
+} else {
+    echo "OLMADI, örnek.xml, örnek.xsl tarafından dönüştürülemedi. ";
+    echo "Bunun sebebi: " . xslt_error($xh) . " ve hata kodu: ";
+    echo "xslt_errno($xh);
+}
+xslt_free($xh);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- XSL dosyalara PHP değişkenlerinin aktarılması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+// XML dizgesi
+$xml = '<?xml version="1.0"?>
+<para>
+ Beni dönüştür
+</para>';
+
+// XSL dizgesi
+$xsl = '
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="html" encoding="ISO-8859-1" indent="no"
+ omit-xml-declaration="yes"  media-type="text/html"/>
+ <xsl:param name="myvar"/>
+ <xsl:param name="mynode"/>
+ <xsl:template match="/">
+PHP değişkeni: <xsl:value-of select="$myvar"/><br />
+Düğüm kümesi: <xsl:value-of select="$mynode"/>
+ </xsl:template>
+</xsl:stylesheet>';
+
+
+$xh = xslt_create();
+
+// İkinci değiştirge bir dizge olarak yorumlanacak
+$parameters = array (
+  'myvar' => 'test',
+  'mynode' => '<foo>bar</foo>'
+);
+
+$arguments = array (
+  '/_xml' => $xml,
+  '/_xsl' => $xsl
+);
+
+echo xslt_process($xh, 'arg:/_xml', 'arg:/_xsl',
+                  NULL, $taşıyıcılar, $değiştirgeler);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+PHP değişkeni: test<br>
+Düğüm kümesi: &lt;foo&gt;bar&lt;/foo&gt;
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.xslt.windows;
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
