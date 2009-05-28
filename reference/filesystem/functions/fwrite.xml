@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.18 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fwrite">
  <refnamediv>
   <refname>fwrite</refname>
@@ -73,6 +73,27 @@
   &reftitle.notes;
   <note>
    <para>
+    Bir ağ akımına yazarken, dizgenin tamamı yazılamadan akım kapanabilir. Bu
+    durum <function>fwrite</function> dönüş değerinden saptanabilir:
+    <programlisting role="php">
+<![CDATA[
+<?php
+function fwrite_stream($fp, $string) {
+    for ($written = 0; $written < strlen($string); $written += $fwrite) {
+        $fwrite = fwrite($fp, substr($string, $written));
+        if (!$fwrite) {
+            return $fwrite;
+        }
+    }
+    return $written;
+}
+?>
+]]>
+    </programlisting>
+   </para>
+  </note>
+  <note>
+   <para>
     İkil ve metin dosyaları farklı ele alan sistemlerde (Windows gibi) dosya
     açılırken <function>fopen</function> işlevinin kip değiştirgesine 'b' harfi
     dahil edilmelidir.
@@ -92,8 +113,7 @@
   <note>
    <para>
     Eğer dosya tanıtıcısında peşpeşe iki yazma yaparsanız, her iki veri de
-    dosyanın sonuna eklenir; yani, aşağıdaki örnek beklendiği gibi
-    çalışmayacaktır:
+    dosyanın sonuna eklenir:
    </para>
    <programlisting role="php">
 <![CDATA[
