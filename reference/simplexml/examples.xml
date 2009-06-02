@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<chapter xml:id="simplexml.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ &reftitle.examples;
+ <section xml:id="simplexml.examples-basic">
+  <para>
+   Bu eklentideki bir çok örnek bir XML dizge gerektirir. Her örnekte bu
+   dizgeyi tekrar tekrar yazmak yerine her örnekte içerilmek üzere bir dosyaya
+   koyduk. Bu dosyanın içeriği aşağıda verilmiştir. İsterseniz kendi XML
+   belgenizi oluşturup <function>simplexml_load_file</function> işleviyle de
+   okutabilirsiniz.
+  </para>
+  <para>
+   <example>
+    <title>- XML dizge olarak içerilecek <filename>example.php</filename>
+    dosyası</title>
+    <programlisting role="php" xml:id="simplexml.examples.movie">
+<![CDATA[
+<?php
+$xmlstr = <<<XML
+<?xml version='1.0' standalone='yes'?>
+<movies>
+ <movie>
+  <title>PHP: Behind the Parser</title>
+  <characters>
+   <character>
+    <name>Ms. Coder</name>
+    <actor>Onlivia Actora</actor>
+   </character>
+   <character>
+    <name>Mr. Coder</name>
+    <actor>El Act&#211;r</actor>
+   </character>
+  </characters>
+  <plot>
+   So, this language. It's like, a programming language. Or is it a
+   scripting language? All is revealed in this thrilling horror spoof
+   of a documentary.
+  </plot>
+  <great-lines>
+   <line>PHP solves all my web problems</line>
+  </great-lines>
+  <rating type="thumbs">7</rating>
+  <rating type="stars">5</rating>
+ </movie>
+</movies>
+XML;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Basit XML eklentisinin basitleştiriciliği, en açık haliyle basit bir XML
+   belgeden bir sayı veya dizgeyi çıkarırken görülür.
+   <example>
+    <title>- <literal>&lt;plot&gt;</literal> içeriğinin eldesi</title>
+    <programlisting role="php"><![CDATA[
+<?php
+include 'example.php';
+
+$xml = new SimpleXMLElement($xmlstr);
+
+echo $xml->movie[0]->plot; // "So this language. It's like..."
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Bir XML belgedeki elemanlara erişirken, PHP isimlendirme kurallarına
+   uymayan (örneğin, tire içeren) eleman isimleri tek tırnak ve kaşlı
+   ayraçlarla sarmalanarak belirtilebilir.
+   <example>
+    <title>- <literal>&lt;line&gt;</literal> içeriğinin eldesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+
+$xml = new SimpleXMLElement($xmlstr);
+
+echo $xml->movie->{'great-lines'}->line; // "PHP solves all my web problems"
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir elemanın birden fazla örneğine erişim</title>
+    <simpara>
+     Bir ebeveyn elemanın aynı isimdeki birden fazla çocuğunun içeriğini elde
+     etmek için normal yineleme teknikleri kullanılır.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+
+$xml = new SimpleXMLElement($xmlstr);
+
+/* Her <movie> düğümündeki <plot> içeriğini çıkaralım */
+foreach ($xml->movie as $movie) {
+   echo $movie->plot, '<br />';
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Özniteliklerin kullanımı</title>
+    <simpara>
+     Şimdiye kadar hep eleman isimleri ve içerikleri ile çalıştık. Basit XML
+     eklentisi eleman özniteliklerine de erişir. Eleman özniteliklerine,
+     eleman ismini taşıyan dizinin anahtarları olarak erişebilirsiniz.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+
+$xml = new SimpleXMLElement($xmlstr);
+
+/* İlk <movie> içindeki <rating> düğümlerine erişelim.
+ * İstatistiksel sonuçları çıktılayalım. */
+foreach ($xml->movie[0]->rating as $rating) {
+    switch((string) $rating['type']) { // Öznitelikler birer anahtardır
+    case 'thumbs':
+        echo $rating, ' onaylı';
+        break;
+    case 'stars':
+        echo $rating, ' yıldızlı';
+        break;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Elemanları ve öznitelikleri karşılaştırmak</title>
+    <simpara>
+     Bir elemanı veya özniteliği bir dizge ile karşılaştırmak veya bir dizge
+     gerektiren bir işleve aktarmak için nesnenin önüne
+     <literal>(string)</literal> getirerek tür dönüşümü yapmalısınız. Aksi
+     takdirde PHP, elemanı bir nesne olarak ele alır.
+    </simpara>
+    <programlisting role="php"><![CDATA[
+<?php
+include 'example.php';
+
+$xml = new SimpleXMLElement($xmlstr);
+
+if ((string) $xml->movie->title == 'PHP: Behind the Parser') {
+    print 'My favorite movie.';
+}
+
+htmlentities((string) $xml->movie->title);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- İki elemanı karşılaştırmak</title>
+    <simpara>
+     İki <classname>SimpleXMLElement</classname> nesnesi, aynı elemana ait
+     olsalar bile, PHP 5.2.0'dan beri farklı nesneler olarak ele alınırlar.
+    </simpara>
+    <programlisting role="php"><![CDATA[
+<?php
+$el1 = new SimpleXMLElement($xmlstr);
+$el2 = new SimpleXMLElement($xmlstr);
+var_dump($el1 == $el2); // PHP 5.2.0'dan sonra FALSE
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- XPath kullanımı</title>
+    <simpara>
+     Basit XML eklentisinin yerleşik <acronym>XPath</acronym> desteği vardar.
+     Tüm <literal>&lt;character&gt;</literal> elemanlarını bulmak isteyelim:
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+$xml = new SimpleXMLElement($xmlstr);
+
+foreach ($xml->xpath('//character') as $character) {
+    echo $character->name, 'played by ', $character->actor, '<br />';
+}
+?>
+]]>
+    </programlisting>
+    <simpara>
+     '<literal>//character</literal>' ifadesindeki '<literal>//</literal>' bir
+     kısaltma olup, belgedeki tüm <literal>character</literal> elemanları
+     anlamına gelir (Bakınız: <link
+     xlink:href="http://belgeler.gen.tr/recs/xpath/#path-abbrev">XML Adresleme
+     Dili (XPath) 1.0</link> belirtimi).
+    </simpara>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Değer atamak</title>
+    <simpara>
+     <classname>SimpleXMLElement</classname> nesnesinin verileri birer sabit
+     değildir. Nesnenin tüm elemanlarında değişiklik yapılabilir.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+$xml = new SimpleXMLElement($xmlstr);
+
+$xml->movie[0]->characters->character[0]->name = 'Miss Coder';
+
+echo $xml->asXML();
+?>
+]]>
+    </programlisting>
+    <simpara>
+     Yukarıdaki kod, özgün belgedeki 'Ms. Coder' dizgesinin yerine 'Miss
+     Coder' dizgesini yerleştirerek yeni bir XML belge çıktılar.
+    </simpara>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Eleman ve öznitelik eklemek</title>
+    <simpara>
+     PHP 5.1.3'ten beri, <classname>SimpleXMLElement</classname> nesnesine
+     çocuk elemanlar ve öznitelikler eklenebilmektedir.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include 'example.php';
+$xml = new SimpleXMLElement($xmlstr);
+
+$character = $xml->movie[0]->characters->addChild('character');
+$character->addChild('name', 'Mr. Parser');
+$character->addChild('actor', 'John Doe');
+
+$rating = $xml->movie[0]->addChild('rating', 'PG');
+$rating->addAttribute('type', 'mpaa');
+
+echo $xml->asXML();
+?>
+]]>
+    </programlisting>
+    <simpara>
+     Yukarıdaki kod, özgün belgeye yeni elemanlar ve öznitelikler ekleyerek
+     yeni bir XML belge çıktılar.
+    </simpara>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- DOM ile çalışabilirlik</title>
+    <simpara>
+     PHP, XML düğümlerin Basit XML ve DOM biçemleri arasında dönüşüm
+     yapılabilmeyi sağlayan bir mekanizmaya sahiptir. Bu örnekte bir DOM
+     elemanının bir <classname>SimpleXMLElement</classname> nesnesine
+     dönüştürülmesi gösterilmiştir.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dom = new domDocument;
+$dom->loadXML('<books><book><title>blah</title></book></books>');
+if (!$dom) {
+     echo 'Belge çözümlenirken hata oluştu';
+     exit;
+}
+
+$s = simplexml_import_dom($dom);
+
+echo $s->book[0]->title;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </section>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
