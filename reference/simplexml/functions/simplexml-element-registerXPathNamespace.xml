@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: nilgun Status: ready -->
+<refentry xml:id='function.simplexml-element-registerXPathNamespace' xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>SimpleXMLElement::registerXPathNamespace</refname>
+  <refpurpose>Sonraki XPath ifadesi için bir önek/isim alanı bağlamı
+  oluşturur</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <classsynopsis>
+   <ooclass><classname>SimpleXMLElement</classname></ooclass>
+   <methodsynopsis>
+    <type>bool</type><methodname>registerXPathNamespace</methodname>
+    <methodparam><type>string</type><parameter>önek</parameter></methodparam>
+    <methodparam><type>string</type><parameter>isimalanı</parameter></methodparam>
+   </methodsynopsis>
+  </classsynopsis>
+  <para>
+   Sonraki XPath ifadesi için bir önek/isim alanı bağlamı oluşturur.
+   Özellikle, XML belgenin, isim alanı öneklerinin değiştirilmesi
+   durumunda kullanışlıdır. Bu yöntem, isim alanındaki düğümlere kodda
+   değişiklik yapmadan erişmek amacıyla ilişkili isim alanı için bir önek
+   oluşturur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>önek</parameter></term>
+     <listitem>
+      <para>
+       <parameter>isimalanı</parameter> ile belirtilen isim alanı için Xpath
+       ifadesinde kullanılacak isim alanı öneki.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>isimalanı</parameter></term>
+     <listitem>
+      <para>
+       Xpath ifadesi için kullanılacak isim alanı. Belirtilen
+       <parameter>önek</parameter>'in kullanıldığı XPath ifadeleri veya XML
+       belgelerinin bir sonuç üretmesi için kullanılacak isim alanı.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir XPath ifadesinde kullanılacak isim alanı önekinin
+    belirtilmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$xml = <<<EOD
+<book xmlns:chap="http://example.org/chapter-title">
+    <title>XPath Kitabı</title>
+    <chapter id="1">
+        <chap:title>1. Fasıl</chap:title>
+        <para>Önemli ifade çeşitlerinden biri konumsal yoldur. Bir konumsal
+        yol bağlamsal düğüme göreli olarak bir düğüm kümesini seçer. İfadenin
+        konumsal yol olduğu durumda değerlendirme sonucu, konumsal yol
+        tarafından seçilen düğümleri içeren düğüm kümesidir. Konumsal yollar
+        düğüm kümelerini süzmekte kullanılan ifadeleri dönüşümlü olarak
+        içerebilir. İki çeşit konumsal yol vardır: Göreli konumsal yollar ve
+        mutlak konumsal yollar.</para>
+    </chapter>
+    <chapter id="2">
+        <chap:title>2. Fasıl</chap:title>
+        <para>Bir göreli konumsal yol, / imleriyle birbirlerinden ayrılmış bir
+        veya daha fazla konumdan oluşur. Göreli konumsal yoldaki bu konumlar
+        soldan sağa birlikte bir bütün oluştururlar. Her konumda bağlamsal
+        düğüme göreli bir düğüm kümesi seçilir ve kümedeki her düğüm sonraki
+        konumun bağlamsal düğümü olur. Bir mutlak konumsal yol / iminden sonra
+        gelen bir göreli konumsal yoldan oluşur. Tek başına / imi, bağlamsal
+        düğümü içeren belgenin kök düğümünü seçer. Kök düğüm, bu imden sonra
+        gelen göreli konumsal yolun ilk konumunun bağlamsal düğümü olur.</para>
+    </chapter>
+</book>
+EOD;
+
+$sxe = new SimpleXMLElement($xml);
+
+$sxe->registerXPathNamespace('c', 'http://example.org/chapter-title');
+$result = $sxe->xpath('//c:title');
+
+foreach ($result as $title) {
+  echo $title . "\n";
+}
+
+?>
+]]>
+    </programlisting>
+    <para>
+     Örnekte, bir isim alanının <literal>chap</literal> önekiyle bir XML
+     belgede nasıl gösterildiğine dikkat edin. Bu belgenin (veya bir
+     benzerinin) geçmişte, aynı isim alanı için <literal>c</literal> önekini
+     kullanmış olduğunu varsayalım. Önek değiştiğinden XPath ifadesi beklenen
+     sonucu vermeyecek ve ifadenin değiştirilmesi gerekecektir. İşte bu
+     noktada <literal>registerXPathNamespace</literal> ile bu gibi önek
+     değişikliklerinde ifadenin değiştirilmesi gereğini ortadan kaldırmak
+     mümkün olur.
+    </para>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><methodname>SimpleXMLElement::getDocNamespaces</methodname></member>
+    <member><methodname>SimpleXMLElement::getNamespaces</methodname></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
