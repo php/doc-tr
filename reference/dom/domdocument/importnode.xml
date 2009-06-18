@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.6 Maintainer: nilgun Status: ready -->
+<refentry xml:id="domdocument.importnode" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>DOMDocument::importNode</refname>
+  <refpurpose>Belgeye bir düğüm dahil eder</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>DOMNode</type><methodname>DOMDocument::importNode</methodname>
+   <methodparam><type>DOMNode</type><parameter>düğüm</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>içiçe</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Dahil edilen düğümü belge ile ilişkilendirip düğümün bir kopyasını döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>düğüm</parameter></term>
+     <listitem>
+      <para>
+       Belgeye dahil edilecek düğüm.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>içiçe</parameter></term>
+     <listitem>
+      <para>
+       &true; belirtiliği takdirde <parameter>düğüm</parameter> alt
+       düğümleriyle birlikte belgeye dahil edilir.
+      </para>
+      <note>
+       <para>
+        Düğümlerin özniteliklerini de kopyalamak için bu değiştirgede &true;
+        belirtmek gerekir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Düğüm kopyalanamazsa &false;, yoksa kopyalanan düğümü döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Düğüm dahil edilemezse <classname>DOMException</classname> istisnası oluşur.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>DOMDocument::importNode</function> örneği</title>
+    <para>
+      Düğümlerin bir belgeden başka bir belgeye kopyalanması.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$orgdoc = new DOMDocument;
+$orgdoc->loadXML("<root><eleman><çocuk>çocuk metin</çocuk></eleman></root>");
+
+// Yeni belgeye dahil edilecek düğüm
+$node = $orgdoc->getElementsByTagName("element")->item(0);
+
+
+// Yeni belgeyi oluşturalım
+$newdoc = new DOMDocument;
+$newdoc->formatOutput = true;
+
+// Biraz imlenim ekleyelim
+$newdoc->loadXML("<root><bireleman>elemanın içeriği</bireleman></root>");
+
+echo "Düğümler kopyalanmadan 'yeni belge':\n";
+echo $newdoc->saveXML();
+
+// Düğümü alt düğümleriyle birlikte belgeye dahil edelim
+$node = $newdoc->importNode($node, true);
+// ve "<root>" düğümüne ekleyelim
+$newdoc->documentElement->appendChild($node);
+
+echo "\nDüğümler kopyalandıktan sonra 'yeni belge':\n";
+echo $newdoc->saveXML();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Düğümler kopyalanmadan 'yeni belge':
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <bireleman>elemanın içeriği</bireleman>
+</root>
+
+Düğümler kopyalandıktan sonra 'yeni belge':
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <bireleman>elemanın içeriği</bireleman>
+  <eleman>
+    <çocuk>çocuk metin</çocuk>
+  </eleman>
+</root>
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
