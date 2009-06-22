@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.4 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.goto" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>goto</literal></title>
  <para>
   <literal>goto</literal> işleci betik içinde başka bir komuta atlamak için
   kullanılabilir. Hedefin yeri, bir yafta ve ikinokta imi ile belirtilebilir.
-  <literal>goto</literal> bu yaftaya göre hedefi bulur.
+  <literal>goto</literal> bu yaftaya göre hedefi bulur. Bu,
+  <literal>goto</literal> deyiminin tamamen sınırsız olduğu anlamına gelmez.
+  Hedef yaftasının aynı bağlam içinde kalması gerekir, yani bir işlev veya
+  yöntemin dışına atlayamayacağınız gibi bir başka işlev veya yöntemin içine
+  de atlayamazsınız. Ayrıca bir switch veya döngünün içine de
+  atlayamazsınız, fakat bunların dışına atlayabilirsiniz, yani çok seviyeli
+  bir <literal>break</literal> yerine bir <literal>goto</literal>
+  kullanabilirsiniz.
  </para>
  <para>
   <example>
@@ -30,17 +37,61 @@ Bar
    </screen>
   </example>
  </para>
+ <para>
+  <example>
+   <title>- Döngüden <literal>goto</literal> ile çıkma örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+for($i=0,$j=50; $i<100; $i++) {
+  while($j--) {
+    if($j==17) goto end;
+  }
+}
+echo "i = $i";
+end:
+echo 'j hit 17';
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+j hit 17
+]]>
+   </screen>
+  </example>
+ </para>
+ <para>
+  <example>
+   <title>- Bu çalışmaz</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+goto loop;
+for($i=0,$j=50; $i<100; $i++) {
+  while($j--) {
+    loop:
+  }
+}
+echo "$i = $i";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Fatal error: 'goto' into loop or switch statement is disallowed in
+script on line 2
+]]>
+   </screen>
+  </example>
+ </para>
  <note>
   <para>
    <literal>goto</literal> işleci PHP 5.3'ten beri kullanılabilmektedir.
   </para>
  </note>
- <warning>
-  <para>
-   Bir döngü veya switch deyimi içinde bir noktadan başka bir noktaya atlamaya
-   izin verilmez. Böyle bir durum ölümcül hataya yol açar.
-  </para>
- </warning>
 
 <!-- Karikatürü biri Türkçe'ye çevirebilir mi?
  <para>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.4 $ -->
-<!-- EN-Revision: 1.36 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.5 $ -->
+<!-- EN-Revision: 1.37 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-ini-file">
  <refnamediv>
   <refname>parse_ini_file</refname>
@@ -223,6 +223,44 @@ Array
         )
 
 )
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir php.ini dosyasının <function>parse_ini_file</function> ile
+    çözümlenmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Aşağıdaki sonuçları karşılaştırmak için basit bir işlev
+function evethayır($ifade)
+{
+ return($ifade ? 'Evet' : 'Hayır');
+}
+
+// php_ini_loaded_file() ile php.ini dosyasının yolunu öğrenelim.
+// İşlev PHP 5.2.4'ten beri kullanılabiliyor.
+$ini_yolu = php_ini_loaded_file();
+
+// php.ini dosyasını çözümleyelim
+$ini = parse_ini_file($ini_yolu);
+
+// Değerleri karşılaştırıp basalım; get_cfg_var() ile de aynı
+// sonuçların alınacağına dikkat ediniz
+echo '(çözümlenen) magic_quotes_gpc =' .
+    evethayır($ini['magic_quotes_gpc']) . PHP_EOL;
+echo '(yüklenen) magic_quotes_gpc = ' .
+    evethayır(get_cfg_var('magic_quotes_gpc')) . PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+(çözümlenen) magic_quotes_gpc = Evet
+(yüklenen) magic_quotes_gpc = Evet
 ]]>
     </screen>
    </example>

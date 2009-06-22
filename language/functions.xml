@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.7 $ -->
-<!-- EN-Revision: 1.70 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.8 $ -->
+<!-- EN-Revision: 1.71 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -9,7 +9,7 @@
    <title>Kullanıcı tanımlı işlevler</title>
 
    <para>
-   Bir işlev, şöyle bir söz dizimi kullanılarak tanımlanabilir:
+    Bir işlev, şöyle bir söz dizimi kullanılarak tanımlanabilir:
    </para>
    <para>
     <example>
@@ -603,7 +603,7 @@ $foo->$funcname();  // Bu $foo->Variable() işlevini çağıracaktır
   <sect1 xml:id="functions.anonymous">
    <title>Anonim işlevler</title>
    <para>
-    Anonim işlevler isimleri belirtilmeksizin oluşturulabilen işlevlerdir.
+    Anonim işlevler isim belirtmeksizin oluşturulabilen işlevlerdir.
     Çoğunlukla <link linkend="language.types.callback">geriçağırım
     işlevi</link> olarak işlev değiştirgelerinde kullanılırsa da kullanımı
     bununla sınırlı değildir.
@@ -626,6 +626,83 @@ echo preg_replace_callback('~-([a-z])~',
     </example>
    </para>
    <para>
+    Anonim işlevler birer değişken değeri olarak da bildirilebilir. Bu
+    durumda, PHP işlevi sihirli bir şekilde  sınıfının nesnel bir örneği
+    haline getirir. Bir anonim işlevi bir değişkene, sıradan bir deyim gibi
+    bir noktalı virgül ile biten bir işleve bir atama yapar gibi yapılır.
+   </para>
+   <para>
+    <example>
+     <title>- Değişkene anonim işlev atama örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$greet = function($isim)
+{
+ printf("Merhaba %s\r\n", $isim);
+};
+
+$greet('Dünya');
+$greet('PHP');
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Anonim işlevler değişkenleri üst bağlamdan miras alabilirler. Bunun
+    olması için, <literal>global</literal> anahtar sözcüğünü kullanan normal
+    işlevlerin tersine bir işlev başlığı içinde bildirilmelidirler.
+   </para>
+   <para>
+    <example>
+     <title>- Anonim işlevler ve etki alanı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Ürünleri eklemek üzere bir Sepet oluşturalım.
+// Eklenen ürünlerin miktarlarını döndürmek üzere
+// bir geriçağırım işlevi kullanalım.
+class Sepet
+{
+ public static $ürünler = Array();
+
+
+ public static function ekle($ürün, $miktar)
+ {
+   self::$ürünler[$ürün] = $miktar;
+ }
+
+ public static function miktarıGetir($ürün)
+ {
+   $miktar = false;
+
+   array_map(function($değer, $anh) use($ürün, &$miktar)
+   {
+     if($anh == $ürün)
+     {
+       $miktar = $değer;
+     }
+
+   }, array_values(self::$ürünler), array_keys(self::$ürünler));
+
+   return($miktar);
+ }
+}
+
+// Sepete birşeyler ekleyelim
+Sepet::ekle('Peynir', 1);
+Sepet::ekle('Süt', 3);
+Sepet::ekle('Yumurta', 6);
+
+// Eklenen yumurta sayısını öğrenelim
+printf('Sepet %d yumurta içeriyor', Sepet::miktarıGetir('Yumurta'));
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
     Anonim işlevler dahili olarak <link
     linkend="reserved.classes.closure"><literal>Closure</literal>
     sınıfı</link> ile gerçeklenmektedir.
@@ -635,9 +712,15 @@ echo preg_replace_callback('~-([a-z])~',
      Anonim işlevler PHP 5.3.0'dan beri kullanılabilmektedir.
     </para>
    </note>
-  </sect1>
+  <note>
+   <para>
+    <function>func_get_args</function> ve benzeri işlevleri bir anonim işlev
+    içinde kullanmak mümkündür.
+   </para>
+  </note>
+ </sect1>
 
- </chapter>
+</chapter>
 
 <!-- Keep this comment at the end of the file
 Local variables:
