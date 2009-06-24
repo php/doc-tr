@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.8 $ -->
-<!-- EN-Revision: 1.71 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.9 $ -->
+<!-- EN-Revision: 1.73 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -602,13 +602,12 @@ $foo->$funcname();  // Bu $foo->Variable() işlevini çağıracaktır
 
   <sect1 xml:id="functions.anonymous">
    <title>Anonim işlevler</title>
-   <para>
+   <simpara>
     Anonim işlevler isim belirtmeksizin oluşturulabilen işlevlerdir.
     Çoğunlukla <link linkend="language.types.callback">geriçağırım
     işlevi</link> olarak işlev değiştirgelerinde kullanılırsa da kullanımı
     bununla sınırlı değildir.
-   </para>
-   <para>
+   </simpara>
     <example>
      <title>- Anonim işlev örneği</title>
      <programlisting role="php">
@@ -624,14 +623,12 @@ echo preg_replace_callback('~-([a-z])~',
 ]]>
      </programlisting>
     </example>
-   </para>
    <para>
     Anonim işlevler birer değişken değeri olarak da bildirilebilir. Bu
-    durumda, PHP işlevi sihirli bir şekilde  sınıfının nesnel bir örneği
-    haline getirir. Bir anonim işlevi bir değişkene, sıradan bir deyim gibi
-    bir noktalı virgül ile biten bir işleve bir atama yapar gibi yapılır.
+    durumda PHP, işlevi özdevinimli olarak  sınıfının nesnel bir örneği
+    haline getirir. Bir anonim işlev, bir değişkene sıradan bir deyim gibi,
+    bir noktalı virgül ile biten bir işlev olarak atanabilir:
    </para>
-   <para>
     <example>
      <title>- Değişkene anonim işlev atama örneği</title>
      <programlisting role="php">
@@ -639,7 +636,7 @@ echo preg_replace_callback('~-([a-z])~',
 <?php
 $greet = function($isim)
 {
- printf("Merhaba %s\r\n", $isim);
+    printf("Merhaba %s\r\n", $isim);
 };
 
 $greet('Dünya');
@@ -648,75 +645,91 @@ $greet('PHP');
 ]]>
      </programlisting>
     </example>
-   </para>
-   <para>
-    Anonim işlevler değişkenleri üst bağlamdan miras alabilirler. Bunun
-    olması için, <literal>global</literal> anahtar sözcüğünü kullanan normal
-    işlevlerin tersine bir işlev başlığı içinde bildirilmelidirler.
-   </para>
-   <para>
+   <simpara>
+    Anonim işlevler değişkenleri üst etki alanındın miras alabilirler. Böyle
+    değişkenler işlevin baş tarafında bildirilebilir. Üst etki alanından
+    miras alınan değişkenler küresel değişkenler gibi ele alınmazlar.
+    Küresel değişkenler, işlevin çalıştığı etki alanında tanımlı
+    değişkenlerdir. Anonim işlevin üst etki alanı ise içinde bildirildiği
+    işlevin etki alanıdır (Anonim işlevin bildirildiği ekti alanı ile
+    çağrıldığı etki alanı aynı olmak zorunda değildir). Aşağıdaki örneğe
+    bakalım:
+   </simpara>
     <example>
      <title>- Anonim işlevler ve etki alanı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 // Ürünleri eklemek üzere bir Sepet oluşturalım.
-// Eklenen ürünlerin miktarlarını döndürmek üzere
-// bir geriçağırım işlevi kullanalım.
+// Eklenen ürünlerin toplam fiyatını döndürmek
+// üzere bir geriçağırım işlevi kullanalım.
 class Sepet
 {
- public static $ürünler = Array();
+  const PRICE_BUTTER = 1.00;
+  const PRICE_MILK = 3.00;
+  const PRICE_EGGS = 6.95;
+
+  protected $ürünler = Array();
 
 
- public static function ekle($ürün, $miktar)
- {
-   self::$ürünler[$ürün] = $miktar;
- }
+  public static function ekle($ürün, $miktar)
+  {
+    $this->ürünler[$ürün] = $miktar;
+  }
 
  public static function miktarıGetir($ürün)
  {
-   $miktar = false;
+    return isset($this->ürünler[$ürün]) ? $this->ürünler[$ürün] : FALSE;
 
-   array_map(function($değer, $anh) use($ürün, &$miktar)
-   {
-     if($anh == $ürün)
-     {
-       $miktar = $değer;
-     }
+  }
 
-   }, array_values(self::$ürünler), array_keys(self::$ürünler));
+  public function Toplam($kdv)
+  {
+      $toplam = 0.00;
 
-   return($miktar);
- }
+      $işlev =
+          function ($miktar, $ürün) use ($kdv, &$toplam)
+          {
+              $birimFiyat = constant(__CLASS__ . "::FiYAT_" .
+                  strtoupper($ürün));
+              $toplam += ($birimFiyat * $miktar) * ($kdv + 1.0);
+          };
+
+      array_walk($this->ürünler, $işlev);
+      return round($toplam, 2);;
+  }
 }
 
-// Sepete birşeyler ekleyelim
-Sepet::ekle('Peynir', 1);
-Sepet::ekle('Süt', 3);
-Sepet::ekle('Yumurta', 6);
+$sepetim = new Sepet;
 
-// Eklenen yumurta sayısını öğrenelim
-printf('Sepet %d yumurta içeriyor', Sepet::miktarıGetir('Yumurta'));
+// Sepete birşeyler ekleyelim
+$sepetim->ekle('Peynir', 1);
+$sepetim->ekle('Süt', 3);
+$sepetim->ekle('Yumurta', 6);
+
+// %5 KDV ile toplamı döndürelim
+print $sepetim->Toplam(0.05) . "\n";
+// sonuç: is 54.29
 ?>
 ]]>
      </programlisting>
     </example>
-   </para>
-   <para>
+   <simpara>
     Anonim işlevler dahili olarak <link
     linkend="reserved.classes.closure"><literal>Closure</literal>
     sınıfı</link> ile gerçeklenmektedir.
-   </para>
+   </simpara>
    <note>
-    <para>
+    <simpara>
      Anonim işlevler PHP 5.3.0'dan beri kullanılabilmektedir.
-    </para>
+    </simpara>
    </note>
   <note>
-   <para>
-    <function>func_get_args</function> ve benzeri işlevleri bir anonim işlev
+   <simpara>
+    <function>func_num_args</function>, <function>func_get_args</function>
+    ve <function>func_get_args</function> işlevini bir anonim işlev
     içinde kullanmak mümkündür.
-   </para>
+   </simpara>
   </note>
  </sect1>
 

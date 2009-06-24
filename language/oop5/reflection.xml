@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.5 $ -->
-<!-- EN-Revision: 1.40 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.6 $ -->
+<!-- EN-Revision: 1.43 Maintainer: nilgun Status: ready -->
  <sect1 xml:id="language.oop5.reflection" xmlns="http://docbook.org/ns/docbook">
   <title>Yansıtma</title>
   <sect2 xml:id="language.oop5.reflection.toc">
-   <title>İçindekiler</title>
+   &reftitle.intro;
    <simplelist>
     <member><link linkend="language.oop5.reflection.introduction"
       >Giriş</link></member>
@@ -190,7 +190,6 @@ class ReflectionFunction extends ReflectionFunctionAbstract implements Reflector
     public string getName()
     public bool isInternal()
     public bool isDisabled()
-    public mixed getClosure() /* PHP 5.3.0 ve sonrası */
     public bool isUserDefined()
     public string getFileName()
     public int getStartLine()
@@ -599,7 +598,6 @@ class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector
     public bool isConstructor()
     public bool isDestructor()
     public int getModifiers()
-    public mixed getClosure() /* PHP 5.3.0 ve sonrası */
     public ReflectionClass getDeclaringClass()
 
     // ReflectionFunctionAbstract'tan miras alındı
@@ -690,43 +688,6 @@ var_dump($method->invoke(NULL));
 ]]>
     </programlisting>
    </example>
-   <example>
-    <title>- <classname>ReflectionMethod</classname> sınıfı ile kapanış
-    örneği</title>
-    <programlisting role='php'>
-<![CDATA[
-<?php
-//Bu örnek PHP 5.3.0 ve sonrasında çalışır
-
-class Example {
-    static function printer () {
-        echo "Hello World!\n";
-    }
-}
-
-$class = new ReflectionClass('Example');
-$method = $class->getMethod('printer');
-$closure = $method->getClosure();
-$closure(); // Hello World!
-
-?>
-]]>
-    </programlisting>
-   </example>
-   <note>
-    <simpara>
-     Genel, korumalı veya soyut bir yöntemin çağrılması,
-     <function>invoke</function> yönteminin oluşturduğu bir istisna ile
-     sonuçlanır.
-    </simpara>
-   </note>
-   <note>
-    <simpara>
-     Yukarıdaki gibi duruk yöntemler için, <function>invoke</function>
-     yöntemine ilk değiştirge olarak &null;, duruk olmayan yöntemler için
-     ise, sınıfın örneğini aktarmalısınız.
-    </simpara>
-   </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.reflection.reflectionproperty">
