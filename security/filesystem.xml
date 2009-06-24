@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.7 Maintainer: nilgun Status: ready -->
+<!-- splitted from ./index.xml, last change in rev 1.66 -->
+  <chapter xml:id="security.filesystem" xmlns="http://docbook.org/ns/docbook">
+   <title>Dosya Sistemi Güvenliği</title>
+   <simpara>
+    PHP, çoğu sunucu sisteminde bulunan dizin ve dosya erişim izinleri ile
+    ilgili yerleşik güvenlik önlemlerinden etkilenir. Bu izinlerle dosya
+    sisteminden kimin hangi dosyaları okuyabileceğini denetleyebilirsiniz.
+    Dosya sistemine erişimi olan tüm kullanıcıların sadece herkesçe
+    okunabilen dosyaları okuyabilmesini sağlamalısınız.
+   </simpara>
+   <simpara>
+    PHP, dosya sistemine kullanıcı seviyesinde düşük seviyeli erişime izin
+    verecek şekilde tasarlandığından, /etc/passwd gibi sistem dosyalarını
+    okumak, eternet bağlantılarını değiştirmek, yazıcılara iş göndermek ve
+    benzerleri tamamen mümkündür. Bu durum sizin bazı önlemler almanızı
+    gerektirir; dosyaları kimlerin okuyabileceğine ve kimlerin yazabileceğine
+    karar vermeniz gerekir.
+   </simpara>
+   <simpara>
+    Örneğin, aşağıdaki betiği ele alalım. Kullanıcı, ev dizinindeki bazı
+    dosyaları silmek istiyor olsun. Bir sayfanın, kullanıcının ev dizinindeki
+    bazı dosyaları Apache kullanıcısına sildirmek için bir arayüz olarak
+    kullanıldığını varsayalım.
+   </simpara>
+   <para>
+    <example>
+     <title>- Değişkenler başınıza iş açabilir...</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Kullanıcının ev dizininden bir dosya silelim
+$kullanıcı = $_POST['kullanıcının_belirttiği_isim'];
+$kullanıcı_dosyası = $_POST['kullanıcının_belirttiği_dosyaismi'];
+$evdizini  = "/home/$kullanıcı";
+
+unlink("$evdizini/$kullanıcı_dosyası");
+
+echo "Dosya silindi!";
+?>
+]]>
+     </programlisting>
+    </example>
+   Birine ait bir kullanıcı ve dosya ismi bir formdan gönderilebileceğinden
+   bunu yapmaya izni olmayan biri bile bu betikle dosya silebilir. Bu durumda
+   kimlik doğrulaması yapabilen bir betik kullanmak daha iyi olabilir.
+   Birinin formu kullanarak "../etc/" ve "passwd" girdiğini varsayalım ve
+   betikte neler oluyor bakalım:
+    <example>
+     <title>... Bir dosya sistemi saldırısı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// PHP kullanıcısının erişebildiği bir yerden bir dosyayı silelim.
+// PHP root yetkilerine sahip olsun.
+$kullanıcı = $_POST['kullanıcının_belirttiği_isim']; // "../etc"
+$kullanıcı_dosyası = $_POST['kullanıcının_belirttiği_dosyaismi']; // "passwd"
+$evdizini  = "/home/$kullanıcı"; // "/home/../etc"
+
+unlink("$evdizini/$kullanıcı_dosyası"); // "/home/../etc/passwd"
+
+echo "Dosya silindi!";
+?>
+]]>
+     </programlisting>
+    </example>
+    Bu saldırıyı önlemek için dikkate alacağınız iki ölçüt vardır.
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       PHP çalıştırılabilirini çalıştıran kullanıcının izinlerini sınırlamak.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Form ile gönderilen tüm değişkenleri denetlemek.
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    Düzeltilmiş betik:
+    <example>
+     <title>- Daha güvenilir bir dosya silme betiği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// PHP kullanıcısının erişebildiği bir dosyayı silelim.
+$kullanıcı = $_SERVER['REMOTE_USER']; // kimlik doğrulaması yapıyoruz
+$dosya = basename($_POST['kullanıcının_belirttiği_dosyaismi']);
+$evdizini  = "/home/$kullanıcı";
+
+$dosyayolu = "$evdizini/$dosya";
+
+if (file_exists($dosyayolu) && unlink($dosyayolu)) {
+    $günce = "$dosyayolu silindi\n";
+} else {
+    $günce = "$dosyayolu silinemedi\n";
+}
+$dt = fopen("/home/logging/filedelete.log", "a");
+fwrite($dt, $günce);
+fclose($dt);
+
+echo htmlentities($logstring, ENT_QUOTES);
+
+?>
+]]>
+     </programlisting>
+    </example>
+    Ancak, bu bile kusurları örtmeye yetmez. Eğer kimlik doğrulama sisteminiz
+    kullanıcıya kendi ev dizinini belirtmesine izin veriyorsa ve kullanıcı
+    "../etc/" dizinine oturum açmayı istiyorsa sistem hala tehdit altında
+    demektir. Bu nedenle, sınanacak noktaları genişletmelisiniz:
+    <example>
+     <title>- Daha da güvenilir bir dosya silme betiği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$kullanıcı = $_SERVER['REMOTE_USER']; // kimlik doğrulaması yapıyoruz
+$dosya = $_POST['kullanıcının_belirttiği_dosyaismi'];
+$evdizini  = "/home/$kullanıcı";
+
+$dosyayolu = "$evdizini/$dosya";
+
+if (!ctype_alnum($kullanıcı) ||
+    !preg_match('/^(?:[a-z0-9_-]|\.(?!\.))+$/iD', $dosyayolu)) {
+        die("Kullanıcı veya dosya ismi hatalı");
+}
+
+//vs...
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Kullandığınız işletim sistemine bağlı olarak, dikkate alacağınız geniş
+    bir dosya isimleri yelpazesi vardır: aygıt dosyaları (/dev/ veya COM1
+    gibi), yapılandırma dosyaları (/etc/ ve .ini dosyaları), bildik saklama
+    alanları (/home/, My Documents), vb. Bu nedenle, açıkça izin verilenler
+    dışında kalan herşeyi yasaklamak en kolayıdır.
+   </para>
+   <sect1 xml:id="security.filesystem.nullbytes">
+    <title>Boş baytlı girdiler</title>
+    <simpara>
+     PHP, dosya sistemi ile ilgili işlemler için kod seviyesinde C
+     işlevlerini kullandığından boş baytlı (\0) dizgeler beklenmedik
+     davranışlara yol açabilir. Boş bayt, C'de dizgeleri sonlandırmak için
+     kullanıldığından boş bayt içeren dizgelerin tamamı değil, boş bayta
+     kadar olan bölüm işleme sokulur. Aşağıdaki örnekte bunun sebep olduğu
+     bir sorun ele alınmıştır:
+    </simpara>
+    <example>
+     <title>- Boş baytlardan olumsuz etkilenen bir betik</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$dosya = $_GET['dosya']; // "../../etc/passwd\0"
+if (file_exists('/home/siteler/'.$dosya.'.php')) {
+    /* /home/siteler/../../etc/passwd mevcut olduğundan
+       file_exists işlevi TRUE döndürür */
+    include '/home/siteler/'.$dosya.'.php';
+    // /etc/passwd dosyası betiğe dahil edildi
+}
+?>
+]]>
+     </programlisting>
+    </example>
+    <para>
+     Bu bakımdan, bir dosya sistemi işleminde kullanılan her dizge daima
+     denetlenmelidir. Aşağıda, önceki örneğin iyileştirilmişi verilmiştir:
+    </para>
+    <example>
+     <title>- Girdiyi doğru şekilde ele almak</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$dosya = $_GET['dosya'];
+
+// Kabul edilebilir değerlerin listesi
+switch ($file) {
+    case 'main':
+    case 'foo':
+    case 'bar':
+        include '/home/siteler/include/'.$dosya.'.php';
+        break;
+    default:
+        include '/home/siteler/include/main.php';
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </sect1>
+
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
