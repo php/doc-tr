@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.2 $ -->
-<!-- EN-Revision: 1.10 Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.odbc-columns" xmlns="http://docbook.org/ns/docbook">
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.8 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.odbc-procedurecolumns" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>odbc_columns</refname>
-  <refpurpose>Belirtilen tablolardaki sütun isimlerini listeler</refpurpose>
+  <refname>odbc_procedurecolumns</refname>
+  <refpurpose>Yordamların değiştirgeleri hakkında bilgi döndürür</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_columns</methodname>
+   <type>resource</type><methodname>odbc_procedurecolumns</methodname>
    <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>şema</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>tablo_ismi</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sütun_ismi</parameter></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>resource</type><methodname>odbc_procedurecolumns</methodname>
+   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
+   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>yordam</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sütun</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen aralıktaki tüm sütunları listeler.
+   Belirtilen yordamların değiştirgeleri hakkında bilgi döndürür.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -39,50 +45,48 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>şema</parameter></term>
+     <term><parameter>sahibi</parameter></term>
      <listitem>
       <para>
-       Sahibi.
+       Sahibi. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tablo_ismi</parameter></term>
+     <term><parameter>yordam</parameter></term>
      <listitem>
       <para>
-       Tablo ismi
+       Yordam. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sütun_ismi</parameter></term>
+     <term><parameter>sütun</parameter></term>
      <listitem>
       <para>
-       Sütun ismi.
+       Sütun. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
-  <para>
-   <parameter>şema</parameter>, <parameter>tablo_ismi</parameter> ve
-   <parameter>sütun_ismi</parameter> olarak arama şablonları belirtilebilir
-   (sıfır veya daha fazla karakterle eşleşmek üzere '%' ve tek bir karakterle
-   eşleşmek üzere '_').
-  </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda &false;, yoksa bir ODBC sonuç tanıtıcısı döner.
+   Belirtilen yordamlar için sonuç kümesini oluşturan girdi ve çıktı
+   değiştirgeleriyle birlikte sütunları da döndürür. Hata durumunda &false;
+   yoksa istenen bilgiyi içeren bir ODBC sonuç tanıtıcısı döner.
   </para>
   <para>
-   Sonuç kümesi şu sütunlara sahiptir:
+   Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_SCHEM</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
+    <listitem><simpara>PROCEDURE_QUALIFIER</simpara></listitem>
+    <listitem><simpara>PROCEDURE_OWNER</simpara></listitem>
+    <listitem><simpara>PROCEDURE_NAME</simpara></listitem>
     <listitem><simpara>COLUMN_NAME</simpara></listitem>
+    <listitem><simpara>COLUMN_TYPE</simpara></listitem>
     <listitem><simpara>DATA_TYPE</simpara></listitem>
     <listitem><simpara>TYPE_NAME</simpara></listitem>
     <listitem><simpara>PRECISION</simpara></listitem>
@@ -93,18 +97,10 @@
     <listitem><simpara>REMARKS</simpara></listitem>
    </itemizedlist>
   </para>
-  <para>
-   Sonuç, TABLE_QUALIFIER, TABLE_SCHEM ve TABLE_NAME sütunlarına göre
-   sıralanır.
-  </para>
- </refsect1>
- <refsect1 role="seealso">
-  &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>odbc_columnprivileges</function></member>
-   </simplelist>
-  </para>
+  <simpara>
+   Sonuç kümesi şu sütunlara göre sıralanır: PROCEDURE_QUALIFIER,
+   PROCEDURE_OWNER, PROCEDURE_NAME ve COLUMN_TYPE.
+  </simpara>
  </refsect1>
 
 </refentry>
