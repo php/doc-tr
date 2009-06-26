@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.11 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.token-get-all" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>token_get_all</refname>
+  <refpurpose>Belirtilen kaynağı PHP dizgeciklerine ayırır</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>token_get_all</methodname>
+   <methodparam><type>string</type><parameter>kaynak</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <parameter>kaynak</parameter> dizgesi, Zend motorunun
+   sözdizimsel tarayıcısı kullanılarak PHP dil dizgeciklerine çözümlenir.
+  </para>
+  <para>
+   Dizgeciklerin listesi için <xref linkend="tokens" /> sayfasına bakınız
+   veya bir dizgecik değerini dizgesel gösterimine dönüştürmek için
+   <function>token_name</function> işlevini kullanınız.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>kaynak</parameter></term>
+     <listitem>
+      <para>
+       Çözümlenecek PHP kaynak kodu.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dizgecik betimleyicilerinden oluşan bir dizi. Her dizgecik betimleyicisi
+   ya tek bir karakterden (<literal>;</literal>, <literal>.</literal>,
+   <literal>&gt;</literal>, <literal>!</literal> gibi) oluşur ya da üç
+   elemanlı bir diziden; 0. elemanda dizgecik indisi, 1. elemanda özgün
+   dizgeciğin dizgesel içeriği ve 2. elemanda satır numarası bulunur.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>token_get_all</function> örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$tokens = token_get_all('<?php echo; ?>');
+    /* => array(
+             array(T_OPEN_TAG, '<?php'),
+             array(T_ECHO, 'echo'),
+             ';',
+             array(T_CLOSE_TAG, '?>') ); */
+
+/* Aşağıdaki örnekte dizge beklendiği gibi
+   T_COMMENT (PHP <5'te' T_ML_COMMENT) olarak değil
+   T_INLINE_HTML olarak çözümlenmektedir. Bunun sebebi
+   sağlanan kodda hiçbir ama/kapama etiketinin bulunmayışıdır.
+   Bu, normal bir dosyada <?php ?> etiketlerinin dışına
+   bir açıklama koymaya eşdeğerdir. */
+$tokens = token_get_all('/* açıklama */');
+    // => array(array(T_INLINE_HTML, '/* comment */'));
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.2.2</entry>
+       <entry>Satır numaraları 2. elemanda dönmeye başladı.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
