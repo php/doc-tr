@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.3 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.array-replace-recursive" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_replace_recursive</refname>
+  <refpurpose>İlk dizinin elemanlarını aktarılan dizilerden ardışık olarak
+  günceller</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_replace_recursive</methodname>
+   <methodparam><type>array</type><parameter role="reference">disi</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">dizi1</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">dizi2</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">...</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>dizi</parameter> dizisinin değerlerini belirtilen diğer
+   dizilerin değerleriyle günceller. İlk dizideki bir anahtar ikinci dizide
+   mevcutsa ilk dizideki değer ikinciden güncellenir. İkinci dizide olup ilk
+   dizide olmayan anahtarlar ilk dizide oluşturulur. Sadece ilk dizide
+   bulunan anahtarların değerlerine dokunulmaz. Birden fazla güncelleyici
+   dizi belirtilmişse diziler sırayla işlenir; yani daima sonraki dizideki
+   değerler daima üste yazar.
+  </para>
+  <para>
+   <function>array_replace_recursive</function> ardışık işlem yapar: alt
+   dizilerdeki değerleri de aynı şekilde günceller.
+  </para>
+  <para>
+   İlk dizideki değer sayıl bir değerse, ikinci dizideki sayıl veya dizi
+   değerle güncellenir. İlk ve ikinci dizideki değerlerin ikisi de dizi ise
+   güncelleme işlemi bu alt dizilere ardışık olarak uygulanır.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dizi</parameter></term>
+     <listitem>
+      <para>
+       Elemanları güncellenecek dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizi1</parameter></term>
+     <listitem>
+      <para>
+       İlk diziyi güncelleyecek dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir hata durumunda &null; aksi takdirde bir dizi döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>array_replace_recursive</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$esas = array('kışlık' => array( "portakal"),
+              'yazlık' => array("karpuz", "kavun"), );
+$ikame = array('kışlık' => array('mandalina'),
+               'yazlık' => array('üzüm'));
+
+$sepet = array_replace_recursive($esas, $ikame);
+print_r($sepet);
+
+$sepet = array_replace($esas, $ikame);
+print_r($sepet);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [kışlık] => Array
+        (
+            [0] => mandalina
+        )
+
+    [yazlık] => Array
+        (
+            [0] => üzüm
+            [1] => kavun
+        )
+
+)
+Array
+(
+    [kışlık] => Array
+        (
+            [0] => mandalina
+        )
+
+    [yazlık] => Array
+        (
+            [0] => üzüm
+        )
+
+)
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- <function>array_replace_recursive</function>ve ardışık işlem
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$esas = array('kışlık' => array("portakal"),
+              'yazlık' => array("kavun", "karpuz"),
+               'diğer' => 'avakado' );
+$ikame = array('kışlık' => 'mandalina',
+               'yazlık' => array('üzüm'),
+                'diğer' => array('ananas'));
+$ikame2 = array('kışlık' => array('nar'),
+                'yazlık' => array('üzüm'),
+                'diğer' => 'muz');
+
+$sepet = array_replace_recursive($esas, $ikame, $ikame2);
+print_r($sepet);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [kışlık] => Array
+        (
+            [0] => nar
+        )
+
+    [yazlık] => Array
+        (
+            [0] => üzüm
+            [1] => karpuz
+        )
+
+    [diğer] => muz
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_replace</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
