@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.2 Maintainer: nilgun Status: ready -->
+<refentry xml:id="tidy.repairstring" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>tidy::repairString</refname>
+  <refname>tidy_repair_string</refname>
+  <refpurpose>Seçimlik bir yapılandırma dosyasını kullanarak bir dizgeyi onarır</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>&style.procedural;</para>
+  <methodsynopsis>
+   <type>string</type><methodname>tidy_repair_string</methodname>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>ayarlar</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter></methodparam>
+  </methodsynopsis>
+  <para>&style.oop;</para>
+  <methodsynopsis>
+   <type>string</type><methodname>tidy::repairString</methodname>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>ayarlar</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <parameter>veri</parameter> dizgesini onarır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>veri</parameter></term>
+     <listitem>
+      <para>
+       Onarılacak veri.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ayarlar</parameter></term>
+     <listitem>
+      <para>
+       Bir dizge veya bir dizi olarak belirtilebilir. Dizge verildiği
+       takdirde yapılandırma dosyasının ismi olarak ele alınır. Dizi olarak
+       verildiğinde ise dizinin yapılandırma seçeneklerini içerdiği
+       varsayılır.
+      </para>
+      <para>
+       Seçeneklerin açıklamaları için
+       <link xlink:href="&url.tidy.conf;">&url.tidy.conf;</link> adresine
+       bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kodlama</parameter></term>
+     <listitem>
+      <para>
+       Belge girdi çıktı kodlaması belirtilir. Olası değerler:
+       <literal>ascii</literal>, <literal>latin0</literal>,
+       <literal>latin1</literal>, <literal>raw</literal>,
+       <literal>utf8</literal>, <literal>iso2022</literal>,
+       <literal>mac</literal>, <literal>win1252</literal>,
+       <literal>ibm858</literal>, <literal>utf16</literal>,
+       <literal>utf16le</literal>, <literal>utf16be</literal>,
+       <literal>big5</literal> ve <literal>shiftjis</literal>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Onarılan dizge.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>tidy::repairString</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+ob_start();
+?>
+
+<html>
+  <head>
+    <title>deneme</title>
+  </head>
+  <body>
+    <p>hata</i>
+  </body>
+</html>
+
+<?php
+
+$buffer = ob_get_clean();
+$tidy = new tidy();
+$clean = $tidy->repairString($buffer);
+
+echo $clean;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>deneme</title>
+</head>
+<body>
+<p>hata</p>
+</body>
+</html>
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.tidy.2only;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>tidy::parseFile</function></member>
+   <member><function>tidy::parseString</function></member>
+   <member><function>tidy::repairFile</function></member>
+  </simplelist>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
