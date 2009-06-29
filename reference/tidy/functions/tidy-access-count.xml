@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.9 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.tidy-access-count" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>tidy_access_count</refname>
+  <refpurpose>Belgede saptanan Tidy erişilebilirlik uyarılarının sayısını
+  döndürür</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>tidy_access_count</methodname>
+   <methodparam><type>tidy</type><parameter>nesne</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belgede saptanan Tidy erişilebilirlik uyarılarının sayısını döndürür.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>nesne</parameter></term>
+     <listitem>
+      <para>
+       &tidy.object;
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Uyarı sayısı döner.
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>tidy_access_count</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$html ='<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head><title>Title</title></head>
+<body>
+
+<p><img src="img.png"></p>
+
+</body></html>';
+
+
+// erişilebilirlik sınama seviyesi 1, 2 veya 3 olabilir
+$config = array('accessibility-check' => 3);
+
+$tidy = new tidy();
+$tidy->parseString($html, $config);
+$tidy->CleanRepair();
+
+/* Bu çağrıyı yapmayı asla unutma! */
+$tidy->diagnose();
+
+echo tidy_access_count($tidy); //5
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    TidyLib tasarımından ötürü, <function>tidy_access_count</function>
+    çağrısından önce bir <function>tidy_diagnose</function> çağrısı
+    yapmalısınız yoksa <function>tidy_access_count</function> daima
+    <literal>0</literal> döndürür. Ayrıca,
+    <literal>accessibility-check</literal> seçeneğini de etkin kılmalısınız.
+   </para>
+  </note>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>tidy_error_count</function></member>
+    <member><function>tidy_warning_count</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
