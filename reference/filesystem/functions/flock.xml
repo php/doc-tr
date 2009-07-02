@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.17 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.18 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.flock">
  <refnamediv>
   <refname>flock</refname>
@@ -133,13 +133,14 @@
 <![CDATA[
 <?php
 
-$dt = fopen("/tmp/lock.txt", "w+");
+$dt = fopen("/tmp/lock.txt", "w");
 
 if (flock($dt, LOCK_EX)) { // ayrıcalıklı bir kilit oluşturalım
-    fwrite($dt, "Buraya birşeyler yazalım\n");
+    ftruncate($fp, 0);  // dosyayı kırp
+    fwrite($dt, "Buraya bir şeyler yazalım\n");
     flock($dt, LOCK_UN); // kilidi serbest bırakalım
 } else {
-    echo "Dosya kilitlenemedi!";
+    echo "Kilit edinilemedi!";
 }
 
 fclose($dt);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.1 $ -->
-<!-- EN-Revision: 1.4 Maintainer: nilgun Status: ready -->
+<!-- $Revision: 1.2 $ -->
+<!-- EN-Revision: 1.6 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="locale.filtermatches">
  <refnamediv>
   <refname>Locale::filterMatches</refname>
@@ -20,6 +20,7 @@
    <methodname>Locale::filterMatches</methodname>
    <methodparam><type>string</type><parameter>dil_yaftası</parameter></methodparam>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>meşru</parameter><initializer>false</initializer></methodparam>
   </methodsynopsis>
   <para>
    Yordamsal kullanım
@@ -29,6 +30,7 @@
    <methodname>locale_filter_matches</methodname>
    <methodparam><type>string</type><parameter>dil_yaftası</parameter></methodparam>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>meşru</parameter><initializer>false</initializer></methodparam>
   </methodsynopsis>
   <para>
    RFC 4647'nin temel süzme algoritmasına göre bir dil yaftasının bir yerelle
@@ -56,6 +58,14 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>meşru</parameter></term>
+     <listitem>
+     <para>
+      &true; ise değiştirgeler eşleştirilmeden önce meşru biçeme dönüştürülür.
+     </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -75,9 +85,11 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-echo (locale_filter_matches('de-DEVA','de-DE')) ? "Eşleşir" : "Eşleşmez";
+echo (locale_filter_matches('de-DEVA','de-DE', false)) ?
+          "Eşleşir" : "Eşleşmez";
 echo '; ';
-echo (locale_filter_matches('de-DE_1996','de-DE')) ? "Eşleşir" : "Eşleşmez";
+echo (locale_filter_matches('de-DE_1996','de-DE', false)) ?
+          "Eşleşir" : "Eşleşmez";
 ?>
 ]]>
    </programlisting>
@@ -87,9 +99,11 @@ echo (locale_filter_matches('de-DE_1996','de-DE')) ? "Eşleşir" : "Eşleşmez";
    <programlisting role="php">
 <![CDATA[
 <?php
-echo (Locale::filter_matches('de-DEVA','de-DE')) ? "Eşleşir" : "Eşleşmez";
+echo (Locale::filterMatches('de-DEVA','de-DE', false)) ?
+          "Eşleşir" : "Eşleşmez";
 echo '; ';
-echo (Locale::filter_matches('de-DE-1996','de-DE')) ? "Eşleşir" : "Eşleşmez";
+echo (Locale::filterMatches('de-DE-1996','de-DE', false)) ?
+          "Eşleşir" : "Eşleşmez";
 ?>
 ]]>
    </programlisting>
