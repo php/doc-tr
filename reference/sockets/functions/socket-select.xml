@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.19 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-select">
+ <refnamediv>
+  <refname>socket_select</refname>
+  <refpurpose>Belirtilen soket dizileri üzerinde belirtilen zaman aşımı ile
+  select() sistem çağrısını çalıştırır</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>socket_select</methodname>
+   <methodparam><type>array</type><parameter role="reference">oku</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">yaz</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">diğer</parameter></methodparam>
+   <methodparam><type>int</type><parameter>tv_sec</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tv_usec</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>socket_select</function> işlevi değiştirge olarak soket dizileri
+   alır ve durumları değişinceye kadar bekler. Soket özkaynakları BSD
+   soketlerinden kaynaklanan bir kabulle dosya tanıtıcıları olarak da
+   bilinir. İşleve birbirinden bağımsız üç çeşit soket özkaynağı
+   belirtilebilir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>oku</parameter></term>
+     <listitem>
+      <para>
+       Karakterlerin okunmaya hazır hale gelmesine kadar (başka bir deyişle,
+       okumanın engellenmediği görülene kadar) dinlenecek soket özkaynakları
+       dizisi. (Okunacak tek şeyin dosyasonu karakteri olduğu durumda
+       <function>socket_read</function> sıfır uzunlukta bir dizge ile döner.)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yaz</parameter></term>
+     <listitem>
+      <para>
+       Yazmanın engellenmediği görülene kadar (soket yazmaya hazır hale
+       gelene kadar) dinlenecek soket özkaynakları dizisi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>diğer</parameter></term>
+     <listitem>
+      <para>
+       Bu dizideki soketler olağan dışı durumlara göre denetlenir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tv_sec</parameter></term>
+     <listitem>
+      <para>
+       Saniye cinsinden zaman aşımı. <parameter>tv_sec</parameter> ve
+       <parameter>tv_usec</parameter> birlikte select() sistem çağrısının
+       <literal>zamanaşımı</literal> değiştirgesini oluşturur.
+       <literal>zamanaşımı</literal>, <function>socket_select</function>
+       dönmeden önce beklenecek azami süreyi belirler.
+       <parameter>tv_sec</parameter> sıfır olabilir; bu durumda
+       <function>socket_select</function> beklemeden döner. Çağrı yinelemek
+       için yararlıdır. <parameter>tv_sec</parameter> &null; olduğu takdirde
+       (zaman aşımı yok), <function>socket_select</function> sonsuza kadar
+       bekleyebilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tv_usec</parameter></term>
+     <listitem>
+      <para>
+       Mikrosaniye cinsinden zaman aşımı. Ayrıntılar için
+       <parameter>tv_sec</parameter> değiştirgesine bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+  <warning>
+   <para>
+    Dönüşte, soket özkaynaklarının durumlarını belirtmek için dizilerde
+    değişiklik yapılır.
+   </para>
+  </warning>
+  <para>
+   <function>socket_select</function> işlevine üç diziyi de aktarmak zorunda
+   değilsiniz. Kullanmadığınız dizileri boş bırakabilir veya bir dizi yerine
+   &null; belirtebilirsiniz. Ayrıca, bu dizilerin gönderimli aktarılmaları
+   gerektiğine de dikkat ediniz; <function>socket_select</function> işlevi
+   dönerken soket durumlarını yansıtacak şekilde bu dizilerde değişiklik
+   yapar.
+  </para>
+  <note>
+   <para>
+    Zend motorundaki bir sınırlamadan dolayı, bir işleve gönderimli
+    aktarılması gereken bir değiştirge yerine işleve doğrudan &null; sabitini
+    aktarmak mümkün değildir. Bu nedenle işleve değeri &null; olan geçici bir
+    değişken veya son değeri bir değişken olan bir ifade aktarmalısınız:
+    <example>
+     <title>- <function>socket_select</function> ile &null; kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$diger = NULL;
+socket_select($oku, $yaz, $diger, 0);
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarı durumunda <function>socket_select</function>, değişiklik yapılan
+   soketlerin sayısını döndürür. Eğer hiçbir değişiklik olmaksızın zaman
+   aşımı dolmuşsa işlev <literal>0</literal> döndürür. Bir hata durumunda
+   &false; döner. Hata kodu <function>socket_last_error</function> ile
+   alınabilir.
+  </para>
+  <note>
+   <para>
+    İşlev, <literal>0</literal> değerini anlamlı bir değer olarak
+    döndürdüğünden <literal>==</literal> işleci ile yapılan bir sınama &true;
+    ile sonuçlanacağından hata durumunu sınarken <literal>===</literal>
+    işlecini kullanmalısınız:
+    <example>
+     <title>- <function>socket_select</function> sonucunu anlamak</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$e = NULL;
+if (false === socket_select($o, $y, $d, 0)) {
+    echo "socket_select() başarısız oldu; sebep: " .
+        socket_strerror(socket_last_error()) . "\n";
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>socket_select</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Oku dizisini hazırlayalım */
+$oku   = array($soket1, $soket2);
+$yaz  = NULL;
+$diger = NULL;
+$degisen_soket_sayısı = socket_select($oku, $yaz, $diger, 0);
+
+if ($degisen_soket_sayısı === false) {
+    /* Hata işlemleri */
+} else if ($degisen_soket_sayısı > 0) {
+    /* En azından bir sokette bir şeyler olmuş */
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bazı soket gerçeklenimlerinin çok dikkatli olmayı gerektirdiğini
+    bilmenizde yarar var. Bir kaç temel kural:
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       <function>socket_select</function> işlevini daima zaman aşımsız
+       kullanmaya çalışın. İşe yarar bir veri yoksa betiğiniz hiçbir işlem
+       yapmamalıdır. Zaman aşımlarına bağımlı bir kod taşınabilir değildir ve
+       hata ayıklamak çok zor olur.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <function>socket_select</function> çağrısından sonra üzerinde hiçbir
+       işlem yapmayacağınız soket özkaynaklarını hiçbir diziye eklemeyin.
+       <function>socket_select</function> döndükten sonra tüm soket
+       özkaynaklarına mutlaka bakılmalıdır. Yazmaya hazır soketlere
+       yazılmalı, okunmaya hazır soketler okunmalıdır.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Diziden dönen bir sokete oku veya yaz işlemi yapacaksanız verinin
+       tamamını okumak veya yazmak zorunda değilsiniz. Sadece bir bayt
+       okumaya veya yazmaya bile hazır olmalısınız.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Hemen tüm soket gerçeklenimlerinde <parameter>diğer</parameter>
+       dizisindeki soketlerin band dışı verilerle ilgili olduğu varsayılır.
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>socket_read</function></member>
+    <member><function>socket_write</function></member>
+    <member><function>socket_last_error</function></member>
+    <member><function>socket_strerror</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
