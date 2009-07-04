@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.12 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-last-error">
+ <refnamediv>
+  <refname>socket_last_error</refname>
+  <refpurpose>Soket üzerindeki son hatanın kodunu döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>socket_last_error</methodname>
+   <methodparam choice="opt"><type>resource</type><parameter>soket</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   İşlev <parameter>soket</parameter> değiştirgesi belirtilerek kullanılırsa
+   belirtilen soket üzerinde son oluşan hatanın kodu döndürülür. Bir soket
+   belirtilmezse başarısız olan son işlemle ilgili hata numarası döner.
+   İkincisi, bir hata durumunda bir soket döndürmeyen
+   <function>socket_create</function> ve belli bir soketle doğrudan ilişkili
+   olmayan bir sebeple başarısız olabilen <function>socket_select</function>
+   gibi işlevler için yararlıdır. Elde edilen hata kodunu
+   <function>socket_strerror</function> işlevinde kullanarak hatanın
+   açıklamasına içeren bir dizge almak mümkündür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>soket</parameter></term>
+     <listitem>
+      <para>
+       <function>socket_create</function> ile oluşturulmuş geçerli bir soket
+       özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir soket hata kodu döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>socket_last_error</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
+if ($socket === false) {
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+
+    die("Soket oluşturulamadı: [$errorcode] $errormsg");
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <function>socket_last_error</function> hata kodunu temizlemez, bunun için
+    <function>socket_clear_error</function> işlevini kullanın.
+   </para>
+  </note>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

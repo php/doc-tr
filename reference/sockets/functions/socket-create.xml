@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 1.1 $ -->
+<!-- EN-Revision: 1.12 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-create">
+ <refnamediv>
+  <refname>socket_create</refname>
+  <refpurpose>Bir soket oluşturur (iletişim için bir uç)</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>resource</type><methodname>socket_create</methodname>
+   <methodparam><type>int</type><parameter>aile</parameter></methodparam>
+   <methodparam><type>int</type><parameter>tür</parameter></methodparam>
+   <methodparam><type>int</type><parameter>protokol</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Bir soket özkaynağı döndürmenin yanında iletişim için uçlardan birini
+   belirler. Normal bir ağ bağlantısı iki soketle yapılır. Biri istemci
+   olurken diğeri sunucu olur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>aile</parameter></term>
+     <listitem>
+      <para>
+       Soket tarafından kullanılacak protokol ailesi.
+      </para>
+      <table>
+       <title>Olası adres/protokol aileleri</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>Aile</entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry><constant>AF_INET</constant></entry>
+          <entry>
+           IPv4 protokolleri. TCP ve UDP bu ailenin en bilinen üyeleridir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>AF_INET6</constant></entry>
+          <entry>
+           IPv6 protokolleri. TCP ve UDP bu ailenin en bilinen üyeleridir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>AF_UNIX</constant></entry>
+          <entry>
+           Yerel iletişim protokolleri ailesi. Süreçler arası iletişimde
+           yüksek verimlilik ve düşük maliyet sağlar.
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>tür</parameter></term>
+     <listitem>
+      <para>
+       Soket tarafından kullanılacak iletişim türü.
+      </para>
+      <table>
+       <title>Olası soket türleri</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>Tür</entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry><constant>SOCK_STREAM</constant></entry>
+          <entry>
+           Sıralı, güvenilir, iki yönlü bağlantıya dayalı bayt akımları.
+           Band dışı veri aktarım mekanizması da desteklenebilir. TCP
+           protokolü bu soket türüne dayanır.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SOCK_DGRAM</constant></entry>
+          <entry>
+           Veri katarlarını destekler (bağlantısız, güvensiz, sabit uzunlukta
+           iletiler). UDP protokolü bu soket türüne dayanır.
+          </entry>
+         </row>
+           <row>
+          <entry><constant>SOCK_SEQPACKET</constant></entry>
+          <entry>
+           Sabit uzunluklu veri katarları için sıralı, güvenilir, iki yönlü
+           bağlantıya dayanan veri aktarımı; her okuma çağrısında paketin
+           tamamını okuyacak bir istemci gerekir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SOCK_RAW</constant></entry>
+          <entry>
+           Ham ağ protokolü erişimi sağlar. Bu özel soket türü elle bir
+           protokol oluşturmak için kullanılabilir. Bu soketin bilinen bir
+           kullanım da ICMP istekleridir (ping, traceroute komutları gibi).
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SOCK_RDM</constant></entry>
+          <entry>
+           Sıralama garantisi olmayan güvenilir verikatarı katmanı sağlar.
+           Çoğunlukla işletim sistemleri tarafından gerçeklenmez.
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>protokol</parameter></term>
+     <listitem>
+      <para>
+       Soketten dönen iletişimi kullanacak aileye özgü protokol. Bu değer
+       protol ismi belirtilerek <function>getprotobyname</function> ile
+       alınabilir. İstenen protokol bir TCP veya UDP protokolü ise
+       <constant>SOL_TCP</constant> veya <constant>SOL_UDP</constant> sabiti
+       değer olarak kullanılabilir.
+      </para>
+      <table>
+       <title>Bilinen protokoller</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>İsim</entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>icmp</entry>
+          <entry>
+           Genel Ağ Denetim İletisi Protokolü esas olarak konaklar ve ağ
+           geçitleri tarafından hataları verikatarı iletişimi ile raporlamak
+           için kullanılır. ICMP uygulamalarının başlıcalarından biri de
+           "ping" komutudur (günümüz işletim sistemlerinin hemen hepsinde
+           vardır).
+          </entry>
+         </row>
+         <row>
+          <entry>udp</entry>
+          <entry>
+           Kullanıcı Verikatarı Protokolü bir bağlantısız, güvenilmez sabit
+           uzuluklu kayıtların iletişiminde kullanılan bir protokoldür. Bu
+           özelliklerinden dolayı UDP çok düşük bir protokol maliyetine
+           sahiptir.
+          </entry>
+         </row>
+         <row>
+          <entry>tcp</entry>
+          <entry>
+           Aktarım Denetim Protokolü, güvenilir, bağlantılı, akım yönelimli,
+           çift yönlü bir protokoldür. TCP tüm veri paketlerinin
+           gönderildikleri sıra ile alınacağını garanti eder. Eğer yolda
+           herhangi bir paket kaybolursa TCP, hedef tarafından alınıncaya
+           kadar bu paketi tekrar tekrar yollar. Güvenilirlik ve başarım için
+           TCP gerçeklenimi, ilgili verikatarı iletişim katmanının kaç
+           sekizlikten oluşacağına kendi karar verir. Bu bakımdan, TCP
+           uygulamaları kısmi kayıt aktarımı olasılığını dikkate almalıdır.
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Başarısızlık durumunda &false;, aksi takdirde bir soket özkaynağı
+   döndürür. Hata kodu <function>socket_last_error</function> işlevi ile
+   alınabilir. Bu hata kodunu <function>socket_strerror</function> işlevine
+   aktararak hatayı açıklayan dizgeyi alabilirsiniz.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.0.0</entry>
+       <entry>
+        <constant>AF_INET6</constant> sabiti eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+   <para>
+    Geçersiz bir <parameter>aile</parameter> veya <parameter>tür</parameter>
+    belirtilmişse, <function>socket_create</function> bunlar için öntanımlı
+    olarak <constant>AF_INET</constant> ve <constant>SOCK_STREAM</constant>
+    değerleri belirtildiğini varsayar ve bu durumu bir
+    <constant>E_WARNING</constant> iletisiyle bildirir.
+   </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>socket_accept</function></member>
+    <member><function>socket_bind</function></member>
+    <member><function>socket_connect</function></member>
+    <member><function>socket_listen</function></member>
+    <member><function>socket_last_error</function></member>
+    <member><function>socket_strerror</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
