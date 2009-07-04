@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision: 1.3 $ -->
-<!-- EN-Revision: 1.22 Maintainer: onurozgurozkan Status: ready -->
+<!-- $Revision: 1.4 $ -->
+<!-- EN-Revision: 1.23 Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.20 -->
 <refentry xml:id="function.call-user-func" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -47,10 +47,14 @@
        <para>
         <function>call_user_func</function> işlevi gönderimli değiştirgeleri
         aktarmaz.
-        <informalexample>
+        <example>
+         <title>- <function>call_user_func</function> örneği ve gönderimler
+         </title>
          <programlisting role="php">
 <![CDATA[
 <?php
+error_reporting(E_ALL);
+
 function say(&$sayı)
 {
     $sayı++;
@@ -58,14 +62,21 @@ function say(&$sayı)
 
 $a = 0;
 call_user_func('say', $a);
-echo $a; // 0
+echo $a."\n";
 
-call_user_func_array('say', array(&$a)); // Yerine bunu kullanın
-echo $a; // 1
+call_user_func_array('say', array(&$a)); // PHP 5.3 öncesinde bunu kullanın
+echo $a."\n";
 ?>
 ]]>
          </programlisting>
-        </informalexample>
+         &example.outputs;
+         <screen>
+<![CDATA[
+0
+1
+]]>
+         </screen>
+        </example>
        </para>
       </note>
      </listitem>
@@ -91,16 +102,25 @@ echo $a; // 1
 <?php
 function berber($tür)
 {
-    echo "Demek $tür kesimi istiyorsunuz, sorun yok.";
+    echo "Demek $tür kesimi istiyorsunuz, sorun yok.\n";
 }
 call_user_func('berber', "saç");
 call_user_func('berber', "sakal");
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Demek saç kesimi istiyorsunuz, sorun yok.
+Demek sakal kesimi istiyorsunuz, sorun yok.
+]]>
+    </screen>
    </example>
+
    <example>
-    <title>- İsim alanı ismi kullanarak <function>call_user_func</function></title>
+    <title>- İsim alanı ismi kullanarak <function>call_user_func</function>
+    </title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -115,18 +135,24 @@ class Misal {
 
 // PHP 5.3.0 ve sonrası
 call_user_func(__NAMESPACE__ .'\Misal\dnm');
-// Merhaba Dünyalı!
 
 // PHP 5.3.0 ve sonrası
 call_user_func(array(__NAMESPACE__ .'\Misal', 'dnm'));
-// Merhaba Dünyalı!
 
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba Dünyalı!
+Merhaba Dünyalı!
+]]>
+    </screen>
    </example>
    <example>
-    <title>- Sınıf yöntemi ile kullanım</title>
+    <title>- Sınıf yöntemi kullanarak <function>call_user_func</function>
+    </title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -150,19 +176,32 @@ call_user_func(array($nesne, 'selam_ver'));
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba!
+Merhaba!
+Merhaba!
+]]>
+    </screen>
    </example>
    <example>
-    <title>- Lamda işlevi olarak kullanımı</title>
+    <title>- Lamda işlevi kullanarak <function>call_user_func</function>
+    </title>
     <programlisting role="php">
 <![CDATA[
 <?php
 // PHP 5.3.0 ve sonrası
 call_user_func(function($arg) { print "[$arg]\n"; }, 'test');
-// [test]
-
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+[test]
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
