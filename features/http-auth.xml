@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision: 1.2 $ -->
-<!-- EN-Revision: 1.53 Maintainer: yasar  Status: ready -->
+<!-- $Revision: 1.3 $ -->
+<!-- EN-Revision: 1.54 Maintainer: yasar  Status: ready -->
  <chapter xml:id="features.http-auth" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP ile HTTP Kimlik Doğrulaması</title>
 
@@ -109,9 +109,11 @@ function http_ozet_cozumle($metin)
     $gerekli_kisimlar = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1,
                               'username'=>1, 'uri'=>1, 'response'=>1);
     $veri = array();
+    $keys = implode('|', array_keys($gerekli_kisimlar));
 
-    preg_match_all('@(\w+)=(?:([\'"])([^\2]+)\2|([^\s,]+))@', $metin,
-                    $eslesen, PREG_SET_ORDER);
+
+    preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@',
+                    $metin, $eslesen, PREG_SET_ORDER);
 
     foreach ($eslesen as $m) {
         $veri[$m[1]] = $m[3] ? $m[3] : $m[4];
