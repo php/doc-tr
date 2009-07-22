@@ -1,23 +1,24 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
 <!-- EN-Revision: 4307255b4da852b90a24ebcedffa33e22803dead Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ssh2-sftp-symlink">
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ssh2-scp-send">
  <refnamediv>
-  <refname>ssh2_sftp_symlink</refname>
-  <refpurpose>Karşıda bir sembolik bağ oluşturur</refpurpose>
+  <refname>ssh2_scp_send</refname>
+  <refpurpose>SCP üzerinden bir dosya gönderir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>ssh2_sftp_symlink</methodname>
-   <methodparam><type>resource</type><parameter>sftp</parameter></methodparam>
-   <methodparam><type>string</type><parameter>hedef</parameter></methodparam>
-   <methodparam><type>string</type><parameter>bağ</parameter></methodparam>
+   <type>bool</type><methodname>ssh2_scp_send</methodname>
+   <methodparam><type>resource</type><parameter>oturum</parameter></methodparam>
+   <methodparam><type>string</type><parameter>yerel_dosya</parameter></methodparam>
+   <methodparam><type>string</type><parameter>uzak_dosya</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>0644</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>hedef</parameter> ile belirtilen uzak dosya sistemine
-   <parameter>bağ</parameter> isminde bir sembolik bağ oluşturur.
+   SCP protokolünü kullanarak bir yerel dosyayı uzak sunucunun dosya sistemine
+   kopyalar.
   </para>
  </refsect1>
 
@@ -26,27 +27,35 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>sftp</parameter></term>
+     <term><parameter>oturum</parameter></term>
      <listitem>
       <para>
-       <function>ssh2_sftp</function> tarafından açılmış bir SSH2 SFTP
-       özkaynağı.
+       <function>ssh2_connect</function> ile sağlanan bir SSH bağlantı
+       tanıtıcısı.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>hedef</parameter></term>
+     <term><parameter>yerel_dosya</parameter></term>
      <listitem>
       <para>
-       Sembolik bağın hedefi.
+       Yerel dosyanın yolu.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>bağ</parameter></term>
+     <term><parameter>uzak_dosya</parameter></term>
      <listitem>
       <para>
-       Sembolik bağın ismi.
+       Uzak dosyanın yolu.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kip</parameter></term>
+     <listitem>
+      <para>
+       Dosya oluşturulurken atanacak erişim izinleri.
       </para>
      </listitem>
     </varlistentry>
@@ -65,15 +74,14 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- Karşıya bir sembolik bağ oluşturmak</title>
+    <title>- SCP üzerinden karşıya dosya yükleme</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $baglanti = ssh2_connect('shell.example.com', 22);
 ssh2_auth_password($baglanti, 'birey', 'parola');
-$sftp = ssh2_sftp($baglanti);
 
-ssh2_sftp_symlink($sftp, '/var/run/mysql.sock', '/tmp/mysql.sock');
+ssh2_scp_send($baglanti, '/yerel/dosya', '/uzak/dosya', 0644);
 ?>
 ]]>
     </programlisting>
@@ -85,8 +93,8 @@ ssh2_sftp_symlink($sftp, '/var/run/mysql.sock', '/tmp/mysql.sock');
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><function>ssh2_sftp_readlink</function></member>
-    <member><function>symlink</function></member>
+    <member><function>ssh2_scp_recv</function></member>
+    <member><function>copy</function></member>
    </simplelist>
   </para>
  </refsect1>
