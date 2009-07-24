@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 1811606d2c4246f95904ab5e3c972684691fd40c Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-seal">
+ <refnamediv>
+  <refname>openssl_seal</refname>
+  <refpurpose>Veriyi mühürler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>openssl_seal</methodname>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam><type>string</type><parameter role="reference">mühürlü_veri</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">zarf_mühürleri</parameter></methodparam>
+   <methodparam><type>array</type><parameter>genankim_dizisi</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Rasgele üretilmiş bir gizli anahtarla RC4 kullanarak
+   <parameter>veri</parameter>'yi şifreler. Anahtar,
+   <parameter>genankim_dizisi</parameter> içindeki kimliklerle ilişkili
+   anahtarlarla ve <parameter>zarf_mühürleri</parameter> içindeki şifreli
+   anahtarlarla şifrelenir. Böylece, şifreli veri çok sayıda alıcıya
+   gönderilebilir (alıcıların genel anahtarları kullanılır). Her alıcının
+   mühürlü veri ile birlikte alıcının genel anahtarı ile şifrelenmiş zarf
+   anahtarını da alması gerekir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>veri</parameter></term>
+     <listitem>
+      <para>
+       Genel anahtarlarla şifrelenip zarf anahtarları ile mühürlenecek veri.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>mühürlü_veri</parameter></term>
+     <listitem>
+      <para>
+       Mühürlenen veri bu değiştirgeye konur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>zarf_mühürleri</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>genankim_dizisi</parameter></term>
+     <listitem>
+      <para>
+       Genel anahtar kimliklerini içeren dizi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   İşlem başarılı olursa mühürlü veri <parameter>mühürlü_veri</parameter>
+   değiştirgesine, zarf anahtarları <parameter>zarf_mühürleri</parameter>
+   değiştirgesine konup mühürlü verinin uzunluğu döndürülür. Hata oluşursa
+   &false; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>openssl_seal</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// $veri'nin mühürlenecek veriyi içerdiği varsayılıyor.
+
+// alıcıların genel anahtarlarını alıp hazırlayalım
+$dt = fopen("/src/openssl-0.9.6/demos/maurice/cert.pem", "r");
+$sert = fread($dt, 8192);
+fclose($dt);
+$ga1 = openssl_get_publickey($sert);
+
+// İşlemi ikinci alıcı için yineleyelim.
+$dt = fopen("/src/openssl-0.9.6/demos/sign/cert.pem", "r");
+$sert = fread($dt, 8192);
+fclose($dt);
+$ga2 = openssl_get_publickey($sert);
+
+// Veriyi mühürleyelim. $muhurlu_veri sadece $ga1 ve $ga2'nin sahipleri
+// tarafından sırasıyla $muhurler[0] ve $muhurler[1] anahtarları ile
+// çözülebilir.
+openssl_seal($data, $muhurlu_veri, $muhurler, array($ga1, $ga2));
+
+// anahtar belleklerini serbest bırakalım
+openssl_free_key($ga1);
+openssl_free_key($ga2);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>openssl_open</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
