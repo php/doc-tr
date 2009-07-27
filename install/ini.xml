@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f371a2079d0431d8b47567f6350df250b63b9711 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b5abeca735d58a7cab92a82d11b47c971d190d02 Maintainer: nilgun Status: ready -->
  <chapter xml:id="configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Çalışma Anı Yapılandırması</title>
 
@@ -122,6 +122,48 @@ include_path = ".;c:\php\lib"
     isimleriyle değişken olarak erişilebilmektedir. Örnek:
     <literal>open_basedir = ${open_basedir} ":/new/dir"</literal>.
    </para>
+  </sect1>
+
+  <sect1 xml:id="configuration.file.per-user">
+   <title>.user.ini dosyaları</title>
+
+   <simpara>
+    PHP 5.3.0'dan beri, dizinler için .htaccess tarzı INI dosyaları
+    desteklenmektedir. Bu dosyalar <emphasis>sadece</emphasis> CGI/FastCGI SAPI
+    tarafından işlenir. Bu işlevsellik ile PECL htscanner eklentisi atıl duruma
+    düşmüştür. Apache kullanıyorsanız aynı etkiyi elde etmek için &htaccess;
+    dosyalarını kullanın.
+   </simpara>
+
+   <simpara>
+    Ana &php.ini; dosyasına ek olarak, PHP istenen PHP dosyasının bulunduğu
+    dizinden itibaren her dizini INI dosyaları için tarar ve bunları geçerli
+    belge kök dizinine uygulanıyormuş gibi uygular
+    (<varname>$_SERVER['DOCUMENT_ROOT']</varname> değişkenine atandığı gibi).
+    .user.ini tarzı INI dosyalarında sadece <constant>PHP_INI_PERDIR</constant>
+    ve <constant>PHP_INI_USER</constant> kipindeki INI ayarları işleme sokulur.
+   </simpara>
+
+   <simpara>
+    Kullanıcı INI dosyalarını denetlemek için iki yeni INI yönergesi
+    kullanılmaktadır: <literal>user_ini.filename</literal> ve
+    <literal>user_ini.cache_ttl</literal>.
+    <!--
+        <link linkend="ini.user-ini.filename">user_ini.filename</link> and
+        <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link>
+    -->
+   </simpara>
+
+   <simpara>
+    <literal>user_ini.filename</literal> ile PHP'nin dizinlerde arayacağı
+    dosyanın ismi belirtilir. <literal>.user.ini</literal> öntanımlı değerdir.
+   </simpara>
+
+   <simpara>
+    <literal>user_ini.cache_ttl</literal> ile kullanıcı INI dosyalarının ne
+    sıklıkta denetleneceği belirtilir. 300 saniye (5 dakika) öntanımlı
+    değerdir.
+   </simpara>
   </sect1>
 
   <sect1 xml:id="configuration.changes.modes">
