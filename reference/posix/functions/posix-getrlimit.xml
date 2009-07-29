@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 887f6f779cd62fd6b56f30ddf4301799e7471edf Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.posix-getrlimit" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>posix_getrlimit</refname>
+  <refpurpose>Sistem özkaynak sınırları hakkında bilgi verir</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>posix_getrlimit</methodname>
+   <void/>
+  </methodsynopsis>
+  <para>
+   Geçerli özkaynakların normal [soft] ve üst [hard] sınırları hakkında bilgi
+   içeren bir dizi döndürür.
+  </para>
+  <para>
+    Her özkaynak için bir normal bir de üst sınır vardır. Normal sınır sistem
+    çekirdeğinin dayattağı sınırdır. Üst sınır ise normal sınır için bir
+    tavandır. Yetkisiz bir süreç sadece kendi normal sınırlarını 0'dan üst
+    sınıra kadar bir aralıkta ayarlayabilir ve kendi üst sınırını geri
+    döndürülemez şekilde düşürebilir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Her elemanında bir sınır tanımlanmış bir ilişkisel dizi döndürür. Her özkaynak için bir normal [soft] bir de üst [hard] sınır vardır.
+   <table>
+    <title>Dönmesi olası sınır değerlerin listesi</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Sınır ismi</entry>
+       <entry>Sınır açıklaması</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>core</entry>
+       <entry>
+        Çekirdeğin oluşturduğu core dosyasının azami boyu. 0 olduğu takdirde
+        core dosyası oluşturulmaz. Oluşturulan core dosyasının boyu burada
+        belirtilenden daha büyükse bu boya indirilir (kırpılır).
+       </entry>
+      </row>
+      <row>
+       <entry>totalmem</entry>
+       <entry>
+        Süreç belleğinin bayt cinsinden azami boyutu.
+       </entry>
+      </row>
+      <row>
+       <entry>virtualmem</entry>
+       <entry>
+        Süreç sanal belleğinin bayt cinsinden azami boyutu.
+       </entry>
+      </row>
+      <row>
+       <entry>data</entry>
+       <entry>
+        Süreç veri bölütünün bayt cinsinden azami boyutu.
+       </entry>
+      </row>
+      <row>
+       <entry>stack</entry>
+       <entry>
+        Süreç yığıtının bayt cinsinden azami boyutu.
+       </entry>
+      </row>
+      <row>
+       <entry>rss</entry>
+       <entry>
+        Fiziksel bellekteki azami sanal sayfa sayısı.
+       </entry>
+      </row>
+      <row>
+       <entry>maxproc</entry>
+       <entry>
+        Ana sürecin gerçek kullanıcı kimliği için oluşturulabilecek çocuk
+        süreçlerin azami sayısı.
+       </entry>
+      </row>
+      <row>
+       <entry>memlock</entry>
+       <entry>
+        Fiziksel bellekte kilitlenebilecek azami bayt sayısı.
+       </entry>
+      </row>
+      <row>
+       <entry>cpu</entry>
+       <entry>
+        İşlemciyi kullanması için sürece tanınan süre.
+       </entry>
+      </row>
+      <row>
+       <entry>filesize</entry>
+       <entry>
+        Bayt cinsinden azami dosya boyutu.
+       </entry>
+      </row>
+      <row>
+       <entry>openfiles</entry>
+       <entry>
+        Azami açık dosya tanıtıcı sayısının bir fazlası.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>posix_getrlimit</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$limits = posix_getrlimit();
+
+print_r($limits);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Array
+(
+    [soft core] => 0
+    [hard core] => unlimited
+    [soft data] => unlimited
+    [hard data] => unlimited
+    [soft stack] => 8388608
+    [hard stack] => unlimited
+    [soft totalmem] => unlimited
+    [hard totalmem] => unlimited
+    [soft rss] => unlimited
+    [hard rss] => unlimited
+    [soft maxproc] => unlimited
+    [hard maxproc] => unlimited
+    [soft memlock] => unlimited
+    [hard memlock] => unlimited
+    [soft cpu] => unlimited
+    [hard cpu] => unlimited
+    [soft filesize] => unlimited
+    [hard filesize] => unlimited
+    [soft openfiles] => 1024
+    [hard openfiles] => 1024
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bu bir POSIX işlevi değildir, BSD ve System V sistemlerinde vardır. Eğer
+    sisteminiz bu işlevi desteklemiyorsa PHP derlenirken bu işlev
+    derlenmeyecektir. Bir işlevin varlığına
+    <function>function_exists</function> ile bakabilirsiniz.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member>getrlimit(2) kılavuz sayfası</member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
