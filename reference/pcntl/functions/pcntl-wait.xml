@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 751d46fd605869500864d948489ce700c06ba4d7 Maintainer: nilgun Status: ready -->
+<refentry xml:id='function.pcntl-wait' xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>pcntl_wait</refname>
+  <refpurpose>Çatallanmış bir çocuğun durum kodu için bekler</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>pcntl_wait</methodname>
+   <methodparam><type>int</type><parameter role="reference">durum</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Bir çocuk süreç çıkana veya sonlandırıcı bir sinyal alana ya da bir sinyal
+   eylemcisi çağrılana kadar çalışmakta olan sürecin çalışmasını askıya alır.
+   Bir çocuk zaten çıkmışsa (yani bir zombi süreçse) işlev beklemeden döner.
+   Çocuk sürecin kullandığı sistem özkaynakları serbest bırakılır.
+   Sisteminizde waitpid'in nasıl çalıştığı hakkında ayrıntılı bilgi edinmek
+   için waitpid(2) kılavuz sayfasına bakınız.
+  </para>
+  <note>
+   <para>
+    <parameter>seçenekler</parameter> değiştirgesi olmadan,
+    <parameter>pid</parameter> değiştirgesinde <literal>-1</literal>
+    belirterek bir <function>pcntl_waitpid</function> çağrısı yapmaya
+    denktir.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>durum</parameter></term>
+     <listitem>
+      <para>
+       <function>pcntl_wait</function>  işlevi <parameter>durum</parameter>
+       değiştirgesinde durum bilgisini şu işlevler ile değerendirilmek üzere
+       saklar: <function>pcntl_wifexited</function>,
+       <function>pcntl_wifstopped</function>,
+       <function>pcntl_wifsignaled</function>,
+       <function>pcntl_wexitstatus</function>,
+       <function>pcntl_wtermsig</function> ve
+       <function>pcntl_wstopsig</function>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Sisteminizde wait3 kullanılabiliyorsa (geneldde BSD sistemlerinde
+       bulunur) isteğe bağlı olan <parameter>seçenekler</parameter>
+       değişirgesini kullanabilirsiniz. Aksi takdirde bu değiştirgede
+       belirtilen seçeneklerin hiçbir etkisi olmayacaktır. Değiştirgenin
+       değeri aşağıdaki küresel sabitlerin bitsel VEYAlanmışıdır:
+       <table>
+        <title>Olası <parameter>seçenekler</parameter></title>
+        <tgroup cols="2">
+         <tbody>
+          <row>
+           <entry><literal>WNOHANG</literal></entry>
+           <entry>
+            Çıkmış çocuk süreç yoksa hemen dön.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>WUNTRACED</literal></entry>
+           <entry>
+            Durumu raporlanmamış ve durmuş çocuklar varsa dön.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Çocuk süreç çıkmışsa süreç kimliği, hata oluşmuşsa -1,
+   (wait3 bulunan sistemlerde) <constant>WNOHANG</constant> kullanılmış ama
+   ortada bir çocuk süreç yoksa 0 ile döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>pcntl_fork</function></member>
+    <member><function>pcntl_signal</function></member>
+    <member><function>pcntl_wifexited</function></member>
+    <member><function>pcntl_wifstopped</function></member>
+    <member><function>pcntl_wifsignaled</function></member>
+    <member><function>pcntl_wexitstatus</function></member>
+    <member><function>pcntl_wtermsig</function></member>
+    <member><function>pcntl_wstopsig</function></member>
+    <member><function>pcntl_waitpid</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
