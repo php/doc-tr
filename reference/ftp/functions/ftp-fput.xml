@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
 <!-- EN-Revision: 32c02d8b9f8ac64c25be324b09be6e2a5075bf0b Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.ftp-nb-fput" xmlns="http://docbook.org/ns/docbook">
+<refentry xml:id="function.ftp-fput" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>ftp_nb_fput</refname>
-  <refpurpose>FTP sunucusuna (engellenmeyen kipte) dosya yüklemek için bir
-  dosya tanıtıcısı kullanır</refpurpose>
+  <refname>ftp_fput</refname>
+  <refpurpose>FTP sunucusuna dosya tanıtıcısı belirtilen dosyayı yükler
+  </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>ftp_nb_fput</methodname>
+   <type>bool</type><methodname>ftp_fput</methodname>
    <methodparam><type>resource</type><parameter>ftp_akımı</parameter></methodparam>
-   <methodparam><type>string</type><parameter>uzak_dosya</parameter></methodparam>
+   <methodparam><type>string</type><parameter>uzak_dosa</parameter></methodparam>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
-   <methodparam><type>int</type><parameter>kip</parameter></methodparam>
+   <methodparam><type>int</type><parameter>mode</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>başlama_yeri</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>ftp_nb_fput</function> işlevi FTP sunucusuna dosya yüklerken <parameter>dt</parameter> ile belirtilen dosya tanıtıcısı kullanır.
-  </para>
-  <para>
-   Bu işlevin <function>ftp_put</function> işlevinden farkı bu işlevin
-   dosyayı eşzamansız olarak yüklemesidir. Yani yükleme işlemi sırasında
-   başka işlemler yapabilirsiniz.
+   <function>ftp_fput</function> işlevi FTP sunucusuna dosya yüklerken
+   <parameter>dt</parameter>  ile belirtilen dosya tanıtıcısı kullanır.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -39,7 +35,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>uzak_dosya</parameter></term>
+     <term><parameter>uzak_dosa</parameter></term>
      <listitem>
       <para>
        Dosyanın FTP sunucusundaki yolu.
@@ -59,7 +55,7 @@
      <term><parameter>kip</parameter></term>
      <listitem>
       <para>
-       Aktarım kipi. <constant>FTP_ASCII</constant> veya
+       Aktarım kipi.  <constant>FTP_ASCII</constant> veya
        <constant>FTP_BINARY</constant> olabilir.
       </para>
      </listitem>
@@ -67,7 +63,7 @@
     <varlistentry>
      <term><parameter>başlama_yeri</parameter></term>
      <listitem>
-      <para></para>
+      <para>Yüklemenin başlatılacağı bayt konumu.</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -76,57 +72,75 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <constant>FTP_FAILED</constant> veya <constant>FTP_FINISHED</constant>
-   ya da <constant>FTP_MOREDATA</constant> döner.
+   &return.success;
   </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>ftp_nb_fput</function> örneği</title>
+    <title>- <function>ftp_fput</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
-$file = 'index.php';
-
+// Okumak için bir dosya açalım
+$file = 'somefile.txt';
 $fp = fopen($file, 'r');
 
+// temel bağlantıyı kuralım
 $conn_id = ftp_connect($ftp_server);
 
+// Kullanıcı adı ve parola ile oturum açalım
 $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
 
 // yüklemeyi başlatalım
-$ret = ftp_nb_fput($conn_id, $file, $fp, FTP_BINARY);
-while ($ret == FTP_MOREDATA) {
-
-   // Başka şeyler yapalım
-   echo ".";
-
-   // Yüklemeye devam...
-   $ret = ftp_nb_continue($conn_id);
-}
-if ($ret != FTP_FINISHED) {
-   echo "Dosya yüklenirken bir hata oluştu...";
-   exit(1);
+if (ftp_fput($conn_id, $file, $fp, FTP_ASCII)) {
+    echo "$file sorunsuzca yüklendi.\n";
+} else {
+    echo "$file yüklenirken bir sorun çıktı.\n";
 }
 
+// bağlantıyı ve dosya tanıtıcısını kapatalım
+ftp_close($conn_id);
 fclose($fp);
+
 ?>
 ]]>
     </programlisting>
    </example>
   </para>
  </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.0</entry>
+       <entry>
+        <parameter>başlama_yeri</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><function>ftp_nb_put</function></member>
-    <member><function>ftp_nb_continue</function></member>
     <member><function>ftp_put</function></member>
-    <member><function>ftp_fput</function></member>
+    <member><function>ftp_nb_fput</function></member>
+    <member><function>ftp_nb_put</function></member>
    </simplelist>
   </para>
  </refsect1>
