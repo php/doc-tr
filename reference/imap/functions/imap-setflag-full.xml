@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: f4871bb5ba05d97dccbeb542aed154ec00f4dda5 Maintainer: haluk Status: ready -->
+<refentry xml:id="function.imap-setflag-full" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>imap_setflag_full</refname>
+  <refpurpose>İletileri imler</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>imap_setflag_full</methodname>
+   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
+   <methodparam><type>string</type><parameter>aralık</parameter></methodparam>
+   <methodparam><type>string</type><parameter>im</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>NIL</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <parameter>aralık</parameter> içindeki iletilerin imlerine
+   belirtilen <parameter>im</parameter> imini ekler.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    &imap.imap-stream.description;
+    <varlistentry>
+     <term><parameter>aralık</parameter></term>
+     <listitem>
+      <para>
+       İleti numaraları aralığı. İmlenecek iletileri <literal>X,Y</literal>
+       biçeminde, döndürülecek iletileri ise <literal>X:Y</literal> biçeminde
+       belirtebilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>im</parameter></term>
+     <listitem>
+      <para>
+       <link xlink:href="&url.rfc;2060">RFC 2060</link> tarafından
+       tanımlanmış şu imler belirtilebilir: <literal>\Seen</literal>
+       (okundu), <literal>\Answered</literal> (yanıtlandı),
+       <literal>\Flagged</literal> (imlendi), <literal>\Deleted</literal>
+       (silindi) ve <literal>\Draft</literal> (taslak).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Şu seçeneklerden sadece birini içerebilir:
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          <constant>ST_UID</constant> - <parameter>aralık</parameter>
+          değiştirgesi sıra numaraları yerine eşsiz kimlikleri içerir.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>imap_setflag_full</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$pk = imap_open("{imap.example.org:143}", "birey", "parola")
+     or die("bağlanılamadı: " . imap_last_error());
+
+$durum = imap_setflag_full($pk, "2,5", "\\Seen \\Flagged");
+
+echo gettype($durum) . "\n";
+echo $durum . "\n";
+
+imap_close($pk);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imap_clearflag_full</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

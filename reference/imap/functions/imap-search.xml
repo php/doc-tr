@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: f4871bb5ba05d97dccbeb542aed154ec00f4dda5 Maintainer: haluk Status: ready -->
+<refentry xml:id="function.imap-search" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>imap_search</refname>
+  <refpurpose>Belirtilen kurala uyan iletileri bir dizi içinde döndürür
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>imap_search</methodname>
+   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
+   <methodparam><type>string</type><parameter>kural</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>SE_FREE</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>NIL</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen <acronym>IMAP</acronym> akımı üzerinde açılmış posta kutusunda
+   bir arama gerçekleştirir.
+  </para>
+  <para>
+   Örneğin, "annem" tarafından gönderilen yanıtlanmamış tüm iletileri
+   döndürmek için şu kural kullanılır: "UNANSWERED FROM annem". Arama işlemi
+   harf büyüklüğüne duyarsızdır. UW c-client kaynak kodundan okunan kural
+   listesi eksik veya yanlış olabilir (ayrıca bakınız: <link
+   xlink:href="&url.rfc;2060">RFC2060</link>, bölüm 6.4.4).
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    &imap.imap-stream.description;
+    <varlistentry>
+     <term><parameter>kural</parameter></term>
+     <listitem>
+      <para>
+       Boşluk ayraçlı bir dizge olup aşağıdaki anahtar sözcüklere izin
+       verilir. Çok sözcüklü değiştirgelerin çift tırnak içine alınması
+       gerekir (örnek: <literal>FROM "joey smith"</literal>).
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          ALL - Kuralın kalanı ile eşleşen tüm iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          ANSWERED - \\ANSWERED (yanıtlandı) imli iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          BCC "dizge" - Bcc: başlığında "dizge" bulunan iletiler döndürülür
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          BEFORE "tarih" - Date: başlığındaki "tarih" tarihinden önceki
+          iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          BODY "dizge" - İleti gövdesindeki "dizge" ile eşleşen iletiler
+          döndürülür
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          CC "dizge" - Cc: başlığında "dizge" bulunan iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          DELETED - silinen iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          FLAGGED - \\FLAGGED imli (bazan Önemli ve Acil diye de nitelenir)
+          iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          FROM "dizge" - From: başlığında "dizge" bulunan iletiler
+          döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          KEYWORD "dizge" - Bir anahtar sözcük olarak "ileti" içeren iletiler
+          döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          NEW - Yeni iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          OLD - Eski iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          ON "tarih" - Date: başlığında "tarih" bulunan iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          RECENT - \\RECENT (en yeni) imli iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          SEEN - \\SEEN (okundu) imli iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          SINCE "tarih" - Date: başlığında "tarih" tarihinden sonraki
+          tarihli iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          SUBJECT "dizge" - Subject: başlığında "dizge" bulunan iletiler
+          döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          TEXT "dizge" - "dizge" metniyle eşleşen iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          TO "dizge" -  To: başlığında "dizge" bulunan iletiler
+          döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          UNANSWERED - Yanıtlanmamış iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          UNDELETED - Silinmiş iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          UNFLAGGED - İmlenmemiş iletiler döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          UNKEYWORD "dizge" - "dizge" anahtar sözcüğünü içermeyen iletiler
+          döndürülür.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          UNSEEN - Henüz okunmamış iletiler döndürülür.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Tek geçerli değer, iletilerin dizi içinde ileti numaralarıyla değil
+       eşsiz kimlikleriyle dönmesini sağlayan <constant>SE_UID</constant>
+       sabitidir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>karküm</parameter></term>
+     <listitem>
+      <para>Karakter kümesi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+  İleti numaralarını veya eşsiz kimlikleri içeren bir dizi döner.
+  </para>
+  <para>
+   <parameter>kural</parameter> ile belirtilen arama kuralı anlaşılamazsa
+   veya kurala uyan hiçbir ileti yoksa &false; döner.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>4.3.3</entry>
+       <entry>
+        <parameter>karküm</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imap_listscan</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
