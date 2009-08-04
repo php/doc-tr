@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 22f21df28b34f7333dc5430ff1ba8be50ca0bf99 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fe2f5b6b7c7c4ce9ed01c36916094037e11b4172 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-clutimage">
  <refnamediv>
   <refname>Imagick::clutImage</refname>
-  <refpurpose>Resmin renklerini bir renk tablosuna göre değiştirir</refpurpose>
+  <refpurpose>Resmin renklerini değiştirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -12,14 +12,12 @@
   <methodsynopsis>
    <type>bool</type><methodname>Imagick::clutImage</methodname>
    <methodparam><type>Imagick</type><parameter>renk_tablosu</parameter></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>kanal</parameter><initializer>Imagick::CHANNEL_ALL</initializer></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter>kanal</parameter><initializer>Imagick::CHANNEL_DEFAULT</initializer></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Resmin renklerini belirtilen renk tablosuna göre değiştirir. İsteğe bağlı
-   ikinci değiştirgede renklerin değiştirileceği kanal belirtilir. Bu yöntem,
-   derleme sırasında ImageMagick kütüphanesinin 6.3.5-7 veya sonraki bir
-   sürümü kuruluysa kullanılabilir.
+   ikinci değiştirgede renklerin değiştirileceği kanal belirtilir.
+   &imagick.method.available.0x636;
   </para>
  </refsect1>
 
@@ -41,8 +39,8 @@
       <para>
        Normalde <link linkend="imagick.constants.channel">kanal türü
        sabitleri</link>nden biri, ancak bitsel işleçler kullanılarak birden
-       fazla kanal belirtilebilir. <constant>Imagick::CHANNEL_ALL</constant>
-       öntanımlıdır.
+       fazla kanal belirtilebilir. Belirtilmezse sadece öntanımlı kanallar
+       değiştirilir.
       </para>
      </listitem>
     </varlistentry>
@@ -71,8 +69,8 @@
 $image = new Imagick('test.jpg');
 $clut = new Imagick();
 $clut->newImage(1, 1, new ImagickPixel('black'));
-$image->clutImage( $clut );
-$image->writeImage( 'test_out.jpg' );
+$image->clutImage($clut);
+$image->writeImage('test_out.jpg');
 ?>
 ]]>
     </programlisting>
