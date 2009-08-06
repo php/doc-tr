@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
 <!-- EN-Revision: f4871bb5ba05d97dccbeb542aed154ec00f4dda5 Maintainer: haluk Status: ready -->
-<refentry xml:id="function.imap-setflag-full" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+<refentry xml:id="function.imap-clearflag-full" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
-  <refname>imap_setflag_full</refname>
-  <refpurpose>İletileri imler</refpurpose>
+  <refname>imap_clearflag_full</refname>
+  <refpurpose>İletilerdeki imleri temizler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>imap_setflag_full</methodname>
+   <type>bool</type><methodname>imap_clearflag_full</methodname>
    <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
    <methodparam><type>string</type><parameter>aralık</parameter></methodparam>
-   <methodparam><type>string</type><parameter>im</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>NIL</initializer></methodparam>
+   <methodparam><type>string</type><parameter>imler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>aralık</parameter> içindeki iletilerin imlerine
-   belirtilen <parameter>im</parameter> imini ekler.
+   Belirtilen <parameter>aralık</parameter> içindeki iletilerden
+   <parameter>imler</parameter> ile belirtilen imleri siler.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -29,20 +29,19 @@
      <term><parameter>aralık</parameter></term>
      <listitem>
       <para>
-       İleti numaraları aralığı. İmlenecek iletileri X,Y  biçeminde
-       sıralayabilir veya X:Y biçeminde bir aralık olarak belirtebilirsiniz.
+       İleti numaraları aralığı. İstenen iletileri X,Y  biçeminde sıralayabilir
+       veya X:Y biçeminde bir aralık olarak belirtebilirsiniz.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>im</parameter></term>
+     <term><parameter>imler</parameter></term>
      <listitem>
       <para>
-       <link xlink:href="&url.rfc;2060">RFC 2060</link> tarafından
-       tanımlanmış şu imler belirtilebilir: <literal>\Seen</literal>
-       (okundu), <literal>\Answered</literal> (yanıtlandı),
-       <literal>\Flagged</literal> (imlendi), <literal>\Deleted</literal>
-       (silindi) ve <literal>\Draft</literal> (taslak).
+       <link xlink:href="&url.rfc;2060">RFC 2060</link>'ta belirtildiği gibi
+       silinecek imleri "\\Seen" (okundu), "\\Answered" (yanıtlandı),
+       "\\Flagged (imli)", "\\Deleted" (silindi), "\\Draft" (taslak) olarak
+       belirtebilirsiniz.
       </para>
      </listitem>
     </varlistentry>
@@ -50,12 +49,12 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Şu seçeneklerden sadece birini içerebilir:
+       Şunlardan gerekenleri içeren bir bit maskesidir:
        <itemizedlist>
         <listitem>
          <simpara>
           <constant>ST_UID</constant> - <parameter>aralık</parameter>
-          değiştirgesi sıra numaraları yerine eşsiz kimlikleri içerir.
+          değiştirgesinin eşsiz kimlikleri içerdiği varsayılır.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -71,34 +70,11 @@
    &return.success;
   </para>
  </refsect1>
- <refsect1 role="examples">
-  &reftitle.examples;
-  <para>
-   <example>
-    <title>- <function>imap_setflag_full</function> örneği</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$pk = imap_open("{imap.example.org:143}", "birey", "parola")
-     or die("bağlanılamadı: " . imap_last_error());
-
-$durum = imap_setflag_full($pk, "2,5", "\\Seen \\Flagged");
-
-echo gettype($durum) . "\n";
-echo $durum . "\n";
-
-imap_close($pk);
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
- </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><function>imap_clearflag_full</function></member>
+    <member><function>imap_setflag_full</function></member>
    </simplelist>
   </para>
  </refsect1>
