@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a36b42f54ddfeab7d533d50e12b9b410ac1dbc66 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: aa1104a02a193493b3e141604b61f41ae2531d28 Maintainer: nilgun Status: ready -->
 <appendix xml:id="ini" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>&php.ini; yönergeleri</title>
 
@@ -1721,7 +1721,8 @@
        magic_quotes_gpc</link></entry>
        <entry>"1"</entry>
        <entry>PHP_INI_PERDIR</entry>
-       <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL. PHP 6.0.0'da kaldırıldı.</entry>
+       <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL. PHP 5.3.0'dan itibaren kullanımı
+       önerilmemektedir. PHP 6.0.0'da kaldırılmıştır.</entry>
       </row>
       <row>
        <entry><link linkend="ini.magic-quotes-runtime">
@@ -2712,7 +2713,8 @@
        <entry><link linkend="ini.safe-mode">safe_mode</link></entry>
        <entry>"0"</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>PHP 6.0.0'da kaldırıldı.</entry>
+       <entry>PHP 5.3.0'dan itibaren kullanımı önerilmemektedir. PHP 6.0.0'da
+       kaldırılmıştır.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-allowed-env-vars">
@@ -4136,7 +4138,8 @@ auto_prepend_file=security.php
        <para>
         İşlev çağrısı sırasında değiştirgeler gönderimli aktarıldığında
         uyarı verilip verilmeyeceğini belirler. Bu yöntemin kullanımı
-        önerilmemekte olup PHP/Zend'in ileri sürümlerinde kaldırılabilir.
+        PHP 5.3.0'dan itibaren önerilmemekte olup PHP/Zend'in ileri
+        sürümlerinde kaldırılabilir.
         Hangi değiştirgelerin gönderimli aktarılacağını işlev bildiriminde
         belirtmek daha iyidir. Bunu yapıp, betiğinizin, dilin gelecekteki
         sürümlerinde de düzgün çalışabilmesi için bu yönergeye sıfır
@@ -4393,7 +4396,7 @@ auto_prepend_file=security.php
         <entry>register_long_arrays</entry>
         <entry>"1"</entry>
         <entry>PHP_INI_PERDIR</entry>
-        <entry>PHP 5.0.0 ve sonrasında mevcuttur.</entry>
+        <entry>PHP 5.0.0 ve sonrasında mevcuttur. PHP 5.3.0'dan itibaren kullanımı önerilmemektedir. PHP 6.0.0'da kaldırılmıştır.</entry>
        </row>
        <row>
         <entry>post_max_size</entry>
@@ -4688,9 +4691,9 @@ auto_prepend_file=security.php
         diziler</link>i kullanmak daha iyidir.
        </simpara>
        <simpara>
-        Bu yönerge PHP 5.0.0'da kullanılabilir hale gelip PHP 6.0.0'da
-        kullanımdan kaldırılmıştır.
+        Bu yönerge PHP 5.0.0'da kullanılabilir hale gelmiştir.
        </simpara>
+       &warn.deprecated.feature-5-3-0.removed-6-0-0;
       </listitem>
      </varlistentry>
 
@@ -4978,6 +4981,16 @@ auto_prepend_file=security.php
         <envar>PATH</envar> ortam değişkenindeki gibidir: Dizinler Unix'te
         iki nokta imleriyle, Windows'ta ise noktalı virgüllerle ayrılır.
        </para>
+       <para>
+        PHP, dahil edilecek dosyaları <parameter>include_path</parameter>
+        içindeki yollarda her dosya için tek tek sırayla arar. Önce ilk yola
+        bakar, sonra diğerine, böyle gider. Dosyayı bulursa döner, bulamazsa
+        bir <link linkend="errorfunc.constants.errorlevels.e-warning">
+        uyarı</link> veya bir <link
+        linkend="errorfunc.constants.errorlevels.e-error">hata</link> verir.
+        Bu yönergenin değerini betiğinizin çalışması sırasında
+        <function>set_include_path</function> işleviyle değiştirebilirsiniz.
+        </para>
        <para>
         <example>
          <title>Unix <code>include_path</code></title>
