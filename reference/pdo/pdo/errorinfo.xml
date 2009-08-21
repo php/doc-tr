@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 751d46fd605869500864d948489ce700c06ba4d7 Maintainer: nilgun Status: ready -->
+<refentry xml:id="pdo.errorinfo" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>PDO::errorInfo</refname>
+  <refpurpose>Veritabanındaki son işlemle ilgili hata bilgisini döndürür
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>PDO::errorInfo</methodname>
+   <void/>
+  </methodsynopsis>
+  <para>
+   Veritabanındaki son işlemle ilgili hata bilgisini döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Veritabanındaki son işlemle ilgili hata bilgisini içeren bir dizi döndürür.
+   Dizi şu alanları içerir:
+   <informaltable>
+    <tgroup cols='2'>
+     <thead>
+      <row>
+       <entry>Eleman</entry>
+       <entry>Bilgi</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>0</entry>
+       <entry>SQLSTATE hata kodu (ANSI SQL standardında tanımlanmış
+       beş karakterlik abecesayısal bir tanıtıcı).</entry>
+      </row>
+      <row>
+       <entry>1</entry>
+       <entry>Sürücüye özgü hatanın kodu.</entry>
+      </row>
+      <row>
+       <entry>2</entry>
+       <entry>Sürücüye özgü hatanın iletisi.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+
+  <note>
+   <para>
+    SQLSTATE hata kodu atanmamışsa veya sürücüye özgü hata kodu yoksa 0.
+    eleman hariç bütün elemanlar &null; içerir.
+    </para>
+  </note>
+
+  <para>
+   <function>PDO::errorInfo</function> yöntemi sadece veritabanına doğrudan
+   uygulanan işlemlerin hata bilgisini döndürür.
+   <function>PDO::prepare</function> veya <function>PDO::query</function> ile
+   bir <classname>PDOStatement</classname> nesnesi oluşturup deyim tanıtıcısı
+   üzerinde oluşan bir hatayla ilgili bilgi alacaksanız
+   <function>PDOStatement::errorInfo</function> yöntemini kullanmalısınız.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir DB2 veiitabanına kurulan bir PDO_ODBC bağlantısıyla ilgili
+    hata bilgisinin gösterilmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* Bir hata oluşturalım -- hatalı bir SQL sözdizimi  */
+$stmt = $dbh->prepare('bozuk sql');
+if (!$stmt) {
+    echo "\nPDO::errorInfo():\n";
+    print_r($dbh->errorInfo());
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+PDO::errorInfo():
+Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => near "bozuk": syntax error
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>PDO::errorCode</function></member>
+    <member><function>PDOStatement::errorCode</function></member>
+    <member><function>PDOStatement::errorInfo</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
