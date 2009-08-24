@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 1e7507433ca540f5a2719ac9d5e345567dcc9067 Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 1901c7be3f3953678bae879906709be6bf46010a Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.14 -->
 <refentry xml:id="function.func-get-args" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -51,6 +51,16 @@
         Bu işlev artık değiştirge listelerinde kullanılabilmektedir.
        </entry>
       </row>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        Bu işlev, çağrının yapıldığı dosyadaki bir işlev tanımında bulunan bir
+        <function>include</function> veya <function>require</function>
+        üzerinden dosyaya dahil edilen bir dosyadan yani, asıl dosyanın etki
+        alanının dışından) çağrılırsa artık bir uyarı üretip &false;
+        döndürmektedir.
+       </entry>
+      </row>
      </tbody>
     </tgroup>
    </informaltable>
@@ -97,6 +107,49 @@ Değiştirge sayısı: 3<br />
 0. değiştirge: 1<br />
 1. değiştirge: 2<br />
 2. değiştirge: 3<br />
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- PHP 5.3 sonrası <function>func_get_arg</function>örneği</title>
+    <programlisting role="php">
+<![CDATA[
+test.php
+<?php
+function foo() {
+    include './fga.inc';
+}
+
+foo('First arg', 'Second arg');
+?>
+
+fga.php
+<?php
+
+$arg = func_get_arg1(1);
+var_export($arg);
+
+?>
+]]>
+    </programlisting>
+    <para>
+     PHP 5.3 öncesi için çıktı:
+    </para>
+    <screen>
+<![CDATA[
+'Second arg'
+]]>
+    </screen>
+    <para>
+     PHP 5.3 ve sonrası için çıktı:
+    </para>
+    <screen>
+<![CDATA[
+Warning: func_get_arg():  Called from the global scope - no function
+context in /home/torben/Desktop/code/ml/fga.inc on line 3
+false
 ]]>
     </screen>
    </example>
