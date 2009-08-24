@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- EN-Revision: 751d46fd605869500864d948489ce700c06ba4d7 Maintainer: nilgun Status: ready -->
+<!-- $Revision$ -->
+<refentry xml:id="pdostatement.fetchcolumn" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>PDOStatement->fetchColumn</refname>
+  <refpurpose>Sonuç kümesindeki sonraki satırdan tek bir sütun döndürür
+  </refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>PDOStatement::fetchColumn</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>sütunnum</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+
+  <para>
+   Sonuç kümesindeki sonraki satırdan tek bir sütun döndürür; ortada satır
+   kalmamışsa &false; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>sütunnum</parameter></term>
+     <listitem>
+      <para>
+       Sütunun numarası. İlk sütunun indisi 0'dır. Değiştirgede hiçbir değer
+       belirtilmemişse ilk sütunun değeri döner.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Sütun değerini bir dizge olarak döndürür.
+  </para>
+  <warning>
+   <para>
+    Veriyi almak için <function>PDOStatement::fetchColumn</function> yöntemini
+    kullanırsanız aynı satırdan artık başka bir sütun döndüremezsiniz.
+   </para>
+  </warning>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Sonraki satırın ilk sütununu döndürmek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sth = $dbh->prepare("SELECT isim, renk FROM meyveler");
+$sth->execute();
+
+/* Sonraki satırın ilk sütununu döndürelim */
+print("Sonuç kümesindeki sonraki satırın ilk sütunu:\n");
+$result = $sth->fetchColumn();
+print("name = $result\n");
+
+print("Sonuç kümesindeki sonraki satırın ikinci sütunu:\n");
+$result = $sth->fetchColumn(1);
+print("colour = $result\n");
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Sonuç kümesindeki sonraki satırın ilk sütunu:
+isim = limon
+Sonuç kümesindeki sonraki satırın ikinci sütunu:
+renk = kırmızı
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>PDO::query</function></member>
+    <member><function>PDOStatement::fetch</function></member>
+    <member><function>PDOStatement::fetchAll</function></member>
+    <member><function>PDO::prepare</function></member>
+    <member><function>PDOStatement::setFetchMode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

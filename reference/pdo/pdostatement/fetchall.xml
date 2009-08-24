@@ -1,0 +1,260 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 751d46fd605869500864d948489ce700c06ba4d7 Maintainer: nilgun Status: ready -->
+<refentry xml:id="pdostatement.fetchall" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>PDOStatement->fetchAll</refname>
+  <refpurpose>Sonuç kümesinin tüm satırlarını içeren bir dizi döndürür
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>PDOStatement::fetchAll</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>alım_tarzı</parameter><initializer>PDO::FETCH_BOTH</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sütunnum</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter><initializer>array()</initializer></methodparam>
+  </methodsynopsis>
+
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>alım_tarzı</parameter></term>
+     <listitem>
+      <para>
+       <function>PDOStatement::fetch</function> yönteminde açıklandığı gibi
+       döndürülen dizinin içeriğini belirleyen sabit.
+       <literal>PDO::FETCH_BOTH</literal> öntanımlıdır.
+      </para>
+      <para>
+       Sonuç kümesindeki tek bir sütunun tüm değerleri içeren bir dizi
+       döndürmek için <literal>PDO::FETCH_COLUMN</literal> belirtin. Bu
+       durumda hangi sütunun içeriğinin alınacağını
+       <parameter>sütunnum</parameter> ile belirtin.
+      </para>
+      <para>
+       Sonuç kümesindeki tek bir sütunun eşsiz değerleri içeren bir dizi
+       döndürmek için <literal>PDO::FETCH_COLUMN</literal> ile
+       <literal>PDO::FETCH_UNIQUE</literal> sabitini bit seviyesinde
+       VEYAlayın.
+      </para>
+      <para>
+       Belirtilen sütunun değerlerine göre gruplanmış bir ilişkisel dizi
+       döndürmek için <literal>PDO::FETCH_COLUMN</literal> ile
+       <literal>PDO::FETCH_GROUP</literal> sabitini bit seviyesinde
+       VEYAlayın.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sütunnum</parameter></term>
+     <listitem>
+      <para>
+       <parameter>alım_tarzı</parameter> değiştirgesinde
+       <literal>PDO::FETCH_COLUMN</literal> belirtildiği takdirde alınacak
+       sütun numarası burada belirtilir. İlk sütunun indisi
+       <literal>0</literal> olup öntanımlı değerdir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değiştirgeler</parameter></term>
+     <listitem>
+      <para>
+       Bu dizinin elemanları kurucuya değiştirge olarak aktarılır..
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Sonuç kümesinde kalan satırların tümünü bir dizi olarak döndürür. Dizinin
+   her elemanı birer satır içerir ve bu satır elemanları sütun değerlerini
+   içeren bir dizi ya da sütun isimlerinin özelliklere karşı düştüğü bir nesne
+   içerir.
+  </para>
+  <para>
+   Büyük sonuç kümelerini almak için bu yöntemi kullanmak sistem ve muhtemelen
+   ağ kaynaklarından aşırı taleplere yol açar. Tüm veriyi alıp PHP ile işleme
+   tabi tutmak yerine sonuç kümeleri üzerinde işlem yapmak için veritabanı
+   sunucusunu kullanmak daha iyi olabilir. Örneğin, SQL'de WHERE ve
+   SORT BY yan tümcelerini kullanarak, PHP'de işleme sokmadan önce sonuç
+   kümesini küçültebilirsiniz.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir sonuç kümesinde kalan tüm satırları almak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sth = $dbh->prepare("SELECT ad, renk FROM meyveler");
+$sth->execute();
+
+/* Sonuç kümesindeki tüm satırları alalım */
+print("Sonuç kümesindeki tüm satırlar:\n");
+$result = $sth->fetchAll();
+print_r($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Sonuç kümesindeki tüm satırlar:
+Array
+(
+    [0] => Array
+        (
+            [AD] => armut
+            [0] => armut
+            [RENK] => yeşil
+            [1] => yeşil
+        )
+
+    [1] => Array
+        (
+            [AD] => ahududu
+            [0] => ahududu
+            [RENK] => mor
+            [1] => mor
+        )
+
+)
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Sonuç kümesinden tek bir sütunun tüm değerlerini almak</title>
+    <para>
+     Aşağıdaki örnekte, SQL deyimi her satırda çok sayıda sütun döndürse bile
+     bu sonuç kümesinden tek bir sütunun tüm değerlerinin nasıl alınacağı
+     gösterilmiştir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sth = $dbh->prepare("SELECT isim, renk FROM meyveler");
+$sth->execute();
+
+/* İlk sütunun tüm değerlerini alalım */
+$result = $sth->fetchAll(PDO::FETCH_COLUMN, 0);
+var_dump($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array(3)
+(
+    [0] =>
+    string(5) => elma
+    [1] =>
+    string(4) => armut
+    [2] =>
+    string(10) => ahududu
+)
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Tüm değerleri tek bir sütuna göre gruplamak</title>
+    <para>
+     Aşağıdaki örnekte, sonuç kümesindeki belli bir sütunun değerlerine göre
+     gruplanmış bir ilişkisel dizini nasıl döndürüleceği gösterilmiştir. Dizi
+     üç anahtar içerir: Elma ve armut iki farklı renk içeren iki dizi olarak
+     ahududu ise tek renk içeren bir dizi olarak döndürülür.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$insert = $dbh->prepare("INSERT INTO fruit(isim, renk) VALUES (?, ?)");
+$insert->execute(array('elma', 'yeşil'));
+$insert->execute(array('armut', 'sarı'));
+
+$sth = $dbh->prepare("SELECT isim, renk FROM meyveler");
+$sth->execute();
+
+/* Değerleri ilk sütuna göre gruplayalım */
+var_dump($sth->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  ["elma"]=>
+  array(2) {
+    [0]=>
+    string(5) "yeşil"
+    [1]=>
+    string(3) "kırmızı"
+  }
+  ["armut"]=>
+  array(2) {
+    [0]=>
+    string(5) "yeşil"
+    [1]=>
+    string(6) "sarı"
+  }
+  ["ahududu"]=>
+  array(1) {
+    [0]=>
+    string(5) "mor"
+  }
+}
+
+]]>
+    </screen>
+   </example>
+
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>PDO::query</function></member>
+    <member><function>PDOStatement::fetch</function></member>
+    <member><function>PDOStatement::fetchColumn</function></member>
+    <member><function>PDO::prepare</function></member>
+    <member><function>PDOStatement::setFetchMode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
