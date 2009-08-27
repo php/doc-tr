@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: ddcceba83ec7cff59b6c46177d2d0fb2d5ad6a6b Maintainer: nilgun Status: ready -->
+<refentry xml:id="ref.pdo-4d.sql4d" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>4D tarafından kabul edilebilen SQL</refname>
+  <refpurpose>PDO ve SQL 4D</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>
+   4D, ANSI 89 standardıyla tam uyumludur. Kullanılabilecek komutlarla ilgili
+   ayrıntılar için 4D SQL belgelerini okuyun. Kılavuz <link
+   xlink:href="&url.4d.doc;">&url.4d.doc;</link> adresinden edinilebilir.
+   Aşağıda 4D karakteristikleri listelenmiştir (ayrıntılı olmamakla birlikte
+   amaca hizmet etmektedir):
+  </para>
+  <para>
+   <table>
+    <title>4D SQL'in başlıca özellikleri</title>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Özellik</entry>
+        <entry>Açıklaması</entry>
+        <entry>Ek bilgi</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>INTEGER</entry>
+        <entry>INT desteklenen tamsayı türüdür. SQL'i INT kullanacak şekilde
+        değiştirir.</entry>
+        <entry></entry>
+       </row>
+       <row>
+        <entry>UNION</entry>
+        <entry>Desteklenmemektedi. Ayrık sorgular yapar.</entry>
+        <entry></entry>
+       </row>
+       <row>
+        <entry>LEFT JOIN</entry>
+        <entry>SQL 89 gösterimi kullanılır (PDO_4D, 3. örneğine bakınız)
+        </entry>
+        <entry></entry>
+       </row>
+       <row>
+        <entry>SELECT 1 + 1;</entry>
+        <entry>SELECT 1 + 1 FROM _USER_SCHEMAS;</entry>
+        <entry></entry>
+       </row>
+       <row>
+        <entry>FLOAT</entry>
+        <entry>Bir SQL 4D işlevi (ROUND, TRUNC veya TRUNCATE) ile  FLOAT
+        değere dönüşüm.</entry>
+        <entry>PDO_4D v1.0'da desteklenmemektedir.</entry>
+       </row>
+       <row>
+        <entry>Desteklenen türler: 4D tarafından desteklenen veri türlerinden
+        biri. Bir INTEGER sütuna dizge olarak '1' yerleştirilebilir.</entry>
+        <entry>Türe uyum sağlamak için ZQL sorgunuzda veya PHP kodunuzda
+        değişiklik yapın</entry>
+        <entry>Desteklenmiyor.</entry>
+       </row>
+       <row>
+        <entry><function>PDO::execute($satır)</function> sadece
+        <literal>TEXT</literal> türündeki tablo sütunları ile çalışır.</entry>
+        <entry>Doğru türleri ve hazır deyimleri kullanın</entry>
+        <entry>PDO eklentisi tüm değerlere execute() üzerinden dizgeye dönüşüm
+        uygular ve SQL veritabanının bu değerleri çözümleyeceğini umar.
+        </entry>
+       </row>
+       <row>
+        <entry>SELECT NULL FROM TABLE</entry>
+        <entry>Seçim listesinde &null; sabitinin kullanımına izin verilmez.
+        </entry>
+        <entry>&null; sabitini kullanmayın. Tablodan çıkarın.</entry>
+       </row>
+       <row>
+        <entry>SELECT * FROM TABLE WHERE 1</entry>
+        <entry>WHERE yan tümcesinde bir sabit kullanılamaz.</entry>
+        <entry><literal>1 = 1</literal> kullanın.</entry>
+       </row>
+       <row>
+        <entry>SHOW TABLES</entry>
+        <entry>Tablolar, şemalar, indisler vs. 7 tane 4D tablosu olarak
+        listelenir.</entry>
+        <entry>
+         <literal>_USER_TABLES</literal>,  <literal>_USER_COLUMNS</literal>,
+         <literal>_USER_INDEXES</literal>,
+         <literal>_USER_CONSTRAINTS</literal>,
+         <literal>_USER_IND_COLUMNS</literal>,
+         <literal>_USER_CONS_COLUMNS</literal>,
+         ve <literal>_USER_SCHEMAS</literal> kullanın.
+        </entry>
+       </row>
+       <row>
+        <entry>SQL yapısal ayracı</entry>
+        <entry>SQL elemanlarını (tablolar, alanlar, kullanıcılar, gruplar,
+        şema, birincil anahtar, vb.) öncelemek için, kapatan köşeli ayraçlar
+        yinelenmeli ve betimleyicinin tamamı köşeli ayraçlar arasına
+        alınmalıdır.
+        </entry>
+        <entry>
+         SQL nesnelerini korumak için şu işlevi kullanın ve ardından köşeli
+         ayraçlar arasına yerleştirin:
+         <literal>str_replace(']',']]', $table)</literal>.
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+  </para>
+  <note>
+   <para>
+     11.3 ve öncesi sürümlerde bir tablonun oluşturulması sırasında
+     <literal>id INT PRIMARY KEY</literal> SQL sözdizimini kullanmak mümkün
+     değildi. 11.4 sürümünden itibaren bu yetersizlik düzeltilmiştir. PDO_4D
+     ile en az 11.4 sürümünün kullanımını öneririz.
+   </para>
+  </note>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
