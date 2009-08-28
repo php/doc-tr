@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 876c81c602fe21a5404b74ed5e412198f632eac0 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6e6a7b535ac29efc91c24d64c74cc68c756ad001 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-merge" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_merge</refname>
@@ -170,28 +170,39 @@ Array
 ]]>
     </screen>
     <para>
-     Dizileri tamamen korumak ve önceki anahtarların üzerine yazılmasını
-     engellemek için bu işlevi kullanmak yerine dizileri birbirine
-     <literal>+</literal> işleci ile ekleyebilirsiniz:
+     İkinci dizideki elemanlar birinci diziye eklerken sirinci dizideki
+     elemanların üzerine yazılmaması ve yeniden indislenmemesi için
+     <literal>+</literal> (dizi birleştirme) işlecini kullanın:
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-$dizi1 = array();
-$dizi2 = array(1 => "veri");
+$dizi1 = array(0 => 'sıfır_a', 2 => 'iki_a', 3 => 'üç_a');
+$dizi2 = array(1 => 'bir_b', 3 => 'üç_b', 4 => 'dört_b');
 $sonuç = $dizi1 + $dizi2;
+
+var_dump($sonuç);
 ?>
 ]]>
     </programlisting>
     <para>
-     Sayısal anahtarlar da korunacağından ilişkiler de korunmuş olur.
+     Birinci dizideki anahtarlar korunur. Bir anahtar iki dizide de mevcutsa
+     birincisi kullanılır ikinci dizideki yok sayılır.
     </para>
     <screen role="php">
 <![CDATA[
-Array
-(
-    [1] => data
-)
+array(5) {
+  [0]=>
+  string(9) "sıfır_a"
+  [2]=>
+  string(5) "iki_a"
+  [3]=>
+  string(6) "üç_a"
+  [1]=>
+  string(5) "bir_b"
+  [4]=>
+  string(7) "dört_b"
+}
 ]]>
     </screen>
    </example>

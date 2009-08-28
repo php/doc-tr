@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 04077dd209c5fb9de2b55fcaf57cd4beef8c4273 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fda91bbd0d57c85c16c5beed30cdafa8ac385b5f Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -1583,7 +1583,7 @@ AC
     <programlisting role="php">
 <![CDATA[
 <?php
-
+// --------------------
 // Aşağıdaki ifadelerde ilk terim sonucu belirlediğinden ikinci
 // terime hiç bakılmayacak, yani foo() işlevi hiç çağrılmayacaktır.
 $a = (false && foo());
@@ -1591,14 +1591,28 @@ $b = (true  || foo());
 $c = (false and foo());
 $d = (true  or  foo());
 
+// --------------------
 // "||" işlecinin önceliği "or" işlecinden yüksektir.
-$e = false || true; // $e değişkenine true atanır
-$f = false or true; // $f değişkenine false atanır
+// İfadenin sonucu $e'ye atanır (false || true)
+// Tıpkı şöyle: ($e = (false || true))
+$e = false || true;
+
+// false sabiti $f'ye atanır ve true yoksayılır
+// Tıpkı böyle: (($e = false) or true)
+$f = false or true;
+
 var_dump($e, $f);
 
+// --------------------
 // "&&" işlecinin önceliği "and" işlecinden yüksektir.
-$g = true && false;  // $g değişkenine false atanır
-$h = true and false; // $h değişkenine true atanır
+// İfadenin sonucu $g'ye atanır (true && false)
+// Tıpkı böyle: ($g = (true && false))
+$g = true && false;
+
+// true sabiti $h'ya atanır ve false yoksayılır
+// Tıpkı böyle: (($h = true) and false)
+$h = true and false;
+
 var_dump($g, $h);
 ?>
 ]]>
