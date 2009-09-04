@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 04077dd209c5fb9de2b55fcaf57cd4beef8c4273 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 607639bdac48700eefea5c4a8c05940e9bf90c5a Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, dirt, sezer -->
  <chapter xml:id="language.exceptions" xmlns="http://docbook.org/ns/docbook">
   <title>İstisnalar</title>
@@ -131,21 +131,30 @@ string(4) "foo!"
 class Exception
 {
     protected $message = 'Bilinmeyen istisna';  // istisna iletisi
+    private   $string;                          // __toString önbelleği
     protected $code = 0;                     // kullanıcı tanımlı istisna kodu
     protected $file;                         // istisnanın kaynak dosyası
     protected $line;                  // istisnanın kaynak dosyasındaki satırı
+    private   $trace;                           // geriye doğru hata izleme
+    private   $previous;              // istisnalar iç içe ise önceki istisna
 
-    function __construct($message = null, $code = 0);
 
-    final function getMessage();                // istisna iletisi
-    final function getCode();                   // istisnanın kodu
-    final function getFile();                   // kaynak dosya
-    final function getLine();                   // kaynak dosya satırı
-    final function getTrace();                  // backtrace() dizisi
-    final function getTraceAsString();          // trace için biçemlenmiş
-                                                // karakter dizisi
+
+    public function __construct($message = null, $code = 0,
+                                  Exception $previous = null);
+
+
+    final private function __clone();           // İstisna kopyalamayı engeller
+    final public function getMessage();         // istisna iletisi
+    final public function getCode();            // istisnanın kodu
+    final public function getFile();            // kaynak dosya
+    final public function getLine();            // kaynak dosya satırı
+    final public function getTrace();           // backtrace() dizisi
+    final public function getTraceAsString();   // biçemli hata izleme dizgesi
+    final public  function getPrevious();       // önceki istisna
+
     /* Geçersiz kılınabilir */
-    function __toString();  // görüntüleme için biçemlenmiş karakter dizisi
+    public function __toString();  // görüntüleme için biçemlenmiş dizge
 }
 ?>
 ]]>
@@ -161,6 +170,13 @@ class Exception
     sağlayabilmek için <link linkend="language.oop5.magic"
     >__toString()</link> yöntemi geçersiz kılınabilir.
    </para>
+   <note>
+    <para>
+     İstisnaların kopyaları yapılamaz. Bir istisnanın <link
+     linkend="language.oop5.cloning">kopyasını</link> yapmaya çalışmak ölümcül
+     hatayla (<literal>E_FATAL</literal> seviyesinden bir hata) ile sonuçlanır.
+    </para>
+   </note>
    <example>
     <title>- <classname>Exception</classname> sınıfının genişletilmesi</title>
     <programlisting role="php">
@@ -172,11 +188,12 @@ class Exception
 class MyException extends Exception
 {
     // İstisnayı yeniden tanımlayalım, böylece ileti seçimlik olmaktan çıkar
-    public function __construct($message, $code = 0) {
+    public function __construct($message, $code = 0,
+                                Exception $previous = null) {
         // biraz kod
 
         // her şeyin düzgün atandığından emin olalım
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     // nesnenin özelleştirilmiş karakter dizisi gösterimi
@@ -234,7 +251,7 @@ try {
 }
 
 // Çalışmaya devam et
-var_dump($o);
+var_dump($o);  // Null
 echo "\n\n";
 
 
@@ -249,7 +266,7 @@ try {
 }
 
 // Çalışmaya devam et
-var_dump($o);
+var_dump($o);  // Null
 echo "\n\n";
 
 
@@ -261,7 +278,7 @@ try {
 }
 
 // Çalışmaya devam et
-var_dump($o);
+var_dump($o);  // Null
 echo "\n\n";
 
 
@@ -273,7 +290,7 @@ try {
 }
 
 // Çalışmaya devam et
-var_dump($o);
+var_dump($o); // TestException
 echo "\n\n";
 ?>
 ]]>
