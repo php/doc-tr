@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 282e60fbe996cf4daf11c93d8f537e4273612398 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 19cbd580fd2bc41d87b31b82cefe6d862947c47e Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.string">
  <title><code>string</code></title>
 
@@ -239,11 +239,11 @@ echo 'Variables do not $expand $either';
     </simpara>
 
     <para>
-     Yorumlu metinler sınıf üyelerini ilklendirmek için kullanılamazlar.
+     Yorumlu metinler sınıf özelliklerini ilklendirmek için kullanılamazlar.
      PHP 5.3'ten beri bu sınırlama sadece değişken içeren yorumlu metinler
      için geçerlidir. Bunun yerine
-     <link linkend="language.types.string.syntax.nowdoc">yorumsuz metinler</link>
-     kullanılabilir.
+     <link linkend="language.types.string.syntax.nowdoc">yorumsuz metinler
+     </link>kullanılabilir.
     </para>
 
     <example>
@@ -336,7 +336,7 @@ EOD
    </example>
 
    <para>
-    PHP 5.3.0'dan itibaren, duruk değişkenleri ve sınıf üyelerini veya
+    PHP 5.3.0'dan itibaren, duruk değişkenleri ve sınıf özelliklerini veya
     sabitlerini yorumlu metin sözdizimini kullanarak ilklendirmek mümkündür:
    </para>
 
@@ -353,7 +353,7 @@ Burada  hiçbir şey yok...
 LABEL;
 }
 
-// Sınıf üyeleri ve sabitleri
+// Sınıf özellikleri ve sabitleri
 class foo
 {
  const BAR = <<<FOOBAR
@@ -463,8 +463,8 @@ Bu büyük 'A' basmalı: \x41]]></screen>
    <note>
     <para>
      Yorumlu metinlerin aksine yorumsuz metinler herhangi bir duruk veri
-     bağlamında kullanılabilirler. Sınıf üyelerini veya sabitlerini yorumsuz
-     metin kullanarak ilklendirme örneği:
+     bağlamında kullanılabilirler. Sınıf özelliklerini veya sabitlerini
+     yorumsuz metin kullanarak ilklendirme örneği:
     </para>
 
     <example>
@@ -666,12 +666,69 @@ echo "I'd like to have another {${ strrev('reeb') }}, hips";
      </programlisting>
     </informalexample>
 
+    <para>
+     Bu sözdizimini kullanan dizgeler içindeki değişkenler üzerinden de sınıf
+     özelliklerine erişmek mümkündür.
+    </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class foo {
+    var $bar = 'I am bar.';
+}
+
+$foo = new foo();
+$bar = 'bar';
+$baz = array('foo', 'bar', 'baz', 'quux');
+echo "{$foo->$bar}\n";
+echo "{$foo->$baz[1]}\n";
+?>
+]]>
+    </programlisting>
+   &example.outputs;
+   <screen>
+I am bar.
+I am bar.
+   </screen>
+   </informalexample>
+
     <note>
      <para>
-      İşlev ve yöntemlerin <literal>{$}</literal> içinde çağrılması PHP 5'tan
-      beri çalışmaktadır.
+      İşlev ve yöntem çağrılarının, duruk sınıf değişkenlerinin ve sınıf
+      sabitlerinin <literal>{$}</literal> içinde çağrılması PHP 5'ten
+      beri çalışmaktadır. Erişilen değer, dizgenin tanımlandığı etki alanındaki
+      bir değişkenin ismi olarak yorumlanır. Kaşlı ayraçların tek başına
+      kullanımı (<literal>{}</literal>), duruk sınıf değişkenlerinin veya sınıf
+      sabitlerinin değerlerine veya işlev ve yöntemlerin dönüş değerlerine
+      erişim için kullanılmaz.
      </para>
     </note>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Tüm hatalar gösterilsin.
+error_reporting(E_ALL);
+
+class beers {
+    const softdrink = 'rootbeer';
+    public static $ale = 'ipa';
+}
+
+$rootbeer = 'A & W';
+$ipa = 'Alexander Keith\'s';
+
+// Bu çalışır; çıktısı: I'd like an A & W
+echo "I'd like an {${beers::softdrink}}\n";
+
+// Bu da çalışır; çıktısı: I'd like an Alexander Keith's
+echo "I'd like an {${beers::$ale}}\n";
+?>
+]]>
+     </programlisting>
+    </informalexample>
 
    </sect4>
   </sect3>
@@ -829,7 +886,7 @@ $str[strlen($str)-1] = 'e';
 
   <para>
    <type>object</type> türler PHP 4'te daima <literal>"Object"</literal>
-   dizgesine dönüştürülür. Nesne üyelerinin değerlerini hata ayıklama
+   dizgesine dönüştürülür. Nesne özelliklerinin değerlerini hata ayıklama
    amacıyla basmak için aşağıdaki paragrafı okuyunuz. Nesne sınıfının ismini
    öğrenmek için <function>get_class</function> işlevini kullanınız. PHP 5
    itibariyle, uygulanabildiği takdirde, <link linkend="language.oop5.magic"
@@ -858,10 +915,10 @@ $str[strlen($str)-1] = 'e';
 
   <para>
    Çoğu PHP değeri kalıcı olarak saklamak amacıyla dizgelere
-   dönüştürülebilir. Bu yönteme serileştirme adı verilir ve
+   dönüştürülebilir. Bu yönteme dizgeleştirme adı verilir ve
    <function>serialize</function> işlevi tarafından gerçekleştirilir. Eğer
    PHP motoru <link linkend="ref.wddx">WDDX</link> desteğiyle derlenmişse PHP
-   değerleri ayrıca iyi biçimli XML metin olarak da serileştirilebilir.
+   değerleri ayrıca iyi biçimli XML metin olarak da dizgeleştirilebilir.
   </para>
 
  </sect2>

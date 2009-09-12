@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 04077dd209c5fb9de2b55fcaf57cd4beef8c4273 Maintainer: yasar Status: ready -->
+<!-- EN-Revision: 19cbd580fd2bc41d87b31b82cefe6d862947c47e Maintainer: yasar Status: ready -->
  <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Değişkenler</title>
 
@@ -729,6 +729,41 @@ echo "$a $merhaba";
     <varname>${$a[1]}</varname> ve ikinci için
     <varname>${$a}[1]</varname>'dir.
    </simpara>
+
+   <simpara>
+    Sınıf özelliklerine değişken  özellik isimlerinden de erişilebilir.
+    Değişken özellik ismi çağrının yapıldığı etki alanı içinde çözümlenir.
+    Örneğin, <varname>$foo->$zam</varname> gibi bir değişkeniniz olsun; burada
+    <varname>$zam</varname>'ın etki alanı incelenir ve <varname>$foo</varname>
+    özelliğinin ismi olarak kullanılır. <varname>$zam</varname>, bir diziye
+    erişim için kullanılıyorsa yine aynı durum geçerlidir.
+   </simpara>
+
+   <para>
+    <example>
+     <title>- Değişken işlevi örneği</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class foo {
+    var $zam = 'Buna zam derler.';
+}
+
+$foo = new foo();
+$zam = 'zam';
+$maz = array('foo', 'zam', 'maz', 'para');
+echo $foo->$zam . "\n";
+echo $foo->$maz[1] . "\n";
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+Buna zam derler.
+Buna zam derler.
+     </screen>
+    </example>
+   </para>
 
    <warning>
     <simpara>
