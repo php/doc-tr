@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 9511edb9f86e995399b840b0ed0fe98f50d6bd22 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d4c454a03907e2c201f5843f25f8f846b92905b2 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-recv">
  <refnamediv>
   <refname>socket_recv</refname>
@@ -17,7 +17,199 @@
    <methodparam><type>int</type><parameter>seçenekler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   &warn.undocumented.func;
+   <function>socket_recv</function> işlevi <parameter>soket</parameter> ile
+   belirtilen soketten <parameter>tampon</parameter> içindeki
+   <parameter>uzunluk</parameter> baytı okur. <function>socket_recv</function>
+   ayrıca, bağlantılı soketlerden veri toplama için de kullanılır. Buna ek
+   olarak işlevin davranışlarında değişiklik yapmak için bir veya daha fazla
+   sayıda seçenek belirtilebilir.
+  </para>
+  <para>
+   <parameter>tampon</parameter> gönderimli aktarılır, dolayısıyla işlevin
+   değiştirgeleri arasında bir değişken olarak yer almalıdır.
+   <function>socket_recv</function> tarafından <parameter>socket</parameter>
+   soketinden okunan veri <parameter>tampon</parameter>'a konarak döndürülür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>socket</parameter></term>
+     <listitem>
+      <para>
+       <function>socket_create</function> ile oluşturulmuş geçerli bir soket
+       özkaynağı.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><parameter>tampon</parameter></term>
+     <listitem>
+      <para>
+       Verinin alınacağı değişken burada belirtilir. Bir hata oluşursa,
+       bağlantı kesilirse veya alınacak bir veri yoksa
+       <parameter>tampon</parameter> içeriği olarak &null; atanır.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><parameter>uzunluk</parameter></term>
+     <listitem>
+      <para>
+       Okunacak azami bayt sayısını belirler.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Aşağıdaki seçeneklerin bitsel VEYAlanmış bir birleşimi.
+     </para>
+       <table>
+        <title>Olası <parameter>seçenekler</parameter></title>
+        <tgroup cols="2">
+         <tbody>
+          <row>
+           <entry><constant>MSG_OOB</constant></entry>
+           <entry>
+            Band dışı veri gönderilir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>MSG_EOR</constant></entry>
+           <entry>
+            Bir kayıt imi belirtir. Gönderilen veri kaydın tamamlanmasını
+            sağlar.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>MSG_EOF</constant></entry>
+           <entry>
+            Soketin gönderici tarafı kapatılır ve gönderilen verinin sonuna
+            bununla ilgili bir bildirim yerleştirilir. Gönderilen veri
+            aktarımın tamamlanmasını sağlar.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>MSG_DONTROUTE</constant></entry>
+           <entry>
+            Yönlendirme es geçilip doğrudan arabirim kullanılır.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Bir hata oluşmuşsa &false; yoksa alınan bayt sayısını döndürür. Oluşan
+   hatanın kodu <function>socket_last_error</function> ile açıklaması ise, elde
+   edilen hata kodu <function>socket_strerror</function> işlevine aktarılarak
+   alınabilir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>socket_recv</function> örneği</title>
+    <para>
+     Bu örnek, <xref linkend="sockets.examples" /> arasında <function>socket_recv</function> kullanan ilk örneğin yeniden yazılmışıdır.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+error_reporting(E_ALL);
+
+echo "<h2>TCP/IP Bağlantısı</h2>\n";
+
+/* HTTP hizmeti için portu öğrenelim. */
+$service_port = getservbyname('www', 'tcp');
+
+/* Hedef konağın IP adresini alalım. */
+$address = gethostbyname('www.example.com');
+
+/* Bir TCP/IP soketi oluşturalım. */
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+if ($socket === false) {
+    echo "socket_create() başısız oldu: sebep: " .
+    socket_strerror(socket_last_error()) . "\n";
+} else {
+    echo "OK.\n";
+}
+
+echo "'$service_port' portundun '$address' adresine bağlanmaya çalışılıyor...";
+$result = socket_connect($socket, $address, $service_port);
+if ($result === false) {
+    echo "socket_connect() başısız oldu:\nSebep: ($result) " .
+    socket_strerror(socket_last_error($socket)) . "\n";
+} else {
+    echo "OK.\n";
+}
+
+$in = "HEAD / HTTP/1.1\r\n";
+$in .= "Host: www.example.com\r\n";
+$in .= "Connection: Close\r\n\r\n";
+$out = '';
+
+echo "HTTP HEAD isteğini gönderelim...";
+socket_write($socket, $in, strlen($in));
+echo "OK.\n";
+
+echo "Yanıtı okuyalım:\n\n";
+$buf = 'Bu bir veri tamponu verisidir.';
+if (false !== ($bytes = socket_recv($socket, $buf, 2048, MSG_WAITALL))) {
+    echo "Read $bytes bytes from socket_recv(). Closing socket...";
+} else {
+    echo "socket_recv() failed; reason: " .
+    socket_strerror(socket_last_error($socket)) . "\n";
+}
+socket_close($socket);
+
+echo $buf . "\n";
+echo "OK.\n\n";
+?>
+]]>
+    </programlisting>
+    <para>
+     Yukarıdaki örnek şuna benzer bir çıktı üretir:
+    </para>
+    <screen>
+<![CDATA[
+<h2>TCP/IP Bağlantısı</h2>
+OK.
+'80' portundan '208.77.188.166' adresine bağlanmaya çalışılıyor...OK.
+HTTP HEAD isteği gönderiliyor...OK.
+Okunan yanıt:
+
+Soket kapatıyor...HTTP/1.1 200 OK
+Date: Mon, 14 Sep 2009 08:56:36 GMT
+Server: Apache/2.2.3 (Red Hat)
+Last-Modified: Tue, 15 Nov 2005 13:24:10 GMT
+ETag: "b80f4-1b6-80bfd280"
+Accept-Ranges: bytes
+Content-Length: 438
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+OK.
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
