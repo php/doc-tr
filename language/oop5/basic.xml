@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: bb2d79ed0c7e99c9924c0eb02ecadd1dffd74171 Maintainer: nilgun Status: ready-->
+<!-- EN-Revision: 813758ad4fea24d978930d9115d4c81790faadb3 Maintainer: nilgun Status: ready-->
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
@@ -8,26 +8,52 @@
    <title><code>class</code> Anahtar Sözcüğü</title>
    <para>
     Her sınıf tanımı <literal>class</literal> anahtar sözcüğü ile başlar sınıf
-    isminin ardından gelen bir çift kaşlı ayracın arasında sınıf üyelerinin
-    ve yöntemlerinin tanımları bulunur. Bir nesne bağlamı içinden bir yöntem
-    çağırmak için <varname>$this</varname> diye bir sözde değişken
-    kullanılır. <varname>$this</varname> çağrılan nesneye bir gönderimdir
-    (normalde yöntemin ait olduğu nesnedir, ancak eğer nesne diğer nesnenin
-    bağlamından <link linkend="language.oop5.static">duruk olarak</link>
-    çağrılıyorsa, bu başka bir nesne de olabilir).
+    isminin ardından gelen bir çift kaşlı ayracın arasında sınıf özelliklerinin
+    ve yöntemlerinin tanımları bulunur.
    </para>
    <para>
-    Sınıf ismi olarak bir <link linkend="reserved">anahtar sözcük</link>
-    kullanılamaz ve bir sınıf ismi başına bir dolar simgesi konulmaması dışında
-    <link linkend="language.variables.basics">PHP'de değişken isimlendirme
-    kurallarına</link> uygun olmalıdır.
+    Sınıf ismi olarak herhangi bir geçerli yafta kullanılabilir ancak bu PHP
+    için <link linkend="reserved">ayrılmış sözcüklerden biri</link>
+    olmamalıdır. Geçerli bir sınıf ısmı bir harf veya alt çizgi ile başlar,
+    sayılar, harfler veya alt çizgiler içerebilir. Bir düzenli ifade olarak
+    şöyle bir şablonla eşleşmelidir:
+    <literal>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</literal>.
    </para>
    <para>
-    Bu örnekte sınıf oluşturma, nesne olarak örnekleme ve
-    <varname>$this</varname> sözde değişkeninin kullanımı gösterilmiştir:
-    <example>
-     <title>- Nesne yönelimli dilde <varname>$this</varname> değişkeni</title>
-     <programlisting role="php">
+    Bir sınıfın kendi <link linkend="language.oop5.constants">sabitleri</link>,
+    <link linkend="language.oop5.properties">değişkenleri</link>
+    (bunlara "özellik" de denir) ve işlevleri (bunlara "yöntem" de denir)
+    olabilir.
+   </para>
+   <example>
+    <title>- Basit bir sınıf tanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class BasitSınıf
+{
+    // özellik bildirimi
+    public $öntanımlı = 'öntanımlı bir değer';
+
+    // yöntem tanımı
+    public function ÖntanımlıyıGöster() {
+        echo $this->öntanımlı;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    Bir nesne bağlamı içinden bir yöntem çağırmak için <varname>$this</varname>
+    diye bir sözde değişken kullanılır. <varname>$this</varname> çağrılan
+    nesneye bir gönderimdir (normalde yöntemin ait olduğu nesnedir, ancak eğer
+    nesne diğer nesnenin bağlamından <link linkend="language.oop5.static">duruk
+    olarak</link> çağrılıyorsa, bu başka bir nesne de olabilir).
+   </para>
+   <example>
+    <title>- <varname>$this</varname> sözde değişkeninin kullanımı</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 class A
@@ -48,15 +74,21 @@ class B
 {
     function bar()
     {
+        // Dikkat: E_STRICT etkinse bu satır bir uyarı
+        // çıktılanmasına sebep olur.
         A::foo();
     }
 }
 
 $a = new A();
 $a->foo();
+
+// Dikkat: E_STRICT etkinse bu satır bir uyarı çıktılanmasına sebep olur.
 A::foo();
 $b = new B();
 $b->bar();
+
+// Dikkat: E_STRICT etkinse bu satır bir uyarı çıktılanmasına sebep olur.
 B::bar();
 ?>
 ]]>
@@ -71,90 +103,6 @@ $this tanımsız.
 ]]>
      </screen>
     </example>
-   </para>
-   <example>
-    <title>- Basit sınıf tanımı</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-class BasitSınıf
-{
-    // üye bildirimi
-    public $değer = 'bir öntanımlı değer';
-
-    // yöntem bildirimi
-    public function değerGöster() {
-        echo $this->değer;
-    }
-}
-?>
-]]>
-    </programlisting>
-   </example>
-
-   <para>
-    Öntanımlı değer, (örneğin) bir değişken, bir sınıf üyesi veya bir işlev
-    çağrısı değil, bir sabit ifade olmalıdır.
-    <example>
-     <title>- Sınıf üyesinin öntanımlı değeri</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-class BasitSınıf
-{
-    // geçersiz üye bildirimleri:
-    public $var1 = 'merhaba '.'dünya';
-    public $var2 = <<<EOD
-merhaba dünya
-EOD;
-    public $var3 = 1+2;
-    public $var4 = self::birDurukYöntem();
-    public $var5 = $birDeğer;
-
-    // geçerli üye bildirimleri:
-    public $var6 = birSabit;
-    public $var7 = self::sınıfSabiti;
-    public $var8 = array(true, false);
-
-
-}
-?>
-]]>
-     </programlisting>
-    </example>
-   </para>
-   <note>
-    <para>
-      Sınıflar ve nesnelerle çalışmak için ilginizi çekebilecek bazı işlevler
-      vardır. Bunlar için <link linkend="ref.classobj">Sınıf/Nesne
-      İşlevleri</link> bölümüne bakabilirsiniz.
-    </para>
-   </note>
-
-   <para>
-    Duruk veri bağlamında yorumlanan çok satırlı metinler değil (heredoc),
-    yorumlanmayan çok satırlı metinler (nowdoc) kullanılabilir.
-    <example>
-     <title>- Duruk veri örneği</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-class foo {
-    // PHP 5.3.0 ve sonrası
-    public $bar = <<<'EOT'
-bar
-EOT;
-}
-?>
-]]>
-     </programlisting>
-    </example>
-   </para>
-   <note>
-    <para>
-     Yorumlanmayan çok satırlı metin (nowdoc) desteği 5.3.0'da eklenmiştir.
-    </para>
-   </note>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.new">
@@ -228,15 +176,15 @@ object(BasitSınıf)#1 (1) {
    <title><code>extends</code> Anahtar Sözcüğü</title>
    <para>
     Bir sınıfın bildiriminde <code>extends</code> anahtar sözcüğü
-    kullanılarak başka bir sınıfın yöntemleri ve üyeleri miras alınabilir.
+    kullanılarak başka bir sınıfın yöntemleri ve özellikleri miras alınabilir.
     Çok sayıda sınıfı miras alarak genişlemek mümkün değildir, bir sınıf
     sadece bir ana sınıfı miras alabilir.
    </para>
    <para>
-    Miras alınan yöntemler ve üyeler, ebeveyn sınıfta tanımlı isimleriyle
-    yeniden bildirilerek geçersiz kılınabilir; bu sadece ebeveyn sınıfın
-    <link linkend="language.oop5.final">final</link> tanımlı yöntemleri için
-    yapılamaz. Geçersiz kılınmış yöntemlere ve duruk üyelere <link
+    Miras alınan yöntemler ve özelliklerler, ebeveyn sınıfta tanımlı
+    isimleriyle yeniden bildirilerek geçersiz kılınabilir; bu sadece ebeveyn
+    sınıfın <link linkend="language.oop5.final">final</link> tanımlı yöntemleri
+    için yapılamaz. Geçersiz kılınmış yöntemlere ve duruk özelliklere <link
     linkend="language.oop5.paamayim-nekudotayim">parent::</link> öneki ile
     atıfta bulunarak erişilebilir.
    </para>

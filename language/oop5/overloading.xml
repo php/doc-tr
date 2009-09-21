@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f104a53630fb9c55face81e92f5929e101a3f551 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 459f5061ab6a48748d0a0cc1ca2e085ca6e2b17f Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.overloading" xmlns="http://docbook.org/ns/docbook">
   <title>Aşırı Yükleme</title>
   <para>
-    PHP'deki aşırı yükleme, bir sınıfın üyelerini ve yöntemlerini devingen
+    PHP'deki aşırı yükleme, bir sınıfın özelliklerini ve yöntemlerini devingen
     olarak <quote>oluşturmak</quote> anlamına gelmektedir. Bu devingen öğeler,
     çeşitli eylem türleri için sınıf içinde oluşturulabilen sihirli
     yöntemler üzerinden işleme sokulurlar.
   </para>
   <para>
     Aşırı yükleme yöntemleri, henüz bildirilmemiş veya geçerli etki alanında
-    <link linkend="language.oop5.visibility">görünür</link> olmayan üyeler ve
+    <link linkend="language.oop5.visibility">görünür</link> olmayan özellik ve
     yöntemlerle etkileşilmek istendiğinde çağrılırlar. Bu bölümün kalanında
     bu bildirim ve görünürlükle ilgili durumdan bahsederken
-    <quote>erişilemeyen üyeler</quote> ve
+    <quote>erişilemeyen özellikler</quote> ve
     <quote>erişilemeyen yöntemler</quote> terimlerini kullanacağız.
   </para>
   <para>
@@ -69,7 +69,7 @@
   </sect2>
 
   <sect2 xml:id="language.oop5.overloading.members">
-   <title>Üyelerde aşırı yükleme</title>
+   <title>Özelliklerde aşırı yükleme</title>
 
    <methodsynopsis>
     <type>void</type><methodname>__set</methodname>
@@ -90,33 +90,33 @@
    </methodsynopsis>
 
    <para>
-    <function>__set()</function> erişilemeyen üyelere veri yazarken
+    <function>__set()</function> erişilemeyen özelliklere veri yazarken
     çalıştırılır.
    </para>
 
    <para>
-    <function>__get()</function> erişilemeyen üyelerden veri okurken devreye
-    sokulur.
+    <function>__get()</function> erişilemeyen özelliklerden veri okurken
+    devreye sokulur.
    </para>
 
    <para>
-    <function>__isset()</function> erişilemeyen üyeler için
+    <function>__isset()</function> erişilemeyen özellikler için
     <function>isset</function> veya <function>empty</function> çağrıldığında
     tetiklenir.
    </para>
 
    <para>
-    <function>__unset()</function> erişilemeyen üyeler için
+    <function>__unset()</function> erişilemeyen özellikler için
     <function>unset</function> kullanıldığında çağrılır.
    </para>
    <para>
-    <varname>$isim</varname> değiştirgesi etkileşime girilecek üyenin
+    <varname>$isim</varname> değiştirgesi etkileşime girilecek özelliğin
     ismidir. <function>__set()</function> yönteminin <varname>$değer</varname>
-    değiştirgesi, <varname>$isim</varname> adlı üyeye atanacak değeri
+    değiştirgesi, <varname>$isim</varname> adlı özelliğe atanacak değeri
     belirler.
    </para>
    <para>
-    Üyeler üzerindeki aşırı yükleme sadece nesne bağlamında çalışır. Bu
+    Özellikler üzerindeki aşırı yükleme sadece nesne bağlamında çalışır. Bu
     sihirli yöntemler duruk bağlamda tetiklenmeyecektir. Bu bakımdan, bu
     yöntemler <link linkend="language.oop5.static">static</link>
     bildirilemez.
@@ -138,23 +138,24 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class ÜyeSınama {
-    /**  Aşırı yüklemeye konu veriler burada.  */
+class ÖzellikSınama {
+    /*  Aşırı yüklemeye konu veriler burada.  */
     private $veri = array();
 
-    /**  Bildirilmiş üyeler için aşırı yükleme kullanılmaz.  */
+    /*  Bildirilmiş özellikler için aşırı yükleme kullanılmaz.  */
     public $bildirilmiş = 1;
 
-    /**  Aşırı yükleme sadece sınıf dışından erişilemeyen üyeler içindir.  */
+    /*  Aşırı yükleme sadece sınıf dışından erişilemeyen özellikler içindir.
+     */
     private $gizli = 2;
 
     public function __set($isim, $değer) {
-        echo "'$isim' adlı üyeye '$değer' atanıyor.\n";
+        echo "'$isim' adlı özelliğe '$değer' atanıyor.\n";
         $this->veri[$isim] = $değer;
     }
 
     public function __get($isim) {
-        echo "'$isim' adlı üyenin değeri isteniyor\n";
+        echo "'$isim' adlı özelliğin değeri isteniyor\n";
         if (array_key_exists($isim, $this->veri)) {
             return $this->veri[$isim];
         }
@@ -189,7 +190,7 @@ class ÜyeSınama {
 
 echo "<pre>\n";
 
-$obj = new ÜyeSınama;
+$obj = new ÖzellikSınama;
 
 $obj->a = 1;
 echo $obj->a . "\n\n";
@@ -214,8 +215,8 @@ echo $obj->gizli . "\n";
     &example.outputs;
     <screen role="php">
 <![CDATA[
-'a' adlı üyeye '1' atanıyor.
-'a' adlı üyenin değeri isteniyor
+'a' adlı özelliğe '1' atanıyor.
+'a' adlı özelliğin değeri isteniyor
 1
 
 'a' atanmış mı?
@@ -232,7 +233,7 @@ bu yüzden __get() kullanılmaz...
 2
 'private' özellikler sınıf dışında görünür değildirler,
 dolayısıyla __get() kullanılır...
-'gizli' adlı üyenin değeri isteniyor
+'gizli' adlı özelliğin değeri isteniyor
 
 Notice: <dosya> dosyasının 71. satırında __get() ile tanımsız özellik istendi: gizli
 ]]>

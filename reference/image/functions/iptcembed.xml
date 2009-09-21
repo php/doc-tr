@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 7cde1450015ba1fdf52d8483951add304fd7e3e5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c48205c99ef2f4a4a520ce44105bf7061aa89802 Maintainer: nilgun Status: ready -->
 <refentry xml:id='function.iptcembed' xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>iptcembed</refname>
@@ -112,11 +112,16 @@ $data = '';
 foreach($iptc as $tag => $string)
 {
     $tag = substr($tag, 2);
-    $data .= iptc_make_tag(2, substr($tag, 2), $string);
+    $data .= iptc_make_tag(2, $tag, $string);
 }
 
 // IPTC verisini resme gömelim.
 $content = iptcembed($data, $path);
+
+// Yeni resim verisini dosyaya yazalım.
+$fp = fopen($path, "wb");
+fwrite($fp, $content);
+fclose($fp);
 ?>
 ]]>
    </programlisting>
