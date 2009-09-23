@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ed67b3c502586ccf07d9b854512272e4cbe0db26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6f44f015afb610b3d03d414de09aa9bdadedddf3 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strspn">
  <refnamediv>
   <refname>strspn</refname>
-  <refpurpose>Maske ile eşleşen ilk parçanın uzunluğunu bulur</refpurpose>
+  <refpurpose>Dizgenin, maskenin tam karakterleri ile eşleşen ilk
+  parçasının uzunluğunu bulur</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -18,7 +19,16 @@
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinin <parameter>maske</parameter>
-   maskesiyle eşleşen en uzun ilk parçasının uzunluğunu döndürür.
+   maskesinin tüm karakterleri ile eşleşen en uzun ilk parçasının uzunluğunu
+   döndürür.
+  </para>
+  <para>
+   Eğer <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
+   değiştirgeleri kullanılmamışsa <parameter>dizge</parameter> dizgesinin
+   tamamı gözden geçirilir. Bunlar kullanılmışsa etkisi,
+   <literal>strspn(substr($dizge, $başlangıç, $uzunluk), $maske)</literal>
+   çağrısına eşdeğerdir. (Ayrıntılı bilgi için <function>substr</function>
+   işlevinin açıklamasına bakınız.)
   </para>
   <para>
    Örnek:
@@ -26,13 +36,13 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$var = strspn("42 is the answer, what is the question ...", "1234567890");
+$var = strspn("42 is the answer to the 128th question.", "1234567890");
 ?>
 ]]>
     </programlisting>
    </informalexample>
-   "1234567890" maskesiyle eşleşen en uzun dizge "42" olduğundan $var
-   değişkenine 2 atanacaktır.
+   "1234567890" maskesiyle eşleşen en uzun ilk dizge parçası "42" olduğundan
+   $var değişkenine 2 atanacaktır.
   </para>
  </refsect1>
 
@@ -52,7 +62,7 @@ $var = strspn("42 is the answer, what is the question ...", "1234567890");
      <term><parameter>maske</parameter></term>
      <listitem>
       <para>
-       Dizge ile eşleştirilecek maske.
+       Dizge ile eşleştirilecek karakterleri içeren maske.
       </para>
      </listitem>
     </varlistentry>
@@ -60,8 +70,16 @@ $var = strspn("42 is the answer, what is the question ...", "1234567890");
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Eşleştirmenin başlatılacağı konum. Negatif değerler dizgenin sonundan
-       itibaren sayılır.
+       <parameter>dizge</parameter> içinde eşleştirmenin başlatılacağı konum.
+      </para>
+      <para>
+       <parameter>başlangıç</parameter> belirtilmişse ve negatif değilse arama
+       işlemi <parameter>dizge</parameter> dizgesinin baştan
+       <parameter>başlangıç</parameter>'ıncı karakterinden başlar; ilk karakterin
+       konumu 0'dır.
+      </para>
+      <para>
+       Negatif değerler dizgenin sonundan itibaren sayılır.
       </para>
      </listitem>
     </varlistentry>
@@ -69,8 +87,17 @@ $var = strspn("42 is the answer, what is the question ...", "1234567890");
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       Eşleşmenin aranacağı alt dizge uzunluğu. Negatif değerler uzunluğu
-       dizgenin sonundan başına doğru belirlerler.
+       Eşleşmenin aranacağı alt dizge uzunluğu.
+      </para>
+      <para>
+       <parameter>uzunluk</parameter> belirtilmişse ve negatif değilse arama
+       dizgenin başlangıcından itibaren <parameter>uzunluk</parameter>'uncu
+       karakterden başlar.
+      </para>
+      <para>
+        Negatif bir değer belirtilmişse arama işlemi dizgenin başından başlar
+        ve dizgenin sonundan itibaren <parameter>uzunluk</parameter>'uncu
+        karakterde biter.
       </para>
      </listitem>
     </varlistentry>
