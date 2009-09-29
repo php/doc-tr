@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9793e6896ec53a155b85ba2add3bd4bc37ad811f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.dio-open" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>dio_open</refname>
@@ -16,7 +16,9 @@
    <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>0</initializer></methodparam>
    </methodsynopsis>
   <para>
-   <function>dio_open</function> işlevi, belirtilen dosyayı açar ve bu dosya
+   <function>dio_open</function> işlevi, C kütüphanesinin girdi/çıktı
+   akımlarıyla ilgili işlevlerinde kullanılmak üzere belirtilen dosyayı düşük
+   seviyede açar (gerekirse oluşturur) ve bu dosya
    için bir dosya tanıtıcısı döndürür.
   </para>
  </refsect1>
@@ -28,7 +30,7 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       Açılacak dosya.
+       Açılacak dosyanın yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -36,8 +38,26 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Aşağıdaki seçeneklerin bir birleşimi olarak belirtilebilir:
+       Aşağıdaki seçeneklerin bir birleşimi (bit seviyesinde VEYAlanmışı)
+       olarak belirtilebilir. Bu değer, aşağıdaki diğer seçeneklere ek olarak
+       <constant>O_RDONLY</constant>, <constant>O_WRONLY</constant>veya
+       <constant>O_RDWR</constant> sabitlerinden birini mutlaka içermelidir.
        <itemizedlist>
+        <listitem>
+         <para>
+          <constant>O_RDONLY</constant> - Dosyayı okuma erişimli açar.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>O_WRONLY</constant> - Dosyayı yazma erişimli açar.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>O_RDWR</constant> -Dosyayı hem okuma hem de yazma erişimli açar.
+         </para>
+        </listitem>
         <listitem>
          <para>
           <constant>O_CREAT</constant> - mevcut değilse dosyayı oluşturur.
@@ -47,7 +67,8 @@
          <para>
           <constant>O_EXCL</constant> - dosya mevcutsa ve
           <constant>O_CREAT</constant> ile <constant>O_EXCL</constant>
-          birlikte belirtilmişse işlev başarısız olur.
+          birlikte belirtilmişse dosya mevcut demektir, bu durumda işlev
+          başarısız olur.
          </para>
         </listitem>
         <listitem>
@@ -66,6 +87,13 @@
           <constant>O_NONBLOCK</constant> - engellenmeyen kip geçerli olur.
          </para>
         </listitem>
+        <listitem>
+          <para>
+          <constant>O_NOCTTY</constant> - Bir TTY aygıt dosyası açılırken
+          işletim sisteminin açılmış dosyayı sürecin denetim uçbirimi olarak
+          atamasını önler.
+          </para>
+        </listitem>
        </itemizedlist>
       </para>
      </listitem>
@@ -75,27 +103,16 @@
      <listitem>
       <para>
        <parameter>seçenekler</parameter> değiştirgesine
-       <constant>O_CREAT</constant> atanmışsa dosya kipi (yazma izinleri)
+       <constant>O_CREAT</constant> atanmışsa dosya kipi (oluşturma izinleri)
        <parameter>kip</parameter> değiştirgesinde belirtildiği gibi ayarlanır.
-       <itemizedlist>
-        <listitem>
-         <para>
-          <constant>O_RDONLY</constant> - dosya salt okunur açılır.
-         </para>
-        </listitem>
-        <listitem>
-         <para>
-          <constant>O_WRONLY</constant> - dosya yazmak için açılır.
-         </para>
-        </listitem>
-        <listitem>
-         <para>
-          <constant>O_RDWR</constant> - dosya hem okumak hem de yazmak için
-          açılır.
-         </para>
-        </listitem>
-       </itemizedlist>
+       <parameter>kip</parameter> olarak <constant>O_CREAT</constant>
+       belirtilmişse <parameter>kip</parameter> doğru işlem için gereklidir,
+       yoksa yok sayılır.
       </para>
+      <para>
+       Oluşturlacak dosyaya atanacak asıl izinler, normal olarak sürecin
+       <emphasis>umask</emphasis> değerinden etkilenir.
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
