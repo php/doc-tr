@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6352caddf30353263abb1063c65c61595ac8ae38 Maintainer: nilgun Status: ready -->
 <chapter xml:id="faq.using" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP Kullanımı</title>
   <titleabbrev>PHP Kullanımı</titleabbrev>
@@ -68,10 +68,12 @@ if (empty($empty)) {
     </question>
     <answer>
      <para>
-      The function <function>addslashes</function> işlevi istediğiniz işlemi
-      yapar. Ayrıca, <function>mysql_escape_string</function> işlevine de
-      bakınız. Eğer bu tersbölüleri tekrar temizlemek isterseniz
-      <function>stripslashes</function> işlevine de bakınız.
+      Bunun bir veritabanı için yapıldığını varsayarak, veritabanı ile gelen
+      önceleme mekaizması kullanılabilir. Örneğin, MySQL ile
+      <function>mysql_real_escape_string</function>, PostgreSQL ile
+      <function>pg_escape_string</function> işlevi kullanılır. Ayrıca, PHP kodu
+      için daha genel amaçlı olarak <function>addslashes</function> ve
+      <function>stripslashes</function> işlevleri de vardır.
      </para>
 
      &note.magicquotes.gpc;
@@ -89,10 +91,11 @@ if (empty($empty)) {
     </question>
     <answer>
      <para>
-      PHP'nin <function>stripslashes</function> işlevi <type>string</type>
-      türündeki tersbölülerden sizi kurtarır. PHP'nin <link
-      linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> yönergesi etkin
-      olduğu sürece tersbölüler sihirli bir biçimde ortaya çıkacaklardır.
+      PHP'nin <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
+      yönergesi etkin olduğu sürece tersbölüler sihirli bir biçimde ortaya
+      çıkacaklardır. Bu PHP'nin eski bir özelliği olup iptal edilmesi ve
+      kullanılmaması gerekir. Ayrıca, <function>stripslashes</function> adlı
+      PHP işlevi de bir dizgeden tersbölüleri ayıklamak için kullanılabilir.
      </para>
 
      &note.magicquotes.gpc;
@@ -334,37 +337,6 @@ foreach ($başlıklar as $isim => $içerik) {
     </answer>
    </qandaentry>
 
-   <qandaentry xml:id="faq.using.netscape">
-    <question>
-     <para>
-      PHP betiğim IE ve Lynx üzerinde düzgün çalışıyor, fakat Netscape
-      üzerinde çıktının bir kısmı kayboluyor. "Sayfa kaynağını göster"
-      seçeneğini kullandığımda ise içeriği IE ile görebiliyorum ama Netscape
-      ile göremiyorum.
-     </para>
-    </question>
-    <answer>
-     <para>
-      Netscape HTML etiketlerine IE'den daha duyarlıdır. HTML çıktısını <link
-      xlink:href="&url.w3.validator;">validator.w3.org</link> gibi bir HTML
-      doğrulayıcısında çalıştırmak bu konuda size yardımcı olabilir. Örneğin
-      eksik bir &lt;/table&gt; etiketi böyle bir soruna yol açabilir.
-     </para>
-     <para>
-      IE ve Lynx, Netscape'in aksine HTML akımlarda &null;
-      (<literal>\0</literal>) değerleri yoksayar. Bunu sınamanın en iyi yolu
-      PHP'nin <link linkend="features.commandline">komut satırı</link>
-      sürümünü (CGI sürümü diye de bilinir) derlemek ve betiğinizi komut
-      satırında çalıştırmaktır. *n*x'lerde <literal>od -c</literal> üzerinden
-      borulamak suretiyle <literal>\0</literal> karakterlerinin varlığına
-      bakabilirsiniz. Windows üzerindeyseniz, ikil dosyalara bakmanızı
-      sağlayacak bir metin düzenleyici veya başka bir programa ihtiyacınız
-      olacaktır. Netscape bir <literal>\0</literal> karakterine rastladığında
-      IE ve Lynx'in aksine o satırda başka hiçbir şey çıktılamaz.
-     </para>
-    </answer>
-   </qandaentry>
-
    <qandaentry xml:id="faq.using.mixml">
     <question>
      <para>
@@ -384,25 +356,6 @@ foreach ($başlıklar as $isim => $içerik) {
       bu etiketi şöyle de kullanabilirsiniz: <literal>&lt;?php echo
       '&lt;?xml'; ?&gt;</literal>.  Bu yönergenin öntanımlı değeri
       <literal>1</literal>'dir.
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.using.editor">
-    <question>
-     <para>
-      Kodlarımı devre dışı bırakmakta inat eden FrontPage'de ve bazı HTML
-      düzenleyicilerde PHP'yi nasıl kullanabilirim?
-     </para>
-    </question>
-    <answer>
-     <para>
-      En kolayı PHP kodunuzda ASP etiketlerini etkin kılmaktır. Böylece ASP
-      tarzı &lt;% ve %&gt; etiketlerini kullanabilirsiniz. Günümüz HTML
-      düzenleyicilerinin bazıları bunları (şimdilik) daha akıllıca ele
-      almaktadır. ASP tarzı etiketleri etkin kılmak için &php.ini;
-      <link linkend="ini.asp-tags">asp_tags</link> yönergesini veya buna
-      uygun Apache yönergesini kullanabilirsiniz.
      </para>
     </answer>
    </qandaentry>

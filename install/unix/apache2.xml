@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 9aff12cf574c8ce7552caa334676c328678525f6 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f5c3425b7f0b88e7fa1072bd11bfe2f32ca03338 Maintainer: nilgun Status: ready -->
    <sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Unix sistemler ve Apache 2.0</title>
+    <title>Unix sistemler ve Apache 2.x</title>
     <para>
-     Bu bölüm Unix sistemlerde PHP'nin Apache 2.0'a kurulumu hakkında
+     Bu bölüm Unix sistemlerde PHP'nin Apache 2.x'e kurulumu hakkında
      bilgiler ve ipuçları içerir.
     </para>
 
     &warn.apache2.compat;
 
     <para>
-     Apache 2.0 HTTP Sunucusu hakkında temel bir bilgi edinmek için mutlaka
-     <link xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Sürüm 2.0
+     Apache 2.x HTTP Sunucusu hakkında temel bir bilgi edinmek için mutlaka
+     <link xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Sürüm 2.x
      Belgeleri</link>ne bakmanızı öneririz.
     </para>
 
     &install.snippet.apache2.compat;
 
     <para>
-     <link xlink:href="&url.apache;">Apache 2.0</link>'ın en son sürümünü ve
+     <link xlink:href="&url.apache;">Apache 2.x</link>'ın en son sürümünü ve
      buna uygun PHP sürümünü yukarıda bahsedilen yerlerden indirebilirsiniz.
-     Bu kısa kılavuz Apache 2.0 ve PHP hakkında sadece temel bilgi sağlar.
+     Bu kısa kılavuz Apache 2.x ve PHP hakkında sadece temel bilgi sağlar.
      Daha ayrıntılı bilgi edinmek için <link
      xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Belgeleri</link>ne
      bakınız. Kurulum talimatlarının sürüm numaralarından ötürü geçerliliğini
      yitirmemesi için sürüm numaraları 'NN' şeklinde belirtilmiştir, siz
      bunların yerine kurduğunuz sürümün sürüm numarasını yazacaksınız.
     </para>
+    <para>
+     Apache 2.x'in şu an iki sürümü mevcuttur: 2.0 ve 2.2. Bunlardan birini
+     seçmek için çeşitli sebepler olabilirse de 2.2 şu an için en son ve
+     önerilen sürümdür. Ancak, burada sözü edilen talimatlar hem 2.0 hem de 2.x
+     için çalışır.
+    </para>
     <example>
      <title>- PHP'nin Paylaşımlı Apache 2 Modülü olarak kurulumu</title>
      <screen>
 <![CDATA[
-1.  gzip -d httpd-2_0_NN.tar.gz
-2.  tar xvf httpd-2_0_NN.tar
+1.  gzip -d httpd-2_x_NN.tar.gz
+2.  tar xvf httpd-2_x_NN.tar
 3.  gunzip php-NN.tar.gz
 4.  tar -xvf php-NN.tar
-5.  cd httpd-2_0_NN
+5.  cd httpd-2_x_NN
 6.  ./configure --enable-so
 7.  make
 8.  make install
 
     Böylece standart prefork MPM'si ve yüklenebilir modül desteği ile Apache
-    2.0.NN /usr/local/apache2 altına kurulmuş oldu. Kurulumu denemek için
+    2.x.NN /usr/local/apache2 altına kurulmuş oldu. Kurulumu denemek için
     Apache HTTP sunucusunu normal yollardan başlatabilirsiniz. Örnek:
     /usr/local/apache2/bin/apachectl start
     PHP yapılandırmasıyla çalıştırmak üzere şimdilik sunucuyu durduralım:
@@ -126,6 +132,12 @@
           SetHandler application/x-httpd-php-source
       </FilesMatch>
 
+    .php dosyalarının uzantılarını değiştirmeden kaynak kodlarını
+    renklendirilmiş olarak göstermek isterseniz bunu şöyle yapabilirsiniz:
+
+      RewriteEngine On
+      RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
+
 16. Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
     başlatmanız yetecektir:
 
@@ -145,12 +157,18 @@
      PHP için şüphesiz birçok farklı yapılandırma seçeneği vardır.
      Yapılandırma seçeneklerinin listesi için her kaynak ağacında
      <command>./configure --help</command> çalıştırabilirsiniz. Eğer Apache
-     2'nin çok evreli MPM'lerinden birini derlemek isterseniz
-     <filename>worker</filename> veya <filename>perchild</filename> MPM
-     modülünü etkin kılabililirsiniz. Bunu yapmak için 6. şıkta derleme
-     seçeneklerinize <option role="configure">--with-mpm=worker</option> veya
-     <option role="configure">--with-mpm=perchild</option> seçeneğini
-     ekleyebilirsiniz. Bunu yapmadan önce, bunun olası sonuçları hakkında
+     2'nin çok evreli çok süreçlilik modüllerinden (MPM) birini derlemek
+     isterseniz standart <filename>prefork</filename> MPM'inden ziyade
+     <filename>worker</filename> modülünü seçmelisiniz. Bunu yapmak için 6.
+     şıkta derleme seçeneklerinize şu seçeneğini ekleyebilirsiniz:
+    </para>
+    <example>
+    <screen>
+--with-mpm=worker
+    </screen>
+    </example>
+    <para>
+     Bunu yapmadan önce, bunun olası sonuçları hakkında
      bilgi sahibi olmaya, azından ne gibi etkilerinin olacağını anlamaya
      çalışın. Bu konuda daha ayrıntılı bilgi edinmek için Apache HTTP
      sunucusunun belgelerinden <link xlink:href="&url.apache2.mpm;">Çok
@@ -165,10 +183,9 @@
     </note>
     <note>
      <para>
-      Apache'nin çok evreli bir sürümünü kurabilmek için sisteminizin
-      evreleri desteklemesi gerekir. Aynı durum PHP'nin deneysel Zend Thread
-      Safety (ZTS) motoru için de geçerlidir. Şüphesiz, evre desteği olmayan
-      eklentiler de kullanılamayacaktır. Bu bakımdan Apache'yi standart
+      Ayrıca, PHP'yi deneysel Zend Thread Safety (ZTS) motoru ile de
+      derleyebilirsiniz. Böyle bir yapılandırmada bütün eklentiler
+      kullanılamayacaktır. Bu bakımdan Apache'yi standart
       <filename>prefork</filename> MPM'si ile derlemenizi öneriyoruz.
      </para>
     </note>
