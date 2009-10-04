@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 11be0104641379512d200b80d14851d5c9fb9fa2 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-floodfillpaintimage">
  <refnamediv>
   <refname>Imagick::floodFillPaintImage</refname>
@@ -13,7 +13,7 @@
    <type>bool</type><methodname>Imagick::floodFillPaintImage</methodname>
    <methodparam><type>mixed</type><parameter>dolgu</parameter></methodparam>
    <methodparam><type>float</type><parameter>benzerlik</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>çerçeve</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>hedef</parameter></methodparam>
    <methodparam><type>int</type><parameter>x</parameter></methodparam>
    <methodparam><type>int</type><parameter>y</parameter></methodparam>
    <methodparam><type>bool</type><parameter>ters</parameter></methodparam>
@@ -49,10 +49,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>çerçeve</parameter></term>
+     <term><parameter>hedef</parameter></term>
      <listitem>
       <para>
-       Çerçeve rengini içeren bir dizge veya bir
+       Boyanacak hedef rengi içeren bir dizge veya bir
        <classname>ImagickPixel</classname> nesnesi.
       </para>
      </listitem>
@@ -99,6 +99,59 @@
    &imagick.return.success;
   </para>
  </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>Imagick::floodfillPaintImage</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+/* Yeni bir imagick nesnesi oluşturalım */
+$im = new Imagick();
+
+/* kırmızı, yeşil ve mavi tuvaller oluşturalım */
+$im->newImage(100, 50, "red");
+$im->newImage(100, 50, "green");
+$im->newImage(100, 50, "blue");
+
+/* Bunları birbirlerine ekleyelim */
+$im->resetIterator();
+$combined = $im->appendImages(true);
+
+/* Elde edilen resmi karşılaştırmak için saklayalım */
+$combined->writeImage("floodfillpaint_intermediate.png");
+
+/* Boyanacak hedef piksel */
+$x = 1;
+$y = 1;
+
+/* Boyanacak pikselin rengini öğrenelim */
+$target = $combined->getImagePixelColor($x, $y);
+
+/* Hedef pikseli ve aynı renkteki komşu pikselleri siyaha boyayalım */
+$combined->floodfillPaintImage("black", 1, $target, $x, $y, false);
+
+/* Sonucu kaydedelimt */
+$combined->writeImage("floodfillpaint_result.png");
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="en/reference/imagick/figures/floodfillpaint_intermediate.png"/>
+     </imageobject>
+     <imageobject>
+      <imagedata fileref="en/reference/imagick/figures/floodfillpaint_result.png"/>
+     </imageobject>
+    </mediaobject>
+   </example>
+   </para>
+  </refsect1>
+
 
 </refentry>
 
