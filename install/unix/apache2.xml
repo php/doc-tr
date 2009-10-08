@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f5c3425b7f0b88e7fa1072bd11bfe2f32ca03338 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 87d45e5f4e6693fee649f7144cc868afee0064f3 Maintainer: nilgun Status: ready -->
    <sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Unix sistemler ve Apache 2.x</title>
     <para>
@@ -19,14 +19,15 @@
     &install.snippet.apache2.compat;
 
     <para>
-     <link xlink:href="&url.apache;">Apache 2.x</link>'ın en son sürümünü ve
-     buna uygun PHP sürümünü yukarıda bahsedilen yerlerden indirebilirsiniz.
+     En son sürümü <link xlink:href="&url.apache;">Apache 2.x indirme
+     sitesinden</link> ve buna uygun PHP sürümünü yukarıda bahsedilen yerlerden
+     indirebilirsiniz.
      Bu kısa kılavuz Apache 2.x ve PHP hakkında sadece temel bilgi sağlar.
      Daha ayrıntılı bilgi edinmek için <link
      xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Belgeleri</link>ne
      bakınız. Kurulum talimatlarının sürüm numaralarından ötürü geçerliliğini
-     yitirmemesi için sürüm numaraları 'NN' şeklinde belirtilmiştir, siz
-     bunların yerine kurduğunuz sürümün sürüm numarasını yazacaksınız.
+     yitirmemesi için sürüm numaraları 'NN' şeklinde belirtilmiştir, NN yerine
+     kurulan Apache sürümünün sürüm numarası yazılmalıdır.
     </para>
     <para>
      Apache 2.x'in şu an iki sürümü mevcuttur: 2.0 ve 2.2. Bunlardan birini
@@ -96,12 +97,6 @@
     göstermelidir. Yukarıdaki 'make install' bunu sizin yerinize yapmıştır
     ama emin olmak için siz yine de bir bakın.
 
-    PHP 4 için:
-
-      LoadModule php4_module modules/libphp4.so
-
-    PHP 5 için:
-
       LoadModule php5_module modules/libphp5.so
 
 15. Apache'ye belli dosya uzantılarını PHP uzantıları olarak ele almasını
@@ -132,11 +127,15 @@
           SetHandler application/x-httpd-php-source
       </FilesMatch>
 
-    .php dosyalarının uzantılarını değiştirmeden kaynak kodlarını
+    .php dosyalarının uzantılarını .phps olarak değiştirmeden kaynak kodlarını
     renklendirilmiş olarak göstermek isterseniz bunu şöyle yapabilirsiniz:
 
       RewriteEngine On
       RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
+
+    PHP kaynak süzgeci, gizli kalması gereken bilgiler içeren genel kullanıma
+    açık sunucularda kullanılmamalıdır. Aksi takdirde gizli kalması gereken
+    bilgiler kaynak koda eklenebilir.
 
 16. Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
     başlatmanız yetecektir:
@@ -156,11 +155,13 @@
      olarak çalıştığı bir Apache 2 HTTP sunucusuna sahip olursunuz. Apache ve
      PHP için şüphesiz birçok farklı yapılandırma seçeneği vardır.
      Yapılandırma seçeneklerinin listesi için her kaynak ağacında
-     <command>./configure --help</command> çalıştırabilirsiniz. Eğer Apache
-     2'nin çok evreli çok süreçlilik modüllerinden (MPM) birini derlemek
-     isterseniz standart <filename>prefork</filename> MPM'inden ziyade
-     <filename>worker</filename> modülünü seçmelisiniz. Bunu yapmak için 6.
-     şıkta derleme seçeneklerinize şu seçeneğini ekleyebilirsiniz:
+     <command>./configure --help</command> çalıştırabilirsiniz.
+    </para>
+    <para>
+     Apache derlenirken <filename>prefork</filename> MPM modülü yerine ,
+     <filename>worker</filename> MPM modülü seçilerek çok evreli derlenebilir.
+     Bunu yapmak için 6. şıkta derleme seçeneklerinize şu seçeneğini
+     ekleyebilirsiniz:
     </para>
     <example>
     <screen>
