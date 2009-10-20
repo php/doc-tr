@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1b72640345862f505ae6d7fa53ee45bacc8dfb4d Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.str-replace">
  <refnamediv>
   <refname>str_replace</refname>
@@ -51,6 +51,7 @@
      <term><parameter>eski</parameter></term>
      <listitem>
       <para>
+       Aranacak değer; çok sayıda değer belirtmek için dizi kullanılabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -58,12 +59,16 @@
      <term><parameter>yeni</parameter></term>
      <listitem>
       <para>
+       Yeni değer; çok sayıda değer belirtmek için dizi kullanılabilir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>konu</parameter></term>
      <listitem>
+      <para>
+       Bir dizge veya dizi belirtilebilir.
+      </para>
       <para>
        Eğer <parameter>konu</parameter> bir dizi ise, arama ve değiştirme her
        eleman için ayrı ayrı yapılır ve dönen değer de bir dizi olur.
@@ -138,7 +143,7 @@
   &reftitle.examples;
   <para>
    <example>
-    <title> <function>str_replace</function> örnekleri</title>
+    <title>- Basit <function>str_replace</function> örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -156,18 +161,40 @@ $yummy   = array("pizza", "beer", "ice cream");
 
 $newphrase = str_replace($healthy, $yummy, $phrase);
 
-// $count değiştirgesi PHP 5.0.0'dan beri kullanılabilmektedir
+// sağlanan: 2
 $str = str_replace("ll", "", "good golly miss molly!", $count);
-echo $count; // 2
+echo $count;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <function>str_replace</function><function>str_replace</function>
+    ile ilgili olası sorunlar</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
 
 // Yer değiştirme sırası
 $str     = "Line 1\nLine 2\rLine 3\r\nLine 4\n";
 $order   = array("\r\n", "\n", "\r");
 $replace = '<br />';
+
 // \r\n'ler önce değiştirilmeli ki tekrar değiştirilmesin
 $newstr = str_replace($order, $replace, $str);
 
+// F çıktılanır, çünkü A ile B, B ile C, ... yer değiştirir.
+// Yer değiştirme soldan sağa doğru yapıldığından
+// son olarak E ile F yer değiştirir.
+$search  = array('A', 'B', 'C', 'D', 'E');
+$replace = array('B', 'C', 'D', 'E', 'F');
+$subject = 'A';
+echo str_replace($search, $replace, $subject);
+
 // Çıktısı: apearpearle pear
+// yukarda bahsedilen sebeple
 $letters = array('a', 'p');
 $fruit   = array('apple', 'pear');
 $text    = 'a p';
@@ -183,6 +210,14 @@ echo $output;
  <refsect1 role="notes">
   &reftitle.notes;
   &note.bin-safe;
+  <caution>
+   <title>Çoklu yer değiştirmeler</title>
+   <para>
+    <function>str_replace</function> yer değiştirmeyi soldan sağa doğru
+    yaptığından, örneklerde de göreceğiniz gibi, çok sayıda yer değiştirme
+    yapıldığında bir önceki değer tekrar değiştirilir.
+   </para>
+  </caution>
   <note>
    <para>
     Bu işlev harf büyüklüğüne duyarlıdır. Harf büyüklüğüne duyarsız işlem
