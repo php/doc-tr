@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a49b6127dbba2a64c9a3253e0f6de70e5aa377af Maintainer: nilgun Status: wip -->
+<!-- EN-Revision: e54c27dd313f7e75413bd45c73f67078e9f66a82 Maintainer: nilgun Status: wip -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!-- Keep 'em sorted -->
 
@@ -615,18 +615,76 @@ daha fazla karakterle eşleşmek üzere "&#x25;" ve tek bir karakterle eşleşme
 üzere "_".'>
 
 <!-- Oracle -->
+<!ENTITY oci.db "<para xmlns='http://docbook.org/ns/docbook' xmlns:xlink='http://www.w3.org/1999/xlink'>Contains
+the <literal>Oracle instance</literal> to connect to. It can be
+an <link xlink:href='&url.oracle.oic.connect;'>Easy Connect
+string</link>, or a Connect Name from
+the <filename>tnsnames.ora</filename> file, or the name of a local
+Oracle instance
+</para>
+<para xmlns='http://docbook.org/ns/docbook'>If not specified, PHP uses
+environment variables such as <constant>TWO_TASK</constant> (on Linux)
+or <constant>LOCAL</constant> (on Windows)
+and <constant>ORACLE_SID</constant> to determine the
+<literal>Oracle instance</literal> to connect to.
+</para>
+<para xmlns='http://docbook.org/ns/docbook'>
+To use the Easy Connect naming method, PHP must be linked with Oracle
+10g or greater Client libraries.
+</para>">
+
 <!ENTITY oci.charset '<para xmlns="http://docbook.org/ns/docbook">Oracle
 sunucusunun 9.2 ve üstü sürümlerini kullanırken,
 <parameter>karakter_kümesi</parameter> değiştirgesini yeni
 bağlantıda kullanılacak değiştirgeye göre belirtebilirsiniz. Eğer 9.2
 sürümünden daha eski bir Oracle sunucusu kullanıyorsanız bu değiştirge yok
 sayılacak, yerine <literal>NLS_LANG</literal> ortam değişkeni
-kullanılacaktır.</para>'>
+kullanılacaktır.</para>
+<para xmlns="http://docbook.org/ns/docbook">If not specified, the
+Oracle Client libraries determine a character set from
+the <constant>NLS_LANG</constant> environment variable.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">Passing this parameter can
+reduce connection time.
+</para>'>
+
+<!ENTITY oci.sessionmode '<para xmlns="http://docbook.org/ns/docbook">This
+parameter is available since version PECL oci8 1.1 and accepts the
+following values: <constant>OCI_DEFAULT</constant>,
+<constant>OCI_SYSOPER</constant> and <constant>OCI_SYSDBA</constant>.
+If either <constant>OCI_SYSOPER</constant> or
+<constant>OCI_SYSDBA</constant> were specified, this function will try
+to establish privileged connection using external credentials.
+Privileged connections are disabled by default. To enable them you
+need to set <link linkend="ini.oci8.privileged-connect">oci8.privileged_connect</link>
+to <literal>On</literal>.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+PHP 5.3 and PECL oci8 1.3.4 introduced the
+<constant>OCI_CRED_EXT</constant> mode value. This tells Oracle to use
+External or OS authentication, which must be configured in the
+database.  The <constant>OCI_CRED_EXT</constant> flag can only be used
+with username of &quot;/&quot; and a empty password.
+<link linkend="ini.oci8.privileged-connect">oci8.privileged_connect</link>
+may be <literal>On</literal> or <literal>Off</literal>.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+<constant>OCI_CRED_EXT</constant> may be combined with the
+<constant>OCI_SYSOPER</constant> or
+<constant>OCI_SYSDBA</constant> modes.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+<constant>OCI_CRED_EXT</constant> is not supported on Windows for
+security reasons.
+</para>'>
 
 <!ENTITY oci.datatypes '<para xmlns="http://docbook.org/ns/docbook">Oci8
 sürücüsü tarafından yapılan veri türü
 eşlemeyle ilgili ayrıntılar için <link linkend="oci8.datatypes">sürücü
 tarafından desteklenen veri türleri</link> bölümüne bakınız.</para>'>
+
+<!ENTITY oci.name.compat.note 'The old function name can still be used
+in current versions, however it is deprecated and not recommended.'>
 
 <!ENTITY oci.parameter.connection '<para xmlns="http://docbook.org/ns/docbook">
 An Oracle connection identifier, returned by <function>oci_connect</function>,
@@ -648,6 +706,19 @@ using <function>oci_set_client_info</function>.</para></tip>'>
 <title>Roundtrip Gotcha</title><para>Some but not all OCI8 functions cause
 roundtrips.  Roundtrips to the database may not occur with queries when result
 caching is enabled. </para></caution>'>
+
+<!ENTITY oci.use.setprefetch '<para xmlns="http://docbook.org/ns/docbook">For
+queries returning a large number of rows, performance can be
+significantly improved by
+increasing <link linkend="ini.oci8.default-prefetch">oci8.default_prefetch</link>
+or using <function>oci_set_prefetch</function>.
+</para>'>
+
+<!ENTITY oci.arg.statement.id
+"<para xmlns='http://docbook.org/ns/docbook'>A valid OCI8 statement
+identifier created by <function>oci_parse</function> and executed
+by <function>oci_execute</function>, or a <literal>REF
+CURSOR</literal> statement identifier.</para>">
 
 <!-- PCNTL Notes -->
 <!ENTITY pcntl.parameter.status '<para

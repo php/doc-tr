@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 201dc3748c7a94e788d470c697f017d2149c6736 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fgetcsv">
  <refnamediv>
   <refname>fgetcsv</refname>
@@ -14,9 +14,9 @@
    <type>array</type><methodname>fgetcsv</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>','</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter><initializer>'"'</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter><initializer>'\\'</initializer></methodparam>
   </methodsynopsis>
   <para>
    Satırı okuyup <acronym>CSV</acronym> biçemindeki alanları bir dizi içinde
@@ -55,7 +55,6 @@
      <listitem>
       <para>
        İsteğe bağlı bu değiştirge ile tek karakterlik alan ayracı belirtilir.
-       Virgül ( , ) öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -64,7 +63,6 @@
      <listitem>
       <para>
        İsteğe bağlı bu değiştirge ile tek karakterlik alan sınırlayıcı belirtilir.
-       Çift tırnak imi ( " ) öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -72,7 +70,7 @@
      <term><parameter>escape</parameter></term>
      <listitem>
       <para>
-       Önceleme karakteri belirtilir (tek bir karakter). Tersbölü çizgisi      ( \ ) öntanımlıdır.
+       Önceleme karakteri belirtilir (tek bir karakter).
       </para>
      </listitem>
     </varlistentry>
@@ -93,8 +91,9 @@
   </note>
   &note.line-endings;
   <para>
-   <function>fgetcsv</function> işlevi, dosya sonuna gelindiğinde veya bir hata
-   oluştuğunda &false; döndürür.
+   <function>fgetcsv</function> işlevi, geçersiz <parameter>dt</parameter>
+   belirtilmişse &null;, dosya sonuna gelindiğinde veya bir hata
+   oluştuğunda ise &false; döndürür.
   </para>
  </refsect1>
 
@@ -143,16 +142,17 @@
 <![CDATA[
 <?php
 $row = 1;
-$handle = fopen("test.csv", "r");
-while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-    $num = count($data);
-    echo "<p>$row. satırdaki $num alan: <br /></p>\n";
-    $row++;
-    for ($c=0; $c < $num; $c++) {
-        echo $data[$c] . "<br />\n";
-    }
-}
-fclose($handle);
+if (($handle = fopen("test.csv", "r")) !== FALSE) {
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        $num = count($data);
+        echo "<p> $row satırındaki $num alan: <br /></p>\n";
+        $row++;
+        for ($c=0; $c < $num; $c++) {
+            echo $data[$c] . "<br />\n";
+        }
+     }
+    fclose($handle);
+ }
 ?>
 ]]>
     </programlisting>

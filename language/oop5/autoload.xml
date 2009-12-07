@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 41dba5e20227294d940b517b20874f3a68404aea Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0d2968f8e0b1e3258629827e5bad397979edc860 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.autoload" xmlns="http://docbook.org/ns/docbook">
   <title>Özdevinimli Sınıf Yükleme</title>
@@ -20,9 +20,12 @@
   </para>
   <note>
    <para>
-   <code>__autoload</code> işlevinde oluşan istisnalar <link
+   5.3.0 öncesinde, <code>__autoload</code> işlevinde oluşan istisnalar <link
    linkend="language.exceptions">catch</link> bloğu ile yakalanamaz,
-   dolayısıyla ölümcül hata ile sonuçlanır.
+   dolayısıyla ölümcül hata ile sonuçlanır. 5.3.0 ve sonrasında ise, bir tane
+   olması şartıyla yakalanabilir. Özel bir istisna yakalanacaksa özel istisna
+   sınıfı mevcut olmalıdır. <code>__autoload</code> işlevi özel istisna
+   sınıflarını ardışık (iç içe) olarak yüklemek için kullanılabilir.
    </para>
   </note>
   <note>
@@ -86,6 +89,67 @@ Fatal error: Interface 'DenemeA' not found in ...
 ]]>
     </programlisting>
    </example>
+   <example>
+    <title>- 5.3.0 ve sonrasında istisnalı özdevinimli yükleme</title>
+    <para>
+     Bu örnekte bir istisna yakalanmakta ve <literal>try/catch</literal>
+     kullanımı gösterilmektedir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function __autoload($name) {
+    echo "$name yüklenmek isteniyor.\n";
+    throw new Exception("$name yüklenemedi.");
+}
+
+try {
+    $obj = new YüklenemezSınıf();
+} catch (Exception $e) {
+    echo $e->getMessage(), "\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+YüklenemezSınıf yüklenmek isteniyor.
+YüklenemezSınıf yüklenemedi.
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>Autoloading with exception handling for 5.3.0+ - Missing custom exception</title>
+    <para>
+     This example throws an exception for a non-loadable, custom exception.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function __autoload($name) {
+    echo "Want to load $name.\n";
+    throw new MissingException("Unable to load $name.");
+}
+
+try {
+    $obj = new NonLoadableClass();
+} catch (Exception $e) {
+    echo $e->getMessage(), "\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Want to load NonLoadableClass.
+Want to load MissingException.
+
+Fatal error: Class 'MissingException' not found in testMissingException.php on line 4
+]]>
+    </screen>
+    </example>
   </para>
 
   <simplesect role="seealso">
