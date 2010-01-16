@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: e54c27dd313f7e75413bd45c73f67078e9f66a82 Maintainer: nilgun Status: wip -->
+<!-- EN-Revision: b5d06ceee2e4f793e65a73773fc5bc6685379b02 Maintainer: nilgun Status: wip -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!-- Keep 'em sorted -->
 
@@ -40,6 +40,13 @@ uygulama sonlanana kadar PHP askıda kalacaktır.</para></note>'>
 <!ENTITY note.func-callback '<note xmlns="http://docbook.org/ns/docbook">
 <simpara>Bir işlev ismi yerine, bir nesneye gönderim ve bir yöntem ismi
 içeren bir dizi de kullanılabilir.</simpara></note>'>
+
+<!ENTITY note.func-callback-exceptions '<note
+xmlns="http://docbook.org/ns/docbook"><para>Note callbacks registered
+with functions such as <function>call_user_func</function> and
+<function>call_user_func_array</function> will not be
+called if theres is an uncaught exception thrown in a previous
+callback.</para></note>'>
 
 <!ENTITY note.funcnoparam '<note xmlns="http://docbook.org/ns/docbook">
 <para>Bu işlev değiştirge ayrıntılarını
@@ -110,6 +117,11 @@ işlevinin içinde kullanılamaz.</para></note>'>
 xmlns="http://docbook.org/ns/docbook"><para>Zaman çözünürlüğünün dosya
 sistemine göre farklı olabileceğini unutmayın.
 </para></note>'>
+
+<!ENTITY note.uses-autoload '<note xmlns="http://docbook.org/ns/docbook">
+<para>Using this function will use any registered
+<link linkend="language.oop5.autoload">autoloaders</link> if the class is not
+already known.</para></note>'>
 
 <!-- Tips -->
 
@@ -284,7 +296,7 @@ iptal edilebilmektedir.'>
 <type>integer</type> türünde bir değer kullanıldığında değer baytların
 sayısıdır. Büyük bayt değerleri için kullanılabilecek birimlerin gösterimleri
 hakkında bilgiyi <link linkend="faq.using.shorthandbytes">bu SSS</link>
-altında bulabilirsiniz</simpara>'>
+altında bulabilirsiniz.</simpara>'>
 
 <!ENTITY info.deprecated.alias 'Geriye uyumluluk adına, kullanımı önerilmese
 de şu takma adı kullanabilirsiniz: '>
@@ -424,7 +436,7 @@ cURL tanıtıcısı.</para></listitem></varlistentry>'>
 akımı.</para></listitem></varlistentry>'>
 
 <!ENTITY imap.pattern '<para xmlns="http://docbook.org/ns/docbook">Posta kutusu hiyerarşisi içine aramanın
-başlayacağı yeri belirtir.</para><para><parameter>kalıp</parameter> içinde
+başlayacağı yeri belirtir.</para><para xmlns="http://docbook.org/ns/docbook"><parameter>kalıp</parameter> içinde
 belirtilebilecek iki özel karakter vardır:
 Alt dizinlere inilmesini sağlayan &apos;<literal>*</literal>&apos; ve alt
 dizinlere inilmemesini sağlayan &apos;<literal>&#37;</literal>&apos;.
@@ -630,7 +642,24 @@ and <constant>ORACLE_SID</constant> to determine the
 </para>
 <para xmlns='http://docbook.org/ns/docbook'>
 To use the Easy Connect naming method, PHP must be linked with Oracle
-10g or greater Client libraries.
+10g or greater Client libraries. The Easy Connect string for Oracle
+10g is of the form:
+<emphasis>[//]host_name[:port][/service_name]</emphasis>. With Oracle
+11g, the syntax is:
+<emphasis>[//]host_name[:port][/service_name][:server_type][/instance_name]
+</emphasis>.
+Service names can be found by running the Oracle
+utility <literal>lsnrctl status</literal> on the database server
+machine.
+</para>
+<para xmlns='http://docbook.org/ns/docbook'>
+The <filename>tnsnames.ora</filename> file can be in the Oracle Net
+search path, which
+includes <filename>$ORACLE_HOME/network/admin</filename>
+and <filename>/etc</filename>.  Alternatively
+set <literal>TNS_ADMIN</literal> so
+that <filename>$TNS_ADMIN/tnsnames.ora</filename> is read.  Make sure
+the web daemon has read access to the file.
 </para>">
 
 <!ENTITY oci.charset '<para xmlns="http://docbook.org/ns/docbook">Oracle
@@ -649,7 +678,7 @@ reduce connection time.
 </para>'>
 
 <!ENTITY oci.sessionmode '<para xmlns="http://docbook.org/ns/docbook">This
-parameter is available since version PECL oci8 1.1 and accepts the
+parameter is available since version PHP 5 (PECL OCI8 1.1) and accepts the
 following values: <constant>OCI_DEFAULT</constant>,
 <constant>OCI_SYSOPER</constant> and <constant>OCI_SYSDBA</constant>.
 If either <constant>OCI_SYSOPER</constant> or
@@ -660,7 +689,7 @@ need to set <link linkend="ini.oci8.privileged-connect">oci8.privileged_connect<
 to <literal>On</literal>.
 </para>
 <para xmlns="http://docbook.org/ns/docbook">
-PHP 5.3 and PECL oci8 1.3.4 introduced the
+PHP 5.3 (PECL OCI8 1.3.4) introduced the
 <constant>OCI_CRED_EXT</constant> mode value. This tells Oracle to use
 External or OS authentication, which must be configured in the
 database.  The <constant>OCI_CRED_EXT</constant> flag can only be used
@@ -678,7 +707,7 @@ may be <literal>On</literal> or <literal>Off</literal>.
 security reasons.
 </para>'>
 
-<!ENTITY oci.datatypes '<para xmlns="http://docbook.org/ns/docbook">Oci8
+<!ENTITY oci.datatypes '<para xmlns="http://docbook.org/ns/docbook">OCI8
 sürücüsü tarafından yapılan veri türü
 eşlemeyle ilgili ayrıntılar için <link linkend="oci8.datatypes">sürücü
 tarafından desteklenen veri türleri</link> bölümüne bakınız.</para>'>
@@ -817,8 +846,8 @@ Yapılandırma yönergelerinin kısa açıklamalarını aşağıda bulabilirsini
 içindeki ayarlardan etkilenir.</simpara>'>
 
 <!ENTITY ini.php.constants 'PHP_INI_* kiplerinin tanımları ve ayrıntılı
-açıklamaları için  <xref linkend="configuration.changes.modes"/> bölümüne
-bakınız.'>
+açıklamaları için  <xref xmlns="http://docbook.org/ns/docbook"
+linkend="configuration.changes.modes"/> bölümüne bakınız.'>
 
 <!-- Used in reference/$extname/constants.xml -->
 <!ENTITY extension.constants '<simpara xmlns="http://docbook.org/ns/docbook">
@@ -977,7 +1006,8 @@ Sadece yordamsal tarz: <function>mysqli_stmt_init</function> işlevinden
 dönen bir deyim tanıtıcısı.</para></listitem></varlistentry>'>
 
 <!ENTITY mysqli.available.mysqlnd 'Sadece
-<link linkend="book.mysqlnd">mysqlnd</link> ile kullanılabilir.'>
+<link xmlns="http://docbook.org/ns/docbook"
+linkend="book.mysqlnd">mysqlnd</link> ile kullanılabilir.'>
 
 
 <!-- Notes for SAPI/Apache -->
@@ -1134,11 +1164,12 @@ değiştirgeleri Tidy 2.0&apos;da eklendi.</simpara></note>'>
 <!ENTITY tidy.conf-enc '<para xmlns="http://docbook.org/ns/docbook"><parameter>ayarlar</parameter> değiştirgesinde
 bir dizge veya bir dizi belirtilebilir. Dizge verildiği takdirde
 yapılandırma dosyasının ismi olarak ele alınır. Dizi olarak verildiğinde ise
-dizinin yapılandırma seçeneklerini içerdiği varsayılır.</para><para>
-Seçeneklerin açıklamaları için
+dizinin yapılandırma seçeneklerini içerdiği varsayılır.</para>
+<para xmlns="http://docbook.org/ns/docbook">Seçeneklerin açıklamaları için
 <link xlink:href="&url.tidy.conf;">&url.tidy.conf;</link> adresine
-bakınız.</para><para><parameter>kodlama</parameter> değiştirgesinde belge
-girdi/çıktı kodlaması belirtilir. Olası değerler::
+bakınız.</para>
+<para xmlns="http://docbook.org/ns/docbook"><parameter>kodlama</parameter>
+değiştirgesinde belge girdi/çıktı kodlaması belirtilir. Olası değerler::
 <literal>ascii</literal>, <literal>latin0</literal>,
 <literal>latin1</literal>, <literal>raw</literal>, <literal>utf8</literal>,
 <literal>iso2022</literal>, <literal>mac</literal>,
@@ -1148,11 +1179,11 @@ girdi/çıktı kodlaması belirtilir. Olası değerler::
 <literal>shiftjis</literal>.</para>'>
 
 <!-- Snippets for the installation section -->
-<!ENTITY warn.apache2.compat '<warning xmlns="http://docbook.org/ns/docbook"> <para>Apache 2&apos;nin bir hizmet
-ortamında evreli MPM&apos;lerle kullanımını önermiyoruz. Bunun yerine
-prefork MPM&apos;sini veya Apache 1 kullanmanızı öneririz. Bunun sebebini
-SSS altında <link linkend="faq.installation.apache2">Apache ve evreli
-MPM&apos;ler</link> başlığı altında bulabilirsiniz.</para></warning>'>
+<!ENTITY warn.apache2.compat '<warning xmlns="http://docbook.org/ns/docbook"> <para>Apache 2&apos;nin bir hizmet ortamında evreli MPM&apos;lerle kullanımını
+önermiyoruz. Bunun yerine Apache 2.0 ve 2.2&apos;de öntanımlı MPM olan Prefork
+MPM&apos;sini kullanmanızı öneririz. Bunun sebebini SSS altında <link
+linkend="faq.installation.apache2">Apache ve evreli MPM&apos;ler</link>
+başlığı altında bulabilirsiniz.</para></warning>'>
 
 <!ENTITY note.apache.slashes '<note xmlns="http://docbook.org/ns/docbook"> <simpara>Windows üzerinde, Apache
 yapılandırma dosyalarına <filename>c:\dizin\dosya.uzn</filename> gibi
@@ -1260,7 +1291,7 @@ linkend="class.httpresponse"><classname>HttpResponse</classname></link> sınıf�
 <!ENTITY http.content.disposition 'İstemci veya kullanıcının (örneğin, tarayıcının &quot;Sayfayı farklı kaydet...&quot; seçeneği ile) &quot;kaydettiği&quot; bir dosyadan veya benzeri bir oluşumdan gelen veriyi göndermek gerektiğinde <literal xmlns="http://docbook.org/ns/docbook">
 Content-Disposition</literal> başlığı çok işe yarar.'>
 
-<!ENTITY http.use.ob_start '<function>ob_start</function> ile kullanmak için.'>
+<!ENTITY http.use.ob_start '<function xmlns="http://docbook.org/ns/docbook">ob_start</function> ile kullanmak için.'>
 
 <!ENTITY note.http.response.recalculate.etag.lm '<note xmlns="http://docbook.org/ns/docbook">
 <simpara>Evvelce değerlendirilip tanımlanmış <literal>ETag</literal> ve
@@ -1566,7 +1597,7 @@ standard Exceptions.</para><para>See also the
 
 <!ENTITY spl.interfaces.intro
 '<para xmlns="http://docbook.org/ns/docbook">SPL provides a set of
-interfaces.</para><para>See also the <xref linkend="reserved.interfaces" />
+interfaces.</para><para xmlns="http://docbook.org/ns/docbook">See also the <xref linkend="reserved.interfaces" />
 </para>'>
 
 <!ENTITY spl.interfaces.list
@@ -1578,9 +1609,11 @@ interfaces.</para><para>See also the <xref linkend="reserved.interfaces" />
 <!ENTITY spl.iterators.intro '<para xmlns="http://docbook.org/ns/docbook">SPL
 provides a set of iterators to traverse over objects.</para>'>
 
-<!ENTITY spl.misc.intro.title
-'<title xmlns="http://docbook.org/ns/docbook">Miscellaneous Classes</title>'>
+<!ENTITY spl.misc.intro.title '<title
+xmlns="http://docbook.org/ns/docbook">Miscellaneous Classes and
+Interfaces</title>'>
 
-<!ENTITY spl.misc.intro
-'<partintro xmlns="http://docbook.org/ns/docbook"><para>Classes which do not fit into the other SPL categories.</para></partintro>'>
+<!ENTITY spl.misc.intro '<partintro
+xmlns="http://docbook.org/ns/docbook"><para>Classes and interfaces which do
+not fit into the other SPL categories.</para></partintro>'>
 
