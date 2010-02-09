@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: aydin Status: ready -->
+<refentry xml:id="function.com-event-sink" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>com_event_sink</refname>
+  <refpurpose>Bir COM nesnesinden, PHP nesnesine olayları bağlar</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>com_event_sink</methodname>
+   <methodparam><type>variant</type><parameter>comNesne</parameter></methodparam>
+   <methodparam><type>object</type><parameter>aliciNesne</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>aliciArayuz</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <parameter>comNesne</parameter> ile üretilen olayların, PHP nesnesi
+   <parameter>aliciNesne</parameter> içine bağlanmasını sağlar.
+  </para>
+  <para>
+   Bu özelliği kullanırken dikkatli olun; eğer aşağıdaki örnek benzeri bir şey
+   yapıyorsanız bunun bir html sunucusunda çalışmasının anlamı yoktur.
+  </para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>comNesne</parameter></term>
+     <listitem>
+      <para>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>aliciNesne</parameter></term>
+     <listitem>
+      <para>
+       <parameter>aliciNesne</parameter> istenen arayüzün yöntem isimlerinin
+       olduğu sınıftan türemiş nesne olmalıdır; bu amaçla şablon bir sınıf
+       üretmek için <function>com_print_typeinfo</function> işlevinden yardım
+       alabilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>aliciArayuz</parameter></term>
+     <listitem>
+      <para>
+       PHP, <parameter>comNesne</parameter> tür kitaplığındaki öntanımlı
+       arayüz türünü kullanmaya çalışacaktır, bu durumu kullanmak istediğiniz
+       arayüzü <parameter>aliciArayuz</parameter> değiştirgesine yazarak
+       engelleyebilirsiniz.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>COM olay bağlayıcı örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class IEEventSinker {
+    var $terminated = false;
+
+   function ProgressChange($progress, $progressmax) {
+      echo "İndirme işlemi: $progress / $progressmax\n";
+    }
+
+    function DocumentComplete(&$dom, $url) {
+      echo "$url tamamlandı\n";
+    }
+
+    function OnQuit() {
+      echo "Çık!\n";
+      $this->terminated = true;
+    }
+}
+$ie = new COM("InternetExplorer.Application");
+// PHP 5 ile & kullanılmasına gerek kalmadığına dikkat edin!
+$sink = new IEEventSinker();
+com_event_sink($ie, $sink, "DWebBrowserEvents2");
+$ie->Visible = true;
+$ie->Navigate("http://www.example.org");
+while(!$sink->terminated) {
+  com_message_pump(4000);
+}
+$ie = null;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>com_print_typeinfo</function></member>
+    <member><function>com_message_pump</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
