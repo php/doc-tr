@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ddc8b420c5d77cf2072cae9295299d81c336c90a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 82303af1f15004f0f002c5b6343a5e551a23350c Maintainer: nilgun Status: ready -->
 <appendix xml:id="ini" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>&php.ini; yönergeleri</title>
 
@@ -28,7 +28,7 @@
        allow_call_time_pass_reference</link></entry>
        <entry>"1"</entry>
        <entry>PHP_INI_PERDIR</entry>
-       <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL. PHP 6.0.0'da kaldırıldı.</entry>
+       <entry>PHP 4.0.0'da PHP_INI_ALL. PHP 6.0.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.allow-url-fopen">
@@ -275,7 +275,7 @@
        <entry><link linkend="ini.asp-tags">asp_tags</link></entry>
        <entry>"0"</entry>
        <entry>PHP_INI_PERDIR</entry>
-       <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL.</entry>
+       <entry>PHP 4.0.0'da PHP_INI_ALL.</entry>
       </row>
       <row>
        <entry><link linkend="ini.assert.active">assert.active</link></entry>
@@ -3003,7 +3003,7 @@
        <entry><link linkend="ini.short-open-tag">short_open_tag</link></entry>
        <entry>"1"</entry>
        <entry>PHP_INI_ALL</entry>
-       <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL. PHP &lt; 5.3.0'da
+       <entry>PHP 4.0.0'da PHP_INI_ALL. PHP &lt; 5.3.0'da
        PHP_INI_PERDIR</entry>
       </row>
       <row>
@@ -3354,6 +3354,12 @@
        <entry>"2M"</entry>
        <entry>PHP_INI_PERDIR</entry>
        <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL.</entry>
+      </row>
+      <row>
+       <entry><link linkend="ini.max-file-uploads">max_file_uploads</link></entry>
+       <entry>20</entry>
+       <entry>PHP_INI_ALL</entry>
+       <entry>PHP 5.2.12'den itbaren kullanılabilmektedir.</entry>
       </row>
       <row>
        <entry><link linkend="ini.upload-tmp-dir">upload_tmp_dir</link></entry>
@@ -4016,14 +4022,14 @@ auto_prepend_file=security.php
         <entry>short_open_tag</entry>
         <entry>"1"</entry>
         <entry>PHP_INI_ALL</entry>
-        <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL. PHP &lt; 5.3.0'da
+        <entry>PHP 4.0.0'da PHP_INI_ALL. PHP &lt; 5.3.0'da
         PHP_INI_PERDIR</entry>
        </row>
        <row>
         <entry>asp_tags</entry>
         <entry>"0"</entry>
         <entry>PHP_INI_PERDIR</entry>
-        <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL.</entry>
+        <entry>PHP 4.0.0'da PHP_INI_ALL.</entry>
        </row>
        <row>
         <entry>precision</entry>
@@ -4041,7 +4047,7 @@ auto_prepend_file=security.php
         <entry>allow_call_time_pass_reference</entry>
         <entry>"1"</entry>
         <entry>PHP_INI_PERDIR</entry>
-        <entry>PHP &lt;= 4.0.0'da PHP_INI_ALL.</entry>
+        <entry>PHP 4.0.0'da PHP_INI_ALL.</entry>
        </row>
        <row>
         <entry>disable_functions</entry>
@@ -4164,8 +4170,6 @@ auto_prepend_file=security.php
        <para>
         İşlev çağrısı sırasında değiştirgeler gönderimli aktarıldığında
         uyarı verilip verilmeyeceğini belirler. Bu yöntemin kullanımı
-        PHP 5.3.0'dan itibaren önerilmemekte olup PHP/Zend'in ileri
-        sürümlerinde kaldırılabilir.
         Hangi değiştirgelerin gönderimli aktarılacağını işlev bildiriminde
         belirtmek daha iyidir. Bunu yapıp, betiğinizin, dilin gelecekteki
         sürümlerinde de düzgün çalışabilmesi için bu yönergeye sıfır
@@ -4179,6 +4183,13 @@ auto_prepend_file=security.php
         değiştirgesini bilgi vermeden değiştirebilir. Bu yan etkilerden
         kaçınmak için hangi değiştirgenin gönderimli aktarılacağının sadece
         işlev bildiriminde belirtilmesi daha iyidir.
+       </para>
+       <para>
+        PHP5'te, <literal>allow_call_time_pass_reference</literal> yönergesinin
+        kullanımı önerilmemektedir, PHP 5.3.0'dan önceki sürümlerde kullanımı
+        bir <constant>E_COMPILE_WARNING</constant> uyarısı çıktılanmasına, PHP
+        5.3.0 ve sonrasında ise bir <constant>E_DEPRECATED</constant>
+        çıktılanmasına sebep olur. Bu yönerge PHP6'da kaldırılmıştır.
        </para>
        <para>
         Ayrıca bakınız: <link linkend="language.references">Gönderimlerle
@@ -4913,7 +4924,7 @@ auto_prepend_file=security.php
       </term>
       <listitem>
        <para>
-        4.0.0 ve sonrasında, PHP Content-type: başlığında öntanımlı olarak
+        PHP, Content-type: başlığında öntanımlı olarak
         bir karakter kodlaması çıktılar. Karakter kümesi gönderimini iptal
         etmek için yönergeye boş dizge ("") atamak yeterlidir.
        </para>
@@ -5474,6 +5485,12 @@ include_path=".;c:\php\includes"
         <entry>PHP_INI_PERDIR</entry>
         <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL.</entry>
        </row>
+       <row>
+        <entry>max_file_uploads</entry>
+        <entry>20</entry>
+        <entry>PHP_INI_ALL</entry>
+        <entry>PHP 5.2.12'den beri kullanılabilmektedir.</entry>
+       </row>
       </tbody>
      </tgroup>
     </table>
@@ -5530,6 +5547,17 @@ include_path=".;c:\php\includes"
 
        &ini.shorthandbytes;
 
+      </listitem>
+     </varlistentry>
+     <varlistentry xml:id="ini.max-file-uploads">
+      <term>
+       <parameter>max_file_uploads</parameter>
+       <type>integer</type>
+      </term>
+      <listitem>
+       <para>
+        Aynı anda karşıya yüklenebilecek azami dosya sayısı.
+       </para>
       </listitem>
      </varlistentry>
     </variablelist>

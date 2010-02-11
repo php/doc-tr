@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 87d45e5f4e6693fee649f7144cc868afee0064f3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7258e52d02c389026cd49ea9ab880abe793ab385 Maintainer: nilgun Status: ready -->
    <sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Unix sistemler ve Apache 2.x</title>
     <para>
@@ -15,8 +15,6 @@
      <link xlink:href="&url.apache2.docs;">Apache HTTP Sunucusu Sürüm 2.x
      Belgeleri</link>ne bakmanızı öneririz.
     </para>
-
-    &install.snippet.apache2.compat;
 
     <para>
      En son sürümü <link xlink:href="&url.apache;">Apache 2.x indirme
@@ -35,122 +33,240 @@
      önerilen sürümdür. Ancak, burada sözü edilen talimatlar hem 2.0 hem de 2.x
      için çalışır.
     </para>
-    <example>
-     <title>- PHP'nin Paylaşımlı Apache 2 Modülü olarak kurulumu</title>
+    <orderedlist>
+     <listitem>
+     <para>Apache HTTP sunucusunu edindikten sonra şu komutları verin:
+     </para>
+     <example>
+      <screen>
+<![CDATA[
+gzip -d httpd-2_x_NN.tar.gz
+tar -xf httpd-2_x_NN.tar
+]]>
+      </screen>
+     </example>
+     </listitem>
+
+     <listitem>
+     <para>Benzer işlemleri PHP için de yapın:</para>
+     <example>
      <screen>
 <![CDATA[
-1.  gzip -d httpd-2_x_NN.tar.gz
-2.  tar xvf httpd-2_x_NN.tar
-3.  gunzip php-NN.tar.gz
-4.  tar -xvf php-NN.tar
-5.  cd httpd-2_x_NN
-6.  ./configure --enable-so
-7.  make
-8.  make install
+gunzip php-NN.tar.gz
+tar -xf php-NN.tar
+]]>
+     </screen>
+     </example>
+     </listitem>
 
+     <listitem>
+     <para>
+      Apache'yi derleyip kurun. Apache'nin nasıl
+      derleneceğini Apache kurulumu belgesinden öğrenebilirsinz.
+     </para>
+
+     <example>
+     <screen>
+<![CDATA[
+cd httpd-2_x_NN
+./configure --enable-so
+make
+make install
+]]>
+     </screen>
+     </example>
+     </listitem>
+
+     <listitem>
+ <para>
     Böylece standart prefork MPM'si ve yüklenebilir modül desteği ile Apache
     2.x.NN /usr/local/apache2 altına kurulmuş oldu. Kurulumu denemek için
     Apache HTTP sunucusunu normal yollardan başlatabilirsiniz. Örnek:
-    /usr/local/apache2/bin/apachectl start
-    PHP yapılandırmasıyla çalıştırmak üzere şimdilik sunucuyu durduralım:
-    /usr/local/apache2/bin/apachectl stop.
+    <example>
+    <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl start
+]]>
+    </screen>
+    </example>
+    PHP yapılandırması ile çalıştırmak üzere sunucuyu durdurun:
+    <example>
+    <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl stop
+]]>
+    </screen>
+    </example>
+ </para>
+ </listitem>
 
-9.  cd ../php-NN
+ <listitem>
+  <para>
+   Şimdi PHP'yi yapılandırıp kurun. Bunu hangi eklentileri etkin kılacaksanız
+   onların seçeneklerini kullanarak yapabilirsiniz. Olası seçeneklerin listesini
+   almak için komut satırına <literal>./configure --help</literal> yazın.
+   Örneğimizde Apache ve MySQL desteğini etkin kılacağız.
+  </para>
 
-10. Artık PHP'yi yapılandırabiliriz. Hangi eklentilerin etkin olacağını
-    belirten çeşitli seçenekleri kullanarak PHP'yi özelleştirebilirsiniz.
-    Olası seçeneklerin listesini görmek için ./configure --help komutunu
-    kullanın. Bu örnekte Apache 2 ve MySQL ile basit bir yapılandırmaya
-    gideceğiz. Sizde apxs farklı bir yere kurulmuş olabilir, hatta ismi apxs2
-    bile olabilir.
-
-      ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql
-
-11. make
-12. make install
-
-    Eğer kurulumdan sonra yapılandırmanızı değiştirmek isterseniz sadece son
-    üç adımı yinelemeniz yeterli olacaktır. Yeni modülün etkin olabilmesi
-    için Apache'yi yeniden başlatmanız gerekir. Apache'yi yeniden derlemeniz
-    gerekmez.
+  <para>
+   Apache'yi yukarıda açklandığı gibi kaynak paketinden derlediyseniz aşağıdaki
+   örnek sizin apxs yolunuzla eşleşecektir. Fakat Apache'yi başka bir şekilde
+   kurduysanız apxs yolunu buna uygun olarak ayarlamalısınız. Bazı dağıtımlar
+   apxs yerine apxs2 ismini kullanır, buna dikkat edin.
+  </para>
+  <example>
+   <screen>
+<![CDATA[
+cd ../php-NN
+./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql
+make
+make install
+]]>
+      </screen>
+     </example>
+   <para>
+    Eğer kurulumdan sonra yapılandırmanızı değiştirmek isterseniz sadece
+    configure, make ve make install adımlarını yinelemeniz yeterli olacaktır.
+    Yeni modülün etkin olabilmesi için Apache'yi yeniden başlatmanız gerekir. 
+    Apache'yi yeniden derlemeniz gerekmez.
 
     Aksi özellikle belirtilmedikçe 'make install' ile phpize gibi çeşitli PHP
     araçları, PEAR, PHP CLI ve bir takım başka şeylerin de kurulumu yapılır.
+   </para>
+   <para>
+     Aksi belirtilmedikçe, 'make install' ile phpize gibi çeşitli PHP araçları,
+     PEAR, PHP CLI ve benzerleri de kurulacaktır.
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    php.ini dosyanızı yapılandırın.
+   </para>
+     <example>
+     <screen>
+<![CDATA[
+cp php.ini-development /usr/local/lib/php.ini
+]]>
+      </screen>
+     </example>
 
-13. php.ini dosyanızı yapılandırın:
-
-    cp php.ini-development /usr/local/lib/php.ini
-
+   <para>
     PHP seçeneklerini ayarlamak için .ini dosyanızı düzenleyebilirsiniz. .ini
-    dosyanızın başka bir yerde durmasını istiyorsanız, 10. şıkta
+    dosyanızın başka bir yerde durmasını istiyorsanız, 5. şıkta
     --with-config-file-path=/başka/bir/yer seçeneği ile dosyanız için başka
     bir yer belirtebilirsiniz.
-
+   </para>
+   <para>
     php.ini-dist yerine php.ini-production (dağıtımın standart .ini dosyası
     yerine önerilen yapılandırmalar dosyasını) kullanmayı tercih ederseniz,
     değişiklik listesini okumayı ihmal etmeyin, çünkü bunlar PHP'nin
     davranışını etkileyecektir.
-
-
-14. PHP modülünün yüklenmesi için httpd.conf dosyasını düzenlemelisiniz.
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    PHP modülünün yüklenmesi için httpd.conf dosyasını düzenlemelisiniz.
     LoadModule yönergesinin değeri PHP modülünün sistemdeki yerini
     göstermelidir. Yukarıdaki 'make install' bunu sizin yerinize yapmıştır
     ama emin olmak için siz yine de bir bakın.
-
-      LoadModule php5_module modules/libphp5.so
-
-15. Apache'ye belli dosya uzantılarını PHP uzantıları olarak ele almasını
+   </para>
+   <example>
+    <programlisting role="apache-conf">
+<![CDATA[
+LoadModule php5_module modules/libphp5.so
+]]>
+    </programlisting>
+   </example>
+  </listitem>
+  <listitem>
+   <para>
+    Apache'ye belli dosya uzantılarını PHP uzantıları olarak ele almasını
     söyleyin. Örneğin, .php uzantılı dosyaları Apache'nin PHP dosyaları
     olarak ele almasını isteyebiliriz. Apache AddType yönergesini kullanmamak
     suretiyle, PHP tarafından çalıştırılmak üzere istismar.php.jpg gibi
     dosyaların oluşturulması ve yüklenmesi gibi tehlikeli durumlardan
-    kaçınmak isteyebilirsiniz. Biz örnek olsun diye .phtml uzantısını
+    kaçınmak isteyebilirsiniz. Biz örnek olsun diye .php uzantısını
     ekledik. Başka uzantıları da buraya ekleyebilirsiniz. Bunları aralarında
     boşluk bırakarak aynı satıra yazabilirsiniz.
-
-      <FilesMatch \.php$>
-          SetHandler application/x-httpd-php
-      </FilesMatch>
-
+   </para>
+   <example>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch \.php$>
+    SetHandler application/x-httpd-php
+</FilesMatch>
+]]>
+    </programlisting>
+   </example>
+   <para>
     Veya .php, .php2, .php3, .php4, .php5, .php6 ve .phtml gibi dosyalar
     dışında hiçbir dosyanın PHP tarafından çalıştırılmamasını şöyle
     sağlayabilirsiniz:
-
-      <FilesMatch "\.ph(p[2-6]?|tml)$">
-          SetHandler application/x-httpd-php
-      </FilesMatch>
-
+   </para>
+   <example>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch "\.ph(p[2-6]?|tml)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+]]>
+    </programlisting>
+   </example>
+   <para>
     PHP kaynak kodlarını renklendirilmiş olarak göstermek için .phps
     uzantısını da yapılandırmanıza ekleyebilirsiniz. Bu, şöyle yapılır:
-
-      <FilesMatch "\.phps$">
-          SetHandler application/x-httpd-php-source
-      </FilesMatch>
-
-    .php dosyalarının uzantılarını .phps olarak değiştirmeden kaynak kodlarını
+   </para>
+   <example>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch "\.phps$">
+    SetHandler application/x-httpd-php-source
+</FilesMatch>
+]]>
+    </programlisting>
+   </example>
+   <para>
+     .php dosyalarının uzantılarını .phps olarak değiştirmeden kaynak kodlarını
     renklendirilmiş olarak göstermek isterseniz bunu şöyle yapabilirsiniz:
-
-      RewriteEngine On
-      RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
-
-    PHP kaynak süzgeci, gizli kalması gereken bilgiler içeren genel kullanıma
+   </para>
+   <example>
+    <programlisting role="apache-conf">
+<![CDATA[
+RewriteEngine On
+RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
+]]>
+    </programlisting>
+   </example>
+   <para>
+     PHP kaynak süzgeci, gizli kalması gereken bilgiler içeren genel kullanıma
     açık sunucularda kullanılmamalıdır. Aksi takdirde gizli kalması gereken
     bilgiler kaynak koda eklenebilir.
-
-16. Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
     başlatmanız yetecektir:
-
-      /usr/local/apache2/bin/apachectl start
-
-          - VEYA -
-
-      service httpd restart
-
+   </para>
+   <example>
+    <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl start
 ]]>
+    </screen>
+   </example>
+   <para>VEYA</para>
+   <example>
+    <screen>
+<![CDATA[
+service httpd restart
+ ]]>
+    </screen>
+   </example>
 
-      </screen>
-     </example>
-    <para>
+      </listitem>
+     </orderedlist>
+     <para>
      Yukarıdaki adımları izleyerek PHP'nin bir <literal>SAPI</literal> modülü
      olarak çalıştığı bir Apache 2 HTTP sunucusuna sahip olursunuz. Apache ve
      PHP için şüphesiz birçok farklı yapılandırma seçeneği vardır.
@@ -160,7 +276,7 @@
     <para>
      Apache derlenirken <filename>prefork</filename> MPM modülü yerine ,
      <filename>worker</filename> MPM modülü seçilerek çok evreli derlenebilir.
-     Bunu yapmak için 6. şıkta derleme seçeneklerinize şu seçeneğini
+     Bunu yapmak için 3. şıkta derleme seçeneklerinize şu seçeneğini
      ekleyebilirsiniz:
     </para>
     <example>
