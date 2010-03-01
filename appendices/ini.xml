@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 82303af1f15004f0f002c5b6343a5e551a23350c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a26901c028d72e0b7fcc5da02eeb364a28641481 Maintainer: nilgun Status: ready -->
 <appendix xml:id="ini" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>&php.ini; yönergeleri</title>
 
@@ -4342,10 +4342,10 @@ auto_prepend_file=security.php
        <para>
         PHP 5.2.1 öncesinde, bu yönergeyi kullanabilmek için PHP'yi
         derlerken <option role="configure">--enable-memory-limit</option>
-        yapılandırma seçeneğini kullanmak gerekirdi. Bu ayrıca,
-        <function>memory_get_usage</function> ve
-        <function>memory_get_peak_usage</function> işlevlerini tanımlamak
-        için de gerekir.
+        yapılandırma seçeneğini kullanmak gerekirdi. 5.2.1 öncesinde bu
+        derleme seçeneği ayrıca, <function>memory_get_usage</function> ve
+        <function>memory_get_peak_usage</function> işlevlerinin de
+        tanımlanmasını gerektirirdi.
        </para>
 
        &ini.shorthandbytes;
@@ -5084,6 +5084,13 @@ auto_prepend_file=security.php
         PHP_INI_ALL.</entry>
        </row>
        <row>
+        <entry>fastcgi.logging</entry>
+        <entry>"1"</entry>
+        <entry>PHP_INI_SYSTEM</entry>
+        <entry>PHP 4.3.0 ve sonrasında mevcuttur. PHP 5.2.1 öncesinde
+        PHP_INI_ALL.</entry>
+       </row>
+       <row>
         <entry>cgi.rfc2616_headers</entry>
         <entry>"0"</entry>
         <entry>PHP_INI_ALL</entry>
@@ -5340,9 +5347,10 @@ include_path=".;c:\php\includes"
       </term>
       <listitem>
        <para>
-        CGI PHP'nin betiklerin başında #! ile başlayan satırın varlığına
-        bakıp bakmayacağını belirler. Betik hem PHP CGI hem de tek başına
-        bir betik olarak çalışabiliyorsa bu satır gerekebilir. PHP, CGI
+        <literal>CGI</literal> PHP'nin betiklerin başında <literal>#!</literal>
+        ile başlayan satırın varlığına bakıp bakmayacağını belirler. Betik hem
+        PHP <acronym>CGI</acronym> hem de tek başına bir betik olarak
+        çalışabiliyorsa bu satır gerekebilir. PHP, <acronym>CGI</acronym>
         kipinde çalışırken bu satırı atlar, bu yönerge "1" olsa bile satırın
         içeriği yok sayılır.
        </para>
@@ -5356,15 +5364,18 @@ include_path=".;c:\php\includes"
       </term>
       <listitem>
        <para>
-        CGI için <emphasis>gerçek</emphasis> PATH_INFO/PATH_TRANSLATED
-        desteği sağlar. PHP'nin önceki davranışı SCRIPT_FILENAME'e
-        PATH_TRANSLATED atamak ve PATH_INFO'yu kaale almamaktı. PATH_INFO
-        hakkında daha ayrıntılı bilgi edinmek için CGI belirtimine bakınız.
-        Bu yönergeye 1 atamakla PHP CGI'nin CGI belirtimine uygun olarak
-        dosya arama yollarını düzeltmesi sağlanmış olur. Sıfır atandığında
-        ise PHP'nin önceki davranışı etkin olur. Öntanımlı değer sıfırdır.
-        Betiklerinizi PATH_TRANSLATED değil SCRIPT_FILENAME kullanması için
-        düzeltmelisiniz.
+        <acronym>CGI</acronym> için <emphasis>gerçek</emphasis> 
+        <literal>PATH_INFO</literal>/<literal>PATH_TRANSLATED</literal>
+        desteği sağlar. PHP'nin önceki davranışı <literal>SCRIPT_FILENAME</literal>'e
+        <literal>PATH_TRANSLATED</literal> atamak ve <literal>PATH_INFO</literal>'yu
+        kaale almamaktı. <literal>PATH_INFO</literal> hakkında daha ayrıntılı
+        bilgi edinmek için <acronym>CGI</acronym> belirtimine bakınız.
+        Bu yönergeye 1 atamakla PHP <acronym>CGI</acronym>'nin
+        <acronym>CGI</acronym>CGI belirtimine uygun olarak dosya arama yollarını
+        düzeltmesi sağlanmış olur. Sıfır atandığında ise PHP'nin önceki davranışı
+        etkin olur. Öntanımlı değer sıfırdır. Betiklerinizi
+        <literal>PATH_TRANSLATED</literal> değil <literal>SCRIPT_FILENAME</literal>
+        kullanması için düzeltmelisiniz.
        </para>
       </listitem>
      </varlistentry>
@@ -5376,10 +5387,11 @@ include_path=".;c:\php\includes"
       </term>
       <listitem>
        <para>
-        PHP'nin çoğu HTTP sunucusunda bir CGI olarak çalışmasının güvenli
-        olmasını sağlamak için bu yönerge gereklidir. Tanımsız bırakılmışsa
-        PHP öntanımlı olarak yönergeyi etkin kılar. Bu yönergeyi etkisiz
-        bırakmakla <emphasis>kendinizi riske atmış olursunuz</emphasis>.
+        PHP'nin çoğu HTTP sunucusunda bir <acronym>CGI</acronym> olarak
+        çalışmasının güvenli olmasını sağlamak için bu yönerge gereklidir.
+        Tanımsız bırakılmışsa PHP öntanımlı olarak yönergeyi etkin kılar.
+        Bu yönergeyi etkisiz bırakmakla <emphasis>kendinizi riske atmış
+        olursunuz</emphasis>.
        </para>
        <note>
         <para>
@@ -5427,6 +5439,19 @@ include_path=".;c:\php\includes"
         tanımlama izni verir. Apache'nin mod_fastcgi modülü bu özelliği
         desteklemez (17-03-2002). IIS altında çalışılıyorsa yönergeye 1
         atayın. Öntanımlı değer sıfırdır.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.fastcgi.logging">
+      <term>
+       <parameter>fastcgi.logging</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+        Turns on SAPI logging when using FastCGI kullanırken SAPI oturum açma
+        etkin olur ve bu öntanımlı durumdur.
        </para>
       </listitem>
      </varlistentry>
