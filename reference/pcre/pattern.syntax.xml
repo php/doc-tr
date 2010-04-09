@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 412c8465bfded808562d8e8bffa0ce26756d9415 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
 <chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook">
  <title>PCRE düzenli ifade sözdizimi</title>
@@ -22,6 +22,70 @@
       ederler ve şablonun eşleştirildiği dizgedeki karşılıkları ile
       eşleşirler. Önemsiz bir örnek olarak <literal>The quick brown
       fox</literal> şablonu kendisiyle aynı olan dizgeyle eşleşecektir.
+     </para>
+    </section>
+    <section xml:id="regexp.reference.delimiters">
+     <title>Delimiters</title>
+     <para>
+      When using the PCRE functions, it is required that the pattern is enclosed
+      by <emphasis>delimiters</emphasis>. A delimiter can be any non-alphanumeric,
+      non-backslash, non-whitespace character.
+     </para>
+     <para>
+      Often used delimiters are forward slashes (<literal>/</literal>), hash
+      signs (<literal>#</literal>) and tildes (<literal>~</literal>). The
+      following are all examples of valid delimited patterns.
+      <informalexample>
+       <programlisting>
+<![CDATA[
+/foo bar/
+#^[^0-9]$#
++php+
+%[a-zA-Z0-9_-]%
+]]>
+       </programlisting>
+      </informalexample>
+     </para>
+     <para>
+      If the delimiter needs to be matched inside the pattern it must be
+      escaped using a backslash. If the delimiter appears often inside the
+      pattern, it is a good idea to choose another delimiter in order to increase
+      readability.
+      <informalexample>
+       <programlisting>
+<![CDATA[
+/http:\/\//
+#http://#
+]]>
+       </programlisting>
+      </informalexample>
+      The <function>preg_quote</function> function may be used to escape a string
+      for injection into a pattern and its optional second parameter may be used 
+      to specify the delimiter to be escaped.
+     </para>
+     <para>
+      In addition to the aforementioned delimiters, it is also possible to use
+      bracket style delimiters where the opening and closing brackets are the
+      starting and ending delimiter, respectively.
+      <informalexample>
+       <programlisting>
+<![CDATA[
+{this is a pattern}
+]]>
+       </programlisting>
+      </informalexample>
+     </para>
+     <para>
+      You may add <link linkend="reference.pcre.pattern.modifiers">pattern
+      modifiers</link> after the ending delimiter. The following is an example
+      of case-insensitive matching:
+      <informalexample>
+       <programlisting>
+<![CDATA[
+#[a-z]#i
+]]>
+       </programlisting>
+      </informalexample>
      </para>
     </section>
     <section xml:id="regexp.reference.meta">
@@ -81,7 +145,9 @@
        <varlistentry>
         <term><emphasis>?</emphasis></term>
         <listitem><simpara>"(" işlecinin anlamını genişletir; 0 veya 1 kere
-        eşleşir; eşleşme miktarını asgarileştirir</simpara></listitem>
+        eşleşir, ayrıca tamahkarlığa son verilir.
+        (bkz. <link linkend="regexp.reference.repetition">Yineleme</link>)
+        </simpara></listitem>
        </varlistentry>
        <varlistentry>
         <term><emphasis>*</emphasis></term>
@@ -197,6 +263,24 @@
         <listitem><simpara>satırsonu (onaltılık 0A)</simpara></listitem>
        </varlistentry>
        <varlistentry>
+        <term><emphasis>\p{xx}</emphasis></term>
+        <listitem>
+         <simpara>
+          xx özellikli bir karakter, daha fazla bilgi için bkz.
+          <link linkend="regexp.reference.unicode">unicode özellikleri</link>.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><emphasis>\P{xx}</emphasis></term>
+        <listitem>
+         <simpara>
+          xx özelliksiz bir karakter, daha fazla bilgi için bkz.
+          <link linkend="regexp.reference.unicode">unicode özellikleri</link>.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
         <term><emphasis>\r</emphasis></term>
         <listitem><simpara>satırbaşı (onaltılık 0D)</simpara></listitem>
        </varlistentry>
@@ -206,7 +290,10 @@
        </varlistentry>
        <varlistentry>
         <term><emphasis>\xhh</emphasis></term>
-        <listitem><simpara>onaltılık kodu hh olan karakter</simpara>
+        <listitem>
+         <simpara>onaltılık kodu hh olan karakter, daha fazla bilgi için bkz.
+          <link linkend="regexp.reference.unicode">unicode özellikleri</link>.
+         </simpara>
         </listitem>
        </varlistentry>
        <varlistentry>
@@ -548,72 +635,82 @@
      </literallayout>
      <table>
       <title>Desteklenen özellik kodları</title>
-      <tgroup cols="2">
+      <tgroup cols="3">
+       <thead>
+        <row>
+         <entry>Özellik</entry>
+         <entry>Eşleşmeler</entry>
+         <entry>Açıklamalar</entry>
+        </row>
+       </thead>
        <tbody>
-        <row><entry><literal>C</literal></entry><entry>Diğer</entry></row>
-        <row><entry><literal>Cc</literal></entry><entry>Denetim</entry></row>
-        <row><entry><literal>Cf</literal></entry><entry>Biçem</entry></row>
+        <row><entry><literal>C</literal></entry><entry>Diğer</entry><entry/></row>
+        <row><entry><literal>Cc</literal></entry><entry>Denetim</entry><entry/></row>
+        <row><entry><literal>Cf</literal></entry><entry>Biçem</entry><entry/></row>
         <row><entry><literal>Cn</literal></entry><entry>Atanmamış
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Co</literal></entry><entry>Özel kullanım
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>Cs</literal></entry><entry>İkame
-        </entry></row>
-        <row><entry><literal>L</literal></entry><entry>Harf</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>L</literal></entry><entry>Harf</entry>
+        <entry>Şu özellikleri içerir: <literal>Ll</literal>,
+        <literal>Lm</literal>, <literal>Lo</literal>, <literal>Lt</literal> ve
+        <literal>Lu</literal>.</entry></row>
         <row><entry><literal>Ll</literal></entry><entry>Küçük harf
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Lm</literal></entry><entry>Değiştirici harf
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Lo</literal></entry><entry>Diğer harf
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Lt</literal></entry><entry>Başlık harfi
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>Lu</literal></entry><entry>Büyük harf
-        </entry></row>
-        <row><entry><literal>M</literal></entry><entry>İm</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>M</literal></entry><entry>İm</entry><entry/></row>
         <row><entry><literal>Mc</literal></entry><entry>Boşluk imi
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Me</literal></entry><entry>Kapsama imi
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>Mn</literal></entry><entry>Boşluk
-        bırakmama imi</entry></row>
-        <row><entry><literal>N</literal></entry><entry>Sayı</entry></row>
+        bırakmama imi</entry><entry/></row>
+        <row><entry><literal>N</literal></entry><entry>Sayı</entry><entry/></row>
         <row><entry><literal>Nd</literal></entry><entry>Onluk sayı
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Nl</literal></entry><entry>Harf numarası
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>No</literal></entry><entry>Diğer sayı
-        </entry></row>
-        <row><entry><literal>P</literal></entry><entry>Noktalama</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>P</literal></entry><entry>Noktalama</entry><entry/></row>
         <row><entry><literal>Pc</literal></entry><entry>Bağlayıcı noktalama
-        </entry></row>
-        <row><entry><literal>Pd</literal></entry><entry>Tire imi</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>Pd</literal></entry><entry>Tire imi</entry><entry/></row>
         <row><entry><literal>Pe</literal></entry><entry>Kapama imi
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Pf</literal></entry><entry>Sonlandırma imi
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Pi</literal></entry><entry>Başlatma imi
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Po</literal></entry><entry>Diğer noktalama
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>Ps</literal></entry><entry>Açma imi
-        </entry></row>
-        <row><entry><literal>S</literal></entry><entry>Simge</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>S</literal></entry><entry>Simge</entry><entry/></row>
         <row><entry><literal>Sc</literal></entry><entry>Para simgesi
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Sk</literal></entry><entry>Değiştirici simge
         </entry></row>
         <row><entry><literal>Sm</literal></entry><entry>Matematiksel simge
-        </entry></row>
+        </entry><entry/></row>
         <row rowsep="1"><entry><literal>So</literal></entry><entry>Diğer simge
-        </entry></row>
-        <row><entry><literal>Z</literal></entry><entry>Ayraç</entry></row>
+        </entry><entry/></row>
+        <row><entry><literal>Z</literal></entry><entry>Ayraç</entry><entry/></row>
         <row><entry><literal>Zl</literal></entry><entry>Satır ayracı
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Zp</literal></entry><entry>Paragraf ayracı
-        </entry></row>
+        </entry><entry/></row>
         <row><entry><literal>Zs</literal></entry><entry>Boşluk ayracı
-        </entry></row>
+        </entry><entry/></row>
        </tbody>
       </tgroup>
      </table>
@@ -814,6 +911,48 @@
       bir anlama sahip değildir, ancak öncelenmiş olmaları da bir sorun
       teşkil etmezdi. Şablon sonlandırıcı daima özeldir ve bir ifade içinde
       kullanıldığında daima öncelenmesi gerekir.
+     </para>
+     <para>
+      Perl supports the POSIX notation for character classes. This uses names
+      enclosed by <literal>[:</literal> and <literal>:]</literal> within the enclosing square brackets. PCRE also
+      supports this notation. For example, <literal>[01[:alpha:]%]</literal>
+      matches "0", "1", any alphabetic character, or "%". The supported class
+      names are:
+      <table>
+       <title>Character classes</title>
+       <tgroup cols="2">
+        <tbody>
+         <row><entry><literal>alnum</literal></entry><entry>letters and digits</entry></row>
+         <row><entry><literal>alpha</literal></entry><entry>letters</entry></row>
+         <row><entry><literal>ascii</literal></entry><entry>character codes 0 - 127</entry></row>
+         <row><entry><literal>blank</literal></entry><entry>space or tab only</entry></row>
+         <row><entry><literal>cntrl</literal></entry><entry>control characters</entry></row>
+         <row><entry><literal>digit</literal></entry><entry>decimal digits (same as \d)</entry></row>
+         <row><entry><literal>graph</literal></entry><entry>printing characters, excluding space</entry></row>
+         <row><entry><literal>lower</literal></entry><entry>lower case letters</entry></row>
+         <row><entry><literal>print</literal></entry><entry>printing characters, including space</entry></row>
+         <row><entry><literal>punct</literal></entry><entry>printing characters, excluding letters and digits</entry></row>
+         <row><entry><literal>space</literal></entry><entry>white space (not quite the same as \s)</entry></row>
+         <row><entry><literal>upper</literal></entry><entry>upper case letters</entry></row>
+         <row><entry><literal>word</literal></entry><entry>"word" characters (same as \w)</entry></row>
+         <row><entry><literal>xdigit</literal></entry><entry>hexadecimal digits</entry></row>
+        </tbody>
+       </tgroup>
+      </table>
+      The <literal>space</literal> characters are HT (9), LF (10), VT (11), FF (12), CR (13),
+      and space (32). Notice that this list includes the VT character (code
+      11). This makes "space" different to <literal>\s</literal>, which does not include VT (for
+      Perl compatibility).
+     </para>
+     <para>
+      The name <literal>word</literal> is a Perl extension, and <literal>blank</literal> is a GNU extension
+      from Perl 5.8. Another Perl extension is negation, which is indicated
+      by a <literal>^</literal> character after the colon. For example,
+      <literal>[12[:^digit:]]</literal> matches "1", "2", or any non-digit.
+     </para>
+     <para>
+      In UTF-8 mode, characters with values greater than 128 do not match any
+      of the POSIX character classes.
      </para>
     </section>
 
