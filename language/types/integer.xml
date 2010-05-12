@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 423eabfd02d97bd88ff4a68afb603cb59ee67372 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 11c3994c5a501117e6b4ac28856a3898b61117c4 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
  <title><code>integer</code></title>
 
@@ -119,34 +119,43 @@ var_dump(01090); // sekizlik: 010, onluk: 8
    <type>float</type> türünde olur.
   </para>
 
-  <informalexample>
+  <example>
+   <title>32 bitlik sistemlerde tamsayı taşması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 $büyük_sayı =  2147483647;
 var_dump($büyük_sayı);
-// çıktısı: int(2147483647)
 
 $büyük_sayı =  2147483648;
 var_dump($büyük_sayı);
-// çıktısı: float(2147483648)
-
-// aynısı 2^31 ve 2^32-1 arasındaki onaltılık değerler için de geçerlidir:
-var_dump( 0xffffffff );
-// çıktısı: float(4294967295)
-
-// ancak 2^32-1'den büyük onaltılık değerler için geçersizdir:
-var_dump( 0x100000000 );
-// output: int(2147483647)
 
 $milyon = 1000000;
 $büyük_sayı =  50000 * $million;
 var_dump($büyük_sayı);
-// çıktısı: float(50000000000)
 ?>
 ]]>
    </programlisting>
-  </informalexample>
+  </example>
+
+  <example>
+   <title>64 bitlik sistemlerde tamsayı taşması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$büyük_sayı = 9223372036854775807;
+var_dump($büyük_sayı);                     // int(9223372036854775807)
+
+$büyük_sayı = 9223372036854775808;
+var_dump($büyük_sayı);                     // float(9.2233720368548E+18)
+
+$milyon = 1000000;
+$büyük_sayı=  50000000000000 * $milyon;
+var_dump($büyük_sayı);                     // float(5.0E+19)
+?>
+]]>
+   </programlisting>
+  </example>
 
   <warning>
    <simpara>
@@ -203,7 +212,8 @@ var_dump(round(25/7));  // float(4)
   </simpara>
 
   <sect3 xml:id="language.types.integer.casting.from-boolean">
-   <title><link linkend="language.types.boolean"><code>boolean</code></link> türünden dönüşüm</title>
+   <title><link linkend="language.types.boolean"><code>boolean</code></link>
+   türünden dönüşüm</title>
 
    <simpara>
     &false;, <literal>0</literal>'a (sıfır); &true;, <literal>1</literal>'e
@@ -212,7 +222,8 @@ var_dump(round(25/7));  // float(4)
   </sect3>
 
   <sect3 xml:id="language.types.integer.casting.from-float">
-   <title><link linkend="language.types.float"><code>float</code></link> türünden dönüşüm</title>
+   <title><link linkend="language.types.float"><code>float</code></link>
+   türünden dönüşüm</title>
 
    <simpara>
     <type>float</type> türünden <type>integer</type> türüne dönüşümde sayı
@@ -221,9 +232,11 @@ var_dump(round(25/7));  // float(4)
 
    <para>
     Dönüşüm sonucu <type>integer</type> türüne ayrılan genişliğe (normalde
-    <literal>+/- 2.15e+9 = 2^31</literal>) sığmıyorsa, <type>float</type> türün
-    hassasiyeti <type>integer</type>  türünde tam bir sonuç vermeyeceğinden
-    sonuç tanımsızdır. Bu durumda ne bir uyarı ne de bir bilgi verilir!
+    32 bitlik sistemlerde <literal>+/- 2.15e+9 = 2^31</literal>, 64 bitlik
+    sistemlerde ise <literal>+/- 9.22e+18 = 2^63</literal>) sığmıyorsa,
+    <type>float</type> türün hassasiyeti <type>integer</type>  türünde tam bir
+    sonuç vermeyeceğinden sonuç tanımsızdır. Bu durumda ne bir uyarı ne de bir
+    bilgi verilir!
    </para>
 
    <warning>
