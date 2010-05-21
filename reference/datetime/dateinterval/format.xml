@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 1b93e897341f12f7f1031a254531d513d42db87a Maintainer: behzat Status: ready -->
 <refentry xml:id="dateinterval.format" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>DateInterval::format</refname>
@@ -29,6 +29,8 @@
        <table>
         <title>
          <parameter>biçem</parameter> dizgesinde tanınan karakterler
+         aşağıda listelenmiştir. Her biçem karakterinin başına bir
+         yüzde (<literal>%</literal>) işareti konmalıdır.
         </title>
         <tgroup cols="3">
          <thead>
@@ -39,6 +41,11 @@
           </row>
          </thead>
          <tbody>
+          <row>
+           <entry><literal>%</literal></entry>
+           <entry><literal>%</literal> iminin kendisi</entry>
+           <entry><literal>%</literal></entry>
+          </row>
           <row>
            <entry><literal>Y</literal></entry>
            <entry>Başına 0 getirilerek iki haneli yıl</entry>
@@ -58,7 +65,7 @@
           <row>
            <entry><literal>m</literal></entry>
            <entry>0 ile öncelenmeksizin ay</entry>
-           <entry><literal>01</literal>, <literal>03</literal>,
+           <entry><literal>1</literal>, <literal>3</literal>,
            <literal>12</literal></entry>
           </row>
           <row>
@@ -127,21 +134,10 @@
            </entry>
            <entry><literal>-</literal>, <literal></literal></entry>
           </row>
-          <row>
-           <entry><literal>%</literal></entry>
-           <entry><literal>%</literal> iminin kendisi</entry>
-           <entry><literal>%</literal></entry>
-          </row>
          </tbody>
         </tgroup>
        </table>
       </para>
-      <note>
-       <para>
-        Biçem belirteçlerinin doğru çalışması için <literal>%</literal> imi
-        ile öncelenmeleri gerekir.
-       </para>
-      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -155,6 +151,96 @@
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <methodname>DateInterval::format</methodname> yöntemi ne zaman dizgelerinde
+    ne de tarih bölümlerinde tehir edilen kısımları yeniden hesaplar. Bunun
+    sebebi <literal>"32 gün"</literal> gibi büyük değerlerin olanaksız oluşudur.
+    Olanaklı olsaydı böyle bir değer <literal>"1 ay 4 gün"</literal> ile
+    <literal>"1 ay 1 gün"</literal> arasında bir değer olarak yorumlanabilirdi.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <classname>DateInterval</classname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$interval = new DateInterval('P2Y4DT6H8M');
+echo $interval->format('%d gün');
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+4 gün
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <classname>DateInterval</classname> ve büyük değerler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$interval = new DateInterval('P32D');
+echo $interval->format('%d gün');
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+   <screen role="php">
+<![CDATA[
+32 gün
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>-
+     <classname>DateInterval</classname> ve 
+     <methodname>DateTime::diff</methodname> ile %a ve %d değiştiricileri
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$january = new DateTime('2010-01-01');
+$february = new DateTime('2010-02-01');
+$interval = $february->diff($january);
+
+// %a toplam gün sayısını çıktılar.
+echo $interval->format('toplam %a gün')."\n";
+
+// %d ise aya dahil olmayan gün sayısını çıktılar.
+echo $interval->format('%m ay, %d gün');
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+toplam 31 gün
+1 ay, 0 gün
+]]>
+    </screen>
+   </example>
+   </para>
+  </refsect1>
 </refentry>
 
 <!-- Keep this comment at the end of the file
