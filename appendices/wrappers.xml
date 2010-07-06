@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e57d6ccfdd9e474227c60e0773a3c7d1ecb9536 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d29e172cab4cce6dff2854b65e7c47de55f60dad Maintainer: nilgun Status: ready -->
 <appendix xml:id="wrappers" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Desteklenen Protokollerin ve Sarmalayıcıların Listesi</title>
  <para>
@@ -448,6 +448,11 @@ X-OzelBaslik: Filanca
     sarmalayıcısı
    <literal>enctype="multipart/form-data"</literal> ile kullanılamaz.
   </simpara>
+  <note>
+   <simpara>
+    <filename>php://input</filename> sadece bir kere okunabilir.
+   </simpara>
+  </note>
   <simpara>
    <filename>php://stdin</filename> ve
    <filename>php://input</filename> salt okunur iken,
@@ -1279,7 +1284,267 @@ $stream = fopen("ssh2.tunnel://$oturum/kabuk.mesela.dom:1234", 'r');
     </tgroup>
    </table>
   </para>
+ </section>
 
+ <section xml:id="wrappers.rar" xreflabel="rar:// wrapper">
+  <title>Rar</title>
+  <simpara>
+   <filename>rar://</filename>
+   PECL rar 3.0.0'dan beri kullanılabilmektedir.
+  </simpara>
+
+  <itemizedlist>
+   <listitem><simpara><filename>rar://&lt;url kodlu arşiv ismi&gt;[*][#[&lt;url
+   kodlu girdi ismi&gt;]]</filename></simpara></listitem>
+  </itemizedlist>
+
+  <note>
+   <title>Bu sarmalayıcı öntanımlı olarak etkin değildir</title>
+   <simpara>
+    <filename>rar://</filename> sarmalayıcısını kullanabilmek için sitesinden
+    alacağınız <link xlink:href="&url.pecl.package;rar">rar</link> eklentisini
+    kurmalısınız.
+   </simpara>
+  </note>
+
+  <simpara>
+   Sarmalayıcı girdi olarak RAR arşivi için url kodlu (mutlak veya değil) yolun
+   yanında isteğe bağlı olarak verilebilen bir yıldız imi
+   (<literal>*</literal>), bir diyez imi (<literal>#</literal>) ve arşivde
+   saklanmak üzere url kodlu bir girdi ismi alır. Girdi isminin belirtilmesi
+   bir diyez imini gerektirir; girdi ismini başına isteğe bağlı olarak bir bölü
+   çizgisi (<literal>#</literal>) konabilir.
+  </simpara>
+
+  <simpara>
+   Bu sarmalayıcı dosyalarla birlikte dizinleri de açabilir. Dizinleri açarken
+   yıldız iminin varlığı girdi olan dizin isimlerinin kodlanmamasına sebep
+   olur. Yıldız imi belirtilmezse dizin isimleri url kodlu olur. Bunun sebebi,
+   url kodlu gibi görünen dosya isimlerinin varlığında
+   <type>RecursiveDirectoryIterator</type> gibi yerleşik işlevselliklerin
+   sarmalayıcı tarafından doğru olarak kullanılmasını sağlamaktır.
+  </simpara>
+
+  <simpara>
+   Diyez imi ve girdi ismi verilmezse arşivin kök dizini gösterilir. Kök dizin
+   arşivde tek başına bir girdi olarak saklanmayacağından, sonuçlanan akımın
+   değişiklik zamanı gibi bilgileri içermemesi bakımından, kök dizinin
+   gösterimi diğer dizinlerden farklı olur. Samalayıcının
+   <type>RecursiveDirectoryIterator</type> ile kullanımı kök dizine ulaşmak
+   için URL içinde diyez iminin bulunmasını gerektirir. Böylece çocuk URL'ler
+   doğru şekilde oluşturulabilir.
+  </simpara>
+
+   <para>
+    <example>
+     <title>- RAR arşivinde ilerleme</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyRecDirIt extends RecursiveDirectoryIterator {
+    function current() {
+        return rawurldecode($this->getSubPathName()) .
+     (is_dir(parent::current())?" [DIR]":"");
+ }
+}
+
+$f = "rar://" . rawurlencode(dirname(__FILE__)) .
+ DIRECTORY_SEPARATOR . 'dirs_and_extra_headers.rar#';
+
+$it = new RecursiveTreeIterator(new MyRecDirIt($f));
+
+foreach ($it as $s) {
+ echo $s, "\n";
+}
+?>
+]]>
+     </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+|-allow_everyone_ni [DIR]
+|-file1.txt
+|-file2_אּ.txt
+|-with_streams.txt
+\-אּ [DIR]
+  |-אּ\%2Fempty%2E [DIR]
+  | \-אּ\%2Fempty%2E\file7.txt
+  |-אּ\empty [DIR]
+  |-אּ\file3.txt
+  |-אּ\file4_אּ.txt
+  \-אּ\אּ_2 [DIR]
+    |-אּ\אּ_2\file5.txt
+    \-אּ\אּ_2\file6_אּ.txt
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    <example>
+     <title>- Şifreli bir dosyanın açılması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$stream = fopen("rar://" .
+    rawurlencode(dirname(__FILE__)) . DIRECTORY_SEPARATOR .
+    'encrypted_headers.rar' . '#encfile1.txt', "r", false,
+ stream_context_create(
+   array(
+     'rar' =>
+       array(
+         'open_password' => 'samplepassword'
+       )
+     )
+   )
+ );
+var_dump(stream_get_contents($stream));
+/* WinRAR'da oluşturma ve son erişim zamanı isteğe bağlıdır.
+ * Bunun sebebi çoğu dosyanın bunları içermemesidir. */
+var_dump(fstat($stream));
+?>
+]]>
+     </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+string(26) "Encrypted file 1 contents."
+Array
+(
+    [0] => 0
+    [1] => 0
+    [2] => 33206
+    [3] => 1
+    [4] => 0
+    [5] => 0
+    [6] => 0
+    [7] => 26
+    [8] => 0
+    [9] => 1259550052
+    [10] => 0
+    [11] => -1
+    [12] => -1
+    [dev] => 0
+    [ino] => 0
+    [mode] => 33206
+    [nlink] => 1
+    [uid] => 0
+    [gid] => 0
+    [rdev] => 0
+    [size] => 26
+    [atime] => 0
+    [mtime] => 1259550052
+ [ctime] => 0
+    [blksize] => -1
+    [blocks] => -1
+)
+]]>
+     </screen>
+    </example>
+   </para>
+
+  <para>
+   <table>
+    <title>Sarmalayıcıların Özellikleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link> ile sınırlama</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><link linkend="ini.allow-url-include">allow_url_include</link> ile sınırlama</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Okumaya İzin</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Sona Eklemeye İzin</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okuma ve yazma izni</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>stat</function> desteği</entry>
+       <entry>Var</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Yok</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <para>
+   <table>
+    <title>Bağlamsal seçenekler</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>İsim</entry>
+       <entry>Kullanım</entry>
+       <entry>Öntanımlı</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>open_password</literal></entry>
+       <entry>Parola varsa, arşiv başlıklarını şifrelemek için
+       kullanılır. WinRAR tüm dosyaları son bilinen başlık parolası ile
+       şifreler, dolayısıyla şifreli başlıkları olan arşivler için
+       <literal>file_password</literal> yoksayılır.</entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><literal>file_password</literal></entry>
+       <entry>Parola varsa, bir dosyayı şifrelemek için kullanılır. Başlıklar
+       zaten şifreliyse bu seçenek <literal>open_password</literal> yararına
+       yoksayılır. İki seçenek olmasının sebebi, farklı başlık ve dosya
+       parolaları içeren arşivleri destekleme olasılığını arttırmaktır. Ancak,
+       eğer arşiv şifreli başlıklar içermiyorsa
+       <literal>open_password</literal> yoksayılıp yerine bu seçeneğin
+       kullanılması gerekir.</entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><literal>volume_callback</literal></entry>
+       <entry>Kayıp bölümlerin yolarını saptamak için kullanılacak geriçağırım
+       işlevi. Daha fazla bilgi için <methodname>RarArchive::open</methodname>
+       yöntemine bakınız.</entry>
+       <entry/>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
 
  </section>
 
