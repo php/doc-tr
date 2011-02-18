@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d4a5d793eb4ee97edc8653da56ea5139435ce9fc Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
 <chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook">
  <title>PCRE düzenli ifade sözdizimi</title>
@@ -25,16 +25,17 @@
      </para>
     </section>
     <section xml:id="regexp.reference.delimiters">
-     <title>Delimiters</title>
+     <title>Ayırıcılar</title>
      <para>
-      When using the PCRE functions, it is required that the pattern is enclosed
-      by <emphasis>delimiters</emphasis>. A delimiter can be any non-alphanumeric,
-      non-backslash, non-whitespace character.
+      PCRE işlevlerini kullanırken şablonların <emphasis>ayırıcılar</emphasis>
+      arasına alınması gerekir. Ayırıcılar tersbölü imi ve boşluk karakterleri
+      hariç herhangi bir abecesayısal karakter olabilir.
      </para>
      <para>
-      Often used delimiters are forward slashes (<literal>/</literal>), hash
-      signs (<literal>#</literal>) and tildes (<literal>~</literal>). The
-      following are all examples of valid delimited patterns.
+      Sıkça kullanılan ayırıcılar şunlardır: Bölü çizgisi
+      (<literal>/</literal>), diyez imi (<literal>#</literal>) yaklaşık imi
+      (<literal>~</literal>). Aşağıda, şablonlarda ayırıcı kullanımı ile
+      örneklere yer verilmiştir.
       <informalexample>
        <programlisting>
 <![CDATA[
@@ -47,10 +48,10 @@
       </informalexample>
      </para>
      <para>
-      If the delimiter needs to be matched inside the pattern it must be
-      escaped using a backslash. If the delimiter appears often inside the
-      pattern, it is a good idea to choose another delimiter in order to increase
-      readability.
+      Bir ayırıcının bir şablon içinde kendisiyle eşleşmesi gerekiyorsa önüne
+      bir tersbölü imi konmalıdır. Eğer ayırıcı şablon içinde çok sık
+      kullanılıyorsa başka bir ayırıcı seçmek okunabilirlik açısından daha
+      iyidir.
       <informalexample>
        <programlisting>
 <![CDATA[
@@ -59,14 +60,14 @@
 ]]>
        </programlisting>
       </informalexample>
-      The <function>preg_quote</function> function may be used to escape a string
-      for injection into a pattern and its optional second parameter may be used 
-      to specify the delimiter to be escaped.
+      Bir dizgeyi bir şablon içine yerleştirmek için
+      <function>preg_quote</function> işlevi kullanılabilir ve işlevin ikinci
+      değiştirgesinde tersbölü ile öncelenecek ayırıcı belirtilebilir.
      </para>
      <para>
-      In addition to the aforementioned delimiters, it is also possible to use
-      bracket style delimiters where the opening and closing brackets are the
-      starting and ending delimiter, respectively.
+      Şimdiye kadar bahsedilen ayırıcılara ek olarak ayraç tarzı ayırıcılar da
+      kullanmak mümkündür. Aşağıdaki örnekteki gibi, şablon kaşlı ayraçlar
+      arasına da alınabilir.
       <informalexample>
        <programlisting>
 <![CDATA[
@@ -76,9 +77,10 @@
       </informalexample>
      </para>
      <para>
-      You may add <link linkend="reference.pcre.pattern.modifiers">pattern
-      modifiers</link> after the ending delimiter. The following is an example
-      of case-insensitive matching:
+      Şablonu sonalndıran ayırıcının ardına bir
+      <link linkend="reference.pcre.pattern.modifiers">şablon
+      değiştircisi</link> eklemek de mümkündür. Aşağıda, harf büyüklüğüne
+      duyarsız eşleşmeyle ilgili bir örnek vardır:
       <informalexample>
        <programlisting>
 <![CDATA[
@@ -179,7 +181,8 @@
        </varlistentry>
        <varlistentry>
         <term><emphasis>^</emphasis></term>
-        <listitem><simpara>sınıfın ilk karakteri olduğu takdirde sınıfla eşleşmeme işleci</simpara></listitem>
+        <listitem><simpara>sınıfın ilk karakteri olduğu takdirde sınıfla
+        eşleşmeme işleci</simpara></listitem>
        </varlistentry>
        <varlistentry>
         <term><emphasis>-</emphasis></term>
@@ -913,46 +916,48 @@
       kullanıldığında daima öncelenmesi gerekir.
      </para>
      <para>
-      Perl supports the POSIX notation for character classes. This uses names
-      enclosed by <literal>[:</literal> and <literal>:]</literal> within the enclosing square brackets. PCRE also
-      supports this notation. For example, <literal>[01[:alpha:]%]</literal>
-      matches "0", "1", any alphabetic character, or "%". The supported class
-      names are:
+      Perl, karakter sınıfları için POSIX gösterimini destekler. Bu gösterimde
+      sınıf isimleri <literal>[:</literal> ve <literal>:]</literal>
+      karakterleri arasına alınır. Örneğin, <literal>[01[:alpha:]%]</literal>
+      şablonu, "0", "1", herhangi bir abecesel karakter veya "%" ile
+      eşleşecekir. Desteklenen sınıf isimleri şunlardır:
       <table>
-       <title>Character classes</title>
+       <title>Karakter sınıfları</title>
        <tgroup cols="2">
         <tbody>
-         <row><entry><literal>alnum</literal></entry><entry>letters and digits</entry></row>
-         <row><entry><literal>alpha</literal></entry><entry>letters</entry></row>
-         <row><entry><literal>ascii</literal></entry><entry>character codes 0 - 127</entry></row>
-         <row><entry><literal>blank</literal></entry><entry>space or tab only</entry></row>
-         <row><entry><literal>cntrl</literal></entry><entry>control characters</entry></row>
-         <row><entry><literal>digit</literal></entry><entry>decimal digits (same as \d)</entry></row>
-         <row><entry><literal>graph</literal></entry><entry>printing characters, excluding space</entry></row>
-         <row><entry><literal>lower</literal></entry><entry>lower case letters</entry></row>
-         <row><entry><literal>print</literal></entry><entry>printing characters, including space</entry></row>
-         <row><entry><literal>punct</literal></entry><entry>printing characters, excluding letters and digits</entry></row>
-         <row><entry><literal>space</literal></entry><entry>white space (not quite the same as \s)</entry></row>
-         <row><entry><literal>upper</literal></entry><entry>upper case letters</entry></row>
-         <row><entry><literal>word</literal></entry><entry>"word" characters (same as \w)</entry></row>
-         <row><entry><literal>xdigit</literal></entry><entry>hexadecimal digits</entry></row>
+         <row><entry><literal>alnum</literal></entry><entry>harfler ve rakamlar</entry></row>
+         <row><entry><literal>alpha</literal></entry><entry>sadece harfler</entry></row>
+         <row><entry><literal>ascii</literal></entry><entry>0 - 127 arasındaki karakter kodları</entry></row>
+         <row><entry><literal>blank</literal></entry><entry>sadece boşluk ve sekme karakteri</entry></row>
+         <row><entry><literal>cntrl</literal></entry><entry>denetim karakterleri</entry></row>
+         <row><entry><literal>digit</literal></entry><entry>onluk rakamlar (\d ile aynı)</entry></row>
+         <row><entry><literal>graph</literal></entry><entry>boşluk hariç tüm basılabilen karakterler</entry></row>
+         <row><entry><literal>lower</literal></entry><entry>küçük harfler</entry></row>
+         <row><entry><literal>print</literal></entry><entry>boşluk dahil tüm basılabilen karakterler</entry></row>
+         <row><entry><literal>punct</literal></entry><entry>harfler ve rakamlar hariç tüm basılabilen karakterler</entry></row>
+         <row><entry><literal>space</literal></entry><entry>tüm boşluk karakterleri (\s ile benzer fakat aynı değil)</entry></row>
+         <row><entry><literal>upper</literal></entry><entry>büyük harfler</entry></row>
+         <row><entry><literal>word</literal></entry><entry>"sözcük" karakterleri (\w ile aynı)</entry></row>
+         <row><entry><literal>xdigit</literal></entry><entry>onaltılık rakamlar</entry></row>
         </tbody>
        </tgroup>
       </table>
-      The <literal>space</literal> characters are HT (9), LF (10), VT (11), FF (12), CR (13),
-      and space (32). Notice that this list includes the VT character (code
-      11). This makes "space" different to <literal>\s</literal>, which does not include VT (for
-      Perl compatibility).
+      <literal>space</literal> karakterleri: HT (9), LF (10), VT (11), FF (12),
+      CR (13) ve boşluk (32). Farkedeceğiniz gibi VT karakteri de (kod
+      11) listeye dahil edilmiştir. Perl uyumluluğu açısından "space" ile
+      <literal>\s</literal> arasındaki fark budur.
      </para>
      <para>
-      The name <literal>word</literal> is a Perl extension, and <literal>blank</literal> is a GNU extension
-      from Perl 5.8. Another Perl extension is negation, which is indicated
-      by a <literal>^</literal> character after the colon. For example,
-      <literal>[12[:^digit:]]</literal> matches "1", "2", or any non-digit.
+      <literal>word</literal> ismi bir Perl eklemesi olup
+      <literal>blank</literal> ismi Perl 5.8'deki bir GNU eklemesidir. Diğer
+      bir ekleme de olumsuzlama belirten <literal>^</literal> karakteri olup
+      ikinokta iminden hemen sonra kullanılır. Örneğin,
+      <literal>[12[:^digit:]]</literal> şablonu "1", "2" veya rakam olmayan
+      herhangi bir karakter ile eşleşir.
      </para>
      <para>
-      In UTF-8 mode, characters with values greater than 128 do not match any
-      of the POSIX character classes.
+      UTF-8 kipinde, 128'den büyük değerli karakterler POSIX karakter
+      sınıflarının hiçbiriyle eşleşmeyecektir.
      </para>
     </section>
 
