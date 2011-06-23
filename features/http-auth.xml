@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: yasar  Status: ready -->
+<!-- EN-Revision: dd3df871f5e3e195f738ac0be1de8d9f5d64cb7c Maintainer: yasar  Status: ready -->
  <chapter xml:id="features.http-auth" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP ile HTTP Kimlik Doğrulaması</title>
 
   <simpara>
-   PHP'deki <acronym>HTTP</acronym> Kimlik Doğrulaması kancaları sadece
-   PHP bir Apache modülü olarak çalıştığında mevcuttur ve CGI sürümünde
-   yoktur. Bir Apache modülü PHP betiğinde, <function>header</function>
-   işlevini kullanarak istemci tarayıcısına "Kimlik Doğrulaması Gerekli"
-   iletisini gönderebilir ve bunun sonucunda Kullanıcı Adı/Parola giriş
+   <function>header</function> işlevi kullanılarak istemci tarayıcısına "Kimlik
+   Doğrulaması Gerekli" (<literal>"Authentication Required"</literal>)
+   iletisini göndererilir ve bunun sonucunda Kullanıcı Adı/Parola giriş
    penceresi açılır.  Kullanıcı kullanıcı adı ve parolasını girdiğinde,
    PHP betiğini içeren URL, kullanıcı adı, parola ve kimlik doğrulama
    türünü atayan <varname>PHP_AUTH_USER</varname>,
@@ -204,9 +202,9 @@ if (!isset($_SERVER['PHP_AUTH_USER']) ||
     ($_POST['SeenBefore'] == 1 && $_POST['OldAuth'] == $_SERVER['PHP_AUTH_USER'])) {
     authenticate();
 } else {
-    echo "<p>Merhaba: {$_SERVER['PHP_AUTH_USER']}<br />";
-    echo "Eski: {$_REQUEST['OldAuth']}";
-    echo "<form action='{$_SERVER['PHP_SELF']}' METHOD='post'>\n";
+    echo "<p>Merhaba: " . htmlspecialchars($_SERVER['PHP_AUTH_USER']) . "<br />";
+    echo "Eski: " . htmlspecialchars($_REQUEST['OldAuth']);
+    echo "<form action='' method='post'>\n";
     echo "<input type='hidden' name='SeenBefore' value='1' />\n";
     echo "<input type='hidden' name='OldAuth' value='{$_SERVER['PHP_AUTH_USER']}' />\n";
     echo "<input type='submit' value='Kimliği Yeniden Doğrula />\n";
