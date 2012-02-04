@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fcddfb2551140fba9a14a4c44dc9fa60004440c8 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
   <para>
-   <link linkend="language.oop5.decon.constructor">
-   <literal>__construct</literal></link>,
-   <link linkend="language.oop5.decon.destructor">
-   <literal>__destruct</literal></link>,
-   (bak: <link linkend="language.oop5.decon">Kurucular ve Yıkıcılar</link>),
-   <link linkend="language.oop5.overloading.methods">
-   <literal>__call</literal></link>,
-   <link linkend="language.oop5.overloading.methods">
-   <literal>__callStatic</literal></link>,
-   <link linkend="language.oop5.overloading.members">
-   <literal>__get</literal></link>,
-   <link linkend="language.oop5.overloading.members">
-   <literal>__set</literal></link>,
-   <link linkend="language.oop5.overloading.members">
-   <literal>__isset</literal></link>,
-   <link linkend="language.oop5.overloading.members">
-   <literal>__unset</literal></link>,
-   (bak: <link linkend="language.oop5.overloading">Aşırı yükleme</link>),
-   <link linkend="language.oop5.magic.sleep"><literal>__sleep</literal></link>,
-   <link linkend="language.oop5.magic.sleep">
-   <literal>__wakeup</literal></link>,
-   <link linkend="language.oop5.magic.tostring">
-   <literal>__toString</literal></link>,
-   <link linkend="language.oop5.magic.invoke">
-   <literal>__invoke</literal></link>,
-   <link linkend="language.oop5.magic.set-state">
-   <literal>__set_state</literal></link> ve
-   <link linkend="language.oop5.cloning"><literal>__clone</literal></link>
+   <link linkend="object.construct">__construct()</link>,
+   <link linkend="object.destruct">__destruct()</link>,
+   <link linkend="object.call">__call()</link>,
+   <link linkend="object.callstatic">__callStatic()</link>,
+   <link linkend="object.get">__get()</link>,
+   <link linkend="object.set">__set()</link>,
+   <link linkend="object.isset">__isset()</link>,
+   <link linkend="object.unset">__unset()</link>,
+   <link linkend="object.sleep">__sleep()</link>,
+   <link linkend="object.wakeup">__wakeup()</link>,
+   <link linkend="object.tostring">__toString()</link>,
+   <link linkend="object.invoke">__invoke()</link>,
+   <link linkend="object.set-state">__set_state()</link> and
+   <link linkend="object.clone">__clone()</link>
    işlev isimleri PHP
    sınıflarında sihirli işlemler yaparlar. İşlevlerinize sihirli bir
    işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
@@ -48,30 +34,56 @@
   </caution>
 
   <sect2 xml:id="language.oop5.magic.sleep">
-   <title><code>__sleep</code> ve <code>__wakeup</code></title>
+   <title>
+    <link linkend="object.sleep">__sleep()</link> ve
+    <link linkend="object.wakeup">__wakeup()</link>
+   </title>
+
+   <methodsynopsis xml:id="object.sleep">
+    <modifier>public</modifier> <type>array</type><methodname>__sleep</methodname>
+    <void/>
+   </methodsynopsis>
+   <methodsynopsis xml:id="object.wakeup">
+    <type>void</type><methodname>__wakeup</methodname>
+    <void/>
+   </methodsynopsis>
+
    <para>
-    <function>serialize</function> işlevi, sınıfınızın <literal>__sleep</literal>
+    <function>serialize</function> işlevi, sınıfınızın
+    <link linkend="object.sleep">__sleep()</link>
     adında sihirli bir işleve sahip olup olmadığına bakar. Böyle bir işlev
     varsa herhangi bir serileştirme işleminden önce bu işlev çalıştırılır.
     Bu işlev ile nesne üzerinde temizlik yapabilir ve serileştirilmesi
     gereken nesnenin tüm değişken isimlerinin bir dizi halinde döndürülmesini
     sağlayabilirsiniz. Eğer işlev hiçbir şey döndürmemişse &null;
-    serileştirilir ve bir E_NOTICE çıktılanır.
+    serileştirilir ve bir <constant>E_NOTICE</constant> çıktılanır.
    </para>
+   <note>
+    <para>
+     Ebeveyn sınıflardaki private özelliklerin isimlerini döndürmek
+     <link linkend="object.sleep">__sleep()</link> için imkansızdır. Bunu
+     yapmaya kalkışırsanız <constant>E_NOTICE</constant> seviyesinde bir hata
+     iletisi alırsınız. Bunun yerine <classname>Serializable</classname>
+     arayüzünü kullanabilirsiniz.
+    </para>
+   </note>
    <para>
-    <literal>__sleep</literal> işlevinin asıl kullanım amacı askıdaki veriyi
+    <link linkend="object.sleep">__sleep()</link> işlevinin asıl kullanım
+    amacı askıdaki veriyi
     göndermek gibi temizliğe benzer işlemler yapmaktır. Ayrıca, tümüyle
     kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu olduğunda da bu
     işlevden yararlanabilirsiniz.
    </para>
    <para>
     <function>unserialize</function> işlevi tersine bir işlem yaparak
-    <literal>__wakeup</literal> adında bir sihirli işlevin varlığını araştırır.
+    <link linkend="object.wakeup">__wakeup()</link> adında bir sihirli
+    işlevin varlığını araştırır.
     Böyle bir işlev varsa, bu işlev nesnenin sahip olduğu tüm özkaynakları
     yeniden oluşturabilir.
    </para>
    <para>
-    <literal>__wakeup</literal> işlevinin asıl kullanım amacı, serileştirme
+    <link linkend="object.wakeup">__wakeup()</link> işlevinin asıl kullanım
+    amacı, serileştirme
     sırasında kaybedilebilen veritabanı bağlantılarını yeniden oluşturmak ve
     diğer ilklendirme işlemlerini yeniden yapmaktır.
    </para>
@@ -80,7 +92,8 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class Bağlantı {
+class Bağlantı
+{
     protected $hat;
     private $sunucu, $kullanıcı, $parola, $db;
 
@@ -116,10 +129,17 @@ class Bağlantı {
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.tostring">
-   <title><code>__toString</code></title>
+   <title><link linkend="object.tostring">__toString()</link></title>
+   <methodsynopsis xml:id="object.tostring">
+    <modifier>public</modifier> <type>string</type><methodname>__toString</methodname>
+    <void/>
+   </methodsynopsis>
    <para>
-    <literal>__toString</literal> yöntemi, sınıf bir dizgeye dönüştürüldüğünde
-    sınıfın nasıl tepki vereceğine karar vermeyi sağlar.
+    <link linkend="object.tostring">__toString()</link> yöntemi, sınıf bir
+    dizgeye dönüştürüldüğünde sınıfın nasıl tepki vereceğine karar vermeyi
+    sağlar. Bu yöntem bir dizge döndürmelidir, aksi takdirde
+    <constant>E_RECOVERABLE_ERROR</constant> seviyesinde ölümcül bir hata
+    çıktılanır.
    </para>
    <example>
     <title>- Basit bir örnek</title>
@@ -131,11 +151,13 @@ class TestClass
 {
     public $foo;
 
-    public function __construct($foo) {
+    public function __construct($foo)
+    {
         $this->foo = $foo;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->foo;
     }
 }
@@ -153,22 +175,28 @@ Merhaba
     </screen>
    </example>
    <para>
-    PHP 5.2.0'dan önce <literal>__toString</literal> yönteminin, doğrudan
-    <function>echo</function> ya da <function>print</function> işlevleri ile
-    birlikte çağrılmadıkça bir önemi yoktu. PHP 5.2.0'dan beri sadece dizge
-    bağlamlarında (<literal>%s</literal> değiştiricili <function>printf</function>
-    gibi) çağrılabilmekte, diğer bağlamlarda (<literal>%d</literal> değiştiricili
-    <function>printf</function> gibi) çağrılamamaktadır. PHP 5.2.0'dan beri
-    nesneleri <literal>__toString</literal> yöntemi olmaksızın dizgeye dönüştürme
-    işlemi <constant>E_RECOVERABLE_ERROR</constant> hatasına yol açmaktadır.
+    PHP 5.2.0'dan önce <link linkend="object.tostring">__toString()</link>
+    yönteminin, doğrudan <function>echo</function> ya da
+    <function>print</function> işlevleri ile birlikte çağrılmadıkça bir önemi
+    yoktu. PHP 5.2.0'dan beri sadece dizge  bağlamlarında
+    (<literal>%s</literal> değiştiricili <function>printf</function>
+    gibi) çağrılabilmekte, diğer bağlamlarda (<literal>%d</literal>
+    değiştiricili <function>printf</function> gibi) çağrılamamaktadır. PHP
+    5.2.0'dan beri nesneleri
+    <link linkend="object.tostring">__toString()</link> yöntemi olmaksızın
+    dizgeye dönüştürme işlemi <constant>E_RECOVERABLE_ERROR</constant>
+    hatasına yol açmaktadır.
    </para>
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.invoke">
-   <title><literal>__invoke</literal></title>
+   <title><link linkend="object.invoke">__invoke()</link></title>
+   <methodsynopsis xml:id="object.invoke">
+    <type>mixed</type><methodname>__invoke</methodname>
+    <methodparam choice="opt"><parameter>...</parameter></methodparam>
+   </methodsynopsis>
    <para>
-    <literal>__invoke</literal> yöntemi, bir betik bir nesneyi bir işlev
-    olarak çağırmaya çalışırsa çağrılır.
+    <link linkend="object.invoke">__invoke()</link> yöntemi, bir betik bir nesneyi bir işlev olarak çağırmaya çalışırsa çağrılır.
    </para>
    <note>
     <para>
@@ -176,12 +204,14 @@ Merhaba
     </para>
    </note>
    <example>
-    <title>- <literal>__invoke</literal> kullanımı</title>
+    <title>- <link linkend="object.invoke">__invoke()</link> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class CallableClass {
-  function __invoke($x) {
+class CallableClass
+{
+  public function __invoke($x)
+  {
     var_dump($x);
   }
 }
@@ -202,7 +232,11 @@ bool(true)
   </sect2>
 
   <sect2 xml:id="language.oop5.magic.set-state">
-   <title><code>__set_state</code></title>
+   <title><link linkend="object.set-state">__set_state()</link></title>
+   <methodsynopsis xml:id="object.set-state">
+    <modifier>static</modifier> <type>object</type><methodname>__set_state</methodname>
+    <methodparam><type>array</type><parameter>özellikler</parameter></methodparam>
+   </methodsynopsis>
    <para>
     Bu <link linkend="language.oop5.static">duruk</link> yöntem, PHP 5.1.0
     sürümünden beri <function>var_export</function> tarafından ihraç edilen
@@ -214,7 +248,7 @@ bool(true)
     ...)</literal> biçeminde ihraç edilen özellikleri içeren bir dizidir.
    </para>
    <example>
-    <title>- <literal>__set_state</literal> kullanımı (PHP 5.1.0 ve sonrası)</title>
+    <title>- <link linkend="object.set-state">__set_state()</link> kullanımı (PHP 5.1.0 ve sonrası)</title>
     <programlisting role="php">
 <![CDATA[
 <?php

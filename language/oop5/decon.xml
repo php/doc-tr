@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 28d123ef985df5a7b86f3601e035968ee1b3b142 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.decon" xmlns="http://docbook.org/ns/docbook">
   <title>Kurucular ve Yıkıcılar</title>
 
   <sect2 xml:id="language.oop5.decon.constructor">
    <title>Kurucular</title>
-   <methodsynopsis>
+   <methodsynopsis xml:id="object.construct">
     <type>void</type><methodname>__construct</methodname>
     <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
     <methodparam choice="opt"><parameter>...</parameter></methodparam>
@@ -52,37 +52,71 @@ $obj = new AltSınıf();
    </example>
    <para>
     Geriye dönük uyumluluk için, PHP 5 belirtilen sınıfa ait bir
-    <function>__construct</function> yöntemi bulamazsa, sınıfın ismine
-    bakarak eski tarz bir kurucu arayacaktır. Dolayısıyla, uyumluluk sorunu
-    yaşayacağınız tek durum sınıf dahilinde <function>__construct</function>
+    <link linkend="object.construct">__construct()</link> yöntemi bulamazsa,
+    sınıfın ismine bakarak eski tarz bir kurucu arayacaktır. Dolayısıyla,
+    uyumluluk sorunu yaşayacağınız tek durum sınıf dahilinde
+    <link linkend="object.construct">__construct()</link>
     isimli bir yöntemin amacı dışında kullanılması olabilir.
    </para>
+   <para>
+    Diğer yöntemlerin tersine,
+    <link linkend="object.construct">__construct()</link> ebeveyn
+    <link linkend="object.construct">__construct()</link> yöntemindekilerden
+    farklı değiştirgelerle kullanılmaya çalışıldığında PHP
+    <constant>E_STRICT</constant> seviyesinden bir hata iletisi
+    üretmeyecektir.
+   </para>
+   <para>
+    PHP 5.3.3 itibariyle, bir isim alanlı sınıf isminin son elemanı ile aynı
+    isimdeki yöntemler artık kurucu olarak ele alınmayacaktır. Bu değişiklik
+    isim alanlı olmayan sınıfları etkilemez.
+   </para>
+   <example>
+    <title>- İsim alanlı sınıflarda kurucular</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+namespace Foo;
+class Bar
+{
+    public function Bar()
+    {
+        // PHP 5.3.0-5.3.2'de kurucu olarak ele alınır
+        // PHP 5.3.3 itibariyle sıradan bir yöntem olarak ele alınır
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.decon.destructor">
    <title>Yıkıcılar</title>
-   <methodsynopsis>
+   <methodsynopsis xml:id="object.destruct">
     <type>void</type><methodname>__destruct</methodname>
     <void />
    </methodsynopsis>
    <para>
     PHP 5, C++ gibi nesne yönelimli dillerdekine benzer bir yıkıcı tasarımına
-    sahiptir. Yıkıcı yöntem, belli bir nesneye yönelik tüm gönderimler
-    kaldırıldığı ya da nesne kapanma sırasında açıkça yok edildiği anda
-    çalıştırılacaktır.
+    sahiptir. Yıkıcı yöntem, belli bir nesneye başka bir gönderim yoksa veya
+    nesne kapanma sırasında açıkça yok edildiği anda çalıştırılacaktır.
    </para>
    <example>
     <title>- Yıkıcı Örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class YıkıcıSınıf {
-   function __construct() {
+class YıkıcıSınıf
+{
+   function __construct()
+   {
        print "Kurucu çalıştı\n";
        $this->name = "YıkıcıSınıf";
    }
 
-   function __destruct() {
+   function __destruct()
+   {
        print "" . $this->name . " yok ediliyor\n";
    }
 }
@@ -98,6 +132,11 @@ $obj = new YıkıcıSınıf();
     sınıfın yıkıcısından <function>parent::__destruct</function> çağrısının
     yapılması gerekir.
    </para>
+   <para>
+    Betiğin icrası <function>exit</function> kullanılarak durdurulsa bile
+    yıkıcı çağrılacaktır. <function>exit</function> işlevinin bir yıkıcı
+    içersinde çağrılması kalan kapanma yordamlarının icrasını engelleyecektir.
+    </para>
    <note>
     <para>
       Yıkıcılar, HTTP başlıklarının gönderilmiş olmasını sağlamak için betik

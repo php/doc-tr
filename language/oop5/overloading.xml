@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 28d123ef985df5a7b86f3601e035968ee1b3b142 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.overloading" xmlns="http://docbook.org/ns/docbook">
   <title>Aşırı Yükleme</title>
@@ -51,15 +51,16 @@
        <row>
         <entry>5.3.0</entry>
         <entry>
-         <function>__callStatic()</function> eklendi. Genel etki alanında
-         görünürlüğü ve devingen bildirimini zorunlu kılacak uyarı eklendi.
+         <link linkend="object.callstatic">__callStatic()</link> eklendi.
+         Genel etki alanında görünürlüğü ve devingen bildirimini zorunlu
+         kılacak uyarı eklendi.
         </entry>
        </row>
        <row>
         <entry>5.1.0</entry>
         <entry>
-         <function>__isset()</function> ve <function>__unset()</function>
-         eklendi.
+         <link linkend="object.isset">__isset()</link> ve
+         <link linkend="object.unset">__unset()</link> eklendi.
         </entry>
        </row>
       </tbody>
@@ -71,74 +72,95 @@
   <sect2 xml:id="language.oop5.overloading.members">
    <title>Özelliklerde aşırı yükleme</title>
 
-   <methodsynopsis>
-    <type>void</type><methodname>__set</methodname>
+   <methodsynopsis xml:id="object.set">
+    <modifier>public</modifier> <type>void</type><methodname>__set</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
     <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
    </methodsynopsis>
-   <methodsynopsis>
-    <type>mixed</type><methodname>__get</methodname>
+   <methodsynopsis xml:id="object.get">
+    <modifier>public</modifier> <type>mixed</type><methodname>__get</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    </methodsynopsis>
-   <methodsynopsis>
-    <type>bool</type><methodname>__isset</methodname>
+   <methodsynopsis xml:id="object.isset">
+    <modifier>public</modifier> <type>bool</type><methodname>__isset</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    </methodsynopsis>
-   <methodsynopsis>
-    <type>void</type><methodname>__unset</methodname>
+   <methodsynopsis xml:id="object.unset">
+    <modifier>public</modifier> <type>void</type><methodname>__unset</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    </methodsynopsis>
 
    <para>
-    <function>__set()</function> erişilemeyen özelliklere veri yazarken
-    çalıştırılır.
+    <link linkend="object.set">__set()</link> erişilemeyen özelliklere veri
+    yazarken çalıştırılır.
    </para>
 
    <para>
-    <function>__get()</function> erişilemeyen özelliklerden veri okurken
-    devreye sokulur.
+    <link linkend="object.get">__get()</link> erişilemeyen özelliklerden veri
+    okurken devreye sokulur.
    </para>
 
    <para>
-    <function>__isset()</function> erişilemeyen özellikler için
+    <link linkend="object.isset">__isset()</link> erişilemeyen özellikler için
     <function>isset</function> veya <function>empty</function> çağrıldığında
     tetiklenir.
    </para>
 
    <para>
-    <function>__unset()</function> erişilemeyen özellikler için
+    <link linkend="object.unset">__unset()</link> erişilemeyen özellikler için
     <function>unset</function> kullanıldığında çağrılır.
    </para>
    <para>
     <varname>$isim</varname> değiştirgesi etkileşime girilecek özelliğin
-    ismidir. <function>__set()</function> yönteminin <varname>$değer</varname>
-    değiştirgesi, <varname>$isim</varname> adlı özelliğe atanacak değeri
-    belirler.
+    ismidir. <link linkend="object.set">__set()</link> yönteminin
+    <varname>$değer</varname> değiştirgesi, <varname>$isim</varname> adlı
+    özelliğe atanacak değeri belirler.
    </para>
    <para>
     Özellikler üzerindeki aşırı yükleme sadece nesne bağlamında çalışır. Bu
     sihirli yöntemler duruk bağlamda tetiklenmeyecektir. Bu bakımdan, bu
     yöntemler <link linkend="language.oop5.static">static</link>
-    bildirilemez.
+    bildirilmemelidir. PHP 5.3.0'dan itibaren, sihirli aşırı yükleme
+    yöntemleri <link linkend="language.oop5.static">static</link>
+    bildirildiğinde bir uyarı çıktılanmaktadır.
    </para>
 
    <note>
     <para>
-     PHP'nin atama işlecini ele alış yöhteminden dolayı
-     <function>__set</function> işlevinin dönüş değeri yoksayılır. Benzer
-     şekilde, <literal><![CDATA[ $a = $obj->b = 8; ]]></literal> örneğindeki
-     gibi zincirleme atamalarda <function>__get</function> get asla çağrılmaz.
+     PHP'nin atama işlecini ele alış yönteminden dolayı
+     <link linkend="object.set">__set()</link> yönteminin dönüş değeri
+     yoksayılır. Benzer şekilde,
+     <literal><![CDATA[ $a = $obj->b = 8; ]]></literal> örneğindeki
+     gibi zincirleme atamalarda
+     <link linkend="object.get">__get()</link> asla çağrılmaz.
+    </para>
+   </note>
+
+   <note>
+    <para>
+     <function>isset</function> dışında hiçbir dil yapısında aşırı yüklü
+     özellikleri kullanmak mümkün değildir. Yani, eğer bir aşırı yüklü özellik
+     üzerinde <function>empty</function> çağrılırsa aşırı yüklü yöntem
+     çağrılmaz.
+    </para>
+    <para>
+     Bu sınırlamadan kurtulmak için aşırı yüklü özellik önce aynı bağlamdaki
+     bir yerel değişkene kopyalanmalı, ondan sonra <function>empty</function>
+     çağrılmalıdır.
     </para>
    </note>
 
 <example>
-    <title>- <function>__get</function>, <function>__set</function>,
-    <function>__isset</function> ve <function>__unset</function> ile
+    <title>- <link linkend="object.get">__get()</link>,
+    <link linkend="object.set">__set()</link>,
+    <link linkend="object.isset">__isset()</link> ve
+    <link linkend="object.unset">__unset()</link> ile
     aşırı yükleme örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-class ÖzellikSınama {
+class ÖzellikSınama
+{
     /*  Aşırı yüklemeye konu veriler burada.  */
     private $veri = array();
 
@@ -149,12 +171,14 @@ class ÖzellikSınama {
      */
     private $gizli = 2;
 
-    public function __set($isim, $değer) {
+    public function __set($isim, $değer)
+    {
         echo "'$isim' adlı özelliğe '$değer' atanıyor.\n";
         $this->veri[$isim] = $değer;
     }
 
-    public function __get($isim) {
+    public function __get($isim)
+    {
         echo "'$isim' adlı özelliğin değeri isteniyor\n";
         if (array_key_exists($isim, $this->veri)) {
             return $this->veri[$isim];
@@ -170,19 +194,22 @@ class ÖzellikSınama {
     }
 
     /**  PHP 5.1.0'dan itibaren  */
-    public function __isset($isim) {
+    public function __isset($isim)
+    {
         echo "'$isim' atanmış mı?\n";
         return isset($this->veri[$isim]);
     }
 
     /**  PHP 5.1.0'dan itibaren  */
-    public function __unset($isim) {
+    public function __unset($isim)
+    {
         echo "'$name' siliniyor\n";
         unset($this->veri[$isim]);
     }
 
     /**  Sihirli bir yöntem değil; sadece örnek olsun diye.  */
-    public function gizliyiOku() {
+    public function gizliyiOku()
+    {
         return $this->gizli;
     }
 }
@@ -245,25 +272,25 @@ Notice: <dosya> dosyasının 71. satırında __get() ile tanımsız özellik ist
   <sect2 xml:id="language.oop5.overloading.methods">
    <title>Yöntemlerde aşırı yükleme</title>
 
-   <methodsynopsis>
-    <type>mixed</type><methodname>__call</methodname>
+   <methodsynopsis xml:id="object.call">
+    <modifier>public</modifier> <type>mixed</type><methodname>__call</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
     <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
    </methodsynopsis>
-   <methodsynopsis>
-    <type>mixed</type><methodname>__callStatic</methodname>
+   <methodsynopsis xml:id="object.callstatic">
+    <modifier>public static</modifier> <type>mixed</type><methodname>__callStatic</methodname>
     <methodparam><type>string</type><parameter>isim</parameter></methodparam>
     <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
    </methodsynopsis>
 
    <para>
-    <function>__call()</function>, erişilemeyen yöntemler bir nesne bağlamından
-    çağrıldığında tetiklenir.
+    <link linkend="object.call">__call()</link>, erişilemeyen yöntemler bir
+    nesne bağlamından çağrıldığında tetiklenir.
    </para>
 
    <para>
-    <function>__callStatic()</function>, erişilemeyen yöntemler duruk bir
-    bağlamdan çağrıldığında tetiklenir.
+    <link linkend="object.callstatic">__callStatic()</link>, erişilemeyen
+    yöntemler duruk bir bağlamdan çağrıldığında tetiklenir.
    </para>
 
    <para>
@@ -274,20 +301,24 @@ Notice: <dosya> dosyasının 71. satırında __get() ile tanımsız özellik ist
    </para>
 
    <example>
-    <title>- <function>__call</function> ve <function>__callStatic</function>
+    <title>- <link linkend="object.call">__call()</link> ve
+    <link linkend="object.callstatic">__callStatic()</link>
     ile aşırı yüklü örneklenmiş yöntemler</title>
     <programlisting role="php">
   <![CDATA[
 <?php
-class YöntemSınama {
-    public function __call($isim, $değiştirgeler) {
+class YöntemSınama
+{
+    public function __call($isim, $değiştirgeler)
+    {
         // Bilgi: $isim değeri büyük-küçük harfe duyarlıdır.
         echo "Nesnenin '$isim' yöntemi çağrılıyor: "
              . implode(', ', $değiştirgeler). "\n";
     }
 
     /**  PHP 5.3.0 ve sonrası  */
-    public static function __callStatic($isim, $değiştirgeler) {
+    public static function __callStatic($isim, $değiştirgeler)
+    {
         // Bilgi: $isim değeri büyük-küçük harfe duyarlıdır.
         echo "Duruk yöntem '$isim' çağrılıyor: "
              . implode(', ', $değiştirgeler). "\n";
