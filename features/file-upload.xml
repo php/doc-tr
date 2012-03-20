@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: yasar  Status: ready -->
+<!-- EN-Revision: 3472f3120dfefafa5f59d45ceb54da220f16c209 Maintainer: yasar  Status: ready -->
 <!-- CREDITS: mesut -->
  <chapter xml:id="features.file-upload" xmlns="http://docbook.org/ns/docbook">
   <title>Karşıya dosya yükleme</title>
@@ -245,7 +245,8 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     </example>
    <para>
     Dosya yükleme ilerleme çubuğu
-   <link linkend="ini.apc.rfc1867">apc.rfc1867</link>'ye göre gerçeklenebilir.
+    <link linkend="session.upload-progress">Dosya Yüklemeyi İzleme</link>
+    seçeneği kullanılarak gerçeklenebilir.
    </para>
   </sect1>
 
@@ -325,8 +326,8 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
          <para>
            Değeri: 8; Dosya yükleme bir PHP eklentisi nedeniyle durmuştur.
            PHP buna hangi eklentinin sebep olduğunu bulmak için bir yol
-           sağlamaz. phpinfo() ile yüklenen eklentilerin listesini alıp
-           incelemek işe yarayabilir.PHP 5.2.0'da gelmiştir.
+           sağlamaz. <function>phpinfo</function> ile yüklenen eklentilerin
+           listesini alıp incelemek işe yarayabilir.PHP 5.2.0'da gelmiştir.
          </para>
        </listitem>
      </varlistentry>
@@ -381,6 +382,17 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     Eğer <link linkend="ini.post-max-size">post_max_size</link> çok küçük
     verildiyse, büyük dosyalar yüklenemez. <literal>post_max_size</literal>
     değerinin yeterli olduğundan emin olun.
+   </simpara>
+   <simpara>
+    PHP 5.2.12'den itibaren,
+    <link linkend="ini.max-file-uploads">max_file_uploads</link> yapılandırma
+    seçeneği bir istekte yüklenebilecek azami dosya sayısını belirtmek için
+    kullanılabilmektedir. Bu sayıdan fazla dosya yüklenmek istendiğinde
+    <varname>$_FILES</varname> bu sayıya ulaşıldığında dosya yüklemeyi
+    durduracaktır. Örneğin, <link
+    linkend="ini.max-file-uploads">max_file_uploads</link> için 10
+    belirtilmişse <varname>$_FILES</varname> asla 10 üyeden fazlasını
+    içermeyecektir.
    </simpara>
    <simpara>
     Üzerinde çalıştığınız dosyanın doğrulanmaması kullanıcıların diğer
@@ -460,6 +472,15 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     <varname>$_FILES['kullanici_dosyasi']['type'][0]</varname>'a da ayrıca
     değerleri atanır.
    </simpara>
+   <warning>
+    <simpara>
+     PHP 5.2.12'den itibaren,
+    <link linkend="ini.max-file-uploads">max_file_uploads</link> yapılandırma
+    seçeneği bir istekte yüklenebilecek azami dosya sayısını belirtmek için
+    kullanılabilmektedir. Formunuzun bir istekte bu sayıdan fazla dosya
+    yüklemeye çalışmamasını sağlamalısınız.
+    </simpara>
+   </warning>
   </sect1>
 
   <sect1 xml:id="features.file-upload.put-method">

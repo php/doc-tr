@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f052ac1bd73549125c3fc3dc68a36d4b0608a16d Maintainer: nilgun Status: ready -->
 <section xml:id="session.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -10,10 +10,10 @@
   <tgroup cols="4">
    <thead>
     <row>
-     <entry>İsim</entry>
-     <entry>Öntanımlı</entry>
-     <entry>Değişiklik Yeri</entry>
-     <entry>Sürüm Bilgisi</entry>
+     <entry>&Name;</entry>
+     <entry>&Default;</entry>
+     <entry>&Changeable;</entry>
+     <entry>&Changelog;</entry>
     </row>
    </thead>
    <tbody>
@@ -168,15 +168,15 @@
      session.bug_compat_42</link></entry>
      <entry>"1"</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry>PHP 4.3.0'dan beri kullanılabilmektedir. PHP 6.0.0'da
-     kaldırılmıştır.</entry>
+     <entry>PHP 4.3.0'dan beri kullanılabilmektedir. PHP 5.4.0'da
+      kaldırılmıştır.</entry>
     </row>
     <row>
      <entry><link linkend="ini.session.bug-compat-warn">
      session.bug_compat_warn</link></entry>
      <entry>"1"</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry>PHP 4.3.0'dan beri kullanılabilmektedir. PHP 6.0.0'da
+     <entry>PHP 4.3.0'dan beri kullanılabilmektedir. PHP 5.4.0'da
      kaldırılmıştır.</entry>
     </row>
     <row>
@@ -199,6 +199,42 @@
      <entry>"a=href,area=href,frame=src,form=,fieldset="</entry>
      <entry>PHP_INI_ALL</entry>
      <entry>PHP 4.0.4'ten beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.enabled">session.upload_progress.enabled</link></entry>
+    <entry>"1"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.cleanup">session.upload_progress.cleanup</link></entry>
+    <entry>"1"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.prefix">session.upload_progress.prefix</link></entry>
+    <entry>"upload_progress_"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.name">session.upload_progress.name</link></entry>
+    <entry>"PHP_SESSION_UPLOAD_PROGRESS"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.freq">session.upload_progress.freq</link></entry>
+    <entry>"1%"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+    <entry><link linkend="ini.session.upload-progress.min-freq">session.upload_progress.min_freq</link></entry>
+    <entry>"1"</entry>
+    <entry>PHP_INI_PERDIR</entry>
+    <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
     </row>
    </tbody>
   </tgroup>
@@ -371,7 +407,10 @@
     <simpara>
      <literal>session.gc_maxlifetime</literal> yönergesi verinin kaç saniye
      sonra 'çöp' olarak ele alınıp temizleneceğini belirler. Çöp toplayıcı
-     oturum başlangıcında etkin olur.
+     oturum başlangıcında etkin olur (<link
+     linkend="ini.session.gc-probability">session.gc_probability</link> ve
+     <link linkend="ini.session.gc-divisor">session.gc_divisor</link>
+     yönergelerine bağlı olarak).
     </simpara>
     <note>
      <para>
@@ -425,6 +464,12 @@
      özkaynağa (bir dosyaya) bir yol belirtir. Çoğu Unix sisteminde kullanılan
      örnekler: <literal>/dev/random</literal> veya
      <literal>/dev/urandom</literal>.
+    </simpara>
+    <simpara>
+     Bu özellik Windows'ta PHP 5.3.3'ten beri desteklenmektedir.
+     <literal>session.entropy_length</literal> yönergesine sıfırdan farklı bir
+     değer atamak PHP'nin Windows Random API'sini bir döküntü kaynağı olarak
+     kullanmasını sağlayacaktır.
     </simpara>
    </listitem>
   </varlistentry>
@@ -738,6 +783,107 @@
     </note>
    </listitem>
   </varlistentry>
+  <varlistentry xml:id="ini.session.upload-progress.enabled">
+   <term>
+    <parameter>session.upload_progress.enabled</parameter>
+    <type>boolean</type>
+   </term>
+   <listitem>
+    <simpara>
+     Yükleme işleminin izlenmesini etkinleştirir. Öntanımlı olarak 1, yani
+     etkindir.
+    </simpara>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.upload-progress.cleanup">
+   <term>
+    <parameter>session.upload_progress.cleanup</parameter>
+    <type>boolean</type>
+   </term>
+   <listitem>
+    <simpara>
+     Tüm POST verisi okunur okunmaz (yani, yükleme tamamlandığında) işlem
+     bilgisi temizlenir. Öntanımlı olarak 1, yani etkindir.
+    </simpara>
+    <note>
+     <simpara>
+      Bu özelliğin daima etkin olması şiddetle önerilir.
+     </simpara>
+    </note>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.upload-progress.prefix">
+   <term>
+    <parameter>session.upload_progress.prefix</parameter>
+    <type>string</type>
+   </term>
+   <listitem>
+    <simpara>
+     A prefix used for the upload progress key in the
+     <varname>$_SESSION</varname> içinde yükleme işlemi anahtarı için
+     kullanılacak önek. Bu önek, eşsiz bir indis elde ertmek için
+     <literal>$_POST[ini_get("session.upload_progress.name")]</literal>
+     değeriyle birleştirilir.
+    </simpara>
+    <simpara>
+     "upload_progress_" öneki öntanımlıdır.
+    </simpara>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.upload-progress.name">
+   <term>
+    <parameter>session.upload_progress.name</parameter>
+    <type>string</type>
+   </term>
+   <listitem>
+    <simpara>
+     İşlem bilgisini <varname>$_SESSION</varname> içinde saklamak için
+     kullanılacak anahtar. Ayrıca bakınız:
+     <link linkend="ini.session.upload-progress.prefix">session.upload_progress.prefix</link>.
+    </simpara>
+    <simpara>
+     <literal>$_POST[ini_get("session.upload_progress.name")]</literal> değeri
+     aktarılmammışsa veya kullanılabilir değilseyükleme işlemi kaydedilmez.
+    </simpara>
+    <simpara>
+     "PHP_SESSION_UPLOAD_PROGRESS" öntanımlıdır.
+    </simpara>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.upload-progress.freq">
+   <term>
+    <parameter>session.upload_progress.freq</parameter>
+    <type>mixed</type>
+   </term>
+   <listitem>
+    <simpara>
+     Yükleme izleme bilgisinin ne sıklıkla güncelleneceğini tanımlar. Bayt
+     cinsinden veya yüzde olarak belirtilebilir. Örneğin, yükleme izleme
+     bilgisi her 100 baytta bir veya dosyanın her %1'i alındığında
+     güncelleniebilir.
+    </simpara>
+    <simpara>
+     "1%" öntanımlıdır.
+    </simpara>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.upload-progress.min-freq">
+   <term>
+    <parameter>session.upload_progress.min-freq</parameter>
+    <type>integer</type>
+   </term>
+   <listitem>
+    <simpara>
+     Güncellemeler arasındaki asgari bekleme süresi (saniye cinsinden).
+     "1" öntanımlıdır.
+    </simpara>
+   </listitem>
+  </varlistentry>
  </variablelist>
  </para>
 
@@ -746,6 +892,12 @@
   <link linkend="ini.register-globals">
   <literal>register_globals</literal></link> yapılandıma yönergeleri oturum
   değişkenlerinin nasıl saklanacağını ve eski haline getirileceğini belirler.
+ </para>
+ <para>
+  Yükleme işlemi, session.upload_progress.enabled etkin olmadıkça ve
+  $_POST[ini_get("session.upload_progress.name")] değişkenine bir atama
+  yapılmadıkça kaydedilmeyecektir. Daha ayrıntılı bilgi çin bakınız:
+  <link linkend="session.upload-progress">Oturumda Yüklemelerin İzlenmesi</link>
  </para>
 
  <note>
