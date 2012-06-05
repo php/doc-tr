@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fb867be9dd8745d6e19e9d133f2c2d54204746a2 Maintainer: nilgun Status: ready -->
 <section xml:id="info.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -9,10 +9,10 @@
    <tgroup cols="4">
     <thead>
      <row>
-      <entry>İsim</entry>
-      <entry>Öntanımlı</entry>
-      <entry>Değişiklik Yeri</entry>
-      <entry>Sürüm Bilgisi</entry>
+      <entry>&Name;</entry>
+      <entry>&Default;</entry>
+      <entry>&Changeable;</entry>
+      <entry>&Changelog;</entry>
      </row>
     </thead>
     <tbody>
@@ -51,7 +51,7 @@
      <entry><link linkend="ini.enable-dl">enable_dl</link></entry>
      <entry>"1"</entry>
      <entry>PHP_INI_SYSTEM</entry>
-     <entry>PHP 6.0.0'da kaldırıldı.</entry>
+     <entry>&removed.php.future;</entry>
     </row>
     <row>
      <entry><link linkend="ini.max-execution-time">
@@ -71,22 +71,27 @@
      max_input_nesting_level</link></entry>
      <entry>"64"</entry>
      <entry>PHP_INI_PERDIR</entry>
-     <entry>PHP 4.4.8'den beri kullanılmaktadır.
-     PHP 5.0.0'da kaldırıldı.</entry>
+     <entry>PHP 4.4.8 ve 5.2.3'den beri kullanılmaktadır.</entry>
     </row>
+    <row>
+     <entry><link linkend="ini.max-input-vars">max_input_vars</link></entry>
+     <entry>1000</entry>
+     <entry>PHP_INI_PERDIR</entry>
+     <entry>PHP 5.3.9'dan beri kullanılmaktadır.</entry>
+     </row>
     <row>
      <entry><link linkend="ini.magic-quotes-gpc">
      magic_quotes_gpc</link></entry>
      <entry>"1"</entry>
      <entry>PHP_INI_PERDIR</entry>
-     <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL. PHP 6.0.0'da kaldırıldı.</entry>
+     <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL. PHP 5.4.0'da kaldırıldı.</entry>
     </row>
     <row>
      <entry><link linkend="ini.magic-quotes-runtime">
      magic_quotes_runtime</link></entry>
      <entry>"0"</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry>PHP 6.0.0'da kaldırıldı.</entry>
+     <entry>PHP 5.4.0'da kaldırıldı.</entry>
     </row>
     <row>
      <entry><link linkend="ini.zend.enable-gc">zend.enable_gc</link></entry>
@@ -233,8 +238,9 @@
     </term>
     <listitem>
      <para>
-      Bir betiğin POST, GET ve karşıya dosya yükleme gibi girdileri
-      çözümlemesi için gereken azami süre saniye cinsinden burada belirtilir.
+      Bir betiğin POST ve GET gibi girdileri çözümlemesi için gereken azami süre
+      saniye cinsinden burada belirtilir. Sunucu tarafından tüm verinin
+      alınışından betiğin çalışmaya başlamasına kadar geçen süredir.
      </para>
     </listitem>
    </varlistentry>
@@ -253,13 +259,31 @@
     </listitem>
    </varlistentry>
 
+   <varlistentry xml:id="ini.max-input-vars">
+    <term>
+     <parameter>max_input_vars</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Kabul edilebilecek <link linkend="language.variables.external">girdi
+      değişkenlerinin sayısı</link>. Çırpı çatışmalarını kullanan hizmet reddi
+      saldırıları olasılığını azaltmak için kullanılır. Bu yönergede
+      belirtilenden daha fazla girdi değişkeni varsa bir
+      <constant>E_WARNING</constant> çıktılanır ve istekteki fazla değişkenler
+      yoksayılır. Bu kısıt sadece çok boyutlu bir girdi dizisinin iç içe her
+      seviyesine uygulanır.
+     </para>
+    </listitem>
+   </varlistentry>
+
    <varlistentry xml:id="ini.magic-quotes-gpc">
     <term>
      <parameter>magic_quotes_gpc</parameter>
      <type>boolean</type>
     </term>
      <listitem>
-     &warn.deprecated.feature-5-3-0.removed-6-0-0;
+     &warn.deprecated.feature-5-3-0.removed-5-4-0;
      <para>
       GPC (Get/Post/Cookie) işlemleri için sihirli tırnakların durumunu
       ayarlar. Bu yönergeye 'On' atandığında tüm ' (tek tırnak),
@@ -296,7 +320,7 @@
      <type>boolean</type>
     </term>
     <listitem>
-     &warn.deprecated.feature-5-3-0.removed-6-0-0;
+     &warn.deprecated.feature-5-3-0.removed-5-4-0;
      <para>
       <parameter>magic_quotes_runtime</parameter> yönergesi etkinse,
       veritabanları ve metin dosyaları gibi her tür harici kaynaktan veri
@@ -326,7 +350,6 @@
        <member><function>gzgets</function></member>
        <member><function>gzwrite</function></member>
        <member><function>gzread</function></member>
-       <member><function>phar_file_get_contents</function></member>
        <member><function>exif_read_data</function></member>
        <member><function>dba_insert</function></member>
        <member><function>dba_replace</function></member>
