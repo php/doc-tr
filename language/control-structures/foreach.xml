@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8ad0d94e1c87b2daabff88e74acc31e8a11eec0a Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.foreach" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>foreach</literal></title>
+ <?phpdoc print-version-for="foreach"?>
  <para>
-  PHP 4 ile birlikte Perl ve bazı diğer dillerde mevcut olan
-  <literal>foreach</literal> yapısı da kullanıma sunulmuştur. Bu deyim
-  diziler üzerinde yineleme yapmayı kolaylaştırmaktadır.
-  <literal>foreach</literal> yalnızca diziler için kullanılabilir; farklı
-  veri türünde veya ilklendirilmemiş bir değişken ile kullanmak
-  istediğinizde hata verir. İki sözdizimi mevcuttur; ikincisi birinciden
-  biraz daha kullanışlıdır:
+  <literal>foreach</literal> yapısı diziler üzerinde yineleme yapmayı
+  kolaylaştırmaktadır. <literal>foreach</literal> yalnızca diziler ve nesneler
+  için kullanılabilir; farklı veri türünde veya ilklendirilmemiş bir değişken
+  ile kullanmak istediğinizde hata verir. İki sözdizimi mevcuttur:
   <informalexample>
    <programlisting>
 <![CDATA[
@@ -45,24 +43,17 @@ foreach (dizi_ifadesi as $isim => $değer)
     sıfırlanır. Bu sebeple, <literal>foreach</literal> deyiminden önce
     <function>reset</function> işlevini çalıştırmanıza gerek yoktur.
    </para>
-  </note>
- </para>
- <para>
-  <note>
    <para>
-    Dizi <link linkend="language.references">gönderimli</link> olmadıkça,
-    <literal>foreach</literal> dizinin kendisi üzerinde değil, bir kopyası
-    üzerinde çalışır. Bundan dolayı özgün dizi göstericisi değiştirilmez
-    ve döndürülen dizi elemanı üzerinde yapılan değişiklikler özgün diziye
-    yansıtılmaz.
+    <literal>foreach</literal> dahili bir dizi göstericisi ile çalışması
+    nedeniyle bunun döngü içinde değiştirilmesi beklenmedik sonuçlara yol
+    açabilir.
    </para>
   </note>
  </para>
  <para>
-  PHP 5'den itibaren, <literal>$değer</literal> değişkeninin önüne &amp;
-  koyarak dizi elemanları üzerinde kolayca değişiklik yapılabilmektedir.
-  Bu kullanımla değeri kopyalamak yerine kendisine bir <link
-  linkend="language.references">gönderim</link> yapılması sağlanır.
+  <literal>$değer</literal> değişkeninin önüne &amp; koyarak dizi elemanları
+  üzerinde kolayca değişiklik yapılabilir. Böylece değer <link
+  linkend="language.references">gönderimli</link> hale gelir.
   <informalexample>
    <programlisting role="php">
 <![CDATA[
@@ -77,18 +68,22 @@ unset($değer); // son eleman da işlendiğine göre gönderimi kaldıralım
 ]]>
    </programlisting>
   </informalexample>
-  Bu durum yalnızca yinelenen diziye gönderim yapılabiliyorsa
-  mümkündür (örneğin, bir değişkense), yani aşağıdaki kod çalışmaz:
+ </para>
+ <para>
+  <literal>$değer</literal> değişkeninin gönderimli hale getirilebilmesi,
+  sadece yinelenen dizi gönderimli (örn, bir değişkene) olabiliyorsa
+  mümkündür, yani aşağıdaki kod çalışmaz:
+  <informalexample>
    <programlisting role="php">
 <![CDATA[
 <?php
 foreach (array(1, 2, 3, 4) as &$value) {
     $value = $value * 2;
 }
-
 ?>
 ]]>
-  </programlisting>
+   </programlisting>
+  </informalexample>
  </para>
  <warning>
   <para>
@@ -125,6 +120,8 @@ foreach ($dizi as $değer) {
 ]]>
    </programlisting>
   </informalexample>
+ </para>
+ <para>
   Aşağıdakiler de işlevsel olarak aynıdır:
   <informalexample>
    <programlisting role="php">
@@ -206,6 +203,111 @@ foreach (array(1, 2, 3, 4, 5) as $v) {
    </programlisting>
   </informalexample>
  </para>
+
+ <sect2 xml:id="control-structures.foreach.list">
+  <title>İç içe dizilerin list() ile ayrıştırılması</title>
+  <?phpdoc print-version-for="foreach.list"?>
+
+  <para>
+   PHP 5.5 ile yeni bir yetenek eklendi. Dizi dizileri üzerinde döngü
+   oluşturmak ve <function>list</function> işlevini değer olarak kullanmak
+   suretiyle içteki diziyi döngü değişkenlerine atayarak onu da açmak artık
+   mümkündür.
+  </para>
+
+  <para>
+   Örneğin:
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = [
+    [1, 2],
+    [3, 4],
+];
+
+foreach ($dizi as list($a, $b)) {
+    // $a içteki dizinin ilk elemanını,
+    // $b ikinci elemanını içerecektir.
+    echo "A: $a; B: $b\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+A: 1; B: 2
+A: 3; B: 4
+]]>
+    </screen>
+   </informalexample>
+  </para>
+
+  <para>
+   İçteki dizinin gerekmeyen elemanlarını <function>list</function> içinde
+   içermeyebilirsiniz:
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = [
+    [1, 2],
+    [3, 4],
+];
+
+foreach ($dizi as list($a)) {
+    // Burada artık $b yok.
+    echo "$a\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+1
+3
+]]>
+    </screen>
+   </informalexample>
+  </para>
+
+  <para>
+   <function>list</function> için yeterli sayıda dizi elemanı yoksa bir uyarı
+   üretilir.:
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = [
+    [1, 2],
+    [3, 4],
+];
+
+foreach ($dizi as list($a, $b, $c)) {
+    echo "A: $a; B: $b; C: $c\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+
+Notice: Undefined offset: 2 in example.php on line 7
+A: 1; B: 2; C:
+
+Notice: Undefined offset: 2 in example.php on line 7
+A: 3; B: 4; C:
+]]>
+    </screen>
+   </informalexample>
+  </para>
+ </sect2>
 </sect1>
 
 <!-- Keep this comment at the end of the file
