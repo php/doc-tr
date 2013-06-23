@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b851244780232e72fb87766bed1e9b0209f7583d Maintainer: nilgun Status: ready-->
+<!-- EN-Revision: c2f8c648c8dcf4ffe7c27749a2643fb1faf6259e Maintainer: nilgun Status: ready-->
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
   <sect2 xml:id="language.oop5.basic.class">
    <title><code>class</code> Anahtar Sözcüğü</title>
    <para>
-    Her sınıf tanımı <literal>class</literal> anahtar sözcüğü ile başlar sınıf
-    isminin ardından gelen bir çift kaşlı ayracın arasında sınıf özelliklerinin
-    ve yöntemlerinin tanımları bulunur.
+    Temel sınıf tanımı <literal>class</literal> anahtar sözcüğü ile başlar
+    sınıf isminin ardından gelen bir çift kaşlı ayracın arasında sınıfa ait
+    özelliklerin ve yöntemlerin tanımları bulunur.
    </para>
    <para>
     Sınıf ismi olarak herhangi bir geçerli yafta kullanılabilir ancak bu PHP
@@ -51,7 +51,7 @@ class BasitSınıf
     nesne diğer nesnenin bağlamından <link linkend="language.oop5.static">duruk
     olarak</link> çağrılıyorsa, bu başka bir nesne de olabilir).
    </para>
-   <example>
+   <example xml:id="language.oop5.basic.class.this">
     <title>- <varname>$this</varname> sözde değişkeninin kullanımı</title>
     <programlisting role="php">
 <![CDATA[
@@ -108,12 +108,18 @@ $this tanımsız.
   <sect2 xml:id="language.oop5.basic.new">
    <title><code>new</code> Anahtar Sözcüğü</title>
    <para>
-    Bir sınıfın örneğini oluşturmak için yeni bir nesne oluşturulup bir
-    değişkene atanmalıdır. Nesnenin hata durumunda daima yeni bir değişkene
+    Bir sınıfın örneğini oluşturmak için <literal>new</literal> anahtar sözcüğü
+    kullanılmalıdır. Nesnenin hata durumunda daima yeni bir değişkene
     atanarak oluşturulması için <link linkend="language.oop5.decon"
     >kurucu</link>sunun bir <link linkend="language.exceptions"
     >istisna</link> oluşturmaması gerekir. Sınıflar, örnekleme öncesi
     tanımlanmış olmalıdır (ve bu, bazı durumlarda bir gereksinimdir).
+   </para>
+   <para>
+    Bir <type>string</type> türünde dizge <literal>new</literal> ile
+    kullanılmış bir sınıf ismi içeriyorsa bu sınıfın yeni bir örneği
+    oluşturulur. Eğer sınıf bir isim alanı içersindeyse bu yapılırken sınıfın
+    tam nitelenmiş ismi kullanılmalıdır.
    </para>
    <example>
     <title>- Bir sınıf örneğinin oluşturulması</title>
@@ -145,6 +151,8 @@ $örnek = new $sınıf(); // BasitSınıf()
     <programlisting role="php">
 <![CDATA[
 <?php
+$örnek = new BasitSınıf();
+
 $atama     =  $örnek;
 $gönderim  =& $örnek;
 
@@ -170,6 +178,47 @@ object(BasitSınıf)#1 (1) {
 ]]>
     </screen>
    </example>
+   <para>
+    Bir nesnenin örneğini oluşturmak için PHP 5.3.0 ve sonrasında yeni yollar
+    kullanılabilmektedir:
+   </para>
+   <example>
+    <title>- Yeni nesneler oluşturmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Test
+{
+    static public function getNew()
+    {
+        return new static;
+    }
+}
+
+class Child extends Test
+{}
+
+$obj1 = new Test();
+$obj2 = new $obj1;
+var_dump($obj1 !== $obj2);
+
+$obj3 = Test::getNew();
+var_dump($obj3 instanceof Test);
+
+$obj4 = Child::getNew();
+var_dump($obj4 instanceof Child);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(true)
+bool(true)
+bool(true)
+]]>
+    </screen>
+   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.extends">
@@ -181,12 +230,18 @@ object(BasitSınıf)#1 (1) {
     sadece bir ana sınıfı miras alabilir.
    </para>
    <para>
-    Miras alınan yöntemler ve özelliklerler, ebeveyn sınıfta tanımlı
+    Miras alınan yöntemler ve özellikler, ebeveyn sınıfta tanımlı
     isimleriyle yeniden bildirilerek geçersiz kılınabilir; bu sadece ebeveyn
     sınıfın <link linkend="language.oop5.final">final</link> tanımlı yöntemleri
     için yapılamaz. Geçersiz kılınmış yöntemlere ve duruk özelliklere <link
     linkend="language.oop5.paamayim-nekudotayim">parent::</link> öneki ile
     atıfta bulunarak erişilebilir.
+   </para>
+   <para>
+    Yöntemler geçersiz kılınırken, değiştirgelerin yerleri korunmalıdır, aksi
+    takdirde PHP <constant>E_STRICT</constant> seviyesinde bir hata üretir.
+    Farklı değiştirgeler kullanarak geçersiz kılmayı mümkün kılan kurucuya bu
+    uygulanmaz.
    </para>
    <example>
     <title>- Basit bir sınıfın miras alınması</title>
@@ -216,6 +271,42 @@ bir öntanımlı değer
 ]]>
     </screen>
    </example>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.basic.class.class">
+   <title>::class</title>
+
+   <para>
+    PHP 5.5'ten itibaren, <literal>class</literal> anahtar sözcüğü, ayrıca
+    sınıf isim çözünürlüğü için de kullanılabilmektedir.
+    <literal>SınıfAdı</literal> sınıfının tam nitelenmiş ismini
+    <literal>SınıfAdı::class</literal> biçeminde kullanarak bir dizge elde
+    edebilirsiniz. Bu, özellikle <link linkend="language.namespaces">isim
+    alanlı</link> sınıflarda çok kullanışlıdır.
+   </para>
+   <para>
+    <example xml:id="language.oop5.basic.class.class.name">
+     <title>- Sınıf adı çözünürlüğü</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+namespace NS {
+    class SınıfAdı {
+    }
+
+    echo SınıfAdı::class;
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+NS\SınıfAdı
+]]>
+     </screen>
+    </example>
+   </para>
   </sect2>
 
  </sect1>
