@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: be1c862babddf0359d9660d11f67ae6b8b9ab247 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-start">
  <refnamediv>
   <refname>ob_start</refname>
@@ -11,9 +11,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>ob_start</methodname>
-   <methodparam choice="opt"><type>callback</type><parameter>çıktı_geriçağırıcı</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>parça_boyu</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>sil</parameter></methodparam>
+   <methodparam choice="opt"><type>callable</type><parameter>çıktı_geriçağırıcı</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>parça_boyu</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>PHP_OUTPUT_HANDLER_STDFLAGS</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev çıktı tamponlamasını ektin kılar. Çıktı tamponlaması etkinken
@@ -63,13 +63,32 @@
        alması ve sonuçta tarayıcıya gönderilmek üzere yeni bir çıktı tamponu
        döndürmesi beklenir. Eğer bu değiştirge ile belirtilen işlev
        çağrılabilir değilse <function>ob_start</function> &false; döndürür.
+       İşlevinin sözdizimi:
       </para>
       <para>
-       Eğer geriçağırıcı iki değiştirgeli ise ikinci değiştirge
-       <constant>PHP_OUTPUT_HANDLER_START</constant>,
-       <constant>PHP_OUTPUT_HANDLER_CONT</constant> ve
-       <constant>PHP_OUTPUT_HANDLER_END</constant> değerlerinden oluşan bir
-       bit alanı ile doldurulur.
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>işlev_ismi</replaceable></methodname>
+        <methodparam><type>string</type><parameter>tampon</parameter></methodparam>
+        <methodparam choice="opt"><type>int</type><parameter>kip</parameter></methodparam>
+       </methodsynopsis>
+       <variablelist>
+        <varlistentry>
+         <term><parameter>tampon</parameter></term>
+         <listitem>
+          <simpara>
+           Çıktı tamponunun içeriği.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>kip</parameter></term>
+         <listitem>
+          <simpara>
+           <constant>PHP_OUTPUT_HANDLER_*</constant> sabitlerinin bit maskesi.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
       </para>
       <para>
        <parameter>çıktı_geriçağırıcı</parameter> &false; döndürdüğü takdirde
@@ -109,18 +128,67 @@
        İsteğe bağlı <parameter>parça_boyu</parameter> belirtildiği takdirde,
        <parameter>parça_boyu</parameter>nu aşan veya tamponun tam dolmasına
        sebep olan bir çıktılama çağrısından sonra tampon boşaltılır. Öntanımlı
-       0 değerinin anlamı işlevin sadece tamponun sonuna gelindiğinde
-       çağrılacağı anlamına gelirken, özel 1 değeri
-       <parameter>parça_boyu</parameter> değerinin 4096 olacağı anlamına gelir.
+       0 değerinin anlamı işlevin sadece çıktı tamponu kapandığında
+       çağrılacağı anlamına gelir.
+      </para>
+      <para>
+       PHP 5.4.0 öncesinde, özel <literal>1</literal> değeri
+       <parameter>parça_boyu</parameter> olarak 4096 kullanılacağı anlamına
+       gelirdi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sil</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
-       İsteğe bağlı <parameter>sil</parameter> değiştirgesinde &false;
-       belirtilirse, betik sonlanana kadar tampon boşaltılmaz.
+       <parameter>kip</parameter>, çıktı tamponuna uygulanabilecek işlemleri
+       denetleyen bir bitmaskesidir. Çıktı tamponunun temizlenmesi,
+       boşaltılması ve silinmesine izin vermek öntanımlı olup, bunun karşılığı
+       <constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant> |
+       <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant> |
+       <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant> veya kısaca
+       <constant>PHP_OUTPUT_HANDLER_STDFLAGS</constant> sabitidir.
+      </para>
+      <para>
+       Her sabit aşağıda açıklandığı gibi belli bir işlev kümesine erişimi
+       denetler:
+       <informaltable>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Sabit</entry>
+           <entry>İşlevler</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant></entry>
+           <entry>
+            <function>ob_clean</function>,
+            <function>ob_end_clean</function> ve
+            <function>ob_get_clean</function>.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant></entry>
+           <entry>
+            <function>ob_end_flush</function>,
+            <function>ob_flush</function> ve
+            <function>ob_get_flush</function>.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant></entry>
+           <entry>
+            <function>ob_end_clean</function>,
+            <function>ob_end_flush</function> ve
+            <function>ob_get_flush</function>.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </informaltable>
       </para>
      </listitem>
     </varlistentry>
@@ -147,6 +215,28 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        <function>ob_start</function> işlevinin (&false; belirtildiğinde
+        betiğin çalışması bitene kadar çıktı tamponunu silinmesini engelleyen)
+        üçüncü değiştirgesi  (çıktı tamponuna uygulanabilecek işlemleri
+        denetleyen bir bitmaskesi olarak) <type>integer</type> türünde
+        <parameter>kip</parameter> değiştirgesi olarak değiştirildi. Ne yazık
+        ki bu değişiklikle, 5.4.0 öncesinde yazılmış ve üçüncü değiştirgenin
+        kullanıldığı kodların API uyumluluğunun bozulmasına sebep olunmuştur.
+        Bu kodun her iki sürümle de uyumlu olmasının nasıl sağlanabileceği ile
+        ilgili örnek için <link linkend="function.ob-start.flags-bc">kip
+        örneği</link>ne bakınız.
+       </entry>
+      </row>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        <literal>1</literal> değeri artık çıktı tamponuna gönderilecek
+        parçaların 1 baytlık olacağı anlamına geliyor.
+       </entry>
+      </row>
       <row>
        <entry>4.3.2</entry>
        <entry>
@@ -206,6 +296,27 @@ ob_end_flush();
 </html>
 ]]>
     </screen>
+   </example>
+  </para>
+
+  <para>
+   <example xml:id="function.ob-start.flags-bc">
+    <title>Çıktı tamponunun hem PHP 5.3 hem de 5.4 ile uyumlu olmasını sağlayan
+    ve çıktı tamponunun silinmesini önleyen kod örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+  ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS ^
+    PHP_OUTPUT_HANDLER_REMOVABLE);
+} else {
+  ob_start(null, 0, false);
+}
+
+?>
+]]>
+    </programlisting>
    </example>
   </para>
  </refsect1>

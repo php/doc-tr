@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<sect1 xml:id="language.types.float">
+<!-- EN-Revision: ea5ef878791d0182c69e3fb69e05a7ddd97aad15 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.types.float" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><code>float</code></title>
 
  <para>
@@ -26,7 +26,7 @@ $c = 7E-10;
  </para>
 
  <informalexample>
-  <programlisting role="php">
+  <programlisting>
 <![CDATA[
 LNUM          [0-9]+
 DNUM          ([0-9]*[\.]{LNUM}) | ({LNUM}[\.][0-9]*)
@@ -45,20 +45,24 @@ USTEL_DNUM    [+-]?(({LNUM} | {DNUM}) [eE][+-]? {LNUM})
   <title>Kayan nokta hassasiyeti</title>
 
   <para>
-    Normal olarak, <literal>0.1</literal> veya <literal>0.7</literal> gibi
-    basit ondalık sayılar az da olsa bir kayıp olmaksızın dahili ikil
-    karşılıklarına dönüştürülemezler. Bunun şöyle bir sonucu olur: örneğin,
-    <code>floor((0.1+0.7)*10)</code> işlevinden beklendiği gibi
-    <literal>8</literal> değil, <literal>7</literal> döner; bunun sebebi
-    dahili gösterimin aslında <literal role="infdec">7.9</literal> gibi bir
-    değer olmasıdır.
+   Kayan noktalı sayılar sınırlı bir hassasiyete sahiptir. Sisteme bağımlı
+   olmakla birlikte PHP normalde (1.11e-16'lık bir yuvarlamadan dolayı görece
+   en büyük hatayı verecek olan) IEEE 754 çift hassasiyetli biçimi kullanır.
+   4 temel işlemden daha karmaşık aritmetik işlemler daha büyük hatalar
+   verebilir, dolayısıyla işlemler karmaşık hale gelmeye başlayınca hatanın
+   açıklanması bir önkabul olarak ele alınmalıdır.
   </para>
 
   <para>
-    Bunun asıl sebebi, noktanın sağındaki rakam sayısı sonsuz olan bazı
-    ondalık sayıları ifade etmekteki zorluktur. Örneğin,
-    <literal>1/3</literal> ifadesinin ondalık sonucu <literal
-    role="infdec">0.3</literal>'tür.
+   Ek olarak, <literal>0.1</literal> veya <literal>0.7</literal> gibi 10
+   tabanında kayan noktalı sayılar olarak tamamiyle gösterilebilen gerçel
+   sayılar, 2 tabanında kayan noktalı sayılar olarak tamamiyle gösterilemezler.
+   Bu bakımdan, az da olsa bir kayıp olmaksızın dahili ikil
+   karşılıklarına dönüştürülemezler. Bunun şöyle bir sonucu olur: örneğin,
+   <code>floor((0.1+0.7)*10)</code> işlevinden beklendiği gibi
+   <literal>8</literal> değil, <literal>7</literal> döner; bunun sebebi
+   dahili gösterimin aslında <literal>7.9999999999999991118...</literal> gibi
+   bir değer olmasıdır.
   </para>
 
   <para>
@@ -67,6 +71,12 @@ USTEL_DNUM    [+-]?(({LNUM} | {DNUM}) [eE][+-]? {LNUM})
    karşılaştırmaları yapılmaz. Eğer daha yüksek hassasiyet isteniyorsa <link
    linkend="ref.bc">keyfi hassasiyetli matematik işlevleri</link> ve <link
    linkend="ref.gmp">gmp</link> işlevleri kullanılabilir.
+  </para>
+
+  <para>
+   "Basit" bir açıklama için
+   <link xlink:href="&url.floating.point.guide;">kayan noktalı sayılar
+   kılavuzuna</link> bakınız.
   </para>
  </warning>
 
@@ -83,7 +93,60 @@ USTEL_DNUM    [+-]?(({LNUM} | {DNUM}) [eE][+-]? {LNUM})
    dönüşüm</link> bölümüne bakınız. PHP 5 itibariyle, bir <type>object</type>
    tür <type>float</type> türe dönüştürülmeye çalışılırsa bir uyarı üretilir.
   </para>
+ </sect2>
 
+ <sect2 xml:id="language.types.float.comparison">
+  <title>Kayan noktalı sayıların karşılaştırılması</title>
+
+  <para>
+   Yukarıdaki uyarıda kısaca değinildiği gibi kayan noktalı sayılar arasında
+   eşitlik karşılaştırmaları, bunların dahili gösterimlerinden dolayı biraz
+   sorunludur. Bununla birlikte, bu sınırlamaların aşılmasını ve kayan noktalı
+   sayılar arasında karşılaştırma yapılmasını sağlayan yollar vardır.
+  </para>
+
+  <para>
+   Kayan noktalı değerlerin eşitliğini sınamak için yuvarlamadan dolayı ortaya
+   çıkan göreli hatanın bir üst sınırı kullanılır. Bu değer makine epsilonu
+   veya yuvarlama birimi olarak bilinir ve hesaplamalardaki kabul edilebilir en
+   küçük farktır.
+  </para>
+
+  <informalexample>
+   <simpara>
+    <varname>$a</varname> ve <varname>$b</varname> 5 haneli hassasiyetle
+    eşittir.
+   </simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1.23456789;
+$b = 1.23456780;
+$epsilon = 0.00001;
+
+if(abs($a-$b) < $epsilon) {
+    echo "doğru";
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </sect2>
+
+ <sect2 xml:id="language.types.float.nan">
+  <title>NaN</title>
+  <para>
+   Bazı sayısal işlemler <constant>NAN</constant> sabiti ile gösterilen bir
+   değerle sonuçlanabilir. Bu sonuç, kayan noktalı hesaplamalarda
+   tanımlanamayan veya gösterilemeyen bir değeri gösterir. Bu değerin, kendisi
+   dahil herhangi bir değerle gevşek ya da sıkı bir karşılaştırması &false;
+   sonucuna sebep olur.
+  </para>
+  <para>
+   <constant>NAN</constant> farklı değerdeki herhangi bir sayıyı temsil
+   ettiğinden kendisi dahil başka bir değerle karşılaştırılmamalı, bunun yerine
+   değer <function>is_nan</function> ile sınanmalıdır.
+  </para>
  </sect2>
 </sect1>
 
