@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d1490c7a46d912f0115f338b7bf399ab7c4c0205 Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.ssl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>SSL  bağlamı seçenekleri</refname>
@@ -41,6 +41,8 @@
      <listitem>
       <para>
        Öz imzalı sertifikalara izin verilir.
+       <link linkend="context.ssl.verify-peer"
+       ><parameter>verify_peer</parameter></link> gerekir.
       </para>
       <para>
        &false; öntanımlıdır.
@@ -153,15 +155,52 @@
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry xml:id="context.ssl.capture-peer-chain">
+    <varlistentry xml:id="context.ssl.capture-peer-cert-chain">
      <term>
-      <parameter>capture_peer_chain</parameter>
+      <parameter>capture_peer_cert_chain</parameter>
       <type>boolean</type>
      </term>
      <listitem>
       <para>
        &true; belirtilirse <literal>peer_certificate_chain</literal> bağlam
        seçeneği sertifika zincirini içererek oluşturulur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.ssl.sni-enabled">
+     <term>
+      <parameter>SNI_enabled</parameter>
+      <type>boolean</type>
+     </term>
+     <listitem>
+      <para>
+       &true; atanırsa sunucu ismi belirteci (SNI) etkin olur. Böylece aynı IP
+       adresinde çok sayıda sertifika mümkün olur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.ssl.sni-server-name">
+     <term>
+      <parameter>SNI_server_name</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       Atanan değer sunucu ismi belirteci için sunucu ismi olarak kullanılır.
+       Bir değer atanmazsa, sunucu ismi akım açılırken kullanılan konak ismine
+       dayanarak tahmin edilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.ssl.disable-compression">
+     <term>
+      <parameter>disable_compression</parameter>
+      <type>boolean</type>
+     </term>
+     <listitem>
+      <para>
+       &true; atanırsa TLS sıkıştırması yapılmaz. Bu, CRIME (SUÇ) saldırı
+       vektörünü azaltmaya yardımcı olabililir.
       </para>
      </listitem>
     </varlistentry>
@@ -181,6 +220,20 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>5.4.13</entry>
+       <entry>
+        <parameter>disable_compression</parameter> eklendi.
+        OpenSSL &gt;= 1.0.0 gerekir.
+       </entry>
+      </row>
+      <row>
+       <entry>5.3.2</entry>
+       <entry>
+        <parameter>SNI_enabled</parameter> ve
+        <parameter>SNI_server_name</parameter> eklendi.
+       </entry>
+      </row>
       <row>
        <entry>5.0.0</entry>
        <entry>
@@ -204,6 +257,14 @@
     sarmalayıcıları için <literal>ssl://</literal> temel aktarım olduğundan,
     <literal>ssl://</literal>'e uygulanan bağlamsal seçenekler ayrıca
     <literal>https://</literal> ve <literal>ftps://</literal>'e de uygulanır.
+   </simpara>
+  </note>
+  <note>
+   <simpara>
+    SNI'nin (Server Name Indication - Sunucu ismi belirteci) kullanılabilmesi
+    için PHP'nin OpenSSL 0.9.8j veya daha üst sürümü ile derlenmesi gerekir.
+    SNI desteği olup olmadığını anlamak için
+    <constant>OPENSSL_TLSEXT_SERVER_NAME</constant> kullanılır.
    </simpara>
   </note>
  </refsect1>
