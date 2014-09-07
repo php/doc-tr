@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: d1490c7a46d912f0115f338b7bf399ab7c4c0205 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2562557ca572d4ae49474c89f82c06548f4cb417 Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.ssl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>SSL  bağlamı seçenekleri</refname>
@@ -19,6 +19,18 @@
   &reftitle.options;
   <para>
    <variablelist>
+    <varlistentry xml:id="context.ssl.peer-name">
+     <term>
+      <parameter>peer_name</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       Kullanılan görevdeşin ismi.Bu değer yoksa akım açılırken kullanılan
+	   konağın ismine dayalı olarak tahmin edilir.
+      </para>
+     </listitem>
+    </varlistentry>
     <varlistentry xml:id="context.ssl.verify-peer">
      <term>
       <parameter>verify_peer</parameter>
@@ -29,7 +41,21 @@
        SSL sertifikası kullanımının doğrulanmasını gerektirir.
       </para>
       <para>
-       &false; öntanımlıdır.
+       &true; öntanımlıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.ssl.verify-peer-name">
+     <term>
+      <parameter>verify_peer_name</parameter>
+      <type>boolean</type>
+     </term>
+     <listitem>
+      <para>
+       Görevdeş isminin doğrulanması gerekir.
+      </para>
+      <para>
+       &true; öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -111,7 +137,13 @@
        eşletirmesi yapmaya çalışır. Eğer bu bilinen isim bununla eşleşmiyorsa
        bağlantı gerçekleşmeyecektir.
       </para>
-     </listitem>
+      <note>
+        <simpara>
+         Bu seçeneğin kullanımı önerilmemektedir. PHP 5.6.0 itibariyle
+		 <parameter>peer_name</parameter> kullanılmalıdır.
+        </simpara>
+      </note>
+    </listitem>
     </varlistentry>
     <varlistentry xml:id="context.ssl.verify-depth">
      <term>
@@ -190,6 +222,12 @@
        Bir değer atanmazsa, sunucu ismi akım açılırken kullanılan konak ismine
        dayanarak tahmin edilir.
       </para>
+      <note>
+        <simpara>
+         Bu seçeneğin kullanımı önerilmemektedir. PHP 5.6.0 itibariyle
+		 <parameter>peer_name</parameter> kullanılmalıdır.
+        </simpara>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry xml:id="context.ssl.disable-compression">
@@ -201,6 +239,25 @@
       <para>
        &true; atanırsa TLS sıkıştırması yapılmaz. Bu, CRIME (SUÇ) saldırı
        vektörünü azaltmaya yardımcı olabililir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.ssl.peer-fingerprint">
+     <term>
+      <parameter>peer_fingerprint</parameter>
+      <type>string</type> | <type>array</type>
+     </term>
+     <listitem>
+      <para>
+       Uzak sertifika özeti belirtilenle eşleşmezse çıkar.
+      </para>
+      <para>
+       Değer <type>string</type> türünde belirtilmişse, uzunluk katıştırma
+	   algoritmasından belirlenir ("md5"  için 32, "sha1" için 40 gibi).
+      </para>
+      <para>
+       Değer <type>array</type> türünde belirtilmişse, anahtarlar
+	   katıştırma algoritmasının ismini, değerler umulan özeti içerir.
       </para>
      </listitem>
     </varlistentry>
@@ -220,6 +277,14 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>5.6.0</entry>
+       <entry>
+       <parameter>peer_fingerprint</parameter> ve
+       <parameter>verify_peer_name</parameter> eklendi.
+        <parameter>verify_peer</parameter> için öntanımlı değer &true; oldu.
+       </entry>
+      </row>
       <row>
        <entry>5.4.13</entry>
        <entry>

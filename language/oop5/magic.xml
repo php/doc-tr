@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: fcddfb2551140fba9a14a4c44dc9fa60004440c8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4307b3bcdf87f058147f6a917051986871ed8fe1 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
@@ -17,8 +17,9 @@
    <link linkend="object.wakeup">__wakeup()</link>,
    <link linkend="object.tostring">__toString()</link>,
    <link linkend="object.invoke">__invoke()</link>,
-   <link linkend="object.set-state">__set_state()</link> and
-   <link linkend="object.clone">__clone()</link>
+   <link linkend="object.set-state">__set_state()</link>,
+   <link linkend="object.clone">__clone()</link> ve
+   <link linkend="object.debuginfo">__debugInfo()</link>
    işlev isimleri PHP
    sınıflarında sihirli işlemler yaparlar. İşlevlerinize sihirli bir
    işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
@@ -95,11 +96,11 @@
 class Bağlantı
 {
     protected $hat;
-    private $sunucu, $kullanıcı, $parola, $db;
+    private $dsn, $kullanıcı, $parola, $db;
 
-    public function __construct($sunucu, $kullanıcı, $parola, $db)
+    public function __construct($dsn, $kullanıcı, $parola, $db)
     {
-        $this->sunucu = $sunucu;
+        $this->dsn = $dsn;
         $this->kullanıcı = $kullanıcı;
         $this->parola = $parola;
         $this->db = $db;
@@ -108,21 +109,19 @@ class Bağlantı
 
     private function bağlan()
     {
-        $this->hat = mysql_connect($this->sunucu, $this->kullanıcı, $this->parola);
-        mysql_select_db($this->db, $this->hat);
+        $this->hat = new PDO($this->dsn, $this->kullanıcı, $this->parola);
     }
 
     public function __sleep()
     {
-        mysql_close($this->hat);
+       return array('dsn', 'kullanıcı', 'parola');
     }
 
     public function __wakeup()
     {
         $this->bağlan();
     }
-}
-?>
+}?>
 ]]>
     </programlisting>
    </example>
@@ -141,6 +140,14 @@ class Bağlantı
     <constant>E_RECOVERABLE_ERROR</constant> seviyesinde ölümcül bir hata
     çıktılanır.
    </para>
+   <warning>
+    <simpara>
+     You cannot throw an exception from within a
+     <link linkend="object.tostring">__toString()</link> yöntemin içinden
+	 bir istisna oluşturamazsınız. Bunu yapılması ölümcül hata ile
+	 sonuçlanır.
+    </simpara>
+   </warning>
    <example>
     <title>- Basit bir örnek</title>
     <programlisting role="php">
@@ -288,6 +295,56 @@ object(A)#2 (2) {
   int(5)
   ["var2"]=>
   string(3) "foo"
+}
+]]>
+    </screen>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.magic.debuginfo">
+   <title><link linkend="object.debuginfo">__debugInfo()</link></title>
+   <methodsynopsis xml:id="object.debuginfo">
+    <type>array</type><methodname>__debugInfo</methodname>
+    <void/>
+   </methodsynopsis>
+   <para>
+    Gösterilmesi gereken özelliklerini döndürmek için bir nesne
+	dökümleneceği zaman bu yöntem <function>var_dump</function> tarafından
+	çağrılır.
+   </para>
+   <para>
+    Bu özellik PHP 5.6.0 sürümünde eklendi.
+   </para>
+   <example>
+    <title><link linkend="object.debuginfo">__debugInfo()</link>
+	  kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class C {
+    private $prop;
+
+    public function __construct($val) {
+        $this->prop = $val;
+    }
+
+    public function __debugInfo() {
+        return [
+            'propSquared' => $this->prop ** 2,
+        ];
+    }
+}
+
+var_dump(new C(42));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+object(C)#1 (1) {
+  ["propSquared"]=>
+  int(1764)
 }
 ]]>
     </screen>
