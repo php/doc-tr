@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 84b8fca68fc762fefe85acde180a38b2e77a28b9 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1906823f554096127a3d6cf9a3b9652970f4318b Maintainer: nilgun Status: ready -->
 
 
- <section xml:id="ini.core">
+ <section xml:id="ini.core" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Temel &php.ini; yönergelerinin tanımları</title>
   <para>
    Bu liste PHP kurulumunuzu yapılandırmakta kullanacağınız yerleşik
@@ -12,6 +12,13 @@
    yönergeleri ile ilgili bilgileri <link
    linkend="session.configuration">oturumlar sayfasında</link> bulabilirsiniz.
   </para>
+  <note>
+   <para>
+    Burada listelenen öntanımlılar &php.ini; yüklenirken kullanılır;
+    değerler kullanıcı içindir ve geliştirilmekte olan &php.ini;
+    farklı olabilir.
+   </para>
+  </note>
 
   <section xml:id="ini.sect.httpd-options">
    <title>Httpd Options</title>
@@ -58,10 +65,11 @@
       </thead>
       <tbody>
        <row>
-        <entry><link linkend="ini.short-open-tag">short_open_tag</link></entry>
+        <entry><link linkend="ini.short-open-tag">
+        short_open_tag</link></entry>
         <entry>"1"</entry>
-        <entry>PHP_INI_ALL</entry>
-        <entry>PHP 4.0.0'da PHP_INI_ALL. PHP &lt; 5.3.0'da
+        <entry>PHP_INI_PERDIR</entry>
+        <entry>PHP 4.0.0'da PHP_INI_ALL. PHP &gt;= 4.0.1'de
         PHP_INI_PERDIR</entry>
        </row>
        <row>
@@ -101,7 +109,7 @@
         <entry><link linkend="ini.disable-functions">
           disable_functions</link></entry>
         <entry>""</entry>
-        <entry>sadece &php.ini;</entry>
+        <entry>sadece >PHP_INI_SYSTEM</entry>
         <entry>PHP 4.0.1 ve sonrasında mevcuttur.</entry>
        </row>
        <row>
@@ -138,6 +146,13 @@
         <entry>PHP 5.4.0 ve sonrasında mevcuttur.</entry>
        </row>
        <row>
+        <entry><link linkend="ini.zend.detect-unicode">
+        zend.detect-unicode</link></entry>
+        <entry>NULL</entry>
+        <entry>PHP_INI_ALL</entry>
+        <entry>PHP 5.4.0 ve sonrasında mevcuttur.</entry>
+       </row>
+       <row>
         <entry><link linkend="ini.zend.signal-check">
           zend.signal_check</link></entry>
         <entry>"0"</entry>
@@ -153,10 +168,12 @@
         </entry>
        </row>
        <row>
-        <entry><link linkend="ini.detect-unicode">detect_unicode</link></entry>
+        <entry>detect_unicode</entry>
         <entry>"1"</entry>
         <entry>PHP_INI_ALL</entry>
-        <entry>PHP 5.1.0 ve sonrasında mevcuttur. &removed.php.future;
+        <entry>PHP 5.1.0 ve sonrasında mevcuttur. PHP 5.4.0'da ismi
+        <link linkend="ini.zend.detect-unicode">zend.detect-unicode</link>
+        oldu.
         </entry>
        </row>
       </tbody>
@@ -326,11 +343,25 @@
        <para>
         PHP'nin kurulu olduğu sunucuda sürüm bilgisini HTTP başlığına
         eklemek suretiyle (örn: X-Powered-By: PHP/5.3.7) kendini karşıya
-        gösterip göstermeyeceğini belirler. PHP logo guid'leri ayrıca ilan
-        edilir; sitenin URL'sine eklemek suretiyle ilgili logo gösterilir.
-        Bu ayrıca <function>phpinfo</function> çıktısını da etkiler ve iptal
-        edildiği zaman olduğu gibi PHP logosu ve bazı bilgiler gösterilmez.
+        gösterip göstermeyeceğini belirler. PHP 5.5.0 öncesinde PHP logo
+        guid'leri ayrıca ilan edilir; böylece onu PHP betiğinizin URL'sine
+        eklemek suretiyle ilgili logonun gösterilmesini sağlarsınız
+        (örn, <link xlink:href="&url.php;?=PHPE9568F34-D428-11d2-A769-00AA001ACF42">&url.php;?=PHPE9568F34-D428-11d2-A769-00AA001ACF42</link>).
+        Bu ayrıca <function>phpinfo</function> çıktısını da etkiler ve
+        iptal edildiği zaman olduğu gibi PHP logosu ve bazı bilgiler
+        gösterilmez.
        </para>
+       <note>
+        <para>
+         PHP 5.5.0 ve sonrasında bu guid'ler ve
+         <function>php_logo_guid</function> işlevi kaldırıldı ve
+         guid'lerin yerine veri URI'leri geldi. Bu bakımdan guid'i URL'ye
+         ekleyerek PHP logosuna erişim artık mümkün değildir. Benzer
+         şekilde, <parameter>expose_php</parameter>'nin off yapılması PHP
+         logosunun <function>phpinfo</function> içinde görünmesini
+         etkilemez.
+        </para>
+       </note>
        <para>
         Ayrıca bakınız: <function>php_logo_guid</function> ve
         <function>phpcredits</function>.
@@ -421,7 +452,7 @@
       </term>
       <listitem>
        <para>
-        Çokbaytlı kodlanmış kaynak dosyalarının çözümlenmesini etkin kılar.
+        Çokbaytlı kodlanmış kaynak dosyalarının çözümlenmesini etkin kılar. Çokbaytlı dizge verisi içinde özel karakterler içeren SJIS, BIG5, vs. gibi karakter kodlamalarını kullanmak için zend.multibyte etkin olmalıdır. UTF-8, EUC gibi ISO-8859-1 uyumlu kodlamalar bu seçeneğin etkinleştirilmesini gerektirmez.
        </para>
       </listitem>
      </varlistentry>
@@ -433,9 +464,27 @@
       </term>
       <listitem>
        <para>
-        Betiğin tepesinde <link linkend="control-structures.declare.encoding"
-        >declare(encoding=...)</link> yönergesi görünmediği takdirde bu değer
-        kullanılır.
+        Betiğin tepesinde
+        <link linkend="control-structures.declare.encoding"
+        >declare(encoding=...)</link> yönergesi görünmediği takdirde bu
+        değer kullanılır. ISO-8859-1 ve UTF-8 ile uyumlu olmayan
+        kodlamalar için zend.multibyte ve zend.script_encoding
+        seçeneklerinin ikisi de etkin olmalıdır.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.zend.detect-unicode">
+      <term>
+       <parameter>zend.detect_unicode</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+        BOM'a (Bayt sıralama imi) ve dosyanın çokbaytlı karakterler
+        içerip içermediğine bakılır. Bu saptama
+        <function>__halt_compiler</function> çalıştırılmadan önce yapılır.
+        Sadece Zend Multibyte kipinde kullanılabilir.
        </para>
       </listitem>
      </varlistentry>
@@ -447,7 +496,7 @@
       </term>
       <listitem>
        <para>
-        Sistemin kapanması sırasında sinyal eylemcilerinin yerlştirilip
+        Sistemin kapanması sırasında sinyal eylemcilerinin yerleştirilip
         yerleştirilmediğini sınamak için.
        </para>
       </listitem>
@@ -597,7 +646,18 @@
        <para>
         PHP tarafından kullanılan realpath önbelleğinin boyunu belirler.
         PHP'nin çok sayıda dosya açtığı sistemlerde gerçekleştirilen dosya
-        işlemlerinin miktarına bağlı olarak bu değerin arttırılması gerekir.
+        işlemlerinin miktarına bağlı olarak bu değerin arttırılması
+        gerekir.
+       </para>
+       <para>
+        Boyut saklanan dosyanın yol dizgesinin bayt olarak uzunluğunu
+        artı, arabellek girdisiyle ilişkili verinin miktarını gösterir.
+        Yani, arabellekte daha uzun dosya yolu saklamak için arabellek
+        boyutunu arttırmanız gerekir.  Bu değer arabelleklenebilen farklı
+        yolların sayısını doğrudan saptayabilmeyi sağlamaz.
+       </para>
+       <para>
+        Arabellek girdisi için gereken boyut sistemden sisteme değişir.
        </para>
       </listitem>
      </varlistentry>
@@ -693,7 +753,14 @@
         <entry>"1"</entry>
         <entry>PHP_INI_PERDIR</entry>
         <entry>PHP 5.0.0 ve sonrasında mevcuttur. PHP 5.3.0'dan itibaren
-        kullanımı önerilmemektedir. PHP 5.4.0'da kaldırıldı</entry>
+        kullanımı önerilmemektedir. PHP 5.4.0'da kaldırıldı.</entry>
+       </row>
+       <row>
+        <entry><link linkend="ini.enable-post-data-reading">
+        enable_post_data_reading</link></entry>
+        <entry>"1"</entry>
+        <entry>PHP_INI_PERDIR</entry>
+        <entry>PHP 5.4.0 ve sonrasında mevcuttur.</entry>
        </row>
        <row>
         <entry><link linkend="ini.post-max-size">post_max_size</link></entry>
@@ -706,7 +773,7 @@
         <entry><link linkend="ini.gpc-order">gpc_order</link></entry>
         <entry>"GPC"</entry>
         <entry>PHP_INI_ALL</entry>
-        <entry></entry>
+        <entry>PHP 5.0.0'da kaldırıldı.</entry>
        </row>
        <row>
         <entry><link linkend="ini.auto-prepend-file">
@@ -734,7 +801,8 @@
           default_charset</link></entry>
         <entry>""</entry>
         <entry>PHP_INI_ALL</entry>
-        <entry></entry>
+        <entry>PHP 5.6.0 ve sonrasında öntanımlı değer "UTF-8" öncesinde
+          boş dizgedir.</entry>
        </row>
        <row>
         <entry><link linkend="ini.always-populate-raw-post-data">
@@ -743,13 +811,6 @@
         <entry>PHP_INI_PERDIR</entry>
         <entry>PHP &lt;= 4.2.3'te PHP_INI_ALL. PHP 4.1.0 ve sonrasında
         mevcuttur.</entry>
-       </row>
-       <row>
-        <entry><link linkend="ini.allow-webdav-methods">
-          allow_webdav_methods</link></entry>
-        <entry>"0"</entry>
-        <entry>PHP_INI_PERDIR</entry>
-        <entry></entry>
        </row>
       </tbody>
      </tgroup>
@@ -1086,8 +1147,8 @@
        </para>
        <note>
         <para>
-         Bu yönerge PHP 4'te yoktur. Yerine <link
-         linkend="ini.variables-order">variables_order</link> yöregesini
+         Bu yönerge PHP 5.0.0'da kaldırıldı. Yerine <link
+         linkend="ini.variables-order">variables_order</link> yönergesini
          kullanın.
         </para>
        </note>
@@ -1152,9 +1213,79 @@
       </term>
       <listitem>
        <para>
-        PHP, Content-type: başlığında öntanımlı olarak
-        bir karakter kodlaması çıktılar. Karakter kümesi gönderimini iptal
-        etmek için yönergeye boş dizge ("") atamak yeterlidir.
+        PHP 5.6 ve sonrasında, "UTF-8" öntanımlı değerdir ve eğer <parameter>encoding</parameter> kullanılmamışsa bu değer
+        <function>htmlentities</function>,
+        <function>html_entity_decode</function> ve
+        <function>htmlspecialchars</function> için öntanımlı karakter kodlaması olarak kullanılır. Ayrıca:
+        <link linkend="ini.iconv.input-encoding"><parameter>iconv.input_encoding</parameter></link>,
+        <link linkend="ini.iconv.output-encoding"><parameter>iconv.output_encoding</parameter></link> ve
+        <link linkend="ini.iconv.internal-encoding"><parameter>iconv.internal_encoding</parameter></link>
+        yapılandırma seçeneklerine değer atanmamışsa
+        <parameter>default_charset</parameter>
+        <link linkend="book.iconv">iconv</link> işlevleri için de
+        öntanımlı karakter kümesi olur.
+
+        <link linkend="ini.mbstring.http-input"><parameter>mbstring.http_input</parameter></link>,
+        <link linkend="ini.mbstring.http-output"><parameter>mbstring.http_output</parameter></link> ve
+        <link linkend="ini.mbstring.internal-encoding"><parameter>mbstring.internal_encoding</parameter></link>
+        yapılandırma seçeneklerine değer atanmamışsa
+        <parameter>default_charset</parameter>
+        <link linkend="book.mbstring">mbstring</link> işlevleri için de
+        öntanımlı karakter kümesi olur.
+       </para>
+       <para>
+        PHP tarafından gönderilen Content-Type başlığı
+        <function>header</function> çağrısı ile değiştirilmedikçe PHP'nin
+        tüm sürümlerinde başlıktaki karakter kümesi değeri bu değer
+        olacaktır.
+       </para>
+       <para>
+        <parameter>default_charset</parameter> seçeneğine boş değer
+        atanması önerilmez.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.input-encoding">
+      <term>
+       <parameter>input_encoding</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        PHP 5.6.0 ve sonrasında kullanılabilir. Bu değer
+        mbstring ve iconv gibi çokbayt modülleri için kullanılır.
+        Öntanımlı değer boş dizgedir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.output-encoding">
+      <term>
+       <parameter>output_encoding</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        PHP 5.6.0 ve sonrasında kullanılabilir. Bu değer
+        mbstring ve iconv gibi çokbayt modülleri için kullanılır.
+        Öntanımlı değer boş dizgedir.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.internal-encoding">
+      <term>
+       <parameter>internal_encoding</parameter>
+       <type>string</type>
+      </term>
+      <listitem>
+       <para>
+        PHP 5.6.0 ve sonrasında kullanılabilir. Bu değer
+        mbstring ve iconv gibi çokbayt modülleri için kullanılır.
+        Öntanımlı değer boş dizgedir ve böyle bir durumda
+        <link linkend="ini.default-charset">default_charset</link>
+        kullanılır.
        </para>
       </listitem>
      </varlistentry>
@@ -1167,38 +1298,33 @@
       <listitem>
        <para>
         <varname>$HTTP_RAW_POST_DATA</varname> değişkeni daima ham POST
-        verisi içerilerek oluşturulur. Aksi takdirde, veri sadece tanınmayan
-        MIME türünde oluşturulur. Bununla birlikte, ham POST verisine
-        erişmek için tercih edilen yol <link linkend="wrappers.php"
-        >php://input</link>'tur. <varname>$HTTP_RAW_POST_DATA</varname>,
+        verisi içerilerek oluşturulur. Aksi takdirde, veri sadece
+        tanınmayan MIME türünde oluşturulur.
+       </para>
+       <para>
+        Ham POST verisine erişmek için tercih edilen yollar
+        <link linkend="wrappers.php">php://input</link> ve
+        <varname>$HTTP_RAW_POST_DATA</varname> PHP 5.6.0 ve sonrasında
+        önerilmemektedir.
+        <varname>$HTTP_RAW_POST_DATA</varname> hiç tanımlanmadığı durumda
+        <parameter>always_populate_raw_post_data</parameter> için
+        <literal>-1</literal> kullanmak PHP'nin gelecek sürümünde
+        gerçeklenecek yeni davranış için bir seçenek olacaktır.
+       </para>
+       <para>
+        Ne atandığına bakılmaksızın <varname>$HTTP_RAW_POST_DATA</varname>
         <literal>enctype="multipart/form-data"</literal> ile kullanılamaz.
        </para>
       </listitem>
      </varlistentry>
 
-     <varlistentry xml:id="ini.allow-webdav-methods">
-      <term>
-       <parameter>allow_webdav_methods</parameter>
-       <type>boolean</type>
-      </term>
-      <listitem>
-       <para>
-        WebDAV http isteklerinin PHP betikleri içinde elde edilmesine izin
-        verir (PROPFIND, PROPPATCH, MOVE, COPY, vs.). Bu yönerge PHP
-        4.3.2'de kullanımdan kaldırılmıştır. POST verisini bu isteklerden
-        almak isterseniz  <link linkend="ini.always-populate-raw-post-data"
-        >always_populate_raw_post_data</link> yönergesini de etkin
-        kılmalısınız.
-       </para>
-      </listitem>
-     </varlistentry>
     </variablelist>
    </para>
    <para>
     Ayrıca bakınız: <link linkend="ini.magic-quotes-gpc"
     >magic_quotes_gpc</link>, <link linkend="ini.magic-quotes-runtime"
-    >magic_quotes_runtime</link> ve <link linkend="ini.magic-quotes-sybase"
-    >magic_quotes_sybase</link>.
+    >magic_quotes_runtime</link> ve
+    <link linkend="ini.magic-quotes-sybase">magic_quotes_sybase</link>.
    </para>
   </section>
 
@@ -1390,9 +1516,33 @@ include_path=".;c:\php\includes"
        </para>
        <para>
         Dosya yolu olarak <literal>.</literal> belirtilmesi çalışılan
-        dizinin arama yollarına dahil edilmesini sağlar. Ancak, dahil edilen
-        her dosyayı PHP'nin daima denetlemesini isterseniz <literal>include
-        './dosya'</literal> biçemini kullanmak daha iyidir.
+        dizinin arama yollarına dahil edilmesini sağlar. Ancak, dahil
+        edilen her dosyayı PHP'nin daima denetlemesini isterseniz
+        <literal>include './dosya'</literal> biçemini kullanmak daha
+        iyidir.
+       </para>
+       <note>
+        <para>
+         <literal>ENV</literal> değişkenlerine .ini dosyalarında daima
+         erişilebilmektedir. Dolayısıyla, <literal>${LOGIN}</literal> ve
+         <literal>${USER}</literal>.kullanarak home dizinine erişmek
+         mümkündür.
+        </para>
+        <para>
+         Ortam değişkenleri sunucunun çalıştığı sisteme bağlı olarak
+         değişiklik gösterebilir.
+        </para>
+       </note>
+       <para>
+        <example>
+         <title>include_path değişkeninde Unix ${USER} ortam değişkeni
+           kullanımı</title>
+         <programlisting role="php.ini">
+<![CDATA[
+include_path = ".:${USER}/pear/php"
+]]>
+         </programlisting>
+        </example>
        </para>
       </listitem>
      </varlistentry>
@@ -1409,13 +1559,22 @@ include_path=".;c:\php\includes"
         etkin olup olmamasından etkilenmez.
        </para>
        <para>
-        Örneğin bir betik, <function>fopen</function> veya
-        <function>gzopen</function> ile bir dosya açmaya çalışırsa dosyanın
-        yerine bakılır. Dosya belirtilen dizin ağacının dışındaysa PHP bu
-        dosyayı açmayı reddeder. Tüm sembolik bağlar çözümlenir, dolayısıyla
-        bir sembolik bağ kullanarak bu kısıtlamayı aşmak mümkün değildir. Eğer
-        dosya mevcut değilse sembolik bağ çözümlenemeyeceğinden dosyanın
-        kendisi <option>open_basedir</option> ile karşılaştırılır.
+        Örneğin bir betik dosya sistemine erişmeye çalışırsa, örneğin
+        <function>fopen</function> veya <function>gzopen</function> ile bir
+        dosya açmaya çalışırsa dosyanın yerine bakılır. Dosya belirtilen
+        dizin ağacının dışındaysa PHP bu dosyayı açmayı reddeder. Tüm
+        sembolik bağlar çözümlenir, dolayısıyla bir sembolik bağ kullanarak
+        bu kısıtlamayı aşmak mümkün değildir. Eğer dosya mevcut değilse
+        sembolik bağ çözümlenemeyeceğinden dosyanın kendisi
+        <option>open_basedir</option> ile karşılaştırılır.
+       </para>
+       <para>
+        <option>open_basedir</option> dosya sistemi işlevlerinden daha
+        fazlasını etkileyebilir; örneğin, <literal>MySQL</literal>
+        <literal>mysqlnd</literal> sürücülerini kullanacak şekilde
+        yapılandırılmışsa <literal>LOAD DATA INFILE</literal> bu seçenekten
+        etkilenir. PHP'nin gelişkin işlevselliğinin çoğu
+        <literal>open_basedir</literal>'ı böyle kullanır.
        </para>
        <para>
         Betiğin çalışma dizinini belirten nokta (<systemitem
@@ -1534,8 +1693,7 @@ include_path=".;c:\php\includes"
       <listitem>
        <para>
         PHP başlatılırken yüklenecek devingen olarak yüklenebilen Zend
-        eklentisinin mutlak yolu (örneğin: <link
-        linkend="book.apd">APD</link>).
+        eklentisinin ismi (örneğin: <link linkend="book.apd">APD</link>).
        </para>
       </listitem>
      </varlistentry>
@@ -1677,9 +1835,20 @@ include_path=".;c:\php\includes"
        <para>
         HTTP yanıt kodu gönderilirken hangi başlık türlerinin
         kullanılacağını belirler. 0 atanırsa PHP, Apache ve diğer HTTP
-        sunucuları tarafından desteklenen bir Status: başlığı gönderir. 1
-        atanırsa PHP, <link xlink:href="&url.rfc;2616">RFC 2616</link>
-        uyumlu başlıklar gönderir. Ne yapıldığı hakkında bir fikriniz yoksa
+        sunucuları tarafından desteklenen bir
+        <link xlink:href="&url.rfc;3875">RFC 3875</link> Status: başlığı
+        gönderir. 1 atanırsa PHP, <link xlink:href="&url.rfc;2616">RFC
+        2616</link> uyumlu başlıklar gönderir.
+       </para>
+       <para>
+        Bu seçenek etkinse ve PHP'yi bir CGI ortamında kullanıyorsanız
+        (PHP-FPM gibi), standard RFC 2616 tarzı HTTP durum yanıt başlıklarını
+        değil, onların RFC 3875 eşdeğerlerini kullanmalısınız. Örneğin
+        header("HTTP/1.0 404 Not found"); değil,
+        header("Status: 404 Not Found"); kullanmalısınız.
+       </para>
+      <para>
+        Ne yapıldığı hakkında bir fikriniz yoksa
         bu yönergeyi 0 değeriyle bırakın.
        </para>
       </listitem>
@@ -1796,9 +1965,6 @@ include_path=".;c:\php\includes"
         <link linkend="ini.post-max-size">post_max_size</link> yönergelerine
         de bakınız.
        </para>
-
-       &ini.shorthandbytes;
-
       </listitem>
      </varlistentry>
 

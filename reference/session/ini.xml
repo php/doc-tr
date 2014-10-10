@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f052ac1bd73549125c3fc3dc68a36d4b0608a16d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2368dd7826263234237df08904eb5f9730ff13b3 Maintainer: nilgun Status: ready -->
 <section xml:id="session.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -40,7 +40,7 @@
      <entry><link linkend="ini.session.auto-start">
      session.auto_start</link></entry>
      <entry>"0"</entry>
-     <entry>PHP_INI_ALL</entry>
+     <entry>PHP_INI_PERDIR</entry>
      <entry></entry>
     </row>
     <row>
@@ -105,6 +105,13 @@
      <entry>""</entry>
      <entry>PHP_INI_ALL</entry>
      <entry>PHP 5.2.0'dan beri kullanılabilmektedir.</entry>
+    </row>
+    <row>
+     <entry><link linkend="ini.session.use-strict-mode">
+     session.use_strict_mode</link></entry>
+     <entry>"0"</entry>
+     <entry>PHP_INI_ALL</entry>
+     <entry>PHP 5.5.2'den beri kullanılabilmektedir.</entry>
     </row>
     <row>
      <entry><link linkend="ini.session.use-cookies">
@@ -281,20 +288,26 @@
     </simpara>
     <para>
      Oturum dosyalarınızın yayılacağı dizin derinliğini belirlemekte
-     kullanılmak üzere seçimlik bir N değiştirgesi vardır. Örneğin yönergeye
-     <literal>'5;/tmp'</literal> değerini atarsanız, bir oturum dosyası şöyle
-     bir konuma konabilir:
+     kullanılmak üzere seçimlik bir <literal>N</literal> değiştirgesi vardır.
+     Örneğin yönergeye <literal>'5;/tmp'</literal> değerini atarsanız, bir
+     oturum dosyası şöyle bir konuma konabilir:
      <literal>/tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If</literal>.
-     N değiştirgesini kullanacaksanız bu dizinleri kullanmadan önce oluşturmuş
-     olmalısınız. Bunu yapmak için <filename>ext/session</filename> altında
+     <literal>N</literal> değiştirgesini kullanacaksanız bu dizinleri
+     kullanmadan önce oluşturmuş olmalısınız. Bunu yapmak için
+     <filename>ext/session</filename> altında
      <filename>mod_files.sh</filename> adında bir betik vardır (Windows için
-     <filename>mod_files.bat</filename>). Ayrıca, N değiştirgesinin sıfırdan
-     büyük bir değerle kullanılması durumunda özdevinimli bir çöp toplayıcının
-     devreye gireceğine de dikkat ediniz; daha ayrıntılı bilgi için &php.ini;
-     dosyanıza bakınız. Ayrıca, N değiştirgesini kullanmanız durumunda,
+     <filename>mod_files.bat</filename>). Ayrıca, <literal>N</literal>
+     değiştirgesinin sıfırdan büyük bir değerle kullanılması durumunda
+     özdevinimli bir çöp toplayıcının devreye gireceğine de dikkat ediniz; daha
+     ayrıntılı bilgi için &php.ini; dosyanıza bakınız. Ayrıca,
+     <literal>N</literal> değiştirgesini kullanmanız durumunda,
      noktalı virgül (<literal>;</literal>) ayracı &php.ini; dosyasında
      açıklamaları başlatmak için kullanıldığından yönergenin değerini tırnak
      içine almalısınız.
+    </para>
+    <para>
+     Dosya saklama modülü dosyaları öntanımlı olarak mode 600 kullanarak oluşturur. Bu öntanımlı değer seçimlik <literal>MODE</literal> ile değiştirilebilir: <literal>N;MODE;/path</literal> burada <literal>MODE</literal> dosya kipinin sekizlik tabanda gösterimidir.
+      Dosya kipini bu yolla belirlemek sürecin umask'ını etkilemez.
     </para>
     <warning>
      <para>
@@ -353,11 +366,22 @@
    <listitem>
     <simpara>
      <literal>session.serialize_handler</literal> yönergesi, veriyi
-     dizgeleştirmek/nesneleştirmek için kullanılacak biçem ismini belirler.
-     Şimdilik sadece, PHP'nin dahili biçemi (<literal>php</literal> veya
-     <literal>php_binary</literal> ismiyle) ve WDDX (<literal>wddx</literal>
-     ismiyle) desteklenmektedir. PHP, <link linkend="ref.wddx">WDDX
-     desteği</link> ile derlenmişse <literal>wddx</literal> tek seçenektir.
+     dizgeleştirmek/nesneleştirmek için kullanılacak eylemcinin ismini
+     belirler. Şimdilik sadece PHP dizgeleştirme biçemi (ismi:
+     <literal>php_serialize</literal>), PHP'nin dahili biçemleri
+     (<literal>php</literal> ve <literal>php_binary</literal> ismiyle) ve WDDX
+     (<literal>wddx</literal> ismiyle) desteklenmektedir. PHP,
+     <link linkend="ref.wddx">WDDX desteği</link> ile derlenmişse
+     <literal>wddx</literal> bir seçenek haline gelir.
+     <literal>php_serialize</literal> PHP 5.5.4 ve sonrasında kullanılabilir.
+     <literal>php_serialize</literal> dahili olarak düz serialize/unserialize
+     işlevini kullanır ve <literal>php</literal> ile
+     <literal>php_binary</literal>'nin sahip olduğu sınırlamalardan azadedir.
+     Daha eski digeleştirme eylemcileri $_SESSION içinde ne bir sayısal indis
+     ne de özel karakterleri (<literal>|</literal> ve <literal>!</literal>)
+     içeren bir dizge indisi saklayabilir. Betiğin durmasına yolaçan özel
+     karakter hataları ve sayısal indislerden kaçınmak için
+     <literal>php_serialize</literal> biçemini kullanın.
      <literal>php</literal> öntanımlıdır.
     </simpara>
    </listitem>
@@ -471,6 +495,14 @@
      değer atamak PHP'nin Windows Random API'sini bir döküntü kaynağı olarak
      kullanmasını sağlayacaktır.
     </simpara>
+    <note>
+     <simpara>
+      PHP 5.4.0 ve sonrasında <literal>session.entropy_file</literal> için
+      <literal>/dev/urandom</literal> veya <literal>/dev/arandom</literal>
+      öntanımlıdır (hangisi varsa). PHP 5.3.0'da bu yönergenin öntanımlı değeri
+      boş dizge idi.
+     </simpara>
+    </note>
    </listitem>
   </varlistentry>
 
@@ -484,6 +516,24 @@
      <literal>session.entropy_length</literal> yönergesi yukarıdaki yönergede
      belirtilen dosyadan okunacak baytların sayısını belirler. Öntanımlı değer
      <literal>0</literal>'dir (hiç bayt okunmayacak).
+    </simpara>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="ini.session.use-strict-mode">
+   <term>
+    <parameter>session.use_strict_mode</parameter>
+    <type>boolean</type>
+   </term>
+   <listitem>
+    <simpara>
+     <literal>session.use_strict_mode</literal> modülün katı oturum kimliği
+     kipini kullanıp kullanmayacağını belirler. Bu kip etkinse modül
+     ilklendirilmemiş oturum kimliklerini kabul etmeyecektir. Tarayıcı
+     tarafından ilklendirilmemiş bir oturum kimliği gönderilmişse, tarayıcıya
+     yeni oturum kimliği gönderilir. Uygulamalar katı kipte oturum
+     sabitlemesinden oturum benimsenmesi yoluyla korunur.
+     <literal>0</literal>(iptal) öntanımlıdır .
     </simpara>
    </listitem>
   </varlistentry>
@@ -657,14 +707,6 @@
      olup etkin değildir.
     </simpara>
     <note>
-     <simpara>
-      PHP 4.1.2 ve öncesinde, şeffaf SID desteğinin PHP ile birlikte
-      derlenmesi için derleme sırasında
-      <link linkend="configure.enable-trans-sid">
-      <literal>--enable-trans-sid</literal></link> seçeneğin kullanılması
-      gerekmektedir; PHP 4.2.0'dan itibaren, bu seçeneğin kullanılması
-      gerekmemektedir.
-     </simpara>
      <simpara>
       URL'ye dayalı oturum yönetiminin çerezlere dayalı oturum yönetimine göre
       daha fazla güvenlik riski vardır. Örneğin, kullanıcılar, etkin oturum
@@ -864,7 +906,7 @@
      Yükleme izleme bilgisinin ne sıklıkla güncelleneceğini tanımlar. Bayt
      cinsinden veya yüzde olarak belirtilebilir. Örneğin, yükleme izleme
      bilgisi her 100 baytta bir veya dosyanın her %1'i alındığında
-     güncelleniebilir.
+     güncellenebilir.
     </simpara>
     <simpara>
      "1%" öntanımlıdır.
@@ -874,7 +916,7 @@
 
   <varlistentry xml:id="ini.session.upload-progress.min-freq">
    <term>
-    <parameter>session.upload_progress.min-freq</parameter>
+    <parameter>session.upload_progress.min_freq</parameter>
     <type>integer</type>
    </term>
    <listitem>
