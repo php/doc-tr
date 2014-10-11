@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8b5940cadeb4f1c8492f4a7f70743a2be807cf39 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.gzencode" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>gzencode</refname>
@@ -57,9 +57,15 @@
        <constant>FORCE_DEFLATE</constant> olabilir.
       </para>
       <para>
-       <constant>FORCE_DEFLATE</constant> belirtirseniz, sonunda crc32 sınama
-       toplamı bulunmayan gzip dosya başlığı altında standart zlib deflate
-       biçemli (zlib başlıkları dahil) bir dizge alırsınız.
+       PHP 5.4.0 öncesinde, <constant>FORCE_DEFLATE</constant> kullanımı,
+       sonunda crc32 sınama toplamı bulunmayan gzip dosya başlığı altında
+       standart zlib deflate biçemli (zlib başlıkları dahil) bir dizge ile
+       sonuçlanırdı.
+      </para>
+      <para>
+       PHP 5.4.0 ve sonrasında, <constant>FORCE_DEFLATE</constant>
+       bir zlib başlığı, deflate biçemli veri ve bir Adler sağlama toplamından
+       oluşan RFC 1950 uyumlu bir çıktı üretir.
       </para>
      </listitem>
     </varlistentry>
@@ -87,9 +93,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.2.0</entry>
+       <entry>5.4.0</entry>
        <entry>
-        <parameter>kodlama_kipi</parameter> değiştirgesi eklendi.
+        <constant>FORCE_DEFLATE</constant> artık RFC 1950 uyumlu bir çıktı
+        üretiyor.
        </entry>
       </row>
      </tbody>
@@ -129,6 +136,11 @@ fclose($dt);
     <member><function>gzinflate</function></member>
     <member><function>gzuncompress</function></member>
     <member><function>gzcompress</function></member>
+    <member>
+     <link xlink:href="&url.rfc;1950">
+      ZLIB Sıkıştırmalı Veri Biçemi Belirtimi (RFC 1950)
+     </link>
+    </member>
    </simplelist>
   </para>
  </refsect1>
