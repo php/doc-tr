@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41aab5ecacf449e51179886c17f1d41735b0234 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-merge" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_merge</refname>
@@ -12,7 +12,6 @@
   <methodsynopsis>
    <type>array</type><methodname>array_merge</methodname>
    <methodparam><type>array</type><parameter>dizi1</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>dizi2</parameter></methodparam>
    <methodparam choice="opt"><type>array</type><parameter>...</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -25,8 +24,7 @@
    sonraki değer öncekinin üzerine yazılmaz, sona eklenir.
   </para>
   <para>
-   Eğer sadece bir dizi verilmişse ve dizi sayısal indisli ise indisler
-   yeniden oluşturulur.
+   Belirtilen dizi sayısal indisli ise sonuç dizisndeki indisler sıfırdan başlayarak yeniden oluşturulur.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -45,7 +43,7 @@
      <term><parameter>dizi2</parameter></term>
      <listitem>
       <para>
-       Kendinden öncekinin ardına eklenecek dizi.
+       Katıştırılacak diğer dizilerin değişkenlerinin listesi.
       </para>
      </listitem>
     </varlistentry>
@@ -58,62 +56,7 @@
    Elde edilen diziyi döndürür.
   </para>
  </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <warning>
-         <para>
-          <function>array_merge</function> işlevinin davranışı PHP 5'te
-          değiştirildi. PHP 4'ün tersine, <function>array_merge</function>
-          artık sadece <type>array</type> türünde değiştirgeler kabul ediyor.
-          Diğer türleri de katıştırmak için tür dönüşümü uygulayabilirsiniz.
-          Ayrıntılar için aşağıdaki örneklere bakınız.
-         </para>
-         <para>
-          <example>
-           <title>- <function>array_merge</function> PHP 5 örneği</title>
-           <programlisting role="php">
-<![CDATA[
-<?php
-$ilk = 'foo';
-$son = array(1 => 'bar');
-$sonuç = array_merge((array)$ilk, (array)$son);
-print_r($sonuç);
-?>
-]]>
-           </programlisting>
-           &example.outputs;
-           <screen role="php">
-    <![CDATA[
-    Array
-    (
-        [0] => foo
-        [1] => bar
-    )
-]]>
-           </screen>
-          </example>
-         </para>
-        </warning>
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -207,12 +150,39 @@ array(5) {
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- array türünde olmayan dizilerle <function>array_merge</function>
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ilk = 'foo';
+$son = array(1 => 'bar');
+$sonuc = array_merge((array)$ilk, (array)$son);
+print_r($sonuc);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+    <![CDATA[
+    Array
+    (
+        [0] => foo
+        [1] => bar
+    )
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><function>array_merge_recursive</function></member>
+    <member><function>array_replace</function></member>
     <member><function>array_combine</function></member>
     <member><link linkend="language.operators.array">dizi
     İşleçleri</link></member>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1bdcb1b9fdcaf92904fc4fdb0d89e1a37159665e Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-fill" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_fill</refname>
@@ -31,8 +31,13 @@
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Döndürülecek dizinin ilk indisi. Negatif bir sayı olmamalıdır.
+       Döndürülecek dizinin ilk indisi. Sadece negatif olmayan indisler
+       desteklenmektedir.
       </para>
+      <para>
+       <parameter>başlangıç</parameter> negatifse, dönen dizinin ilk indisi <parameter>başlangıç</parameter> olacak sonrakiler ise sıfırdan başlayacaktır.
+       (<link linkend="function.array-fill.example.basic">örneğe bakın</link>).
+       </para>
      </listitem>
     </varlistentry>
 
@@ -40,7 +45,7 @@
      <term><parameter>miktar</parameter></term>
      <listitem>
       <para>
-       Diziye yerleştirilecek eleman sayısı.
+       Diziye yerleştirilecek eleman sayısı. Sıfırdan büyük olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -76,13 +81,13 @@
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   <example>
+   <example xml:id="function.array-fill.example.basic">
     <title>- <function>array_fill</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $a = array_fill(5, 6, 'banana');
-$b = array_fill(-2, 2, 'pear');
+$b = array_fill(-2, 4, 'pear');
 print_r($a);
 print_r($b);
 ?>
@@ -104,6 +109,8 @@ Array
 (
     [-2] => pear
     [0] => pear
+    [1] => pear
+    [2] => pear
 )
 ]]>
     </screen>
