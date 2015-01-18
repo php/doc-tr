@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 850354823a33c044b39aedcfd96b8c196f6e84f2 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -167,7 +167,7 @@ function recursion($a)
 
    <simpara>
     Bir işleve veri, virgül ayraçlı ifadelerden oluşan bir değiştirge listesi
-    ile aktarılır.
+    ile aktarılır. Değitirgeler soldan sağa doğru değerlendirilir.
    </simpara>
    <para>
     PHP, değiştirgelerin değerleriyle aktarılmalarını (öntanımlı), <link
@@ -175,9 +175,7 @@ function recursion($a)
     <link linkend="functions.arguments.default">öntanımlı değiştirge
     kullanımı</link>nı destekler. <link
     linkend="functions.variable-arg-list">Değiştirge sayısı değişken
-    işlevler</link> de desteklenmektedir; daha ayrıntılı bilgi edinmek için
-    <function>func_num_args</function>, <function>func_get_arg</function> ve
-    <function>func_get_args</function> işlevlerini de inceleyiniz.
+    işlevler</link> de desteklenmektedir.
    </para>
    <para>
     <example>
@@ -353,7 +351,8 @@ Bir kase az çilekli yoğurt yap.
 
     <note>
      <simpara>
-     PHP 5'den itibaren, öntanımlı değerler gönderimli aktarılabilmektedir.
+     PHP 5'den itibaren, gönderimli aktarılabilen değiştirgeler öntanımlı değer
+     içerebilmektedir.
      </simpara>
     </note>
 
@@ -363,19 +362,170 @@ Bir kase az çilekli yoğurt yap.
     <title>Değiştirge sayısı değişken işlevler</title>
 
     <simpara>
-      PHP 4 ve sonrasında, değiştirge sayısı değişken kullanıcı tanımlı
-      işlevler desteklenmektedir. <function>func_num_args</function>,
+      Değiştirge sayısı değişken kullanıcı tanımlı işlevler desteklenmektedir.
+      PHP 5.6 ve sonrasında bu <literal>...</literal> ile, PHP 5.5 ve öncesinde
+      ise <function>func_num_args</function>,
       <function>func_get_arg</function> ve <function>func_get_args</function>
       işlevleri sayesinde bu özelliği kolayca kullanabilirsiniz.
     </simpara>
 
-    <simpara>
-      Özel bir sözdizimi gerekli değildir, değiştirge listesini işlev
-      tanımında açıkça belirtirseniz normal davranışını gösterecektir.
-    </simpara>
+    <sect3 xml:id="functions.variable-arg-list.new">
+     <title>PHP 5.6 ve sonrasında <literal>...</literal></title>
 
+     <para>
+      PHP 5.6 ve sonrasında, işlevin değişken sayıda değiştirge içerebilmesini sağlamak için değiştirge listesine <literal>...</literal> dizgeciği konulabilir. Değiştirgeler belirtilen değikene bir dizi olarak aktarılır.
+      Örnek:
+
+      <example>
+       <title>Değişkenin değiştirgelerine erişim için <literal>...</literal>
+         kullanımı</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+function sum(...$numbers) {
+    $acc = 0;
+    foreach ($numbers as $n) {
+        $acc += $n;
+    }
+    return $acc;
+}
+
+echo sum(1, 2, 3, 4);
+?>
+]]>
+       </programlisting>
+       &example.outputs;
+       <screen>
+<![CDATA[
+10
+]]>
+       </screen>
+      </example>
+     </para>
+
+     <para>
+      Bir diziyi, bir <classname>Traversable</classname> değişkeni veya bir sabiti değiştirge listesi haline getirmek için işlev çağrılırken de <literal>...</literal> kullanılabilir. Örnek:
+
+      <example>
+        <title> Değiştirgelere erişmek için <literal>...</literal>
+        kullanımı</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+function add($a, $b) {
+    return $a + $b;
+}
+
+echo add(...[1, 2])."\n";
+
+$a = [1, 2];
+echo add(...$a);
+?>
+]]>
+       </programlisting>
+       &example.outputs;
+       <screen>
+<![CDATA[
+3
+3
+]]>
+       </screen>
+      </example>
+     </para>
+
+     <para>
+      <literal>...</literal> dizgeciğinden önce normal konumsal değiştirgeler
+      belirtilebilir. Bu durumda <literal>...</literal> ile üretilen diziye
+      sadece bir konumsal değiştirge ile eşleşmeyen tokeni izleyen değiştirgeler
+      eklenir.
+     </para>
+
+     <para>
+      <literal>...</literal> dizgeciğinin önüne bir
+      <link linkend="language.oop5.typehinting">tür dayatıcı</link> eklemek de
+      mümkündür. Böyle bir durumda, <literal>...</literal> tarafından işleme
+      sokulacak tüm değiştirgeler dayatılan sınıfın nesneleri olmalıdır
+
+      <example>
+       <title>Değişken değiştirgelerinde tür dayatma</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+function total_intervals($unit, DateInterval ...$intervals) {
+    $time = 0;
+    foreach ($intervals as $interval) {
+        $time += $interval->$unit;
+    }
+    return $time;
+}
+
+$a = new DateInterval('P1D');
+$b = new DateInterval('P2D');
+echo total_intervals('d', $a, $b).' gün';
+
+// Bir DateInterval nesnesi olmadığından bu başarısız olur.
+echo total_intervals('d', null);
+?>
+]]>
+       </programlisting>
+       &example.outputs;
+       <screen>
+<![CDATA[
+3 gün
+Catchable fatal error: Argument 2 passed to total_intervals() must be an instance of DateInterval, null given, called in - on line 14 and defined in - on line 2
+]]>
+       </screen>
+      </example>
+     </para>
+
+     <para>
+      Son olarak, <literal>...</literal> dizgeciğinin önüne bir
+       <literal>&amp;</literal> ekleyerek değişken değiştirgelerini
+       <link linkend="functions.arguments.by-reference">gönderimli</link>
+       olarak da aktarabilirsiniz.
+     </para>
+    </sect3>
+
+    <sect3 xml:id="functions.variable-arg-list.old">
+     <title>Daha eski PHP sürümlerinde</title>
+
+     <para>
+      Bir işlevin değişken sayıda değiştirge içerebilmesi özel bir sözdizimi
+      gerekmez; ancak işlevin değiştirgelerine erişim için
+      <function>func_num_args</function>, <function>func_get_arg</function>
+      ve <function>func_get_args</function> kullanmak gerekir.
+     </para>
+
+     <para>
+      PHP 5.5 ve öncesinde yukarıdaki ilk örnek şöyle gerçeklenirdi;
+
+      <example>
+       <title>PHP 5.5 ve öncesinde değişken değiştirgelerine erişim</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+function sum() {
+    $acc = 0;
+    foreach (func_get_args() as $n) {
+        $acc += $n;
+    }
+    return $acc;
+}
+
+echo sum(1, 2, 3, 4);
+?>
+]]>
+       </programlisting>
+       &example.outputs;
+       <screen>
+<![CDATA[
+10
+]]>
+       </screen>
+      </example>
+     </para>
+    </sect3>
    </sect2>
-
   </sect1>
 
   <sect1 xml:id="functions.returning-values">
@@ -545,7 +695,33 @@ $foo->$funcname();  // Bu $foo->Variable() işlevini çağıracaktır
     </example>
    </para>
    <para>
-    Ayrıca bakınız: <function>call_user_func</function>,
+    Static türünden yöntemleri çağırırken işlev çağrısı 'static property' işlecinden daha güçlüdür:
+    <example>
+     <title>Duruk özellikli yöntem çağrısı örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    static $variable = 'static property';
+    static function Variable()
+    {
+        echo 'Method Variable called';
+    }
+}
+
+echo Foo::$variable; // Bu 'static property' basar. Bu bağlamda $variable gerekmez.
+$variable = "Variable";
+Foo::$variable();  // Bu bağlamda $variable değişkenini okuyan $foo->Variable() çağrılır.
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  <para>
+    Ayrıca bakınız: <function>is_callable</function>,
+    <function>call_user_func</function>,
     <link linkend="language.variables.variable"> değişken değişkenleri</link>
     ve <function>function_exists</function>.
    </para>
@@ -642,12 +818,75 @@ $greet('PHP');
      </programlisting>
     </example>
    <simpara>
-    Anonim işlevler değişkenleri üst etki alanındın miras alabilirler. Böyle
-    değişkenler işlevin baş tarafında bildirilebilir. Üst etki alanından
+    Anonim işlevler değişkenleri üst etki alanından miras alabilirler. Böyle
+    değişkenler <literal>use</literal> dil oluşumuna aktarılmalıdır.
+   </simpara>
+
+   <example>
+    <title>Değikenleri üst etki alanından miras almak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$message = 'hello';
+
+// "use" olmaksızın
+$example = function () {
+    var_dump($message);
+};
+echo $example();
+
+// $message miras alınır
+$example = function () use ($message) {
+    var_dump($message);
+};
+echo $example();
+
+// Miras alınan deşkenin değeri işlevin tanımından gelir, çağrısından değil.
+$message = 'world';
+echo $example();
+
+// message sıfırlanır
+$message = 'hello';
+
+// Gönderimle miras alma
+$example = function () use (&$message) {
+    var_dump($message);
+};
+echo $example();
+
+// Üst etki alanında değişen değer
+// işlev çağrısı içinde yansılır.
+$message = 'world';
+echo $example();
+
+// Anonim işlevler sıradan değiştirgeleri de kabul edebilir
+$example = function ($arg) use ($message) {
+    var_dump($arg . ' ' . $message);
+};
+$example("hello");
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Notice: Undefined variable: message in /example.php on line 6
+NULL
+string(5) "hello"
+string(5) "hello"
+string(5) "hello"
+string(5) "world"
+string(11) "hello world"
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    Üst etki alanından
     miras alınan değişkenler küresel değişkenler gibi ele alınmazlar.
     Küresel değişkenler, işlevin çalıştığı etki alanında tanımlı
     değişkenlerdir. Anonim işlevin üst etki alanı ise içinde bildirildiği
-    işlevin etki alanıdır (Anonim işlevin bildirildiği ekti alanı ile
+    işlevin etki alanıdır (Anonim işlevin bildirildiği etki alanı ile
     çağrıldığı etki alanı aynı olmak zorunda değildir). Aşağıdaki örneğe
     bakalım:
    </simpara>
@@ -711,22 +950,50 @@ print $sepetim->Toplam(0.05) . "\n";
      </programlisting>
     </example>
    <simpara>
-    Anonim işlevler dahili olarak <link
-    linkend="reserved.classes.closure"><literal>Closure</literal>
-    sınıfı</link> ile gerçeklenmektedir.
+    Anonim işlevler <link linkend="class.closure">
+    <classname>Closure</classname></link> kullanılarak gerçeklenmektedir.
    </simpara>
-   <note>
-    <simpara>
-     Anonim işlevler PHP 5.3.0'dan beri kullanılabilmektedir.
+
+   <sect2 role="changelog">
+    &reftitle.changelog;
+    <para>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>&Version;</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>5.4.0</entry>
+         <entry>
+          Anonim işlevlerde <varname>$this</varname> kullanılabilir.
+         </entry>
+        </row>
+        <row>
+         <entry>5.3.0</entry>
+         <entry>
+          Anonim işlevler kullanılabilir oldu.
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+    </para>
+   </sect2>
+
+  <sect2 role="notes">
+    &reftitle.notes;
+    <note>
+     <simpara>
+     <function>func_num_args</function>, <function>func_get_args</function>
+     ve <function>func_get_args</function> işlevini bir anonim işlev
+     içinde kullanmak mümkündür.
     </simpara>
    </note>
-  <note>
-   <simpara>
-    <function>func_num_args</function>, <function>func_get_args</function>
-    ve <function>func_get_args</function> işlevini bir anonim işlev
-    içinde kullanmak mümkündür.
-   </simpara>
-  </note>
+  </sect2>
  </sect1>
 
 </chapter>
