@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2368dd7826263234237df08904eb5f9730ff13b3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d22db7f5b0ed55d6f904549bd3116be900a0e8d3 Maintainer: nilgun Status: ready -->
 <section xml:id="session.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -243,6 +243,12 @@
     <entry>PHP_INI_PERDIR</entry>
     <entry>PHP 5.4.0'dan beri kullanılabilmektedir.</entry>
     </row>
+    <row>
+     <entry><link linkend="ini.session.lazy-write">session.lazy_write</link></entry>
+     <entry>"1"</entry>
+     <entry>PHP_INI_ALL</entry>
+     <entry>PHP 7.0.0'dan beri kullanılabilmektedir.</entry>
+    </row>
    </tbody>
   </tgroup>
  </table>
@@ -318,6 +324,19 @@
       amaçları doğrultusunda kullanabilirler.
      </para>
     </warning>
+    <caution>
+     <para>
+      Dizin derinliğini belirlemekte kullanılan seçimlik <literal>N</literal>
+      değiştirgesi yukarıda belirtildiği gibi kullanılırken 1 veya 2'den daha
+      yüksek bir değer kullanımı büyük sayıda dizin gerektirmesindan dolayı bir
+      çok site için uygun olmayacaktır; örneğin, 3 değeri dosya sistemi üzerinde
+      <literal>64^3</literal> dizinin varolabileceğini öngörür, bu da çok sayıda
+      dosya girdisi açılması ve büyük miktarda alanın boşa harcanması demektir.
+     </para>
+     <para>
+      Sadece, sitenizin 2'den büyük bir <literal>N</literal> değeri gerektirecek kadar büyük olması halinde 2'den büyük bir değer kullanabilirsiniz.
+     </para>
+    </caution>
     <note>
      <simpara>
       PHP'nin 4.3.6 sürümünden önce, Windows kullanıcılar bu değeri PHP'nin
@@ -445,17 +464,6 @@
       <link linkend="ini.session.save-path">session.save_path</link> yönergesi
       ile birlikte kullanılmalıdır.
      </para>
-    </note>
-    <note>
-     <simpara>Öntanımlı olan dosyalara dayalı oturum yönetimini
-     kullanıyorsanız, dosya sisteminiz dosyalara erişim zamanlarını (atime)
-     saklamak zorundadır. Windows FAT bunu yapmaz; bu bakımdan, FAT dosya
-     sistemini veya dosya erişim zamanınını kaydetmeyen harhangi bir dosya
-     sistemini kullanmak zorundaysanız, çöp toplamayı sağlayacak başka bir
-     yöntem kullanmalısınız. PHP 4.2.3'ten beri, bu amaçla atime yerine mtime
-     (değişiklik zamanı) kullanılmaktadır; dolayısıyla, atime kaydı yapmayan
-     dosya sistemlerinde artık böyle bir sorunla karşılaşmamanız sağlanmıştır.
-     </simpara>
     </note>
    </listitem>
   </varlistentry>
@@ -926,13 +934,25 @@
     </simpara>
    </listitem>
   </varlistentry>
+
+  <varlistentry xml:id="ini.session.lazy-write">
+   <term>
+    <parameter>session.lazy_write</parameter>
+    <type>boolean</type>
+   </term>
+   <listitem>
+    <simpara>
+     <literal>session.lazy_write = 1</literal> atandığında oturum verisi sadece değişirse yeniden yazılır. Bu öntanımlı değerdir ve etkindir.
+    </simpara>
+   </listitem>
+  </varlistentry>
+
  </variablelist>
  </para>
 
  <para>
-  <link linkend="ini.track-vars"><literal>track_vars</literal></link> ve
   <link linkend="ini.register-globals">
-  <literal>register_globals</literal></link> yapılandıma yönergeleri oturum
+  <literal>register_globals</literal></link> yapılandıma yönergesi oturum
   değişkenlerinin nasıl saklanacağını ve eski haline getirileceğini belirler.
  </para>
  <para>
@@ -941,14 +961,6 @@
   yapılmadıkça kaydedilmeyecektir. Daha ayrıntılı bilgi çin bakınız:
   <link linkend="session.upload-progress">Oturumda Yüklemelerin İzlenmesi</link>
  </para>
-
- <note>
-  <para>
-   PHP 4.0.3'ten itibaren,
-   <link linkend="ini.track-vars"><literal>track_vars</literal></link>
-   yönergesinin değeri daima <literal>On</literal>'dur.
-  </para>
- </note>
 
 </section>
 
