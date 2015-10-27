@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d2b80e560f2933ad785698ededbfeb806c00b7ef Maintainer: nilgun Status: ready -->
 <appendix xml:id="tokens" xmlns="http://docbook.org/ns/docbook">
  <title>Çözümleyici Dizgeciklerinin Listesi</title>
  <para>
@@ -15,6 +15,23 @@
   PHP söz dizimi ve kılavuzdaki açıklamalarına bağlarla burada
   listelenmişlerdir.
  </para>
+ <note>
+  <title>T_* sabitlerinin kullanımı</title>
+  <para>
+   Aşağıda listelenmiş sabitlerin tümü aynı zamanda PHP sabiti olarak da
+   tanımlıdır. Bunların değerleri PHP'nin temel çözümleyici alt yapısına dayalı
+   olarak özdevinimli üretilir. Yani bir dizgeciğin somut değeri iki PHP sürümü
+   arasında değişebilir. Örneğin <constant>T_FILE</constant> sabitinin değeri
+   PHP 5.3'te <literal>365</literal> iken aynı değer PHP 5.4'te
+   <constant>T_TRAIT</constant> sabitine atanmışken <constant>T_FILE</constant>
+   sabitinin değeri <literal>369</literal>'dur. Yani kodunuz PHP sürümleri
+   arasında uyumluluk sağlamak için PHP'nin X.Y.Z sürümünden alınmış özgün T_*
+   değerlerine güvenmemelidir. Kodunuz bunun yerine her iki PHP sürümü ile
+   çalışacak uygun bir stratejiden, T_* değerlerinden ve özel değerlerden
+   (<literal>10000</literal> gibi büyük bir değer kullanmak)
+   yararlanmalıdır.
+  </para>
+ </note>
  <table>
   <title>Dizgecikler</title>
   <tgroup cols="3">
@@ -85,6 +102,11 @@
      <entry><link linkend="control-structures.break">break</link></entry>
     </row>
     <row>
+     <entry><constant>T_CALLABLE</constant></entry>
+     <entry>callable</entry>
+     <entry><link linkend="language.types.callable">callable</link></entry>
+    </row>
+    <row>
      <entry><constant>T_CASE</constant></entry>
      <entry>case</entry>
      <entry><link linkend="control-structures.switch">switch</link></entry>
@@ -92,8 +114,7 @@
     <row>
      <entry><constant>T_CATCH</constant></entry>
      <entry>catch</entry>
-     <entry><xref linkend="language.exceptions"/> (PHP 5.0.0 ve sonrasında
-     mevcuttur).</entry>
+     <entry><xref linkend="language.exceptions"/></entry>
     </row>
     <row>
      <entry><constant>T_CHARACTER</constant></entry>
@@ -110,7 +131,6 @@
      <entry><constant>__CLASS__</constant></entry>
      <entry>
       <link linkend="language.constants.predefined">sihirli sabitler</link>
-      (PHP 4.3.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -118,7 +138,6 @@
      <entry>clone</entry>
      <entry>
       <link linkend="language.oop5">sınıflar ve nesneler</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -128,7 +147,7 @@
     </row>
     <row>
      <entry><constant>T_COMMENT</constant></entry>
-     <entry>// veya # ve PHP5'te /* */</entry>
+     <entry>// veya # ve /* */</entry>
      <entry><link
      linkend="language.basic-syntax.comments">açıklamalar</link></entry>
     </row>
@@ -192,7 +211,7 @@
     </row>
     <row>
      <entry><constant>T_DNUMBER</constant></entry>
-     <entry>0.12, etc</entry>
+     <entry>0.12, vs.</entry>
      <entry><link linkend="language.types.float">gerçek sayılar</link></entry>
     </row>
     <row>
@@ -200,7 +219,7 @@
      <entry>/** */</entry>
      <entry>
       <link linkend="language.basic-syntax.comments">PHPDoc tarzı
-      açıklmalar</link> (PHP 5.0.0 ve sonrasında mevcuttur).
+      açıklamalar</link>.
      </entry>
     </row>
     <row>
@@ -236,6 +255,13 @@
      <entry><constant>T_ECHO</constant></entry>
      <entry>echo</entry>
      <entry><function>echo</function></entry>
+    </row>
+    <row>
+     <entry><constant>T_ELLIPSIS</constant></entry>
+     <entry>...</entry>
+     <entry>
+      <link linkend="functions.variable-arg-list.new">işlev değiştirgeleri</link> (PHP 5.6.0 ve sonrasında mevcuttur.)
+     </entry>
     </row>
     <row>
      <entry><constant>T_ELSE</constant></entry>
@@ -330,8 +356,13 @@
     <row>
      <entry><constant>T_FINAL</constant></entry>
      <entry>final</entry>
-     <entry><xref linkend="language.oop5.final"/> (PHP 5.0.0 ve sonrasında
-     mevcuttur).</entry>
+     <entry><xref linkend="language.oop5.final"/></entry>
+    </row>
+    <row>
+     <entry><constant>T_FINALLY</constant></entry>
+     <entry>finally</entry>
+     <entry><xref linkend="language.exceptions"/> (PHP 5.5.0 ve sonrasında
+     mevcuttur.)</entry>
     </row>
     <row>
      <entry><constant>T_FOR</constant></entry>
@@ -353,7 +384,6 @@
      <entry><constant>__FUNCTION__</constant></entry>
      <entry>
       <link linkend="language.constants.predefined">sihirli sabitler</link>
-      (PHP 4.3.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -382,8 +412,7 @@
     <row>
      <entry><constant>T_IMPLEMENTS</constant></entry>
      <entry>implements</entry>
-     <entry><xref linkend="language.oop5.interfaces"/> (PHP 5.0.0 ve
-     sonrasında mevcuttur).</entry>
+     <entry><xref linkend="language.oop5.interfaces"/></entry>
     </row>
     <row>
      <entry><constant>T_INC</constant></entry>
@@ -413,8 +442,13 @@
      <entry>instanceof</entry>
      <entry>
       <link linkend="language.operators.type">tür işleçleri</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
+    </row>
+    <row>
+     <entry><constant>T_INSTEADOF</constant></entry>
+     <entry>insteadof</entry>
+     <entry><xref linkend="language.oop5.traits"/> (PHP 5.4.0 ve sonrasında
+     mevcuttur)</entry>
     </row>
     <row>
      <entry><constant>T_INT_CAST</constant></entry>
@@ -425,8 +459,7 @@
     <row>
      <entry><constant>T_INTERFACE</constant></entry>
      <entry>interface</entry>
-     <entry><xref linkend="language.oop5.interfaces"/> (PHP 5.0.0 ve
-     sonrasında mevcuttur).</entry>
+     <entry><xref linkend="language.oop5.interfaces"/></entry>
     </row>
     <row>
      <entry><constant>T_ISSET</constant></entry>
@@ -470,6 +503,14 @@
      işleçleri</link></entry>
     </row>
     <row>
+     <entry><constant>T_SPACESHIP</constant></entry>
+     <entry>&lt;=&gt;</entry>
+     <entry>
+      <link linkend="language.operators.comparison">karşılaştırma
+       işleçleri</link> (PHP 7.0.0 ve sonrasında mevcuttur.)
+     </entry>
+    </row>
+    <row>
      <entry><constant>T_LINE</constant></entry>
      <entry>__LINE__</entry>
      <entry><link linkend="language.constants.predefined">sihirli
@@ -482,7 +523,7 @@
     </row>
     <row>
      <entry><constant>T_LNUMBER</constant></entry>
-     <entry>123, 012, 0x1ac, vs</entry>
+     <entry>123, 012, 0x1ac, vs.</entry>
      <entry><link linkend="language.types.integer">tamsayılar</link></entry>
     </row>
     <row>
@@ -508,7 +549,6 @@
      <entry>__METHOD__</entry>
      <entry>
       <link linkend="language.constants.predefined">sihirli sabitler</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -516,12 +556,6 @@
      <entry>-=</entry>
      <entry><link linkend="language.operators.assignment">atama
      işleçleri</link></entry>
-    </row>
-    <row>
-     <entry><constant>T_ML_COMMENT</constant></entry>
-     <entry>/* ve */</entry>
-     <entry><link linkend="language.basic-syntax.comments">açıklamalar</link>
-      (sadece PHP 4)</entry>
     </row>
     <row>
      <entry><constant>T_MOD_EQUAL</constant></entry>
@@ -536,12 +570,27 @@
      işleçleri</link></entry>
     </row>
     <row>
+     <entry><constant>T_NAMESPACE</constant></entry>
+     <entry>namespace</entry>
+     <entry>
+      <link linkend="language.namespaces">isim alanları</link>  (PHP 5.3.0 ve
+      sonrasında mevcuttur.)
+     </entry>
+    </row>
+    <row>
      <entry><constant>T_NS_C</constant></entry>
      <entry>><constant>__NAMESPACE__</constant></entry>
      <entry>
       <link linkend="language.namespaces">isim alanları</link>.
-      Ayrıca, <constant>T_NAMESPACE</constant> olarak tanımlıdır
       (PHP 5.3.0 ve sonrasında mevcuttur).
+     </entry>
+    </row>
+    <row>
+     <entry><constant>T_NS_SEPARATOR</constant></entry>
+     <entry>\</entry>
+     <entry>
+      <link linkend="language.namespaces">isim alanları</link> (PHP 5.3.0 ve
+      sonrasında mevcuttur.)
      </entry>
     </row>
     <row>
@@ -565,11 +614,6 @@
      <entry><constant>T_OBJECT_OPERATOR</constant></entry>
      <entry>-&gt;</entry>
      <entry><link linkend="language.oop5">sınıflar ve nesneler</link></entry>
-    </row>
-    <row>
-     <entry><constant>T_OLD_FUNCTION</constant></entry>
-     <entry>old_function</entry>
-     <entry>(Sadece PHP 4)</entry>
     </row>
     <row>
      <entry><constant>T_OPEN_TAG</constant></entry>
@@ -602,6 +646,22 @@
      işleçleri</link></entry>
     </row>
     <row>
+     <entry><constant>T_POW</constant></entry>
+     <entry>**</entry>
+     <entry>
+      <link linkend="language.operators.arithmetic">aritmetik işleçleri</link>
+      (PHP 5.6.0 ve sonrasında mevcuttur.)
+     </entry>
+    </row>
+    <row>
+     <entry><constant>T_POW_EQUAL</constant></entry>
+     <entry>**=</entry>
+     <entry>
+      <link linkend="language.operators.assignment">atama işleçleri</link>
+      (PHP 5.6.0 ve sonrasında mevcuttur.)
+     </entry>
+    </row>
+    <row>
      <entry><constant>T_PRINT</constant></entry>
      <entry>print()</entry>
      <entry><function>print</function></entry>
@@ -611,7 +671,6 @@
      <entry>private</entry>
      <entry>
       <link linkend="language.oop5">sınıflar ve nesneler</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -619,7 +678,6 @@
      <entry>public</entry>
      <entry>
       <link linkend="language.oop5">sınıflar ve nesneler</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -627,7 +685,6 @@
      <entry>protected</entry>
      <entry>
       <link linkend="language.oop5">sınıflar ve nesneler</link>
-      (PHP 5.0.0 ve sonrasında mevcuttur).
      </entry>
     </row>
     <row>
@@ -684,9 +741,11 @@
     </row>
     <row>
      <entry><constant>T_STRING</constant></entry>
-     <entry>"$a[a]"</entry>
-     <entry><link linkend="language.types.string.parsing">dizge içinde dizge
-     dizi indisi</link></entry>
+     <entry>parent, self, vs.</entry>
+     <entry>
+      <literal>parent</literal> ve <literal>self</literal> gibi anahtar sözcükler, işlev isimleri ve sınıf isimleri gibi belirteçlerle eşleşir.
+      Ayrıca bakınız: <constant>T_CONSTANT_ENCAPSED_STRING</constant>.
+     </entry>
     </row>
     <row>
      <entry><constant>T_STRING_CAST</constant></entry>
@@ -708,14 +767,12 @@
     <row>
      <entry><constant>T_THROW</constant></entry>
      <entry>Throw</entry>
-     <entry><xref linkend="language.exceptions"/> (PHP 5.0.0 ve sonrasında
-     mevcuttur).</entry>
+     <entry><xref linkend="language.exceptions"/></entry>
     </row>
     <row>
      <entry><constant>T_TRY</constant></entry>
      <entry>Try</entry>
-     <entry><xref linkend="language.exceptions"/> (PHP 5.0.0 ve sonrasında
-     mevcuttur).</entry>
+     <entry><xref linkend="language.exceptions"/></entry>
     </row>
     <row>
      <entry><constant>T_UNSET</constant></entry>
@@ -726,7 +783,7 @@
      <entry><constant>T_UNSET_CAST</constant></entry>
      <entry>(unset)</entry>
      <entry><link linkend="language.types.typecasting">tür çarpıtma</link>
-     (PHP 5.0.0 ve sonrasında mevcuttur).</entry>
+     </entry>
     </row>
     <row>
      <entry><constant>T_USE</constant></entry>
@@ -760,6 +817,11 @@
      <entry>^=</entry>
      <entry><link linkend="language.operators.assignment">atama
      işleçleri</link></entry>
+    </row>
+    <row>
+     <entry><constant>T_YIELD</constant></entry>
+     <entry>yield</entry>
+     <entry><link linkend="control-structures.yield">üreteçler</link> (PHP 5.5.0 ve sonrasında mevcuttur).</entry>
     </row>
    </tbody>
   </tgroup>
