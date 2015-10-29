@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c5c902b47755cf0c0761e90cce4cc8ee1eb9426e Maintainer: nilgun Status: ready -->
 <sect1 xml:id="function.include" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- <title><function>include</function></title>
+ <title>include</title>
+ <?phpdoc print-version-for="include"?>
  <simpara>
-  <function>include</function> deyimi belirtilen dosyayı betiğe ekler ve
+  <literal>include</literal> deyimi belirtilen dosyayı betiğe ekler ve
   içeriğini değerlendirir.
  </simpara>
  <simpara>
   Betiğe dahil edilecek dosyalar önce belirtilen dizinde aranır, eğer bir dizin
   belirtilmemişse <link linkend="ini.include-path">include_path</link>
-  yönergesinde belirtilen yollarda aranır. <function>include</function> dosyayı
-  bulamazsa bir <link linkend="errorfunc.constants.errorlevels.e-warning">
-  uyarı</link> çıktılar; <function>require</function> için bu davranış bir
+  yönergesinde belirtilen yollarda aranır. Dosya
+  <link linkend="ini.include-path">include_path</link> içinde yoksa
+  <literal>include</literal> son çare olarak çağrıcı betiğin kendi dizinine ve o
+  anki çalışma dizinine bakar, bulamazsa bir
+  <link linkend="errorfunc.constants.errorlevels.e-warning">uyarı</link>
+  çıktılar; <function>require</function> için bu davranış bir
   <link linkend="errorfunc.constants.errorlevels.e-error">ölümcül hata</link>
   olarak kendini gösterir.
  </simpara>
  <simpara>
-  Bir dizin belirtilmişse (göreli veya mutlak) <link
+  Bir dizin belirtilmişse - mutlak (Windows'ta bir sürücü harfi veya
+  <literal>\</literal> ile başlıyorsa veya Unix sistemlerinde
+  <literal>/</literal> ile başlıyorsa) veya geçerli dizine göreli
+  (<literal>.</literal> veya <literal>..</literal> ile başlıyorsa)- <link
   linkend="ini.include-path">include_path</link> yönergesine bakılmaz. Örneğin
   bir dosya <literal>../</literal> ili başlıyorsa PHP çözümleyicisi dosyayı
   betiğin bulunduğu dizinin üst dizininde arayacaktır.
@@ -38,7 +45,7 @@
  </simpara>
  <para>
    <example>
-    <title>- Basit bir <function>include</function> örneği</title>
+    <title>- Basit bir <literal>include</literal> örneği</title>
     <programlisting role="php">
 <![CDATA[
 vars.php
@@ -110,7 +117,7 @@ echo 'Bir $renk $meyve';    // Bir yeşil
   etiketleri</link> arasına alınmalıdır.
  </simpara>
  <simpara>
-  "<link linkend="ini.allow-url-fopen">URL fopen sarmalayıcıları</link>"
+  "<link linkend="ini.allow-url-include">URL include sarmalayıcıları</link>"
   PHP'de etkinleştirilmiş ise (öntanımlı yapılandırmada etkindirler),
   <literal>include</literal> deyiminde yerel dosya yolu belirtmek yerine
   (HTTP ya da desteklenen başka bir sarmalayıcı üzerinden - <xref
@@ -122,7 +129,6 @@ echo 'Bir $renk $meyve';    // Bir yeşil
   aslında uzak sunucuda çalıştırılıp yerel betiğe sonuçlar dahil
   edilmektedir.
  </simpara>
- &warn.no-win32-fopen-wrapper;
  <para>
   <example>
    <title>- HTTP üzerinden <code>include</code></title>
@@ -177,7 +183,9 @@ include 'dosya.php';  // Çalışır.
   bakınız.
  </para>
  <simpara>
-  <literal>return</literal> kullanımı: Dahil edilen dosyanın içersinde, bu
+  <literal>return</literal> kullanımı: <literal>include</literal> başarısız olursa <literal>FALSE</literal> döndürür ve bir uyarı verir. Başarılı olursa, içerildikleri dosya tarafından aksi belirtilmedikçe <literal>1</literal> döndürür.
+
+  Dahil edilen dosyanın içersinde, bu
   dosyanın işlenmesi durdurmak ve dahil eden betiğe geri dönmek için
   <function>return</function> kullanılabilir. Ayrıca, dahil edilen
   dosyalardan değer döndürmek de mümkündür. Normal bir işlevde olduğu
@@ -199,14 +207,14 @@ include 'dosya.php';  // Çalışır.
    <programlisting role="php">
 <![CDATA[
 <?php
-// çalışmaz, include(('vars.php') == 'TAMAM') olarak değerlendirilir,
+// çalışmaz, include(('vars.php') == TRUE) olarak değerlendirilir,
 // sonuç include('') olur
-if (include('vars.php') == 'TAMAM') {
+if (include('vars.php') == TRUE) {
     echo 'TAMAM';
 }
 
 // çalışır
-if ((include 'vars.php') == 'TAMAM') {
+if ((include 'vars.php') == TRUE) {
     echo 'TAMAM';
 }
 ?>
@@ -274,7 +282,7 @@ echo $bar; // 1 basar
  <simpara>
   Bir PHP dosyasını bir değişkene "dahil" etmenin diğer bir yolu, çıktıyı
   <link linkend="ref.outcontrol">Çıktı Denetim İşlevleri</link>ni
-  <function>include</function> ile birlikte kullanarak yakalamaktır. Örnek:
+  <literal>include</literal> ile birlikte kullanarak yakalamaktır. Örnek:
  </simpara>
  <para>
   <example>
@@ -289,9 +297,7 @@ function get_include_contents($filename) {
     if (is_file($filename)) {
         ob_start();
         include $filename;
-        $contents = ob_get_contents();
-        ob_end_clean();
-        return $contents;
+        return ob_get_clean();
     }
     return false;
 }
