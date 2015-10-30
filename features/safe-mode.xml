@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e57d6ccfdd9e474227c60e0773a3c7d1ecb9536 Maintainer: nilgun  Status: ready -->
+<!-- EN-Revision: 2bb07c8c43f028c665a33bfc08a22639e9e35dc6 Maintainer: nilgun  Status: ready -->
  <chapter xml:id="features.safe-mode" xmlns="http://docbook.org/ns/docbook">
   <title>Güvenli Kip</title>
 
@@ -12,7 +12,36 @@
    ISP'ler güvenli kipi halen kullanmaktadırlar.
   </para>
 
-  &warn.deprecated.feature-5-3-0.removed-6-0-0;
+  &warn.deprecated.feature-5-3-0.removed-5-4-0;
+
+  <para>
+   <table>
+    <title><literal>safe mode</literal> için değişiklik bilgisi</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        PHP'den kaldırıldı. Etkinleştirilirse, ölümcül seviyede <constant>E_CORE_ERROR</constant> hatası verilir.
+       </entry>
+      </row>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        Kullanımı önerilmemekte olup <constant>E_DEPRECATED</constant> hataları
+        eklenmiştir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
 
   <sect1 xml:id="ini.sect.safe-mode">
    <title>Güvenlik ve Güvenli Kip</title>
@@ -22,10 +51,10 @@
      <tgroup cols="4">
       <thead>
        <row>
-        <entry>İsim</entry>
-        <entry>Öntanımlı</entry>
-        <entry>Değişklik Yeri</entry>
-        <entry>Sürüm Bilgisi</entry>
+        <entry>&Name;</entry>
+        <entry>&Default;</entry>
+        <entry>&Changeable;</entry>
+        <entry>&Changelog;</entry>
        </row>
       </thead>
       <tbody>
@@ -33,43 +62,41 @@
        <entry><link linkend="ini.safe-mode">safe_mode</link></entry>
        <entry>"0"</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>&removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-gid">safe_mode_gid</link></entry>
        <entry>"0"</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>PHP 4.1.0'dan beri kullanılabilmektedir.
-       &removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-include-dir">
        safe_mode_include_dir</link></entry>
        <entry>NULL</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>PHP 4.1.0'dan beri kullanılabilmektedir.
-       &removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-exec-dir">
        safe_mode_exec_dir</link></entry>
        <entry>""</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>&removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-allowed-env-vars">
        safe_mode_allowed_env_vars</link></entry>
        <entry>"PHP_"</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>&removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       <row>
        <entry><link linkend="ini.safe-mode-protected-env-vars">
        safe_mode_protected_env_vars</link></entry>
        <entry>"LD_LIBRARY_PATH"</entry>
        <entry>PHP_INI_SYSTEM</entry>
-       <entry>&removed.php.future;</entry>
+       <entry>PHP 5.4.0'da kaldırıldı.</entry>
       </row>
       </tbody>
      </tgroup>
@@ -93,7 +120,7 @@
         öntanımlı olarak <literal>On</literal> (etkin), aksi takdirde
         <literal>Off</literal>'tur (etkisiz).
        </para>
-       &warn.deprecated.feature-5-3-0.removed-6-0-0;
+       &warn.deprecated.feature-5-3-0.removed-5-4-0;
       </listitem>
      </varlistentry>
      <varlistentry xml:id="ini.safe-mode-gid">
@@ -125,7 +152,7 @@
         de belirtilmelidir).
        </para>
        <simpara>
-        PHP 4.2.0'dan beri, bu yönergede
+        Bu yönergede
         <link linkend="ini.include-path">include_path</link> yönergesinde
         olduğu gibi, tek bir dizin belirtmek yerine aralarına ikinokta imi
         (Windows'da noktalı virgül imi) koymak suretiyle birden fazla dizin
@@ -141,10 +168,9 @@
         sadece <literal>/dir/incl</literal> dizini belirtilmiş olur.
        </simpara>
        <simpara>
-        Bu yönergede boş değer belirtilirse PHP 4.2.3 ve PHP 4.3.3'ten
-        itibaren farklı <literal>UID</literal>/<literal>GID</literal>'e sahip
-        hiçbir dosya dahil edilmez. Önceki sürümlerde tüm dosyalar dahil
-        edilirdi.
+        Bu yönergede boş değer belirtilirse farklı
+        <literal>UID</literal>/<literal>GID</literal>'e sahip
+        hiçbir dosya dahil edilmez.
        </simpara>
       </listitem>
      </varlistentry>
@@ -512,8 +538,7 @@ Warning: readfile() has been disabled for security reasons in
          <function>show_source</function>
         </entry>
         <entry>
-         &sm.uidcheck; &sm.uidcheck.dir; (bilgi: sadece PHP 4.2.1'den beri
-         etkindir)
+         &sm.uidcheck; &sm.uidcheck.dir;
         </entry>
        </row>
        <row>
@@ -521,8 +546,7 @@ Warning: readfile() has been disabled for security reasons in
          <function>parse_ini_file</function>
         </entry>
         <entry>
-         &sm.uidcheck; &sm.uidcheck.dir; (bilgi: sadece PHP 4.2.1'den beri
-         etkindir)
+         &sm.uidcheck; &sm.uidcheck.dir;
         </entry>
        </row>
        <row>
@@ -546,7 +570,7 @@ Warning: readfile() has been disabled for security reasons in
          <function>mail</function>
         </entry>
         <entry>
-         Güvenli kipte, 5. değiştirge iptal edilir. (bilgi: sadece PHP 4.2.3'ten beri etkindir)
+         Güvenli kipte, 5. değiştirge iptal edilir.
         </entry>
        </row>
        <row>

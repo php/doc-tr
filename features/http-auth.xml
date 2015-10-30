@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: dd3df871f5e3e195f738ac0be1de8d9f5d64cb7c Maintainer: yasar  Status: ready -->
+<!-- EN-Revision: 744111cf061120a5e82033a50ca0031902e102d4 Maintainer: yasar  Status: ready -->
  <chapter xml:id="features.http-auth" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP ile HTTP Kimlik Doğrulaması</title>
 
@@ -13,22 +13,11 @@
    türünü atayan <varname>PHP_AUTH_USER</varname>,
    <varname>PHP_AUTH_PW</varname> ve <varname>AUTH_TYPE</varname>
    <link linkend="reserved.variables"> öntanımlı değişkenleri</link>
-   ile tekrar çağrılır. Bu öntanımlı değişkenler
-   <varname>$_SERVER</varname> ve <varname>$HTTP_SERVER_VARS</varname>
+   ile tekrar çağrılır. Bu öntanımlı değişkenler <varname>$_SERVER</varname>
    dizileri içinde bulunur. "Temel" ve "Özet" (PHP 5.1.0'dan itibaren)
    kimlik doğrulama yöntemlerinin ikisi de desteklenir. Daha fazla bilgi
    için <function>header</function> işlevine bakınız.
   </simpara>
-
-  <note>
-   <title>PHP Sürüm Bilgisi</title>
-   <para>
-    <varname>$_SERVER</varname> gibi
-    <link linkend="language.variables.superglobals">süper küreseller</link>,
-    PHP <link xlink:href="&url.php.release4.1.0;">4.1.0</link>'dan itibaren
-    kullanılabilmektedir.
-   </para>
-  </note>
 
   <para>
    İstemci sayfasını kimlik doğrulamaya zorlayacak örnek betik aşağıdaki gibidir:
@@ -154,7 +143,7 @@ function http_ozet_cozumle($metin)
   </para>
 
   <simpara>
-   PHP 4.3.0'dan itibaren geleneksel harici kimlik doğrulama yönteminden geçmiş
+   Geleneksel harici kimlik doğrulama yönteminden geçmiş
    bir sayfa için girilmiş parolayı gösteren bir betik yazılmasını engellemek
    için, harici kimlik doğrulaması yapılan sayfa için güvenli kip (&safemode;)
    etkinleştirilir, böylece PHP_AUTH değişkenlerine değer atanmaz. Harici kimlik
@@ -225,18 +214,9 @@ if (!isset($_SERVER['PHP_AUTH_USER']) ||
    temizleyebilir.
   </simpara>
   <simpara>
-   Ayrıca PHP 4.3.3'e kadar, PHP'nin CGI sürümünü kullanan Microsoft'un IIS
-   sunucularında IIS kısıtlaması nedeniyle HTTP kimlik doğrulaması çalışmaz.
-   PHP 4.3.3 ve sonrasında bunun çalışması için IIS yapılandırmasındaki
+   HTTP kimlik doğrulamasının çalışması için IIS yapılandırmasındaki
    "Dizin Güvenliği"ni değiştirmelisiniz. "Düzenle"ye basınız ve sadece
    "Anonim Erişim"leri seçiniz, diğer bütün sahalar seçimsiz olmalıdır.
-  </simpara>
-  <simpara>
-   Diğer kısıtlama IIS modülü (ISAPI) ve PHP 4 kullanımında yaşanır.
-   <literal>PHP_AUTH_*</literal> değişkenlerini kullanamazsınız, bunun yerine
-   <literal>HTTP_AUTHORIZATION</literal> değişkeni kullanılabilir. Örnek:
-   <literal>list($user, $pw) = explode(':',
-   base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));</literal>
   </simpara>
   <note>
    <title>IIS Bilgisi:</title>

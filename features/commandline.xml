@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4778c21b0ced33780bd3809e4f5ad824a0d21804 Maintainer: yasar  Status: ready -->
+<!-- EN-Revision: 8ef95a748d7c99e4310ca27d44de7dedf11610ed Maintainer: yasar  Status: ready -->
 
 <chapter xml:id="features.commandline" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>PHP'nin komut satırından kullanımı</title>
@@ -10,11 +10,7 @@
  <section xml:id="features.commandline.introduction">
   <title>Giriş</title>
  <para>
-  PHP 4.3.0 sürümünden beri, <emphasis>Komut Satırı Arayüzü</emphasis>
-  anlamına gelen &cli; isimli yeni bir
-  <literal>SAPI</literal> türünü (Sunucu Uygulaması Yazılım Arayüzü)
-  desteklemektedir.  Adından da anlaşıldığı gibi, bu <literal>SAPI</literal>
-  türünün ana odağı PHP ile kabuk (veya masaüstü) uygulamaları
+  &cli.sapi;'nin ana odağı PHP ile kabuk (veya masaüstü) uygulamaları
   geliştirmektir. &cli; <acronym>SAPI</acronym>'nin bu bölümde anlatılan diğer
   <literal>SAPI</literal>'lerden az bir farkı vardır. Söylemek gerekir ki,
   her ne kadar &cli; ve <acronym>CGI</acronym> birçok aynı
@@ -1617,21 +1613,30 @@ php >
  <section xml:id="features.commandline.webserver">
   <title>Yerleşik HTTP sunucusu</title>
 
+  <warning>
+   <para>
+    Bu HTTP sunucusu uygulama geliştirmeye yardımcı olmak üzere tasarlanmıştır.
+    Ayrıca, denetimli bir ortam olarak uygulamaların denenmesi amacıyla da
+    kullanılabilir. Herşeyiyle eksiksiz bir HTTP sunucusu olarak
+    tasarlanmamıştır. Halka açık ağlarda kullanılmamalıdır.
+   </para>
+  </warning>
+
   <para>
    PHP 5.4.0'dan itibaren, &cli.sapi; yerleşik bir HTTP sunucusu
    içermektedir.
   </para>
 
   <para>
-   Bu HTTP sunucusu sadece geliştirme amaçlı kullanıma uygun olarak
-   tasarlanmıştır. Genel amaçlı bir HTTP sunucusu olarak kullanılmamalıdır.
+   Bu HTTP sunucusu tek evreli bir süreç çalıştırır. Dolayısıyla, PHP
+   uygulamaları istek engellendiği zaman yavaşlayıp duracaktır.
   </para>
 
   <para>
    İstenen adres PHP'nin başlatıldığı çalışma dizinine göre sunulur. Bu kök
    dizin PHP çalıştırılırken -t seçeneği kullanılarak değiştirlebilir. İstek
    bir dosya belirtmiyorsa belirtilen dizindeki index.php veya index.html
-   dosyası sunulur. Bu iki dosya da mevcut değilse 404 yanıt kodu döndürülür.
+   dosyası sunulur. Bu iki dosya da mevcut değilse index.php veya index.html araması üst dizinde devam eder ve bu belge kök dizinine ulaşılıncaya dek devam eder. Bulunduğu takdirde, döndürülür ve URI'nin devamına $_SERVER['PATH_INFO'] atanır. Aksi takdirde 404 yanıt kodu döndürülür.
   </para>
 
   <para>
@@ -1641,10 +1646,61 @@ php >
   </para>
 
   <para>
-   .css, .gif, .htm, .html, .jpe, .jpeg, .jpg, .js, .png, .svg ve .txt uzantılı
-   dosyalar için standart MIME türleri döndürülür. .htm ve .svg uzantıları PHP
-   5.4.4'den beri tanınmaktadır.
+   .3gp,.apk, .avi, .bmp, .css, .csv, .doc, .docx, .flac, .gif, .gz,
+   .gzip, .htm, .html, .ics, .jpe, .jpeg, .jpg, .js, .kml, .kmz,
+   .m4a, .mov, .mp3, .mp4, .mpeg, .mpg, .odp, .ods, .odt, .oga, .ogg,
+   .ogv, .pdf, .pdf, .png, .pps, .pptx, .qt, .svg, .swf, .tar, .text,
+   .tif, .txt, .wav, .webm, .wmv, .xls, .xlsx, .xml, .xsl, .xsd ve .zip
+   uzantılı dosyalar için standart MIME türleri döndürülür.
   </para>
+
+  <table>
+   <title>Desteklenen MIME Türleri (dosya uzantıları) için değişiklik
+    bilgisi</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>5.5.12</entry>
+      <entry>
+       .xml, .xsl ve .xsd
+      </entry>
+     </row>
+     <row>
+      <entry>5.5.7</entry>
+      <entry>
+       .3gp, .apk, .avi, .bmp, .csv, .doc, .docx, .flac, .gz, .gzip,
+       .ics, .kml, .kmz, .m4a, .mp3, .mp4, .mpg, .mpeg, .mov, .odp, .ods,
+       .odt, .oga, .pdf, .pptx, .pps, .qt, .swf, .tar, .text, .tif, .wav,
+       .wmv, .xls, .xlsx ve .zip
+      </entry>
+     </row>
+     <row>
+      <entry>5.5.5</entry>
+      <entry>
+       .pdf
+      </entry>
+     </row>
+     <row>
+      <entry>5.4.11</entry>
+      <entry>
+       .ogg, .ogv ve .webm
+      </entry>
+     </row>
+     <row>
+      <entry>5.4.4</entry>
+      <entry>
+        .htm ve .svg
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
 
   <example>
    <title>HTTP sunucusunun başlatılması</title>
@@ -1763,8 +1819,8 @@ $ php -S localhost:8000 router.php
 <?php
 // router.php
 $path = pathinfo($_SERVER["SCRIPT_FILENAME"]);
-if ($path["extension"] == "ogg") {
-    header("Content-Type: video/ogg");
+if ($path["extension"] == "el") {
+    header("Content-Type: text/x-script.elisp");
     readfile($_SERVER["SCRIPT_FILENAME"]);
 }
 else {
