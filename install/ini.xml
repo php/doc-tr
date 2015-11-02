@@ -1,98 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a21982466ee63b70fecaa58561e0f46624b00cc7 Maintainer: nilgun Status: ready -->
- <chapter xml:id="configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <title>Çalışma Anı Yapılandırması</title>
+<!-- EN-Revision: ad46822c2c912ebf70885ff9faa3a7e366555e1f Maintainer: nilgun Status: ready -->
+<chapter xml:id="configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Çalışma Anı Yapılandırması</title>
+ <sect1 xml:id="configuration.file">
+  <title>Yapılandırma Dosyası</title>
 
-  <sect1 xml:id="configuration.file">
-   <title>Yapılandırma Dosyası</title>
-
-   <simpara>
-    Yapılandırma dosyası (&php.ini;) PHP başlatıldığında okunur. PHP'nin
-    sunucu modülü sürümlerinde bu işlem bir kereliğine HTTP sunucusu
-    başlatıldığında gerçekleşir. <acronym>CGI</acronym> ve
-    <acronym>CLI</acronym> sürümlerinde ise PHP'nin her çağrılışında işlem
-    tekrarlanır.
-   </simpara>
+  <simpara>
+   Yapılandırma dosyası (&php.ini;) PHP başlatıldığında okunur. PHP'nin
+   sunucu modülü sürümlerinde bu işlem bir kereliğine HTTP sunucusu
+   başlatıldığında gerçekleşir. <acronym>CGI</acronym> ve
+   <acronym>CLI</acronym> sürümlerinde ise PHP'nin her çağrılışında işlem
+   tekrarlanır.
+  </simpara>
+  <para>
+   &php.ini; sırasıyla şuralarda aranır:
+   <itemizedlist>
+    <listitem>
+     <para>
+      SAPI modülüne özgü konum (Apache 2'de <literal>PHPIniDir</literal>
+      yönergesi, CGI ve CLI için <literal>-c</literal> komut satırı seçeneği,
+      NSAPI'de <literal>php_ini</literal> değiştirgesi, THTTPD'de
+      <literal>PHP_INI_PATH</literal> ortam değişkeni)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <varname>PHPRC</varname> ortam değişkeni. PHP 5.2.0 öncesinde
+      aşağıda bahsedilen kayıt defteri anahtarından sonra bu değişkene
+      bakılırdı.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      PHP 5.2.0'dan itibaren, PHP'nin farklı sürümlerine ait
+      <literal>php.ini</literal> dosyaları için Windows kayıt defterinde
+      sırayla aşağıdaki yerlere bakılmaktadır:
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y.z]</literal>,
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y]</literal> ve
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x]</literal>.
+      Burada x, y ve z harfleri PHP'nin ana, alt ve yama sürümlerini
+      belirtir. Bu anahtarlarda bir <literal>IniFilePath</literal> değeri
+      varsa ilk bulunan <literal>php.ini</literal> konumu kullanılır.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP]</literal> anahtarının
+      <literal>\IniFilePath</literal> değeri. (Windows Kayıt Defteri kaydı)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+       Geçerli çalışma dizini (CLI dışında)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      HTTP sunucusunun dizini (SAPI modülleri için) veya PHP dizini
+      (Windows için)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Windows dizini (<filename class="directory">C:\windows</filename>
+      veya <filename class="directory">C:\winnt</filename>) (Windows için)
+      veya <literal>--with-config-file-path</literal> derleme seçeneği ile
+      belirtilen dizin.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   <filename>php-SAPI.ini</filename> mevcutsa (burada SAPI, kullanılan
+   SAPI'dir, dolayısıyla <filename>php-cli.ini</filename> veya
+   <filename>php-apache.ini</filename> gibi bir dosya ismidir), &php.ini;
+   yerine bu dosya kullanılır. SAPI ismi <function>php_sapi_name</function>
+   işlevi ile saptanabilir.
+  </para>
+  <note>
    <para>
-    &php.ini; sırasıyla şuralarda aranır:
-    <itemizedlist>
-     <listitem>
-      <para>
-       SAPI modülüne özgü konum (Apache 2'de <literal>PHPIniDir</literal>
-       yönergesi, CGI ve CLI için <literal>-c</literal> komut satırı seçeneği,
-       NSAPI'de <literal>php_ini</literal> değiştirgesi, THTTPD'de
-       <literal>PHP_INI_PATH</literal> ortam değişkeni)
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       <varname>PHPRC</varname> ortam değişkeni. PHP 5.2.0 öncesinde
-       aşağıda bahsedilen kayıt defteri anahtarından sonra bu değişkene
-       bakılırdı.
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       PHP 5.2.0'dan itibaren, PHP'nin farklı sürümlerine ait
-       <literal>php.ini</literal> dosyaları için Windows kayıt defterinde
-       sırayla aşağıdaki yerlere bakılmaktadır:
-       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y.z]</literal>,
-       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y]</literal> ve
-       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x]</literal>.
-       Burada x, y ve z harfleri PHP'nin ana, alt ve yama sürümlerini
-       belirtir. Bu anahtarlarda bir <literal>IniFilePath</literal> değeri
-       varsa ilk bulunan <literal>php.ini</literal> konumu kullanılır.
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP]</literal> anahtarının
-       <literal>\IniFilePath</literal> değeri. (Windows Kayıt Defteri kaydı)
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-        Geçerli çalışma dizini (CLI dışında)
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       HTTP sunucusunun dizini (SAPI modülleri için) veya PHP dizini
-       (Windows için)
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Windows dizini (<filename class="directory">C:\windows</filename>
-       veya <filename class="directory">C:\winnt</filename>) (Windows için)
-       veya <literal>--with-config-file-path</literal> derleme seçeneği ile
-       belirtilen dizin.
-      </para>
-     </listitem>
-    </itemizedlist>
+   Apache HTTP sunucusunun başlatıldığında kök dizine geçmesi PHP'nin
+   &php.ini; dosyasını dosya sisteminin kök dizininde aramasına sebep olur.
    </para>
-   <para>
-    <filename>php-SAPI.ini</filename> mevcutsa (burada SAPI, kullanılan
-    SAPI'dir, dolayısıyla <filename>php-cli.ini</filename> veya
-    <filename>php-apache.ini</filename> gibi bir dosya ismidir), &php.ini;
-    yerine bu dosya kullanılır. SAPI ismi <function>php_sapi_name</function>
-    işlevi ile saptanabilir.
-   </para>
-   <note>
-    <para>
-    Apache HTTP sunucusunun başlatıldığında kök dizine geçmesi PHP'nin
-    &php.ini; dosyasını dosya sisteminin kök dizininde aramasına sebep olur.
-    </para>
-   </note>
+  </note>
+  <para>
+   &php.ini; içinde kullanılabilen ortam değişkenlerinin kullanımı aşağıda gösterilmiştir.
+  </para>
+  <para>
+   <example>
+    <title>&php.ini; Ortam Değişkenleri</title>
+      <programlisting role="ini">
+ <![CDATA[
+; PHP_MEMORY_LIMIT'in ortamdan alınışı
+memory_limit = ${PHP_MEMORY_LIMIT}
+]]>
+     </programlisting>
+    </example>
+  </para>
    <para>
     &php.ini; yönergelerinin eklentilerle ilgili olanlarının belgeleri her
     eklentinin kendi belgeleri içindedir. <link linkend="ini">Temel
     yönergelerin listesini</link> eklerde bulabilirsiniz. Tamamı olmasa da
     yönergelerin büyük çoğunluğu kılavuzda belgelenmiş durumdadır. Kurulu PHP
     sürümünüzde geçerli yönergelerin tam listesi için kendi içinde iyi
-    açıklanmış &php.ini; dosyanızı okuyun. Ayrıca, SVN'de bulunan <link
-    xlink:href="&url.php.svn.phpini;">en son &php.ini;</link> dosyası da bu
+    açıklanmış &php.ini; dosyanızı okuyun. Ayrıca, Git'te bulunan <link
+    xlink:href="&url.php.git.phpini;">en son &php.ini;</link> dosyası da bu
     konuda size yardımcı olabilir.
    </para>
    <para>
@@ -116,219 +129,256 @@ include_path = ".;c:\php\lib"
 ]]>
 </programlisting>
 <!-- TODO: add more details about values and expressions -->
-    </example>
-   </para>
+   </example>
+  </para>
+  <para>
+   PHP'nin 5.1.0 sürümünden beri .ini dosyalarında bulunan yönergelere
+   isimleriyle değişken olarak erişilebilmektedir. Örnek:
+   <literal>open_basedir = ${open_basedir} ":/new/dir"</literal>.
+  </para>
+
+  <sect2 xml:id="configuration.file.changelog">
+   &reftitle.changelog;
    <para>
-    PHP'nin 5.1.0 sürümünden beri .ini dosyalarında bulunan yönergelere
-    isimleriyle değişken olarak erişilebilmektedir. Örnek:
-    <literal>open_basedir = ${open_basedir} ":/new/dir"</literal>.
-   </para>
-  </sect1>
-
-  <sect1 xml:id="configuration.file.per-user">
-   <title>.user.ini dosyaları</title>
-
-   <simpara>
-    PHP 5.3.0'dan beri, dizinler için .htaccess tarzı INI dosyaları
-    desteklenmektedir. Bu dosyalar <emphasis>sadece</emphasis> CGI/FastCGI SAPI
-    tarafından işlenir. Bu işlevsellik ile PECL htscanner eklentisi atıl duruma
-    düşmüştür. Apache kullanıyorsanız aynı etkiyi elde etmek için &htaccess;
-    dosyalarını kullanın.
-   </simpara>
-
-   <simpara>
-    Ana &php.ini; dosyasına ek olarak, PHP istenen PHP dosyasının bulunduğu
-    dizinden itibaren her dizini INI dosyaları için tarar ve bunları geçerli
-    belge kök dizinine uygulanıyormuş gibi uygular
-    (<varname>$_SERVER['DOCUMENT_ROOT']</varname> değişkenine atandığı gibi).
-    PHP dosyasının belge kökü dışında olduğu durumlarda sadece onun dizini
-    taranır.
-   </simpara>
-   <simpara>
-    .user.ini tarzı INI dosyalarında sadece <constant>PHP_INI_PERDIR</constant>
-    ve <constant>PHP_INI_USER</constant> kipindeki INI ayarları işleme sokulur.
-   </simpara>
-
-   <simpara>
-    Kullanıcı INI dosyalarını denetlemek için iki yeni INI yönergesi
-    kullanılmaktadır: <literal>user_ini.filename</literal> ve
-    <literal>user_ini.cache_ttl</literal>.
-    <!--
-        <link linkend="ini.user-ini.filename">user_ini.filename</link> and
-        <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link>
-    -->
-   </simpara>
-
-   <simpara>
-    <literal>user_ini.filename</literal> ile PHP'nin dizinlerde arayacağı
-    dosyanın ismi belirtilir. <literal>.user.ini</literal> öntanımlı değerdir.
-   </simpara>
-
-   <simpara>
-    <literal>user_ini.cache_ttl</literal> ile kullanıcı INI dosyalarının ne
-    sıklıkta denetleneceği belirtilir. 300 saniye (5 dakika) öntanımlı
-    değerdir.
-   </simpara>
-  </sect1>
-
-  <sect1 xml:id="configuration.changes.modes">
-   <title>Yapılandırma ayarlarının yeri</title>
-
-   <para>
-    Bu kipler, bir PHP yönergesinin nerede ve ne zaman atanabileceğini
-    belirlerler ve bu kılavuzdaki her yönerge bu kiplerden biri ile
-    ilişkilidir. Örneğin, bazı ayarlar bir PHP betiğinin içinde
-    <function>ini_set</function> kullanarak atanabilirken bazıları da
-    &php.ini; veya &httpd.conf; dosyasında atanabilirler.
-   </para>
-
-   <para>
-    Örneğin, <link linkend="ini.output-buffering">output_buffering</link>
-    ayarı için kip <literal>PHP_INI_PERDIR</literal> olup
-    <function>ini_set</function> kullanarak atanamaz. Bununla birlikte,
-    <link linkend="ini.display-errors">display_errors</link> yönergesinin
-    kipi <literal>PHP_INI_ALL</literal> olup <function>ini_set</function>
-    kullanımı dahil her yerde atanabilir.
-   </para>
-
-    <table>
-      <title>PHP_INI_* kiplerinin tanımları</title>
-      <tgroup cols="3">
+    <informaltable>
+     <tgroup cols="2">
       <thead>
-        <row>
-        <entry>Kip</entry>
-        <entry>Değeri</entry>
-        <entry>Anlamı</entry>
-        </row>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
       </thead>
       <tbody>
-        <row>
-        <entry>PHP_INI_USER</entry>
-        <entry>1</entry>
-        <entry>Girdi <link linkend="configuration.changes.windows">Windows
-        registry</link> veya kullanıcı betiklerinde atanabilir.</entry>
-        </row>
-        <row>
-        <entry>PHP_INI_PERDIR</entry>
-        <entry>6</entry>
-        <entry>Girdi &php.ini;, &htaccess; veya &httpd.conf; dosyasında
-        atanabilir.</entry>
-        </row>
-        <row>
-        <entry>PHP_INI_SYSTEM</entry>
-        <entry>4</entry>
-        <entry>Girdi &php.ini; veya &httpd.conf; dosyasında atanabilir.</entry>
-        </row>
-        <row>
-        <entry>PHP_INI_ALL</entry>
-        <entry>7</entry>
-        <entry>Girdi herhangi bir yerde atanabilir.</entry>
-        </row>
+       <row>
+        <entry>7.0.0</entry>
+        <entry>
+         <literal>#</literal> karakteri artık açıklama olarak ele alınmıyor.
+        </entry>
+       </row>
+       <row>
+        <entry>5.3.0</entry>
+        <entry>
+         <literal>#</literal> karakteri artık açıklama olarak ele alınmıyor ve
+         kullanılırsa kullanımımın önerilmediğini belirten bir uyarı
+         çıktılanıyor.
+        </entry>
+       </row>
+       <row>
+        <entry>5.1.0</entry>
+        <entry>
+         I. ini dosyalarının içindeki mevcut .ini değişkenlerine atıfta bulunmak
+         artık mümkün.
+        </entry>
+       </row>
       </tbody>
-      </tgroup>
-    </table>
-  </sect1>
+     </tgroup>
+    </informaltable>
+   </para>
+  </sect2>
+ </sect1>
 
-  <sect1 xml:id="configuration.changes">
-   <title>Yapılandırma ayarlarının değiştirilmesi</title>
+ <sect1 xml:id="configuration.file.per-user">
+  <title>.user.ini dosyaları</title>
 
-   <sect2 xml:id="configuration.changes.apache">
-    <title>PHP'nin bir Apache modülü olarak çalıştırılması</title>
-    <simpara>
-     PHP'yi bir Apache modülü olarak kullanırken, yapılandırma ayarlarını
-     Apache yapılandırma dosyalarındaki (&httpd.conf; ve &htaccess;
-     dosyaları) yönergeleri kullanarak da değiştirebilirsiniz. Bunu
-     yapabilmek için Apache yapılandırmasında "AllowOverride Options" veya
-     "AllowOverride All" olması gerekir.
-    </simpara>
+  <simpara>
+   PHP 5.3.0'dan beri, dizinler için .htaccess tarzı INI dosyaları
+   desteklenmektedir. Bu dosyalar <emphasis>sadece</emphasis> CGI/FastCGI SAPI
+   tarafından işlenir. Bu işlevsellik ile PECL htscanner eklentisi atıl duruma
+   düşmüştür. Apache kullanıyorsanız aynı etkiyi elde etmek için &htaccess;
+   dosyalarını kullanın.
+  </simpara>
 
-    <para>
-     PHP yapılandırmasını Apache yapılandırma dosyaları içinden
-     değiştirmenize imkan veren çeşitli Apache yönergeleri vardır.
-     <constant>PHP_INI_ALL</constant>, <constant>PHP_INI_PERDIR</constant>
-     veya <constant>PHP_INI_SYSTEM</constant> olarak belirtilebilen
-     yönergeleri eklerdeki <link linkend="ini.list">php.ini yönergelerinin
-     listesi</link> sayfasında bulabilirsiniz.
-    </para>
+  <simpara>
+   Ana &php.ini; dosyasına ek olarak, PHP istenen PHP dosyasının bulunduğu
+   dizinden itibaren her dizini INI dosyaları için tarar ve bunları geçerli
+   belge kök dizinine uygulanıyormuş gibi uygular
+   (<varname>$_SERVER['DOCUMENT_ROOT']</varname> değişkenine atandığı gibi).
+   PHP dosyasının belge kökü dışında olduğu durumlarda sadece onun dizini
+   taranır.
+  </simpara>
+  <simpara>
+   .user.ini tarzı INI dosyalarında sadece <constant>PHP_INI_PERDIR</constant>
+   ve <constant>PHP_INI_USER</constant> kipindeki INI ayarları işleme sokulur.
+  </simpara>
 
-    <para>
-     <variablelist>
-      <varlistentry>
-       <term>
-        <systemitem role="directive">php_value</systemitem>
-        <parameter>isim</parameter>
-        <parameter>değer</parameter>
-       </term>
-       <listitem>
-        <para>
-          Belirtilen değeri ismi belirtilen yönergeye atar. Sadece
-          <constant>PHP_INI_ALL</constant> ve
-          <constant>PHP_INI_PERDIR</constant> türü yönergeler için
-          kullanılabilir. Önceki atanan değeri silmek için değer olarak
-          <literal>none</literal> kullanın.
-        </para>
-        <note>
-         <simpara>
-          Mantıksal değer atamak için <systemitem role="directive"
-          >php_value</systemitem> yönergesini değil, <systemitem
-          role="directive">php_flag</systemitem> (aşağıya bakınız)
-          yönergesini kullanmalısınız.
-         </simpara>
-        </note>
-       </listitem>
-      </varlistentry>
-      <varlistentry>
-       <term>
-        <systemitem role="directive">php_flag</systemitem>
-        <parameter>isim</parameter>
-        <parameter>on|off</parameter>
-       </term>
-       <listitem>
-        <para>
-          Bir mantıksal yapılandırma yönergesi atamak için kullanılır. Sadece
-          <constant>PHP_INI_ALL</constant> ve
-          <constant>PHP_INI_PERDIR</constant> türü yönergeler için
-          kullanılabilir.
-        </para>
-       </listitem>
-      </varlistentry>
-      <varlistentry>
-       <term>
-        <systemitem role="directive">php_admin_value</systemitem>
-        <parameter>isim</parameter>
-        <parameter>değer</parameter>
-       </term>
-       <listitem>
-        <para>
-         İsmi belirtilen yönergeye belirtilen değeri atar. &htaccess;
-         dosyalarında <emphasis>kullanılamaz</emphasis>. Bu yönerge ile
-         atanan hiçbir yönerge türü <function>ini_set</function> veya
-         &htaccess; tarafından geçersiz kılınamaz. Önceki atanan değeri
-         silmek için değer olarak <literal>none</literal> kullanın.
-        </para>
-       </listitem>
-      </varlistentry>
-      <varlistentry>
-       <term>
-        <systemitem role="directive">php_admin_flag</systemitem>
-        <parameter>isim</parameter>
-        <parameter>on|off</parameter>
-       </term>
-       <listitem>
-        <para>
-          Bir mantıksal yapılandırma yönergesi atamak için kullanılır.
-          &htaccess; dosyalarında <emphasis>kullanılamaz</emphasis>. Bu
-          yönerge ile atanan hiçbir yönerge türü &htaccess; veya
-          <function>ini_set</function> tarafından geçersiz kılınamaz.
-        </para>
-       </listitem>
-      </varlistentry>
-     </variablelist>
-    </para>
-    <para>
-     <example>
-      <title>- Apache yapılandırma örneği</title>
-      <programlisting role="ini">
+  <simpara>
+   Kullanıcı INI dosyalarını denetlemek için iki yeni INI yönergesi
+   kullanılmaktadır: <literal>user_ini.filename</literal> ve
+   <literal>user_ini.cache_ttl</literal>.
+   <!--
+       <link linkend="ini.user-ini.filename">user_ini.filename</link> and
+       <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link>
+   -->
+  </simpara>
+
+  <simpara>
+   <literal>user_ini.filename</literal> ile PHP'nin dizinlerde arayacağı
+   dosyanın ismi belirtilir. <literal>.user.ini</literal> öntanımlı değerdir.
+  </simpara>
+
+  <simpara>
+   <literal>user_ini.cache_ttl</literal> ile kullanıcı INI dosyalarının ne
+   sıklıkta denetleneceği belirtilir. 300 saniye (5 dakika) öntanımlı
+   değerdir.
+  </simpara>
+ </sect1>
+
+ <sect1 xml:id="configuration.changes.modes">
+  <title>Yapılandırma ayarlarının yeri</title>
+
+  <para>
+   Bu kipler, bir PHP yönergesinin nerede ve ne zaman atanabileceğini
+   belirlerler ve bu kılavuzdaki her yönerge bu kiplerden biri ile
+   ilişkilidir. Örneğin, bazı ayarlar bir PHP betiğinin içinde
+   <function>ini_set</function> kullanarak atanabilirken bazıları da
+   &php.ini; veya &httpd.conf; dosyasında atanabilirler.
+  </para>
+
+  <para>
+   Örneğin, <link linkend="ini.output-buffering">output_buffering</link>
+   ayarı için kip <literal>PHP_INI_PERDIR</literal> olup
+   <function>ini_set</function> kullanarak atanamaz. Bununla birlikte,
+   <link linkend="ini.display-errors">display_errors</link> yönergesinin
+   kipi <literal>PHP_INI_ALL</literal> olup <function>ini_set</function>
+   kullanımı dahil her yerde atanabilir.
+  </para>
+
+   <table>
+    <title>PHP_INI_* kiplerinin tanımları</title>
+    <tgroup cols="2">
+     <thead>
+       <row>
+       <entry>Kip</entry>
+       <entry>Anlamı</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>PHP_INI_USER</entry>
+        <entry>Girdi <link linkend="configuration.changes.windows">Windows
+         registry</link> veya kullanıcı betiklerinde (örneğin
+         <function>ini_set</function> ile) atanabilir.
+        </entry>
+       </row>
+       <row>
+        <entry>PHP_INI_PERDIR</entry>
+        <entry>Girdi &php.ini;, &htaccess;, &httpd.conf; veya (PHP 5.3
+         itibariyle) &user-ini; dosyasında atanabilir.
+        </entry>
+       </row>
+       <row>
+        <entry>PHP_INI_SYSTEM</entry>
+        <entry>Girdi &php.ini; veya &httpd.conf; dosyasında atanabilir.</entry>
+       </row>
+       <row>
+        <entry>PHP_INI_ALL</entry>
+        <entry>Girdi herhangi bir yerde atanabilir.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+   </table>
+ </sect1>
+
+ <sect1 xml:id="configuration.changes">
+  <title>Yapılandırma ayarlarının değiştirilmesi</title>
+
+  <sect2 xml:id="configuration.changes.apache">
+   <title>PHP'nin bir Apache modülü olarak çalıştırılması</title>
+   <simpara>
+    PHP'yi bir Apache modülü olarak kullanırken, yapılandırma ayarlarını
+    Apache yapılandırma dosyalarındaki (&httpd.conf; ve &htaccess;
+    dosyaları) yönergeleri kullanarak da değiştirebilirsiniz. Bunu
+    yapabilmek için Apache yapılandırmasında "AllowOverride Options" veya
+    "AllowOverride All" olması gerekir.
+   </simpara>
+
+   <para>
+    PHP yapılandırmasını Apache yapılandırma dosyaları içinden
+    değiştirmenize imkan veren çeşitli Apache yönergeleri vardır.
+    <constant>PHP_INI_ALL</constant>, <constant>PHP_INI_PERDIR</constant>
+    veya <constant>PHP_INI_SYSTEM</constant> olarak belirtilebilen
+    yönergeleri eklerdeki <link linkend="ini.list">php.ini yönergelerinin
+    listesi</link> sayfasında bulabilirsiniz.
+   </para>
+
+   <para>
+    <variablelist>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_value</systemitem>
+       <parameter>isim</parameter>
+       <parameter>değer</parameter>
+      </term>
+      <listitem>
+       <para>
+         Belirtilen değeri ismi belirtilen yönergeye atar. Sadece
+         <constant>PHP_INI_ALL</constant> ve
+         <constant>PHP_INI_PERDIR</constant> türü yönergeler için
+         kullanılabilir. Önceki atanan değeri silmek için değer olarak
+         <literal>none</literal> kullanın.
+       </para>
+       <note>
+        <simpara>
+         Mantıksal değer atamak için <systemitem role="directive"
+         >php_value</systemitem> yönergesini değil, <systemitem
+         role="directive">php_flag</systemitem> (aşağıya bakınız)
+         yönergesini kullanmalısınız.
+        </simpara>
+       </note>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_flag</systemitem>
+       <parameter>isim</parameter>
+       <parameter>on|off</parameter>
+      </term>
+      <listitem>
+       <para>
+         Bir mantıksal yapılandırma yönergesi atamak için kullanılır. Sadece
+         <constant>PHP_INI_ALL</constant> ve
+         <constant>PHP_INI_PERDIR</constant> türü yönergeler için
+         kullanılabilir.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_admin_value</systemitem>
+       <parameter>isim</parameter>
+       <parameter>değer</parameter>
+      </term>
+      <listitem>
+       <para>
+        İsmi belirtilen yönergeye belirtilen değeri atar. &htaccess;
+        dosyalarında <emphasis>kullanılamaz</emphasis>. Bu yönerge ile
+        atanan hiçbir yönerge türü <function>ini_set</function> veya
+        &htaccess; tarafından geçersiz kılınamaz. Önceki atanan değeri
+        silmek için değer olarak <literal>none</literal> kullanın.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>
+       <systemitem role="directive">php_admin_flag</systemitem>
+       <parameter>isim</parameter>
+       <parameter>on|off</parameter>
+      </term>
+      <listitem>
+       <para>
+         Bir mantıksal yapılandırma yönergesi atamak için kullanılır.
+         &htaccess; dosyalarında <emphasis>kullanılamaz</emphasis>. Bu
+         yönerge ile atanan hiçbir yönerge türü &htaccess; veya
+         <function>ini_set</function> tarafından geçersiz kılınamaz.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+   <para>
+    <example>
+     <title>- Apache yapılandırma örneği</title>
+     <programlisting role="ini">
 <![CDATA[
 <IfModule mod_php5.c>
   php_value include_path ".:/usr/local/lib/php"
@@ -339,64 +389,64 @@ include_path = ".;c:\php\lib"
   php_admin_flag engine on
 </IfModule>
 ]]>
-      </programlisting>
-     </example>
-    </para>
-    <caution>
-     <para>
-      PHP sabitleri PHP dışında mevcut değildir. Örneğin, &httpd.conf;
-      dosyasında <link linkend="ini.error-reporting">error_reporting</link>
-      yönergesine <constant>E_ALL</constant> veya
-      <constant>E_NOTICE</constant> PHP sabitlerini atayamazsınız. Bunu
-      yaparsanız daima 0 olarak değerlendirileceklerdir. Sabitleri kullanmak
-      yerine bunların bit maskelerini kullanın. Bu sabitler &php.ini; içinde
-      kullanılabilir.
-     </para>
-    </caution>
-   </sect2>
-
-   <sect2 xml:id="configuration.changes.windows">
-    <title>PHP yapılandırmasının Windows kayıt defteri üzerinden
-      değiştirilmesi</title>
-     <simpara>
-      PHP, Windows üzerinde çalışırken, yapılandırma değerleri Windows kayıt
-      defteri kullanılarak her dizin için ayrı ayrı değiştirilebilir.
-      Yapılandırma değerleri defterde <literal>HKLM\SOFTWARE\PHP\Per
-      Directory Values</literal> anahtarının dizin isimlerine karşılık gelen
-      alt anahtarlarında saklanır. Örneğin,
-      <literal>c:\inetpub\wwwroot</literal> dizini için yapılandırma
-      değerleri <literal>HKLM\SOFTWARE\PHP\Per Directory
-      Values\c\inetpub\wwwroot</literal> anahtarında saklanır. Dizin ile
-      ilgili ayarlar, dizin içinde ve alt dizinlerde çalıştırılan her betik
-      için geçerli olur. Anahtar altındaki değerler PHP yapılandırma
-      yönergelerinin isimlerini ve dizge değerlerini içermelidir. Değerlerde
-      bulunan PHP sabitleri çözümlenmez. Sadece,
-      <constant>PHP_INI_USER</constant> türü değişebilir yapılandırma
-      değerleri bu yolla atanabilir,  <constant>PHP_INI_PERDIR</constant>
-      değerleri atanamaz.
-     </simpara>
-   </sect2>
-
-   <sect2 xml:id="configuration.changes.other">
-    <title>Diğer PHP arayüzleri</title>
+     </programlisting>
+    </example>
+   </para>
+   <caution>
     <para>
-      PHP'yi nasıl çalıştırdığınızdan bağımsız olarak, belli değerleri
-      betiğinizin çalışması sırasında <function>ini_set</function> işlevi
-      sayesinde değiştirebilirsiniz. Bu konuda daha ayrıntılı bilgi için
-      <function>ini_set</function> sayfasına bakınız.
+     PHP sabitleri PHP dışında mevcut değildir. Örneğin, &httpd.conf;
+     dosyasında <link linkend="ini.error-reporting">error_reporting</link>
+     yönergesine <constant>E_ALL</constant> veya
+     <constant>E_NOTICE</constant> PHP sabitlerini atayamazsınız. Bunu
+     yaparsanız daima 0 olarak değerlendirileceklerdir. Sabitleri kullanmak
+     yerine bunların bit maskelerini kullanın. Bu sabitler &php.ini; içinde
+     kullanılabilir.
     </para>
-    <para>
-      Sistem yapılandırmanızla ilgili ayarlar ve mevcut değerleri ilginizi
-      çekiyorsa <function>phpinfo</function> işlevini çalıştırabilir ve elde
-      ettiğiniz sayfayı inceleyebilirsiniz. Ayrıca, yapılandırma
-      yönergelerinin her birine çalışma anında <function>ini_get</function>
-      veya <function>get_cfg_var</function> işlevini kullanarak
-      erişebilirsiniz.
-    </para>
-   </sect2>
-  </sect1>
+   </caution>
+  </sect2>
 
- </chapter>
+  <sect2 xml:id="configuration.changes.windows">
+   <title>PHP yapılandırmasının Windows kayıt defteri üzerinden
+     değiştirilmesi</title>
+    <simpara>
+     PHP, Windows üzerinde çalışırken, yapılandırma değerleri Windows kayıt
+     defteri kullanılarak her dizin için ayrı ayrı değiştirilebilir.
+     Yapılandırma değerleri defterde <literal>HKLM\SOFTWARE\PHP\Per
+     Directory Values</literal> anahtarının dizin isimlerine karşılık gelen
+     alt anahtarlarında saklanır. Örneğin,
+     <literal>c:\inetpub\wwwroot</literal> dizini için yapılandırma
+     değerleri <literal>HKLM\SOFTWARE\PHP\Per Directory
+     Values\c\inetpub\wwwroot</literal> anahtarında saklanır. Dizin ile
+     ilgili ayarlar, dizin içinde ve alt dizinlerde çalıştırılan her betik
+     için geçerli olur. Anahtar altındaki değerler PHP yapılandırma
+     yönergelerinin isimlerini ve dizge değerlerini içermelidir. Değerlerde
+     bulunan PHP sabitleri çözümlenmez. Sadece,
+     <constant>PHP_INI_USER</constant> türü değişebilir yapılandırma
+     değerleri bu yolla atanabilir,  <constant>PHP_INI_PERDIR</constant>
+     değerleri atanamaz.
+    </simpara>
+  </sect2>
+
+  <sect2 xml:id="configuration.changes.other">
+   <title>Diğer PHP arayüzleri</title>
+   <para>
+     PHP'yi nasıl çalıştırdığınızdan bağımsız olarak, belli değerleri
+     betiğinizin çalışması sırasında <function>ini_set</function> işlevi
+     sayesinde değiştirebilirsiniz. Bu konuda daha ayrıntılı bilgi için
+     <function>ini_set</function> sayfasına bakınız.
+   </para>
+   <para>
+     Sistem yapılandırmanızla ilgili ayarlar ve mevcut değerleri ilginizi
+     çekiyorsa <function>phpinfo</function> işlevini çalıştırabilir ve elde
+     ettiğiniz sayfayı inceleyebilirsiniz. Ayrıca, yapılandırma
+     yönergelerinin her birine çalışma anında <function>ini_get</function>
+     veya <function>get_cfg_var</function> işlevini kullanarak
+     erişebilirsiniz.
+   </para>
+  </sect2>
+ </sect1>
+
+</chapter>
 
 <!-- Keep this comment at the end of the file
 Local variables:

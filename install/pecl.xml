@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 10fd0ed41bec930e789c111c611486d6d7c38a98 Maintainer: nilgun Status: ready -->
 <chapter xml:id="install.pecl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>PECL eklentilerinin kurulması</title>
 
@@ -35,7 +35,7 @@
     PHP modüllerini derlerken, derleme için gerekli araçların (autoconf,
     automake, libtool gibi) birbirleriyle en uyumlu sürümlerini kullanıyor
     olmak önemlidir. Gerekli araçlar ve bunların gerekli sürümleriyle ilgili
-    ayrıntılı bilgiyi  <link xlink:href="&url.php.anonsvn;">Anonim SVN
+    ayrıntılı bilgiyi  <link xlink:href="&url.php.anonsvn;">Anonim Git
     Talimatları</link> sayfasında bulabilirsiniz.
   </simpara>
  </sect1>
@@ -146,9 +146,9 @@ $ svn checkout http://svn.php.net/repository/pecl/extname/trunk eklenti
   <sect2 xml:id="install.pecl.windows.find">
    <title>Bir eklenti nereden bulunur?</title>
    <para>
-    PHP eklentileri genellikle "php_*.dll" biçeminde isimlendirilirler
-    (yıldız iminin yerine eklentinin ismi gelir) ve "PHP\ext" (PHP 4'te
-    "PHP\extensions") dizini altında bulunurlar.
+    PHP eklentileri genellikle "php_*.dll" biçeminde isimlendirilir
+    (yıldız iminin yerine eklentinin ismi gelir) ve "PHP\ext" dizini altında
+    bulunur.
    </para>
    <para>
     PHP, geliştiricilerin büyük çoğunluğunca en faydalı bulunan eklentilerle
@@ -167,7 +167,8 @@ $ svn checkout http://svn.php.net/repository/pecl/extname/trunk eklenti
     başkaları da eklentinizden yararlanabilir. Bunun bazı olumlu yan etkileri
     de vardır: Geribildirim, teşekkür, hata bildirimi, hatta düzeltme ve yama
     alma şansınız olur. Eklentinizi barındırılmak üzere PECL'ye göndermeden
-    önce lütfen &url.pecl.submit; adresini ziyaret ediniz.
+    önce lütfen <link xlink:href="&url.pecl.submit;">PECL submit</link> adresini
+    ziyaret ediniz.
    </para>
   </sect2>
 
@@ -399,6 +400,104 @@ $ make
     Komutun kullanım bilgilerini görmek için <command>phpize --help</command>
     komutunu verin.
   </simpara>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.php-config">
+  <title>php-config</title>
+
+  <para>
+   php-config basit bir kabuk betiği olup kurulu PHP yapılandırması hakkında
+   bilgi edinmek için kullanılır.
+  </para>
+
+  <para>
+   Eklentiler derlenirken, birden fazla PHP sürümü kuruluysa yapılandırma
+   sırasında <literal>--with-php-config</literal> seçeneğinde ilgili php-config
+   betiğinin yolunu yazarak hangi kurulumu kurmak istediğinizi
+   belirtebilirsiniz.
+  </para>
+
+  <para>
+   php-config betiği tarafından sağlanan komut satırı seçeneklerinin listesini, betiği <option>-h</option> seçeneği ile çalıştırarak istediğiniz zaman alabilirsiniz:
+   <screen>
+<![CDATA[
+Usage: /usr/local/bin/php-config [OPTION]
+Options:
+  --prefix            [...]
+  --includes          [...]
+  --ldflags           [...]
+  --libs              [...]
+  --extension-dir     [...]
+  --include-dir       [...]
+  --php-binary        [...]
+  --php-sapis         [...]
+  --configure-options [...]
+  --version           [...]
+  --vernum            [...]
+]]>
+   </screen>
+  </para>
+
+  <para>
+   <table>
+    <title>Komut satırı seçenekleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Seçenek</entry>
+       <entry>Açıklama</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>--prefix</entry>
+       <entry>PHP'nin kurulu olduğu dizinin öneki, /usr/local gibi.</entry>
+      </row>
+      <row>
+       <entry>--includes</entry>
+       <entry>Tüm başlık dosyaları ile -I seçeneklerinin listesi</entry>
+      </row>
+      <row>
+       <entry>--ldflags</entry>
+       <entry>PHP'nin birlikte derlendiği LD seçenekleri</entry>
+      </row>
+      <row>
+       <entry>--libs</entry>
+       <entry>PHP'nin birlikte derlendiği ek kütüphaneler</entry>
+      </row>
+      <row>
+       <entry>--extension-dir</entry>
+       <entry>Eklentilerin aranacağı öntanımlı dizin</entry>
+      </row>
+      <row>
+       <entry>--include-dir</entry>
+       <entry>Başlık dosyalarının bulunduğu öntanımlı dizininin öneki</entry>
+      </row>
+      <row>
+       <entry>--php-binary</entry>
+       <entry>PHP CLI veya CGI çalıştırılabilirinin tam yolu</entry>
+      </row>
+      <row>
+       <entry>--php-sapis</entry>
+       <entry>Kullanılabilir tüm SAPI modüllerini gösterir</entry>
+      </row>
+      <row>
+       <entry>--configure-options</entry>
+       <entry>Geçerli PHP kurulumunu yeniden oluşturmak için yapılandırma
+        seçenekleri</entry>
+      </row>
+      <row>
+       <entry>--version</entry>
+       <entry>PHP sürümü</entry>
+      </row>
+      <row>
+       <entry>--vernum</entry>
+       <entry>Tamsayı olarak PHP sürümü</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
  </sect1>
 
  <sect1 xml:id="install.pecl.static">
