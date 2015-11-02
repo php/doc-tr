@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 4354122587520a321f33dfdbd1696f8a1adf8a86 Maintainer: erdemkeren Status: ready -->
+<sect1 xml:id="language.types.callable">
+ <title>Geriçağırımlar / Çağırılılabilirler</title>
+ 
+ <para>
+  Geriçağırımlar PHP 5.4.&apos;ten itibaren <type>callable</type> tür ipucu
+  ile belirtilebilirler.
+  Bu belgelerde <type>callback</type> tür bilgisi aynı amaçla kullanıldı.
+ </para>
+
+ <para>
+  <function>call_user_func</function> ya da <function>usort</function> gibi
+  bazı işlevler değiştirge olarak kullanıcı tarafından belirlenen 
+  geriçağırım işlevleri kabul eder. Geriçağırım işlevleri basit işlevler
+  olabileceği gibi, duruk işlevler de dâhil olmak üzere <type>object</type>
+  türünde nesne yöntemleri de olabilirler.
+ </para>
+
+ <sect2 xml:id="language.types.callable.passing">
+  <title>Aktarım</title>
+
+  <para>
+    Bir PHP işlevi adı ile <type>string</type> türünde aktarılır. Her türlü
+    yerleşik ve kullanıcı tanımlı işlev kullanılabilir, ancak;
+   <function>array</function>, <function>echo</function>,
+   <function>empty</function>, <function>eval</function>, 
+   <function>exit</function>, <function>isset</function>, 
+   <function>list</function>, <function>print</function> ya da 
+   <function>unset</function> gibi dil sabitleri müstesna.
+  </para>
+
+  <para>
+    Örneklenmiş bir nesne yöntemi, 0 indisinde nesne, 1 indisinde yöntem adı
+    olan bir dizi ile aktarılır.
+  </para>
+
+  <para>
+    Duruk sınıf yöntemleri, 0 indisinde nesne yerine sınıf adı kullanılarak,
+    sınıfın nesnesi örneklendirilmeden de aktarılabilir.
+    PHP 5.2.3.&apos;ten itibaren, <literal>'SınıfAdı::yöntemAdı'</literal>
+    kullanarak aktarmak da mümkündür.
+  </para>
+
+  <para>
+    Kullanıcı tanımlı işlevler haricinde,
+   <link linkend="functions.anonymous">isimsiz işlevler</link> de geriçağırım
+   değiştirgesi olarak aktarılabilirler.
+  </para>
+
+  <para>
+   <example>
+    <title>
+     Geriçağırım işlev örnekleri
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php 
+
+// Örnek bir geriçağırım işlevi
+function benim_gericagirim_islevim() {
+    echo 'merhaba dünya!';
+}
+
+// Örnek bir geriçağırım yöntemi
+class BenimSinifim {
+    static function benimGericagirimYontemim() {
+        echo 'Merhaba Dünya!';
+    }
+}
+
+// Tür 1: Basit geriçağırım
+call_user_func('benim_gericagirim_islevim'); 
+
+// Tür 2: Duruk sınıf yöntemi çağrısı
+call_user_func(array('BenimSinifim', 'benimGericagirimYontemim'));
+
+// Tür 3: Nesne yöntem çağrısı
+$nesne = new BenimSinifim();
+call_user_func(array($nesne, 'benimGericagirimYontemim'));
+
+// Tür 4: Duruk sınıf yöntemi çağrısı (PHP 5.2.3 itibariyle)
+call_user_func('BenimSinifim::benimGericagirimYontemim');
+
+// Tür 5: İlişkisel duruk sınıf yöntem çağrısı (PHP 5.3.0 itibariyle)
+class A {
+    public static function kim() {
+        echo "A\n";
+    }
+}
+
+class B extends A {
+    public static function kim() {
+        echo "B\n";
+    }
+}
+
+call_user_func(array('B', 'parent::kim')); // A
+
+// Tür 6: Nesneler, __invoke uyguluyorlarsa çağırılabilir olarak kullanılabilirler (PHP 5.3 sonrası)
+class C {
+    public function __invoke($ad) {
+        echo 'Merhaba ', $ad, "\n";
+    }
+}
+
+$c = new C();
+call_user_func($c, 'PHP!');
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>
+     Koruncak kullanan Geriçağırım örneği
+    </title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Bizim koruncağımız
+$iki_misli = function($a) {
+    return $a * 2;
+};
+
+// Bu bizim sayı aralığımız
+$sayilar = range(1, 5);
+
+// Sayı aralığımızın her bir elemanını
+// ikiye katlamak için burada koruncağı
+// bir geriçağırım olarak kullan.
+$yeni_sayilar = array_map($iki_misli, $sayilar);
+
+print implode(' ', $yeni_sayilar);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+2 4 6 8 10
+]]>
+    </screen>
+   </example>
+  </para>
+
+  <note>
+   <simpara>
+    PHP 4&apos;te, bir geriçağırım yaratmak için, kopyasını değil; gerçek <type>nesne</type>&apos;yi işaret eden bir gönderim kullanmak gerekiyordu. Daha fazla bilgi için bkz: <link linkend="language.references">Gönderimlerle İlgili Herşey</link>.
+   </simpara>
+  </note>
+
+  &note.func-callback-exceptions;
+ </sect2>
+
+</sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
