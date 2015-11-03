@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5e9fde393a7bfdba759d9c295f6c04de0205ae45 Maintainer: nilgun Status: ready -->
+ <sect1 xml:id="language.oop5.traits" xmlns="http://docbook.org/ns/docbook">
+  <title>Nitelikler</title>
+  <para>
+   PHP 5.4.0 itibariyle, PHP tekrar tekrar kullanılabilen bir yöntem kodu olarak
+   <literal>trait</literal> isminı kullanarak nitelikleri tanımlamıştır.
+  </para>
+  <para>
+   Nitelikler, PHP gibi tek kalıtımlı dillerde kodun yeniden
+   kullanımını sağlayan bir mekanizmadır. Yöntem kümelerini farklı sınıf
+   hiyerarşilerinde yaşayan birçok bağımsız sınıfın içinde özgürce yeniden
+   kullanımını mümkün kılarak tek kalıtımlı dillerdeki bazı sınırlamaları
+   azaltmak için tasarlanmıştır. Sınıfların ve niteliklerin
+   birleşiminden doğan anlamlılık, karmaşıklığı azaltan ve çoklu kalıtım ve iç
+   içeliklerle ilgili bilinen sorunlardan kaçınan bir yol izlenerek
+   tanımlanmıştır.
+  </para>
+  <para>
+   Nitelikler sınıflara benzemekle birlikte işlevselliği gruplamak için
+   daha bir ince elenip sık dokunarak tasarlanmıştır. Bir niteliği
+   kendi içinde örneklemek mümkün değildir. Geleneksel kalıtıma bir ekleme olup
+   yatay davranış düzenini, yani kalıtım gerekmeksizin sınıf üyesi olmayı mümkün
+   kılar.
+  </para>
+  
+  <example xml:id="language.oop5.traits.basicexample">
+    <title>Nitelik örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait ezcReflectionReturnInfo {
+    function getReturnType() { /*1*/ }
+    function getReturnDescription() { /*2*/ }
+}
+
+class ezcReflectionMethod extends ReflectionMethod {
+    use ezcReflectionReturnInfo;
+    /* ... */
+}
+
+class ezcReflectionFunction extends ReflectionFunction {
+    use ezcReflectionReturnInfo;
+    /* ... */
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  
+  <sect2 xml:id="language.oop5.traits.precedence">
+   <title>Öncelik sırası</title>
+   <para>
+    Bir nitelikle gelen bir üye, bir temel sınıftan miras alınan bir
+    üyenin yerine geçerse onu geçersiz kılar; sınıfın kendi üyeleri de
+    niteliğin yerine geçerse onu geçersiz kılar.
+   </para>
+   <example xml:id="language.oop5.traits.precedence.examples.ex1">
+    <title>Öncelik sırası örneği</title>
+    <para>
+     Temel sınıftan miras alınan yöntem, DünyaDe niteliğinden MerhabaDünyam
+     içine yerleştirilen üye tarafından geçersizleştirilmektedir. MerhabaDünyam
+     sınıfı içinde tanımlı yöntemler için de davranış aynıdır. Öncelik sırası
+     şöyledir: Temel sınıftan alınan yöntemleri geçersizleştiren nitelikleri
+     geçerli sınıfın yöntemleri geçersizleştirir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Temel {
+    public function merhabaDe() {
+        echo 'Merhaba ';
+    }
+}
+
+trait DünyaDe {
+    public function merhabaDe() {
+        parent::merhabaDe();
+        echo 'Dünya!';
+    }
+}
+
+class MerhabaDünyam extends Temel {
+    use DünyaDe;
+}
+
+$o = new MerhabaDünyam();
+$o->merhabaDe();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba Dünya!
+]]>
+    </screen>
+   </example>
+   <example xml:id="language.oop5.traits.precedence.examples.ex2">
+    <title>Bir diğer öncelik sırası örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait MerhabaDünya {
+    public function merhabaDe() {
+        echo 'Merhaba Dünya!';
+    }
+}
+
+class DünyaYetmez {
+    use MerhabaDünya;
+    public function merhabaDe() {
+        echo 'Merhaba Evren!';
+    }
+}
+
+$o = new DünyaYetmez();
+$o->merhabaDe();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba Evren!
+]]>
+    </screen>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.multiple">
+   <title>Çoklu Nitelikler</title>
+   <para>
+    Çok sayıda nitelik bir sınıfın içine use deyiminde virgüllerle ayrılarak
+    yerleştirilebilir.
+   </para>
+   <example xml:id="language.oop5.traits.multiple.ex1">
+    <title>Çok sayıda niteliğin kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait Merhaba {
+    public function merhabaDe() {
+        echo 'Merhaba ';
+    }
+}
+
+trait Dünya {
+    public function dünyaDe() {
+        echo 'Dünya';
+    }
+}
+
+class MerhabaDünyam {
+    use Merhaba, Dünya;
+    public function Bağır() {
+        echo '!';
+    }
+}
+
+$o = new MerhabaDünyam();
+$o->merhabaDe();
+$o->dünyaDe();
+$o->Bağır();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba Dünya!
+]]>
+    </screen>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.conflict">
+   <title>Çelişki Çözümleme</title>
+   <para>
+    Bir yönteme aynı isme sahip iki nitelik yerleştirilirse çelişki açıkça
+    çözümlenmediği takdirde ölümcül bir hataya sebep olur.
+   </para>
+   <para>
+    Aynı sınıfta kullanılan nitelikler arasındaki adlandırma
+    çakışmasını çözümlemek için <literal>insteadof</literal> işleci birini
+    seçmek amacıyla kullanılabilir.
+   </para>
+   <para>
+    Bu işlem niteliklerin birini dışlamayı sağladığından diğerini de farklı bir
+    isimle içermek için <literal>as</literal> işleci kullanılabilir.
+   </para>
+   <example xml:id="language.oop5.traits.conflict.ex1">
+    <title>Çelişki çözümleme örneği</title>
+    <para>
+      Bu örnekte, Talker A ve B niteliklerini kullanıyor. A ve B çakışan
+      yöntemlere sahip olduğundan B niteliğinden smallTalk ve A niteliğinden
+      bigTalk kullanılmaktadır.
+    </para>
+    <para>
+      Aliased_Talker ise B'nin bigTalk gerçeklenimini <literal>talk</literal>
+      diye bir takma ad altında kullanmak için <literal>as</literal> işlecinden
+      yararlanmaktadır.
+    </para> 
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait A {
+    public function smallTalk() {
+        echo 'a';
+    }
+    public function bigTalk() {
+        echo 'A';
+    }
+}
+
+trait B {
+    public function smallTalk() {
+        echo 'b';
+    }
+    public function bigTalk() {
+        echo 'B';
+    }
+}
+
+class Talker {
+    use A, B {
+        B::smallTalk insteadof A;
+        A::bigTalk insteadof B;
+    }
+}
+
+class Aliased_Talker {
+    use A, B {
+        B::smallTalk insteadof A;
+        A::bigTalk insteadof B;
+        B::bigTalk as talk;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.visibility">
+   <title>Yöntem Görünürlüğünü Değiştirme</title>
+   <para>
+    Sergileyen sınıf içinde yöntemin görünürlüğünü ayarlamak için
+    <literal>as</literal> sözdizimi kullanılabilir.
+   </para>
+   <example xml:id="language.oop5.traits.visibility.ex1">
+    <title>Yöntem görünürlüğünü değiştirme örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait MerhabaDünya {
+    public function merhabaDe() {
+        echo 'Merhaba Dünya!';
+    }
+}
+
+// merhabaDe görünürlüğünü değiştir
+class Sınıfım1 {
+    use MerhabaDünya { merhabaDe as protected; }
+}
+
+// Görünürlüğü ve ismi değişmiş yöntem
+// merhabaDe görünürlüğü değişmedi
+class Sınıfım2 {
+    use MerhabaDünya { merhabaDe as private özelMerhabam; }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.composition">
+   <title>Niteliklerden oluşturulmuş Nitelikler</title>
+   <para>
+    Sınıflarda olduğu gibi nitelikler de bir diğerinin içinde kullanılabilir.
+    Birden fazla nitelik kısmen veya tamamen bir diğer niteliğin içinde
+    kullanılabilir.
+   </para>
+   <example xml:id="language.oop5.traits.composition.ex1">
+    <title>Niteliklerden nitelik oluşturma örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait Merhaba {
+    public function merhabaDe() {
+        echo 'Merhaba ';
+    }
+}
+
+trait Dünya {
+    public function dünyaDe() {
+        echo 'Dünya!';
+    }
+}
+
+trait MerhabaDünya {
+    use Merhaba, Dünya;
+}
+
+class MerhabaDünyam {
+    use MerhabaDünya;
+}
+
+$o = new MerhabaDünyam();
+$o->merhabaDe();
+$o->dünyaDe();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Merhaba Dünya!
+]]>
+    </screen>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.abstract">
+   <title>Soyut Nitelik Yöntemleri</title>
+   <para>
+    Nitelikler, sergileyen sınıfa gereksinimleri aşılamak amacıyla
+    yöntem soyutlamayı destekler.
+   </para>
+   <example xml:id="language.oop5.traits.abstract.ex1">
+    <title>Gereksinimlerin soyut yöntemlerle ifadesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait Merhaba {
+    public function merhabaDünyaDe() {
+        echo 'Merhaba'.$this->dünyaGetir();
+    }
+    abstract public function dünyaGetir();
+}
+
+class MerhabaDünyam {
+    private $dünya;
+    use Merhaba;
+    public function dünyaGetir() {
+        return $this->dünya;
+    }
+    public function dünyaAta($val) {
+        $this->dünya = $val;
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.static">
+   <title>Duruk Nitelik Yöntemleri</title>
+   <para>
+    Nitelikler hem duruk üyeleri hem de duruk yöntemleri tanımlayabilir.
+   </para>
+   <example xml:id="language.oop5.traits.static.ex1">
+    <title>Duruk Değişkenler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait Sayaç {
+    public function arttır() {
+        static $c = 0;
+        $c = $c + 1;
+        echo "$c\n";
+    }
+}
+
+class C1 {
+    use Sayaç;
+}
+
+class C2 {
+    use Sayaç;
+}
+
+$o = new C1(); $o->arttır(); // 1 basar
+$p = new C2(); $p->arttır(); // 1 basar
+?>
+]]>
+    </programlisting>
+   </example>
+   <example xml:id="language.oop5.traits.static.ex2">
+    <title>Duruk Yöntemler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait DurukÖrnek {
+    public static function bişeyYap() {
+        return 'Bir şey yapıyorum';
+    }
+}
+
+class Örnek {
+    use DurukÖrnek;
+}
+
+Örnek::bişeyYap();
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  
+  <sect2 xml:id="language.oop5.traits.properties">
+   <title>Özellikler</title>
+   <para>
+    Nitelikler özellik tanımlayabilir.
+   </para>
+   <example xml:id="language.oop5.traits.properties.example">
+    <title>Özellik tanımlama örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait NitelikliÖzellik {
+    public $x = 1;
+}
+
+class ÖzellikÖrneği {
+    use NitelikliÖzellik;
+}
+
+$örnek = new ÖzellikÖrneği;
+örnek->x;
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    Bir nitelik bir özellik tanımlarsa sınıf aynı isimde bir özellik
+    tanımlayamaz, aksi takdirde bir hata oluşur. Eğer sınıf tanımı (aynı
+    görünürlük ve ilk değer olarak) uyumluysa <constant>E_STRICT</constant>
+    çıktılanır değilse ölümcül bir hata oluşur.
+   </para>
+   <example xml:id="language.oop5.traits.properties.conflicts">
+    <title>Çelişki yaratma örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+trait NitelikliÖzellik {
+    public $aynı = true;
+    public $farklı = false;
+}
+
+class ÖzellikÖrneği {
+    use NitelikliÖzellik;
+    public $aynı = true; // Strict
+    public $farklı = true; // ölümcül hata
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
