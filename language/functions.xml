@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 740336ed228874ebc439334c41adcbef30734779 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 82d79c66531b3a08b781ac8c89c0c2f2fe4efb8f Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -30,8 +30,8 @@ function foo($arg_1, $arg_2, /* ..., */ $arg_n)
 
    <simpara>
     Bir işlevin içerisinde geçerli her tür PHP kodu kullanılabilir, buna
-    başka işlevler ve <link linkend="keyword.class">sınıf</link> tanımları da
-    dahildir.
+    başka işlevler ve <link linkend="language.oop5.basic.class">sınıf</link> 
+    tanımları da dahildir.
    </simpara>
    <para>
     İşlev isimleri, PHP'deki diğer isimlerle aynı kurallara tabidir. Geçerli
@@ -458,6 +458,34 @@ Bir kase az çilekli yoğurt yap.
        </tbody>
       </tgroup>
      </informaltable>
+     <warning>
+      <para>
+       Yukarıdaki türler için takma ad kullanımı desteklenmemektedir.
+       Ancak, bunlar bir sınıf veya arayüz adı olarak ele alınabilir.
+       Örneğin, <literal>boolean</literal> türünün <type>bool</type> türü 
+       yerine, bir değiştirge gerektiren bir dönüş türü veya &instanceof; 
+       sınıfı bir dönüş değeri veya <literal>boolean</literal> arayüzü veya 
+       bir değiştirge olarak kullanımı:
+      </para>
+      <para>
+       <example>
+        <programlisting role="php">
+ <![CDATA[
+ <?php
+ function test(boolean $param) {}
+ test(true);
+ ?>
+ ]]>
+        </programlisting>
+        &example.outputs;
+        <screen>
+ <![CDATA[
+ Fatal error: Uncaught TypeError: Argument 1 passed to test() must be an instance of boolean, boolean given, called in - on line 1 and defined in -:1
+ ]]>
+        </screen>
+       </example>
+      </para>
+     </warning>
     </sect3>
 
     <sect3 xml:id="functions.arguments.type-declaration.examples">
@@ -570,7 +598,7 @@ NULL
      </para>
 
      <para>
-      Dosyaya özel olmak kaydıyla kesin kipi etkin kılmak mümkündür. Kesin kipte sadece tür belirtiminde belirtilmiş türde bir değer kabul edilir, aksi takdirde bir <classname>TypeError</classname> istisnası oluşur. Bu kuralın tek istisnası, <type>float</type> türünde bir değer beklenen bir işleve <type>integer</type> türünde bir değer belirtilebilmesidir.
+      Dosyaya özel olmak kaydıyla kesin kipi etkin kılmak mümkündür. Kesin kipte sadece tür belirtiminde belirtilmiş türde bir değer kabul edilir, aksi takdirde bir <classname>TypeError</classname> istisnası oluşur. Bu kuralın tek istisnası, <type>float</type> türünde bir değer beklenen bir işleve <type>integer</type> türünde bir değer belirtilebilmesidir. Dahili işlevlerin içinden yapılan işlev çağrıları kesin tür belirtiminden etkilenmez.
      </para>
 
      <para>
@@ -1171,6 +1199,7 @@ Foo::$variable();  // Bu bağlamda $variable değişkenini okuyan $foo->Variable
      <title>Karmaşık çağrılar</title>
      <programlisting role="php">
 <![CDATA[
+<?php
 class Foo
 {
     static function bar()
@@ -1185,10 +1214,11 @@ class Foo
 
 $func = array("Foo", "bar");
 $func(); // prints "bar"
-$f = array(new Foo, "baz");
+$func = array(new Foo, "baz");
 $func(); // prints "baz"
-$f = "Foo::bar";
-$func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretir
+$func = "Foo::bar";;
+$func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretirdi
+?>
 ]]>
      </programlisting>
     </example>
@@ -1284,6 +1314,12 @@ $func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretir
     işlevi</link> olarak işlev değiştirgelerinde kullanılırsa da kullanımı
     bununla sınırlı değildir.
    </simpara>
+   <simpara>
+    Anonim işlevler 
+    <link linkend="class.closure"><classname>Closure</classname></link> 
+    sınıfı kullanılarak gerçeklenir.
+   </simpara>
+
     <example>
      <title>- Anonim işlev örneği</title>
      <programlisting role="php">
@@ -1337,17 +1373,17 @@ $message = 'hello';
 $example = function () {
     var_dump($message);
 };
-echo $example();
+$example();
 
 // $message miras alınır
 $example = function () use ($message) {
     var_dump($message);
 };
-echo $example();
+$example();
 
 // Miras alınan deşkenin değeri işlevin tanımından gelir, çağrısından değil.
 $message = 'world';
-echo $example();
+$example();
 
 // message sıfırlanır
 $message = 'hello';
@@ -1356,12 +1392,12 @@ $message = 'hello';
 $example = function () use (&$message) {
     var_dump($message);
 };
-echo $example();
+$example();
 
 // Üst etki alanında değişen değer
-// işlev çağrısı içinde yansılır.
+// işlev çağrısı içinde yansıtılır.
 $message = 'world';
-echo $example();
+$example();
 
 // Anonim işlevler sıradan değiştirgeleri de kabul edebilir
 $example = function ($arg) use ($message) {
@@ -1452,11 +1488,113 @@ print $sepetim->Toplam(0.05) . "\n";
 ?>
 ]]>
      </programlisting>
-    </example>
-   <simpara>
-    Anonim işlevler <link linkend="class.closure">
-    <classname>Closure</classname></link> kullanılarak gerçeklenmektedir.
-   </simpara>
+   </example>
+   
+   <example>
+    <title><literal>$this</literal>'in özdevinimli bağlanması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class Test
+{
+    public function testing()
+    {
+        return function() {
+            var_dump($this);
+        };
+    }
+}
+
+$object = new Test;
+$function = $object->testing();
+$function();
+    
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+object(Test)#1 (0) {
+}
+]]>
+    </screen>
+    &example.outputs.53;
+    <screen>
+<![CDATA[
+Notice: Undefined variable: this in script.php on line 8
+NULL]]>
+    </screen>
+   </example>
+
+   <para>
+    PHP 5.4.0 itibariyle, bir sınıf başka bir sınıfın içinde bildirildiğinde 
+    <literal>$this</literal>'i işlevin etki alanı içinde kullanılabilir 
+    kılarak özdevinimli olarak ona bağlanır. Bu özdevinimli bağlantı 
+    istenmiyorsa bunun yerine <link linkend="functions.anonymous-functions.static">duruk 
+    anonim işlevler</link> kullanılabilir.
+   </para>
+
+   <sect2 xml:id="functions.anonymous-functions.static">
+    <title>Duruk anonim işlevler</title>
+    <para>
+     PHP 5.4 itibariyle, anonim işlevler duruk olarak bildirilebilmektedir.
+     Böylece, geçerli sınıfın özdevinimli olarak bunlara bağlanamaması 
+     sağlanabilir. Çalışma anında nesneler de özdevinimli olarak bunlara 
+     bağlanamayacaktır.
+    </para>
+    <para>
+     <example>
+      <title>- Duruk anonim bir işlevin içinde <literal>$this</literal> 
+        kullanmaya çalışmak</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+new class {
+    function __construct()
+    {
+        (static function() {
+            var_dump($this);
+        })();
+    }
+};
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+Notice: Undefined variable: this in %s on line %d
+NULL
+]]>
+      </screen>
+     </example>
+    </para>
+
+    <para>
+     <example>
+      <title>- Duruk anonim bir işleve bir nesne bağlamaya çalışmak</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+(static function() {
+    // function body
+})->call(new StdClass);
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+Warning: Cannot bind an instance to a static closure in /in/sLLS9 on line 5
+]]>
+      </screen>
+     </example>
+    </para>
+   </sect2>
 
    <sect2 role="changelog">
     &reftitle.changelog;
@@ -1473,7 +1611,8 @@ print $sepetim->Toplam(0.05) . "\n";
         <row>
          <entry>5.4.0</entry>
          <entry>
-          Anonim işlevlerde <varname>$this</varname> kullanılabilir.
+          Duruk olarak bildirilmek koşuluyla anonim işlevlerde 
+          <varname>$this</varname> kullanılabilir.
          </entry>
         </row>
         <row>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d1b39ea532d197c48104180f5e54e5d8b8e10505 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.serialize" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>serialize</refname>
@@ -43,11 +43,11 @@
       </para>
       <para>
        PHP nesneleri dizgeleştirirken önce <link
-       linkend="language.oop5.magic">__sleep</link> üye işlevi çağrılmaya
+       linkend="object.sleep">__sleep</link> üye işlevi çağrılmaya
        çalışılır. Bu işlem, nesneye dizgeleştirme öncesinde bir takım
        temizlikler yapabilmesi imkanını tanır. Benzer şekilde,
        <function>unserialize</function> kullanılarak nesne özgün durumuna
-       getirilirken <link linkend="language.oop5.magic">__wakeup</link> üye
+       getirilirken <link linkend="object.wakeup">__wakeup</link> üye
        işlevi çağrılmaya çalışılır.
       </para>
       <note>
@@ -68,6 +68,12 @@
   <para>
    Belirtilen değerin herhangi bir yerde saklanabilecek, akımlar üzerinden
    aktarılabilen bir gösterimini döndürür.
+  </para>
+  <para>
+   Bunun ikil bir dizge oluşuna, null baytlar içerebileceğine ve ikil olarak
+   ele alınabileceğine dikkat ediniz. Örneğin,
+   <function>serialize</function> çıktısının genelde bir veritabanının bir
+   CHAR veya TEXT alanında değil bir BLOB alanında saklanması gerekir.
   </para>
  </refsect1>
 
@@ -101,46 +107,43 @@ if (!odbc_execute($stmt, $sqldata)) {
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.7</entry>
-       <entry>
-        Nesne dizgeleştirme işlemi tamamen gerçeklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="notes">
   &reftitle.notes;
   <note>
    <para>
-    PHP'nin yerleşik nesnelerini dizgeleştirmek mümkün değildir.
+    Yerleşik PHP nesenelerinin çoğunun dizgeleştirilemeyeceğine dikkar
+    ediniz. Bu bakımda ya <interfacename>Serializable</interfacename> arayüzü
+    veya sihirli <link linkend="object.sleep">__sleep()</link> ve
+    <link linkend="object.wakeup">__wakeup()</link> yöntemleri kullanılarak
+    gerçeklenir. Dahili bir sınıf bu gereksinimleri sağlamıyorsa gerektiği
+    gibi dizgeleştirilemez.
+    </para>
+   <para>
+    Yukarıdaki kuralın geçmişten gelen bazı istisnaları olup bazı dahili
+    nesneler arayüz gerçeklemeden veya malum yöntemleri kullanmadan
+    dizgeleştirilebilir. Özellikle, PHP 5.2.0 öncesi
+    <classname>ArrayObject</classname> buna bir örnektir.
    </para>
-  </note>
- </refsect1>
+   </note>
+  <warning>
+   <para>
+    <function>serialize</function> işlevi nesneleri dizgeleştirirken, azami
+    uyumluluğu sağlamak için isimalanlı sınıfların sınıf isimlerinin sonuna
+    tersbölü konmaz.
+   </para>
+  </warning>
+</refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><function>unserialize</function></member>
-    <member><link linkend="oop4.serialization">Nesneleri Dizgeleştirme</link>
-    </member>
+    <member><function>var_export</function></member>
+    <member><function>json_encode</function></member>
+    <member><link linkend="language.oop5.serialization">Nesneleri Dizgeleştirme</link></member>
+    <member><link linkend="object.sleep">__sleep()</link></member>
+    <member><link linkend="object.wakeup">__wakeup()</link></member>
    </simplelist>
   </para>
  </refsect1>
