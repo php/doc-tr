@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d62d6b01c4d00cfebb7737054d19ba7ce26132d0 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.setcookie" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>setcookie</refname>
@@ -12,10 +12,10 @@
   <methodsynopsis>
    <type>bool</type><methodname>setcookie</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>değer</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>değer</parameter><initializer>""</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>zaman_aşımı</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>yol</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>alan</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>yol</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>alan</parameter><initializer>""</initializer></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>güvenli</parameter><initializer>false</initializer></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>sadece_http</parameter><initializer>false</initializer></methodparam>
   </methodsynopsis>
@@ -29,29 +29,18 @@
    karakteri çıktısından bile önce yer almasını gerektirir.
   </para>
   <para>
-   Çerezler bir kere atandı mı, artık <varname>$_COOKIE</varname> veya
-   <varname>$HTTP_COOKIE_VARS</varname> dizileri ile sonraki sayfa
-   yüklemesinde erişilebilir olacaktır. <varname>$_COOKIE</varname> gibi
-   <link linkend="language.variables.superglobals">süper küresellerin</link>
-   PHP 4.1.0'dan itibaren kullanılabilir hale geldiğini unutmayınız. Çerez
-   değerleri ayrıca, <varname>$_REQUEST</varname> içinde de mevcuttur.
+   Çerezler bir kere atandı mı, artık <varname>$_COOKIE</varname> dizisi ile 
+   sonraki sayfa yüklemesinde erişilebilir olacaktır. Çerez
+   değerleri ayrıca, <varname>$_REQUEST</varname> içinde de mevcut olabilir.
   </para>
  </refsect1>
 
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
-   <parameter>isim</parameter> değiştirgesi dışında tüm değiştirgeler isteğe
-   bağlıdır. Bir değiştirgeyi belirtmeden geçmek için değer olarak bir boş
-   dizge (<emphasis>&quot;&quot;</emphasis>) belirtebilirsiniz.
-   <parameter>zaman_aşımı</parameter> değeri bir tamsayı olduğundan bir boş
-   dizge ile atlanamaz, yerine sıfır (<emphasis>0</emphasis>) kullanın.
-  </para>
-  <para>
    <function>setcookie</function> değiştirgelerinin her birinin nasıl
    çalıştığını hakkında bilgi edinmek için
-   <link xlink:href="&spec.cookies;">Netscape çerez belirtimi</link>ne
-   bakınız.
+   <link xlink:href="&url.rfc;6265">RFC 6265</link>'e bakınız.
    <variablelist>
     <varlistentry>
      <term><parameter>isim</parameter></term>
@@ -67,8 +56,8 @@
       <para>
        Çerezin değeri. Bu değer istemcinin bilgisayarında saklanır. Bu
        bakımdan çerezlerde güvenlik ihlaline konu bilgiler saklamayın.
-       <parameter>isim</parameter> değiştirgesinde 'çerezim' ismini
-       kullandığınız varsayımıyla, bu çerezin değerini
+       <parameter>isim</parameter> değiştirgesinde <literal>'çerezim'</literal> 
+       ismini kullandığınız varsayımıyla, bu çerezin değerini
        <varname>$_COOKIE['çerezim']</varname> değişkeni ile alabilirsiniz.
       </para>
      </listitem>
@@ -94,10 +83,6 @@
          belirtilen <literal>Wdy, DD-Mon-YYYY HH:MM:SS GMT</literal> tarih
          biçeminin zıddı olup bu dönüşümü PHP dahili olarak yapar.
         </para>
-        <para>
-         <parameter>zaman_aşımı</parameter> istemci zamanının sunucu
-         zamanından farkı hesaba katılarak karşılaştırılır.
-        </para>
        </note>
       </para>
      </listitem>
@@ -119,14 +104,18 @@
      <term><parameter>alan</parameter></term>
      <listitem>
       <para>
-       Çerezin kullanılabileceği alan. Çerezi mesela.dom ve alt alanlarında
-       kullanılabilir yapmak için değer olarak
-       <literal>'.mesela.dom'</literal> belirtmelisiniz. Baştaki nokta
-       gereksiz olsa da bazı tarayıcılarla uyumluluk adına bulunması daha
-       iyidir. Değer olarak, <literal>'belge.mesela.dom'</literal>
-       belirtilirse çerez sadece <literal>belge</literal> alt alanında
-       kullanılabilir olacaktır. Sondan eşleme ile ilgili kurallar için
-       <link xlink:href="&spec.cookies;">belirtime</link> bakınız.
+       Çerezin kullanılabileceği (alt)alan. Çerezi 
+       (<literal>'www.example.com'</literal> gibi) bir alt alan adında  
+       kullanılabilir yapmak onu tüm diğer alt alan adlarında da 
+       (w2.www.example.com gibi) kullanılabilir kılacaktır.için değer olarak
+       <literal>'.mesela.dom'</literal> belirtmelisiniz. Çerezi tüm alt alan 
+       adlarında kullanılabilir yapmak için buraya alan adını (örneğimiz için 
+       (<literal>'example.com'</literal>) yazın.
+      </para>
+      <para>
+       Eski tarayıcılar hala kullanımdan kalkmış olan ve alt alan adıyla 
+       eşleşme sağlamak için . ile başlatmayı gerektiren  <link 
+         xlink:href="&url.rfc;2109">RFC 2109</link>'u gerçeklemektedir.
       </para>
      </listitem>
     </varlistentry>
@@ -137,7 +126,7 @@
        Çerezin istemciye güvenli bir HTTPS bağlantısı üzerinden mi
        aktarılması gerektiğini belirtmek için kullanılır. &true; belirtildiği
        takdirde, çerez sadece güvenli bağlantı mevcutsa gönderilecektir.
-       &false; öntanımlı değerdir. Sunucu tarafında, bu çeşit çerezin sadece
+       Sunucu tarafında, bu çeşit çerezin sadece
        (<varname>$_SERVER["HTTPS"]</varname> ile ilgili) güvenli bağlantı
        üzerinden gönderilmesi kararı programcıya aittir.
       </para>
@@ -151,8 +140,9 @@
        erişilebilir olacaktır. Yani çerez, JavaScript gibi betik dilleri
        tarafından erişilebilir olmayacaktır. Bu ayarlama, XSS saldırılarıyla
        kimlik hırsızlığı riskini etkin şekilde azaltmaya (tüm tarayıcılar
-       tarafından desteklenmese de) yardımcı olabilir.  Bu değiştirge PHP
-       5.2.0'da eklenmiştir. Değer olarak &true; veya &false; belirtilebilir.
+       tarafından desteklenmese de) yardımcı olabilir, fakat bu sava çoğunlukla 
+       itiraz edilir.  Bu değiştirge PHP 5.2.0'da eklenmiştir. Değer olarak 
+       &true; veya &false; belirtilebilir.
       </para>
      </listitem>
     </varlistentry>
@@ -184,7 +174,7 @@ $value = 'bir şeyler bir yerlere';
 
 setcookie("TestCookie", $value);
 setcookie("TestCookie", $value, time()+3600);  /* 1 saatliğine geçerli */
-setcookie("TestCookie", $value, time()+3600, "/~rasmus/", ".mesela.dom", 1);
+setcookie("TestCookie", $value, time()+3600, "/~rasmus/", "example.com", 1);
 ?>
 ]]>
     </programlisting>
@@ -206,7 +196,6 @@ setcookie("TestCookie", $value, time()+3600, "/~rasmus/", ".mesela.dom", 1);
 <?php
 // Bağımsız bir çerez bas
 echo $_COOKIE["TestCookie"];
-echo $HTTP_COOKIE_VARS["TestCookie"];
 
 // Tüm çerezleri görmek için başka bir yol
 print_r($_COOKIE);
@@ -228,7 +217,7 @@ print_r($_COOKIE);
 <?php
 // süre bitimini 1 saat önceye ayarlayalım
 setcookie ("TestCookie", "", time() - 3600);
-setcookie ("TestCookie", "", time() - 3600, "/~rasmus/", ".mesela.dom", 1);
+setcookie ("TestCookie", "", time() - 3600, "/~rasmus/", "example.com", 1);
 ?>
 ]]>
     </programlisting>
@@ -254,6 +243,8 @@ setcookie("cookie[one]", "cookieone");
 // sayfayı yeniden yükledikten sonra çerezler basalım
 if (isset($_COOKIE['cookie'])) {
     foreach ($_COOKIE['cookie'] as $name => $value) {
+        $name = htmlspecialchars($name);
+        $value = htmlspecialchars($value);
         echo "$name : $value <br />\n";
     }
 }
@@ -284,6 +275,13 @@ one : cookieone
       </row>
      </thead>
      <tbody>
+       <row>
+       <entry>5.5.0</entry>
+       <entry>
+        Max-Age niteliği istemciye gönderilen Set-Cookie başlığında artık 
+        bulunmaktadır.
+       </entry>
+      </row>
       <row>
        <entry>5.2.0</entry>
        <entry>
@@ -375,8 +373,8 @@ one : cookieone
     <member><function>header</function></member>
     <member><function>setrawcookie</function></member>
     <member><link linkend="features.cookies">Çerezler bölümü</link></member>
+    <member><link xlink:href="&url.rfc;6265">RFC 6265</link></member>
     <member><link xlink:href="&url.rfc;2109">RFC 2109</link></member>
-    <member><link xlink:href="&url.rfc;2965">RFC 2965</link></member>
    </simplelist>
   </para>
  </refsect1>

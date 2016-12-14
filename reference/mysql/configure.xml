@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: mustafa Status: ready -->
+<!-- EN-Revision: 95bdd6883b5dde9504701777ba81b3c5f15df52b Maintainer: mustafa Status: ready -->
 <section xml:id="mysql.installation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.install;
 
+ <warning>
+  &mysql.alternative.note;
+ </warning>
+ 
  <para xml:id="mysql.configure">
   Derlemek için, tercihe bağlı <literal>[DIR]</literal>
   MySQL kurulum dizinine işaret edecek şekilde,
@@ -13,7 +17,7 @@
  <para>
   Bu MySQL eklentisi MySQL 4.1.0 ve üzeri ile uyumlu olduğu halde,
   bu sürümlerin sağladığı fazladan özellikleri desteklemez.
-  Bunun için, <link linkend="ref.mysqli">MySQLi</link> eklentisini kullanın.
+  Bunun için, <link linkend="book.mysqli">MySQLi</link> eklentisini kullanın.
  </para>
  <para>
   Eğer mysqli eklentisinin yanısıra mysql eklentisini de kurmak isterseniz
@@ -23,49 +27,64 @@
 
  <section xml:id="mysql.installation.linux">
   <title>Linux Sistemlerde Kurulum</title>
-  <section>
-   <title>PHP 4</title>
-   <para>
-    <option role="configure">--with-mysql</option> seçeneği
-    öntanımlı olarak etkindir. Bu davranış
-    <option role="configure">--without-mysql</option>
-    ayar seçeneği ile devre dışı bırakılabilir.
-    Eğer MySQL, MySQL kurulum dizini belirtilmeden seçilmişse,
-    PHP kendisi ile birlikte gelen istemci kütüphanelerini kullanacaktır.
-   </para>
-   <para>
-    MySQL kullanan uygulamalar (örneğin <literal>auth-mysql</literal>)
-    çalıştıran kullanıcılar birlikte gelen kütüphaneyi kullanmak yerine MySQL
-    kurulum dizini belirtmelidir; örnek:
-    <option role="configure">--with-mysql=/bir/yer/mysql</option>.
-    Bu PHP'yi MySQL tarafından kurulan kütüphaneleri
-    kullanmaya zorlayarak uyuşmazlıkları önleyecektir.
-   </para>
-  </section>
-  <section>
-   <title>PHP 5+</title>
-   <para>
-    MySQL ne öntanımlı olarak seçilmiştir,
-    ne de PHP ile birlikte gelir. Nedenini öğrenmek için
-    <link linkend="faq.databases.mysql.php5">SSS</link> adresini okuyunuz.
-    MySQL desteğini dahil etmek için
-    <option role="configure">--with-mysql[=DIR]</option> ayar seçeneğini
-    kullanın. <emphasis>Başlık dosyalarını ve kütüphaneleri</emphasis>
-    <link xlink:href="&url.mysql;">MySQL</link> sitesinden indirebilirsiniz.
-   </para>
-  </section>
+  <para>
+   <literal>[DIR]</literal> MySQL istemci kütüphanesi (başlık ve kütüphane dosyaları) dosyalarının yolu olup bunlar <link xlink:href="&url.mysql;">MySQL</link> ile indirilebilir.
+  </para>
+  <table>
+   <title>ext/mysql derleme zamanı destek matrisi</title>
+   <tgroup cols="5">
+    <thead>
+     <row>
+      <entry>PHP &Version;</entry>
+      <entry>&Default;</entry>
+      <entry>&ConfigureOptions;: <link linkend="mysqlnd.overview">mysqlnd</link></entry>
+      <entry>&ConfigureOptions;: <literal>libmysqlclient</literal></entry>
+      <entry>&Changelog;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>4.x.x</entry>
+      <entry>libmysqlclient</entry>
+      <entry>&NotAvailable;</entry>
+      <entry>etkisizleştirmek için 
+       <option role="configure">--without-mysql</option></entry>
+      <entry>MySQL öntanımlı olarak etkindir. MySQL istemci kütüphaneleri 
+       dahil edilir.</entry>
+     </row>
+     <row>
+      <entry>5.0.x, 5.1.x, 5.2.x</entry>
+      <entry>libmysqlclient</entry>
+      <entry>&NotAvailable;</entry>
+      <entry><option role="configure">--with-mysql=[DIR]</option></entry>
+      <entry>
+       MySQL artık öntanımlı olarak etkin değildir ve MySQL istemci 
+       kütüphaneleri dahil edilmez.
+      </entry>
+     </row>
+     <row>
+      <entry>5.3.x</entry>
+      <entry>libmysqlclient</entry>
+      <entry><option role="configure">--with-mysql=mysqlnd</option></entry>
+      <entry><option role="configure">--with-mysql=[DIR]</option></entry>
+      <entry>mysqlnd kullanılabilir oldu</entry>
+     </row>
+     <row>
+      <entry>5.4.x</entry>
+      <entry>mysqlnd</entry>
+      <entry><option role="configure">--with-mysql</option></entry>
+      <entry><option role="configure">--with-mysql=[DIR]</option></entry>
+      <entry>mysqlnd öntanımlı oldu</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
  </section>
 
  <section xml:id="mysql.installation.windows">
   <title>Windows Sistemlerde Kurulum</title>
-  <section>
-   <title>PHP 4</title>
-   <para>
-    PHP MySQL eklentisi PHP içinde derlenmiştir.
-   </para>
-  </section>
-  <section>
-   <title>PHP 5+</title>
+  <section xml:id="mysql.installation.windows.php52">
+   <title>PHP 5.0.x, 5.1.x, 5.2.x</title>
    <para>
     MySQL artık öntanımlı olarak etkin değildir, bu yüzden
     <filename>php_mysql.dll</filename> DLL'i &php.ini;
@@ -76,7 +95,7 @@
     <envar>PATH</envar>'inden erişilebilir olmalıdır.
     Bunu nasıl yapabileceğinizi öğrenmek için
     "<link linkend="faq.installation.addtopath">PHP dizinimi Windows'ta
-    <varname>PATH</varname> değişkenine nasıl eklerim</link>" başlıklı
+    <envar>PATH</envar> değişkenine nasıl eklerim</link>" başlıklı
     soruyu inceleyiniz. <filename>libmysql.dll</filename>'i Windows sistem
     dizinine kopyalamak işe yarasa da (çünkü sistem dizini öntanımlı olarak
     sistemin <envar>PATH</envar>'indedir), tavsiye edilmez.
@@ -102,6 +121,15 @@
     </para>
    </note>
   </section>
+  <section xml:id="mysql.installation.windows.php53">
+   <title>PHP 5.3.0+</title>
+   <para>
+    <link linkend="mysqlnd.overview">MySQL Yerli Sürücü</link> öntanımlı olarak 
+    etkindir. <filename>php_mysql.dll</filename> buna dahildir, fakat 
+    <filename>libmysql.dll</filename> artık ne gerekmekte ne de 
+    kullanılmaktadır.
+   </para>
+  </section>
  </section>
 
  <section xml:id="mysql.installation.notes">
@@ -118,7 +146,7 @@
     <para>
      Eğer (öntanımlı) <emphasis>latin</emphasis> karakter seti dışında
      karakter kümelerine ihtiyaç duyarsanız, karakter kümesi desteği ile
-     derlenmiş olan harici bir libmysql kurmalısınız.
+     derlenmiş olan harici bir libmysqlclient kurmalısınız.
     </para>
    </note>
  </section>

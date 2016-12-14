@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 66e166573396fdcc8f37885e092ed24a0982ac2f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ae6be5bb4f40f334c713bdf0dc11ac6a59f6461d Maintainer: nilgun Status: ready -->
  <chapter xml:id="faq.databases" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Veritabanı Sorunları</title>
   <titleabbrev>Veritabanı Sorunları</titleabbrev>
@@ -20,17 +20,14 @@
     </question>
     <answer>
      <para>
-      Windows makinelerde dahili ODBC desteğini, doğru ODBC sürücüsüyle
+      Unix makinelerde <link linkend="ref.pdo-odbc">PDO_ODBC</link>
+      veya <link linkend="book.uodbc">Unified ODBC API</link>.
       kullanabilirsiniz.
      </para>
      <para>
-      Unix makinelerde, protokol uyumluluğu (en azından oldukça uyumlu)
-      sayesinde Microsoft SQL Sunucusuna erişmek için Sybase-CT sürücüsünü
-      kullanabilirsiniz. Sybase, <link xlink:href="&url.sybase.ctlib;">Linux
-      sistemler için gerekli kütüphanelerin özgür sürümlerine</link>
-      sahiptir. Diğer Unix işletim sistemlerinin kullanıcılarının doğru
-      kütüphaneleri temin etmek için Sybase'e başvurmaları gerekmektedir.
-      Ayrıca, sonraki soruya da bakınız.
+      Windows makinelerde, ayrıca 
+      <link linkend="ref.pdo-sqlsrv">PDO_SQLSRV</link> veya
+      <link linkend="book.sqlsrv">SQLSRV</link> de kullanabilirsiniz.      
      </para>
     </answer>
    </qandaentry>
@@ -185,93 +182,6 @@
       Eklentileri karışık kullanmak mümkün değildir. Bu bakımdan, örneğin, bir
       mysqli bağlantısını PDO_MySQL veya ext/mysql'e aktarmak işe
       yaramayacaktır.
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.databases.mysql.php5">
-    <question>
-     <para>
-      PHP 5 artık MySQL istemci kütüphaneleri ile gelmiyor. Bunun anlamı
-      nedir? MySQL'i hala PHP ile kullanabilecek miyim?  MySQL kullanmayı
-      denediğimde "function undefined" (tanımsız işlev) hataları alıyorum. Bu
-      hataları neden veriyor?
-     </para>
-    </question>
-    <answer>
-     <para>
-      PHP'de MySQL desteği şu veya bu şekilde daima olacaktır. PHP 5'te
-      farklı olan tek şey,  istemci kütüphanesinin PHP ile birlikte
-      dağıtılmamasıdır. Bunun çeşitli sebepleri var:
-     </para>
-     <itemizedlist>
-      <listitem>
-       <para>
-        Bu günlerde çoğu sistemde istemci kütüphanesi zaten kurulu geliyor.
-       </para>
-      </listitem>
-      <listitem>
-       <para>
-        Yukarıda bahsedildiği gibi, bir kütüphanenin bir çok sürümüne sahip
-        olmak bazı karışıklıklara sebep olabilir. Örneğin, mod_auth_mysql'i
-        PHP sizinkinden farklı bir sürümle ilintileyebilir; Apache içinde
-        ikisinin birden etkin olması kaçınılmaz olarak bir çökme ile
-        sonuçlanır. Ayrıca, PHP ile dağıtılan istemcinin sürümü sunucu ile
-        tam uyumlu olmayabilir. Bunun en belirgin belirtisi Unix soket
-        dosyası mysql.socket üzerinde bir anlaşmazlık oluşmasıdır.
-       </para>
-      </listitem>
-      <listitem>
-       <para>
-        Bakım işleri gevşetilmişti ve yazılım zaman içinde mevcut sürümün
-        gerisine düşmüştü.
-       </para>
-      </listitem>
-      <listitem>
-       <para>
-        Kütüphanenin gelecek sürümleri GPL altında olacaktır. Bir GPL'li
-        kütüphaneyi bir BSD/Apache tarzı lisanslı bir proje ile birlikte
-        paketleyemezdik. Bunu bir noktada durdurmak için PHP 5 iyi bir
-        seçimdi.
-       </para>
-      </listitem>
-     </itemizedlist>
-     <para>
-      Bu aslında pek çok kişiyi etkilemeyecektir. Unix kullanıcıları, en
-      azından ne yapacaklarını bilen kişilerdir. PHP'yi derlerken, sistemde
-      kurulu libmysqlclient kütüphanesini <option role="configure">
-      --with-mysql=/usr</option> yapılandırma seçeneği ile belirtmeleri
-      yeterli olacaktır. Windows kullanıcıları &php.ini; içinde
-      <filename>php_mysql.dll</filename> eklentisini etkin kılabilirler.
-      Kurulum talimatları hakkında daha ayrıntılı bilgi için <link
-      linkend="ref.mysql">MySQL Başvuru Kılavuzuna</link> bakınız. Ayrıca,
-      <filename>libmysql.dll</filename> dosyası da sistem
-      <envar>PATH</envar>'ından erişilebilir olmalıdır. Daha ayrıntılı bilgi
-      için <link linkend="faq.installation.addtopath">Windows sistem PATH'ının
-      ayarlanması</link> ile ilgili SSS'yi okuyun.
-      <filename>libmysql.dll</filename> (ve PHP ile ilgili diğer dosyalar)
-      PHP dizininde bulunduğundan, bu dizinin sistem <envar>PATH</envar>'ına
-      eklenmesi gerekebilir.
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.databases.shared-mysql">
-    <question>
-     <para>
-      Paylaşımlı MySQL desteğini kurduktan sonra, Apache, libphp4.so
-      yüklendiği anda core dosyası dökümlüyor. Bu düzeltilebilir mi?
-     </para>
-    </question>
-    <answer>
-     <para>
-      MySQL kütüphanelerini pthreads ile ilintilerseniz bu durum ortaya
-      çıkar. <code>ldd</code> ile bunun olup olmadığına bakın. Böyle bir
-      durum varsa, MySQL kaynak paketini veya kaynak RPM'sini indirip
-      pthreads ile ilintileme seçeneğini derleme seçeneklerinden çıkarıp,
-      paketi yeniden derlemelisiniz. Bu işlem sorunu çözecektir. Bundan sonra
-      PHP'yi yeni MySQL kütüphanesini kullanacak şekilde yeniden derlemeniz
-      gerekecektir.
      </para>
     </answer>
    </qandaentry>

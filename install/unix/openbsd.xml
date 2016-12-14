@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d4fc928c2450c3211bb3569cc83670c13c3fad7b Maintainer: nilgun Status: ready -->
 <sect1 xml:id="install.unix.openbsd" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>OpenBSD Kurulum Bilgiler</title>
  <para>
-  Bu bölüm PHP'nin <link xlink:href="&url.openbsd;">OpenBSD 3.6</link>
+  Bu bölüm PHP'nin <link xlink:href="&url.openbsd;">OpenBSD 5.8</link>
   sistemlere kurulumu hakkında bilgiler ve ipuçları içerir.
  </para>
  <sect2 xml:id="install.unix.openbsd.packages">
@@ -16,10 +16,10 @@
     duyacağınız dosyaları OpenBSD CD'nizde veya FTP sitesinde bulabilirsiniz.
    </simpara>
    <simpara>
-    İhtiyacınız olan ana paket <filename>php4-core-4.3.8.tgz</filename> olup,
+    İhtiyacınız olan ana paket <filename>php</filename> olup,
     temel motoru (artı gettext ve iconv) içerir. Modül paketleri ise
-    <filename>php4-mysql-4.3.8.tgz</filename> veya
-    <filename>php4-imap-4.3.8.tgz</filename> gibi isimler alırlar. Bu
+    <filename>php-mysql</filename> veya
+    <filename>php-imap</filename> gibi isimler alırlar. Bu
     modülleri &php.ini; dosyanızda etkin ve etkisiz kılmak için
     <command>phpxs</command> komutuna ihtiyacınız olacak.
    </simpara>
@@ -27,20 +27,18 @@
     <title>- OpenBSD Paket Kurulum Örneği</title>
     <programlisting role="shell">
 <![CDATA[
-# pkg_add php4-core-4.3.8.tgz
-# /usr/local/sbin/phpxs -s
-# cp /usr/local/share/doc/php4/php.ini-recommended /var/www/conf/php.ini
-  (add in mysql)
-# pkg_add php4-mysql-4.3.8.tgz
-# /usr/local/sbin/phpxs -a mysql
-  (add in imap)
-# pkg_add php4-imap-4.3.8.tgz
-# /usr/local/sbin/phpxs -a imap
-  (remove mysql as a test)
-# pkg_delete php4-mysql-4.3.8
-# /usr/local/sbin/phpxs -r mysql
-  (install the PEAR libraries)
-# pkg_add php4-pear-4.3.8.tgz
+# pkg_add php
+# pkg_add php-fpm
+# pkg_add php-mysql
+  (PEAR kütüphanesini kur)
+# pkg_add pear
+
+Paketlerle ilgili talimatları izle
+  (paketleri kaldırmak için)
+# pkg_delete php
+# pkg_delete php-fpm
+# pkg_delete php-mysql
+# pkg_delete pear
 ]]>
     </programlisting>
    </example>
@@ -68,8 +66,14 @@
   <title>Bilinen Sorunlar</title>
   <itemizedlist>
    <listitem>
+    <simpara>Apache ve Nginx artık OpenBSD'nin öntanımlı sunucusu olmamakla 
+     beraber her ikiksi de portlarda ve paketlerde kolayca bulunabilir. Yeni 
+     öntanımlı sunucu 'httpd'dir.
+    </simpara>
+   </listitem>
+   <listitem>
     <simpara>
-     Apache'nin öntanımlı kurulumu bir <link
+     httpd'nin öntanımlı kurulumu bir <link
      xlink:href="&url.openbsd.chroot;">chroot(2)</link> hücresinde çalışır,
      böylece PHP betiklerinin <filename>/var/www</filename> altındaki
      dosyalara erişmesi engellenir. Bu bakımdan PHP oturum dosyalarının
@@ -81,18 +85,13 @@
      <filename>/etc/resolv.conf</filename> ve
      <filename>/etc/services</filename> gibi dosyaların
      <filename>/var/www/etc</filename> dizinine taşınması gerekecektir.
-     OpenBSD PEAR paketi özdevinimli olarak doğru chroot dizinlerine kurulur
-     dolayısıyla onun için özel bir değişiklik yapmak gerekmez. OpenBSD
-     üzerinde Apache hakkında daha ayrıntılı bilgi edinmek için <link
-     xlink:href="&url.openbsd.apachefaq;">OpenBSD SSS</link>'sine bakınız.
+     OpenBSD PEAR paketi özdevinimli olarak doğru chroot dizinlerine kurulur.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <link xlink:href="&url.gd;">gd</link> için OpenBSD 3.6 paketi
-     XFree86'nın kurulu olmasını gerektirir. X11 için gereken bazı yazı tipi
-     özelliklerini istemiyorsanız bunun yerine
-     <filename>php4-gd-4.3.8-no_x11.tgz</filename> paketini kurunuz.
+     <link xlink:href="&url.gd;">gd</link> eklentisi için, OpenBSD 5.7+ paketi
+     XFree86'nın kurulu olmasını gerektirir. Bu, kurulum sonrası paketlere eklenerek kurulabilir (OpenBSD FAQ#4'e bakınız).
     </simpara>
    </listitem>
   </itemizedlist>

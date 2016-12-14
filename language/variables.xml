@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e57d6ccfdd9e474227c60e0773a3c7d1ecb9536 Maintainer: yasar Status: ready -->
+<!-- EN-Revision: 9884bb84dd0d63fbc19312349f75f31b229e3190 Maintainer: yasar Status: ready -->
  <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Değişkenler</title>
 
@@ -424,6 +424,13 @@ function test_global()
      </programlisting>
     </example>
    </para>
+   <note>
+    <para>
+     Eğer içerildiği dosya bir işlevin içinde içerilmişse 
+     <literal>global</literal> anahtar sözcüğünün işlevlerin dışında kullanımı 
+     bir hataya yol açmaz.
+    </para>
+   </note>
   </sect2>
 
   <sect2 xml:id="language.variables.scope.static">
@@ -518,8 +525,9 @@ say();
     <note>
      <para>
       Duruk değişkenler yukarıdaki örneklerde yapıldığı gibi tanımlanabilir.
-      Bu değişkenlere ifadelerin sonuçlarını değer olarak atamaya çalışmak
-      çözümleme hatasına neden olacaktır.
+      PHP 5.6 itibariyle, bu değişkenlere ifadelerin sonuçlarını değer olarak 
+      atayabilirsiniz fakat burada herhangi bir işlev kullanamazsınız, bu bir 
+      çözümleme hatasına sebep olur.
      </para>
      <para>
       <example>
@@ -529,8 +537,8 @@ say();
 <?php
 function foo(){
     static $int = 0;          // doğru
-    static $int = 1+2;        // yanlış  (ifade olduğu için)
-    static $int = sqrt(121);  // yanlış  (bu da ifade olduğu için)
+    static $int = 1+2;        // doğru  (PHP 5.6 itibariyle)
+    static $int = sqrt(121);  // yanlış (bir işlevle atandığı için)
 
     $int++;
     echo $int;
@@ -744,28 +752,60 @@ echo "$a $merhaba";
     erişim için kullanılıyorsa yine aynı durum geçerlidir.
    </simpara>
 
+   <caution>
+    <simpara>
+     Bir değişken özelliğinin atıfla bırakılması bir dizi içindeyse PHP 5 ve 
+     PHP 7'de farklı sözdizimlerine sahiptir. <link 
+     linkend="migration70.incompatible.variable-handling.indirect">PHP 7.0 göç 
+     rehberi</link>nde ifade türlerindeki değişiklikler  ve karışıklıktan 
+     kaçınmak için kaşlı ayraçların nasıl kullanılacağı ile ilgili ayrıntıları 
+     bulabilirsiniz.
+    </simpara>
+   </caution>
+
+   <simpara>
+    Kaşlı ayraçlar, özellik ismini açıkça sınırlamak için de kullanılabilir.
+    Bir dizi içinde bulunan bir özelliğin değerlerine erişmek için ya da 
+    özellik ismi başka türlü geçerli olmayan karakterler (örn, 
+    <function>json_decode</function> veya <link 
+    linkend="book.simplexml">SimpleXML</link> ile üretilmiş) içeriyorsa çok 
+    kullanışlıdır.
+   </simpara>
+
    <para>
     <example>
-     <title>- Değişken işlevi örneği</title>
+     <title>- Değişken özellik örneği</title>
       <programlisting role="php">
 <![CDATA[
 <?php
 class foo {
-    var $zam = 'Buna zam derler.';
+    var $bar = 'I am bar.';
+    var $arr = array('I am A.', 'I am B.', 'I am C.');
+    var $r   = 'I am r.';
 }
 
 $foo = new foo();
-$zam = 'zam';
-$maz = array('foo', 'zam', 'maz', 'para');
-echo $foo->$zam . "\n";
-echo $foo->$maz[1] . "\n";
+$bar = 'bar';
+$baz = array('foo', 'bar', 'baz', 'quux');
+echo $foo->$bar . "\n";
+echo $foo->{$baz[1]} . "\n";
+
+$start = 'b';
+$end   = 'ar';
+echo $foo->{$start . $end} . "\n";
+
+$arr = 'arr';
+echo $foo->{$arr[1]} . "\n";
+
 ?>
 ]]>
      </programlisting>
      &example.outputs;
      <screen>
-Buna zam derler.
-Buna zam derler.
+I am bar.
+I am bar.
+I am bar.
+I am r.
      </screen>
     </example>
    </para>
@@ -810,40 +850,51 @@ Buna zam derler.
     </para>
 
     <para>
-      Kurulumunuza ve kişisel tercihlerinize bağlı olarak, HTML
-      formlarınızdaki bilgiye erişimin birçok yolu vardır. Bazı örnekler:
+      PHP 5.4.0 itibariyle, HTML  formlarınızdaki bilgiye erişimin iki yolu 
+      vardır. Şu an için kullanılabilen yöntemler aşağıda sıralanmıştır:
     </para>
 
-    <!-- FIXME PHP_6 register_long_arrays removal alert -->
     <para>
      <example>
       <title>- Basit bir POST HTML formundan bilgiye erişim</title>
       <programlisting role="html">
 <![CDATA[
 <?php
-// PHP 4.1.0'dan beri vardır
 
-   echo $_POST['kullanici_adi'];
-   echo $_REQUEST['kullanici_adi'];
+echo $_POST['kullanici_adi'];
+echo $_REQUEST['kullanici_adi'];
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     There were some other ways of accessing user input in old PHP versions. These
+     are listed below. See changelog at the bottom of the page for more details.
+     <example>
+      <title>Old methods of accessing user input</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+// DİKKAT: Bu yöntemler artık desteklenMEmektedir.
+// Geçerli olanlar yukarıda gösterilmiştir.
+
+// import_request_variables() kullanımı - Bu işlev PHP 5.4.0'da kaldırılmıştır
 
    import_request_variables('p', 'p_');
    echo $p_kullanici_adi;
 
-// PHP 5.0.0'dan itibaren, bu uzun öntanımlı değişkenler
-// register_long_arrays yönergesi ile etkisiz kılınabilir.
-
+// PHP 5.4.0'dan itibaren, bu uzun öntanımlı değişkenler kaldırılmıştır
    echo $HTTP_POST_VARS['kullanici_adi'];
 
-// Eğer PHP yönergesi register_globals = on ise kullanılabilir.
-// PHP 4.2.0'dan itibaren register_globals'ın öntanımlı değeri off'dur.
-// Bu yöntemin kullanımı/güvenilmesi tercih edilmez.
-
+// register_globals kullanımı - Bu özellik PHP 5.4.0'da kaldırılmıştır
    echo $kullanici_adi;
 ?>
 ]]>
       </programlisting>
      </example>
     </para>
+    
     <para>
       Bunun yerine önceden tanımlı uygun bir GET değişkeni kullanmak
       dışında, GET formunun kullanımı aynıdır. GET ayrıca
@@ -851,44 +902,16 @@ Buna zam derler.
       sorgu dizgesine de uygulanır. Bu bakımdan örneğin,
       <literal>http://mesela.dom/dnm.php?id=3</literal>
       <varname>$_GET['id']</varname> ile erişilebilen GET verisini içerir.
-      Ayrıca, <varname>$_REQUEST</varname> değişkenine ve
-      <function>import_request_variables</function> işlevine de bakınız.
+      Ayrıca, <varname>$_REQUEST</varname> değişkenine de bakınız.
     </para>
 
-    <note>
-     <para>
-      <varname>$_POST</varname> ve <varname>$_GET</varname> gibi
-      <link linkend="language.variables.superglobals">Süper küresel
-      diziler</link> PHP 4.1.0'dan itibaren vardır.
-     </para>
-    </note>
     <note>
      <para>
       Değişken isimlerindeki noktalar ve boşluklar altçizgi karakterine
       dönüştürülür. Örneğin, <literal>&lt;input name="a.b" /&gt;</literal>
       ifadesi <literal>$_REQUEST["a_b"]</literal> haline gelir.
-      </para>
-     </note>
-
-    <para>
-      Bahsedildiği gibi, PHP 4.2.0'dan önce  <link
-      linkend="ini.register-globals">register_globals</link> yönergesinin
-      öntanımlı değeri <emphasis>on</emphasis>'du. PHP topluluğu herkesi bu
-      yönergeye güvenmemeleri, <emphasis>off</emphasis> olarak kabul ederek
-      kodu buna göre yazmaları konusunda teşvik etmektedir.
-    </para>
-
-    <note>
-     <para>
-      <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
-      yapılandırma yönergesi Get, Post ve Cookie değerlerini etkiler. Eğer
-      değeri 'on' yapılırsa, (It's "PHP!") değeri özdevinimli olarak (It\'s
-      \"PHP!\") olur. Veritabanına kayıt için önceleme gerekir. Ayrıca,
-      <function>addslashes</function>, <function>stripslashes</function> ve
-      <link linkend="ini.magic-quotes-sybase">magic_quotes_sybase</link>
-      işlevlerine de bakınız.
      </para>
-    </note>
+     </note>
 
     <simpara>
      PHP form değişkenleri bağlamında dizileri de anlar (<link
@@ -959,7 +982,7 @@ if ($_POST) {
     <title>HTTP Çerezleri</title>
 
     <simpara>
-      PHP, <link xlink:href="&spec.cookies;">Netscape Belirtimi</link>nde
+      PHP, <link  xlink:href="&url.rfc;6265">RFC 6265</link>'de
       tanımlandığı gibi HTTP çerezlerini şeffaf olarak destekler. Çerezler
       kullanıcıları izleyip tanımlamak amacıyla kullanıcının tarayıcısında
       veri saklamak için kullanılan bir yöntemdir. Çerezleri
@@ -968,10 +991,9 @@ if ($_POST) {
       <function>setcookie</function> işlevi tarayıcıya herhangi bir çıktı
       gönderilmeden önce çağrılmak zorundadır. Bu kısıtlama
       <function>header</function> işlevi için de geçerlidir. Çerez verisi
-      <varname>$_COOKIE</varname>, <varname>$HTTP_COOKIE_VARS</varname>
-      veya <varname>$_REQUEST</varname> gibi uygun çerez veri dizisinde
-      bulunur. Ayrıntılar ve örnekler için <function>setcookie</function>
-      kılavuz sayfasına bakınız.
+      <varname>$_COOKIE</varname> veya <varname>$_REQUEST</varname> gibi 
+      uygun çerez veri dizisinde bulunur. Ayrıntılar ve örnekler için 
+      <function>setcookie</function> kılavuz sayfasına bakınız.
     </simpara>
 
     <simpara>
@@ -1068,6 +1090,58 @@ $varname.ext;  /* geçersiz değişken ismi */
       <function>is_object</function> ve <function>is_string</function>.
       Ayrıca <link linkend="language.types">Türler</link> bölümüne de
       bakınız.
+    </para>
+   </sect2>
+
+   <sect2 xml:id="language.variables.external.changelog">
+    &reftitle.changelog;
+
+    <para>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>&Version;</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>5.4.0</entry>
+         <entry>
+          <link linkend="security.globals">Küresel Kayıtlar</link>, 
+          <link linkend="security.magicquotes">Sihirli tırnak</link> ve
+          <link linkend="ini.register-long-arrays">register_long_arrays</link>
+          kaldırıldı.
+         </entry>
+        </row>
+        <row>
+         <entry>5.3.0</entry>
+         <entry>
+          <link linkend="security.globals">Küresel Kayıtlar</link>, 
+          <link linkend="security.magicquotes">Sihirli tırnak</link> ve
+          <link linkend="ini.register-long-arrays">register_long_arrays</link>
+          kulllanımı önerilmez duruma geldi.
+         </entry>
+        </row>
+        <row>
+         <entry>4.2.0</entry>
+         <entry>
+          <link linkend="ini.register-globals">register_globals</link>
+          yönergesinin öntanımlı değeri <emphasis>off</emphasis> oldu.
+         </entry>
+        </row>
+        <row>
+         <entry>4.1.0</entry>
+         <entry>
+          <varname>$_POST</varname> ve <varname>$_GET</varname> gibi 
+          <link linkend="language.variables.superglobals">Süper küresel 
+          diziler</link> kullanılabilir oldu.
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
     </para>
    </sect2>
 
