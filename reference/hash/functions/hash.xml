@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a028258b51dd09eeb8fcdbd1af8f1a073fd29815 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.hash" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>hash</refname>
@@ -61,6 +61,28 @@
    takdirde ham ikil gösterimi içeren bir dizge olarak çıktılar.
   </para>
  </refsect1>
+ 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>Tiger algoritması artık en-kıymetli-bayt-önde bayt sıralamasını kullanmaktadır. Aşağıdaki örneğe bakınız.</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -78,6 +100,46 @@ echo hash('ripemd160', 'Dağ başını duman almış gümüş dere durmaz akar.'
     <screen>
 <![CDATA[
 5397ae847c5c30e0ca3d8b2f3b3f71fd6be383bd
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example xml:id="function.hash.tiger-bc">
+    <title>PHP-5.4 öncesi tiger algoritmalarını PHP-5.4 ve sonrası ile hesaplamak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function old_tiger($data = "", $width=192, $rounds = 3) {
+    return substr(
+        implode(
+            array_map(
+                function ($h) {
+                    return str_pad(bin2hex(strrev($h)), 16, "0");
+                },
+                str_split(hash("tiger192,$rounds", $data, true), 8)
+            )
+        ),
+        0, 48-(192-$width)/4
+    );
+}
+echo hash('tiger192,3', 'a-string'), PHP_EOL;
+echo old_tiger('a-string'), PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs.53;
+    <screen>
+<![CDATA[
+146a7492719b3564094efe7abbd40a7416fd900179d02773
+64359b7192746a14740ad4bb7afe4e097327d0790190fd16
+]]>
+    </screen>
+    &example.outputs.54;
+    <screen>
+<![CDATA[
+64359b7192746a14740ad4bb7afe4e097327d0790190fd16
+146a7492719b3564094efe7abbd40a7416fd900179d02773
 ]]>
     </screen>
    </example>
