@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 459c0e1de40c71062731abb431ec1c9f74b2aaf2 Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.socket" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>Soket bağlamı seçenekleri</refname>
@@ -26,8 +26,9 @@
       <para>
        PHP'nin ağa erişmek için kullanacağı IP adresini (IPv4 veya IPv6) ve
        port numarasını belirtmek için kullanılır. Söz dizimi:
-       <literal>ip:port</literal>. IP veya porta <literal>0</literal>
-       belirtilirse IP veya portu sistem seçer.
+       IPV4 adreslsr için <literal>ip:port</literal> ve
+       IPV6 adreslsr için <literal>[ip]:port</literal>. IP veya porta 
+       <literal>0</literal> belirtilirse IP veya portu sistem seçer.
       </para>
       <note>
        <para>
@@ -35,6 +36,77 @@
         numarası bu seçenek kullanılarak belirtilemez.
        </para>
       </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.socket.backlog">
+     <term><parameter>backlog</parameter></term>
+     <listitem>
+      <para>
+       Soketin dinleme kuyruğundaki çıkan bağlantıların sayısını kısıtlamakta 
+       kullanılır.
+      </para>
+      <note>
+       <para>
+        Sadece <function>stream_socket_server</function> işlevi için 
+        uygulanabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.socket.ipv6_v6only">
+     <term><parameter>ipv6_v6only</parameter></term>
+     <listitem>
+      <para>
+       IPv4'ün IPv6'ya eşleştirilmesiyle ilgili işletim sistemi öntanımlısını 
+       geçersiz kılar.
+      </para>
+      <note>
+       <para>
+        Bu, özellikle <literal>[::]</literal> üzerinde bir bağ mevcutken IPv4 
+        adreslerini ayrı ayrı dinlemeye çalışırken önemlidir.
+       </para>
+       <para>
+        Sadece <function>stream_socket_server</function> işlevine 
+        uygulanabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.socket.so_reuseport">
+     <term><parameter>so_reuseport</parameter></term>
+     <listitem>
+      <para>
+       Ayrı süreçlerden bile olsa aynı ip:port çiftine çok sayıda bağlanma 
+       sağlar.
+      </para>
+      <note>
+       <para>
+        Sadece <function>stream_socket_server</function> işlevine 
+        uygulanabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.socket.so_broadcast">
+     <term><parameter>so_broadcast</parameter></term>
+     <listitem>
+      <para>
+       Yayın adresleri/ne/nden veri gönderip alır.
+      </para>
+      <note>
+       <para>
+        Sadece <function>stream_socket_server</function> işlevine 
+        uygulanabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.socket.tcp_nodelay">
+     <term><parameter>tcp_nodelay</parameter></term>
+     <listitem>
+      <para>
+       Bu seçeneğe &true; atanması TCP Nagle algoritmasını iptal edeceğinden <literal>SOL_TCP,NO_DELAY=1</literal> atamasına sebep olacaktır.
+      </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -53,10 +125,40 @@
       </row>
      </thead>
      <tbody>
+       <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <parameter>tcp_nodelay</parameter> eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.1</entry>
+       <entry>
+        <parameter>ipv6_v6only</parameter> eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <parameter>so_broadcast</parameter> eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <parameter>so_reuseport</parameter> eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.3.3</entry>
+       <entry>
+        <parameter>backlog</parameter> eklendi.
+       </entry>
+      </row>
       <row>
        <entry>5.1.0</entry>
        <entry>
-        <literal>bindto</literal> eklendi.
+        <parameter>bindto</parameter> eklendi.
        </entry>
       </row>
      </tbody>
@@ -87,6 +189,16 @@ $seçenekler = array(
         'bindto' => '192.168.0.100:7000',
     ),
 );
+
+
+// internete '2001:db8::1' IPv6 adresini kullanarak bağlanalım
+// and port '7000'
+$opts = array(
+    'socket' => array(
+        'bindto' => '[2001:db8::1]:7000',
+    ),
+);
+
 
 
 // internete port '7000' üzerinden bağlanalım
