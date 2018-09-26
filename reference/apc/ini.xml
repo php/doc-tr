@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 1ca4b8c7529b569121224b9864f3da0f5212d71d Maintainer: aydin Status: ready -->
 <section xml:id="apc.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -30,16 +30,24 @@
   ayırmanız veya <literal>apc.filters</literal> kullanarak daha az betiği
   önbelleğe almanız sorunu çözebilir.
  </para>
+  <para>
+  APC, mmap (Memory Mapping) desteği ile derlendiğinde sadece bir bellek segmenti 
+  kullanır. SHM (SysV Shared Memory) desteği ile derlendiğinde ise çok sayıda 
+  bellek segmenti kullanır. MMAP için azami sınır yoktur, SHM için azami sınır 
+  <literal>/proc/sys/kernel/shmmax</literal> içinde belirtilmiştir.Genelde MMAP 
+  desteği önerilir, çünkü HTTP sunucusu başlatıldığında bellek daha çabuk 
+  düzenlenir ve başlatma sırasındaki bellek ayırma etkilerini azaltır.
+ </para>
  <para>
   <table>
    <title>APC Yapılandırma Seçenekleri</title>
    <tgroup cols="4">
     <thead>
      <row>
-      <entry>İsim</entry>
-      <entry>Öntanımlı değeri</entry>
-      <entry>Değişiklik yeri</entry>
-      <entry>Değişiklik bilgisi</entry>
+      <entry>&Name;</entry>
+      <entry>&Default;</entry>
+      <entry>&Changeable;</entry>
+      <entry>&Changelog;</entry>
      </row>
     </thead>
     <tbody>
@@ -58,9 +66,15 @@
      </row>
      <row>
       <entry><link linkend="ini.apc.shm-size">apc.shm_size</link></entry>
-      <entry>"30"</entry>
+      <entry>"32M"</entry>
       <entry>PHP_INI_SYSTEM</entry>
       <entry></entry>
+     </row>
+      <row>
+      <entry><link linkend="ini.apc.shm-strings-buffer">apc.shm_strings_buffer</link></entry>
+      <entry>"4M"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.4 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.optimization">apc.optimization</link>
@@ -126,61 +140,74 @@
      <row>
       <entry><link linkend="ini.apc.slam-defense">apc.slam_defense</link>
       </entry>
-      <entry>"0"</entry>
+      <entry>"1"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.0&apos;dan beri kullanılabilmektedir. APC 3.1.4 öncesinde 
+       öntanımlı değer <literal>"0"</literal> (iptal) idi.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.file-update-protection">
       apc.file_update_protection</link></entry>
       <entry>"2"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.6&apos;dan beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.6 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.enable-cli">apc.enable_cli</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.7&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.7 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.max-file-size">apc.max_file_size</link>
       </entry>
       <entry>"1M"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.7&apos;dan beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.7 ve sonrasında kullanılabilir.</entry>
+     </row>
+      <row>
+      <entry><link linkend="ini.apc.use-request-time">apc.use_request_time</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_ALL</entry>
+      <entry>APC 3.1.3 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.stat">apc.stat</link></entry>
       <entry>"1"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.10&apos;dan beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.10 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.write-lock">apc.write_lock</link></entry>
       <entry>"1"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.11&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.11 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.report-autofilter">
       apc.report_autofilter</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.11&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.11 ve sonrasında kullanılabilir.</entry>
+     </row>
+      <row>
+      <entry><link linkend="ini.apc.serializer">apc.serializer</link></entry>
+      <entry>"default"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.0 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.include-once-override">
       apc.include_once_override</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.12&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.12 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.rfc1867">apc.rfc1867</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.13&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.13 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.rfc1867-prefix">apc.rfc1867_prefix</link>
@@ -203,31 +230,67 @@
       <entry>PHP_INI_SYSTEM</entry>
       <entry></entry>
      </row>
+      <row>
+      <entry><link linkend="ini.apc.rfc1867-ttl">apc.rfc1867_ttl</link></entry>
+      <entry>"3600"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.1 ve sonrasında kullanılabilir.</entry>
+     </row>
      <row>
       <entry><link linkend="ini.apc.localcache">apc.localcache</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.14&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.14 - 3.1.11 arasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.localcache.size">
       apc.localcache.size</link></entry>
       <entry>"512"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.14&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.14 - 3.1.11 arasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.coredump-unmap">apc.coredump_unmap</link>
       </entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.16&apos;dan beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.16 ve sonrasında kullanılabilir.</entry>
      </row>
      <row>
       <entry><link linkend="ini.apc.stat-ctime">apc.stat_ctime</link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
-      <entry>APC 3.0.13&apos;den beri kullanılabilmektedir.</entry>
+      <entry>APC 3.0.13 ve sonrasında kullanılabilir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.preload-path">apc.preload_path</link></entry>
+      <entry>NULL</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.1 ve sonrasında kullanılabilir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.file-md5">apc.file_md5</link></entry>
+      <entry>"0"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.1 ve sonrasında kullanılabilir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.canonicalize">apc.canonicalize</link></entry>
+      <entry>"1"</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.1 ve sonrasında kullanılabilir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.lazy-functions">apc.lazy_functions</link></entry>
+      <entry>0</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.3 ve sonrasında kullanılabilir.</entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.apc.lazy-classes">apc.lazy_classes</link></entry>
+      <entry>0</entry>
+      <entry>PHP_INI_SYSTEM</entry>
+      <entry>APC 3.1.3 ve sonrasında kullanılabilir.</entry>
      </row>
     </tbody>
    </tgroup>
@@ -273,13 +336,30 @@
    <varlistentry xml:id="ini.apc.shm-size">
     <term>
      <parameter>apc.shm_size</parameter>
-     <type>integer</type>
+     <type>string</type>
     </term>
     <listitem>
      <para>
       MB olarak her bir paylaşılan bellek kesiminin boyutu.
+      <link linkend="faq.using.shorthandbytes">SSS</link>'de açıklanan kısa 
+      gösterimle belirtilir.
       Öntanımlı olarak bazı sistemler (çoğu BSD türevi dahil) paylaşılan
       bellek kesimi için çok düşük sınırlara sahiptir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.apc.shm-strings-buffer">
+    <term>
+     <parameter>apc.shm_strings_buffer</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      APC tarafından dahili olarak dizgeler için paylaşımlı bellek olarak 
+      kullanılacak bellek miktarı. Değerinden sonunda megabaytlar için M, 
+      gigabatlar için G kullanılabilir. Bu seçeneğin etkin olması her PHP-FPM
+      modülü başına kullanılan bellek miktarını düşürür. Aksi takdirde 
+      dizgeler her PHP-FPM modülü için değil sadece bir kere saklanacaktır.
      </para>
     </listitem>
    </varlistentry>
@@ -557,6 +637,18 @@
      </para>
     </listitem>
    </varlistentry>
+   
+   <varlistentry xml:id="ini.apc.serializer">
+    <term>
+     <parameter>apc.serializer</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      Kullanılacak üçüncü parti sıralandırıcıyı yapılandırmak için kullanılır.
+     </para>
+    </listitem>
+   </varlistentry>
 
    <varlistentry xml:id="ini.apc.include-once-override">
     <term>
@@ -569,6 +661,13 @@
        çağrılarında eniyileştirme sağlar ve pahalı sistem çağrılarının
        kullanımından sakınır.
      </para>
+     <warning>
+      <simpara>
+       Bu seçenek <emphasis>DENEYSEL</emphasis>dir. Bu seçeneğin ismi, 
+       davranışı ve belgelemesi APC'nin ileri sürümlerinde bilgi verilmeksizin
+       değiştirilebilir. Bu seçeneği kullanma riski size aittir.
+      </simpara>
+     </warning>
     </listitem>
    </varlistentry>
 
@@ -596,6 +695,10 @@
      <para>
       Karşıya dosya yükleme izlemesi, evre korumalı değildir, bu yüzden yeni
       yapılan yüklemeler bir önceki devam eden izlemeyi devre dışı bırakır.
+     </para>
+      <para>
+      Şuna dikkat edin: <literal>hız</literal> sadece tüm dosya aktarımları 
+      tamamlandığında kullanılabilir.
      </para>
      <para>
       <example>
@@ -673,6 +776,18 @@ Array
      </para>
     </listitem>
    </varlistentry>
+   
+   <varlistentry xml:id="ini.apc.rfc1867-ttl">
+    <term>
+     <parameter>apc.rfc1867_ttl</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      RFC1867 girdileri için <acronym>TTL</acronym>.
+     </para>
+    </listitem>
+   </varlistentry>
 
    <varlistentry xml:id="ini.apc.localcache">
     <term>
@@ -747,7 +862,84 @@ Array
      </para>
     </listitem>
    </varlistentry>
-  </variablelist>
+
+   <varlistentry xml:id="ini.apc.canonicalize">
+    <term>
+     <parameter>apc.canonicalize</parameter>
+     <type>bool</type>
+    </term>
+    <listitem>
+     <para>
+      Etkin kılındığında göreli dosya yolları durumsuz kipte normalleştirilir
+      ve akış sarmalayıcıları üzerinden kullanılan dosyalar, 
+      <function>realpath</function> akış sarmalayıcıları desteklemediğinden 
+      arabelleklenemez.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.preload-path">
+    <term>
+     <parameter>apc.preload_path</parameter>
+     <type>string</type>
+    </term>
+    <listitem>
+     <para>
+      İsteğe bağlı olarak, APC'nin başlatma sırasında arabellek verisini 
+      yükleyeceği dizinin yolunu belirtmekte kullanılır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.use-request-time">
+    <term>
+     <parameter>apc.use_request_time</parameter>
+     <type>bool</type>
+    </term>
+    <listitem>
+     <para>
+      <acronym>TTL</acronym> için <acronym>SAPI</acronym> istek başlatma 
+      zamanını kullanır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.file-md5">
+    <term>
+     <parameter>apc.file_md5</parameter>
+     <type>bool</type>
+    </term>
+    <listitem>
+     <para>
+      Dosyalar için belirtilem md5 özeti kullanılır.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.lazy-functions">
+    <term>
+     <parameter>apc.lazy_functions</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      İşlevler için çılgın yüklemeyi etkinleştirir.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.apc.lazy-classes">
+    <term>
+     <parameter>apc.lazy_classes</parameter>
+     <type>integer</type>
+    </term>
+    <listitem>
+     <para>
+      Sınıflar için çılgın yüklemeyi etkinleştirir.
+     </para>
+    </listitem>
+   </varlistentry>
+ </variablelist>
  </para>
 </section>
 
