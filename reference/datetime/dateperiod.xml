@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 943cea19189df1da4e2c44670ad155523697996c Maintainer: behzat Status: ready -->
+<!-- EN-Revision: a39d6f9134acf08a17bb1763d4a7deb1e9090321 Maintainer: behzat Status: ready -->
 <phpdoc:classref xml:id="class.dateperiod" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
 
  <title>DatePeriod sınıfı</title>
@@ -13,6 +13,10 @@
    &reftitle.intro;
    <para>
     Dönemselliğin gösterimi.
+   </para>
+   <para>
+    Bir tarih aralığı, belirli bir süre boyunca düzenli aralıklarla yinelenen bir 
+    tarih ve zaman kümesi üzerinde yinelemeye izin verir.
    </para>
   </section>
 <!-- }}} -->
@@ -43,7 +47,39 @@
      <initializer>1</initializer>
     </fieldsynopsis>
 
-    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <classsynopsisinfo role="comment">&Properties;</classsynopsisinfo>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>integer</type>
+     <varname linkend="dateperiod.props.recurrences">tekrarsayısı</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>boolean</type>
+     <varname linkend="dateperiod.props.include_start_date">include_start_date</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>DateTimeInterface</type>
+     <varname linkend="dateperiod.props.start">başlangıç</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>DateTimeInterface</type>
+     <varname linkend="dateperiod.props.current">şimdi</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>DateTimeInterface</type>
+     <varname linkend="dateperiod.props.end">son</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>DateInterval</type>
+     <varname linkend="dateperiod.props.interval">aralık</varname>
+    </fieldsynopsis>
+
+   <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
     <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.dateperiod')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[not(@role='procedural')])">
      <xi:fallback />
     </xi:include>
@@ -51,10 +87,11 @@
     <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.dateperiod')/db:refentry/db:refsect1[@role='description']/descendant::db:destructorsynopsis[not(@role='procedural')])">
      <xi:fallback />
     </xi:include>
+    -->    
     <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.dateperiod')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[not(@role='procedural')])">
      <xi:fallback />
     </xi:include>
-    -->
+
 
    </classsynopsis>
 <!-- }}} -->
@@ -64,23 +101,101 @@
 <!-- {{{ DatePeriod constants -->
   <section xml:id="dateperiod.constants">
    &reftitle.constants;
-   <section xml:id="dateperiod.constants.types">
-    <title>DatePeriod Düğüm Türleri</title>
-    <variablelist>
-
-     <varlistentry xml:id="dateperiod.constants.exclude-start-date">
-      <term><constant>DatePeriod::EXCLUDE_START_DATE</constant></term>
-      <listitem>
-       <para><function>DatePeriod::__construct</function> yönteminde kullanılan
-        başlangıç tarihi dışlanır.</para>
-      </listitem>
-     </varlistentry>
-
-    </variablelist>
-   </section>
+   <variablelist>
+    <varlistentry xml:id="dateperiod.constants.exclude-start-date">
+     <term><constant>DatePeriod::EXCLUDE_START_DATE</constant></term>
+     <listitem>
+      <para>
+        <function>DatePeriod::__construct</function> yönteminde kullanılan
+        başlangıç tarihi dışlanır.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
   </section>
 <!-- }}} -->
+  
+  <section xml:id="dateperiod.props">
+   &reftitle.properties;
+   <variablelist>
+    <varlistentry xml:id="dateperiod.props.recurrences">
+     <term><varname>tekrarsayısı</varname></term>
+     <listitem>
+      <para>
+       Yineleme sayısı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateperiod.props.include_start_date">
+     <term><varname>başlangıç_tarihini_içer</varname></term>
+     <listitem>
+      <para>
+       Başlangıç tarihinin yinelenen tarihler kümesine dahil edilip edilmeyeceği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateperiod.props.start">
+     <term><varname>başlangıç</varname></term>
+     <listitem>
+      <para>
+       Dönemin başlangıç tarihi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateperiod.props.current">
+     <term><varname>şimdi</varname></term>
+     <listitem>
+      <para>
+       Yineleme sırasında, dönem içindeki şimdiki tarihi içerecektir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateperiod.props.end">
+     <term><varname>son</varname></term>
+     <listitem>
+      <para>
+       Dönemin bitiş tarihi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateperiod.props.interval">
+     <term><varname>aralık</varname></term>
+     <listitem>
+      <para>
+       Bir ISO 8601 tekrarlanan aralık belirtimi.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
 
+  <section role="changelog" xml:id="dateperiod.changelog">
+   &reftitle.changelog;
+   <para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>5.3.27, 5.4.17</entry>
+        <entry>
+         Public özellikler <varname>tekrarsayısı</varname>,
+         <varname>başlangıç_tarihini_içer</varname>, 
+         <varname>başlangıç</varname>,
+         <varname>şimdi</varname>, <varname>son</varname> ve
+         <varname>aralık</varname> kullanıma girdi.
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </para>
+  </section>
 
  </partintro>
 
