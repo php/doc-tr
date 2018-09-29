@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 55940885de1e37b3f37346206e39391d6f9043ae Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 85a0f924337aa29b61018828b1292a12e796f288 Maintainer: behzat Status: ready -->
 <refentry xml:id="dateperiod.construct" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>DatePeriod::__construct</refname>
@@ -12,16 +12,16 @@
   &reftitle.description;
   <constructorsynopsis role="oop">
    <modifier>public</modifier> <methodname>DatePeriod::__construct</methodname>
-   <methodparam><type>DateTime</type><parameter>başlangıç</parameter></methodparam>
+   <methodparam><type>DateTimeInterface</type><parameter>başlangıç</parameter></methodparam>
    <methodparam><type>DateInterval</type><parameter>aralık</parameter></methodparam>
-   <methodparam><type>int</type><parameter>tekrarlama</parameter></methodparam>
+   <methodparam><type>int</type><parameter>tekrarsayısı</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
   </constructorsynopsis>
   <constructorsynopsis role="oop">
    <modifier>public</modifier> <methodname>DatePeriod::__construct</methodname>
-   <methodparam><type>DateTime</type><parameter>başlangıç</parameter></methodparam>
+   <methodparam><type>DateTimeInterface</type><parameter>başlangıç</parameter></methodparam>
    <methodparam><type>DateInterval</type><parameter>aralık</parameter></methodparam>
-   <methodparam><type>DateTime</type><parameter>bitiş</parameter></methodparam>
+   <methodparam><type>DateTimeInterface</type><parameter>bitiş</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
   </constructorsynopsis>
   <constructorsynopsis role="oop">
@@ -42,7 +42,7 @@
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Tarih başlangıcı.
+       Dönemin başlangıç tarihi.
       </para>
      </listitem>
     </varlistentry>
@@ -50,15 +50,15 @@
      <term><parameter>aralık</parameter></term>
      <listitem>
       <para>
-       Aralık.
+       Dönemsel yinelemeler arasındaki boşluk.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tekrarlama</parameter></term>
+     <term><parameter>tekrarsayısı</parameter></term>
      <listitem>
       <para>
-       Tekrar sayısı.
+       Yineleme sayısı.
       </para>
      </listitem>
     </varlistentry>
@@ -66,7 +66,7 @@
      <term><parameter>bitiş</parameter></term>
      <listitem>
       <para>
-       Tarih bitişi.
+       Dönemin bitiş tarihi.
       </para>
      </listitem>
     </varlistentry>
@@ -74,7 +74,7 @@
      <term><parameter>isostr</parameter></term>
      <listitem>
       <para>
-       ISO aralığını içeren dizge.
+       Bir ISO 8601 tekrarlanan aralık belirtimi.
       </para>
      </listitem>
     </varlistentry>
@@ -82,12 +82,133 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       <constant>DatePeriod::EXCLUDE_START_DATE</constant> sabiti olabilir.
+       Başlangıç tarihini, dönem içindeki yinelenen tarihler kümesinden hariç tutmak 
+       için <constant>DatePeriod::EXCLUDE_START_DATE</constant> sabiti 
+       kullanılabilir.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.5.8</entry>
+       <entry>
+        <parameter>bitiş</parameter> için tür
+        <interfacename>DateTimeInterface</interfacename> oldu.
+        Evvelce, <classname>DateTime</classname> idi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.0</entry>
+       <entry>
+        <parameter>başlangıç</parameter> için tür
+        <interfacename>DateTimeInterface</interfacename> oldu.
+        Evvelce, <classname>DateTime</classname> idi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>DatePeriod örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$start = new DateTime('2012-07-01');
+$interval = new DateInterval('P7D');
+$end = new DateTime('2012-07-31');
+$recurrences = 4;
+$iso = 'R4/2012-07-01T00:00:00Z/P7D';
+
+// Hepsi eşdeğer
+$period = new DatePeriod($start, $interval, $recurrences);
+$period = new DatePeriod($start, $interval, $end);
+$period = new DatePeriod($iso);
+
+// DatePeriod nesnesi üzerinde yineleme yaparak 
+// yinelenen dönemlerin tarihleri basılabilir.
+foreach ($period as $date) {
+    echo $date->format('Y-m-d')."\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+2012-07-01
+2012-07-08
+2012-07-15
+2012-07-22
+2012-07-29
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><constant>DatePeriod::EXCLUDE_START_DATE</constant> 
+      ile DatePeriod örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$start = new DateTime('2012-07-01');
+$interval = new DateInterval('P7D');
+$end = new DateTime('2012-07-31');
+
+$period = new DatePeriod($start, $interval, $end,
+                         DatePeriod::EXCLUDE_START_DATE);
+
+// DatePeriod nesnesi üzerinde yineleme yaparak 
+// yinelenen dönemlerin tarihleri basılabilir.
+// Bu defa, 2012-07-01 basılmayacak.
+foreach ($period as $date) {
+    echo $date->format('Y-m-d')."\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+2012-07-08
+2012-07-15
+2012-07-22
+2012-07-29
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <simpara>
+   Unbound numbers of repetitions as specified by ISO 8601 belirtiminin 4.5
+   "Recurring time interval" bölümünde belirtilen sınırsız sayıda tekrarlama desteklenmemektedir. Yani, <parameter>isostr</parameter> için
+   <literal>"R/..."</literal> çalışmayacağı gibi <parameter>bitiş</parameter> için 
+   &null; da çalışmayacaktır
+  </simpara>
  </refsect1>
 
 </refentry>
