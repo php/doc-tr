@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e78b76ce4215a4927bf0926de9fbe4594e2e2b8 Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.createelement" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::createElement</refname>
@@ -9,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>DOMElement</type><methodname>DOMDocument::createElement</methodname>
+    <modifier>public</modifier> <type>DOMElement</type><methodname>DOMDocument::createElement</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>değer</parameter></methodparam>
-  </methodsynopsis>
+  </methodsynopsis> 
   <para>
    Yeni bir <classname>DOMElement</classname> nesnesi oluşturur.
    &dom.node.inserted;
@@ -34,9 +34,12 @@
      <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       Elemanın değeri. Öntanımlı olarak boş eleman oluşturulur. Değeri daha
-       sonra <literal>DOMElement->nodeValue</literal> özelliğine de
-       atayabilirsiniz.
+       Elemanın değeri. Öntanımlı olarak boş eleman oluşturulur.
+      </para>
+      <para>
+       &lt; ve &gt; öğe başvuruları öncelenmedikçe değer birebir kulllanılır.
+       Dikkat: &amp; öncelenmek sorundadır, aksi takdirde öğe başvurusunun 
+       başlangıç karakteri olarak ele alınmaz. Ayrıca, " karakteri öncelenmez.
       </para>
      </listitem>
     </varlistentry>
@@ -75,11 +78,10 @@
 <?php
 
 $dom = new DOMDocument('1.0', 'utf-8');
-
 $element = $dom->createElement('test', 'This is the root element!');
 
 // Oluşturduğumuz elemanı belge elemanı yapalım
-$dom->appendChild($element);
+$element->appendChild($element_ns);
 
 echo $dom->saveXML();
 ?>
@@ -94,6 +96,39 @@ echo $dom->saveXML();
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- <parameter>değer</parameter> olarak öncelenmemiş &amp; içeren metin kullanmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dom = new DOMDocument('1.0', 'utf-8');
+$element = $dom->createElement('foo', 'sen & ben');
+$dom->appendChild($element);
+echo $dom->saveXML();
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Warning: DOMDocument::createElement(): unterminated entity reference             ben in /in/BjTCg on line 4
+<?xml version="1.0" encoding="utf-8"?>
+<foo/>
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <parameter>değer</parameter> öncelen<emphasis>ME</emphasis>yecektir.
+    <emphasis>Önceleme destekli</emphasis> bir metin düğümü oluşturmak 
+    istiyorsanız <methodname>DOMDocument::createTextNode</methodname> kullanın.
+   </para>
+  </note>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
