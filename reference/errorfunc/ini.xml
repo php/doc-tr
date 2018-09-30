@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<section xml:id="errorfunc.configuration" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: cc921d3789d1138c6cda2deccb8decc31edc67af Maintainer: nilgun Status: ready -->
+<section xml:id="errorfunc.configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.runtime;
  &extension.runtime;
  <para>
@@ -10,10 +10,10 @@
    <tgroup cols="4">
     <thead>
      <row>
-      <entry>İsim</entry>
-      <entry>Öntanımlı</entry>
-      <entry>Değişiklik Yeri</entry>
-      <entry>Sürüm Bilgisi</entry>
+      <entry>&Name;</entry>
+      <entry>&Default;</entry>
+      <entry>&Changeable;</entry>
+      <entry>&Changelog;</entry>
      </row>
     </thead>
     <tbody>
@@ -146,10 +146,19 @@
       bakınız.
      </para>
      <para>
-      PHP 4 ve PHP 5'te öntanımlı değer  <constant>E_ALL</constant>
-      &amp; ~<constant>E_NOTICE</constant> olup bu ayarla
-      <constant>E_NOTICE</constant> seviyesindeki hatalar gösterilmez.
-      Betiğinizi geliştirirken onları da görmek isteyebilirsiniz.
+      PHP 5.3 ve sonrasında öntanımlı değer:
+      <constant>E_ALL</constant> &amp;
+      ~<constant>E_NOTICE</constant> &amp;
+      ~<constant>E_STRICT</constant> &amp;
+      ~<constant>E_DEPRECATED</constant>. <constant>E_NOTICE</constant>, <constant>E_STRICT</constant> ve <constant>E_DEPRECATED</constant>
+      seviyesinden hatalar burada gösterilmez. Bunları yazılımınızı 
+      geliştirirken kendiniz ekleyebilirsiniz.
+      PHP 5.3.0 öncesinde öntanımlı değer:
+      is <constant>E_ALL</constant> &amp;
+      ~<constant>E_NOTICE</constant> &amp;
+      ~<constant>E_STRICT</constant>. 
+      PHP 4 için öntanımlı değer: <constant>E_ALL</constant>
+       &amp; ~<constant>E_NOTICE</constant>.
      </para>
      <note>
       <para><constant>E_NOTICE</constant> seviyesindeki hataların geliştirme
@@ -168,14 +177,18 @@
      </note>
      <note>
       <para>
-       PHP 5'te <constant>E_STRICT</constant> yeni bir hata seviyesi olarak
-       devreye girmiştir. <constant>E_ALL</constant> ile birlikte açıkça
+       PHP 5.4.0 öncesinde <constant>E_ALL</constant> ile birlikte açıkça
        belirtilmedikçe <constant>E_STRICT</constant> seviyesinden hata
-       raporları etkin olmayacaktır. <constant>E_STRICT</constant>
-       seviyesinden hataların geliştirme aşamasında gösterilmesinin bazı
-       yararları vardır. Bu iletiler, en son ve en çok önerilen kodlama
-       yöntemini kullanmanız için size yardımcı olacaktır. Örneğin, kullanımı
-       artık önerilmeyen işlevler hakkında uyarılacaksınız.
+       raporları etkin olmayacaktır. PHP 5.4.0 sonrasında 
+       <constant>E_STRICT</constant> seviyesinden hataların geliştirme aşamasında 
+       gösterilmesinin bazı yararları vardır. STRICT iletiler, kodunuzun en iyi 
+       birlikte çalışabilirliğini ve iletilebilirliğini sağlamaya yardımcı 
+       olabilecek öneriler sunar. Bu iletiler, duruk olmayan yöntemlerin duruk 
+       olarak çağrılması, kullanılan bir özellik tanımlıyken uyumlu bir sınıf 
+       tanımında tekrar tanımlanması ve PHP 5.3'ten önce bazı kullanımdan 
+       kaldırılmış özelliklerin (örnekleme sırasında nesnelerin başvuruya göre 
+       atanması gibi) <constant>E_STRICT</constant> hatası ataması gibi şeyler 
+       içerebilir. 
       </para>
      </note>
      <note>
@@ -277,7 +290,8 @@
       1024 öntanımlı değer olup, 0 belirtildiği takdirde hata günlüğü
       iletilerininin uzunlukları sınırlanmaz. Bu uzunluk günlüğe kaydedilen
       ve gösterilen hata iletilerinden başka <varname>$php_errormsg</varname>
-      iletilerine de uygulanır.
+      iletilerine de uygulanır fakat <function>error_log</function> gibi açıkça 
+      çağrılan işlevlerde uygulanmaz.
      </para>
 
      &ini.shorthandbytes;
