@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: f543b07b0a335d58d7ea8ade0e6b3b63b61191dd Maintainer: haluk Status: ready -->
 <refentry xml:id='function.imagegd2' xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagegd2</refname>
@@ -11,13 +11,12 @@
   <methodsynopsis>
    <type>bool</type><methodname>imagegd2</methodname>
    <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>parça_boyutu</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>çıktıyeri</parameter><initializer>NULL</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>parça_boyutu</parameter><initializer>128</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer>IMG_GD2_RAW</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bir GD2 resmini <parameter>dosyaismi</parameter> ile belirtilen dosyaya
-   çıktılar.
+   Bir GD2 resmini belirtilen <parameter>çıktıyeri</parameter>ne çıktılar.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -26,12 +25,13 @@
    <variablelist>
     &gd.image.description;
     <varlistentry>
-     <term><parameter>dosyaismi</parameter></term>
+     <term><parameter>çıktıyeri</parameter></term>
      <listitem>
       <para>
-       GD2 resminin kaydedileceği dosyanın yolu. Belirtilmezse veya &null;
-       verilirse ham resim akımı doğrudan tarayıcıya çıktılanır.
+       GD2 resminin kaydedileceği yol. Belirtilmezse veya &null;
+       verilirse doğrudan ham resim akımı çıktılanır.
       </para>
+      <para>&gd.image.path;</para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -59,6 +59,31 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+  &gd.return.trueonerror;
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        <type>resource</type> türünde bir akımın <parameter>çıktıyeri</parameter>
+        değiştirgesine aktarılabilmesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -98,7 +123,7 @@ imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
 // gd2 resmini kaydedelim
 // GD2 resimlerin dosya biçemi .gd2'dir.
 // http://www.libgd.org/GdFileFormats adresine bakınız
-imagegd2($im, 'simple.gd');
+imagegd2($im, 'simple.gd2');
 
 // Belleği serbest bırakalım
 imagedestroy($im);
@@ -110,7 +135,6 @@ imagedestroy($im);
  </refsect1>
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.gd.2;
   <note>
    <para>
     GD2 biçemi resim parçalarının hızlı yüklenebilmesi için kullanılan bir
@@ -118,30 +142,6 @@ imagedestroy($im);
     kullanılabileceğine dikkat ediniz.
    </para>
   </note>
- </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.2</entry>
-       <entry>
-        <parameter>parça_boyutu</parameter> ve <parameter>tür</parameter>
-        değiştirgeleri eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;

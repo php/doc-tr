@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 235f3d10c6151423fb0e03f090d335e336aa31fc Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imageistruecolor" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imageistruecolor</refname>
@@ -47,12 +47,15 @@ if(!imageistruecolor($im))
 {
     // Değilse gerçek renkli yeni bir taslak oluşturalım
     $tc = imagecreatetruecolor(imagesx($im), imagesy($im));
-
+    
+    //Piksellerin üstüne kopyala
     imagecopy($tc, $im, 0, 0, 0, 0, imagesx($im), imagesy($im));
     imagedestroy($im);
 
     $im = $tc;
     $tc = NULL;
+    
+    // VEYA imagepalettetotruecolor() kullan
 }
 
 // Resim taslağıyla çalışmaya devam
@@ -62,15 +65,12 @@ if(!imageistruecolor($im))
    </example>
   </para>
  </refsect1>
- <refsect1 role="notes">
-  &reftitle.notes;
-  &note.gd.2;
- </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><function>imagecreatetruecolor</function></member>
+    <member><function>imagepalettetotruecolor</function></member>
    </simplelist>
   </para>
  </refsect1>

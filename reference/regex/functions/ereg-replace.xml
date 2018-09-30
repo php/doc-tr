@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b38c2956ff4b9bd38834fce799ead05314ddee63 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ereg-replace">
  <refnamediv>
   <refname>ereg_replace</refname>
   <refpurpose>Düzenli ifadeye göre dizgede değişiklik yapar</refpurpose>
  </refnamediv>
+ <refsynopsisdiv>
+  <warning>
+   &warn.deprecated.function.5-3-0.removed.7-0-0.alternatives;
+   <simplelist role="alternatives">
+    <member><function>preg_replace</function></member>
+   </simplelist>
+  </warning>
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
@@ -20,12 +28,6 @@
    <parameter>şablon</parameter> düzenli ifadesini arar ve eşleşen metnin
    yerine <parameter>yenisi</parameter>'ni yerleştirir.
   </simpara>
-  <warning>
-   <simpara>
-    Evrenkod uyumsuzluğu nedeniyle bu işlevin kullanımı PHP 5.3.0'dan beri
-    <emphasis>ÖNERİLMEMEKTEDİR</emphasis>.
-   </simpara>
-  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -46,9 +48,9 @@
       <para>
        Eğer <parameter>şablon</parameter> parantezli gruplar içeriyorsa
        <parameter>yenisi</parameter> değiştirgesi
-       <literal>\\<replaceable>rakam</replaceable></literal> biçeminde bir
+       <literal>\<replaceable>rakam</replaceable></literal> biçeminde bir
        dizge içerebilir. Burada rakam, parantezli grubun şablonun solundan
-       itibaren kaçıncı grup olduğunu gösterir. <literal>\\0</literal> değeri
+       itibaren kaçıncı grup olduğunu gösterir. <literal>\0</literal> değeri
        dizgenin tamamınına karşılıktır. Böyle 9 alt dizge belirtilebilir.
        Parantezler iç içe olabilir, bu durumda aç parantezler sayılır.
       </para>
@@ -132,24 +134,12 @@ echo $string;   /* Çıktısı: 'This string has 4 words.' */
 <![CDATA[
 <?php
 $text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]",
-                     "<a href=\"\\0\">\\0</a>", $text);
+                     '<a href="\\0">\\0</a>', $text);
 ?>
 ]]>
     </programlisting>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  &note.regex.deprecated;
-  <tip>
-   <para>
-    Perl uyumlu düzenli ifade sözdizimini kullanan
-    <function>preg_replace</function> işlevi çoğu durumda
-    <function>ereg_replace</function> işlevinden daha hızlıdır.
-   </para>
-  </tip>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -160,7 +150,8 @@ $text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]",
     <member><function>eregi</function></member>
     <member><function>eregi_replace</function></member>
     <member><function>str_replace</function></member>
-    <member><function>preg_match</function></member>
+    <member><function>preg_replace</function></member>
+    <member><function>quotemeta</function></member>
    </simplelist>
   </para>
  </refsect1>

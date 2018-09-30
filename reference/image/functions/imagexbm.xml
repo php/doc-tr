@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f543b07b0a335d58d7ea8ade0e6b3b63b61191dd Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagexbm" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagexbm</refname>
@@ -12,11 +12,18 @@
    <type>bool</type><methodname>imagexbm</methodname>
    <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>artalan</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>önalan</parameter></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen resmin <acronym>XBM</acronym> sürümünü çıktılar veya kaydeder.
   </para>
+  <note>
+   <simpara>
+    <function>imagexbm</function> herhangi bir dolgulama yapmaz, dolayısıyla resim 
+    genişliği 8 ile çarpılmalıdır. Bu sınırlama artık  PHP 5.6.24 ve 7.0.9 
+    itibariyle uygulanmıyor.
+   </simpara>
+  </note>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -30,15 +37,22 @@
        Resmin kaydedileceği dosyanın yolu. Belirtilmez veya &null; verilirse
        doğrudan ham resim akımı çıktılanır.
       </para>
+       <para>
+        <parameter>dosyaismi</parameter> (.xbm uzantısız) iayrıca 
+        <acronym>XBM</acronym>'nin C tanımlayıcıları için de kullanılır, 
+        dolayısıylla geçerli yerelin alfasayısal olmayan karakterleri altçizgilerle 
+        ikame edilir.  <parameter>dosyaismi</parameter> olarak &null; verilirse 
+        <parameter>resim</parameter> C tanıtıcıları için kullanılır.
+       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>artalan</parameter></term>
+     <term><parameter>önalan</parameter></term>
      <listitem>
       <para>
        <function>imagecolorallocate</function> tarafından sağlanmış bir
-       tanıtıcı ile bir artalan rengi tanımlayabilirsiniz. Öntanımlı artalan
-       rengi siyahtır.
+       tanıtıcı ile bir önalan rengi tanımlayabilirsiniz. Öntanımlı önalan
+       rengi siyahtır. Kalan tüm renkler artalan rengidir.
       </para>
      </listitem>
     </varlistentry>
@@ -50,6 +64,7 @@
   <para>
    &return.success;
   </para>
+  &gd.return.trueonerror;
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
@@ -85,8 +100,8 @@ $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// Yeni artalan rengini ayarlayalım
-$artalan_rengi = imagecolorallocate($resim, 255, 0, 0);
+// Yeni önalan rengini ayarlayalım
+$önalan_rengi = imagecolorallocate($resim, 255, 0, 0);
 
 // Resmi çıktılayalım
 imagexbm($resim, NULL, $artalan_rengi);
@@ -101,7 +116,6 @@ imagedestroy($resim);
  </refsect1>
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.bundled.gd;
  </refsect1>
 </refentry>
 

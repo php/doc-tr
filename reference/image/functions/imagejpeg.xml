@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f543b07b0a335d58d7ea8ade0e6b3b63b61191dd Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagejpeg" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagejpeg</refname>
-  <refpurpose>Tarayıcıya veya bir dosyaya bir JPEG resmi çıktılar</refpurpose>
+  <refpurpose>&gd.image.output;</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagejpeg</methodname>
    <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>çıktıyeri</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>kalite</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -26,12 +26,9 @@
    <variablelist>
     &gd.image.description;
     <varlistentry>
-     <term><parameter>dosyaismi</parameter></term>
+     <term><parameter>çıktıyeri</parameter></term>
      <listitem>
-      <para>
-       Resmin kaydedileceği dosyanın yolu. Belirtilmez veya &null; verilirse
-       doğrudan ham resim akımı çıktılanır.
-      </para>
+      <para>&gd.image.path;</para>
       <para>
        <parameter>kalite</parameter> değiştirgesini kullanmak için bu
        değiştirgeye &null; değeri vererek atlayabilirsiniz.
@@ -57,12 +54,44 @@
   <para>
    &return.success;
   </para>
+  &gd.return.trueonerror;
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        <type>resource</type> türünde bir akımın <parameter>çıktıyeri</parameter>
+        değiştirgesine aktarılabilmesi eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.4.0</entry>
+       <entry>
+        <parameter>çıktıyeri</parameter> değiştirgesini atlamak için boş dizge 
+        atanması men edildi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- Bir JPEG resmi çıktılamak</title>
+    <title>- Bir JPEG resmini tarayıcıya çıktılamak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -72,7 +101,7 @@ $text_color = imagecolorallocate($im, 233, 14, 91);
 imagestring($im, 1, 5, 5,  'A Simple Text String', $text_color);
 
 // İçerik türünü belirtelim
-header('Content-type: image/jpeg');
+header('Content-Type: image/jpeg');
 
 // Resmi çıktılayalım
 imagejpeg($im);
@@ -84,6 +113,7 @@ imagedestroy($im);
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: Bir JPEG resmini çıktılamak</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagejpeg.jpg"/>
      </imageobject>
@@ -92,7 +122,7 @@ imagedestroy($im);
   </para>
   <para>
    <example>
-    <title>- Bir JPEG resmi kaydetmek</title>
+    <title>- Bir JPEG resmi bir dosyaya kaydetmek</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -113,7 +143,7 @@ imagedestroy($im);
   </para>
   <para>
    <example>
-    <title>- Resmi 75% kaliteyle oluşturmak</title>
+    <title>- Resmi 75% kaliteyle tarayıcıya çıktılamak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -123,9 +153,9 @@ $text_color = imagecolorallocate($im, 233, 14, 91);
 imagestring($im, 1, 5, 5,  'A Simple Text String', $text_color);
 
 // İçerik türünü belirtelim
-header('Content-type: image/jpeg');
+header('Content-Type: image/jpeg');
 
-// Dosya ismini NULL ile atlayıp kaliteyi 75% yapalım
+// çıktıyeri'ni NULL ile atlayıp kaliteyi 75% yapalım
 imagejpeg($im, NULL, 75);
 
 // Belleği serbest bırakalım
@@ -138,7 +168,6 @@ imagedestroy($im);
  </refsect1>
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.config.jpeg;
   <note>
    <para>
     Aşamalı JPEG'ler çıktılamak isterseniz geçişimliliği

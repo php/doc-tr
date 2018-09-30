@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ec54028a9669461b0c72a6858fdce9d25ff55568 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagerotate" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagerotate</refname>
@@ -23,8 +23,6 @@
    Dönüş merkezi resmin merkezi olup, döndürülen resim özgün resimden farklı
    boyutlara sahip olabilir.
   </para>
-  <para>
-  </para>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -35,7 +33,7 @@
      <term><parameter>açı</parameter></term>
      <listitem>
       <para>
-       Derece olarak dönüş açısı.
+       Derece olarak saat yönünün tersine dönüş açısı.
       </para>
      </listitem>
     </varlistentry>
@@ -61,7 +59,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  </para>
+   Döndürülen resmin özkaynağını döndürür, &return.falseforfailure;.
+   </para>
  </refsect1>
  <refsect1 role="changelog">
   &reftitle.changelog;
@@ -75,6 +74,19 @@
       </row>
      </thead>
      <tbody>
+       <row>
+       <entry>5.5.0</entry>
+       <entry>
+        <parameter>şeffaflığı_yoksay</parameter> artık sessizce yoksayılıyor.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.0</entry>
+       <entry>
+        Bu işlev artık <function>imagesetinterpolation</function> işlevince 
+        atanan aradeğerleme yönteminden etkileniyor.
+       </entry>
+      </row>
       <row>
        <entry>5.1.0</entry>
        <entry>
@@ -112,11 +124,16 @@ $rotate = imagerotate($source, $degrees, 0);
 
 // Çıktılayalım
 imagejpeg($rotate);
+
+// Belleği serbest bırakalım
+imagedestroy($source);
+imagedestroy($rotate);
 ?>
 ]]>
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: Bir resmi 180 derece döndürmek</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagerotate.jpg"/>
      </imageobject>
@@ -126,7 +143,15 @@ imagejpeg($rotate);
  </refsect1>
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.bundled.gd;
+  &note.gd.interpolation;
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>imagesetinterpolation</function></member>
+   </simplelist>
+  </para>
  </refsect1>
 </refentry>
 
