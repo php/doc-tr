@@ -1,67 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: bb33d2a40c73ce3f55252c2254fef0c05d15f5f9 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 445962cfde047efd759cfc37006a5c5864864ef5 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.basic-syntax" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Sözdizimi</title>
-  <sect1 xml:id="language.basic-syntax.phpmode">
-   <title>HTML&apos;den Kaçmak</title>
+  <sect1 xml:id="language.basic-syntax.phptags">
+   <title>PHP etiketleri</title>
    <para>
     PHP bir dosyayı çözümlerken, hangi bölümü yorumlayıp hangi bölümü
-    yorumlamadan geçeceğine açılış ve kapanış etiketlerine bakarak
-    karar verir. PHP&apos;nin bu şekilde çalışıyor olması, PHP&apos;nin
-    çesitli türde birçok belgenin içine gömülebilmesini sağlar, çünkü PHP
-    başlangıç ve bitiş etiketlerinin dışında kalan her şey PHP çözümleyicisi
-    tarafından gözardı edilir. Çoğu zaman, bu örnekte olduğu gibi PHP&apos;nin
-    HTML içine gömülmüş olduğunu göreceksiniz.
+    yorumlamadan geçeceğine karar vermek için <literal>&lt;?php</literal> ve 
+    <literal>?&gt;</literal> açılış ve kapanış etiketlerine bakar. Bu şekilde 
+    çözümleme PHP'nin her çeşit farklı belgeye gömülmesini sağlar, çünkü bir 
+    çift açılış ve kapanış etiketinin dışındaki her şey PHP çözümleyicisi 
+    tarafından gözardı edilir.
+   </para>
+   <para>
+    PHP ayrıca kısa başlangıç etiketine de <literal>&lt;?</literal> izin verir.
+    Bu sadece, PHP <option>--enable-short-tags</option> yapılandırma seçeneği ile 
+    derlenerek veya &php.ini; yapılandırma dosyası yönergesi <link 
+    linkend="ini.short-open-tag">short_open_tag</link> kullanılarak 
+    etkinleştirilebilir.
+   </para>
+   <para>
+    Bir dosya saf PHP kodu ise, dosyanın sonunda PHP kapanış etiketini koymamak 
+    tercih edilir. Yazılımcıdan herhangi bir çıktı gönderme isteği gelmezse PHP 
+    betiğin bu noktasında çıktı tamponlamasını başlatacağından kapama etiketinden 
+    sonra istenmeyen etkilere neden olabilecek boşluk veya yeni satırların 
+    yanlışlıkla eklenmesi böylece engellenmiş olur.
     <informalexample>
      <programlisting role="php">
 <![CDATA[
-<p>Bu bölüm gözardı edilecektir.</p>
-<?php echo 'Bu bölüm PHP tarafından çözümlenecektir.'; ?>
-<p>Bu bölüm de gözardı edilecektir.</p>
+<?php
+echo "Merhaba Dünya";
+
+// ... daha kod
+
+echo "İletişimin sonu";
+
+// PHP kapama etiketi olmadan betik burada biter
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <para>
-    Daha gelişmiş yapılar da kullanmanız mümkündür:
-    <example>
-     <title>- Gelişmiş önceleme</title>
+    <table>
+     &reftitle.changelog;
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>7.0.0</entry>
+         <entry>
+          <code>&lt;%</code>, <code>%&gt;</code>, <code>&lt;%=</code> ASP 
+          etiketleri ve <code>&lt;script language="php"&gt;</code> betik 
+          etiketi PHP'den kaldırıldıP.
+         </entry>
+       </row>
+       <row>
+        <entry>5.4.0</entry>
+         <entry>
+           <link linkend="ini.short-open-tag">short_open_tag</link> &php.ini; 
+           seçeneğine bakmaksızın &lt;?= etiketi daima kullanılabilir oldu.
+         </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </sect1>
+  <sect1 xml:id="language.basic-syntax.phpmode">
+   <title>HTML'den Kaçmak</title>
+   <para>
+    Başlangıç ve bitiş etiketlerinin dışında kalan her şey PHP çözümleyicisi
+    tarafından gözardı edilerek PHP dosyalarının karışık içeriğe sahip olabilmesi 
+    sağlanır. Çoğu zaman, bu örnekte olduğu gibi PHP'nin HTML içine gömülmüş 
+    olduğunu göreceksiniz.
+    <informalexample>
      <programlisting role="php">
 <![CDATA[
-<?php
-if ($ifade) {
-    ?>
-    <strong>Bu önerme doğrudur.</strong>
-    <?php
-} else {
-    ?>
-    <strong>Bu önerme yanlıştır.</strong>
-    <?php
-}
+<p>Bu bölüm PHP tarafından gözardı edilecek ve tarayıcıda gösterilecektir.</p>
+<?php echo 'Bu bölüm PHP tarafından çözümlenecektir.'; ?>
+<p>Bu bölüm de PHP tarafından gözardı edilecek ve tarayıcıda gösterilecektir.</p>
+]]>
+     </programlisting>
+    </informalexample>
+     Bu beklendiği gibi çalışır, çünkü PHP çözümleyicisi ?&gt; kapanış etiketine 
+     rastlayınca  (hemen ardından bir satırsonu karakteri gelmesi durumu hariç - 
+     bak: <link linkend="language.basic-syntax.instruction-separation">deyim 
+     ayırma</link>) başka bir açılış etiketine rastlayıncaya kadar (etiketin koşullu 
+     bir ifadenin ortasında olması durumu hariç - bu durumda çözümleyici neyin 
+     atlanacağına karar vermek için ifadenin sonucun saptamaya çalışacaktır) herşeyi 
+     çıktılamaya başlar. Aşağıdaki örneğe bakınız:
+   </para>
+   <para>
+    Yapıların koşullu kullanımı
+    <example>
+     <title>- Koşul kullanan gelişmiş önceleme</title>
+     <programlisting role="php">
+<![CDATA[
+<?php if (ifade == true): ?>
+  İfade doğruysa bu gösterilir.
+<?php else: ?>
+  İfade doğru değilse bu gösterilir.
+<?php endif; ?>
 ?>
 ]]>
      </programlisting>
     </example>
-      Bu beklendiği gibi çalışacaktır, çünkü PHP, ?&gt; kapanış
-      etiketi ile karşılaştığında, tekrar bir açılış etiketi ile karşılaşana
-      kadar bulduğu herşeyi (kapanış etiketinden sonraki satırsonu karakteri
-      hariç - bkz, <link
-      linkend="language.basic-syntax.instruction-separation">deyim
-      ayırma</link>) çıktılayacaktır. Buradaki örnek oldukça basit, ancak
-      büyük metin bloklarını görüntülemek istediğimizde PHP&apos;yi çözümleme
-      kipinden çıkartmak çoğu zaman tüm metni <function>echo</function> ya da
-      <function>print</function> ile görüntülemekten daha verimlidir.
+    Bu örnekte PHP, açılış/kapanış etiketlerinin dışında olsa bile koşulun 
+    karşılanmadığı blokları atlayacaktır, çünkü PHP yorumlayıcısı koşulun 
+    karşılanmadığı durumda koşulun içinde bulunan blokları atlar.
    </para>
    <para>
-    PHP ile kullanılabilecek dört farklı açılış ve kapanış etiketi çifti
-    vardır. Bunlardan ikisi, &lt;?php ?&gt; ve &lt;script language="php"&gt;
-    &lt;/script&gt; her zaman kullanılabilir durumdadır. Diğer ikisi, kısa
-    etiketler ve <productname>ASP</productname> tarzı etiketler olup
-    &php.ini; yapılandırma dosyası içersinden açılıp kapatılabilirler. Bazı
-    kişiler kısa etiketleri ve <productname>ASP</productname> tarzı
-    etiketleri daha kullanışlı bulmaktadır, ancak bu ikisi daha az
+    Büyük metin bloklarını görüntülemek istediğimizde PHP'yi çözümleme
+    kipinden çıkartmak çoğu zaman tüm metni <function>echo</function> ya da
+    <function>print</function> ile görüntülemekten daha verimlidir.
+   </para>
+   <para>
+    PHP 5'te, PHP'nin yapılandırılışına bağlı olarak kullanılabilecek beş 
+    farklı açılış ve kapanış etiketi çifti vardır. Bunlardan ikisi, 
+    &lt;?php ?&gt; ve &lt;script language="php"&gt; &lt;/script&gt; her zaman 
+    kullanılabilir durumdadır. Ayrıca, bir de PHP 5.4.0 ve sonrasında 
+    kullanılabilen <code>&lt;?= ?&gt;</code> kısa echo etiketi vardır.
+   </para>
+   <para>
+    Diğer ikisi, kısa etiketler ve <productname>ASP</productname> tarzı 
+    etiketlerdir. Bazı kişiler kısa etiketleri ve <productname>ASP</productname> 
+    tarzı etiketleri daha kullanışlı bulmaktadır, ancak bu ikisi daha az
     taşınabilir olduklarından genellikle tavsiye edilmemektedir.
     <note>
      <para>
@@ -72,42 +142,51 @@ if ($ifade) {
     </note>
    </para>
    <para>
+    PHP 7'de <productname>ASP</productname> ve
+    <code>&lt;script language="php"&gt;</code> etiketleri için destek 
+    kaldırılmıştır. Sonuç olarak, PHP kodunu yazarken azami uyumluluk için 
+    sadece <code>&lt;?php ?&gt;</code> ve <code>&lt;?= ?&gt;</code> 
+    etiketlerini kullanmanızı öneriyoruz.
+   </para>
+   <para>
     <example>
      <title>- PHP Açılış ve Kapanış Etiketleri</title>
      <programlisting role="php">
 <![CDATA[
-1.  <?php echo 'XHTML ya da XML belgeleri sunacaksanız, böyle yapın'; ?>
+1.  <?php echo 'XHTML ya da XML belgeleri sunacaksanız, 
+                bu etiketleri kullanın'; ?>
 
-2.  <script language="php">
-        echo 'bazı düzenleyiciler (FrontPage gibi) işlem
-             yönergelerini sevmezler';
+2.  <?= 'bu metni basmak' ?> için kısa echo etiketini kullanabilirsiniz.
+    PHP 5.4.0 ve sonrasında daima etkin olup
+    <?php echo 'bu metni basmak' ?> ile eşdeğerdir.
+
+3.  <? echo 'bu kod kısa etiketlerin içindedir, fakat sadece '.
+            'short_open_tag etkinse çalışır'; ?>
+
+4.  <script language="php">
+        echo 'bazı düzenleyiciler (FrontPage gibi) bu etiketlerin 
+             içindeki işlem yönergelerini sevmezler';
     </script>
 
-3.  <? echo 'Bu en basit, SGML işlem yönergesidir'; ?>
-    <?= ifade ?> Bu "<? echo ifade ?>" için bir kısayoldur.
-
-4.  <% echo 'İsterseniz ASP tarzı etiketler kullanabilirsiniz'; %>
-    <%= $degisken; # Bu "<% echo . . ." %> için bir kısayoldur.
+5.  <% echo 'İsterseniz ASP tarzı etiketler kullanabilirsiniz'; %>
+    <%= $değişken; %> etiketleri içindeki kod, <% echo $değişken; %> 
+     için bir kısayoldur. Bu son iki etiket çifti PHP 7.0.0'da kaldırılmıştır.
 ]]>
      </programlisting>
     </example>
    </para>
    <para>
-    Bir ve iki numaralı örneklerde gözüken etiketler her zaman
-    kullanılabilirler. Bu ikisinden birincisi en geniş kullanıma sahip olanı
-    ve en çok tercih edilenidir.
-   </para>
-   <para>
-    Kısa etiketler (üçüncü gibi) yalnızca &php.ini; içersinde <link
+    Kısa etiketler (üçüncü örnek) yalnızca &php.ini; içersinde <link
     linkend="ini.short-open-tag">short_open_tag</link> yapılandırma
     yönergesiyle etkinleştirilmişlerse ya da PHP,
     <code>--enable-short-tags</code> derleme seçeneği ile
     yapılandırılmışsa kullanılabilirler.
    </para>
    <para>
-    <productname>ASP</productname> tarzı etiketler (dördüncü örnek) &php.ini;
+    <productname>ASP</productname> tarzı etiketler (beşinci örnek) &php.ini;
     dosyasında <link linkend="ini.asp-tags">asp_tags</link> yapılandırma
-    yönergesiyle etkinleştirilmişlerse kullanılabilirler.
+    yönergesiyle etkinleştirilmişse kullanılabilir. Bunlar 
+    PHP 7.0.0'da kaldırılmıştır.
    </para>
    <para>
     <note>
@@ -124,7 +203,15 @@ if ($ifade) {
      <para>
       PHP 5.2 ve öncesinde, çözümleyici, bir dosya içindeki tek şey olarak
       <literal>&lt;?php</literal> başlangıç etiketine izin vermezdi.
-      PHP 5.3'ten itibaren izin verilmektedir.
+      Açılş etiketinden sonra bir veya daha fazla boşluk karakteri olması 
+      durumunda PHP 5.3'ten itibaren izin verilmektedir.
+     </para>
+    </note>
+    <note>
+     <para>
+      PHP 5.4 itibariyle, kısa echo etiketi <literal>&lt;?=</literal> 
+      <link linkend="ini.short-open-tag">short_open_tag</link> seçeneğine 
+      bakılmaksızın daima geçerlidir ve tanınmaktadır. 
      </para>
     </note>
    </para>
