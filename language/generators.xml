@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 27b04f9647bab2c913c93ec10e03692038fc066d Maintainer: nilgun Status: ready -->
+<chapter xml:id="language.generators" xmlns="http://docbook.org/ns/docbook">
+ <title>Üreteçler</title>
+
+ <sect1 xml:id="language.generators.overview">
+  <title>Üreteçlere giriş</title>
+  <?phpdoc print-version-for="generators"?>
+
+  <para>
+   Üreteçler, <classname>Iterator</classname> arayüzünü gerçekleyen bir sınıfı 
+   gerçeklemenin karmaşıklığı ve giderleri olmaksızın basit 
+   <link linkend="language.oop5.iterations">yineleyicileri</link> 
+   gerçeklemek için kolay bir yol sağlar.
+  </para>
+
+  <para>
+   Bir üreteç, önemli miktarda işlem süresi gerektirmeden ve bellek 
+   sınırını aşabilecek bir dizi oluşturmaya gerek kalmadan bir dizi veriyi 
+   yinelemek için &foreach; kullanan bir kod yazmanızı sağlar. Bunun için 
+   bir üreteç işlevini normal bir <link 
+   linkend="functions.user-defined">işlev</link> yazar gibi yazabilirsiniz, 
+   siz bir kez değer <link linkend="functions.returning-values">döndürmeyi</link>, 
+   beklerken bir üreteç üzerinde yinelenecek değerleri sağlamak için gerektiği 
+   kadar çok kez değer döndürebilir.
+  </para>
+
+  <para>
+   Buna basit bir örnek <function>range</function> işlevini bir üreteç olarak 
+   tekrar gerçeklemektir. Standard <function>range</function> işlevi her 
+   değeri ve onun dönen değerini içeren devasa boyutlara ulaşabilen bir dizi 
+   üretmek zorundadır. Örneğin, <command>range(0, 1000000)</command> çağrısı 
+   100MB üzerinde bellek kullanımıyla sonuçlanabilir.
+  </para>
+
+  <para>
+   Bir seçenek olarak, bir <literal>xrange()</literal> üreteci gerçekleyebiliriz, 
+   tek ihtiyacımız bir <classname>Iterator</classname> nesnesi oluşturmaya yetecek 
+   bellek ayırmak ve 1 kilobayttan azıyla dönmesi için üretecin dahili durumunu 
+   izlemektir.
+  </para>
+
+  <example>
+   <title>- <function>range</function> işlevini bir üreteç olarak gerçeklemek</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function xrange($start, $limit, $step = 1) {
+    if ($start < $limit) {
+        if ($step <= 0) {
+            throw new LogicException('Step must be +ve');
+        }
+
+        for ($i = $start; $i <= $limit; $i += $step) {
+            yield $i;
+        }
+    } else {
+        if ($step >= 0) {
+            throw new LogicException('Step must be -ve');
+        }
+
+        for ($i = $start; $i >= $limit; $i -= $step) {
+            yield $i;
+        }
+    }
+}
+
+/*
+ * range() ve xrange() işlevlerinin ikisi de aşağıda 
+ * benzer çıktıyı verecektir.
+ */
+
+echo 'range() içindeki bir haneli tek sayılar:  ';
+foreach (range(1, 9, 2) as $number) {
+    echo "$number ";
+}
+echo "\n";
+
+echo 'xrange() içindeki bir haneli tek sayılar: ';
+foreach (xrange(1, 9, 2) as $number) {
+    echo "$number ";
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+range() içindeki bir haneli tek sayılar: 1 3 5 7 9 
+xrange() içindeki bir haneli tek sayılar: 1 3 5 7 9 
+]]>
+   </screen>
+  </example>
+
+  <sect2 xml:id="language.generators.object">
+   <title><classname>Generator</classname> nesneleri</title>
+   <para>
+    Bir üreteç işlevi çağrıldığında dahili <classname>Generator</classname> 
+    sınıfının yeni bir nesnesi döner. Bu nesne  <classname>Iterator</classname> 
+    arayüzünü gerçekler. Bu, sadece ileri doğru yineleme yapan bir yineleme 
+    nesnesinin yaptığını yapacak ve değer gönderme ve döndürme dahil, üretecin 
+    durumunu da değiştirmeye yarayacak çağırılabilir yöntemler sağlayacaktır.
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="language.generators.syntax">
+  <title>Generator sözdizimi </title>
+
+  <para>
+   Bir üreteç işlevi, normal bir işlev gibi görünür fakat bir üreteç tek bir 
+   değer döndürmek yerine ihtiyaç duyulduğu kadar çok değer üretir (&yield;).
+  </para>
+
+  <para>
+   Bir üreteç işlevi çağrıldığında üzerinde yineleme yapılabilecek bir nesne 
+   döndürür. Bu nesne üzerinde yineleme yaptığınızda (örneğin &foreach; ile), 
+   PHP bir değere her ihtiyaç duyuşunda nesnenin yineleme yöntemlerini çağırır 
+   ve üreteç bir değer ürettiğinde üretecin durumunu kaydeder, böylece yeni 
+   bir değere her ihtiyaç duyuluşunda üreteç kaldığı yerden devam edebilir.
+  </para>
+
+  <para>
+   Üretilecek değer kalmadığında, üreteç basitçe çıkar ve adeta bir dizi 
+   değerlerini tüketmiş gibi kod çağrılmaya devam eder.
+  </para>
+
+  <note>
+   <para>
+    PHP 5'te, bir üreteç bir değer döndüremezdi: bu bir derleme hatasıyla 
+    sonuçlanırdı. Üreteç içinde geçerli sözdizimi boş bir 
+    <command>return</command> deyimi idi ve üreteci sonlandırırdı. PHP 7.0 
+    itibariyle, üreteç değerleri döndürebilmekte ve
+    <methodname>Generator::getReturn</methodname> kullanarak 
+    bunlar alınabilmektedir.
+   </para>
+  </note>
+
+  <sect2 xml:id="control-structures.yield">
+   <title><command>yield</command> sözcüğü</title>
+
+   <para>
+    Üreteç işlevinin kalbi  <command>yield</command> sözcüğüdür. En basit 
+    halinde, bir yield deyimi çoğunlukla bir return deyimi gibi görünür. 
+    İşlevin çalışmasını durdurmak ve değer döndürmek yerine, yield, üreteç 
+    üzerindeki kod döngüsüne bir değer verir ve üreteç işlevini bekletir.
+   </para>
+
+   <example>
+    <title>- Basit bir yield örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function gen_one_to_three() {
+    for ($i = 1; $i <= 3; $i++) {
+        // yield'ler arasında $i korunur.
+        yield $i;
+    }
+}
+
+$generator = gen_one_to_three();
+foreach ($generator as $value) {
+    echo "$value\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+1
+2
+3
+]]>
+    </screen>
+   </example>
+
+   <note>
+    <para>
+     Dahili olarak, ilişkisel olmayan dizilerdeki gibi sıralı tamsayı 
+     anahtarlar üretilen (yield) değerlerle çiftler oluşturur.
+    </para>
+   </note>
+
+   <caution>
+    <para>
+     yield sözcüğünü bir ifade bağlamında kullanıyorsanız, (örneğin bir 
+     atamanın sağ tarfında) PHP5'te yield deyimini parantez içine almanız 
+     gerekir. Örneğin aşağıdaki geçerlidir:
+    </para>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+      $data = (yield $value);
+]]>
+     </programlisting>
+    </informalexample>
+
+    <para>
+     Bu yapılmazsa PHP 5'te bir çözümleme hatası ortaya çıkar:
+    </para>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+      $data = yield $value;
+]]>
+     </programlisting>
+    </informalexample>
+
+    <para>
+     Parantez kısıtlamaları PHP7'de uygulanmaz.
+    </para>
+
+    <para>
+      <methodname>Generator::send</methodname> yöntemine 
+      <varname>$data</varname> değiştirgesine atanan değer ya da yerine 
+      <methodname>Generator::next</methodname> çağılırsa &null; atanır.
+    </para>
+   </caution>
+
+   <sect3 xml:id="control-structures.yield.associative">
+    <title>Değerleri anahtarlarla üretmek</title>
+
+    <para>
+     PHP ilişkisel dizileri de destekler ve üreteçlerin bir farkı yoktur. 
+     Basit değerlerin üretilmesinin yanında, yukarıda gösterildiği gibi, 
+     aynı anda bir anahtar da üretebilirsiniz.
+    </para>
+
+    <para>
+     Bir anahtar/değer çifti üretmenin (yielding) sözdizimi, aşağıda 
+     gösterildiği gibi, bir ilişkisel dizi tanımlamada kullanılan sözdizimine 
+     çok benzer.
+    </para>
+
+    <example>
+     <title>- Bir anahtar/değer çifti üretimi</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/*
+ * girdi noktalı virgülle ayrılmış alanlardır,
+ * ilk alan anahtar olarak kullanılacak ID'dir
+ */
+
+$input = <<<'EOF'
+1;PHP;Dolar imlerini sever
+2;Python;Boşlukları sever
+3;Ruby;Blokları sever
+EOF;
+
+function input_parser($input) {
+    foreach (explode("\n", $input) as $line) {
+        $fields = explode(';', $line);
+        $id = array_shift($fields);
+
+        yield $id => $fields;
+    }
+}
+
+foreach (input_parser($input) as $id => $fields) {
+    echo "$id:\n";
+    echo "    $fields[0]\n";
+    echo "    $fields[1]\n";
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+1:
+    PHP
+    Dolar imlerini sever
+2:
+    Python
+    Boşlukları sever
+3:
+    Ruby
+    Blokları sever
+]]>
+     </screen>
+    </example>
+
+    <caution>
+     <para>
+      Evvelce gösterilen basit değerli üretimler gibi, bir anahtar/değer 
+      çiftini bir ifade bağlamı içinde üretmek, yield deyimin parantez 
+      içine alınmasını gerektirir (PHP 5 için):
+     </para>
+
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+      $data = (yield $key => $value);
+]]>
+      </programlisting>
+     </informalexample>
+    </caution>
+   </sect3>
+
+   <sect3 xml:id="control-structures.yield.null">
+    <title>null değerlerin üretini</title>
+
+    <para>
+     Yield deyimini değiştirgesiz kullanmak &null; değerinin özdevinimli bir 
+     anahtarla birlikte üretilmesini sağlar.
+    </para>
+
+    <example>
+     <title>- &null; üretmek</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function gen_three_nulls() {
+    foreach (range(1, 3) as $i) {
+        yield;
+    }
+}
+
+var_dump(iterator_to_array(gen_three_nulls()));
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  NULL
+  [1]=>
+  NULL
+  [2]=>
+  NULL
+}
+]]>
+     </screen>
+    </example>
+   </sect3>
+
+   <sect3 xml:id="control-structures.yield.references">
+    <title>Başvuruya göre üretim</title>
+
+    <para>
+     Üreteç işlevleri üretimi, değerlerle yapabildiği gibi başvurularla da 
+     yapabilir. Bu, işlev isminin önüne bir '&amp;' imi yerleştirip <link 
+     linkend="functions.returning-values">işlevlerden başvurları döndürerek</link> 
+     yapılabilir:
+    </para>
+
+    <example>
+     <title>- Değerleri başvuruya göre üretmek</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function &gen_reference() {
+    $value = 3;
+
+    while ($value > 0) {
+        yield $value;
+    }
+}
+
+/*
+ * $number döngü içinde değiştirilebilir,
+ * üreteç başvuruları ürettiğinden, 
+ * gen_reference() içindeki $value değişir.
+ */
+foreach (gen_reference() as &$number) {
+    echo (--$number).'... ';
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+2... 1... 0... 
+]]>
+     </screen>
+    </example>
+   </sect3>
+
+   <sect3 xml:id="control-structures.yield.from">
+    <title><command>yield from</command> üzerinden üreteç ihalesi</title>
+
+    <para>
+     PHP 7'de, üreteç ihalesi, değerlerin başka bir üreteçte
+     (<command>yield from</command> deyimini kullanarak <type>array</type> veya 
+     <classname>Traversable</classname> nesnesinden) üretilmesini sağlar. 
+     Dış üreteç tüm değerleri iç üreteç, nesne veya diziden geçerliliğini 
+     yitirene kadar ürettikten sonra üretime dış üreteçte devam edilecektir.
+    </para>
+
+    <para>
+     Bir üreteç <command>yield from</command> ile kullanılırsa, 
+     <command>yield from</command> ifadesi ayrıca, iç üreteçten döndürülen
+     değerleri de döndürecektir.
+    </para>
+    
+    <caution>
+     <title>Bir dizide saklama (örn, <function>iterator_to_array</function> ile)</title>
+
+      <para>
+       <command>yield from</command> anahtarları sıfırlamaz, 
+       <classname>Traversable</classname> nesnesinden veya diziden döndürülen 
+       anahtarları korur. Böylece, bazı değerler başka bir 
+       <command>yield</command> veya <command>yield from</command> ile 
+       ortaklaşılan bir anahtarla paylaşılır (bir diziye değer girilmesiyle, 
+       anahtar ilk değerlerin üzerine yazılmasına sebep olur).
+      </para>
+
+      <para>
+       Bu konuda alışılmış durum, <function>iterator_to_array</function> 
+       işlevinin  öntanımlı olarak bir anahtarlı dizi döndürmesidir 
+       (muhtemelen beklenmedik sonuçlara yol açarak). 
+       <function>iterator_to_array</function> ikinci bir değiştirgeye 
+       sahiptir: <classname>Generator</classname> tarafından döndürülen 
+       anahtarları yoksayarken tüm değerleri toplamak için &false; atanabilen 
+       <parameter>use_keys</parameter> değiştirgesi.
+      </para>
+     
+      <example>
+       <title>- <function>iterator_to_array</function> ile 
+         <command>yield from</command></title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+function from() {
+    yield 1; // key 0
+    yield 2; // key 1
+    yield 3; // key 2
+}
+function gen() {
+    yield 0; // key 0
+    yield from from(); // keys 0-2
+    yield 4; // key 1
+}
+// [0, 1, 2, 3, 4] dizisini almak için ikinci değiştirgeye false aktaralım
+var_dump(iterator_to_array(gen()));
+?>
+]]>
+       </programlisting>
+       &example.outputs;
+       <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  int(1)
+  [1]=>
+  int(4)
+  [2]=>
+  int(3)
+}
+]]>
+       </screen>
+      </example>
+    </caution>
+
+    <example>
+     <title>- <command>yield from</command> için temel kullanım</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function count_to_ten() {
+    yield 1;
+    yield 2;
+    yield from [3, 4];
+    yield from new ArrayIterator([5, 6]);
+    yield from seven_eight();
+    yield 9;
+    yield 10;
+}
+
+function seven_eight() {
+    yield 7;
+    yield from eight();
+}
+
+function eight() {
+    yield 8;
+}
+
+foreach (count_to_ten() as $num) {
+    echo "$num ";
+}
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+1 2 3 4 5 6 7 8 9 10 
+]]>
+     </screen>
+    </example>
+
+    <example>
+     <title>- <command>yield from</command> ve dönen değerler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function count_to_ten() {
+    yield 1;
+    yield 2;
+    yield from [3, 4];
+    yield from new ArrayIterator([5, 6]);
+    yield from seven_eight();
+    return yield from nine_ten();
+}
+
+function seven_eight() {
+    yield 7;
+    yield from eight();
+}
+
+function eight() {
+    yield 8;
+}
+
+function nine_ten() {
+    yield 9;
+    return 10;
+}
+
+$gen = count_to_ten();
+foreach ($gen as $num) {
+    echo "$num ";
+}
+echo $gen->getReturn();
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+1 2 3 4 5 6 7 8 9 10
+]]>
+     </screen>
+    </example>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="language.generators.comparison">
+  <title>Üreteçlerin <classname>Iterator</classname> nesneleriyle karşılaştırılması</title>
+
+  <para>
+   Üreteçlerin başlıca getirisi basitlikleridir. 
+   <classname>Iterator</classname> sınıfının gerçeklenmesine kıyasla çok 
+   daha az kod yazılır ve kod genelde çok daha okunabilirdir. 
+   Örneğin aşağıdaki işlev ve sınıf eşdeğerdir:
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function getLinesFromFile($fileName) {
+    if (!$fileHandle = fopen($fileName, 'r')) {
+        return;
+    }
+ 
+    while (false !== $line = fgets($fileHandle)) {
+        yield $line;
+    }
+ 
+    fclose($fileHandle);
+}
+
+// versus...
+
+class LineIterator implements Iterator {
+    protected $fileHandle;
+ 
+    protected $line;
+    protected $i;
+ 
+    public function __construct($fileName) {
+        if (!$this->fileHandle = fopen($fileName, 'r')) {
+            throw new RuntimeException('Couldn\'t open file "' . $fileName . '"');
+        }
+    }
+ 
+    public function rewind() {
+        fseek($this->fileHandle, 0);
+        $this->line = fgets($this->fileHandle);
+        $this->i = 0;
+    }
+ 
+    public function valid() {
+        return false !== $this->line;
+    }
+ 
+    public function current() {
+        return $this->line;
+    }
+ 
+    public function key() {
+        return $this->i;
+    }
+ 
+    public function next() {
+        if (false !== $this->line) {
+            $this->line = fgets($this->fileHandle);
+            $this->i++;
+        }
+    }
+ 
+    public function __destruct() {
+        fclose($this->fileHandle);
+    }
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Bu esnekliğin bir bedeli vardır, üreteçler sadece ileri sayan yineleyiciler
+   olduklarından yineleme bir kere başladı mı bir daha başa sarılamazlar. 
+   Bunun bir diğer anlamı, aynı üretecin tekrar tekrar kullanılamamasıdır; 
+   üreteç işlevi tekrar çağrılarak üretecin yeniden oluşturulması gerekir.
+  </para>
+ </sect1>
+</chapter>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
