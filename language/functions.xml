@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 82d79c66531b3a08b781ac8c89c0c2f2fe4efb8f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 654f983667dbd37234c598a6e11fb2d2bcff151c Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -454,6 +454,21 @@ Bir kase az çilekli yoğurt yap.
           Değiştirge geçerli bir dizge olmalıdır.
          </entry>
          <entry>PHP 7.0.0</entry>
+        </row>
+        <row>
+         <entry><literal>iterable</literal></entry>
+         <entry>
+          Değiştirge ya bir <type>array</type> ya da bir &instanceof; 
+          <classname>Traversable</classname> olmalıdır.
+         </entry>
+         <entry>PHP 7.1.0</entry>
+        </row>
+        <row>
+         <entry><literal>object</literal></entry>
+         <entry>
+          Değiştirge bir <type>object</type> olmalıdır.
+         </entry>
+         <entry>PHP 7.2.0</entry>
         </row>
        </tbody>
       </tgroup>
@@ -1271,8 +1286,8 @@ $func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretirdi
     <function>imagecreatetruecolor</function> gibi <link linkend="ref.image"
     >resim</link> işlevlerini kullanabilmek için, PHP'yi
     <productname>GD</productname> desteğiyle derlemiş olmanız gerekir. Ya da,
-    <function>mysql_connect</function> işlevini kullanabilmek için, PHP'nin
-    <link linkend="ref.mysql">MySQL</link> desteği ile derlenmiş olması
+    <function>mysqli_connect</function> işlevini kullanabilmek için, PHP'nin
+    <link linkend="book.mysqli">MySQLi</link> desteği ile derlenmiş olması
     gerekmektedir. Bunların yanında, bütün PHP sürümlerine eklenen <link
     linkend="ref.strings">dizge</link> ve <link linkend="ref.var"
     >değişken</link> işlevleri gibi birçok çekirdek işlev de mevcuttur.
@@ -1360,6 +1375,9 @@ $greet('PHP');
    <simpara>
     Anonim işlevler değişkenleri üst etki alanından miras alabilirler. Böyle
     değişkenler <literal>use</literal> dil oluşumuna aktarılmalıdır.
+    PHP 7.1 itibariyle, bu değişkenler &link.superglobals;,
+    <varname>$this</varname> veya bir değiştirge ile aynı isimdeki değişkenleri 
+    içeremez.
    </simpara>
 
    <example>
@@ -1552,14 +1570,18 @@ NULL]]>
 <![CDATA[
 <?php
 
-new class {
+class Foo
+{
     function __construct()
     {
-        (static function() {
+        $func = static function() {
             var_dump($this);
-        })();
+        };
+        $func();
     }
 };
+new Foo();
+
 ?>
 ]]>
       </programlisting>
@@ -1580,16 +1602,20 @@ NULL
 <![CDATA[
 <?php
 
-(static function() {
-    // function body
-})->call(new StdClass);
+$func = static function() {
+    // işlev gövdesi
+};
+
+$func = $func->bindTo(new StdClass);
+$func();
+
 ?>
 ]]>
       </programlisting>
       &example.outputs;
       <screen>
 <![CDATA[
-Warning: Cannot bind an instance to a static closure in /in/sLLS9 on line 5
+Warning: Cannot bind an instance to a static closure in %s on line %d
 ]]>
       </screen>
      </example>
@@ -1608,6 +1634,14 @@ Warning: Cannot bind an instance to a static closure in /in/sLLS9 on line 5
         </row>
        </thead>
        <tbody>
+        <row>
+         <entry>7.1.0</entry>
+         <entry>
+          Anonim işlev değişkenleri &link.superglobals;, 
+          <varname>$this</varname> veya bir değiştirge ile aynı isimdeki 
+          değişkenleri içeremez.
+         </entry>
+        </row>
         <row>
          <entry>5.4.0</entry>
          <entry>

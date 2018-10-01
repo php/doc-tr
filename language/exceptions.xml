@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4c4736f7d3bbe24552038e5887708b268da89fe8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3d1b737b25cfb0b7e4a8750def40d23d19fe2161 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, dirt, sezer -->
  <chapter xml:id="language.exceptions" xmlns="http://docbook.org/ns/docbook">
   <title>İstisnalar</title>
@@ -19,7 +19,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class Exception
+class Exception extends Throwable
 {
     protected $message = 'Bilinmeyen istisna';  // istisna iletisi
     private   $string;                          // __toString önbelleği
@@ -245,9 +245,8 @@ class MyException extends Exception
    <para>
     Farklı sınıflara ait istisnaları yakalamak için birden fazla &catch; bloğu
     kullanılabilir. Normal çalışma sıradaki son &catch; bloğundan sonra devam
-    eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna oluşmadığı
-    veya bir &catch; bloğu ile eşleşen bir oluşmuş istisnalar sınıfının
-    mevcut olmadığı duruma karşılıktır) sıradaki tanımlanmış son &catch;
+    eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna 
+    oluşmadığında) sıradaki tanımlanmış son &catch;
     bloğundan sora devam eder. İstisnalar bir &catch; bloğu içerisinde oluşmuş
     olabileceği gibi yeniden de oluşabilir (&throw;).
    </para>
@@ -259,6 +258,12 @@ class MyException extends Exception
     eylemcisi tanımlanmamışsa, PHP bir ölümcül hata durumu oluşturur ve bir
     "<literal>Uncaught Exception ...</literal>" ("Yakalanmamış istisna ...")
     iletisi çıktılar.
+   </para>
+   <para>
+    PHP 7.1 ve sonrasında, boru (<literal>|</literal>) karakteri kullanarak bir 
+    &catch; bloğunda çok sayıda istisna belirtilebilir. Farklı sınıf 
+    hiyerarşilerindeki farklı istisnalar aynı şekilde elde edildiğinde 
+    kullanışlıdır.
    </para>
   </simplesect>
 
@@ -409,8 +414,40 @@ string(4) "foo!"
 ]]>
     </screen>
    </example>
-  </simplesect>
+   <example>
+    <title>Çoklu catch istisna eldesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
 
+class MyException extends Exception { }
+
+class MyOtherException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            throw new MyException();
+        } catch (MyException | MyOtherException $e) {
+            var_dump(get_class($e));
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(11) "MyException"
+]]>
+    </screen>
+   </example>
+  </simplesect>
 
  </chapter>
 

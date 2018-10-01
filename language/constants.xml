@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5e9fde393a7bfdba759d9c295f6c04de0205ae45 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: aa8396c5519eb3bf08e8102b6eea28169b38d406 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.constants" xmlns="http://docbook.org/ns/docbook">
   <title>Sabitler</title>
@@ -63,27 +63,29 @@ define("__FOO__", "bir şey");
   <sect1 xml:id="language.constants.syntax">
    <title>Söz dizimi</title>
    <simpara>
-    Bir sabiti <function>define</function> işlevini kullanarak
-    veya PHP 5.3.0'dan 5.6.0'a kadar sınıf tanımlarının dışında
-    <literal>const</literal> anahtar sözcüğünü kullanarak
-    tanımlayabilirsiniz. PHP 5.6.0'dan itibaren ise, bir sabiti bir sayısal
-    sabit olarak veya <type>array</type> türünde bir sabit olarak tanımlamak
-    mümkündür. Sabitleri <type>resource</type> türünde tanımlamak mümkünse de
-    beklenmedik sorunlara yol açabileceğinden bundan kaçınılmalıdır.
+    Bir sabiti <function>define</function> işlevini kullanarak veya 
+    PHP 5.3.0'dan itibaren sınıf tanımlarının dışında <literal>const</literal> 
+    anahtar sözcüğünü kullanarak tanımlayabilirsiniz. 
+    <function>define</function> bir sabitin keyfî bir ifadede tanımlanmasına 
+    izin verir. <literal>const</literal> ile ilgili kısıtlamalara aşağıdaki 
+    paragrafta yer verilmiştir. Bir sabit tanımlandıktan sonra asla 
+    değiştirilemez ve tanımsız yapılamaz.
    </simpara>
    <simpara>
-    Bir sabit ismine yalnızca bir sayıl değer (<type>boolean</type>,
+    PHP 5.6.0 öncesinde, <literal>const</literal> kullanılırken
+    sabitlere yalnızca bir sayıl değer (<type>boolean</type>,
     <type>integer</type>, <type>float</type> veya <type>string</type>)
-    atanabilir. Sabitleri <type>resource</type> olarak kayıt altına almak
-    mümkündür, fakat umulmadık sonuçlara yol açabileceğinden bundan
-    kaçınılmalıdır.
+    atanabilirdi. PHP 5.6 itibariyle, bir sabiti sayısal bir ifade hatta bir 
+    <type>array</type> sabit olarak tanımlamak mümkündür. Sabitleri 
+    <type>resource</type> olarak tanımlamak mümkünse de, umulmadık 
+    sonuçlara yol açabileceğinden bundan kaçınılmalıdır.
    </simpara>
    <simpara>
     Bir sabitin değerini basitçe ismini belirterek alabilirsiniz.
     Değişkenlerin aksine, sabitlerin önüne <literal>$</literal> imi
-    eklemeniz gerekmez. Bunun yanında, bir sabitin ismini devingen şekilde
-    elde etmek isterseniz, sabitin değerini okumak için
-    <function>constant</function> işlevini de kullanabilirsiniz.
+    ekleme<emphasis>ME</emphasis>niz gerekir. Bunun yanında, bir sabitin 
+    ismini devingen şekilde kullanmak isterseniz, sabitin değerini okumak 
+    için <function>constant</function> işlevini de kullanabilirsiniz.
     Tanımlanmış sabitlerin tamamının bir listesini almak için,
     <function>get_defined_constants</function> işlevini kullanabilirsiniz.
    </simpara>
@@ -105,7 +107,7 @@ define("__FOO__", "bir şey");
     linkend="language.types.array.foo-bar"><code>$foo[bar]</code> neden
     yanlıştır?</link> başlığı altında bulabilirsiniz. Bu <link
     linkend="language.namespaces.rules">(tamamen) nitelenmiş sabitlere</link>
-    uygulanmaz, çünkü tanımsız olduğunda ölümcül bir hataya yol açar. Bir
+    uygulanmaz, çünkü tanımsızsa ölümcül bir hataya yol açar. Bir
     sabitin tanımlı olup olmadığını <function>defined</function> işlevi
     sayesinde kolayca öğrenebilirsiniz.
    </simpara>
@@ -139,10 +141,12 @@ define("__FOO__", "bir şey");
       <simpara>
         Bir sabit sadece bir sayıl değerlerle (<type>boolean</type>,
         <type>integer</type>, <type>float</type> veya <type>string</type>
-        türünde bir değer) sonuçlanabilir. PHP 5.6 ve sonrasında
-        <literal>const</literal> sözcüğünü kullanarak, PHP 7.0 ve sonrasında ise
-        <function>define</function> kullanarak dizi sabitler tanımlamak
-        mümkündür.
+        türünde bir değerle) sonuçlanabilir. PHP 5.6 ve sonrasında
+        <literal>const</literal> sözcüğünü kullanarak (örneğin, 
+        <literal>const FOO = array(1,2,3)[0];</literal>), PHP 7.0 ve 
+        sonrasında ise <function>define</function> kullanarak dizi sabitler 
+        tanımlamak mümkünse de sonuçta değerin izin verilen türde olması 
+        gerekir.
        </simpara>
      </listitem>
     </itemizedlist>
@@ -156,7 +160,7 @@ define("__FOO__", "bir şey");
 <?php
 define("CONSTANT", "Merhaba dünya.");
 echo CONSTANT; // "Merhaba dünya" çıktılar.
-echo Constant; // "Constant" çıktılar ve bir bilgi iletisi gösterir.
+echo Constant; // "Constant" çıktılar ve bir uyarı gösterir.
 ?>
 ]]>
      </programlisting>
@@ -205,6 +209,14 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
     </para>
    </note>
 
+   <note>
+    <para>
+     <literal>const</literal> anahtar sözcüğü ile tanımlanan sabitler daima harf 
+     büyüklüğüne duyarlıyken <function>define</function> ile tanımlanan sabitler 
+     harf büyüklüğüne duyarlı olmayabilir.
+    </para>
+   </note>
+
    <simpara>
     Ayrıca, <link linkend="language.oop5.constants">Sınıf Sabitleri</link>
     belgesine de bakınız.
@@ -215,18 +227,20 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
    <title>Sihirli Sabitler</title>
 
    <simpara>
-    PHP, çalışan her betiğin erişebileceği çok sayıda <link
-    linkend="reserved.constants">öntanımlı sabit</link>&apos;e sahiptir. Öte
+    PHP, çalışan her betiğe çok sayıda <link
+    linkend="reserved.constants">öntanımlı sabit</link> sağlar. Öte
     yandan, bu sabitlerin çoğu, çeşitli eklentiler tarafından
     tanımlandığından, sadece eklenti bir modül olarak veya PHP içinde
     derlenmişse kullanılabilir.
    </simpara>
 
    <para>
-    Değerleri kullanıldıkları yere göre değişen sekiz sihirli sabit vardır.
+    Değerleri kullanıldıkları yere göre değişen dokuz sihirli sabit vardır.
     Örneğin, <constant>__LINE__</constant> sabitinin değeri betiğin hangi
-    satırında kullanıldığına bağlıdır. Bu özel sabitler büyük-küçük harf
-    farkına duyarsızdır ve aşağıda listelenmişlerdir:
+    satırında kullanıldığına bağlıdır. Çalışma zamanında çözümlenen sırada 
+    sabitlerin tersine "sihirli" sabitlerin tamamı derleme sırasında çözümlenir.
+    Bu özel sabitler büyük-küçük harf farkına duyarsızdır ve aşağıda 
+    listelenmişlerdir:
    </para>
    <para>
     <table>
@@ -242,7 +256,7 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
        <row xml:id="constant.line">
         <entry><constant>__LINE__</constant></entry>
         <entry>
-          Dosyada bu sabitin bulunduğu satırın numarası.
+          Dosyada geçerli satırın numarası.
         </entry>
        </row>
        <row xml:id="constant.file">
@@ -272,7 +286,7 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
        <row xml:id="constant.class">
         <entry><constant>__CLASS__</constant></entry>
         <entry>
-          Sınıf ismi. Bbildirildiği isim alanını
+          Sınıf ismi. Bildirildiği isim alanını
           (<literal>Foo\Bar</literal> gibi) içerir. PHP 5.4 ve sonrasında
           __CLASS__ ayrıca kalıtsal özelliklerin içinde de çalışır. Böyle bir
           yöntemin içinde kullanıldığında __CLASS__, kalıtsal özelliğin içinde
@@ -296,6 +310,13 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
         <entry><constant>__NAMESPACE__</constant></entry>
         <entry>
           Geçerli isim alanının adı.
+        </entry>
+       </row>
+       <row xml:id="constant.coloncolonclass">
+        <entry><constant>ClassName::class</constant></entry>
+        <entry>
+         Tamamen nitelenmiş sınıf ismi. Ayrıca bkz, 
+         <link linkend="language.oop5.basic.class.class">::class</link>.
         </entry>
        </row>
       </tbody>
@@ -322,6 +343,12 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
         </row>
        </thead>
        <tbody>
+        <row>
+         <entry>5.5.0</entry>
+         <entry>
+          Sihirli sabit <constant>::class</constant> eklendi.
+         </entry>
+        </row>
         <row>
          <entry>5.4.0</entry>
          <entry>
