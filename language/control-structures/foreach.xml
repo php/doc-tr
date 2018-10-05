@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 8ad0d94e1c87b2daabff88e74acc31e8a11eec0a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 75fb719c3c051fdd62a704bc110197edcba8f532 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.foreach" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>foreach</literal></title>
  <?phpdoc print-version-for="foreach"?>
@@ -38,15 +38,18 @@ foreach (dizi_ifadesi as $isim => $değer)
  <para>
   <note>
    <para>
-    <literal>foreach</literal> ilk çalışmaya başladığında, dizi
+    PHP 5'te <literal>foreach</literal> ilk çalışmaya başladığında, dizi
     göstericisi özdevinimli olarak ilk elemanı gösterecek biçimde
     sıfırlanır. Bu sebeple, <literal>foreach</literal> deyiminden önce
     <function>reset</function> işlevini çalıştırmanıza gerek yoktur.
    </para>
    <para>
-    <literal>foreach</literal> dahili bir dizi göstericisi ile çalışması
-    nedeniyle bunun döngü içinde değiştirilmesi beklenmedik sonuçlara yol
-    açabilir.
+    PHP 5'te <literal>foreach</literal>'in dahili bir dizi göstericisi ile 
+    çalışması nedeniyle  bunun döngü içinde değiştirilmesi beklenmedik 
+    sonuçlara yol açabilir.
+   </para>
+   <para>
+    PHP 7'de, <literal>foreach</literal> dahili dizi göstericisi kullanmaz.
    </para>
   </note>
  </para>
@@ -69,77 +72,66 @@ unset($değer); // son eleman da işlendiğine göre gönderimi kaldıralım
    </programlisting>
   </informalexample>
  </para>
- <para>
-  <literal>$değer</literal> değişkeninin gönderimli hale getirilebilmesi,
-  sadece yinelenen dizi gönderimli (örn, bir değişkene) olabiliyorsa
-  mümkündür, yani aşağıdaki kod çalışmaz:
-  <informalexample>
-   <programlisting role="php">
-<![CDATA[
-<?php
-foreach (array(1, 2, 3, 4) as &$value) {
-    $value = $value * 2;
-}
-?>
-]]>
-   </programlisting>
-  </informalexample>
- </para>
  <warning>
   <para>
     <literal>$değer</literal> gönderim için kullanıldığından
     <literal>foreach</literal> döngüsünün sonunda son dizi elemanına
     gönderimli olarak kalır, bu bakımdan döngünün sonunda bu gönderimin
     <function>unset</function> işlevi kullanılarak kaldırılması önerilir.
+    Yoksa aşağıdaki davranışla karşılaşırsınız:
   </para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array("bir", "iki", "üç");
+foreach ($arr as &$value) {
+    değer = değer * 2;
+}
+// $dizi şimdi array(2, 4, 6, 8)
+
+// unset($değer) olmaksızın, $değer hala son öğeye gösterimli olur: $dizi[3]
+
+foreach ($dizi as $key => $değer) {
+    // $dizi[3] artık $dizi içindeki her değerle güncellenecek
+    echo "{$key} => {$değer} ";
+    print_r($dizi);
+ }
+// ...ikinciden son değere kadar son değere kopyalanacak.
+
+// çıktı:
+// 0 => 2 Array ( [0] => 2, [1] => 4, [2] => 6, [3] => 2 )
+// 1 => 4 Array ( [0] => 2, [1] => 4, [2] => 6, [3] => 4 )
+// 2 => 6 Array ( [0] => 2, [1] => 4, [2] => 6, [3] => 6 )
+// 3 => 6 Array ( [0] => 2, [1] => 4, [2] => 6, [3] => 6 )
+?>
+]]>
+   </programlisting>
+  </informalexample>
  </warning>
  <para>
+  PHP 5.5.0 öncesinde, <literal>$değer</literal> sadece yinelenen dizi 
+  gösterimli (yanı bir değişken) olabiliyorsa gösterimli olur. Aşağıdaki 
+  kod sadece PHP 5.5.0 ve sonrasında çalışır:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+foreach (array(1, 2, 3, 4) as &$değer) {
+    $değer = $değer * 2;
+}
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+  <para>
   <note>
    <para>
-    <literal>foreach</literal>, hata iletilerinin '@' kullanılarak
-    gözardı edilmesi özelliğini desteklemez.
+    <literal>foreach</literal> '@' kullanarak hata iletilerini göstermeme 
+    yeteneğini desteklemez.
    </para>
   </note>
- </para>
- <para>
-  Aşağıdaki iki döngünün aynı işi yaptığını farkedeceksiniz:
-  <informalexample>
-   <programlisting role="php">
-<![CDATA[
-<?php
-$dizi = array("bir", "iki", "üç");
-reset($dizi);
-while (list(, $değer) = each($dizi)) {
-    echo "Değer: $değer<br />\n";
-}
-
-foreach ($dizi as $değer) {
-    echo "Değer: $değer<br />\n";
-}
-?>
-]]>
-   </programlisting>
-  </informalexample>
- </para>
- <para>
-  Aşağıdakiler de işlevsel olarak aynıdır:
-  <informalexample>
-   <programlisting role="php">
-<![CDATA[
-<?php
-$dizi = array("bir", "iki", "üç");
-reset($dizi);
-while (list($isim, $değer) = each($dizi)) {
-    echo "Anahtar: $isim; Değer: $değer<br />\n";
-}
-
-foreach ($dizi as $isim => $değer) {
-    echo "Anahtar: $isim; Değer: $değer<br />\n";
-}
-?>
-]]>
-   </programlisting>
-  </informalexample>
  </para>
  <para>
   Değişik kullanımlara örnekler:
@@ -308,7 +300,44 @@ A: 3; B: 4; C:
    </informalexample>
   </para>
  </sect2>
-</sect1>
+
+ <sect2 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <literal>foreach</literal> artık dahili dizi göstericisini kullanmıyor.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.0</entry>
+       <entry>
+        <literal>$değer</literal>'i gösterimli yapmak ifadeler için de 
+        destekleniyor, evvelce sadece değişkenler için desteklenirdi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.0</entry>
+       <entry>
+        <function>list</function> ile içiçe dizilerin açılması destekleniyor. 
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </sect2>
+ </sect1>
 
 <!-- Keep this comment at the end of the file
 Local variables:

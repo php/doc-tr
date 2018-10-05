@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2c3698ad6f5bd147301df8c49a3dda2dad9b04a6 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.for" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>for</literal></title>
+ <?phpdoc print-version-for="for"?>
  <para>
   <literal>for</literal> döngüsü, PHP'deki en karmaşık döngü yapısıdır.
   C'deki karşılığıyla aynı biçimde çalışır. <literal>for</literal>
@@ -116,13 +117,13 @@ endfor;
  * döngü içinde verilerde değişiklik yapacağız.
  */
 $bizimkiler = Array(
-        Array('isim' => 'Ali', 'tuz' => 856412),
-        Array('isim' => 'Veli', 'tuz' => 215863)
-        );
+    Array('isim' => 'Ali', 'tuz' => 856412),
+    Array('isim' => 'Veli', 'tuz' => 215863)
+);
 
-for($i = 0; $i < sizeof($bizimkiler); ++$i)
+for($i = 0; $i < count($bizimkiler); ++$i)
 {
-    $bizimkiler[$i]['tuz'] = rand(000000, 999999);
+    $bizimkiler[$i]['tuz'] = mt_rand(000000, 999999);
 }
 ?>
 ]]>
@@ -130,10 +131,10 @@ for($i = 0; $i < sizeof($bizimkiler); ++$i)
   </informalexample>
  </para>
  <simpara>
-  Sorun ikinci ifadede gizlidir. Her yinelemede dizinin boyutları yeniden
+  Her yinelemede dizinin boyutları yeniden
   hesaplandığından kod yavaş çalışabilir. Örnekte boyut değişmediğinden
-  dizi boyutunu önce bir değişkene atıp ifadede bu değişken kullanılarak
-  kod en iyilenebilir. Aşağıdaki bunun yapılışı örneklenmiştir:
+  <function>count</function> işlevini defalarca çağırmak yerine dizi boyutunu 
+  bir değişkene atıp ifadede bu değişken kullanılarak kod en iyilenebilir:
  </simpara>
  <para>
   <informalexample>
@@ -141,13 +142,13 @@ for($i = 0; $i < sizeof($bizimkiler); ++$i)
 <![CDATA[
 <?php
 $bizimkiler = Array(
-        Array('isim' => 'Ali', 'tuz' => 856412),
-        Array('isim' => 'Veli', 'tuz' => 215863)
-        );
+    Array('isim' => 'Ali', 'tuz' => 856412),
+    Array('isim' => 'Veli', 'tuz' => 215863)
+);
 
-for($i = 0, $size = sizeof($bizimkiler); $i < $size; ++$i)
+for($i = 0, $size = count($bizimkiler); $i < $size; ++$i)
 {
-    $bizimkiler[$i]['salt'] = rand(000000, 999999);
+    $bizimkiler[$i]['salt'] = mt_rand(000000, 999999);
 }
 ?>
 ]]>
