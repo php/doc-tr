@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e57d6ccfdd9e474227c60e0773a3c7d1ecb9536 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9f9375d3a4934edd8eeed98d56a180e15dcf623c Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.declare" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>declare</literal></title>
+ <?phpdoc print-version-for="declare"?>
  <para>
   <literal>declare</literal> yapısı bir kod bloğunun çalıştırılması
   esnasında uygulanacak yönergeleri belirlemek için kullanılır.
@@ -19,17 +20,57 @@ declare (yönerge)
  </para>
  <para>
   <replaceable>yönerge</replaceable> bölümü, <literal>declare</literal>
-  bloğunun davranışını belirlemek için kullanılır. Şimdilik yalnızca iki
+  bloğunun davranışını belirlemek için kullanılır. Şimdilik yalnızca üç
   yönerge kullanılabilmektedir: <literal>ticks</literal> yönergesi (Daha
   fazla bilgi edinmek için aşağıya, <link
   linkend="control-structures.declare.ticks">ticks</link> yönergesine
-  bakınız.) ve <literal>encoding</literal> yönergesi.
+  bakınız.), <literal>encoding</literal> yönergesi ve 
+  <literal>strict_types</literal> yönergesi. Daha fazla bilgi için işlev 
+  değiştirgeleri sayfasındaki 
+  <link linkend="functions.arguments.type-declaration.strict">strict</link> 
+  bölümüne bakınız.
  </para>
- <note>
-  <simpara>
-   <literal>encoding</literal> yönergesi PHP 5.3.0'da eklenmiştir.
-  </simpara>
- </note>
+ <para>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>5.3.0</entry>
+      <entry><literal>encoding</literal> yönergesi eklendi.</entry>
+     </row>
+     <row>
+      <entry>7.0.0</entry>
+      <entry><literal>strict_types</literal> yönergesi eklendi.</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </para>
+ <para>
+  Yönergeler dosya derlendikçe ele alındığından, sadece birebir değerler
+  yönergelere değer olarak verilebilir. Değişkenler ve sabitler kullanılamaz. 
+  Örnek:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Bu geçerlidir:
+declare(ticks=1);
+
+// Bu geçersizdir:
+const TICK_VALUE = 1;
+declare(ticks=TICK_VALUE);
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
  <para>
   <literal>declare</literal> bloğunun <replaceable>deyim</replaceable>
   bölümünün nasıl çalıştırılacağı ve çalışma esnasındaki yan etkilerinin
@@ -175,12 +216,14 @@ declare(encoding='ISO-8859-1');
     <literal>--enable-zend-multibyte</literal> yapılandırma seçeneği ile
     derlenmediği takdirde PHP 5.3'te yoksayılır. PHP 6.0'da
     <literal>--enable-zend-multibyte</literal> etkindir.
-<!-- FIXME PHP_6
-    PHP 6.0'da
-    <literal>encoding</literal> yönergesi, dosya oluşturulurken hangi
-    kodlamanın kullanıldığını tarayıcıya bildirmek için kullanılır. Meşru
-    değerler, UTF-8 gibi karakter kodlaması isimleridir.
--->
+  </para>
+  <para>
+   Dikkat: PHP, <literal>--enable-zend-multibyte</literal>'ın PHP'yi derlemek 
+   için kullanılıp kullanılmadığını <function>phpinfo</function> dışında 
+   göstermez.
+  </para>
+  <para>
+   Ayrıca bak: <link linkend="ini.zend.script-encoding">zend.script_encoding</link>.
   </para>
  </sect2>
 </sect1>

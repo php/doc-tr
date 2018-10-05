@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d62fd8edf74b0db2d199bc079e41d2ad95d441f7 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.break" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><literal>break</literal></title>
+ <?phpdoc print-version-for="break"?>
  <simpara>
   <literal>break</literal> deyimi, <literal>for</literal>,
   <literal>foreach</literal>, <literal>while</literal>,
@@ -12,7 +13,8 @@
  <simpara>
   <literal>break</literal> deyiminde istenirse bir sayısal ifade
   belirtilebilir. Bu sayı iç içe yapılardan içten dışa kaç yapının aynı
-  anda durdurulacağını belirler.
+  anda durdurulacağını belirler. Öntanımlı değer <literal>1</literal> 
+  olup sadece ilk yapının çalışması sonlandırılır.
  </simpara>
  <para>
   <informalexample>
@@ -20,7 +22,7 @@
 <![CDATA[
 <?php
 $arr = array('sıfır', 'bir', 'iki', 'üç', 'dur', 'dört', 'beş');
-while (list(, $val) = each($arr)) {
+foreach ($arr as $val) {
     if ($val == 'dur') {
         break;    /* Burada 'break 1;' de yazabilirsiniz. */
     }
@@ -46,6 +48,35 @@ while (++$i) {
 ]]>
    </programlisting>
   </informalexample>
+ </para>
+ <para>
+  <table>
+   <title><literal>break</literal> ile ilgili değişiklikler</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>5.4.0</entry>
+      <entry>
+       <literal>break 0;</literal> artık geçersiz. Önceki sürümlerde 
+       <literal>break 1;</literal> ile aynı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>5.4.0</entry>
+      <entry>
+       Sayı yerine değişken aktarımı kaldırıldı.
+       (örn, <literal>$num = 2; break $num;</literal>)
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
  </para>
 </sect1>
 
