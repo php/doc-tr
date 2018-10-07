@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 73b8b5c0299a67b34a77afd1929b953feb128ce1 Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.http" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>HTTP bağlamı seçenekleri</refname>
@@ -37,7 +37,7 @@
     <varlistentry xml:id="context.http.header">
      <term>
       <parameter>header</parameter>
-      <type>string</type>
+      <type>array</type> veya <type>string</type>
      </term>
      <listitem>
       <para>
@@ -103,6 +103,21 @@
       </para>
       <para>
        &false; öntanımlıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="context.http.follow-location">
+     <term>
+      <parameter>follow_location</parameter>
+      <type>integer</type>
+     </term>
+     <listitem>
+      <para>
+       <literal>Location</literal> başlık yönlendirmelerini izler.
+       İptal etmek için <literal>0</literal> atayın.
+      </para>
+      <para>
+       <literal>1</literal> öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -190,10 +205,16 @@
       </row>
      </thead>
      <tbody>
-       <row>
-        <entry>5.3.0</entry>
+      <row>
+       <entry>5.3.4</entry>
        <entry>
-        <parameter>protocol_version</parameter> yönergesine
+        Eklendi: <parameter>follow_location</parameter>.
+       </entry>
+      </row>
+      <row>
+       <entry>5.3.0</entry>
+       <entry>
+        Değişti: <parameter>protocol_version</parameter> yönergesine
         <literal>1.1</literal> atandığında parçalı aktarım kodlaması artık
         desteklenmektedir.
        </entry>
@@ -201,38 +222,38 @@
       <row>
        <entry>5.2.10</entry>
        <entry>
-        <parameter>ignore_errors</parameter> eklendi.
+        Eklendi: <parameter>ignore_errors</parameter>
        </entry>
       </row>
       <row>
        <entry>5.2.10</entry>
        <entry>
-        Artık <parameter>header</parameter> sayısal indisli bir dizi
+        Değişti: Artık <parameter>header</parameter> sayısal indisli bir dizi
         olabilmektedir.
         </entry>
        </row>
       <row>
        <entry>5.2.1</entry>
        <entry>
-        <parameter>timeout</parameter> eklendi.
+        Eklendi: <parameter>timeout</parameter>
        </entry>
       </row>
       <row>
        <entry>5.1.0</entry>
        <entry>
-        HTTP vekilleri üzerinden HTTPS vekaleti eklendi.
+        Eklendi: HTTP vekilleri üzerinden HTTPS vekaleti
        </entry>
       </row>
       <row>
        <entry>5.1.0</entry>
        <entry>
-        <parameter>max_redirects</parameter> eklendi.
+        Eklendi: <parameter>max_redirects</parameter>
        </entry>
       </row>
       <row>
        <entry>5.1.0</entry>
        <entry>
-        <parameter>protocol_version</parameter> eklendi.
+        Eklendi: <parameter>protocol_version</parameter>
        </entry>
       </row>
      </tbody>
@@ -265,10 +286,41 @@ $seçenekler = array('http' =>
     )
 );
 
-$bağlam  = stream_context_create($seçenekler);
+$bağlam = stream_context_create($seçenekler);
 
 $sonuç = file_get_contents('http://mesela.dom/submit.php', false, $bağlam);
 
+?>
+]]>
+    </programlisting>
+   </example><!-- }}} -->
+  </para>
+  <para>
+   <example xml:id="context.http.example-fetch-ignore-redirect"><!-- {{{ -->
+    <title>Başlıklar ve içerik alınırken yönlendirmeleri yoksaymak </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$url = "http://www.example.org/header.php";
+
+$opts = array('http' =>
+    array(
+        'method' => 'GET',
+        'max_redirects' => '0',
+        'ignore_errors' => '1'
+    )
+);
+
+$context = stream_context_create($opts);
+$stream = fopen($url, 'r', false, $context);
+
+// meta veri ve başlıklar
+var_dump(stream_get_meta_data($stream));
+
+// esas veri
+var_dump(stream_get_contents($stream));
+fclose($stream);
 ?>
 ]]>
     </programlisting>
@@ -289,12 +341,39 @@ $sonuç = file_get_contents('http://mesela.dom/submit.php', false, $bağlam);
     yapılır.
    </simpara>
   </note>
+  <note>
+   <title>HTTP durum satırı</title>
+   <simpara>
+    Bu akım sarmalayıcı bir yönlendirmeyi izlerken 
+    <function>stream_get_meta_data</function> tarafından döndürülen 
+    <literal>wrapper_data</literal>, gerçekte <literal>0</literal> indisinde 
+    içerik verisine uygulanan HTTP durum satırını içermeyebilir.
+   </simpara>
+   <screen>
+<![CDATA[
+array (
+  'wrapper_data' =>
+  array (
+    0 => 'HTTP/1.0 301 Moved Permantenly',
+    1 => 'Cache-Control: no-cache',
+    2 => 'Connection: close',
+    3 => 'Location: http://example.com/foo.jpg',
+    4 => 'HTTP/1.1 200 OK',
+    ...
+]]>
+   </screen>
+   <simpara>
+    İlk istek <literal>301</literal> (kalıcı yönlendirme) ile döndü, dolayısıyla
+    akım sarmalayıcı özdevinimli olarak yönlendirmeyi izleyip bir <literal>200</literal> yanıtı aldı (indis = <literal>4</literal>).
+   </simpara>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><xref linkend="wrappers.http" /></member>
     <member><xref linkend="context.socket" /></member>
     <member><xref linkend="context.ssl" /></member>
    </simplelist>
