@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 64642ea9c35700b3d3a584b0020d4e15a79a0a89 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.autoload" xmlns="http://docbook.org/ns/docbook">
   <title>Özdevinimli Sınıf Yükleme</title>
@@ -12,20 +12,32 @@
     dosya).
   </para>
   <para>
-    PHP 5 ile birlikte bu durum zorunluluk olmaktan çıkmıştır. Henüz
-    tanımlanmamış bir sınıfı özdevinimli olarak çağırmak istediğinizde, bir
-    <code>__autoload</code> işlevi tanımlayabilirsiniz. Bu işlevi çağırmakla
-    PHP'nin  çalışması hata ile sonuçlanmadan önce betik yorumlama motoruna
-    sınıfı yüklemek için son bir şans verilmiş olur.
+    PHP 5 ile birlikte bu durum zorunluluk olmaktan çıkmıştır. 
+    <function>spl_autoload_register</function> işlevi, henüz tanımlanmamışlarsa, 
+    sınıfların ve arayüzlerin özdevinimli olarak yüklenmesini sağlayacak 
+    sayıda özdevinimli yükleyiciyi kaydeder. Özdevinimli yükleyicileri 
+    kaydederek, bir hatayla başarısızlığa uğramadan önce PHP'ye sınıf veya 
+    arayüzü yüklemek için son bir şans verilir.
   </para>
+  <tip>
+   <para>
+    <function>__autoload</function> işlevi sınıf ve arayüzlerin özdevinimli 
+    yüklenmesini sağlasa da <function>spl_autoload_register</function> işlevini 
+    kullanımı tercih edilmelidir. Bunun sebebi daha esnek olmasıdır (üçüncü 
+    parti kütüphanelerde olduğu gibi uygulamada belirtilebilecek sayıda 
+    özdevinimli yükleyiciyi etkinleştirerek). Bu nedenle 
+    <function>__autoload</function> işlevinin kullanılmaması daha iyi olur 
+    ve hatta, ileride kullanımı önerilmeyen işlev durumuna da gelebilir.
+   </para>
+  </tip>
   <note>
    <para>
    5.3.0 öncesinde, <code>__autoload</code> işlevinde oluşan istisnalar <link
    linkend="language.exceptions">catch</link> bloğu ile yakalanamaz,
-   dolayısıyla ölümcül hata ile sonuçlanır. 5.3.0 ve sonrasında ise, bir tane
-   olması şartıyla yakalanabilir. Özel bir istisna yakalanacaksa özel istisna
-   sınıfı mevcut olmalıdır. <code>__autoload</code> işlevi özel istisna
-   sınıflarını ardışık (iç içe) olarak yüklemek için kullanılabilir.
+   dolayısıyla ölümcül hata ile sonuçlanır. 5.3.0 ve sonrasında ise, 
+   özel bir istisna yakalanacaksa özel istisna sınıfının mevcut olmasıyla 
+   bu mümkündür. <code>__autoload</code> işlevi özel istisna sınıflarını 
+   iç içe yüklemek için kullanılabilir.
    </para>
   </note>
   <note>
@@ -36,8 +48,9 @@
   </note>
   <note>
    <para>
-    Sınıf ismini <function>call_user_func</function> gibi bir işlevde kullanırsanız
-    <literal>../</literal> gibi bazı tehlikeli karakterler içerebilir. Böyle işlevlerde
+    Sınıf ismini <function>call_user_func</function> gibi bir işlevde 
+    kullanırsanız <literal>../</literal> gibi bazı tehlikeli karakterler 
+    içerebilir. Böyle işlevlerde
     kullanıcı girdilerini kullanmamanız ya da en azından girdiyi
     <function>__autoload</function> ile doğrulamanızı öneririz.
    </para>
@@ -54,9 +67,10 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-function __autoload($class_name) {
-    require_once $class_name . '.php';
-}
+spl_autoload_register(function ($class_name) {
+    include $class_name . '.php';
+});
+
 
 $obj  = new MyClass1();
 $obj2 = new MyClass2();
@@ -73,9 +87,9 @@ $obj2 = new MyClass2();
 <![CDATA[
 <?php
 
-function __autoload($isim) {
+spl_autoload_register(function ($name) {
     var_dump($isim);
-}
+});
 
 class Fan implements DenemeA {
 }
@@ -98,10 +112,10 @@ Fatal error: Interface 'DenemeA' not found in ...
     <programlisting role="php">
 <![CDATA[
 <?php
-function __autoload($name) {
+spl_autoload_register(function ($name) {
     echo "$name yüklenmek isteniyor.\n";
     throw new Exception("$name yüklenemedi.");
-}
+});
 
 try {
     $obj = new YüklenemezSınıf();
@@ -127,10 +141,10 @@ YüklenemezSınıf yüklenemedi.
     <programlisting role="php">
 <![CDATA[
 <?php
-function __autoload($name) {
+spl_autoload_register(function ($name) {
     echo "Want to load $name.\n";
     throw new MissingException("Unable to load $name.");
-}
+});
 
 try {
     $obj = new NonLoadableClass();
@@ -157,10 +171,12 @@ Fatal error: Class 'MissingException' not found in testMissingException.php on l
    <para>
     <simplelist>
      <member><function>unserialize</function></member>
-     <member><link linkend="unserialize-callback-func">
-     unserialize_callback_func</link></member>
-     <member><function>spl_autoload</function></member>
+     <member><link linkend="ini.unserialize-callback-func">
+         unserialize_callback_func</link></member>
      <member><function>spl_autoload_register</function></member>
+
+     <member><function>spl_autoload</function></member>
+     <member><function>__autoload</function></member>
     </simplelist>
    </para>
   </simplesect>

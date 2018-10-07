@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b7031192a2b7d97257d3e303b8eb0f4692819fee Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.abstract" xmlns="http://docbook.org/ns/docbook">
   <title>Sınıf Soyutlama</title>
 
   <para>
     PHP 5, soyut sınıf ve yöntemlerin kullanımını mümkün kılmıştır. Soyut
-    olarak tanımlanmış bir sınıftan örnek oluşturmaya izin verilmemektedir.
-    Bir sınıf en az bir soyut yöntem içeriyorsa, o sınıf da soyut olarak
-    tanımlanmalıdır. Soyut olarak tanımlanmış yöntemler o yöntemlerin
-    imzasıdırlar, gerçeklemenin bütününü temsil edemezler.
+    olarak tanımlanmış bir sınıf örneklenemeyebilir ve en az bir soyut yöntem 
+    içeren bir sınıf da soyut olmalıdır. Soyut olarak tanımlanmış yöntemler o 
+    yöntemlerin imzasıdırlar, gerçeklemenin bütününü temsil edemezler.
   </para>
 
   <para>
@@ -21,7 +20,12 @@
     >görünürlükle</link> tanımlanması gerekir. Örneğin, soyut yöntem
     <code>protected</code> olarak tanımlanmışsa, işlev gerçeklenimi
     <code>private</code> değil, <code>protected</code> ya da
-    <code>public</code> olarak tanımlanmalıdır.
+    <code>public</code> olarak tanımlanmalıdır. Bundan başka, yöntemlerin 
+    imzaları da eşleşmelidir, örneğin gerekli değiştirgelerin tür ipuçları 
+    ve sayıları aynı olmalıdır. Örneğin bir çocuk sınıf seçimlik bir 
+    değiştirge tanımlarken soyut yöntem bunu yapmıyorsa bir imza uyumsuzluğu 
+    yoktur. PHP5.4'te bu kuruculara da uygulanır. PHP 5.4 öncesinde kurucu 
+    imzaları farklı olabilirdi.
   </para>
 
   <example>
@@ -80,6 +84,49 @@ SomutSınıf1
 FOO_SomutSınıf1
 SomutSınıf2
 FOO_SomutSınıf2
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>Soyut sınıf örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+abstract class AbstractClass
+{
+    // Soyut sınıfımız sadece gerekli değiştirgeleri tanımlamalı
+    abstract protected function prefixName($name);
+
+}
+
+class ConcreteClass extends AbstractClass
+{
+
+    // Çocuk sınıfımız seçimlik değiştirgeleri tanımlamalı 
+    // ebeveynin imzasındakileri değil
+    public function prefixName($name, $separator = ".") {
+        if ($name == "Pacman") {
+            $prefix = "Mr";
+        } elseif ($name == "Pacwoman") {
+            $prefix = "Mrs";
+        } else {
+            $prefix = "";
+        }
+        return "{$prefix}{$separator} {$name}";
+    }
+}
+
+$class = new ConcreteClass;
+echo $class->prefixName("Pacman"), "\n";
+echo $class->prefixName("Pacwoman"), "\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Mr. Pacman
+Mrs. Pacwoman
 ]]>
    </screen>
   </example>
