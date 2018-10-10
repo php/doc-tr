@@ -134,20 +134,20 @@ YüklenemezSınıf yüklenemedi.
     </screen>
    </example>
    <example>
-    <title>Autoloading with exception handling for 5.3.0+ - Missing custom exception</title>
+    <title>5.3.0+ için istisnalı özdevinimli yükleme - Eksik özel istisna</title>
     <para>
-     This example throws an exception for a non-loadable, custom exception.
+     Bu örnek, yüklenemeyen, özel bir istisna için bir istisna yavrular.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
 spl_autoload_register(function ($name) {
-    echo "Want to load $name.\n";
-    throw new MissingException("Unable to load $name.");
+    echo "$name yüklenmek isteniyor.\n";
+    throw new Eksikİstisna("$name yüklenemedi.");
 });
 
 try {
-    $obj = new NonLoadableClass();
+    $obj = new YülenemezSınıf();
 } catch (Exception $e) {
     echo $e->getMessage(), "\n";
 }
@@ -157,10 +157,10 @@ try {
     &example.outputs;
     <screen>
 <![CDATA[
-Want to load NonLoadableClass.
-Want to load MissingException.
+YülenemezSınıf yüklenmek isteniyor.
+Eksikİstisna yüklenmek isteniyor.
 
-Fatal error: Class 'MissingException' not found in testMissingException.php on line 4
+Fatal error: Class 'Eksikİstisna' not found in testMissingException.php on line 4
 ]]>
     </screen>
     </example>
