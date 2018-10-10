@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c2aae8928b69ed28b4e61bd7aadb869e5ccb64d8 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.iterations" xmlns="http://docbook.org/ns/docbook">
   <title>Nesne Yineleme</title>
@@ -27,7 +27,7 @@ class MyClass
 
     function iterateVisible() {
        echo "MyClass::iterateVisible:\n";
-       foreach($this as $key => $value) {
+       foreach ($this as $key => $value) {
            print "$key => $value\n";
        }
     }
@@ -66,12 +66,14 @@ private => private var
 
  <para>
   Çıktıdan görüleceği gibi, &foreach; erişilebilir olan tüm <link
-  linkend="language.oop5.visibility">görünür</link> değişkenleri yineledi.
-  Bir adım öteye giderek, PHP'nin yerleşik <link
-  linkend="language.oop5.interfaces">arayüz</link>lerinden biri olan
-  <varname>Iterator</varname>'ü gerçekleyebilirsiniz.
+  linkend="language.oop5.visibility">görünür</link> özellikleri yineledi.
+ </para>
+ <para>
+  Bir adım öteye giderek, <varname>Iterator</varname> <link
+  linkend="language.oop5.interfaces">arayüzü</link> gerçeklenebilir.
   <varname>Iterator</varname> kullanılarak, hangi nesnenin nasıl
-  yineleneceğine bir nesnenin karar verebilmesi mümkündür.
+  yineleneceğine ve her yinelemede hangi değerlerin kullanılacağına bir 
+  nesnenin karar verebilmesi mümkündür.
  </para>
 
   <example>
@@ -90,31 +92,37 @@ class MyIterator implements Iterator
         }
     }
 
-    public function rewind() {
+    public function rewind() 
+    {
         echo "başa al\n";
         reset($this->var);
     }
 
-    public function current() {
+    public function current() 
+    {
         $var = current($this->var);
         echo "mevcut: $var\n";
         return $var;
     }
 
-    public function key() {
+    public function key() 
+    {
         $var = key($this->var);
         echo "anahtar: $var\n";
         return $var;
     }
 
-    public function next() {
+    public function next() 
+    {
         $var = next($this->var);
         echo "sonraki: $var\n";
         return $var;
     }
 
-    public function valid() {
-        $var = $this->current() !== false;
+    public function valid() 
+    {
+        $key = key($this->var);
+        $var = ($key !== NULL && $key !== FALSE);
         echo "geçerli: {$var}\n";
         return $var;
     }
@@ -133,25 +141,21 @@ foreach ($it as $a => $b) {
    <screen role="php">
 <![CDATA[
 başa al
-mevcut: 1
 geçerli: 1
 mevcut: 1
 anahtar: 0
 0: 1
 sonraki: 2
-mevcut: 2
 geçerli: 1
 mevcut: 2
 anahtar: 1
 1: 2
 sonraki: 3
-mevcut: 3
 geçerli: 1
 mevcut: 3
 anahtar: 2
 2: 3
 sonraki:
-mevcut:
 geçerli:
 ]]>
    </screen>
@@ -159,10 +163,14 @@ geçerli:
   </example>
 
   <para>
-    Ayrıca, kendi sınıfınızı, <varname>Iterator</varname> işlevlerinin tümünü
-    her defasında yeniden tanımlamadan, PHP 5 ile birlikte gelen
-    <varname>IteratorAggregate</varname> arayüzünü gerçekleyerek
-    tanımlayabilirsiniz.
+   <interfacename>IteratorAggregate</interfacename>   
+   <link linkend="language.oop5.interfaces">arayüzü</link>,
+   <interfacename>Iterator</interfacename> yöntemlerinin tümünü gerçeklemek 
+   için de kullanılabilir. <interfacename>IteratorAggregate</interfacename>
+   sadece <interfacename>Iterator</interfacename> arayüzünü gerçekleyen 
+   sınıfın bir örneğini döndüren 
+   <methodname>IteratorAggregate::getIterator</methodname> yönteminin 
+   gerçeklenmesini gerektirir.    
   </para>
 
   <example>
@@ -234,6 +242,13 @@ geçerli:
     linkend="spl.iterators"/> bölümüne bakınız.
    </para>
   </note>
+  <note>
+   <para>
+    PHP 5.5 ve sonrası kullanıcıları, yineleyicileri tanımlamanın başka bir 
+    yolu olarak <link linkend="language.generators">üreteçleri</link> 
+    inceleyebilir.
+   </para>
+  </note> 
 
  </sect1>
 

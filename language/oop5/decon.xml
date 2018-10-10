@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 28d123ef985df5a7b86f3601e035968ee1b3b142 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: db2ac1420fa7946f15518a9e42e1474159b765fd Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.decon" xmlns="http://docbook.org/ns/docbook">
   <title>Kurucular ve Yıkıcılar</title>
@@ -9,7 +9,7 @@
    <title>Kurucular</title>
    <methodsynopsis xml:id="object.construct">
     <type>void</type><methodname>__construct</methodname>
-    <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
+    <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter><initializer>""</initializer></methodparam>
     <methodparam choice="opt"><parameter>...</parameter></methodparam>
    </methodsynopsis>
    <para>
@@ -23,7 +23,9 @@
      Çocuk sınıflardan kurucusu olanlar için örtük olarak ebeveyn sınıfın
      kurucusu çağrılmaz. Ebeveyn sınıfın kurucusunu çocuk sınıftan çağırmak
      için, çocuk sınıf içinden <function>parent::__construct</function>
-     çağrısı yapılması gerekir.
+     çağrısı yapılması gerekir. Çocuğun bir kurucu tanımlamaması halinde, 
+     normal sınıf yöntemi gibi (eğer private olarak tanımlanmadıysa) ana 
+     sınıftan miras alınabilir.
     </simpara>
    </note>
    <example>
@@ -33,31 +35,52 @@
 <?php
 class AnaSınıf {
    function __construct() {
-       print "AnaSınıf kurucusundayız\n";
+      print "AnaSınıf kurucusundayız\n";
    }
 }
 
 class AltSınıf extends AnaSınıf {
    function __construct() {
-       parent::__construct();
-       print "AltSınıf kurucusundayız\n";
+      parent::__construct();
+      print "AltSınıf kurucusundayız\n";
    }
 }
 
+class DiğerAltSınıf extends AnaSınıf {
+    // AnaSınıf'ın kurucusunu miras alır
+}
+
+// AnaSınıf kurucusunda
 $obj = new AnaSınıf();
+
+// AnaSınıf kurucusunda
+// AltSınıf kurucusunda
 $obj = new AltSınıf();
+
+// AnaSınıf kurucusunda
+$obj = new DiğerAltSınıf();
 ?>
 ]]>
     </programlisting>
    </example>
    <para>
-    Geriye dönük uyumluluk için, PHP 5 belirtilen sınıfa ait bir
+    PHP 3 ve 4 ile geriye dönük uyumluluk için, PHP 5 belirtilen sınıfa ait bir
     <link linkend="object.construct">__construct()</link> yöntemi bulamazsa,
     sınıfın ismine bakarak eski tarz bir kurucu arayacaktır. Dolayısıyla,
     uyumluluk sorunu yaşayacağınız tek durum sınıf dahilinde
     <link linkend="object.construct">__construct()</link>
     isimli bir yöntemin amacı dışında kullanılması olabilir.
    </para>
+   <!-- Not using an entity because I want specific wording here, since we're
+   not deprecating constructors in general. -->
+   <warning>
+    <simpara>
+     PHP 7.0'da eski tarz kurucuların <emphasis>kullanımı 
+     önerilmemekte</emphasis> olup ileri sürümlerde kaldırılacaktır. 
+     Yeni kodlarda daima <link linkend="object.construct">__construct()</link> 
+     kullanmalısınız.
+    </simpara>
+   </warning>
    <para>
     Diğer yöntemlerin tersine,
     <link linkend="object.construct">__construct()</link> ebeveyn
@@ -112,17 +135,17 @@ class YıkıcıSınıf
    function __construct()
    {
        print "Kurucu çalıştı\n";
-       $this->name = "YıkıcıSınıf";
    }
 
    function __destruct()
    {
-       print "" . $this->name . " yok ediliyor\n";
+       print "" . __CLASS__ . " yok ediliyor\n";
    }
 }
 
 $obj = new YıkıcıSınıf();
 ?>
+
 ]]>
     </programlisting>
    </example>
@@ -130,7 +153,8 @@ $obj = new YıkıcıSınıf();
     Kurucularda olduğu gibi ebeveyn yıkıcılar çocuk sınıflar için dolaylı
     olarak çağrılmayacaktır. Ebeveyn sınıfın yıkıcısının çalışması için çocuk
     sınıfın yıkıcısından <function>parent::__destruct</function> çağrısının
-    yapılması gerekir.
+    yapılması gerekir. Ayrıca, kuruculardaki gibi, bir çocuk sınıf 
+    kendisininkini gerçeklemediyse ebeveyninin yıkıcısını miras alabilir.
    </para>
    <para>
     Betiğin icrası <function>exit</function> kullanılarak durdurulsa bile
