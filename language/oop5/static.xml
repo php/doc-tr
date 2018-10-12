@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7e52ec86851a62d1d00109ccffa5dab5c73e5cc2 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.static" xmlns="http://docbook.org/ns/docbook">
   <title><code>static</code> Anahtar Sözcüğü</title>
+  <tip>
+   <simpara>
+    Bu sayfada duruk yöntem ve özellikleri tanımlamak için  <literal>static</literal> anahtar sözcüğünün kullanımı açıklanmıştır.
+    <literal>static</literal> ayrıca,
+    <link linkend="language.variables.scope.static">duruk değişkenleri 
+    tanımlamak</link> ve 
+    <link linkend="language.oop5.late-static-bindings">duruk içselleştirim</link>
+    için de kullanılır. Lütfen <literal>static</literal> anahtar sözcüğünün 
+    anlamları hakkında bilgi edinmek için bu sayfalara bakınız.
+   </simpara>
+  </tip>
   <para>
     Sınıf özelliklerinin ya da yöntemlerinin <code>static</code> olarak
     tanımlanması, o özelliklerin ve yöntemlerin sınıf örneğinin oluşturulmasına
@@ -20,41 +31,74 @@
     varsayılır.
   </para>
 
+  <sect2 xml:id="language.oop5.static.methods">
+   <title>Duruk Yöntemler</title>
+
   <para>
     Duruk yöntemlerin, nesnenin bir örneği oluşturulmadan erişilebilir
     olmalarından dolayı, <varname>$this</varname> sözde değişkeni,
     <code>static</code> olarak bildirilmiş bir yöntemin içinde kullanılamaz.
   </para>
 
-  <para>
+   <caution>
+    <simpara>
+     PHP 5'te, duruk olmayan özellikler durukmuş gibi çağrılırsa 
+     <constant>E_STRICT</constant> seviyesinde bir uyarı üretilir.
+    </simpara>
+   </caution>
+
+   <warning>
+    <simpara>
+     PHP 7'de, duruk olmayan yöntemlerin duruk olarak çağrılması artık 
+     önerilmemekte olup bir <constant>E_DEPRECATED</constant> uyarısı 
+     üretir.warning. duruk olmayan yöntemlerin duruk olarak çağrılması
+     desteği yakında kaldırılabilir.
+    </simpara>
+   </warning>
+
+   <example>
+    <title>- Duruk yöntem örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public static function durukYöntem() {
+        // ...
+    }
+}
+
+Foo::durukYöntem();
+$classname = 'Foo';
+$classname::durukYöntem(); // PHP 5.3.0 ve sonrası
+?> 
+]]>
+     </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.static.properties">
+   <title>Duruk Özellikler</title>
+   <para>
     Duruk özelliklere, nesne üzerinden ok işleci (-&gt;) kullanılarak
     erişilemez.
-  </para>
-
-  <para>
-    Duruk olmayan özellikler durukmuş gibi çağrılırsa E_STRICT seviyesinde
-    bir uyarı üretilir.
-  </para>
-
-  <para>
-   PHP'nin diğer duruk değişkenlerinde olduğu gibi duruk özellikler de sadece
-   bir sayıl veya sabit kullanılarak ilklendirilebilir; ifadelere izin
-   verilmez. Yani, bir duruk özelliği örneğin, bir tamsayı veya bir dizi ile
-   ilklendirebilirsiniz ama örneğin, bir işlevin dönen değeri, bir değişken
-   veya bir nesne ile ilklendiremezsiniz.
+   </para>
+   <para>
+    PHP 5.6 öncesinde diğer duruk değişkenlerde olduğu gibi duruk özellikler 
+    de sadece bir sayıl veya sabit kullanılarak ilklendirilebilir; ifadelere 
+    izin verilmez. PHP 5.6.0 ve sonrasında &const; için geçerli kurallar 
+    uygulanır: bazı sınırlı ifadeler mümkündür, bunlar derleme sırasında 
+    değerlendirilir.
    </para>
 
-  <para>
+   <para>
     PHP 5.3.0 ve sonrasında, bir sınıfa bir değişken kullanarak gönderim
     yapılabilmektedir. Böyle bir değişkenin değeri <literal>self</literal>,
     <literal>parent</literal> veya <literal>static</literal> gibi bir anahtar
     sözcük olamaz.
-  </para>
-
-
-  <example>
-   <title>- Duruk özellik örneği</title>
-   <programlisting role="php">
+   </para>
+   <example>
+    <title>- Duruk özellik örneği</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 class Falanca
@@ -89,29 +133,9 @@ $feşmekan = new Feşmekan();
 print $feşmekan->falancaDuruk() . "\n";
 ?>
 ]]>
-   </programlisting>
-  </example>
-
-  <example>
-   <title>- Duruk yöntem örneği</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-class Falanca {
-    public static function birDurukYöntem() {
-        // ...
-    }
-}
-
-Falanca::birDurukYöntem();
-$sınıfadı = 'Falanca';
-$sınıfadı::birDurukYöntem(); // PHP 5.3.0 ve sonrası
-
-?>
-]]>
     </programlisting>
-  </example>
-
+   </example>
+  </sect2>
  </sect1>
 
 <!-- Keep this comment at the end of the file

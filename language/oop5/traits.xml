@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5e9fde393a7bfdba759d9c295f6c04de0205ae45 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cc8ca605308635ac8d660b5be8c7edcd5fcf4ccc Maintainer: nilgun Status: ready -->
  <sect1 xml:id="language.oop5.traits" xmlns="http://docbook.org/ns/docbook">
   <title>Nitelikler</title>
   <para>
@@ -187,8 +187,10 @@ Merhaba Dünya!
     seçmek amacıyla kullanılabilir.
    </para>
    <para>
-    Bu işlem niteliklerin birini dışlamayı sağladığından diğerini de farklı bir
-    isimle içermek için <literal>as</literal> işleci kullanılabilir.
+    Bu işlem yöntemi dışlamayı sağladığından <literal>as</literal> işleci
+    yönteme takma ad eklemek için kullanılabilir. <literal>as</literal> 
+    işlecinin yöntemin ismini değiştirmediğini ve diğer 
+    yöntemleri etkilemediğini unutmayın.
    </para>
    <example xml:id="language.oop5.traits.conflict.ex1">
     <title>Çelişki çözümleme örneği</title>
@@ -241,6 +243,13 @@ class Aliased_Talker {
 ]]>
     </programlisting>
    </example>
+   <note>
+    <para>
+     7.0 öncesinde, bir nitelikteki gibi, bir özelliği ayni isimli bir sınıf 
+     içinde tanımlamak, sınıf tanımı uyumlu ise (aynı görünürlük ve ilk 
+     değer), bir <constant>E_STRICT</constant> hatasına yol açar.
+    </para>
+   </note>
   </sect2>
   
   <sect2 xml:id="language.oop5.traits.visibility">
@@ -436,10 +445,12 @@ $örnek = new ÖzellikÖrneği;
     </programlisting>
    </example>
    <para>
-    Bir nitelik bir özellik tanımlarsa sınıf aynı isimde bir özellik
-    tanımlayamaz, aksi takdirde bir hata oluşur. Eğer sınıf tanımı (aynı
-    görünürlük ve ilk değer olarak) uyumluysa <constant>E_STRICT</constant>
-    çıktılanır değilse ölümcül bir hata oluşur.
+    Bir nitelik bir özellik tanımlarsa sınıf aynı isimde bir özellik (uyumlu
+    - aynı görünürlük ve ilk değer - olmadıkça) tanımlayamaz, aksi takdirde 
+    bir hata oluşur. 
+    7.0 öncesinde, bir nitelikteki gibi, bir özelliği ayni isimli bir sınıf 
+    içinde tanımlamak, sınıf tanımı uyumlu ise (aynı görünürlük ve ilk 
+    değer), bir <constant>E_STRICT</constant> hatasına yol açar.
    </para>
    <example xml:id="language.oop5.traits.properties.conflicts">
     <title>Çelişki yaratma örneği</title>
@@ -453,7 +464,9 @@ trait NitelikliÖzellik {
 
 class ÖzellikÖrneği {
     use NitelikliÖzellik;
-    public $aynı = true; // Strict
+    public $aynı = true;   // PHP 7.0.0 ve sonrasında izin verilir; 
+                           // öncesinde E_STRICT uyarısı alır.
+    
     public $farklı = true; // ölümcül hata
 }
 ?>

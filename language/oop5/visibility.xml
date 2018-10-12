@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 70fb482c26ecfb7b95b1484ebb73a14f272c9871 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.visibility" xmlns="http://docbook.org/ns/docbook">
   <title>Görünürlük</title>
   <para>
-    Bir özelliğin ya da bir yöntemin görünürlüğü, bildirim sırasında önüne şu
-    anahtar sözcüklerden biri getirilerek belirlenebilir:
+    Bir özelliğin ya da bir yöntemin (PHP 7.1.0 ve sonrası) görünürlüğü, 
+    bildirim sırasında önüne şu anahtar sözcüklerden biri getirilerek 
+    belirlenebilir:
     <code>public</code>, <code>protected</code> ya da <code>private</code>.
     <command>public</command> olarak bildirilmiş özelliklere ve yöntemlere her
     yerden erişilebilir. <command>protected</command> bildirimli özelliklere ve
-    yöntemlere sadece miras alınmış ve ebeveyn sınıflardan (ve özelliğin
-    tanımlandığı nesneden), <command>private</command> bildirimli özelliklere
-    ve yöntemlere ise sadece özelliğin tanımlandığı sınıfın içinden
-    erişilebilir.
+    yöntemlere sadece tanımlandığı sınıfdan, ebeveyn sınıflardan ve miras alınarak 
+    <command>private</command> bildirimli özelliklere ve yöntemlere ise sadece 
+    özelliğin tanımlandığı sınıfın içinden erişilebilir.
   </para>
   <sect2 xml:id="language.oop5.visiblity-members">
    <title>Özelliklerin Görünürlüğü</title>
    <para>
     Sınıf özellikleri <code>public</code>, <code>protected</code> ya da
-    <code>private</code> olarak tanımlanmalıdır. Bir özellik bunlardan biri
-    olmadan sadece <code>var</code> kullanarak bildirilmişse
+    <code>private</code> olarak tanımlanmalıdır. Bir özellik sadece 
+    <code>var</code> kullanarak bildirilmişse
     <code>public</code> olarak bildirilmiş gibi ele alınır.
    </para>
    <para>
@@ -58,8 +58,9 @@ $nesne->selamVer();    // Genel, Korumalı ve Özel görüntüler
  */
 class ÖbürSınıfım extends Sınıfım
 {
-    // public ve protected yöntemleri yeniden tanımlayabiliriz,
+    // public ve protected özellikleri yeniden tanımlayabiliriz,
     // ancak private olanlar tanımlanamaz
+    public $genel = 'Genel2';
     protected $korumalı = 'Öbür korumalı';
 
     function selamVer()
@@ -72,9 +73,10 @@ class ÖbürSınıfım extends Sınıfım
 
 $nesne2 = new ÖbürSınıfım();
 echo $nesne2->genel;    // Çalışır
-echo $nesne2->özel;     // Tanımsız
 echo $nesne2->korumalı; // Ölümcül Hata
-$nesne2->selamVer();    // Genel, Öbür korumalı ve Undefined görüntülenir
+echo $nesne2->özel;     // Tanımsız
+
+$nesne2->selamVer();    // Genel2, Öbür korumalı ve Undefined görüntülenir
 
 ?>
 ]]>
@@ -193,7 +195,127 @@ $fo->dnm();  // Bar::dnmÖzel
     </example>
    </para>
   </sect2>
- </sect1>
+
+  <sect2 xml:id="language.oop5.visiblity-constants">
+   <title>Sabit Görünürlüğü</title>
+   <para>
+    PHP 7.1.0 ve sonrasında, sınıf sabitleri public, private veya
+    protected olarak tanımlanabilir. Bu sözcükler olmaksızın tanımlanmış 
+    sabitlerin public olarak tanımlandıkları varsayılır.
+   </para>
+   <para>
+    <example>
+     <title>- PHP 7.1.0 ve sonrasında sabit bildirimleri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+/**
+ * Tanımla: MyClass
+ */
+class MyClass
+{
+    // public sabit bildirimi
+    public const MY_PUBLIC = 'genel';
+
+    // protected  sabit bildirimi
+    protected const MY_PROTECTED = 'korumalı';
+
+    // private  sabit bildirimi
+    private const MY_PRIVATE = 'özel';
+
+    public function foo()
+    {
+        echo self::MY_PUBLIC;
+        echo self::MY_PROTECTED;
+        echo self::MY_PRIVATE;
+    }
+}
+
+$myclass = new MyClass();
+MyClass::MY_PUBLIC; // Çalışır
+MyClass::MY_PROTECTED; // Ölümcül hata
+MyClass::MY_PRIVATE; // Ölümcül hata
+$myclass->foo(); // genel, korumalı ve özel çalışır
+
+
+/**
+ * Tanımla: MyClass2
+ */
+class MyClass2 extends MyClass
+{
+    // public
+    function foo2()
+    {
+        echo self::MY_PUBLIC;
+        echo self::MY_PROTECTED;
+        echo self::MY_PRIVATE; // Ölümcül hata
+    }
+}
+
+$myclass2 = new MyClass2;
+echo MyClass2::MY_PUBLIC; // Çalışır
+$myclass2->foo2(); // genel ve korumalı çalışır, özel çalışmaz
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.visibility-other-objects">
+   <title>Diğer nesnelerden görünürlük</title>
+   <para>
+    Aynı türdeki nesneler, aynı örnekler olmasalar bile, diğerlerinin özel ve 
+    korunan üyelerine erişime sahip olacaktır. Bunun sebebi, gerçeklenime özgü 
+    ayrıntıların bu nesnelerin içindeyken zaten biliniyor olmasıdır.
+   </para>
+   <example>
+    <title>- Aynı nesne türündeki özel üyelere erişim</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Test
+{
+    private $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    private function bar()
+    {
+        echo 'Private yönteme erişildi.';
+    }
+
+    public function baz(Test $other)
+    {
+        // private özelliği değiştirebiliriz:
+        $other->foo = 'hello';
+        var_dump($other->foo);
+
+        // private yöntemi de çağırabiliriz:
+        $other->bar();
+    }
+}
+
+$test = new Test('test');
+
+$test->baz(new Test('other'));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "hello"
+Private yönteme erişildi.
+]]>
+    </screen>
+   </example>
+  </sect2>
+
+  </sect1>
 
 <!-- Keep this comment at the end of the file
 Local variables:
