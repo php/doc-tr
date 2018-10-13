@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fddb6fb79392f87b40b1c63bc5efd0becf9caac3 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.object">
  <title><code>object</code></title>
 
@@ -48,10 +48,29 @@ $kedi->birŞeySöyle();
    <literal>stdClass</literal> sınıfının yeni bir örneği oluşturulmuş olur.
    Eğer değer &null; ise yeni örnek boş olur. Bir dizi <type>object</type>
    türüne dönüştürülürse dizi elemanlarının isimleri değerleriyle birlikte
-   nesnenin özellikleri haline gelirler. Diğer değerler ise,
-   <literal>scalar</literal> adlı üye değişkenin değeri haline gelirler.
+   nesnenin özellikleri haline gelirler. Bu durumda PHP 7.2.0 öncesinde, sayısal 
+   anahtarların yinelenmedikçe erişilmez olacağını unutmayın.
   </para>
 
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$obj = (object) array('1' => 'foo');
+var_dump(isset($obj->{'1'})); // PHP 7.2.0 ve sonrasında 'bool(true)' 
+                              // öncesinde 'bool(false)' basar
+var_dump(key($obj)); // PHP 7.2.0 ve sonrasında 'string(1) "1" 
+                     // öncesinde 'int(1)' basar
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Herhangi bir başka değer için, <literal>scalar</literal> isimli bir üye 
+   değişken, değeri içerecektir.
+  </para>
+   
   <informalexample>
    <programlisting role="php">
 <![CDATA[

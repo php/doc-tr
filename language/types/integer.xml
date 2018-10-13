@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 11c3994c5a501117e6b4ac28856a3898b61117c4 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b3e793af147cee7284b4f0d8e2e93d87f75cad69 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
  <title><code>integer</code></title>
 
  <simpara>
   Bir <type>integer</type> türünde değer şu kümeden bir tamsayıdır:
-  Z = {..., -2, -1, 0, 1, 2, ...}.
+  &#8484; = {..., -2, -1, 0, 1, 2, ...}.
  </simpara>
 
  <para>
@@ -16,7 +16,7 @@
  <itemizedlist>
   <listitem>
    <simpara>
-    <link linkend="ref.gmp">Keyfi uzunlukta tamsayı / GMP</link>
+    <link linkend="book.gmp">Keyfi uzunlukta tamsayı / GMP</link>
    </simpara>
   </listitem>
   <listitem>
@@ -26,7 +26,7 @@
   </listitem>
   <listitem>
    <simpara>
-    <link linkend="ref.bc">Keyfi ondalık hassasiyet / BCMath</link>
+    <link linkend="book.bc">Keyfi ondalık hassasiyet / BCMath</link>
    </simpara>
   </listitem>
  </itemizedlist>
@@ -36,13 +36,19 @@
 
   <simpara>
    <type>integer</type> türünde değerler  onluk, sekizlik veya onaltılık
-   tabanda belirtilebilirler ve önlerinde isteğe bağlı bir + veya - işareti
-   bulunabilir.
+   tabanda belirtilebilirler.
+   <link linkend="language.operators.arithmetic">değil işleci</link>
+   negatif bir tamsayı belirtmekte kullanılabilir.
   </simpara>
 
   <para>
+   İkil <type>integer</type> sayılar PHP 5.4.0 ve sonrasında kullanılabilir.
+  </para>
+
+  <para>
    Sekizlik gösterimde sayıların önüne <literal>0</literal> (sıfır),
-   onaltılık gösterimde ise <literal>0x</literal> getirilir.
+   onaltılık gösterimde <literal>0x</literal> ve ikil gösterimde 
+   <literal>0b</literal> getirilir.
   </para>
 
   <example>
@@ -54,6 +60,7 @@ $a = 1234; // onluk tabanda bir sayı
 $a = -123; // negatif bir sayı
 $a = 0123; // sekizlik tabanda bir sayı (onluk: 83)
 $a = 0x1A; // onaltılık tabanda bir sayı (onluk: 26)
+$a = 0b11111111; // ikil sayı (onluk: 255)
 ?>
 ]]>
    </programlisting>
@@ -73,9 +80,12 @@ onaltılık : 0[xX][0-9a-fA-F]+
 
 sekizlik  : 0[0-7]+
 
-tamsayı   : [+-]?onluk
-          | [+-]?onaltılık
-          | [+-]?sekizlik
+ikil      : 0[bB][01]+
+
+tamsayı     : onluk
+            | onaltılık
+            | sekizlik
+            | ikil
 ]]>
    </programlisting>
   </informalexample>
@@ -84,27 +94,17 @@ tamsayı   : [+-]?onluk
    Bir <type>integer</type> türün genişliği platforma göre değişir. 32 bitlik
    sistemlerde azami değer 2 milyon civarında iken 64 bitlik sistemlerde 9E18
    civarındadır. PHP işaretsiz tamsayıları (C'deki unsigned) desteklemez.
-   <type>integer</type> türün genişliği PHP 4.4.0'da
-   <constant>PHP_INT_SIZE</constant> sabitine ve olası en büyük değeri ise PHP
-   5.0.5'te <constant>PHP_INT_MAX</constant> sabitine atanmıştır.
+   <type>integer</type> türün genişliği <constant>PHP_INT_SIZE</constant> 
+   sabitine, olası en büyük değeri PHP 5.0.5'te <constant>PHP_INT_MAX</constant> 
+   sabitine ve en küçük değeri ise PHP 7'de <constant>PHP_INT_MIN</constant> 
+   sabitine atanmıştır.
   </para>
 
   <warning>
    <para>
-    Sekizlik bir değer içinde geçersiz bir rakam kullanılmışsa (8, 9 gibi) o
-    ve kalan tüm rakamlar yok sayılır.
+    PHP 7 öncesinde, sekizlik bir değer içinde geçersiz bir rakam kullanılmışsa 
+    (8, 9 gibi) o ve kalan tüm rakamlar yok sayılır, PHP 7 ve sonrasında bir çözümleme hatası çıktılanır.
    </para>
-
-   <example>
-    <title>- Sekizlik garabeti</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-var_dump(01090); // sekizlik: 010, onluk: 8
-?>
-]]>
-    </programlisting>
-   </example>
   </warning>
  </sect2>
 
@@ -157,25 +157,11 @@ var_dump($büyük_sayı);                     // float(5.0E+19)
    </programlisting>
   </example>
 
-  <warning>
-   <simpara>
-    Ne yazık ki, bunun negatif sayılar için her zaman çalışmaması şeklinde
-    kendini gösteren bir PHP yazılım hatası mevcuttu. Örneğin,
-    <literal>-50000 * $milyon</literal> işleminin sonucu
-    <literal>-429496728</literal> olmaktadır. Ancak, her iki terimin işareti
-    pozitif olduğunda hiçbir sorun çıkmamaktadır.
-   </simpara>
-
-   <simpara>
-    Bu hata PHP 4.1.0'da düzeltilmiştir.
-   </simpara>
-  </warning>
-
   <para>
    PHP'de sonucun <type>integer</type> türünde elde edileceği bir bölme
    işlemi mevcut değildir. <literal>1/2</literal> işleminin sonucu
    <type>float</type> türünde <literal>0.5</literal> değeridir. Bu değer
-   (<type>integer</type>) ile çarpıtılarak aşağı yuvarlamak suretiyle bir
+   (<type>integer</type>) ile çarpıtılarak sıfıra yuvarlamak suretiyle bir
    tamsayıya dönüştürülebilirse de <function>round</function> işlevini
    kullanırsanız dönüşümün nasıl yapılacağını kendiniz belirleyebilirsiniz.
   </para>
@@ -207,6 +193,12 @@ var_dump(round(25/7));  // float(4)
   </simpara>
 
   <simpara>
+   Bir <type>resource</type> bir <type>integer</type> sayıya dönüştürülürse, 
+   sonuç, PHP tarafından çalışma anında özkaynağa atanan eşsiz özkaynak 
+   numarası olacaktır.
+  </simpara>
+
+  <simpara>
    Ayrıca, <link linkend="language.types.type-juggling">Tür Dönüşümü</link>
    bölümüne de bakınız.
   </simpara>
@@ -232,12 +224,20 @@ var_dump(round(25/7));  // float(4)
 
    <para>
     Dönüşüm sonucu <type>integer</type> türüne ayrılan genişliğe (normalde
-    32 bitlik sistemlerde <literal>+/- 2.15e+9 = 2^31</literal>, 64 bitlik
-    sistemlerde ise <literal>+/- 9.22e+18 = 2^63</literal>) sığmıyorsa,
-    <type>float</type> türün hassasiyeti <type>integer</type>  türünde tam bir
+    32 bitlik sistemlerde <literal>+/- 2.15e+9 = 2^31</literal>, Windows dışındaki
+    64 bitlik sistemlerde ise <literal>+/- 9.22e+18 = 2^63</literal>) sığmıyorsa,
+    <type>float</type> türün hassasiyeti <type>integer</type> türünde tam bir
     sonuç vermeyeceğinden sonuç tanımsızdır. Bu durumda ne bir uyarı ne de bir
     bilgi verilir!
    </para>
+
+   <note>
+    <para>
+     PHP 7.0.0 ve sonrasında, tanımsız ve platforma bağlı olmak yerine
+     <type>integer</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır 
+     olacaktır. 
+    </para>
+   </note>
 
    <warning>
     <para>

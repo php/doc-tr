@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 428ce16274347e5ec89e63873aab1ab27523af6c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c60cc6f3a87a8eef2a546e5e23c65b9b7faad076 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.pseudo-types">
  <title>Bu belgede kullanılan sözde türler ve değişkenler</title>
+
+ <para>
+  Sözde türler PHP belgelerinde bir değişkene sahip olabileceği türleri ve 
+  değerleri belirtmek için kullanılan anahtar smzcüklerdir. PHP dilinin 
+  yapı taşları olmadıklarından sözde türleri özel işlevlerinizde tür bildirimi 
+  olarak kullanamazsınız. 
+ </para>
 
  <sect2 xml:id="language.types.mixed">
   <title><code>mixed</code></title>
@@ -35,132 +42,21 @@
   <title><code>callback</code></title>
 
   <para>
-   <function>call_user_func</function>, <function>usort</function> gibi
-   işlevler değiştirge olarak kullanıcı tanımlı geriçağırım işlevlerini kabul
-   ederler. Geriçağırım işlevleri her zaman basit işlevler olmayabilir, nesne
-   yöntemleri ve hatta duruk sınıf yöntemleri bile olabilirler.
+   <type>callable</type> türünün PHP 5.4 ve sonrasında eklenmesinden önce bu 
+   belgelerde <type>callback</type> sözde türü kullanılırdı. İkisi tamamen aynı 
+   anlamdadır.
   </para>
+  
+ </sect2>
+ 
+ <sect2 xml:id="language.types.array-object">
+  <title><literal>array|object</literal></title>
 
   <para>
-   Bir PHP işlevi, <type>string</type> türündeki ismiyle aktarılır. Şu dil
-   oluşumları dışında herhangi bir yerleşik veya kullanıcı tanımlı işlev
-   kullanılabilir:
-   <function>array</function>, <function>echo</function>,
-   <function>empty</function>, <function>eval</function>,
-   <function>exit</function>, <function>isset</function>,
-   <function>list</function>, <function>print</function> veya
-   <function>unset</function>.
+   <literal>array|object</literal> bir değiştirgeninin ya <type>array</type> 
+   ya da <type>object</type> türünde olabileceğini belirtir.
   </para>
-
-  <para>
-    Örneklenmiş bir nesnenin bir yöntemi, nesnenin ismi 0. indiste, yöntem
-    ismi 1. indiste yer alan bir dizi olarak aktarılır.
-  </para>
-
-  <para>
-   Duruk sınıf yöntemleri de sınıf ismi 0. indiste içerilerek, sınıf bir
-   nesne olarak örneklenmeksizin aktarılabilir.
-  </para>
-
-  <para>
-   <function>create_function</function> işlevi bildik kullanıcı tanımlı
-   işlevlerden başka, bir anonim geriçağırım işlevi oluşturmak için de
-   kullanılabilir. PHP 5.3.0'dan itibaren işleve değiştirge olarak bir
-   <link linkend="functions.anonymous">anonim işlev</link> aktarmak
-   mümkün oldu.
-  </para>
-
-  <para><example>
-   <title>- Geriçağırım işlevi örnekleri</title>
-   <programlisting role="php">
-<![CDATA[
-<?php
-
-// Bir geriçağırım işlevi örneği
-function geriçağırım_işlevim() {
-    echo 'merhaba dünya!';
-}
-
-// Bir geriçağırım yöntemi örneği
-class Sınıfım {
-    static function geriçağırımYöntemim() {
-        echo 'Merhaba Dünya!';
-    }
-}
-
-// 1. tür: Basit geriçağırım
-call_user_func('geriçağırım_işlevim');
-
-// 2. tür: Duruk sınıf yöntemi çağrısı
-call_user_func(array('Sınıfım', 'geriçağırımYöntemim'));
-
-// 3. tür: Nesne yöntemi çağrısı
-$nesne = new Sınıfım();
-call_user_func(array($nesne, 'geriçağırımYöntemim'));
-
-// 4. tür: Duruk sınıf yöntemi çağrısı (PHP 5.2.3 ve sonrası)
-call_user_func('Sınıfım::geriçağırımYöntemim');
-
-// 5. tür: Göreli duruk sınıf yöntemi çağrısı (PHP 5.2.3 ve sonrası)
-class A {
-    public static function kimsin() {
-        echo "A\n";
-    }
-}
-
-class B extends A {
-    public static function kimsin() {
-        echo "B\n";
-    }
-}
-
-call_user_func(array('B', 'parent::kimsin')); // A
-?>
-]]>
-   </programlisting>
-  </example></para>
-
-  <para>
-   <example>
-    <title>- Anonim işlev kullanan bir geriçağırım işlevi örneği</title>
-   <programlisting role="php">
-<![CDATA[
-<?php
-// Anonim işlevimiz
-$double = function($a) {
-    return $a * 2;
-};
-
-// Sayı aralığımız
-$numbers = range(1, 5);
-
-// Aralık içindeki her elemanın boyutunu
-// ikiye katlamak için geriçağırım işlevi
-// olarak burada anonim bir işlev kullanalım
-$new_numbers = array_map($double, $numbers);
-
-print implode(' ', $new_numbers);
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-2 4 6 8 10
-]]>
-    </screen>
-   </example>
-  </para>
-
-  <note>
-   <simpara>
-    PHP4'te, kopyayı değil de asıl nesneyi işaret eden bir geriçağırım
-    oluşturmak için gönderim kullanmak gerekir. Daha fazla bilgi için
-    <link linkend="language.references">Gönderimler Hakkında</link> bölümüne
-    bakınız.
-   </simpara>
-  </note>
-  &note.func-callback-exceptions;
+  
  </sect2>
 
  <sect2 xml:id="language.types.void">
@@ -169,7 +65,9 @@ print implode(' ', $new_numbers);
   <para>
    <literal>void</literal> bir dönüş türü olarak dönüş değerinin yararsız
    olduğu anlamına gelir. <literal>void</literal> bir değiştirge listesinde
-   kullanıldığında işlevin değiştirge kabul etmediği anlamına gelir.
+   kullanıldığında işlevin değiştirge kabul etmediği anlamına gelir.  PHP 7.1 
+   ve sonrasında <literal>void</literal> bir işlev dönüş türü olarak kabul 
+   edilmiştir.
   </para>
 
  </sect2>
