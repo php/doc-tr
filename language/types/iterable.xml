@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: e9366ee458b2900c53a503b1ad97664e1d9a8859 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.types.iterable">
+ <title>Yinelenebilirler</title>
+
+ <para>
+  <type>Iterable</type> bir sözde-tür olup PHP 7.1'de eklendi.
+  <classname>Traversable</classname> gerçeleyen bir nesne veya bir dizi 
+  kabul eder. Bu türlerin her ikisi de &foreach; kullanarak yinelenebilir ve
+  <command>yield from</command> ile bir <link
+  linkend="language.generators">üreteç</link> içinde kullanılabilir.
+ </para>
+
+ <sect2 xml:id="language.types.iterable.using">
+  <title>Yinelenebilirlerin kullanımı</title>
+
+  <para>
+   Yinelenebilir, bir işlevin bir değerler kümesi gerektirdiğini belirtmek 
+   için bir değiştirge türü olarak kullanılabilir. Fakat &foreach; ile 
+   kullanacağından değer kümesinin biçimini umursamaz. Eğer değer bir dizi 
+   veya bir <classname>Traversable</classname> örneği değilse bir 
+   <classname>TypeError</classname> yavrulanır.
+  </para>
+
+  <para>
+   <example>
+    <title>- Yinelenebilir değiştirge örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function foo(iterable $yinele) {
+    foreach ($yinele as $değer) {
+        // ...
+    } 
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   <type>iterable</type> türünde bildirilen değişirgeler &null; veya 
+   öntanımlı değer olarak bir dizi kullanabilir.
+  </para>
+
+  <para>
+   <example>
+    <title>- Yinelenebilir değiştirge için öntanımlı değer örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function foo(iterable $iterable = []) {
+    // ...
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   Bir işlevin <type>iterable</type> türünde bir değerle döneceğini belirtmek 
+   için dönüş türü olarak kullanılabilir. Dönen değer bir dizi veya bir 
+   <classname>Traversable</classname> örneği değilse bir 
+   <classname>TypeError</classname> yavrulanır.
+  </para>
+
+  <para>
+   <example>
+    <title>- Yinelenebilir dönüş türü örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function bar(): iterable {
+    return [1, 2, 3];
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   Dönüş türü olarak <type>iterable</type> bildiren bir işlev ayrıca,
+   bir <link linkend="language.generators">üreteç</link> olarak da 
+   kullanılabilir.
+  </para>
+
+  <para>
+   <example>
+    <title>- Yinelenebilir üreteç dönüş türü örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function gen(): iterable {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.types.iterable.variance">
+  <title>Yinelenebilir Tür Uygulamaları</title>
+
+  <para>
+   Genişletilen/gerçeklenen sınıflar, <type>iterable</type> türündeki 
+   değiştirgelerde veya <type>iterable</type> türündeki dönüş 
+   değerinde &array; veya <classname>Traversable</classname> kullanarak 
+   yöntemleri genişletebilir, dönüş değerlerini daraltabilir.
+  </para>
+
+  <para>
+   <example>
+    <title>- Yinelenebilir tür uygulama örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+interface Örnek {
+    public function yöntem(array $dizi): iterable;
+}
+
+class ÖrnekGerçeklenim implements Örnek {
+    public function yöntem(iterable $yinele): array {
+        // Değiştirge genişletilir ve dönüş türü daraltılır
+    }
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect2>
+
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
