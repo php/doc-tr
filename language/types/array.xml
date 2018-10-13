@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 88723b48e9d5f812144a12d490f3dd3461a024b4 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 57b593d529d12995a693eb3d2db5ac71e238f1e4 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.array">
  <title><code>array</code></title>
 
@@ -33,112 +33,337 @@
    </para>
 
    <synopsis>
-array( <optional> <replaceable>anahtar </replaceable> =&gt; </optional> <replaceable>değer</replaceable>
-     , ...
-     )
-// <replaceable>anahtar</replaceable> sadece <type>integer</type> veya <type>string</type> türünde olabilir.
-// <replaceable>değer</replaceable> herhangi bir türde herhangi bir değer olabilir.</synopsis>
+array(
+    <optional><replaceable>anahtar</replaceable>  =&gt; </optional><replaceable>değer</replaceable>,
+    <optional><replaceable>anahtar2</replaceable> =&gt; </optional><replaceable>değer2</replaceable>,
+    <optional><replaceable>anahtar3</replaceable> =&gt; </optional><replaceable>değer3</replaceable>,
+    ...
+)</synopsis>
    <!-- Do not fix the whitespace for the synopsis end element. A limitation of PhD prevents proper trimming -->
 
-   <informalexample>
+   <para>
+    Son dizi elemanından sonraki virgül seçimliktir ve konmayabilir. 
+    Bu genellikle tek satırlık dizilerde yapılır. Yani, 
+    <literal>array(1, 2, )</literal> yerine
+    <literal>array(1, 2)</literal> yazmak tercih edilir. Diğer taraftan, 
+    çok satırlı dizilerde yeni elemanların sona eklenmesini 
+    kolaylaştırdığından sondaki virgülün konulması tercih edilir.
+   </para>
+   
+   <para>
+    PHP 5.4 ve sonrasında ayrıca, <literal>array()</literal> yerine 
+    <literal>[]</literal> kullanan kısa dizi sözdizimini de kullanabilirsiniz.
+   </para>
+   
+   <example>
+    <title>- Basit bir dizi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$dizi = array("fu" => "bar", 12 => true);
+$array = array(
+    "foo" => "bar",
+    "bar" => "foo",
+);
 
-echo $dizi["fu"]; // bar
-echo $dizi[12];    // 1
+// PHP 5.4 ve sonrası
+$array = [
+    "foo" => "bar",
+    "bar" => "foo",
+];
 ?>
 ]]>
     </programlisting>
-   </informalexample>
+   </example>
 
    <para>
     Bir <replaceable>anahtar</replaceable> ya <type>integer</type>  ya da
-    <type>string</type> türünde olabilir. Bir anahtar, sadece onluk tamsayı
-    gösterimiyle belirtilmişse bir tamsayı anahtar olarak yorumlanır. Yani,
-    <literal>"8"</literal> belirtilmeşse bu tamsayı <literal>8</literal>
-    olarak ele alınacak ama <literal>"08"</literal> belirtilmişse dizge
-    <literal>"08"</literal> olarak ele alınacaktır. <type>float</type>
-    türünde belirtilen bir anahtar <type>integer</type> türüne aşağı
-    yuvarlanır. PHP için indisli ve ilişkisel diziler, her ikisi de
-    <type>integer</type> ve <type>string</type> türünde indisler
-    içerebildiğinden aynı çeşitten dizilerdir.
+    <type>string</type> türünde olabilir. Bir <replaceable>değer</replaceable> 
+    ise herhangi bir türde olabilir.
    </para>
 
    <para>
-    <replaceable>değer</replaceable> herhangi bir PHP türünde herhangi bir
-    değer olabilir.
+    Ek olarak <replaceable>anahtar</replaceable> için şu tür çarpıtmaları oluşur:
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       Geçerli onluk tamsayı içeren bir <type>string</type> <literal>+</literal> 
+       imi ile başlamadıkça <type>integer</type> türüne çarpıtılır. Yani, 
+       <literal>"8"</literal> anahtarı aslında <literal>8</literal> olarak 
+       saklanır. Diğer yandan, <literal>"08"</literal> geçerli bir onluk 
+       tamsayı olmadığından tür çarpıtmasına uğramaz.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>Float</type> türler ondalık kısmı kırpılarak <type>integer</type> 
+       türüne çarpıtılır. Yani, <literal>8.7</literal> anahtarı aslında 
+       <literal>8</literal> olarak saklanır..
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>Bool</type> türler <type>integer</type> türüne çarpıtılır. Yani
+       <literal>true</literal> anahtarı <literal>1</literal>,
+       <literal>false</literal> anahtarı da <literal>0</literal> olarak saklanır.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>Null</type> türler boş dizeye çarpıtılır. 
+       Yani <literal>null</literal> aslında <literal>""</literal> olarak saklanır.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>Array</type> ve <type>object</type> türler anahtar olarak 
+       kullanıla<emphasis>MAZ</emphasis>. Bunu yapmak <literal>Illegal offset 
+       type</literal> uyarısına sebep olur.
+      </simpara>
+     </listitem>
+    </itemizedlist>
    </para>
 
+   <para>
+    Dizi bildiriminde çok sayıda eleman aynı anahtarı kullanıyorsa, diğerleri 
+    birbirlerinin üzerine yazıyormuşçasına sadece son eleman kullanılır.
+   </para>
+   
+   <example>
+    <title>- Tür Çarpıtma ve Üzerine Yazma örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = array(
+    1    => "a",
+    "1"  => "b",
+    1.5  => "c",
+    true => "d",
+);
+var_dump($array);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(1) {
+  [1]=>
+  string(1) "d"
+}
+]]>
+    </screen>
+     <para>
+      Yukarıdaki örnekte tüm anahtarlar <literal>1</literal>'e çarpıtıldığından 
+      her yeni eleman değeri bir öncekinin üzerie yazılır ve dizide sadece son
+      atanan değer kalır. 
+     </para>
+   </example>  
+   
+   <para>
+    PHP indisli ve ilişkisel diziler arasında bir ayrım yapmadığından 
+    <type>integer</type> ve <type>string</type> türündeki anahtarlar aynı anda 
+    bulunabilir.
+   </para>
+   
+   <example>
+    <title>- Karışık <type>integer</type> ve <type>string</type> anahtarlar</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+dizi = array(
+    "foo" => "bar",
+    "bar" => "foo",
+    100   => -100,
+    -100  => 100,
+);
+var_dump($dizi);
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(4) {
+  ["foo"]=>
+  string(3) "bar"
+  ["bar"]=>
+  string(3) "foo"
+  [100]=>
+  int(-100)
+  [-100]=>
+  int(100)
+}
+]]>
+    </screen>
+   </example>
+
+   <para>
+    <replaceable>anahtar</replaceable> belirtmek isteğe bağlıdır. Bir anahtar 
+    belirtmeksizin bir değer atanıyorsa bu değer, mevcut <type>integer</type>
+    anahtarların en büyüğüne bir eklenerek elde edilen <type>integer</type> 
+    anahtarlı elemana atanır. 
+   </para>
+
+   <example>
+    <title>- Anahtarsız indisli diziler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array("foo", "bar", "hello", "world");
+var_dump($dizi);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(4) {
+  [0]=>
+  string(3) "foo"
+  [1]=>
+  string(3) "bar"
+  [2]=>
+  string(5) "hello"
+  [3]=>
+  string(5) "world"
+}
+]]>
+    </screen>
+   </example>
+
+   <para>
+    Bazı değerlere anahtar belirtirken bazılarına belirtmemek mümkündür.
+   </para>
+
+   <example>
+    <title>- Tüm elemanlar için birer anahtar belirtilmeyebilir</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array(
+         "a",
+         "b",
+    6 => "c",
+         "d",
+);
+var_dump($dizi);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(4) {
+  [0]=>
+  string(1) "a"
+  [1]=>
+  string(1) "b"
+  [6]=>
+  string(1) "c"
+  [7]=>
+  string(1) "d"
+}
+]]>
+    </screen>
+    <para>
+     Gördüğünüz gibi son değer <literal>"d"</literal>, <literal>7</literal> 
+     anahtarına atanmıştı. Bunun sebebi önceki en büyük tamsayılı indisin 
+     <literal>6</literal> olmasıdır.
+    </para>
+   </example>
+  </sect3>
+  
+  <sect3 xml:id="language.types.array.syntax.accessing">
+   <title>Köşeli ayraç sözdizimi ile belirtilen dizilere erişim</title>
+   
+   <para>
+    Dizi elemanlarına  <literal>array[anahtar]</literal> sözdizimi 
+    kullanılarak erişilir.
+   </para>
+   
+   <example>
+    <title>- Dizi elemenlarına erişim</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$dizi = array(
+    "foo" => "bar",
+    42    => 24,
+    "çok" => array(
+         "boyutlu" => array(
+             "dizi" => "foo"
+         )
+    )
+);
+
+var_dump($dizi["foo"]);
+var_dump($dizi[42]);
+var_dump($dizi["çok"]["boyutlu"]["dizi"]);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(3) "bar"
+int(24)
+string(3) "foo"
+]]>
+    </screen>
+   </example>
+   
    <note>
     <para>
-      Tanımlanmamış bir dizi anahtarına erişmeye çalışmakla tanımsız bir
-      değişkene erişmeye çalışmak arasında fark yoktur:
-      <constant>E_NOTICE</constant> seviyesinde bir hata iletisi çıktılanır ve
-      sonuç &null; olur
+     Dizilere erişmek için köşeli ayraçların yerine kaşlı ayraçlar da 
+     kullanılabilir (yani, yukarıdaki örnekte <literal>$dizi[42]</literal> 
+     ve <literal>$dizi{42}</literal> aynı şeyi yapar).
     </para>
    </note>
-
-<informalexample>
+   <para>
+    PHP 5.4 ve sonrasında, bir işlev veya yöntem çağrısının sonucunu doğrudan 
+    bir diziye atamak mümkündür. Evvelce bu işlem için geçici bir değişken 
+    kullanılırdı.
+   </para>
+   <para>
+    PHP 5.5 ve sonrasında bir diziyi başka bir diziye atamak mümükündür.
+   </para>
+   
+   <example>
+    <title>Array dereferencing</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$dizi = array("birdizi" => array(6 => 5, 13 => 9, "a" => 42));
+function getArray() {
+    return array(1, 2, 3);
+}
 
-echo $dizi["birdizi"][6];    // 5
-echo $dizi["birdizi"][13];   // 9
-echo $dizi["birdizi"]["a"];  // 42
+// PHP 5.4 ve sonrasında
+$ikinciEleman = getArray()[1];
+
+// evvelce
+$tmp = getArray();
+$ikinciEleman = $tmp[1];
+
+// PHP 5.5 ve sonrasında
+list(, $ikinciEleman) = getArray();
 ?>
 ]]>
     </programlisting>
-   </informalexample>
-
-   <para>
-    Bir anahtar belirtmeksizin bir değer atanıyorsa değer, mevcut tamsayı
-    anahtarların en büyüğüne bir eklenerek elde edilen tamsayı anahtarlı
-    elemana atanır. Bir anahtar mevcut anahtarlardan biriyle değer atıyorsa,
-    yeni değer mevcut eleman değerinin üzerine yazılır.
-   </para>
-
-   <informalexample>
-    <programlisting role="php">
-<![CDATA[
-<?php
-// Bu iki dizi birbirinin aynıdır:
-array(5 => 43, 32, 56, "b" => 12);
-
-array(5 => 43, 6 => 32, 7 => 56, "b" => 12);
-?>
-]]>
-    </programlisting>
-   </informalexample>
-
-   <warning>
-    <simpara>
-     PHP 4.3.0 öncesinde, en büyük indisi bir negatif tamsayı olan bir diziye
-     anahtarsız değer atanması durumunda değere anahtarı yukarıda açıklandığı
-     gibi atanırdı. PHP 4.3.0 ve sonrasında ise böyle bir durumda yeni değer
-     <literal>0</literal> anahtarına atanmaktadır.
-    </simpara>
-   </warning>
-
-   <para>
-    <replaceable>anahtar</replaceable> olarak &true; belirtilirse bu tamsayı
-    <literal>1</literal> olarak, &false; belirtilirse tamsayı
-    <literal>0</literal> olarak yorumlanır.
-    <replaceable>anahtar</replaceable> olarak &null; kullanımı bir boş dizge
-    olarak yorumlanır.  Boş dizgeyle anahtar belirtimi, yeni değerin boş
-    dizge anahtarlı olarak atanmasına sebep olur ve bu, anahtar
-    belirtmeksizin (boş köşeli ayraçlarla) atama yapmak anlamında
-    değerlendirilmez.
-   </para>
-
-   <para>
-    <type>array</type> veya <type>object</type> türünde anahtar belirtilemez.
-    Aksi takdirde şöyle bir uyarı alırsınız: <literal>Illegal offset
-    type</literal> (Kuraldışı konumlama türü).
-   </para>
+   </example>
+   
+   <note>
+    <para>
+     Atanmamış bir dizi elemanına erişme çabası, atanmamış bir değişkene erişme 
+     çabasıyla aynı sonucu verir: <constant>E_NOTICE</constant> seviyesinde bir 
+     hata çıktılanır ve sonuç &null; olur.
+    </para>
+   </note>
+   <note>
+    <para>
+     <type>string</type> türünde olmayan birebir değeri başka bir diziye atama 
+     işlemi sessiz bir &null; atamasıyla sonuçlanır, yani bir hata iletisi 
+     çıktılanmaz.
+    </para>
+   </note>
 
   </sect3>
 
@@ -160,14 +385,27 @@ $dizi[<replaceable>anahtar</replaceable>] = <replaceable>değer</replaceable>;
 $dizi[] = <replaceable>değer</replaceable>;
 
 // <replaceable>anahtar</replaceable> sadece <type>integer</type> veya <type>string</type> türünde olabilir.
-// <replaceable>değer</replaceable> herhangi bir türde herhangi bir değer olabilir.</synopsis>
+// <replaceable>değer</replaceable> herhangi bir türde olabilir.</synopsis>
 
    <para>
-    <varname>$dizi</varname> mevcut değilse oluşturulur, dolayısıyla bu da
-    yeni bir dizi oluşturma yöntemidir. Belli bir değeri değiştirmek için
-    yeni değer elemana mevcut anahtar kullanılarak atanır. Belli bir elemanı
-    (anahtar/değer çiftini) diziden silmek için <function>unset</function>
-    işlevi kullanılır.
+    <varname>$dizi</varname> mevcut değilse oluşturulur. Yani bu işlem yeni 
+    bir dizi oluşturmak için kullanılabilir. Ancak bunun yapılması önerilmez. 
+    Çünkü  <varname>$dizi</varname> bir dize değer içeriyor olabileceğnden bu 
+    değer yerinde kalır ve <literal>[]</literal> aslında bir 
+    <link linkend="language.types.string.substr">dize erişim işleci</link> 
+    haline gelir. Bir değişkeni doğrudan atamayla ilkendirmek daha iyidir.
+   </para>
+   <note>
+    <simpara>
+     PHP 7.1.0 ve sonrasında, boş indis işlecini bir dizeye uygulamak ölümcül 
+     hataya sebep olur. Evvelce, dize sessizce bir diziye dönüştürülürdü.
+    </simpara>
+   </note>
+   
+   <para>
+    Anahtar kullanarak bir elemana yeni bir değer atamak bu elemanın değerinin 
+    değiştirilmesi demektir. Belli bir anahtar/değer çiftini silmek için 
+    <function>unset</function> işlevini kullanın.
    </para>
 
    <informalexample>
@@ -193,7 +431,8 @@ unset($dizi);    // Dizinin tamamını siler
     <para>
      Yukarıda değinildiği gibi, bir diziye yeni değeri bir anahtar
      belirtmeden atamak, mevcut en büyük tamsayı indisine bir eklenerek elde
-     edilen anahtar kullanılarak gerçekleşir. Dizide henüz bir tamsayı indis
+     edilen anahtar (en azından <literal>0</literal> değil) kullanılarak 
+     gerçekleşir. Dizide henüz bir tamsayı indis
      yoksa anahtar olarak <literal>0</literal> (sıfır) kullanılır.
     </para>
 
@@ -311,7 +550,7 @@ $b = array_values($a);
    <title><literal>$foo[bar]</literal> niye yanlıştır?</title>
 
    <para>
-    Bir dizge sayıllı indis daima tırnak içinde kullanılır. Örneğin,
+    Bir dize sayıllı indis daima tırnak içinde kullanılır. Örneğin,
     <literal>$foo[bar]</literal> yanlışken <literal>$foo['bar']</literal>
     doğrudur. Ama, neden? Eski betiklerde şu sözdizimine sıkça rastlanır:
    </para>
@@ -329,14 +568,14 @@ echo $foo[bar];
    </informalexample>
 
    <para>
-    Bu yanlıştır, ama çalışır. Bunun sebebi, bu kodun bir dizgeden ziyade
-    tanımsız bir sabit (bar) belirtiyor olmasıdır. PHP ilerde şans eseri ismi
-    aynı zamanda değeri olan bir sabit tanımlayabilir. PHP özdevinimli olarak
-    bir <emphasis>çıplak dizge</emphasis>yi (tırnak içine alınmamış bir
-    dizgeyi), bu çıplak dizgeyi içeren bir dizgeye dönüştüreceğinden bu
-    çalışır. Örneğin, <constant>bar</constant> isminde tanımlanmış bir sabit
-    yoksa, PHP <constant>bar</constant> sabitine <literal>'bar'</literal>
-    dizgesini yerleştirecek ve bunu kullanacaktır.
+    Bu yanlıştır, ama çalışır. Bunun sebebi, bu kodun bir dizeden ziyade
+    tanımsız bir sabit (<literal>bar</literal>) belirtiyor olmasıdır. PHP 
+    ilerde şans eseri ismi aynı zamanda değeri olan bir sabit tanımlayabilir. 
+    PHP özdevinimli olarak bir <emphasis>çıplak dize</emphasis>yi (tırnak 
+    içine alınmamış bir dizeyi), bu çıplak dizeyi içeren bir dizeye 
+    dönüştüreceğinden bu çalışır. Örneğin, <literal>bar</literal> isminde 
+    tanımlanmış bir sabit yoksa, PHP <literal>bar</literal> sabitine 
+    <literal>'bar'</literal> dizesini yerleştirecek ve bunu kullanacaktır.
    </para>
 
    <note>
@@ -425,7 +664,7 @@ define('meyve', 'sebze');
 print $dizi['meyve'];  // elma
 print $dizi[meyve];    // havuç
 
-// Bir dizge içinde olduğundan bu da doğrudur.
+// Bir dize içinde olduğundan bu da doğrudur.
 // Dizge içinde kalan sabitler, sabit olarak ele alınmazlar;
 // dolayısıyla burada bir E_NOTICE oluşmaz.
 print "Turfanda $dizi[meyve]";      // Turfanda elma
@@ -437,7 +676,7 @@ print "Turfanda {$dizi['meyve']}";   // Turfanda elma
 
 // Bu çalışmaz ve şöyle bir çözümleme hatasıyla sonuçlanır:
 // Parse error: parse error, expecting T_STRING' or T_VARIABLE' or T_NUM_STRING'
-// Bu, dizgeler içindeki süper küresellere de uygulanır.
+// Bu, dizeler içindeki süper küresellere de uygulanır.
 print "Turfanda $dizi['meyve']";
 print "Turfanda $_GET['foo']";
 
@@ -527,11 +766,11 @@ $error_descriptions[8] = "Bu sadece bilgilendirici bir uyarı";
 
     <note>
      <simpara>
-      Yinelemek gerekirse, çift tırnak imleri arasına alınmış bir dizge, dizi
+      Yinelemek gerekirse, çift tırnak imleri arasına alınmış bir dize, dizi
       indisini tırnak içine almadığından geçerlidir; yani,
       <literal>"$foo[bar]"</literal> geçeridir. Yukarıdaki örnekleri bu gözle
       tekrar inceleyin ve ayrıca  <link
-      linkend="language.types.string.parsing">dizgelerin içinde değişken
+      linkend="language.types.string.parsing">dizelerin içinde değişken
       çözümleme</link> bölümüne de bakın.
      </simpara>
     </note>
@@ -714,7 +953,7 @@ Turkuaz rengi sever misiniz?
   </example>
 
   <para>
-   PHP5'ten beri dizi değerleri gönderimli aktarıldıklarından dizi
+   Dizi değerleri gönderimli aktarıldıklarından dizi
    değerlerini doğrudan değiştirmek mümkündür. Fakat arada bazı şeyler yapmak
    gerekir:
   </para>
@@ -727,18 +966,12 @@ Turkuaz rengi sever misiniz?
 <?php
 $renkler = array('Turuncu', 'Pembe', 'Mor', 'Turkuaz');
 
-// PHP 5
 foreach ($renkler as &$renk) {
     $renk = strtoupper($renk);
 }
 
 unset($renk); /* Aşağıdaki atamalarda $renk son
                  dizi elemanını değiştirmesin */
-
-// Eski sürümü yeniden elde edelim
-foreach ($renkler as $anahtar => $renk) {
-    $renkler[$anahtar] = strtoupper($renk);
-}
 
 print_r($renkler);
 ?>
