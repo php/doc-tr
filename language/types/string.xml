@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 6ba9448d71ad9744744c78bf51e4343496aefd02 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9cc4767b2ddf65c4ed592c9deb818cbb2c9def7b Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.string">
  <title><code>string</code></title>
 
  <!-- FIXME PHP_6 Likely unicode support will alter this -->
  <para>
-  Bir dizge <type>string</type> türünde bir sayıl değer olup bir dizi
-  karakterden oluşur. Bu bakımdan her karakter tek bayt ile ifade
-  edilir. Yani, olası karakter sayısı 256'dan ibarettir. Bu yüzden PHP
-  Evrenkod için yerleşik desteğe sahip olamıyor. Temel Evrenkod işlevselliği
-  hakkında bilgi edinmek için <function>utf8_encode</function> ve
-  <function>utf8_decode</function> işlevlerine bakınız.
+  Bir dize <type>string</type> türünde bir sayıl değer olup bir dizi
+  tek bayta eşdeğer karakterden oluşur. Yani, olası karakter sayısı 256'dan ibarettir. Bu yüzden PHP Unicode için yerleşik desteğe sahip olamıyor. 
+  <link linkend="language.types.string.details">Dize türünün ayrıntıları</link>
+  belgesine bakınız.
  </para>
 
  <note>
   <simpara>
-   Bir dizgenin çok büyük olması bir sorun teşkil etmez. PHP,
-   <type>string</type> türünde bir değer için boyut sınırlaması yapmaz; tek
-   sınırlama PHP'nin çalıştığı makinede PHP'nin kullanımına ayrılan bellek
-   miktarıdır.
+   PHP 7.0.0 ve sonrasında, 64 bitlik derlemelerde dize uzunluğu ile ilgili bir 
+   sınırlama yoktur. 32 bitlik derlemelerde ve erken dönem sürümlerde dize 
+   uzunluğu en fazla 2GB (2147483647 bayt) olabilir. 
   </simpara>
  </note>
 
@@ -33,13 +30,13 @@
   <itemizedlist>
    <listitem>
     <simpara>
-     <link linkend="language.types.string.syntax.single">tek tırnaklı dizge
+     <link linkend="language.types.string.syntax.single">tek tırnaklı dize
      </link>
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <link linkend="language.types.string.syntax.double">çift tırnaklı dizge
+     <link linkend="language.types.string.syntax.double">çift tırnaklı dize
      </link>
     </simpara>
    </listitem>
@@ -58,27 +55,30 @@
   </itemizedlist>
 
   <sect3 xml:id="language.types.string.syntax.single">
-   <title>Tek tırnaklı dizgeler</title>
+   <title>Tek tırnaklı dizeler</title>
 
    <para>
-    Bir dizgeyi belirtmenin en basit yolu dizgeyi tek tırnak
+    Bir dizeyi belirtmenin en basit yolu dizeyi tek tırnak
     (<literal>'</literal>) imlerinin arasına almaktır.
    </para>
 
    <para>
-    Tek tırnaklı bir dizge içinde tek tırnağı sayıl değeriyle kullanmak
+    Tek tırnaklı bir dize içinde tek tırnağı sayıl değeriyle kullanmak
     isterseniz önüne bir tersbölü imi getirmelisiniz (<literal>\</literal>).
     Bir tersbölü imini sayıl değeriyle kullanmak isterseniz onun da önüne bir
     tersbölü imi getirmelisiniz (<literal>\\</literal>). Tersbölü imini
     bunlardan başka bir karakterin önünde kullanırsanız, tersbölü imi
-    karakterle birlikte basılır.
+    karakterle birlikte basılır. <literal>\r</literal> veya 
+    <literal>\n</literal> gibi özel anlamı olan öncelemeler özel anlamı yoksayılarak olduğu gibi basılır.
    </para>
 
    <note>
     <simpara>
-     Diğer üç sözdiziminin aksine, <link linkend="language.variables"
-     >değişkenler</link> ve özel karakterlerin öncelemleri tek tırnaklı
-     dizgelerin içinde kullanıldıklarında yorumlanmazlar.
+     <link linkend="language.types.string.syntax.double">çift tırnak</link> ve
+     <link linkend="language.types.string.syntax.heredoc">yorumlu metin</link> 
+     sözdizimlerinin aksine, <link linkend="language.variables">değişkenler</link> 
+     ve özel karakterlerin öncelemleri tek tırnaklı dizelerin içinde 
+     kullanıldıklarında yorumlanmazlar.
     </simpara>
    </note>
 
@@ -86,7 +86,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-echo 'Bu basit bir dizgedir';
+echo 'Bu basit bir dizedir';
 
 echo 'Dizgelerin içinde satırsonu karakterlerini
 tıpkı buradaki gibi
@@ -114,10 +114,10 @@ echo 'Variables do not $expand $either';
   </sect3>
 
   <sect3 xml:id="language.types.string.syntax.double">
-   <title>Çift tırnaklı dizgeler</title>
+   <title>Çift tırnaklı dizeler</title>
 
    <para>
-    Eğer bir dizge çift tırnak (") içine alınmışsa PHP, aşağıdaki özel
+    Eğer bir dize çift tırnak (") içine alınmışsa PHP, aşağıdaki özel
     karakter öncelemlerini yorumlayacaktır:
    </para>
 
@@ -150,6 +150,10 @@ echo 'Variables do not $expand $either';
        <entry>düşey sekme (VT veya ASCII 11 (0x0B)) (PHP 5.2.5 ve sonrası)</entry>
       </row>
       <row>
+       <entry><literal>\e</literal></entry>
+       <entry>escape (ESC veya ASCII 27 (0x1B) (PHP 5.4.4 ve sonrası)</entry>
+      </row>
+      <row>
        <entry><literal>\f</literal></entry>
        <entry>sayfa ileri (FF veya ASCII 12 (0x0C)) (PHP 5.2.5 ve sonrası)</entry>
       </row>
@@ -169,7 +173,8 @@ echo 'Variables do not $expand $either';
        <entry><literal>\[0-7]{1,3}</literal></entry>
        <entry>
         Bu düzenli ifade ile eşleşen dizilim, karakterin sekizlik
-        gösterimidir.
+        gösterimi olup bir bayta sığmak için sessizce taşar
+        (örn, "\400" === "\000").
        </entry>
       </row>
       <row>
@@ -177,6 +182,14 @@ echo 'Variables do not $expand $either';
        <entry>
         Bu düzenli ifade ile eşleşen dizilim, karakterin onaltılık
         gösterimidir.
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\u{[0-9A-Fa-f]+}</literal></entry>
+       <entry>
+        Bu düzenli ifade ile eşleşen dizilim bir Unicode karakter kodu olup,
+        dizeye karakter kodunun UTF-8 gösterimini çıktılar 
+        (PHP 7.0.0'da eklendi).
        </entry>
       </row>
      </tbody>
@@ -190,7 +203,7 @@ echo 'Variables do not $expand $either';
    </para>
 
    <para>
-    Çift tırnaklı dizgelerin en önemli özelliği içerdiği değişkenlerin
+    Çift tırnaklı dizelerin en önemli özelliği içerdiği değişkenlerin
     yorumlanmasıdır. Bu konuda daha ayrıntılı bilgi edinmek için <link
     linkend="language.types.string.parsing">Değişken çözümleme</link>
     bölümüne bakınız.
@@ -201,16 +214,16 @@ echo 'Variables do not $expand $either';
    <title>Yorumlu metinler</title>
 
    <simpara>
-    Bir dizgenin sınırlarını belirlemenin üçüncü yolu, <emphasis>yorumlu
+    Bir dizenin sınırlarını belirlemenin üçüncü yolu, <emphasis>yorumlu
     metin</emphasis> sözdizimidir. Bir yorumlu metin daima
     <literal>&lt;&lt;&lt;</literal> karakterleri ile başlar ve hemen ardından
-    bir betimleyici ve bir satırsonu karakteri gelir. Asıl dizge satırsonu
-    karakterinden sonra yer alır. Dizgenin sonunu belirtmek üzere dizgenin
+    bir betimleyici ve bir satırsonu karakteri gelir. Asıl dize satırsonu
+    karakterinden sonra yer alır. Dizgenin sonunu belirtmek üzere dizenin
     sonuna, baştaki betimleyici konur.
    </simpara>
 
    <simpara>
-    Kapanış betimleyicisinin dizgeden sonraki satırın başında olması
+    Kapanış betimleyicisinin dizeden sonraki satırın başında olması
     <emphasis>gerekir</emphasis>. Ayrıca, betimleyici PHP'deki diğer isimlere
     uygulanan kurallara uygun olmalıdır: Sadece bir harfle veya alt çizgi imi
     ile başlayabilir; sadece harfler, rakamlar veya alt çizgi imleri
@@ -220,13 +233,14 @@ echo 'Variables do not $expand $either';
    <warning>
     <simpara>
      Kapanış betimleyicisinin bulunduğu satırda betimleyicinin hemen ardına
-     konan noktalı virgül (<literal>;</literal>) dışında hiçbir karakter
-     bulunmaması çok önemli olup buna özellikle dikkat etmelisiniz. Yani,
+     konan <emphasis>muhtemel</emphasis> bir noktalı virgül 
+     (<literal>;</literal>) dışında hiçbir karakter bulunmaması çok önemli 
+     olup buna özellikle dikkat etmelisiniz. Yani,
      betimleyici özellikle <emphasis>girintilenmemeli</emphasis>; noktalı
      virgülden önce ve sonra herhangi bir boşluk karakteri bulunmamalıdır.
      Ayrıca, kapanış betimleyicisinden hemen önce gelen karakterin yerel
      işletim sistemine özgü satırsonu karakteri olması çok önemlidir.
-     Bu karakter Unix ve Mac OS X için <literal>\n</literal>'dir. Kapanış
+     Bu karakter Unix ve macOS için <literal>\n</literal>'dir. Kapanış
      betimleyicisinden (ve olası noktalı virgül karakterinden) sonraki
      karakter de böyle bir satırsonu karakteri olmalıdır.
     </simpara>
@@ -250,6 +264,23 @@ echo 'Variables do not $expand $either';
     <example>
      <title>- Geçersiz örnek</title>
      <programlisting role="php">
+      <!-- This is an INVALID example -->
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<EOT
+bar
+    EOT;
+}
+// Betimleyici girintilenmez
+?>
+]]>
+     </programlisting>
+    </example>
+    <example>
+     <title>- Geçerli örnek</title>
+     <programlisting role="php">
+      <!-- This is a VALID example -->
 <![CDATA[
 <?php
 class foo {
@@ -261,15 +292,21 @@ EOT;
 ]]>
      </programlisting>
     </example>
+    
+    <para>
+     Yorumlu metinler sınıf özelliklerini ilklendirmek için kullanılamaz.
+     PHP 5.3 ve sonrasında, bu sınırlama sadece değişken içeren yorumlu 
+     metinler için geçerlidir.
+    </para>
    </warning>
 
    <para>
-    Yorumlu metinler tıpkı çift tırnaklı dizgeler gibi davranırlar. Yorumlu
+    Yorumlu metinler tıpkı çift tırnaklı dizeler gibi davranırlar. Yorumlu
     metin çift tırnaklar arasına alınmaz ve metin içindeki çift tırnak
     imlerinin tersbölü ile öncelenmesi gerekmez, ancak yukarıda çift tırnaklı
-    dizgeler için belirtilen öncelem kodları kullanılabilir. Değişkenler
+    dizeler için belirtilen öncelem kodları kullanılabilir. Değişkenler
     yorumlanır, fakat yorumlanan metin içinde yer alan karmaşık değişkenler
-    ifade edilirken dizgelerde dikkate alınması gerekenler yorumlu metinlerde
+    ifade edilirken dizelerde dikkate alınması gerekenler yorumlu metinlerde
     de dikkate alınmalıdır.
    </para>
 
@@ -281,7 +318,7 @@ EOT;
 $str = <<<EOD
 Yorumlu metin sözdizimi
 kullanılarak çok sayıda
-satıra bölünmüş dizge örneği.
+satıra bölünmüş dize örneği.
 EOD;
 
 /* Değişkenlerin de kullanıldığı daha karmaşık bir örnek */
@@ -290,7 +327,7 @@ class foo
     var $foo;
     var $bar;
 
-    function foo()
+    function __construct()
     {
         $this->foo = 'Foo';
         $this->bar = array('Bar1', 'Bar2', 'Bar3');
@@ -308,14 +345,14 @@ EOT;
 ?>
 ]]>
     </programlisting>
-   </example>
-   &example.outputs;
-   <screen>
+    &example.outputs;
+    <screen>
 <![CDATA[
 Adım "Kimimben" ve işim Foo basmak.
 Şimdi Bar2 basıyorum.
 Bu büyük 'A' basmalı: A]]>
-   </screen>
+    </screen>
+   </example>
 
    <para>
     Ayrıca işlev değiştirgesinde veri aktarırken de yorumlu metin
@@ -337,7 +374,7 @@ EOD
    </example>
 
    <para>
-    PHP 5.3.0'dan itibaren, duruk değişkenleri ve sınıf özelliklerini veya
+    PHP 5.3.0 ve sonrasında, duruk değişkenleri ve sınıf özelliklerini veya
     sabitlerini yorumlu metin sözdizimini kullanarak ilklendirmek mümkündür:
    </para>
 
@@ -371,8 +408,8 @@ FOOBAR;
    </example>
 
    <para>
-    PHP 5.3.0 ile ayrıca, yorumlu metinlerin bildiriminde çift tırnak
-    kullanımı olasılığı da dikkate alınmıştır:
+    PHP 5.3.0 ve sonrasında, yorumlu metinlerin açılış betimleyicisi 
+    seçimlik olarak çift tırnaklarla kapatılabilir:
    </para>
 
    <example>
@@ -388,20 +425,14 @@ TIRNAKLI;
     </programlisting>
    </example>
 
-   <note>
-    <para>
-     Yorumlu metin desteği PHP 4'te eklenmiştir.
-    </para>
-   </note>
-
   </sect3>
 
   <sect3 xml:id="language.types.string.syntax.nowdoc">
    <title>Yorumsuz metinler</title>
 
    <para>
-    Yorumlu metinlerin çift tırnaklı dizgelere karşılık gelmesi gibi yorumsuz
-    metinler de tek tırnaklı dizgelere karşılık gelir. Yorumsuz metinler de
+    Yorumlu metinlerin çift tırnaklı dizelere karşılık gelmesi gibi yorumsuz
+    metinler de tek tırnaklı dizelere karşılık gelir. Yorumsuz metinler de
     yorumlular gibi belirtilir ama, <emphasis>yorumsuz metin içinde çözümleme
     yapılmaz</emphasis>. Yorumsuz metinler, PHP kodlarını veya büyük metin
     bloklarını herhangi bir önlem almaksızın içine yerleştirmek için
@@ -412,7 +443,7 @@ TIRNAKLI;
 
    <para>
     Yorumsuz metin de yorumlu metindeki <literal>&lt;&lt;&lt;</literal>
-    dizgesini kullanır fakat betimleyicisi tek tırnak içine alınır; yani,
+    dizesini kullanır fakat betimleyicisi tek tırnak içine alınır; yani,
     şuna benzer: <literal>&lt;&lt;&lt;'EOT'</literal>. Yorumlu metin için
     geçerli tüm diğer kurallar yorumsuz metin için de geçerlidir; özellikle
     de kapanış betimleyici ile ilgili olanlar.
@@ -426,7 +457,7 @@ TIRNAKLI;
 $str = <<<'EOD'
 Yorumlu metin sözdizimi
 kullanılarak çok sayıda
-satıra bölünmüş dizge örneği.
+satıra bölünmüş dize örneği.
 EOD;
 
 /* Değişkenli daha karmaşık bir örnek. */
@@ -435,7 +466,7 @@ class foo
     public $foo;
     public $bar;
 
-    function foo()
+    function __construct()
     {
         $this->foo = 'Foo';
         $this->bar = array('Bar1', 'Bar2', 'Bar3');
@@ -453,24 +484,18 @@ EOT;
 ?>
 ]]>
     </programlisting>
-   </example>
-   &example.outputs;
-   <screen>
+    &example.outputs;
+    <screen>
 <![CDATA[
 İsmim "$name" ve işim $foo->foo basmak.
 Artık {$foo->bar[1]} basıyorum.
-Bu büyük 'A' basmalı: \x41]]></screen>
-
-   <note>
-    <para>
-     Yorumlu metinlerin aksine yorumsuz metinler herhangi bir duruk veri
-     bağlamında kullanılabilirler. Sınıf özelliklerini veya sabitlerini
-     yorumsuz metin kullanarak ilklendirme örneği:
-    </para>
-
-    <example>
-     <title>- Duruk veri örneği</title>
-     <programlisting role="php">
+Bu büyük 'A' basmalı: \x41]]>
+    </screen>
+   </example>
+   
+   <example>
+    <title>- Duruk veri örneği</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 class foo {
@@ -480,9 +505,8 @@ EOT;
 }
 ?>
 ]]>
-     </programlisting>
-    </example>
-   </note>
+    </programlisting>
+   </example>
 
    <note>
     <para>
@@ -496,7 +520,7 @@ EOT;
    <title>Değişken çözümleme</title>
 
    <simpara>
-    Bir dizge çift tırnaklar arasında veya  bir yorumlu metin olarak
+    Bir dize çift tırnaklar arasında veya  bir yorumlu metin olarak
     belirtilmişse içindeki <link linkend="language.variables"
     >değişkenler</link> çözümlenir.
    </simpara>
@@ -506,13 +530,13 @@ EOT;
     linkend="language.types.string.parsing.simple">basit</link>, diğeri <link
     linkend="language.types.string.parsing.complex">karmaşık</link>. Basit
     sözdizimi en çok kullanılanı ve elverişli olanıdır; bir değişken, bir
-    dizi değeri veya bir nesne özelliğini bir dizge içinde en az çabayla
+    dizi değeri veya bir nesne özelliğini bir dize içinde en az çabayla
     kullanmayı sağlar.
    </simpara>
 
    <simpara>
-    Karmaşık sözdizimi PHP4'ten itibaren kullanılmakta olup ifadeyi
-    sarmalayan kaşlı ayraçlar biçiminde kendini gösterir.
+    Karmaşık sözdizimi ifadeyi sarmalayan kaşlı ayraçlar biçiminde kendini 
+    gösterir.
    </simpara>
 
    <sect4 xml:id="language.types.string.parsing.simple">
@@ -520,7 +544,7 @@ EOT;
 
     <simpara>
      Çözümleyici, bir dolar imine (<literal>$</literal>) rastlandığında,
-     geçerli bir değişken ismi oluşturmak için alabildiği bütün dizgecikleri
+     geçerli bir değişken ismi oluşturmak için alabildiği bütün dizecikleri
      açgözlülükle toplar. Değişken isminin kaşlı ayraçlar arasına alınması
      ismin sonunun açıkça belirtilmesini sağlar.
     </simpara>
@@ -529,15 +553,26 @@ EOT;
      <programlisting role="php">
 <![CDATA[
 <?php
-$bira = 'Bira';
-echo "$bira'nın tadı berbattır"; // çalışır; "'" değişken adında geçersizdir
-echo "$biralar geldi";   // çalışmaz; 'lar' değişken isminde geçerlidir
-                         // ama değişken "$biralar" değildir.
-echo "${bira}lar geldi"; // çalışır
-echo "{$bira}lar geldi"; // çalışır
+$juice = "apple";
+
+echo "He drank some $juice juice.".PHP_EOL;
+
+// Geçersiz. "s" değişken ismi olarak geçerli karakterdir fakat, değişken: $juice.
+echo "He drank some juice made of $juices.";
+
+// Geçerli. Kaşlı ayraçların içine alınarak değişken isminin bitimi açıkça belirtilmiş
+echo "He drank some juice made of ${juice}s.";
 ?>
 ]]>
      </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+He drank some apple juice.
+He drank some juice made of .
+He drank some juice made of apples.
+]]>
+     </screen>
     </informalexample>
 
     <simpara>
@@ -547,49 +582,70 @@ echo "{$bira}lar geldi"; // çalışır
      nesne özelliklerine de uygulanır.
     </simpara>
 
-    <informalexample>
+    <example><title>- Basit sözdizimi örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-// Bu örnekler dizge içinde dizi kullanımına özgüdür.
-// Dizilerin dizgesel anahtarları daima tırnak içine alınır,
-// bu amaçla kaşlı ayraçlar kullanılmaz.
+$juices = array("apple", "orange", "koolaid1" => "purple");
 
-// Bütün hataları görelim
-error_reporting(E_ALL);
+echo "He drank some $juices[0] juice.".PHP_EOL;
+echo "He drank some $juices[1] juice.".PHP_EOL;
+echo "He drank some $juices[koolaid1] juice.".PHP_EOL;
 
-$meyve = array('çilek' => 'kırmızı', 'muz' => 'sarı');
+class people {
+    public $john = "John Smith";
+    public $jane = "Jane Smith";
+    public $robert = "Robert Paulsen";
+    
+    public $smith = "Smith";
+}
+$people = new people();
 
-// Çalışır, fakat bunun dizge dışında farklı çalışacağına dikkat edin
-echo "Bir muz $meyve[muz] renktedir.";
-
-// Çalışır
-echo "Bir muz {$meyve['muz']} renktedir.";
-
-// çalışır, fakat PHP aşağıda açıklandığı gibi önce muz adında bir sabit arar
-echo "Bir muz {$meyve[muz]} renktedir.";
-
-// Çalışmaz, kaşlı ayraç kullanın. Bir çözümleme hatasına yol açar.
-echo "Bir muz $meyve['muz'] renktedir.";
-
-// Çalışır
-echo "Bir muz " . $meyve['muz'] . " renktedir.";
-
-// Çalışır
-echo "Bu karenin bir kenarı $square->width metre uzunluktadır.";
-
-// Çalışmaz. Çözüm için karmaşık sözdizimine bakın.
-echo "Bu karenin bir kenarı $square->width00 santimetre uzunluktadır.";
+echo "$people->john drank some $juices[0] juice.".PHP_EOL;
+echo "$people->john then said hello to $people->jane.".PHP_EOL;
+echo "$people->john's wife greeted $people->robert.".PHP_EOL;
+echo "$people->robert greeted the two $people->smiths."; // Won't work
 ?>
 ]]>
-<!-- XXX this won't work:
-echo "This square is $square->{width}00 centimeters broad.";
-// XXX: php developers: it would be consequent to make this work.
-// XXX: like the $obj->{expr} syntax outside a string works,
-// XXX: analogously to the ${expr} syntax for variable var's.
--->
      </programlisting>
-    </informalexample>
+     &example.outputs;
+     <screen>
+<![CDATA[
+He drank some apple juice.
+He drank some orange juice.
+He drank some purple juice.
+John Smith drank some apple juice.
+John Smith then said hello to Jane Smith.
+John Smith's wife greeted Robert Paulsen.
+Robert Paulsen greeted the two .
+]]>
+     </screen>
+    </example>
+    
+    <simpara>
+     PHP 7.1.0 ve sonrasında <emphasis>negatif</emphasis> sayısal indisler 
+     desteklenir.
+    </simpara>
+ 
+    <example><title>Negative numeric indices</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$string = 'string';
+echo "The character at index -2 is $string[-2].", PHP_EOL;
+$string[-3] = 'o';
+echo "Changing the character at index -3 to o gives $string.", PHP_EOL;
+?>
+]]>
+      </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+The character at index -2 is n.
+Changing the character at index -3 to o gives strong.
+]]>
+     </screen>
+    </example>
 
     <simpara>
      Bunlardan daha karmaşık herşey için karmaşık sözdizimini kullanmalısınız.
@@ -605,8 +661,9 @@ echo "This square is $square->{width}00 centimeters broad.";
     </simpara>
 
     <simpara>
-     Aslında, isim alanındaki her değer, bir dizge içinde bu sözdizimi ile
-     yer alabilir. İfade basitçe dizge dışındaki gösterimiyle yazılıp
+     Herhangi bir sayıl değer, dizi elemanı veya nesne özelliği bir dize 
+     içinde bu sözdizimi ile yer alabilir. İfade basitçe dize dışındaki 
+     gösterimiyle yazılıp
      <literal>{</literal> ve <literal>}</literal> arasına alınır.
      <literal>{</literal> öncelenemeyeceğinden bu sözdizimi sadece
      <literal>$</literal> iminin <literal>{</literal> iminin hemen ardında
@@ -628,21 +685,24 @@ echo "Bu çok { $şahane}";
 
 // Çalışır, çıktısı: Bu çok harika
 echo "Bu çok {$şahane}";
-echo "Bu çok ${şahane}";
 
 // Çalışır
 echo "Bu karenin bir kenarı {$square->width}00 santimetre uzunluktadır.";
 
+// Çalışır, tırnaklı anahtarlar sadece kaşlı ayraç sözdizimi kullanılarak çalışır
+echo "Bu çalışır: {$arr['key']}";
+
+
 // Çalışır
 echo "Bu çalışır: {$arr[4][3]}";
 
-// $foo[bar] bir dizge dışında neden yanlışsa bu da o yüzden yanlıştır.
+// $foo[bar] bir dize dışında neden yanlışsa bu da o yüzden yanlıştır.
 // Yani, bu yine de çalışır fakat PHP önce foo adında bir sabit
 // arayacağından çalışır; bununla birlikte E_NOTICE seviyesinde
 // bir hata oluşacaktır (tanımsız sabit).
 echo "Bu yanlış: {$arr[foo][3]}";
 
-// Çalışır. Çok boyutlu dizileri dizgelerin içinde kullanılırken,
+// Çalışır. Çok boyutlu dizileri dizelerin içinde kullanılırken,
 // dizileri daima kaşlı ayraçlar arasına alın.
 echo "Bu çalışır: {$arr['foo'][3]}";
 
@@ -656,6 +716,9 @@ echo "$name adlı değişkenin değeri: {${$name}}";
 echo "Adı getName() işlevinin dönüş değeri olan değişkenin değeri: {${getName()}}";
 
 echo "Adı \$object->getName() yönteminin dönüş değeri olan değişkenin değeri: {${$object->getName()}}";
+
+// Çalışmaz, çıktısı: This is the return value of getName(): {getName()}
+echo "This is the return value of getName(): {getName()}";
 ?>
 ]]>
 <!-- maybe it's better to leave this out??
@@ -668,7 +731,7 @@ echo "I'd like to have another {${ strrev('reeb') }}, hips";
     </informalexample>
 
     <para>
-     Bu sözdizimini kullanan dizgeler içindeki değişkenler üzerinden de sınıf
+     Bu sözdizimini kullanan dizeler içindeki değişkenler üzerinden de sınıf
      özelliklerine erişmek mümkündür.
     </para>
 
@@ -684,14 +747,16 @@ $foo = new foo();
 $bar = 'bar';
 $baz = array('foo', 'bar', 'baz', 'quux');
 echo "{$foo->$bar}\n";
-echo "{$foo->$baz[1]}\n";
+echo "{$foo->{$baz[1]}}\n";
 ?>
 ]]>
     </programlisting>
    &example.outputs;
    <screen>
-I am bar.
-I am bar.
+<![CDATA[
+ I am bar.
+ I am bar.
+]]>
    </screen>
    </informalexample>
 
@@ -699,7 +764,7 @@ I am bar.
      <para>
       İşlev ve yöntem çağrılarının, duruk sınıf değişkenlerinin ve sınıf
       sabitlerinin <literal>{$}</literal> içinde çağrılması PHP 5'ten
-      beri çalışmaktadır. Erişilen değer, dizgenin tanımlandığı etki alanındaki
+      beri çalışmaktadır. Erişilen değer, dizenin tanımlandığı etki alanındaki
       bir değişkenin ismi olarak yorumlanır. Kaşlı ayraçların tek başına
       kullanımı (<literal>{}</literal>), duruk sınıf değişkenlerinin veya sınıf
       sabitlerinin değerlerine veya işlev ve yöntemlerin dönüş değerlerine
@@ -740,37 +805,60 @@ echo "I'd like an {${beers::$ale}}\n";
    <para>
     Dizgelerin içindeki karakterlere, dizilerin köşeli ayraçları arasında
     karakterin dizinin başlangıcından itibaren (ilk karakterin indisi sıfır
-    olmak üzere) kaçıncı karakter olduğu belirtilerek ($dizge[42] gibi)
+    olmak üzere) kaçıncı karakter olduğu belirtilerek ($dize[42] gibi)
     erişilebilir veya o karakterde değişiklik yapılabilir. Dizgeler bu
     nedenle bir karakter dizisi olarak düşünülür. 1 karakterden fazlasını elde
     etmek veya yer değiştirmek isterseniz  <function>substr</function> ve
     <function>substr_replace</function> işlevlerini kullanabilirsiniz.
    </para>
+   
+   <note>
+    <simpara>
+     PHP 7.1.0 ve sonrasında, negatif dize başlangıçları da desteklenmektedir.
+     Öncesinde, bunların okunması boş bir dizeyle ve <constant>E_NOTICE</constant> 
+     çıktılanmasıyla, yazılması ise dizenin olduğu gibi bırakılması ve 
+     <constant>E_WARNING</constant> çıktılanması ile sonuçlanırdı.
+    </simpara>
+   </note>
 
    <note>
     <simpara>
      Dizge karakterlerine ayrıca <varname>$str{42}</varname> biçeminde kaşlı
-     ayraçlar kullanılarak da erişilebilirse de bu sözdiziminin kullanımı PHP
-     5.3.0 itibariyle önerilmemektedir. Bu amaçla kaşlı ayraçları değil, daima
-     köşeli ayraçları tercih edin; örnek: <varname>$str[42]</varname>.
+     ayraçlar kullanılarak da erişilebilir
     </simpara>
    </note>
 
    <warning>
     <simpara>
-     Karakter indisi olarak dizgenin uzunluğundan büyük bir değer belirtmek,
-     dizgenin sonuna boşlukların eklenmesine sebep olur. Tamsayı olmayan
+     Karakter indisi olarak dizenin uzunluğundan büyük bir değer belirtmek,
+     dizenin sonuna boşlukların eklenmesine sebep olur. Tamsayı olmayan
      indis değerleri tamsayıya dönüştürülür. Kuraldışı indis belirtimi
-     <constant>E_NOTICE</constant>'e sebep olur. Yazma sırasında negatif
-     indisler bir <constant>E_NOTICE</constant> çıktılanmasına sebep olurken
-     okuma işlemi boş dizge okunmasıyla sonuçlanır. Atanmış bir dizgenin
-     sadece ilk karakteri kullanılır. Boş dizge atamak &null; atamasıyla
-     sonuçlanır.
+     <constant>E_NOTICE</constant>'e sebep olur. 
+     Atanmış bir dizenin sadece ilk karakteri kullanılır. 
+     PHP 7.1.0 ve sonrasında, boş dize ataması ölümcül hata ile sonuçlanır. 
+     Evvelce, bir NULL bayt atanırdı.
     </simpara>
    </warning>
 
+   <warning>
+    <simpara>
+     Dahili olarak, PHP dizeleri bayt dizileridir. Sonuç olarak, dizi ayraçları 
+     kullanarak bir dizeye erişmek ve değişklik yapmak, çok baytlı gösterimde 
+     güvenli değildir. Bu işlem dizelere sadece ASCII gibi tek baytlık 
+     kodlamalarda yapılmalıdır.
+    </simpara>
+   </warning>
+
+   <note>
+    <simpara>
+     PHP 7.1.0 ve sonrasında, boş dize üzerinde boş indis işleci kullanımı 
+     ölümcül hataya yol açar. Evvelce, boş dize sessizce bir diziye 
+     dönüştürülürdü.
+    </simpara>
+   </note>
+
    <example>
-    <title>- Bazı dizge örnekleri</title>
+    <title>- Bazı dize örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -794,11 +882,71 @@ $str[strlen($str)-1] = 'e';
     </programlisting>
    </example>
 
+   <para>
+    PHP 5.4 ve sonrasında, dizi başlangıçları ya tamsayı ya da tamsayı 
+    benzeri dize olmalıdır, aksi takdirde bir uyarı çıktılanır. Evvelce,  
+    <literal>"foo"</literal> gibi bir başlangıç belirtimi sessizce 
+    <literal>0</literal> belirtimi olarak ele alınırdı.
+   </para>
+
+   <example>
+    <title>- PHP 5.3 ve PHP 5.4 arasındaki farklar</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = 'abc';
+
+var_dump($str['1']);
+var_dump(isset($str['1']));
+
+var_dump($str['1.0']);
+var_dump(isset($str['1.0']));
+
+var_dump($str['x']);
+var_dump(isset($str['x']));
+
+var_dump($str['1x']);
+var_dump(isset($str['1x']));
+?>
+]]>
+    </programlisting>
+    &example.outputs.53;
+    <screen>
+<![CDATA[
+string(1) "b"
+bool(true)
+string(1) "b"
+bool(true)
+string(1) "a"
+bool(true)
+string(1) "b"
+bool(true)
+]]>
+    </screen>
+    &example.outputs.54;
+    <screen>
+<![CDATA[
+string(1) "b"
+bool(true)
+
+Warning: Illegal string offset '1.0' in /tmp/t.php on line 7
+string(1) "b"
+bool(false)
+
+Warning: Illegal string offset 'x' in /tmp/t.php on line 9
+string(1) "a"
+bool(false)
+string(1) "b"
+bool(false)
+]]>
+    </screen>
+   </example>
+
    <note>
     <para>
-     Diğer türlerdeki değişkenlere <literal>[]</literal> veya
-     <literal>{}</literal> kullanarak erişme çabası &null; dönmesiyle
-     sonuçlanır.
+     Diğer türlerdeki değişkenlere (uygun arayüzleri gerçekleyen nesneler ve 
+     diziler hariç) <literal>[]</literal> veya <literal>{}</literal> 
+     kullanarak erişme çabası &null; dönmesiyle sonuçlanır.
     </para>
    </note>
 
@@ -821,17 +969,16 @@ $str[strlen($str)-1] = 'e';
   </para>
 
   <simpara>
-   Genel işlevler için <link linkend="ref.strings">Dizge İşlevleri</link>ne,
+   Genel işlevler için <link linkend="ref.strings">Dize İşlevleri</link>ne,
    ileri düzey bul ve değiştir işlevselliği için <link
-   linkend="ref.regex">düzenli ifade işlevleri</link>ne veya  <link
    linkend="ref.pcre">Perl uyumlu düzenli ifade işlevleri</link>ne bakınız.
   </simpara>
 
   <simpara>
-   Ayrıca, <link linkend="ref.url">URL dizgeleri için işlevler</link> ve
-   dizgeleri şifrelemek veya şifrelerini çözmek için <link
-   linkend="ref.mcrypt">mcrypt</link> ve <link
-   linkend="ref.mhash">mhash</link> işlevleri vardır.
+   Ayrıca, <link linkend="ref.url">URL dizeleri için işlevler</link> ve
+   dizeleri şifrelemek veya şifrelerini çözmek için 
+   <link linkend="ref.sodium">Sodium</link> ve
+   <link linkend="ref.hash">Hash</link> işlevleri vardır.
   </simpara>
 
   <simpara>
@@ -844,11 +991,11 @@ $str[strlen($str)-1] = 'e';
   <title>Dizgeye dönüşüm</title>
 
   <para>
-   Bir değer bir dizgeye <literal>(string)</literal> tür çarpıtması veya
-   <function>strval</function> işleviyle dönüştürülür. Bir dizgenin gerekli
-   olduğu ifade bağlamlarında dizgeye dönüşüm özdevinimli olarak gerçekleşir.
+   Bir değer bir dizeye <literal>(string)</literal> tür çarpıtması veya
+   <function>strval</function> işleviyle dönüştürülür. Bir dizenin gerekli
+   olduğu ifade bağlamlarında dizeye dönüşüm özdevinimli olarak gerçekleşir.
    Bu genellikle, <function>echo</function> veya <function>print</function>
-   işlevleri kullanılırken veya bir değişken bir dizge ile karşılaştırılırken
+   işlevleri kullanılırken veya bir değişken bir dize ile karşılaştırılırken
    gerçekleşir. Aşağıdakilere, <link linkend="language.types">Türler</link>
    ve <link linkend="language.types.type-juggling">Tür Dönüşümü</link>
    bölümlerinde daha ayrıntılı değinilmiştir. Ayrıca,
@@ -859,14 +1006,14 @@ $str[strlen($str)-1] = 'e';
     <type>boolean</type> türündeki &true; değeri <type>string</type>
     türündeki <literal>"1"</literal> değerine dönüştürülür.
     <type>boolean</type> türündeki &false; değeri <type>string</type>
-    türündeki <literal>""</literal> değerine (boş dizgeye) dönüştürülür. Bu
+    türündeki <literal>""</literal> değerine (boş dizeye) dönüştürülür. Bu
     şekilde, <type>boolean</type> ve <type>string</type> değerler arasında
     her iki yönde de dönüşüm yapılabilmektedir.
   </para>
 
   <para>
    <type>integer</type> veya <type>float</type> türünde bir değerin
-   <type>string</type> türüne dönüşümü sayının dizgesel gösterimiyle (üstel
+   <type>string</type> türüne dönüşümü sayının dizesel gösterimiyle (üstel
    gösterim dahil) sonuçlanır. Kayan noktalı sayılar üstel gösterim
    kullanılarak dönüştürülebilir (<literal>4.1E+6</literal> gibi).
   </para>
@@ -879,7 +1026,7 @@ $str[strlen($str)-1] = 'e';
   </note>
 
   <para>
-   Diziler daima <literal>"Array"</literal> dizgesine dönüştürülür; bundan
+   Diziler daima <literal>"Array"</literal> dizesine dönüştürülür; bundan
    dolayı <function>echo</function> ve <function>print</function> bir dizinin
    içeriğini kendiliklerinden gösteremezler. Tek bir dizi elemanını
    görüntüleyebilmek için <literal>echo $arr['foo']</literal> gibi bir oluşum
@@ -888,24 +1035,24 @@ $str[strlen($str)-1] = 'e';
   </para>
 
   <para>
-   <type>object</type> türler PHP 4'te daima <literal>"Object"</literal>
-   dizgesine dönüştürülür. Nesne özelliklerinin değerlerini hata ayıklama
-   amacıyla basmak için aşağıdaki paragrafı okuyunuz. Nesne sınıfının ismini
-   öğrenmek için <function>get_class</function> işlevini kullanınız. PHP 5
-   itibariyle, uygulanabildiği takdirde, <link linkend="language.oop5.magic"
-   >__toString</link> yöntemi kullanılır.
+   <type>object</type> türleri <type>string</type> türüne dönüştürmek için
+   <link linkend="language.oop5.magic">__toString</link> sihirli yöntemi 
+   kullanılmalıdır.
   </para>
 
   <para>
    <type>resource</type> türler daima <literal>"Resource id #1"</literal>
-   benzeri bir dizgeye dönüştürülürler; buradaki <literal>1</literal>,
-   özkaynağa PHP tarafından çalışma anında atanan eşsiz bir sayıdır. Bu
-   yapıya güvenmeseniz iyi olur; ilerde değişebilir. Özkaynağın türünü
+   benzeri bir dizeye dönüştürülürler; buradaki <literal>1</literal>,
+   özkaynağa PHP tarafından çalışma anında atanan eşsiz bir sayıdır.
+   Bu dizenin tam yapısı değişikliğe konu olduğundan güvenilmemelidir ve değişime 
+   tabi tutulmalıdır. Çalıştırılan bir betiğin (bir sayfa isteği veya CLI işlemi) 
+   ömrü boyunca, belirli bir özkaynak için daima benzersiz olacak ve yeniden 
+   kullanılabilir olmayacaktır. Özkaynağın türünü
    öğrenmek için <function>get_resource_type</function> işlevini kullanınız.
   </para>
 
   <para>
-   &null; daima boş bir dizgeye dönüştürülür.
+   &null; daima boş bir dizeye dönüştürülür.
   </para>
 
   <para>
@@ -917,11 +1064,11 @@ $str[strlen($str)-1] = 'e';
   </para>
 
   <para>
-   Çoğu PHP değeri kalıcı olarak saklamak amacıyla dizgelere
-   dönüştürülebilir. Bu yönteme dizgeleştirme adı verilir ve
+   Çoğu PHP değeri kalıcı olarak saklamak amacıyla dizelere
+   dönüştürülebilir. Bu yönteme dizeleştirme adı verilir ve
    <function>serialize</function> işlevi tarafından gerçekleştirilir. Eğer
    PHP motoru <link linkend="ref.wddx">WDDX</link> desteğiyle derlenmişse PHP
-   değerleri ayrıca iyi biçimli XML metin olarak da dizgeleştirilebilir.
+   değerleri ayrıca iyi biçimli XML metin olarak da dizeleştirilebilir.
   </para>
 
  </sect2>
@@ -930,7 +1077,7 @@ $str[strlen($str)-1] = 'e';
   <title>Dizgelerin sayılara dönüşümü</title>
 
   <simpara>
-   Bir dizge, sayısal bir bağlamda değerlendirildiğinde sonuçlanacak değer ve
+   Bir dize, sayısal bir bağlamda değerlendirildiğinde sonuçlanacak değer ve
    türün nasıl belirleneceği aşağıda açıklanmıştır.
   </simpara>
 
@@ -942,7 +1089,7 @@ $str[strlen($str)-1] = 'e';
   </simpara>
 
   <para>
-   Değerin dizgenin başında belirtileceği varsayılır. Eğer dizge geçerli bir
+   Değerin dizenin başında belirtileceği varsayılır. Eğer dize geçerli bir
    sayısal veri ile başlıyorsa sayısal değer olarak bu kullanılır. Aksi
    takdirde değer 0 (sıfır) olacaktır. Geçerli sayısal veri isteğe bağlı bir
    işaret ile başlar, bir veya daha fazla sayıda rakam ile isteğe bağlı bir
@@ -993,7 +1140,107 @@ echo "\$foo==$foo; " . gettype ($foo) . " türündedir<br />\n";
    beklemeyin. Karakter/ASCII kod dönüşümleri için <function>ord</function> ve
    <function>chr</function> işlevlerini kullanınız.
   </para>
+ </sect2>
+ 
+ <sect2 xml:id="language.types.string.details">  
+  <title>String Türü ve Ayrıntılar</title>
+  
+  <para>
+   PHP'de <type>string</type> türü bir bayt dizisi ve tampon uzumlığunu 
+   belirten bir tamsayı olarak gerçeklenmiştir. Bu baytların nasıl 
+   karakterlere dönüştüğü hakkında bir bilgiye sahip değildir, bu görev 
+   yazılımcıya bırakılmıştır. Bir dizeyi oluşturan değerlerle ilgili bir 
+   sınırlama yoktur. Özellikle <literal>0</literal> değerli baytlara (NUL 
+   baytlar) dizenin her yerinde izin verilir. (Bununla birlikte, bu kılavuzda 
+   "ikil olarak güvenli" olmadığı belirtilen bir kaç işlev, dizeleri, NULL 
+   baytından sonra verileri yok sayan kitaplıklara dağıtabilir.)
+  </para>
+  <para>
+   <type>string</type> türünün bu doğası, PHP'de neden ayrı bir bayt türünün 
+   olmadığını açıklar; bu rolü dizeler üstlenir. Örneğin metin veri 
+   döndürmeyen işlevler, ham veriyi bir ağ soketinden okuyup yine de dize 
+   döndürecektir.
+  </para>
+  <para>
+   PHP dizelere belli bir karakter kodlaması dayatmaz, dizelerin nasıl 
+   baytlara dönüştüğü merak edilebilir. Örneğin, <literal>"Ã¡"</literal> 
+   dizesi <literal>"\xE1"</literal> (ISO-8859-1),
+   <literal>"\xC3\xA1"</literal> (UTF-8, C form),
+   <literal>"\x61\xCC\x81"</literal> (UTF-8, D form) olarak mı yoksa olası 
+   başka bir gösterime göre mi kodlanacak? Bunun yanıtı, betiğin karakter 
+   kodlaması neyse ona göre karakterler kodlanır, olacaktır. Bu bakımdan, 
+   betik örneğin ISO-8859-1'de yazılmışsa dize de ISO-8859-1'de kodlanacaktır. 
+   Ancak, Zend Çokbaytlılık etkinse bu uygulanmaz; bu durumda betik keyfi bir 
+   kodlamada (açıkça belirtilmiş veya algılanmış olabilir) yazılabilir ve 
+   ardından belli bir dahili kodlamaya (dizeler için kullanılacak kodlama) 
+   dönüştürülebilir. Betiğin kodlanmasında (veya dahili kodlamada, Zend 
+   Çokbaytlılık etkin olmalıdır) bazı kısıtlamalar olduğunu unutmayın. 
+   Bu hemen hemen her zaman, bu kodlamanın UTF-8 veya ISO-8859-1 gibi 
+   ASCII'nin uyumlu bir üst kümesi olması gerektiği anlamına gelir. Bununla 
+   birlikte, büyük/küçük harf durumlarında aynı bayt değerlerinin 
+   kullanılabildiği durum bağımlı kodlamaların sorunlu olabileceğini unutmayın.
+  </para>
+  <para>
+   Şüphesiz, kullanışlı olmak noktasında, metinler üzerinde çalışan işlevler 
+   dizenin nasıl kodlanacağına ilşkin bazı varsayımlarda bulunabilir. 
+   Ne yazık ki, işlevler arasında bu konuda çok farklı varsayımlar mevcuttur:
+  </para>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Bazı işlevler dizenin tek baytlı bir kodlamayla kodlanacağını varsayar,
+     fakat bu baytları belli karakterlere yorumlama gereği duymazlar.
+     <function>substr</function>, <function>strpos</function>, 
+     <function>strlen</function> ve <function>strcmp</function> işlevleri bu 
+     durumdadır. Bu işlevlerin bellek tamponlarında, yani baytlar ve bayt 
+     adresleriyle çalıştıkları için böyle oldukları düşünülebilir.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Diğer bir işlev grubu, dizgenin kodlamasının aktarıldığını ya da bir 
+     öntanımlı kodlamanın olduğunu varsayar. 
+     <link linkend="book.mbstring">mbstring</link> eklentisindeki işlevler 
+     ve <function>htmlentities</function> böyledir.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Bir başka işlev grubu geçerli yereli kullanır (bak 
+     <function>setlocale</function>), fakat bayt bayt çalışır.
+     <function>strcasecmp</function>, <function>strtoupper</function> ve 
+     <function>ucfirst</function> işlevi böyledir. Yani yerelle uyumlu olduğu 
+     sürece sadece tek baytlı kodlamaları kullanabilirler. Örneğin,
+     <literal>strtoupper("á")</literal> eğer yerel doğru ayarlanmışsa ve 
+     <literal>á</literal> tek bayta çözümlenmişse <literal>"Á"</literal> 
+     döndürür. UTF-8 kodlamada doğru sonuç dönmeyebilir ve sonuçlanan dize 
+     geçerli yerele bağlı olarak bozunmuş ya da bozunmamış olabilir.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Son grup, dizenin belli bir kodlamayı, normal olarak UTF-8 kullandığını 
+     varsayar.  <link linkend="book.intl">intl</link> ve 
+     <link linkend="book.pcre">PCRE</link> eklentilerindeki işlevlerin çoğu 
+     böyledir (PCRE eklentilerindeki işlevlerde sadece  <literal>u</literal>
+     değiştircisi kullanıldığında). Özel kullanımlarından dolayı 
+     olsa da, <function>utf8_decode</function> işlevi kodlamanın UTF-8 
+     olduğunu varsayarken <function>utf8_encode</function> işlevi ise 
+     ISO-8859-1 olduğunu varsayar.
+    </simpara>
+   </listitem>
+  </itemizedlist>
 
+  <para>
+   Sonuç olarak, Unicode kullanarak doğru programların yazılması, çalışmayan 
+   ve büyük olasılıkla verileri bozacak işlevlerden itinayla kaçınmaya ve 
+   bunun yerine doğru davranan, genellikle <link linkend="book.intl">intl</link> 
+   ve <link linkend="book.mbstring">mbstring</link> eklentilerindeki işlevleri 
+   kullanmaya bağlıdır. Bununla birlikte, Unicode kodlamaları işleyebilen 
+   işlevleri kullanmak sadece başlangıçtır. Dilin sağladığı işlevler ne olursa
+   olsun, asıl olan Unicode belirtimini bilmektir. Örneğin, sadece büyük ve 
+   küçük harfler olduğunu varsayan bir yazılım yanlış kabul yapıyor demektir.
+  </para>
  </sect2>
 </sect1><!-- end string -->
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e57d6ccfdd9e474227c60e0773a3c7d1ecb9536 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4fc282f33eb0b461f1d6c206d523bcbbb395109e Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.type-juggling">
  <title>Tür Dönüşümü</title>
 
@@ -15,8 +15,8 @@
  </simpara>
 
  <para>
-  Toplama işleci '+', PHP'nin özdevinimli tür dönüşümüne iyi bir örnektir.
-  Bir toplama işleminde terimlerden biri <type>float</type> türündeyse her
+  Çarpma işleci '*', PHP'nin özdevinimli tür dönüşümüne iyi bir örnektir.
+  Terimlerden biri <type>float</type> türündeyse her
   iki terim <type>float</type> olarak ele alınır ve sonuç <type>float</type>
   türünde olur. Aksi takdirde, terimler <type>integer</type> olarak
   yorumlanır ve sonuç <type>integer</type> türünde olur. Yalnız dikkat edin,
@@ -28,15 +28,15 @@
   <programlisting role="php">
 <![CDATA[
 <?php
-$foo = "0";  // $foo string türündedir (ASCII 48)
+$foo = "1";  // $foo string türündedir (ASCII 49)
 $foo += 2;   // $foo integer türündedir (2)
-$foo = $foo + 1.3;  // $foo float türündedir (3.3)
-$foo = 5 + "10 Little Piggies"; // $foo integer türündedir (15)
-$foo = 5 + "10 Small Pigs";     // $foo integer türündedir (15)
+$foo = $foo * 1.3;  // $foo float türündedir (2.6)
+$foo = 5 * "10 Little Piggies"; // $foo integer türündedir (50)
+$foo = 5 * "10 Small Pigs";     // $foo integer türündedir (50)
 ?>
 ]]>
 <!-- bad example, no real operator (must be used with variable, modifies it too)
-$foo++;      // $foo is the string "1" (ASCII 49)
+$foo++;      // $foo is the string "2" (ASCII 50)
 
 TODO: explain ++/- - behaviour with strings
 
@@ -140,11 +140,6 @@ $bar = (boolean) $foo;   // $bar boolean türündedir
    <listitem>
     <simpara>(string) - <type>string</type> türüne dönüşüm</simpara>
    </listitem>
-   <!-- FIXME PHP_6
-   <listitem>
-    <simpara>(binary) - ikil <type>string</type> türe dönüşüm(PHP 6)</simpara>
-   </listitem>
-   -->
    <listitem>
     <simpara>(array) - <type>array</type> türüne dönüşüm</simpara>
    </listitem>
@@ -152,13 +147,21 @@ $bar = (boolean) $foo;   // $bar boolean türündedir
     <simpara>(object) - <type>object</type> türüne dönüşüm</simpara>
    </listitem>
    <listitem>
-    <simpara>(unset) - <type>NULL</type>'a dönüşüm (PHP 5)</simpara>
+    <simpara>(unset) - <type>NULL</type>'a dönüşüm</simpara>
    </listitem>
   </itemizedlist>
 
   <para>
    (binary) çarpıtması ve b önekinin ileriye dönük desteği PHP 5.2.1'de
-   eklenmiştir.
+   eklenmiştir. (binary) çarpıtmasının (string) ile aynı olması gerektiğini, 
+   ancak buna güvenilmemesi gerektiğini unutmayın,
+  </para>
+
+  <para>
+   (unset) çarpıtması PHP 7.2.0 ve sonrasında önerilmemektedir. 
+   (unset) çarpıtmasının değişken veya çağrıya <type>NULL</type> değer 
+   atanmasıyla aynı olduğunu unutmayın. (unset) çarpıtması PHP 8.0.0 
+   sürümünde kaldırılacaktır.
   </para>
 
   <para>
@@ -204,7 +207,7 @@ $foo = 10;            // $foo integer türündedir
 $str = "$foo";        // $str string türündedir
 $fst = (string) $foo; // $fst de string türündedir
 
-// Bu, "bunlar aynı" basar
+// "bunlar aynı" basar
 if ($fst === $str) {
     echo "bunlar aynı";
 }
