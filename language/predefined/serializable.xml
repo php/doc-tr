@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4724b47c25b48f509355d27291aa6893ad0b40c0 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 4c276c97e11e89c2a6506557d9a7abb46bc542b2 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: haluk -->
 <phpdoc:classref xml:id="class.serializable" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
 
  <title><code>Serializable</code> arayüzü</title>
@@ -16,9 +17,10 @@
    </para>
 
    <para>
-    Bu arayüzü gerçekleyen sınıflar <link linkend="language.oop5.magic.sleep"
-    >__sleep()</link> ve <link linkend="language.oop5.magic.sleep"
-    >__wakeup()</link> işlevlerini desteklemezler. Bir örneğin
+    Bu arayüzü gerçekleyen sınıflar 
+    <link linkend="object.sleep">__sleep()</link> ve 
+    <link linkend="object.wakeup">__wakeup()</link> 
+    işlevlerini desteklemezler. Bir örneğin
     dizgeleştirilmesi gerektiğinde <code>serialize</code> yöntemi çağrılır.
     Bunun <code>__destruct()</code> çağırmak veya yöntem içinde tanımlanmamış
     bir işlemi yapmak gibi bir yan etkisi yoktur. Dizgeleştirilmiş nesne
@@ -55,14 +57,14 @@
 
   <section xml:id="serializable.examples">
    <example xml:id="serializable.example.basic"><!-- {{{ -->
-    <title>Temel kullanım</title>
+    <title>- Temel kullanım</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class obj implements Serializable {
     private $data;
     public function __construct() {
-        $this->data = "Özel verim";
+        $this->data = "My private data";
     }
     public function serialize() {
         return serialize($this->data);
@@ -78,6 +80,8 @@ class obj implements Serializable {
 $obj = new obj;
 $ser = serialize($obj);
 
+var_dump($ser);
+
 $newobj = unserialize($ser);
 
 var_dump($newobj->getData());
@@ -87,7 +91,8 @@ var_dump($newobj->getData());
     &example.outputs.similar;
     <screen>
 <![CDATA[
-string(11) "Özel verim"
+string(38) "C:3:"obj":23:{s:15:"My private data";}"
+string(15) "My private data"
 ]]>
     </screen>
    </example><!-- }}} -->
