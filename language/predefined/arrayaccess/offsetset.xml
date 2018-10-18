@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: e3886ea0388f7babae5dcc2e3446ce69af9bb5db Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 3e13c61bffee8c9c09fff524c737f516615914b0 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: haluk -->
 <refentry xml:id="arrayaccess.offsetset" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ArrayAccess::offsetSet</refname>
-  <refpurpose>Konuma değer atanır</refpurpose>
+  <refpurpose>Belirtilen konuma bir değer atar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -61,14 +62,40 @@
      <programlisting role="php">
 <![CDATA[
 <?php
-$arrayaccess[] = "value";
+$arrayaccess[] = "ilk değer";
+$arrayaccess[] = "ikinci değer";
+print_r($arrayaccess);
 ?>
 ]]>
      </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Array
+(
+    [0] => ilk değer
+    [1] => ikinci değer
+)
+]]>
+     </screen>
     </informalexample>
    </para>
   </note>
- </refsect1>
+
+  <note>
+    <para>
+      Bu işlev gönderimli atamalarda çağrılmaz, aksi takdirde 
+      <classname>ArrayAccess</classname> ile dizi boyularında yapılan dolaylı 
+      değişiklikler aşırı yüklemeye yol açar.
+      Dolaylı değişiklik, boyutu doğrudan değiştirerek değil, bir alt boyutu 
+      veya alt özelliği değiştirerek ya da dizi boyutunu gönderimli olarak 
+      başka bir değişkene atayarak yapılır. Bunun için 
+      <function>ArrayAccess::offsetGet</function> çağrılır. İşlem sadece 
+      yöntem gönderimli değer döndürürse başarılı olur ki, bu da PHP 5.3.4 
+      ve sonrasını gerektirir.
+    </para>
+  </note>
+</refsect1>
 
 <!--
  <refsect1 role="examples">
