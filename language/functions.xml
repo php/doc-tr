@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 654f983667dbd37234c598a6e11fb2d2bcff151c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: add41695ca84eecde2e3d2f3bae839e16add1ef7 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -38,7 +38,7 @@ function foo($arg_1, $arg_2, /* ..., */ $arg_n)
     bir işlev ismi bir harf ya da alt çizgi ile başlar, herhangi bir sayıda
     geçerli harf, sayı ya da alt çizgi ile devam eder. Düzenli ifade olarak,
     şu şekilde ifade edebiliriz:
-   <literal>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</literal>.
+   <code>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</code>.
    </para>
    <simpara>
     İşlevlerin çağrılmadan önce tanımlanmaları, aşağıdaki iki örnekte
@@ -1008,6 +1008,12 @@ $yenigönderim =& gönderimli_döndür();
     ise dönen değer doğru türde değilse <classname>TypeError</classname>
     istisnası oluşur.
    </para>
+   
+   <para>
+    PHP 7.1.0 ve sonrasında, dönüş değeri, tür adı soru işareti 
+    (<literal>?</literal>) öncelenerek, null olarak işaretlenebilir. 
+    Bu, işlevin belirtilen türü veya &null; değerini döndürdüğünü belirtir.
+   </para>
 
    <note>
     <para>
@@ -1094,6 +1100,23 @@ object(C)#1 (0) {
 }
 ]]>
       </screen>
+     </example>
+
+     <example>
+      <title>- Null olabilen dönüş türü bildirimi (7.1.0 ve sonrası)</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function get_item(): ?string {
+    if (isset($_GET['item'])) {
+        return $_GET['item'];
+    } else {
+        return null;
+    }
+}
+?>
+]]>
+      </programlisting>
      </example>
     </sect3>
    </sect2>

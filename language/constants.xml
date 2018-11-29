@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: aa8396c5519eb3bf08e8102b6eea28169b38d406 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6f439ae86a3c09188e2274dd895ec543181ceb9f Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.constants" xmlns="http://docbook.org/ns/docbook">
   <title>Sabitler</title>
@@ -18,7 +18,14 @@
     kurallara tabidir. Geçerli bir sabit ismi bir harfle ya da alt çizgi imi
     ile başlar, herhangi bir sayıda harf, rakam ya da alt çizgi ile
     devam eder. Bir sabit ismi düzenli ifade olarak, şu şekilde ifade
-    edilebilir: <literal>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</literal>
+    edilebilir: 
+   <code>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</code>
+  </para>
+  <para>
+   Geçersiz ismleri ve PHP kullanımına ayrılmış isimleri 
+   <function>define</function> işlevi ile tanımlamak mümkünse de bunların 
+   değeri sadece <function>constant</function> işlevi ile elde edilebilir. 
+   Ancak, bu tavsiye edilmez.
   </para>
     &tip.userlandnaming;
   <para>
@@ -99,9 +106,11 @@ define("__FOO__", "bir şey");
    <simpara>
     Tanımlanmamış bir sabit ismi kullanırsanız, PHP, bir sabit değil bir
     sayıl değer kullanmak istediğinizi varsayar ve sabiti <type>string</type>
-    türünde bir değer (SABIT yerine "SABIT" ) olarak ele alır. Böyle bir
-    durumda <link linkend="ref.errorfunc" >E_NOTICE</link> seviyesinde bir
-    hata çıktılanır. Ayrıca, <code>$foo[bar]</code> kullanımının (evvelce
+    türünde bir değer (SABIT yerine "SABIT" ) olarak ele alır. PHP 7.2.0 ve 
+    sonrasında bu önerilmemekta olup böyle bir durumda bir 
+    <constant>E_WARNING</constant> çıktılanır (evvelce bir <link 
+    linkend="ref.errorfunc">E_NOTICE</link> çıktılanırdı). Ayrıca, 
+    <code>$foo[bar]</code> kullanımının (evvelce
     <function>define</function> işleviyle <literal>bar</literal> isminde bir
     sabit tanımlamamışsanız) neden yanlış olduğuyla ilgili açıklamayı <link
     linkend="language.types.array.foo-bar"><code>$foo[bar]</code> neden
@@ -280,7 +289,7 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
        <row xml:id="constant.function">
         <entry><constant>__FUNCTION__</constant></entry>
         <entry>
-          İşlev ismi.
+          İşlev ismi veya anonim işlevler için <literal>{closure}</literal>.
         </entry>
        </row>
        <row xml:id="constant.class">
