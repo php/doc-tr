@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f91ed9bc6f48dfeb91cadd6f008740d94cd30725 Maintainer: nilgun Status: wip -->
+<!-- EN-Revision: ca35bb0ee60fdbf44956427c44c4eee7b1ea0fdb Maintainer: nilgun Status: wip -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 
 <!ENTITY changelog.randomseed '<row xmlns="http://docbook.org/ns/docbook">
@@ -940,6 +940,12 @@ kutularının listelenmesini sağlar. <parameter>kalıp</parameter> olarak
 inilmeden sadece <filename>~/mail</filename> dizini altındaki posta kutuları
 listelenir.</para>'>
 
+<!ENTITY imap.mailboxname.insecure '<warning xmlns="http://docbook.org/ns/docbook"><simpara>
+<link linkend="ini.imap.enable-insecure-rsh">imap.enable_insecure_rsh</link> 
+iptal edilmedikçe bu değiştirgeye güvenilir olmayan verinin aktarılması 
+<emphasis>güvenli değildir</emphasis>. 
+</simpara></warning>'>
+
 <!-- intl notes -->
 
 <!ENTITY intl.codepoint.parameter '<para xmlns="http://docbook.org/ns/docbook">The <type>integer</type> codepoint value (e.g. <literal>0x2603</literal> for <emphasis>U+2603 SNOWMAN</emphasis>), or the character encoded as a UTF-8 <type>string</type> (e.g. <literal>"\u{2603}"</literal>)</para>'>
@@ -1841,18 +1847,7 @@ isterseniz IP adresini köşeli ayraçlar arasına almalısınız. Örnek:
 </simpara></note>'>
 
 <!-- Notes for tidy -->
-<!ENTITY note.tidy.ze2 '<note xmlns="http://docbook.org/ns/docbook"> <simpara>Bu işlev sadece Zend Motoru 2
-(PHP &gt;= 5.0.0) ile kullanılabilir.</simpara></note>'>
-
 <!ENTITY tidy.object '<classname xmlns="http://docbook.org/ns/docbook">Tidy</classname> nesnesi.'>
-
-<!ENTITY note.tidy.1only '<note xmlns="http://docbook.org/ns/docbook"> <simpara>Bu işlev sadece
-Tidy 1.0 ile kullanılabilir. Tidy 2.0&apos;dan itibaren kullanımı
-önerilmemekte olup bu nedenle de kaldırılmıştır.</simpara></note>'>
-
-<!ENTITY note.tidy.2only '<note xmlns="http://docbook.org/ns/docbook"> <simpara>Seçimlik
-<parameter>ayarlar</parameter> ve <parameter>kodlama</parameter>
-değiştirgeleri Tidy 2.0&apos;da eklendi.</simpara></note>'>
 
 <!ENTITY tidy.conf-enc '<para xmlns="http://docbook.org/ns/docbook"><parameter>ayarlar</parameter> değiştirgesinde
 bir dizge veya bir dizi belirtilebilir. Dizge verildiği takdirde
@@ -2867,18 +2862,20 @@ used.</para>'>
 <para xmlns="http://docbook.org/ns/docbook">
  The sources of randomness used for this function are as follows:
 </para>
-<itemizedlist xmlns="http://docbook.org/ns/docbook">
+<itemizedlist xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <listitem>
   <simpara>
    On Windows,
-   <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.csprng.crypt-gen-random;"><function>CryptGenRandom</function></link>
-   will always be used.
+   <link xlink:href="&url.csprng.crypt-gen-random;"><function>CryptGenRandom</function></link>
+   will always be used. As of PHP 7.2.0, the
+   <link xlink:href="&url.csprng.cng-api;">CNG-API</link>
+   will always be used instead.
   </simpara>
  </listitem>
  <listitem>
   <simpara>
    On Linux, the
-   <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.csprng.get-random-2;">getrandom(2)</link>
+   <link xlink:href="&url.csprng.get-random-2;">getrandom(2)</link>
    syscall will be used if available.
   </simpara>
  </listitem>
