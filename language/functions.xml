@@ -38,7 +38,7 @@ function foo($arg_1, $arg_2, /* ..., */ $arg_n)
     bir işlev ismi bir harf ya da alt çizgi ile başlar, herhangi bir sayıda
     geçerli harf, sayı ya da alt çizgi ile devam eder. Düzenli ifade olarak,
     şu şekilde ifade edebiliriz:
-   <code>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</code>.
+   <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>.
    </para>
    <simpara>
     İşlevlerin çağrılmadan önce tanımlanmaları, aşağıdaki iki örnekte
@@ -125,8 +125,8 @@ bar();
    </simpara>
    <note>
     <simpara>
-      İşlev isimleri büyük-küçük harf duyarsızdır, ancak işlev isimlerini
-      tanımlandıkları halleriyle kullanmak daha iyidir.
+      İşlev isimleri <literal>A</literal>'dan <literal>Z</literal>'ye kadar 
+      ASCII karakterler için büyük-küçük harf duyarsızdır, ancak işlev isimlerini tanımlandıkları halleriyle kullanmak daha iyidir.
     </simpara>
    </note>
    <simpara>
@@ -575,6 +575,37 @@ Stack trace:
       </screen>
      </example>
 
+     <example>
+      <title>Gönderimli aktarılabilen değiştirgelerde tür bildirimi</title>
+      <simpara>
+       Gönderimli aktarılabilen değiştirgelerde bildirilen tür işlev 
+       çalıştırılırken denetlenir fakat işlevin dönen değiştirgesinin türü 
+       için bu yapılmaz. Dolayısıyla dönen değiştirgenin türü, işlev 
+       döndüğünde değişmiş olabilir.
+      </simpara>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function array_baz(array &$param)
+{
+    $param = 1;
+}
+$var = [];
+array_baz($var);
+var_dump($var);
+array_baz($var);
+?>
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+int(1)
+
+Fatal error: Uncaught TypeError: Argument 1 passed to array_baz() must be of the type array, int given, called in %s on line %d
+]]>
+      </screen>
+     </example>
      <example>
       <title>Boş olabilen tür bildirimi</title>
       <programlisting role="php">
@@ -1684,17 +1715,184 @@ Warning: Cannot bind an instance to a static closure in %s on line %d
     </para>
    </sect2>
 
-  <sect2 role="notes">
+   <sect2 role="notes">
     &reftitle.notes;
     <note>
      <simpara>
-     <function>func_num_args</function>, <function>func_get_args</function>
-     ve <function>func_get_args</function> işlevini bir anonim işlev
-     içinde kullanmak mümkündür.
-    </simpara>
-   </note>
-  </sect2>
- </sect1>
+      <function>func_num_args</function>, <function>func_get_args</function>
+      ve <function>func_get_args</function> işlevini bir anonim işlev
+      içinde kullanmak mümkündür.
+     </simpara>
+    </note>
+   </sect2>
+  </sect1>
+  
+  <sect1 xml:id="functions.arrow">
+   <title>Ok İşlevleri</title>
+
+   <simpara>
+    Ok işlevleri PHP 7.4'te <link linkend="functions.anonymous">anonim 
+    işlevler</link> için daha kısa bir sözdizimi olarak tanıtılmıştır.
+   </simpara>
+   <simpara>
+    Anonim işlevler ve ok işlevlerinin ikisi de 
+    <link linkend="class.closure"><classname>Closure</classname></link> 
+    sınıfı kullanılarak gerçeklenmiştir.
+   </simpara>
+
+   <simpara>
+    Ok işlevlerinin temel biçimi:
+    <code>fn (değiştirgeler) =&gt; ifade</code>
+   </simpara>
+
+   <simpara>
+    Ok işlevleri, üst etki alanındaki değişkenleri daima özdevinimli 
+    kullanması dışında <link linkend="functions.anonymous">anonim 
+    işlevler</link>in desteklediği özelliklerin tümünü destekler.
+   </simpara>
+
+   <simpara>
+    İfadede kullanılan bir değişken üst etki alanında tanımlandığında, 
+    örtük olarak değeriyle aktarılır. Aşağıdaki örnekte 
+    <varname>$fn1</varname> ve <varname>$fn2</varname> işlevleri aynı 
+    şekilde davranır.
+   </simpara>
+
+   <para>
+    <example>
+     <title>- Ok işlevleri özdevinimli olarak değişkenleri üst etki alanından 
+    daima değerleriyle alır</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$y = 1;
+ 
+$fn1 = fn($x) => $x + $y;
+// $y değiştirgesini değeriyle kullanmaya eşdeğerdir:
+$fn2 = function ($x) use ($y) {
+    return $x + $y;
+};
+
+var_export($fn1(3));
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+4
+]]>
+      </screen>
+    </example>
+   </para>
+   <simpara>
+    Aşağıdaki örnek, ok işlevleri iç içe kullanılsa da çalışır:
+   </simpara>
+   <para>
+    <example>
+     <title>- Ok işlevleri özdevinimli olarak değişkenleri iç içe olsalar bile 
+       üst etki alanından daima değerleriyle alır</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$z = 1;
+$fn = fn($x) => fn($y) => $x * $y + $z;
+// 51 çıktılanır
+var_export($fn(5)(10));
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    Anonim işlevlere benzer olarak, ok işlevleri sözdizimi de, değiştirge ve 
+    dönüş türleri dahil, öntanımlı değerler, değişken sayıda değiştirgeler, 
+    gönderimli aktarım ve dönüşler gibi rasgele işlev imzalarına da izin 
+    verir. Aşağıdaki ok işlevlerinin tamamı geçerli örneklerdir:
+   </simpara>
+   <para>
+    <example>
+     <title>- Ok işlevi örnekleri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+fn(array $x) => $x;
+static fn(): int => $x;
+fn($x = 42) => $x;
+fn(&$x) => $x;
+fn&($x) => $x;
+fn($x, ...$rest) => $rest;
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    Ok işlevleri değişken bağlamını değeriyle kullanır. Bu kabaca, ok işlevi 
+    içinde kullanılan her <varname>$x</varname> değişkeni için bir 
+    <code>use($x)</code> çalıştırmaya eşdeğerdir.
+    Değişken bağlamını değeriyle kullanmaktan kasıt, dış etki alanındaki 
+    herhangi bir değerin değiştirilmesinin mümkün olmayacağıdır.
+    Değişken bağlamını gönderimiyle kullanmak için 
+    <link linkend="functions.anonymous">anonim işlevler</link> kullanılabilir.
+   </simpara>
+   <para>
+    <example>
+     <title>- Dış etki alanındaki değerler ok işlevleri kullanılarak değiştirilemez</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$x = 1;
+$fn = fn() => $x++; // Etkisiz
+$fn();
+var_export($x);  // 1 çıktılanır
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   
+   <sect2 role="changelog">
+    &reftitle.changelog;
+    <para>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>&Version;</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>7.4.0</entry>
+         <entry>
+          Ok işlevleri kullanılabilir oldu.
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+    </para>
+   </sect2>
+
+   <sect2 role="notes">
+    &reftitle.notes;
+    <note>
+     <simpara>
+      Bir ok işlevi içinden <function>func_num_args</function>,
+      <function>func_get_arg</function> ve <function>func_get_args</function>
+      kullanmak mümkündür.
+     </simpara>
+    </note>
+   </sect2>
+  </sect1>
 
 </chapter>
 
