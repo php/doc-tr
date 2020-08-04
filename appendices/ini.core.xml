@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3df65c988d3f900361308a0e493af56171103e58 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c653b888fbfb9036b7dc514ba71d6f04edca755d Maintainer: nilgun Status: ready -->
 
 
  <section xml:id="ini.core" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -52,12 +52,15 @@
         <entry><link linkend="ini.precision">precision</link></entry>
         <entry>"14"</entry>
         <entry>PHP_INI_ALL</entry>
-        <entry></entry>
+        <entry>
+         PHP 5.3.6 öncesinde öntanımlı değer 100 idi.
+         PHP 7.1.0 öncesinde öntanımlı değer 17 idi.
+        </entry>
        </row>
        <row>
         <entry><link linkend="ini.serialize-precision">
           serialize_precision</link></entry>
-        <entry>"17"</entry>
+        <entry>"-1"</entry>
         <entry>PHP_INI_ALL</entry>
         <entry>PHP 5.3.5'e kadar öntanımlı değer 100 idi.</entry>
        </row>
@@ -106,6 +109,12 @@
         <entry>"2"</entry>
         <entry>PHP_INI_SYSTEM</entry>
         <entry>PHP 7.1.0 ve sonrasında mevcuttur.</entry>
+       </row>
+       <row>
+        <entry><link linkend="ini.zend.exception-ignore-args" >zend.exception_ignore_args</link></entry>
+        <entry>"0"</entry>
+        <entry>PHP_INI_ALL</entry>
+        <entry>PHP 7.4.0 ve sonrasında mevcuttur.</entry>
        </row>
        <row>
         <entry><link linkend="ini.zend.multibyte">zend.multibyte</link></entry>
@@ -383,16 +392,14 @@
       </term>
       <listitem>
        <simpara>
-        Bu yönerge <link linkend="security">güvenlik</link> ile ilgili
-        sebeplerle belli işlevleri iptal etmeye yarar. İşlev isimleri
-        aralarına virgül konarak belirtilir. Bu yönerge <link
-        linkend="ini.safe-mode">güvenli kipte</link> etkili değildir.
+        Bu yönerge belli işlevleri iptal etmeye yarar. İşlev isimleri
+        aralarına virgül konarak belirtilir.
        </simpara>
        <para>
         Bu yönerge ile sadece <link linkend="functions.internal">dahili
         işlevler</link> iptal edilebilir.
-        <link linkend="functions.user-defined">Kullanıcı tarafından tanımlanmış
-        işlevler</link> etkilenmez.
+        <link linkend="functions.user-defined">Kullanıcı tarafından 
+         tanımlanmış işlevler</link> etkilenmez.
        </para>
        <simpara>
         Bu yönerge sadece &php.ini; içinde atanabilir. Örneğin &httpd.conf;
@@ -408,10 +415,8 @@
       </term>
       <listitem>
        <simpara>
-        Bu yönerge <link linkend="security">güvenlik</link> ile ilgili
-        sebeplerle belli sınıfları iptal etmeye yarar. Sınıf isimleri
-        aralarına virgül konarak belirtilir. Bu yönerge <link
-        linkend="ini.safe-mode">güvenli kipte</link> etkili değildir.
+        Bu yönerge belli sınıfları iptal etmeye yarar. Sınıf isimleri
+        aralarına virgül konarak belirtilir.
        </simpara>
        <simpara>
         Bu yönerge sadece &php.ini; içinde atanabilir. Örneğin &httpd.conf;
@@ -483,6 +488,18 @@
         olup PHP 5.3.0 itibariyle özellik <emphasis>KALDIRILMIŞTIR</emphasis>.
         </simpara>
        </warning>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry xml:id="ini.zend.exception-ignore-args">
+      <term>
+       <parameter>zend.exception_ignore_args</parameter>
+       <type>boolean</type>
+      </term>
+      <listitem>
+       <para>
+        İstisnalardan oluşturulan yığın izlerindeki bağımsız değişkenleri hariç tutar.
+       </para>
       </listitem>
      </varlistentry>
 
@@ -687,7 +704,13 @@
       </tbody>
      </tgroup>
     </table>
-   </para>
+    <note>
+     <para>
+      <link linkend="ini.open-basedir">open_basedir</link> kullanımı
+      realpath önbelleğini <emphasis>iptal eder</emphasis>.
+     </para>
+    </note>
+  </para>
    &ini.descriptions.title;
    <para>
     <variablelist>
@@ -1534,10 +1557,9 @@
        <para>
         PHP, dahil edilecek dosyaları <parameter>include_path</parameter>
         içindeki yollarda her dosya için tek tek sırayla arar. Önce ilk yola
-        bakar, sonra diğerine, böyle gider. Dosyayı bulursa döner, bulamazsa
-        bir <link linkend="errorfunc.constants.errorlevels.e-warning">
-        uyarı</link> veya bir <link
-        linkend="errorfunc.constants.errorlevels.e-error">hata</link> verir.
+        bakar, sonra diğerine, böyle gider. Ya dosyayı bulur ya da
+        bir <constant>E_WARNING</constant> veya bir 
+        <constant>E_ERROR</constant> ile döner.
         Bu yönergenin değerini betiğinizin çalışması sırasında
         <function>set_include_path</function> işleviyle değiştirebilirsiniz.
        </para>
@@ -1669,6 +1691,13 @@ include_path = ".:${USER}/pear/php"
          dizinleri listelerken, işletim sisteminin kısıtlarına aldırmaksızın
          bir ayraç olarak <constant>PATH_SEPARATOR</constant> sabiti
          kullanılabilir.
+        </para>
+       </note>
+       <note>
+        <para>
+         open_basedir kullanımı<link linkend="ini.realpath-cache-size" 
+         >realpath_cache_size</link> seçeneğine <literal>0</literal> atar,
+         dolayısıyla realpath önbelleği <emphasis>iptal olur</emphasis>.
         </para>
        </note>
       </listitem>
