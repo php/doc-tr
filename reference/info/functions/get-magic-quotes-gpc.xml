@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e15d2894fb35432d2a111db36fe8ba8ebc62024 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.get-magic-quotes-gpc" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>get_magic_quotes_gpc</refname>
   <refpurpose>magic_quotes_gpc yönergesinin değerini döndürür</refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+   &warn.deprecated.function-7-4-0;
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>get_magic_quotes_gpc</methodname>
+   <type>bool</type><methodname>get_magic_quotes_gpc</methodname>
    <void/>
   </methodsynopsis>
   <para>
@@ -31,10 +35,35 @@
   &reftitle.returnvalues;
   <para>
    <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> yönergesinin
-   değeri "off" ise 0, "on" ise 1 döner.
+   değeri "off" ise 0, "on" ise 1 döner. PHP 5.4.0 ve sonrasında daima
+   &false; döner.
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        Bu işlev kullanımdan kaldırıldı.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ 
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -43,15 +72,19 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-echo get_magic_quotes_gpc();         // 1
+//magic quotes etkinse
 echo $_POST['lastname'];             // O\'reilly
 echo addslashes($_POST['lastname']); // O\\\'reilly
 
-if (!get_magic_quotes_gpc()) {
-    $lastname = addslashes($_POST['lastname']);
-} else {
-    $lastname = $_POST['lastname'];
+// Tüm PHP sürümlerinde
+if (get_magic_quotes_gpc()) {
+    $lastname = stripslashes($_POST['lastname']);
 }
+else {
+     $lastname = $_POST['lastname'];
+}
+// MySQL kullanılıyorsa
+$lastname = mysql_real_escape_string($lastname);
 
 echo $lastname; // O\'reilly
 $sql = "INSERT INTO lastnames (lastname) VALUES ('$lastname')";
@@ -60,20 +93,6 @@ $sql = "INSERT INTO lastnames (lastname) VALUES ('$lastname')";
     </programlisting>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    Eğer <link linkend="ini.magic-quotes-sybase">magic_quotes_sybase</link>
-    yönergesinin değeri ON ise <link linkend="ini.magic-quotes-gpc">
-    magic_quotes_gpc</link> geçersiz olacaktır. Bu bakımdan,
-    <function>get_magic_quotes_gpc</function> &true; döndürse bile ne çift
-    tırnaklar ne tersbölüler ne de &null; değerler öncelenecektir. Bu durumda
-    bunlar <emphasis>''</emphasis> olarak görünecektir.
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="seealso">

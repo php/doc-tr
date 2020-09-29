@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2aa87f30ab381a911b65fbb190d39c74cb8a1373 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.addslashes">
  <refnamediv>
   <refname>addslashes</refname>
@@ -15,33 +15,46 @@
   </methodsynopsis>
   <para>
    Veritabanı sorguları gibi yerlerde kullanılmak üzere bir dizgenin içindeki
-   özel karakterlerin önüne tersbölü koyarak elde edilen dizgeyi döndürür. Özel
-   karakterler: tek tırmak (<literal>'</literal>), çift tırnak
-   (<literal>"</literal>), tersbölü (<literal>\</literal>) ve NUL (0. bayt).
+   özel karakterlerin önüne tersbölü koyarak elde edilen dizgeyi döndürür. 
+   Özel karakterler: 
+   <simplelist>
+    <member>tek tırmak (<literal>'</literal>)</member>
+    <member>çift tırnak (<literal>"</literal>)</member>
+    <member>tersbölü (<literal>\</literal>)</member>
+    <member>NUL (NUL baytı)</member>
+   </simplelist>
   </para>
   <para>
-   <function>addslashes</function> işlevinin örnek kullanımlarından biri, bir
-   veritabanına girilecek veriyi hazırlamaktır.  Örneğin
-   <literal>O'reilly</literal> dizgesini bir veritabanına girerken onu
-   öncelemeniz gerekir. Bu işlem için veritabanına özgü öncelem işlevlerini
-   kullanmanız daha iyi olur (MySQL için
-   <function>mysqli_real_escape_string</function>, PostgreSQL için
-   <function>pg_escape_string</function> gibi). Sadece, kullandığınız
-   veritabanı özel karakterlerin öncelenmesini gerektirdiği halde böyle bir
-   işleve sahip değilse, bu işlevi kullanın. Tek tırnak karakterini
-   kendisiyle öncelemek için <link linkend="ini.magic-quotes-sybase">
-   magic_quotes_sybase</link> PHP ini yönergesine <literal>on</literal> değeri
-   atanmış olmalıdır.
+   <function>addslashes</function> kullanımından amaç, PHP tarafından 
+   değerlendirilecek bir dizede yukarıda belirtilen karakterleri tersbölü ile 
+   öncelemektir:
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = "O'Reilly?";
+eval("echo '" . addslashes($str) . "';");
+?>
+]]>
+    </programlisting>
+   </informalexample>
   </para>
   <para>
-   <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> yönergesi
-   öntanımlı olarak <literal>on</literal> değerine sahip olup tüm GET, POST
-   ve COOKIE verileri üzerinde <function>addslashes</function>
-   çalıştırılmasını sağlar. Çifte öncelem yapmamak için bu yönergenin etkin
-   olduğu sistemlerde GET, POST ve COOKIE verileri üzerinde
-   <function>addslashes</function> işlevini kullanmayın. Böyle bir durumda
-   <function>addslashes</function> işlevini kullanıp kullanmayacağınızı
-   <function>get_magic_quotes_gpc</function> işlevi ile sınayabilirsiniz.
+   PHP 5.4.0 öcesinde, 
+   <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link>
+   PHP yönergesinin öntanımlı değeri <literal>on</literal> idi ve aslında
+   tüm GET, POST ve COOKIE verisi üzerinde <function>addslashes</function> 
+   işlevini çalıştırırdı. Dizelerin iki defa öncelenmesini istemiyorsanız
+   <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> ile
+   öncelemiş dizeyi <function>addslashes</function> işlevinde 
+   kullanmamalısınız. 
+   <function>get_magic_quotes_gpc</function> işlevi
+   <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> değerinin 
+   <literal>on</literal> olup olmadığına bakmak için kullanılabilir.
+  </para>
+  <para>
+   <function>addslashes</function> işlevi bazan hatalı olarak
+   <link linkend="security.database.sql-injection">SQL Enjeksiyonu</link>nu engellemek için kullanılırdı. Bunun yerine veritbanlarına özgü önceleme işlevleri ve/veya hazırlanmış ifadeler kullanılmalıdır.
   </para>
  </refsect1>
 
@@ -76,9 +89,9 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$str = "İsminiz O'reilly mi?";
+$str = "İsminiz O'Reilly mi?";
 
-// Çıktısı: İsminiz O\'reilly mi?
+// Çıktısı: İsminiz O\'Reilly mi?
 echo addslashes($str);
 ?>
 ]]>
