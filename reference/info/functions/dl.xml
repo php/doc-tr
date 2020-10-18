@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.dl" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>dl</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>dl</methodname>
+   <type>bool</type><methodname>dl</methodname>
    <methodparam><type>string</type><parameter>kütüphane</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -23,7 +23,12 @@
    ile) yüklenen eklentileri bulan <function>extension_loaded</function>
    işlevini kullanın.
   </para>
-  &warn.deprecated.function-5-3-0.removed-6-0-0;
+  <warning>
+   <simpara>
+    Bu işlev PHP 5.3.0 sürümünde çoğu SAPI'den kaldırıldı. PHP-FPM'den PHP 
+    7.0.0 sürümünde kaldırıldı.
+   </simpara>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -46,7 +51,7 @@
       </para>
       <para>
        Windows - &php.ini; içinde açıkça belirtilmemişse, eklenti öntanımlı
-       olarak <filename>c:\php4\extensions\</filename> dizininden yüklenir.
+       olarak <filename>c:\php5\</filename> dizininden yüklenir.
       </para>
       <para>
        Unix - &php.ini; içinde açıkça belirtilmemişse, öntanımlı eklenti
@@ -89,8 +94,7 @@
   &reftitle.returnvalues;
   <para>
    &return.success; Eğer modül yükleme işlevsel değilse
-   (<literal>enable_dl</literal> ile iptal edilmiş veya &php.ini; içinde
-   &safemode; etkin kılınmışsa) bir <constant>E_ERROR</constant> iletisi
+   (&php.ini; içinde <literal>enable_dl</literal> off yapılarak iptal edilmişse) bir <constant>E_ERROR</constant> iletisi
    çıktılanıp çalışma durdurulur. Eğer işlev, kütüphane yüklenemediğinden
    dolayı başarısız olursa bir <constant>E_WARNING</constant> iletisi
    çıktılayarak &false;döndürür.
@@ -114,7 +118,7 @@ if (!extension_loaded('sqlite')) {
     }
 }
 
-// PHP 4.3.0 ve sonrası için PHP_SHLIB_SUFFIX sabiti de kullanılabilir
+// veya PHP_SHLIB_SUFFIX sabiti de kullanılabilir
 if (!extension_loaded('sqlite')) {
     $prefix = (PHP_SHLIB_SUFFIX === 'dll') ? 'php_' : '';
     dl($prefix . 'sqlite.' . PHP_SHLIB_SUFFIX);
@@ -126,63 +130,16 @@ if (!extension_loaded('sqlite')) {
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Artık CLI, CGI ve Embed hariç tüm SAPI'lerde bir E_DEPRECATED
-        üretiliyor.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="notes">
   &reftitle.notes;
   <note>
    <para>
-    <function>dl</function> işlevi <emphasis>çok evreli HTTP sunucularında
-    desteklenmez</emphasis>. Böyle bir ortamda çalışıyorsanız &php.ini; içinde
-    <literal>extensions</literal> deyimini kullanın. Ancak,
-    <literal>CGI</literal> ve <literal>CLI</literal> sürümleri bundan
-    <emphasis role="strong">etkilenmez</emphasis>.
-   </para>
-  </note>
-  <note>
-   <para>
-    PHP 5'ten beri, <function>dl</function> işlevinin <acronym>CLI</acronym>
-    dışında kullanımı önerilmemektidir. Yerine
+    PHP, ZTS desteği ile derlenmişse <function>dl</function> işlevi 
+    <emphasis>desteklenmez</emphasis>. Yerine
     <link linkend="ini.extension">Eklenti Yükleme Yönergeleri</link>ni
     kullanın.
    </para>
   </note>
-  <note>
-   <para>
-    PHP 6'dan beri bu işlev CLI, CGI ve embed dışında kalan tüm SAPI'lerde
-    kaldırılmıştır.
-   </para>
-  </note>
-  <note>
-   <para>
-    <function>dl</function> işlevinin değiştirgesi Unix platformlarında harf
-    büyüklüğüne duyarlıdır.
-   </para>
-  </note>
-  &note.sm.disabled;
  </refsect1>
 
  <refsect1 role="seealso">

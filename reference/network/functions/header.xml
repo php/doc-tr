@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.header">
  <refnamediv>
   <refname>header</refname>
@@ -11,8 +11,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>void</type><methodname>header</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>değiştir</parameter><initializer>true</initializer></methodparam>
+   <methodparam><type>string</type><parameter>başlık</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>değiştir</parameter><initializer>&true;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>http_yanıt_kodu</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -37,6 +37,7 @@
 /* Bu bir hata verecektir.  header() çağrısından
  * önce hiçbir satırlar olmamalıydı. */
 header('Location: http://localhost/');
+exit;
 ?>
 ]]>
     </programlisting>
@@ -49,7 +50,7 @@ header('Location: http://localhost/');
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>başlık</parameter></term>
      <listitem>
       <para>
        Başlık dizgesi.
@@ -124,7 +125,8 @@ header('WWW-Authenticate: NTLM', false);
      <term><parameter>http_yanıt_kodu</parameter></term>
      <listitem>
       <para>
-       HTTP yanıt kodunun belirtilen değer olması için zorlanır.
+       HTTP yanıt kodunu belirtilen değere zorlar. Bu değiştirge sadece 
+       <parameter>başlık</parameter> değiştirgesi boş değilse etkilidir.
       </para>
      </listitem>
     </varlistentry>
@@ -136,44 +138,6 @@ header('WWW-Authenticate: NTLM', false);
   &reftitle.returnvalues;
   <para>
    &return.void;
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.4.2 ve 5.1.2</entry>
-       <entry>
-        Başlık yerleştirme saldırılarına karşı bir önlem olarak bu işlev
-        artık bir kerede birden fazla başlık gönderilmesine izin
-        vermemektedir.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>http_yanıt_kodu</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.4</entry>
-       <entry>
-        <parameter>değiştir</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -193,7 +157,7 @@ header('WWW-Authenticate: NTLM', false);
 <![CDATA[
 <?php
 // Bir PDF çıktılayacağız
-header('Content-type: application/pdf');
+header('Content-Type: application/pdf');
 
 // Dosya ismi indirilen.pdf olsun
 header('Content-Disposition: attachment; filename="indirilen.pdf"');
@@ -246,6 +210,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Geçmişte bir tarih
 
  <refsect1 role="notes">
   &reftitle.notes;
+  &note.network.header.sapi;
   <note>
    <para>
     PHP 4'ten itibaren, bu işlevi çağırmadan önce, tarayıcıya gönderilene
@@ -274,19 +239,9 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Geçmişte bir tarih
    </para>
   </note>
   <note>
-   <simpara>
-    Eğer <link linkend="ini.safe-mode">safe mode</link> etkinse ve HTTP
-    kimlik doğrulaması için <literal>WWW-Authenticate</literal> başlığını
-    kullanıyorsanız başlığın <literal>realm</literal> alanına betiğin
-    kullanıcı kimliği eklenecektir.
-   </simpara>
-  </note>
-  <note>
-   <para>HTTP/1.1,
-    <link xlink:href="&spec.http1.1;-sec14.html#sec14.30">Location:</link>
-    için değiştirge olarak bir mutlak <acronym>URI</acronym> belirtilmesini
-    gerektirir (şema, konak ismi ve mutlak dosya yolu dahil), fakat bazı
-    istemciler göreli <acronym>URI</acronym>'leri kabul ederler. Bir mutlak
+   <para>Çoğu çağdaş istemci
+    <link xlink:href="&spec.http1.1;#section-7.1.2">Location:</link>
+    için değiştirge olarak göreli bir <acronym>URI</acronym> kabul etmektedir, fakat bazı eski istemciler şema, konak ismi ve mutlak dosya yolu içeren mutlak bir URI gerektirir. Bir mutlak
     <acronym>URI</acronym>'yi bir göreli <acronym>URI</acronym>'ye
     dönüştürmek için örnekteki gibi <varname>$_SERVER['HTTP_HOST']</varname>,
     <varname>$_SERVER['PHP_SELF']</varname> ve <function>dirname</function>
@@ -322,8 +277,8 @@ exit;
    <simplelist>
     <member><function>headers_sent</function></member>
     <member><function>setcookie</function></member>
-    <member><link linkend="features.http-auth">HTTP
-     kimlik doğrulaması</link> bölümü</member>
+    <member><function>http_response_code</function></member>
+    <member><function>header_remove</function></member>
    </simplelist>
   </para>
  </refsect1>

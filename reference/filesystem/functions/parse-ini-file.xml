@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-ini-file">
  <refnamediv>
   <refname>parse_ini_file</refname>
@@ -12,7 +12,7 @@
   <methodsynopsis>
    <type>array</type><methodname>parse_ini_file</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>bölümleri_işle</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>bölümleri_işle</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>tarama_kipi</parameter><initializer>INI_SCANNER_NORMAL</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -33,7 +33,8 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       Çözümlenecek yapılandırma dosyası.
+       Çözümlenecek yapılandırma dosyasının ismi. Göreli bir yol kullanılıyorsa, mevcut çalışma dizinine göre, ardından 
+       <link linkend="ini.include-path">include_path</link> değerlendirilir.
       </para>
      </listitem>
     </varlistentry>
@@ -56,6 +57,7 @@
        <constant>INI_SCANNER_RAW</constant> belirtilirse seçenek değerleri
        çözümlenmez.
       </para>
+      &ini.scanner.typed;
      </listitem>
     </varlistentry>
    </variablelist>
@@ -67,59 +69,6 @@
   <para>
    Başarısızlık durumunda &false; aksi takdirde ayarları bir ilişkisel dizi
    içinde döndürür.
-  </para>
- </refsect1>
-
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        İsteğe bağlı <parameter>tarama_kipi</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.2.7</entry>
-       <entry>
-        Sözdizimi hatasında boş bir dizi yerine &false; döndürülmeye başlandı.
-       </entry>
-      </row>
-      <row>
-       <entry>5.2.4</entry>
-       <entry>
-        Sayılardan oluşan anahtarlar ve bölüm isimleri artık PHP <link
-        linkend="language.types.integer">tamsayıları</link> olarak
-        değerlendirilmeye başlanmıştır. Bu bakımdan 0 ile başlayanlar
-        sekizlik, 0x ile başlayanlar onaltılık tabanda değerlendirilir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        Çift tırnak içine alınmış değerler satırsonu karakterleri içerebilir.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.1</entry>
-       <entry>
-        Bu işlev &safemode; ve <link linkend="ini.open-basedir">open_basedir</link>
-        yönergelerinden etkilenir olmuştur.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -147,6 +96,9 @@ phpversion[] = "5.0"
 phpversion[] = "5.1"
 phpversion[] = "5.2"
 phpversion[] = "5.3"
+
+urls[svn] = "http://svn.php.net"
+urls[git] = "http://git.php.net"
 ]]>
     </programlisting>
    </example>
@@ -154,10 +106,10 @@ phpversion[] = "5.3"
     <title>- <function>parse_ini_file</function> örneği</title>
     <para>
      INI dosyası içinde <link linkend="language.constants">sabitler</link> de
-     çözümlenebilir, bu bakımdan <function>parse_ini_file</function> işlevini
+     (fakat <constant>__FILE__</constant> gibi sihirli sabitler değil) çözümlenebilir, bu bakımdan <function>parse_ini_file</function> işlevini
      çalıştırmadan önce bir sabiti bir ini değeri olarak tanımlamışsanız, bu
      sabit de sonuca dahil edilir. Sadece ini değerleri değerlendirmeye
-     alınır. Örnek:
+     alınır ve değer bir sabit olmalıdır. Örnek:
     </para>
     <programlisting role="php">
 <![CDATA[
@@ -194,6 +146,12 @@ Array
             [3] => 5.3
         )
 
+    [urls] => Array
+        (
+            [svn] => http://svn.php.net
+            [git] => http://git.php.net
+        )
+
 )
 Array
 (
@@ -218,6 +176,12 @@ Array
                     [1] => 5.1
                     [2] => 5.2
                     [3] => 5.3
+                )
+
+            [urls] => Array
+                (
+                    [svn] => http://svn.php.net
+                    [git] => http://git.php.net
                 )
 
         )
@@ -265,6 +229,52 @@ echo '(yüklenen) magic_quotes_gpc = ' .
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>ara değerler</title>
+    <para>
+     Sabitleri değerlendirmeye ek olarak, belirli karakterlerin bir ini 
+     değerinde özel anlamları vardır. Buna ek olarak, ortam değişkenleri ve 
+     önceden tanımlanmış değerler <code>${}</code>sözdizimi kullanılaraqk 
+     okunabilir.
+    </para>
+    <programlisting>
+<![CDATA[
+; bitsel VEYA için | kullanılır
+three = 2|3
+
+; bitsel VE için & kullanılır
+four = 6&5
+
+; bitsel Ayrıcalıklı VEYA için ^ kullanılır
+five = 3^6
+
+; bitsel olumsuzlama için ~ kullanılır
+negative_two = ~1
+
+; gruplama için () kullanılır
+seven = (8|7)&(6|5)
+
+; bir değeri öncelemek için \ kullanılır.
+satırsonu_mu = "\\n" ; dize içinde "\n" olarak sonuçlanır, 
+; satırsonu karakteri olarak değil.
+tırnaklı = "She said \"Exactly my point\"." ; İçinde tırnak imleri bulunan 
+; bir dize elde edilir.
+
+path = ${PATH}
+also_five = ${five}
+
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+(parsed) magic_quotes_gpc = Yes
+(loaded) magic_quotes_gpc = Yes
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
@@ -284,12 +294,36 @@ echo '(yüklenen) magic_quotes_gpc = ' .
   </note>
   <note>
    <simpara>
-    INI dosyalarında anahtar olarak kullanılmaması gereken anahtar sözcükler
-    vardır: none, null, yes, no, on, off, true ve false.
-    null, no ve false değerleri "" olarak, yes ve true ise "1" olarak
-    sonuçlanır. <literal>{}|&amp;~![()^"</literal> karakterleri anahtar içinde
-    hiçbir yerde kullanılamaz ve değer olarak da özel bir anlama sahiptirler.
+    INI dosyalarında anahtar olarak kullanılmaması gereken bazı özel sözcükler
+    vardır. Bunlar: <literal>null</literal>, <literal>yes</literal>, 
+    <literal>no</literal>, <literal>true</literal>, <literal>false</literal>,
+    <literal>on</literal>, <literal>off</literal>, <literal>none</literal>.
+    <constant>INI_SCANNER_TYPED</constant> kipi kullanılmadıkça (PHP 5.6.1 ve sonrası)
+    <literal>null</literal>, <literal>off</literal>, <literal>no</literal> ve 
+    <literal>false</literal> sözcükleri <literal>""</literal> ile 
+    sonuçlanırken, <literal>on</literal>, <literal>yes</literal> ve 
+    <literal>true</literal> sözcükleri <literal>"1"</literal> ile sonuçlanır.
+    <literal>?{}|&amp;~![()^"</literal> karakterleri hiçbir yerde anahtar veya
+    değer içinde kullanılmamalıdır.
    </simpara>
+  </note>
+  <note>
+   <para>
+    Eşit işareti içermeyen girdiler yoksayılır. Örneğin, "foo" yoksayılırken 
+    "bar =" çözümlenir ve boş değer eklenir. Örneğin, MySQL 
+    <filename>my.cnf</filename> içinde bir "no-auto-rehash" girdisine sahiptir 
+    ve herhangi bir değer almadığı için yoksayılır.
+   </para>
+  </note>
+  <note>
+   <para>
+    ini dosyaları genellikle HTTP sunucuları tarafından düz metin olarak kabul 
+    edilir ve bu nedenle istenirse tarayıcılara sunulur. Bu, güvenlik için ini 
+    dosyalarınızı belge kök dizininiz dışında tutmanız veya HTTP sunucunuzu 
+    onlara hizmet vermeyecek şekilde yeniden yapılandırmanız gerektiği 
+    anlamına gelir. Bunlardan herhangi birinin yapılmaması bir güvenlik riski 
+    oluşturabilir.
+   </para>
   </note>
  </refsect1>
 

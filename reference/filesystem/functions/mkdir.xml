@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.mkdir">
  <refnamediv>
   <refname>mkdir</refname>
@@ -13,7 +13,7 @@
    <type>bool</type><methodname>mkdir</methodname>
    <methodparam><type>string</type><parameter>yol</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>0777</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ardışık</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ardışık</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -57,7 +57,8 @@
      <term><parameter>ardışık</parameter></term>
      <listitem>
       <para>
-       Öntanımlı olarak &false;'tır.
+       <parameter>yol</parameter> değiştirgesinde belirtilen alt dizinlerin de 
+       oluşturulmasını sağlar.
       </para>
      </listitem>
     </varlistentry>
@@ -78,45 +79,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>ardışık</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        PHP 5.0.0 sürümünden itibaren bu işlev <emphasis>bazı</emphasis> URL
-        sarmalayıcıları ile kullanılabilmektedir. <function>mkdir</function>
-        işlevini destekleyen sarmalayıcıların listesini <xref
-        linkend="wrappers"/> başlığı altında bulabilirsiniz.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <parameter>mode</parameter> değiştirgesi seçimlik hale geldi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -131,17 +93,46 @@ mkdir("/dizinim/için/bir/yol", 0700);
     </programlisting>
    </example>
   </para>
+  <para>
+   <example>
+    <title><function>mkdir</function> işlevinin <parameter>ardışık</parameter> değiştirgesi ile kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// İstenen dizin yapısı
+$yapı = './alt1/alt2/alt3/';
+
+// Alt dizinleri de oluşturmak için mkdir() işlevine
+// <parameter>ardışık</parameter> değiştirgesi belirtilmelidir.
+
+if (!mkdir($yapı, 0777, true)) {
+    die('Dizinler oluşturulamadı....');
+}
+
+// ...
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
- <refsect1 role="notes">
-  &reftitle.notes;
-  &note.sm.uidcheck.dir;
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Dizin mevcutsa <constant>E_WARNING</constant> seviyesinde hata çıktılanır.
+  </para>
+  <para>
+   İlgili izinler dizinin oluşturulmasını engelliyorsa 
+   <constant>E_WARNING</constant> seviyesinde hata çıktılanır.
+  </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>is_dir</function></member>
     <member><function>rmdir</function></member>
    </simplelist>
   </para>

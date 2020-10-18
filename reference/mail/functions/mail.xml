@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mail" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mail</refname>
@@ -14,7 +14,7 @@
    <methodparam><type>string</type><parameter>kime</parameter></methodparam>
    <methodparam><type>string</type><parameter>konu</parameter></methodparam>
    <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_başlıklar</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>ek_başlıklar</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>ek_değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -64,7 +64,7 @@
        Gönderilecek ileti.
       </para>
       <para>
-       Her satır bir satırsonu (\n) karakteri ile bitmeli ve 70 karakterden
+       Her satır bir CRLF (\r\n) karakteri ile bitmeli ve 70 karakterden
        uzun olmamalıdır.
       </para>
       <caution>
@@ -87,13 +87,30 @@ $text = str_replace("\n.", "\n..", $text);
      <term><parameter>ek_başlıklar</parameter> (seçimlik)</term>
      <listitem>
       <para>
-       Eposta başlığının sonuna yerleştirilecek dizge.
+       Eposta başlığının sonuna yerleştirilecek <type>string</type> veya 
+       <type>array</type> türünde veri.
       </para>
       <para>
        Bu genellikle ek başlıklar eklemek için kullanılır (From, Cc, Bcc
        gibi). Çok sayıda başlık eklenecekse bunlar birer CRLF (\r\n) ile
-       birbirlerinden ayrılmalıdır.
+       birbirlerinden ayrılmalıdır. Bu başlığı oluşturmak için dış veriler 
+       kullanılıyorsa, istenmeyen başlıkların araya girmemesi için veriler 
+       elden geçirilip temizlenmelidir.
       </para>
+      <para>
+       Bir dizi aktarılmışsa, anahtarları başlık isimleri, değerleri de ilgili 
+       başlık değerleri olmalıdır.
+      </para>
+      <note>
+       <para>
+        Sırasıyla PHP 5.4.42 ve 5.5.27 öncesinde, 
+        <parameter>ek_başlıklar</parameter> eposta başlığı enjeksiyon 
+        korumasına sahip değildi. Bu bakımdan, kullanıcılar belirtilen 
+        başlıkların güvenli olduğundan ve sadece başlıkları içerdiğinden emin 
+        olmalıdır. Örn, eposta gövdesi asla çok sayıda satırsonu konularak 
+        başlatılmamalıdır.
+       </para>
+      </note>      
       <note>
        <para>
         Eposta gönderilirken bir <literal>From</literal> başlığı içermesi
@@ -114,7 +131,8 @@ $text = str_replace("\n.", "\n..", $text);
        <para>
         Eğer ileti alınmazsa satırsonlarını CRLF (\r\n) ile değil sadece LF
         (\n) ile sonlandırmayı deneyin. Bazı düşük kaliteli Unix eposta
-        sunucuları LF karakterlerini özdevinimli olarak CRLF karakterleri ile
+        sunucuları (en bilineni <link xlink:href="&url.qmail;">qmail</link>) 
+        LF karakterlerini özdevinimli olarak CRLF karakterleri ile
         değiştirir (CRLF kullanıldıysa sonuç CRCRLF olur). Bu yöntem <link
         xlink:href="&url.rfc;2822">RFC 2822</link>'ye uygun olmadığından başka
         çare yoksa kullanılmalıdır.
@@ -132,6 +150,22 @@ $text = str_replace("\n.", "\n..", $text);
        Örneğin, <command>sendmail</command> kullanılıyorsa bu değiştirgeyi
        <literal>-f</literal> komut satırı seçeneği ile zarf gönderici adresini
        belirtmek için kullanabilirsiniz.
+      </para>
+      <para>
+       Bu değiştirge komut çalıştırmayı engellemek için dahili olarak 
+       <function>escapeshellcmd</function> işlevi tarafından öncelenir, fakat 
+       işlev ek değiştirgeler eklemeye izin verir. Güvenlik nedeniyle, kabuk 
+       komutuna istenmeyen değiştirgeler eklenmesinden kaçınmak için bu 
+       değiştirgenin kullanıcı tarafından elden geçirilip temizlenmesi 
+       önerilir.
+      </para>
+      <para>
+       <function>escapeshellcmd</function> işlevi özdevinimli uygulandığından, 
+       internet RFCleri tarafından eposta adreslerinde izin verilen bazı 
+       karakterler kullanılamaz. <function>mail</function> böyle karakterlere 
+       izin veremez, bu bakımdan bu tür karakterlerin kullanılmasının gerekli 
+       olduğu programlarda alternatif e-posta gönderme yöntemleri (bir iskelet 
+       veya kitaplık kullanmak gibi) önerilir.
       </para>
       <para>
        Zarf göndericisinin (-f) bu değiştirge ile belirtildiği durumda,
@@ -172,27 +206,9 @@ $text = str_replace("\n.", "\n..", $text);
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0 (Sadece Windows)</entry>
+       <entry>7.2.0</entry>
        <entry>
-        Tüm özel başlıklar (From, Cc, Bcc, Date gibi) desteklenir ve bunlar
-        harf büyüklüğüne duyarsızdır. (Özel başlıklar ilk MTA tarafından değil,
-        PHP tarafından yorumlanır. PHP'nin 4.3'ten önceki sürümlerinde sadece
-        Cc başlığı, o da harf büyüklüğüne duyarlı olarak desteklenirdi.)
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.3</entry>
-       <entry>
-        <parameter>ek_değiştirgeler</parameter>, eğer <link
-        linkend="ini.safe-mode">safe_mode</link> etkin değilse iptal edilir ve
-        <function>mail</function> işlevi bunu bir uyarı iletisi ile belirtip
-        &false; döndürür.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.5</entry>
-       <entry>
-        <parameter>ek_değiştirgeler</parameter> değiştirgesi eklendi.
+        <parameter>ek_başlıklar</parameter> değiştirgesi artık dizi de kabul ediyor.
        </entry>
       </row>
      </tbody>
@@ -213,10 +229,10 @@ $text = str_replace("\n.", "\n..", $text);
 <![CDATA[
 <?php
 // İleti
-$ileti = "Line 1\nLine 2\nLine 3";
+$ileti = "Line 1\r\nLine 2\r\nLine 3";
 
 // Satırlarımızın 70 karakterden uzun olanlarını katlamamız lazım
-$ileti = wordwrap($ileti, 70);
+$ileti = wordwrap($ileti, 70, "\r\n");
 
 // Epostayı gönderelim
 mail('kafeinli@example.com', 'İleti konusu', $ileti);
@@ -238,6 +254,29 @@ $ileti     = 'Merhaba';
 $başlıklar = 'From: webmaster@example.com' . "\r\n" .
     'Reply-To: webmaster@example.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
+
+mail($kime, $konu, $ileti, $başlıklar);
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- <type>array</type> türünde ek başlıklarla eposta gönderimi</title>
+    <para>
+     Bu örnekte, üst örnekteki eposta gönderilmekte, ancak ek başlıklar bir 
+     dizi olarak aktarılmaktadır (PHP 7.2.0 ve sonrasında kullanılabilir).
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$kime      = 'nobody@example.com';
+$konu      = 'konu';
+$ileti     = 'Merhaba';
+$başlıklar = array(
+    'From' => 'webmaster@example.com',
+    'Reply-To' => 'webmaster@example.com',
+    'X-Mailer' => 'PHP/' . phpversion()
+);
 
 mail($kime, $konu, $ileti, $başlıklar);
 ?>
@@ -269,8 +308,7 @@ mail('nobody@example.com', 'the subject', 'the message', null,
 <![CDATA[
 <?php
 // çok sayıda alıcı
-$to  = 'aidan@example.com' . ', '; // virgüle dikkat
-$to .= 'wez@example.com';
+$to = 'johny@example.com, sally@example.com'; // virgüle dikkat
 
 // konu
 $subject = 'Ağustos ayında hatırlanacak doğum günleri';
@@ -299,17 +337,17 @@ $message = '
 ';
 
 // HTML eposta göndermek için, the Content-type başlığı belirtilmeli
-$headers  = 'MIME-Version: 1.0' . "\r\n";
-$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+$headers[] = 'MIME-Version: 1.0';
+$headers[] = 'Content-type: text/html; charset=utf-8';
 
 // Ek başlıklar
-$headers .= 'To: Mary <mary@example.com>, Kelly <kelly@example.com>' . "\r\n";
-$headers .= 'From: Birthday Reminder <birthday@example.com>' . "\r\n";
-$headers .= 'Cc: birthdayarchive@example.com' . "\r\n";
-$headers .= 'Bcc: birthdaycheck@example.com' . "\r\n";
++$headers[] = 'To: Mary <mary@example.com>, Kelly <kelly@example.com>';
++$headers[] = 'From: Birthday Reminder <birthday@example.com>';
++$headers[] = 'Cc: birthdayarchive@example.com';
++$headers[] = 'Bcc: birthdaycheck@example.com';
 
 // İletiyi postalayalım
-mail($to, $subject, $message, $headers);
+mail($to, $subject, $message, implode("\r\n", $headers));
 ?>
 ]]>
     </programlisting>
@@ -382,7 +420,8 @@ mail($to, $subject, $message, $headers);
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
-   <simplelist>
+   <simplelist>    
+    <member><function>mb_send_mail</function></member>
     <member><function>imap_mail</function></member>
     <member><link xlink:href="&url.pear.package;Mail">PEAR::Mail</link></member>
     <member><link xlink:href="&url.pear.package;Mail_Mime">PEAR::Mail_Mime</link></member>

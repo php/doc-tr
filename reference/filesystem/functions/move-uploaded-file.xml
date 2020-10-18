@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.move-uploaded-file">
  <refnamediv>
   <refname>move_uploaded_file</refname>
@@ -54,6 +54,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
+   Başarı durumunda &true; döner.
+  </para>
+  <para>
    Eğer <parameter>dosyaismi</parameter> karşıya yüklenen geçerli bir dosya
    değilse işlem gerçekleşmez ve işlev &false; ile döner.
   </para>
@@ -76,7 +79,9 @@ $uploads_dir = '/uploads';
 foreach ($_FILES["pictures"]["error"] as $key => $error) {
     if ($error == UPLOAD_ERR_OK) {
         $tmp_name = $_FILES["pictures"]["tmp_name"][$key];
-        $name = $_FILES["pictures"]["name"][$key];
+        // basename() dosya sistemi çapraz saldırılarını engelleyebilir;
+        // dosya isminin daha fazla doğrulanması/temizliği uygun olabilir
+        $name = basename($_FILES["pictures"]["name"][$key]);
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
     }
 }
@@ -91,8 +96,8 @@ foreach ($_FILES["pictures"]["error"] as $key => $error) {
   &reftitle.notes;
   <note>
    <para>
-    <function>move_uploaded_file</function> işlevi &safemode; ve
-    <link linkend="ini.open-basedir">open_basedir</link> yönergelerinden
+    <function>move_uploaded_file</function> işlevi 
+    <link linkend="ini.open-basedir">open_basedir</link> yönergesinden
     etkilenir. Bununla birlikte, karşıya yüklenecek dosyaların
     <parameter>hedef</parameter>'e taşınmasına izin verilmesinden dolayı
     yapılacak işlem bu sınırlamalarla çelişir.
@@ -113,6 +118,7 @@ foreach ($_FILES["pictures"]["error"] as $key => $error) {
   <para>
    <simplelist>
     <member><function>is_uploaded_file</function></member>
+    <member><function>rename</function></member>
     <member>Basit bir kullanım örneği için <link
     linkend="features.file-upload">Karşıya dosya yükleme</link> bölümüne
     bakınız.</member>

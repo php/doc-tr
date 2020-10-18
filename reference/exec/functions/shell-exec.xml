@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/exec.xml, last change in rev 1.2 -->
 <refentry xml:id='function.shell-exec' xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -19,6 +19,13 @@
    Bu işlev <link linkend="language.operators.execution">çalıştırma
    işleci</link> kullanmakla eşdeğerdir.
   </para>
+  <note>
+   <para>
+    Windows'ta, ilgili boru metin kipinde açıldığı için ikil çıktı için 
+    işlevin başarısız olmasına sebep olur. Böyle durumlarda bu işlev yerine 
+    <function>popen</function> kullanabilirsiniz.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -40,8 +47,17 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Çalıştırılan komutun çıktısı bir dizge olarak döner.
+   Çalıştırılan komutun çıktısı bir dizge olarak döner. Komut çıktı 
+   üretmezse veya hata oluşmuşsa &null; döner.
   </para>
+  <note>
+   <para>
+    Bu işlev, hem komutun çıktı üretmediği durumda hem de hata durumunda ayırt 
+    etmeksizin &null; döndürür. Bu sebeple başarısızlık durumunu bu işlevle 
+    saptamak mümkün değildir. Komutun çıkış durumuna erişmek gerekliyse bu 
+    işlev yerine <function>exec</function> kullanılmalıdır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="examples">
@@ -59,15 +75,6 @@ echo "<pre>$çıktı</pre>";
     </programlisting>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    &sm.disabled;
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="seealso">

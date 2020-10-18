@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fopen">
  <refnamediv>
   <refname>fopen</refname>
@@ -13,7 +13,7 @@
    <type>resource</type><methodname>fopen</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
    <methodparam><type>string</type><parameter>kip</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>include_path_kullan</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>include_path_kullan</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -41,8 +41,8 @@
        Eğer PHP <parameter>dosyaismi</parameter> ile belirtilen dosyanın bir
        yerel dosya olduğuna karar verirse bu dosya üzerinde bir akım açmaya
        çalışır. Dosya PHP için erişilebilir olmalıdır, yani dosyanın bu erişim
-       için yeterli izinlere sahip olduğundan emin olmanız gerekir. &safemode;,
-       veya <link linkend="ini.open-basedir">open_basedir</link> yönergesi
+       için yeterli izinlere sahip olduğundan emin olmanız gerekir.
+       <link linkend="ini.open-basedir">open_basedir</link> yönergesi
        etkinse bunlarla ilgili kısıtlamalar uygulanabilir.
       </para>
       <para>
@@ -71,7 +71,7 @@
         <programlisting role="php">
 <![CDATA[
 <?php
-$dt = fopen("c:\\veri\\bilgi.txt", "r");
+$dt = fopen("c:\\dizin\\kaynak.txt", "r");
 ?>
 ]]>
         </programlisting>
@@ -131,6 +131,8 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
            <entry>
             Akım sadece yazmak için açılır; dosya konumlayıcı dosyanın
             sonuna yerleştirilir. Dosya mevcut değilse oluşturulmaya çalışılır.
+            <function>fseek</function> işlevi bu kipte etkisiz olup daima 
+            dosyanın sonuna yazar.
            </entry>
           </row>
           <row>
@@ -139,6 +141,8 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
             Akım hem okumak hem de yazmak için açılır; dosya konumlayıcı
             dosyanın sonuna yerleştirilir. Dosya mevcut değilse oluşturulmaya
             çalışılır.
+            <function>fseek</function> işlevi bu kipte etkisiz olup daima 
+            dosyanın sonuna yazar.
            </entry>
           </row>
           <row>
@@ -157,14 +161,39 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
           <row>
            <entry><literal>'x+'</literal></entry>
            <entry>
-            Dosya oluşturulur ve hem okumak hem de yazmak için açılır; dosya
-            konumlayıcı dosyanın başlangıcına yerleştirilir. Dosya zaten
-            mevcutsa <function>fopen</function> &false; döndürürek başarısız
-            olur ve <constant>E_WARNING</constant> seviyesinde bir hata
-            üretir. Dosya mevcut değilse oluşturulmaya çalışılır. Bu işlem,
-            <literal>open(2)</literal> sistem çağrısı için
-            <literal>O_EXCL|O_CREAT</literal> seçeneklerini belirtmeye
+            Dosya oluşturulur ve hem okumak hem de yazmak için açılır; aksi takdirde <literal>'x'</literal> verilmiş gibi davranır.
             eşdeğerdir.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>'c'</literal></entry>
+           <entry>
+            Dosya yalnızca yazmak için açılır. Dosya yoksa oluşturulur. Varsa, 
+            ne kesilir (<literal>'w'</literal> değiştirgesininin aksine), 
+            ne de bu işleve yapılan çağrı başarısız olur 
+            (<literal>'x'</literal> durumunda olduğu gibi). Dosya konumlayıcı 
+            dosyanın başlangıcına yerleştirilir. Dosyayı değiştirmeye 
+            çalışmadan önce bir tavsiye kilidi (<function>flock</function> 
+            bölümüne bakın) isteniyorsa bu yararlı olabilir, 
+            <literal>'w'</literal> kullanımındaki gibi kilitlenmeden önce 
+            dosyayı kesebilir (kesme istenirse, kilit talep edildikten sonra 
+            <function>ftruncate</function>  kullanılabilir).
+            requested).
+           </entry>
+          </row>
+          <row>
+           <entry><literal>'c+'</literal></entry>
+           <entry>
+            Dosya hem okumak hem de yazmak için açılır; aksi takdirde,
+            <literal>'c'</literal> değiştirgesindeki gibi davranır.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>'e'</literal></entry>
+           <entry>
+            Açık dosya konumlayıcıya close-on-exec bayrağını uygular. Sadece
+            PHP, POSIX.1-2008 uyumlu sistemler üzerinde derlenmişse 
+            kullanılabilir.
            </entry>
           </row>
          </tbody>
@@ -177,8 +206,8 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
         vardır. Bir metin dosyasını yazarken işletim sisteminizin gerektirdiği
         satır sonlandırma karakterlerini kullanmanız gerekir. Unix ve
         türevleri satırları sonlandırmak için <code>\n</code>, Windows
-        ailesi <code>\r\n</code>, Mac'ler ise  <code>\r</code>
-        karakterini kullanırlar.
+        ailesi <code>\r\n</code>, Mac'ler ise (Mac OS Classic) 
+        <code>\r</code> karakterini kullanır.
        </para>
        <para>
         Dosyalarınızı yazarken yanlış satır sonlandırma karakterleri
@@ -196,16 +225,15 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
         daima son karakter olarak belirtin.
        </para>
        <para>
-        Öntanımlı dönüşüm kipi kullandığınız PHP sürümüne ve SAPI'ye bağlıdır.
-        Bu bakımdan uyumluluk için daima uygun seçeneği belirtmelisiniz. Salt
+        Öntanımlı dönüşüm kipi <literal>'b'</literal>'dir. Salt
         metin dosyalarla çalışıyorsanız ve betiğinizde satır sonu karakteri
         olarak <code>\n</code> kullanıyorsanız, fakat dosyalarınızın
-        notepad gibi uygulamalarla da okunabilmesini istiyorsanız
-        <literal>'t'</literal> kipini kullanmanız, diğer tüm durumlarda ise
-        <literal>'b'</literal> kipini kullanmanız gerekir.
+        notepad'in eski sürümleri gibi uygulamalarla da okunabilmesini 
+        istiyorsanız <literal>'t'</literal> kipini kullanmanız, diğer tüm 
+        durumlarda ise <literal>'b'</literal> kipini kullanmanız gerekir.
        </para>
        <para>
-        İkil dosyalarla çalışırken 'b' seçeneğini belirtmezseniz, verinizle
+        İkil dosyalarla çalışırken 't' seçeneğini belirseniz, verinizle
         ilgili tuhaf sorunlarla karşılaşabilirsiniz (örneğin, bozuk resim
         dosyaları ve <code>\r\n</code> karakterlerine bağlı tuhaf
         sorunlar).
@@ -213,14 +241,7 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
       </note>
       <note>
        <para>
-        Uyumluluk adına, dosyaları <function>fopen</function> ile açarken
-        daima <literal>'b'</literal> seçeneğini kullanmanızı hararetle tavsiye
-        ederiz.
-       </para>
-      </note>
-      <note>
-       <para>
-        Tekrar, uyumluluk adına, dosyanızı <literal>'t'</literal> seçeneğinin
+        Uyumluluk adına, dosyanızı <literal>'t'</literal> seçeneğinin
         kullanılmasını gerektirmeyecek satır sonlandırma karakterleri ile
         yazmanızı ve dosyayı açarken daima <literal>'b'</literal> seçeneğini
         kullanmanızı hararetle tavsiye ederiz.
@@ -258,12 +279,7 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
 
  <refsect1 role="errors">
   &reftitle.errors;
-  <para>
-   Dosya başarıyla açılamazsa <constant>E_WARNING</constant> seviyesinde
-   bir hata üretilir. Bu uyarının çıktılanmaması için işlev isminin başına
-   <link linkend="language.operators.errorcontrol">@</link> karakterini
-   ekleyebilirsiniz.
-  </para>
+  &fs.emits.warning.on.failure;
  </refsect1>
 
  <refsect1 role="changelog">
@@ -279,19 +295,9 @@ $dt = fopen("c:\\veri\\bilgi.txt", "r");
      </thead>
      <tbody>
       <row>
-       <entry>4.3.2</entry>
+       <entry>7.0.16, 7.1.2</entry>
        <entry>
-        PHP 4.3.2'den beri, ikil ve metin ayrımı yapan tüm platformlar için
-        ikil kip öntanımlıdır. PHP sürümünüzü yükselttikten sonra sorunlarla
-        karşılaşırsanız, betiğinizi taşınabilir duruma getirene kadar sorundan
-        kurtulmak için <literal>'t'</literal> seçeneğini kullanmayı
-        deneyebilirsiniz.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.2</entry>
-       <entry>
-        <literal>'x'</literal> ve <literal>'x+'</literal> seçenekleri eklendi.
+        <literal>'e'</literal> seçeneği eklendi.
        </entry>
       </row>
      </tbody>
@@ -322,14 +328,23 @@ $dt = fopen("ftp://user:password@example.com/somefile.txt", "w");
  <refsect1 role="notes">
   &reftitle.notes;
   &warn.ssl-non-standard;
-  &note.sm.uidcheck.dir;
-  <para>
-   PHP'nin sunucu modülü sürümünü kullanıyorsanız ve dosyaları okumak ve
-   yazmak ile ilgili sorunlar bakımından deneyimliyseniz, sunucu sürecinin bu
-   dosya ve dizinlere erişim izninin olması gerektiğini aklınızdan
-   çıkarmamalısınız.
-  </para>
- </refsect1>
+  <note>
+   <para>
+    PHP'nin sunucu modülü sürümünü kullanıyorsanız ve dosyaları okumak ve
+    yazmak ile ilgili sorunlar bakımından deneyimliyseniz, sunucu sürecinin bu
+    dosya ve dizinlere erişim izninin olması gerektiğini aklınızdan
+    çıkarmamalısınız.
+   </para>
+  </note>
+  <note>
+    <para>
+     <parameter>dosyaismi</parameter> bir dizin olduğunda da bu işlev başarılı 
+     olabilir. <parameter>dosyaismi</parameter>'nin bir dosya mı yoksa bir 
+     dizin mi olduğundan emin olamıyorsanız <function>fopen</function> işlevini 
+     çağırmadan önce <function>is_dir</function> kullanmanız gerekebilir.
+   </para>
+  </note>
+</refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
@@ -347,6 +362,8 @@ $dt = fopen("ftp://user:password@example.com/somefile.txt", "w");
     <member><function>stream_set_timeout</function></member>
     <member><function>popen</function></member>
     <member><function>stream_context_create</function></member>
+    <member><function>umask</function></member>
+    <member><classname>SplFileObject</classname></member>
    </simplelist>
   </para>
  </refsect1>

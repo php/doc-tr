@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/dir.xml, last change in rev 1.2 -->
 <refentry xml:id="function.chdir" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -43,6 +43,14 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Başarısızlaık durumunda <constant>E_WARNING</constant> seviyesinde 
+   bir hata çıktılar.
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -77,7 +85,18 @@ echo getcwd() . "\n";
 
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.sm.uidcheck.dir;
+  <caution>
+   <para>
+    PHP yorumlayıcısı ZTS (Zend Thread Safety) etkin kılınarak derlenmişse, 
+    geçerli dizinde <function>chdir</function> ile yapılan değişiklikler 
+    işletim sistemine görünmez olacaktır. Yerleşik PHP işlevlerinin tamamı bu 
+    değişikliklere uygun davranacak fakat <link linkend="book.ffi">FFI</link> 
+    kullanarak çağrılan harici kütüphane işlevleri bu değişiklikleri yok 
+    sayacaktır. PHP kopyanızın ZTS etkin kılınarak derlenip derlenmediğini 
+    <command>php -i</command> komutunu veya yerleşik 
+    <constant>PHP_ZTS</constant> sabitini kullanarak anlayabilirsiniz.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4284b55c35c9f0da96b640d67d33b8eac5b280a5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -77,7 +77,7 @@
       </thead>
       <tbody>
        <row>
-        <entry>yönsüz</entry>
+        <entry>(yok)</entry>
         <entry>
          <literal>clone</literal>
          <literal>new</literal>
@@ -86,12 +86,7 @@
         linkend="language.oop5.basic.new">new</link></entry>
        </row>
        <row>
-        <entry>soldan</entry>
-        <entry><literal>[</literal></entry>
-        <entry><function>array</function></entry>
-       </row>
-       <row>
-        <entry>right</entry>
+        <entry>(yok)</entry>
         <entry><literal>**</literal></entry>
         <entry>
          <link linkend="language.operators.arithmetic">aritmetik</link>
@@ -117,14 +112,14 @@
         </entry>
        </row>
        <row>
-        <entry>yönsüz</entry>
+        <entry>soldan</entry>
         <entry><literal>instanceof</literal></entry>
         <entry>
          <link linkend="language.types">Türler</link>
         </entry>
        </row>
        <row>
-        <entry>sağdan</entry>
+        <entry>(yok)</entry>
         <entry><literal>!</literal></entry>
         <entry>
          <link linkend="language.operators.logical">mantıksal</link>
@@ -228,7 +223,7 @@
         <entry>right</entry>
         <entry><literal>??</literal></entry>
         <entry>
-         <link linkend="language.operators.comparison">karşılaştırma</link>
+         <link linkend="language.operators.comparison.coalesce">null birleşimi</link>
         </entry>
        </row>
        <row>
@@ -255,10 +250,30 @@
          <literal>^=</literal> 
          <literal>&lt;&lt;=</literal> 
          <literal>&gt;&gt;=</literal>
+         <literal>??=</literal>
         </entry>
         <entry>
          <link linkend="language.operators.assignment">atama</link>
         </entry>
+       </row>
+        <row>
+        <entry>(yok)</entry>
+        <entry><literal>yield from</literal></entry>
+        <entry>
+         <link linkend="control-structures.yield.from">yield from</link>
+        </entry>
+       </row>
+       <row>
+        <entry>(yok)</entry>
+        <entry><literal>yield</literal></entry>
+        <entry>
+         <link linkend="control-structures.yield">yield</link>
+        </entry>
+       </row>
+       <row>
+        <entry>(yok)</entry>
+        <entry><literal>print</literal></entry>
+        <entry><function>print</function></entry>
        </row>
        <row>
         <entry>soldan</entry>
@@ -552,31 +567,171 @@ print "$b\n"; // bu da 4 basar, $b, $a'ya bir gönderimdi ve $a değişti
      <link linkend="language.oop5.basic.new">new</link> işleci özdevinimli     
      olarak bir gönderim döndürür. Dolayısıyla, 
      <link linkend="language.oop5.basic.new">new</link> sonucunu gönderimli 
-     atamak PHP 5.3 ve sonrasında bir <constant>E_DEPRECATED</constant> 
+     atamaya PHP 7.0.0 ve sonrasında izin verilmez.
+     PHP 5.3.0 ve sonrasında bir <constant>E_DEPRECATED</constant> 
      iletisiyle, önceki sürümlerde ise bir <constant>E_STRICT</constant> 
      iletisiyle sonuçlanır.
     </para>
     <para>
-     Örneğin bu kod bir uyarı ile somuçlanır:
+     Örneğin bu kod bir hata veya uyarı ile sonuçlanır:
      <informalexample>
       <programlisting role="php">
 <![CDATA[
 <?php
 class C {}
 
-/* Aşağıdaki satırın ürettiği hata iletisi:
- * Deprecated: Assigning the return value of new by reference is deprecated in...
- */
 $o = &new C;
 ?>
 ]]>
       </programlisting>
-     </informalexample>
+      &example.outputs.7;
+      <screen>
+<![CDATA[
+Parse error: syntax error, unexpected 'new' (T_NEW) in …
+// Çözümleme hatası: sözdizimi hatası, beklenmeyen 'new' (T_NEW) in …
+]]>
+      </screen>
+      &example.outputs.53;
+      <screen>
+<![CDATA[
+Deprecated: Assigning the return value of new by reference is deprecated in …
+// Kullanım dışı: Dönen new değerini gönderimli atama artık kullanılmıyor- …
+]]>
+      </screen>
+      &example.outputs.5;
+      <screen>
+<![CDATA[
+Strict Standards: Assigning the return value of new by reference is deprecated in …
+// Katı Kurallar: Dönen new değerini gönderimli atama artık kullanılmıyor- …
+]]>
+      </screen>
+    </informalexample>
     </para>
     <para>
       Gönderimler hakkında daha ayrıntılı bilgi
       edinmek için <link linkend="language.references">Gönderimlerle ilgili
       herşey</link> bölümüne bakınız.
+    </para>
+   </sect2>
+   <sect2 xml:id="language.operators.assignment.arithmetic">
+    <title>Aritmetik Atams İşleçleri</title>
+    <informaltable>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Örnek</entry>
+        <entry>Eşdeğeri</entry>
+        <entry>İşlem</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>$a += $b</entry>
+        <entry>$a = $a + b</entry>
+        <entry>Toplama</entry>
+       </row>
+       <row>
+        <entry>$a -= $b</entry>
+        <entry>$a = $a - $b</entry>
+        <entry>Çıkarma</entry>
+       </row>
+       <row>
+        <entry>$a *= $b</entry>
+        <entry>$a = $a * $b</entry>
+        <entry>Çarpma</entry>
+       </row>
+       <row>
+        <entry>$a /= $b</entry>
+        <entry>$a = $a / $b</entry>
+        <entry>Bölme</entry>
+       </row>
+       <row>
+        <entry>$a %= $b</entry>
+        <entry>$a = $a % $b</entry>
+        <entry>Mod</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect2>
+
+   <sect2 xml:id="language.operators.assignment.bitwise">
+    <title>Bitsel Atama İşleçleri</title>
+    <informaltable>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Örnek</entry>
+        <entry>Eşdeğeri</entry>
+        <entry>İşlem</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>$a &amp;= $b</entry>
+        <entry>$a = $a &amp; $b</entry>
+        <entry>Bitsel VE</entry>
+       </row>
+       <row>
+        <entry>$a |= $b</entry>
+        <entry>$a = $a | $b</entry>
+        <entry>Bitsel VEYA</entry>
+       </row>
+       <row>
+        <entry>$a ^= $b</entry>
+        <entry>$a = $a ^ $b</entry>
+        <entry>Bitsel XOR</entry>
+       </row>
+       <row>
+        <entry>$a &lt;&lt;= $b</entry>
+        <entry>$a = $a &lt;&lt; $b</entry>
+        <entry>Sola Öteleme</entry>
+       </row>
+       <row>
+        <entry>$a &gt;&gt;= $b</entry>
+        <entry>$a = $a &gt;&gt; $b</entry>
+        <entry>Sağa Öteleme</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect2>
+
+   <sect2 xml:id="language.operators.assignment.other">
+    <title>Diğer Atama İşleçleri</title>
+    <informaltable>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Örnek</entry>
+        <entry>Eşdeğeri</entry>
+        <entry>İşlem</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>$a .= $b</entry>
+        <entry>$a = $a . $b</entry>
+        <entry>Dize Birleştirme</entry>
+       </row>
+       <row>
+        <entry>$a ??= $b</entry>
+        <entry>$a = $a ?? $b</entry>
+        <entry>Null Birleşimi</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect2>
+   
+   <sect2 xml:id="language.operators.assignment.see-also">
+    <para>
+     Kılavuzun <link linkend="language.operators.arithmetic">
+     aritmetik işleçler</link>, 
+     <link linkend="language.operators.bitwise">bitsel işleçler</link>, 
+     <link linkend="language.operators.string">dize işleçleri</link> ve 
+     <link linkend="language.operators.comparison.coalesce">null birleşim 
+     işleçleri</link> bölümlerine de bakınız.
     </para>
    </sect2>
   </sect1>
@@ -809,7 +964,7 @@ foreach ($değerler as $değer) {
    </para>
    <para>
     <example>
-     <title>- Dizgeler üzerinde bitsel işlemler</title>
+     <title>- Dizeler üzerinde bitsel işlemler</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -1331,9 +1486,8 @@ function p($snç, $dgr, $op, $hane, $ilt = '') {
        <entry>$a &lt;=&gt; $b</entry>
        <entry>Mekik</entry>
        <entry>
-        An <type>integer</type> less than, equal to, or greater than zero when
-        <varname>$a</varname> küçük, eşit ve büyük <varname>$b</varname> 
-        olduğunda, bir tamsayı da sırasıyla küçük, eşit ve büyük sıfırdır. 
+        <varname>$a</varname> küçük, eşit veya büyük <varname>$b</varname> 
+        olduğunda, bir tamsayı da sırasıyla küçük, eşit veya büyük sıfırdır. 
         PHP 7 ve sonrasında kullanılabilir.
        </entry>
       </row>
@@ -1707,15 +1861,14 @@ echo $foo ?? $bar ?? $baz ?? $qux; // 1 basar
     <simpara>
     <function>set_error_handler</function> ile özel bir hata işleyici işlev 
     tanımlarsanız, hala çağrılmasına rağmen bu özel hata işleyicinin 
-    <function>error_reporting</function> işlevini (hatayı tetikleyen çağrı @ ile 
-    öncelenmişse 0 döndürür) çağırması gerekir.
+    <function>error_reporting</function> işlevini (hatayı tetikleyen 
+    çağrı @ ile öncelenmişse 0 döndürür) çağırması gerekir.
    </simpara>
    <simpara>
-    Eğer <link linkend="ini.track-errors"><literal>track_errors</literal></link>
-    özelliği etkinse bu deyimin ürettiği hata iletileri
-    <varname>$php_errormsg</varname> değişkenine kaydedilir. Her hata
-    oluşunda yeni hata eskisinin yerini alacağından bu değişkene yeterli
-    sıklıkta bakmanız gerekir.
+    İfade tarafından üretilenhata iletisi, <function>get_error_last</function>
+    işlevinden dönen dizinin <literal>"message"</literal> elemanında bulunur.
+    Bu işlevin sonucu her hatada değişir, bu bakımdan sonuca yeterince kısa 
+    sürede bakmak gerekir.
    </simpara>
    <para>
     <informalexample>
@@ -1724,7 +1877,7 @@ echo $foo ?? $bar ?? $baz ?? $qux; // 1 basar
 <?php
 /* Kasıtlı dosya hatası */
 $dosyam = @file ('var_olmayan_dosya') or
-    die ("Dosya açılamadı: hata '$php_errormsg' değişkeninde kayıtlı");
+    die ("Dosya açılamadı: hata '" . get_error_last()['message'] . "'");
 
 // İfadelerle çalışır ama işlevlerle çalışmaz:
 $değer = @$cache[$key];
@@ -1786,7 +1939,7 @@ echo "<pre>$output</pre>";
    </para>
    <note>
     <para>
-     &safemode; etkinse veya <function>shell_exec</function> işlevi etkin
+     <function>shell_exec</function> işlevi etkin
      değilse, çalıştırma işleci etkin değildir.
     </para>
    </note>
@@ -1813,7 +1966,7 @@ echo "<pre>$output</pre>";
    <note>
     <simpara>
      Arttırım ve eksiltim işleçleri sadece sayıları ve dizeleri etkiler.
-     Diziler, nesneler ve özkaynaklar etkilenmez.
+     Diziler, nesneler, mantıksallar ve özkaynaklar etkilenmez.
      &null; değerini eksiltmenin bir etkisi yoktur fakat arttırmanın sonucu
      <literal>1</literal>'dir.
     </simpara>
@@ -2392,7 +2545,8 @@ bool(false)
    </para>
    <para>
     Sınanan değişken bir nesne değilse instanceof hata çıktılamaz, basitçe 
-    &false; döndürür. Sabitlere izin verilmez.
+    &false; döndürür. Sabitlere, her nasılsa, PHP 7.3.0 öncesinde izin 
+    verilmezdi.
     <example>
      <title>- Değişkenleri sınamak için <literal>instanceof</literal> kullanımı</title>
      <programlisting role="php">
@@ -2420,12 +2574,31 @@ PHP Fatal error:  instanceof expects an object instance, constant given
     </example>
    </para>
    <para>
+    PHP 7.3.0 ve sonrasında, <literal>instanceof</literal> işlecinin sol tarafında sabitlere izin verilmektedir.
+    <example>
+     <title>Sabit kullanımını sınamak için <literal>instanceof</literal> kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(FALSE instanceof stdClass);
+?>
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+bool(false)
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
     Burada bilmeniz gereken bir kaç zorluk vardır.  PHP 5.1.0 öncesinde,
     <literal>instanceof</literal> işleci, sınıf mevcut değilse 
     <function>__autoload</function> çağrısı yapardı.
     Buna ek olarak, sınıf yüklenmemişse bir ölümcül hata oluşurdu. Bunun
     olmaması için bir <literal>devingen sınıf gönderimi</literal> veya sınıf
-    ismini içeren bir dizge değişkeni kullanılabilir:
+    ismini içeren bir dize değişkeni kullanılabilir:
     <example>
      <title>- PHP 5.0'da <literal>instanceof</literal> ile ölümcül hatalardan ve
      sınıf ismi aramalarından kaçınmak</title>
