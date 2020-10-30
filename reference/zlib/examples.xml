@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-
+<!-- EN-Revision: 4691b6ddbdf4058b2190e123e31e25af0abd319d Maintainer: nilgun Status: ready -->
 <chapter xml:id="zlib.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <para>
@@ -49,6 +48,32 @@ echo "</pre>\n</body>\n</html>\n";
 ?>
 ]]>
   </programlisting>
+ </example>
+ <example>
+  <title>PHP 7.0.0 ve sonrasında çalışan ardışık sıkıştırma ve açma arayüzü örneği</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+// GZIP sıkıştırması gerçekleştirelim:
+$deflateContext = deflate_init(ZLIB_ENCODING_GZIP);
+$compressed = deflate_add($deflateContext, "Sıkıştırılacak veri", ZLIB_NO_FLUSH);
+$compressed .= deflate_add($deflateContext, ", biraz daha", ZLIB_NO_FLUSH);
+$compressed .= deflate_add($deflateContext, " ve biraz daha!", ZLIB_FINISH);
+
+// GZIP sıkıştırmasını açalım:
+$inflateContext = inflate_init(ZLIB_ENCODING_GZIP);
+$uncompressed = inflate_add($inflateContext, $compressed, ZLIB_NO_FLUSH);
+$uncompressed .= inflate_add($inflateContext, NULL, ZLIB_FINISH);
+echo $uncompressed;
+?>
+]]>
+  </programlisting>
+  &example.outputs;
+  <screen>
+<![CDATA[
+Sıkıştırılacak veri, biraz daha, ve biraz daha!
+]]>
+  </screen>
  </example>
 </chapter>
 
