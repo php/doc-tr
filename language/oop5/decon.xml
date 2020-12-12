@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: db2ac1420fa7946f15518a9e42e1474159b765fd Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a6338d747762e36e01061eae19aadca4167375b6 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.decon" xmlns="http://docbook.org/ns/docbook">
   <title>Kurucular ve Yıkıcılar</title>
@@ -9,11 +9,11 @@
    <title>Kurucular</title>
    <methodsynopsis xml:id="object.construct">
     <type>void</type><methodname>__construct</methodname>
-    <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter><initializer>""</initializer></methodparam>
-    <methodparam choice="opt"><parameter>...</parameter></methodparam>
+    <methodparam rep="repeat"><type>mixed</type><parameter>değerler</parameter><initializer>""</initializer></methodparam>
+
    </methodsynopsis>
    <para>
-    PHP 5 geliştiricilerin sınıflar için kurucu yöntemler bildirmesine
+    PHP geliştiricilerin sınıflar için kurucu yöntemler bildirmesine
     imkan verir. Bir kurucu yöntemi olan sınıflar her yeni nesne
     oluşturuluşunda bu yöntemi çağırırlar, bu bakımdan nesne kullanılmadan
     önce yapılması gereken ilklendirmeler için kurucular çok uygundur.
@@ -29,7 +29,7 @@
     </simpara>
    </note>
    <example>
-    <title>- Yeni tekilleşmiş kurucuların kullanımı</title>
+    <title>- Miras almada kurucuların kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -64,24 +64,6 @@ $obj = new DiğerAltSınıf();
     </programlisting>
    </example>
    <para>
-    PHP 3 ve 4 ile geriye dönük uyumluluk için, PHP 5 belirtilen sınıfa ait bir
-    <link linkend="object.construct">__construct()</link> yöntemi bulamazsa,
-    sınıfın ismine bakarak eski tarz bir kurucu arayacaktır. Dolayısıyla,
-    uyumluluk sorunu yaşayacağınız tek durum sınıf dahilinde
-    <link linkend="object.construct">__construct()</link>
-    isimli bir yöntemin amacı dışında kullanılması olabilir.
-   </para>
-   <!-- Not using an entity because I want specific wording here, since we're
-   not deprecating constructors in general. -->
-   <warning>
-    <simpara>
-     PHP 7.0'da eski tarz kurucuların <emphasis>kullanımı 
-     önerilmemekte</emphasis> olup ileri sürümlerde kaldırılacaktır. 
-     Yeni kodlarda daima <link linkend="object.construct">__construct()</link> 
-     kullanmalısınız.
-    </simpara>
-   </warning>
-   <para>
     Diğer yöntemlerin tersine,
     <link linkend="object.construct">__construct()</link> ebeveyn
     <link linkend="object.construct">__construct()</link> yöntemindekilerden
@@ -90,28 +72,187 @@ $obj = new DiğerAltSınıf();
     üretmeyecektir.
    </para>
    <para>
-    PHP 5.3.3 itibariyle, bir isim alanlı sınıf isminin son elemanı ile aynı
-    isimdeki yöntemler artık kurucu olarak ele alınmayacaktır. Bu değişiklik
-    isim alanlı olmayan sınıfları etkilemez.
+    Kurucular, karşılık gelen nesnelerinin somutlaştırılması sırasında çağrılan 
+    sıradan yöntemlerdir. Bu nedenle, gerekli olabilen, bir türe ve öntanımlı 
+    bir değere sahip olabilen rastgele sayıda değiştirge tanımlayabilirler. 
+    Kurucu değiştirgeleri, sınıf adından sonra gelen parantezlerin içine 
+    yerleştirilerek çağrılır.
    </para>
    <example>
-    <title>- İsim alanlı sınıflarda kurucular</title>
+    <title>- Kurucu değiştirgelerinin kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-namespace Foo;
-class Bar
-{
-    public function Bar()
-    {
-        // PHP 5.3.0-5.3.2'de kurucu olarak ele alınır
-        // PHP 5.3.3 itibariyle sıradan bir yöntem olarak ele alınır
+class Point {
+    protected int $x;
+    protected int $y;
+
+    public function __construct(int $x, int $y = 0) {
+        $this->x = $x;
+        $this->y = $y;
     }
 }
+// Değiştirgelerin ikisini de aktaralım
+$p1 = new Point(4, 5);
+// Yalnız gerekli değiştirgeyi aktaralım. 
+// $y öntanımlı olan 0 değerini alır.
+$p2 = new Point(4);
+// isimli değiştirge kullanımı (PHP 8.0 ve sonrası):
+$p3 = new Point(y: 5, x: 4);
 ?>
 ]]>
     </programlisting>
    </example>
+   <para>
+    Bir sınıf kurucuya sahip değilse veya kurucu değiştirgesizse parantezler 
+    konmayabilir.
+   </para>
+   <sect3>
+    <title>Eski tarz kurucular</title>
+    <para>
+     PHP 8.0.0'dan önce, genel isim alanındaki sınıflar, eski tarz kurucu ile 
+     aynı adı taşıyan bir yöntemi yorumlar. Bu sözdizimi kaldırılmış olup bir 
+     <constant>E_DEPRECATED</constant> hatasıyla sonuçlanırsa da yöntem yine de 
+     bir kurucu olarak çağrılır. 
+     Hem <link linkend="object.construct">__construct()</link> hem de aynı adı 
+     taşıyan yöntem tanımlanmışsa
+     <link linkend="object.construct">__construct()</link> çağrılır.
+    </para>
+    <para>
+     İsim alanlı sınıflarda veya PHP 8.0.0 öncesinde herhangi bir sınıfta, 
+     sınıfla aynı ismi taşıyan bir yöntemin özel bir anlamı yoktur.
+    </para>
+    <para>
+    Yeni kodlarda daima <link linkend="object.construct">__construct()</link> 
+    kullanın.
+    </para>
+   </sect3>
+   <sect3 xml:id="language.oop5.decon.constructor.promotion">
+    <title>Kurucu Tanıtımı</title>
+    <para>
+     PHP 8.0.0'dan itibaren, kurucu değiştirgeleri de bir nesne özelliğine 
+     karşılık gelecek şekilde tanıtılabilir. Kurucu değiştirgelerinin kurucudaki 
+     bir özelliğe atanması, ancak başka şekilde çalıştırılmaması çok yaygındır. 
+     Kurucu tanıtımı, bu kullanım durumu için kestirme bir yol sağlar. 
+     Yukarıdaki örnek aşağıdaki gibi yeniden yazılabilir.
+    </para>
+    <example>
+     <title>- Kurucu özelliği tanıtımının kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Point {
+    public function __construct(protected int $x, protected int $y = 0) {
+    }
+}
+]]>
+     </programlisting>
+    </example>
+    <para>
+     Bir kurucu değiştirgesi bir görünürlük değiştirici içerdiğinde, PHP bunu 
+     hem nesne özelliği hem de kurucu değiştirgesi olarak yorumlar ve özelliğe 
+     değiştirgenin değerini atar. Kurucu gövdesi boş olabilir veya başka 
+     ifadeler içerebilir. Bu ifadeler, değiştirge değerleri karşılık 
+     gelen özelliklere atandıktan sonra yorumlanır.
+    </para>
+    <para>
+     Tüm değiştirgelerin tanıtımı gerekmez. Tanıtılan ve tanıtılmayan 
+     değiştirgeleri herhangi bir sırayla karıştırmak ve eşleştirmek mümkündür. 
+     Tanıtılan değiştirgelerin kurucuyu çağıran kod üzerinde hiçbir etkisi 
+     yoktur.
+    </para>
+    <note>
+     <para>
+      Nesne özellikleri, ortaya çıkabilecek motor belirsizliği nedeniyle 
+      <type>callable</type> türde olamaz. Tanıtılan değiştirgeler de bu nedenle 
+      <type>callable</type> türde olamaz. Bununla birlikte, başka herhangi bir 
+      <link linkend="language.types.declarations">tür bildirimine</link> izin 
+      verilir.
+     </para>
+    </note>
+    <note>
+     <para>
+      <!-- This should be linked once attributes are documented. -->
+      Tanıtılan kurucu değiştirgelerine yerleştirilen öznitelikler, hem özelliğe hem de değiştirgeye atanır.
+     </para>
+    </note>
+   </sect3>
+   <sect3 xml:id="language.oop5.decon.constructor.static">
+    <title>Duruk kurucu yöntemleri</title>
+    <para>
+     PHP, sınıf başına yalnızca tek bir kurucuyu destekler. Bununla birlikte, 
+     bazı durumlarda, bir nesnenin farklı girdilere sahip farklı yollarla 
+     oluşturulabilmesi istenebilir. Bunu yapmanın önerilen yolu, kurucu 
+     sarmalayıcıları olarak duruk yöntemler kullanmaktır.      
+    </para>
+    <example>
+     <title>- Duruk kurucu yöntemlerinin kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Product {
+
+    private ?int $id;
+    private ?string $name;
+
+    private function __construct(?int $id = null, ?string $name = null) {
+        $this->id = $id;
+        $this->name = $name;
+    }
+
+    public static function fromBasicData(int $id, string $name): static {
+        $new = new static($id, $name);
+        return $new;
+    }
+
+    public static function fromJson(string $json): static {
+        $data = json_decode($json);
+        return new static($data['id'], $data['name']);
+    }
+
+    public static function fromXml(string $xml): static {
+        // Kendi mantığını burya koy.
+        $data = convert_xml_to_array($xml);
+        $new = new static();
+        $new->id = $data['id'];
+        $new->name = $data['name'];
+        return $new;
+    }
+}
+
+$p1 = Product::fromBasicData(5, 'Widget');
+$p2 = Product::fromJson($some_json_string);
+$p3 = Product::fromXml($some_xml_string);
+]]>
+     </programlisting>
+    </example>
+    <para>
+     Kurucu, haricen çağrılmasını önlemek için özel veya korumalı yapılabilir.
+     Bu durumda, sınıfı yalnızca duruk bir yöntem örnekleyebilir. Aynı sınıf 
+     tanımında olduklarından, aynı nesne örneğinde olmasa bile özel yöntemlere 
+     erişebilirler. Özel kurucu isteğe bağlıdır ve kullanım durumuna bağlı 
+     olarak anlamlı olabilir veya olmayabilir.
+    </para>
+    <para>
+     Nesneyi örneklemenin farklı yollarını göstermek için üç tür public static 
+     yöntem vardır.
+    </para>
+    <simplelist>
+     <member><code>fromBasicData()</code> gerekli değiştirgeleri alıp kurucuyu 
+      çalıştırarak nesney oluşturur vesonucu döndürür.</member>
+     <member><code>fromJson()</code> bir JSON dizesi alıp bazı önişlemlerden 
+      geçirip kurucuya gereken biçime dönüştürür ve yeni nesneyi döndürür.
+     </member>
+     <member><code>fromXml()</code> bir XML dizesi alıp önişemden geçirerek 
+      çıplak bir nesne oluşurur. Kurucu hala çağrılabilirse de değiştirgelerin 
+      tamamı seçimlik olduğundan yöntem bunları yoksayar. Sonucu döndürmeden 
+      önce değerleri doğrudan nesne özelliklerine atar.</member>
+    </simplelist>
+    <para>
+     Üç durumda da, <code>static</code> anahtar sözcüğü, kodun bulunduğu sınıfın 
+     adına çevrilir. Bu durumda, <code>Product</code>.
+    </para>
+   </sect3>
   </sect2>
 
   <sect2 xml:id="language.oop5.decon.destructor">

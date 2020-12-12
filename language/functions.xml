@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 9268006bcf989f31baeaa9035e4ef7cfc7690c28 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e296d2443b197fce63a9752dc6d58c0fdcf0c5cc Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -156,13 +156,13 @@ function recursion($a)
 ]]>
      </programlisting>
     </example>
-   <note>
-    <simpara>
+    <note>
+     <simpara>
      Kendini çağıran işlev ve yöntemler bunu 100-200 kere yaparsa yığıt
      taşabilir ve çalışan betiğin durdurulmasına sebep olabilir. Özellikle,
      kendini çağırma sayısı sonsuza giderse bu bir programlama hatası sayılır.
-    </simpara>
-   </note>
+     </simpara>
+    </note>
    </para>
 
   </sect1>
@@ -196,6 +196,57 @@ function dizi_kabul_eder($girdi)
 ]]>
      </programlisting>
     </example>
+   </para>
+   <para>
+    PHP 8.0.0'dan itibaren, işlev değiştirgelerinin sonunda göz ardı edilecek 
+    bir virgül bulunabilir. Bu, özellikle değiştirge listesinin uzun olduğu 
+    veya uzun isimler içerdiği durumlarda, değiştirgeleri alt alta sıralamayı 
+    kolaylaştırır.
+   </para>
+   <para>
+   <example>
+    <title>- Virgül ile sonlanan işlev değiştirgeleri örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function takes_many_args(
+    $first_arg,
+    $second_arg,
+    $a_very_long_argument_name,
+    $arg_with_default = 5,
+    $again = 'a default string', // 8.0.0 öncesinde bu virgüle izin verilmezdi.
+)
+{
+    // ...
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   </para>
+   <para>
+    PHP 8.0.0'dan itibaren, zorunlu değiştirgelerin seçimlik değiştirgelerden 
+    sonra aktarımı kullanımdan kaldırılmıştır. Bu sorun genellikle öntanımlı 
+    değeri yazmamak suretiyle çözümlenebilir. Bunun tek istisnası &null; 
+    öntanımlamasının türü örtük olarak nullable yapan <code>Type $param = 
+    null</code> şeklindeki değiştirgelerdir. Bu kullanımda kalmışsa da örtük 
+    bir nullable türü kullanılacaksa önerilir.
+   </para>
+   <para>
+   <example>
+    <title>- Zorunlu değiştirgelerin seçimliklerden sonra kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo($a = [], $b) {} // Önce
+function foo($a, $b) {}      // Sonra
+
+function bar(A $a = null, $b) {} // Hala kullanımda
+function bar(?A $a, $b) {}       // Önerilen
+?>
+]]>
+    </programlisting>
+   </example>
    </para>
 
    <sect2 xml:id="functions.arguments.by-reference">
@@ -232,7 +283,6 @@ echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
       </programlisting>
      </example>
     </para>
-
    </sect2>
 
    <sect2 xml:id="functions.arguments.default">
@@ -289,8 +339,8 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
 ]]>
       </programlisting>
      </example>
-
     </para>
+    
     <simpara>
       Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
       değil, bir sabit ifadesi olmalıdır.
@@ -317,7 +367,7 @@ echo yoğurtyap("çilekli");   // beklendiği gibi çalışmayacaktır
 ]]>
       </programlisting>
       &example.outputs;
-     <screen>
+      <screen>
 <![CDATA[
 Warning: Missing argument 2 for yoğurtyap(), called in
 /home/nilgun/dnm/php-dnm on line 7 and defined in
@@ -356,437 +406,42 @@ Bir kase az çilekli yoğurt yap.
 
     <note>
      <simpara>
-     PHP 5'den itibaren, gönderimli aktarılabilen değiştirgeler öntanımlı değer
-     içerebilmektedir.
+      Gönderimli aktarılabilen değiştirgeler öntanımlı değer içerebilir.
      </simpara>
     </note>
    </sect2>
 
-   <sect2 xml:id="functions.arguments.type-declaration">
-    <title>Tür Bildirimleri</title>
+   <sect2 xml:id="functions.variable-arg-list">
+    <title>Değişken uzunlukta değiştirge listesi</title>
+ 
+    <simpara>
+     PHP, kullanıcı tanımlı işlevlerde değiştirge listesinin sonuna 
+     <literal>...</literal> konarak listenin uzatılmasını destekler.
+    </simpara>
 
     <note>
-     <para>
-      Tür bildirimleri PHP 5'de tür önerileri olarak da bilinir.
-     </para>
+     <simpara>
+      Değişken uzunlukta değiştirge listesi
+      <function>func_num_args</function>,
+      <function>func_get_arg</function> ve
+      <function>func_get_args</function> işlevleri kullanılarak da elde 
+      edilebilir. Bu teknik <literal>...</literal> kullanımından öncesine ait 
+      olduğundan kullanımı önerilmez.
+     </simpara>
     </note>
 
     <para>
-     Tür bildirimleri işlevlerin çalıştırılması sırasında belli bir tür
-     gerektirmesini sağlar. Eğer değer uygun olmayan bir türdeyse PHP 5'de
-     kurtarılabilir bir ölümcül hata oluşurken, PHP 7'de
-     <classname>TypeError</classname> istisnası oluşur.
+     Değiştirge listeleri, işlevin değişken sayıda değiştirge kabul ettiğini 
+     belirtmek için <literal> ... </literal> simgesini içerebilir. Bu durumda 
+     değiştirgeler değişkene bir dizi olarak aktarılır. Örneğin:
     </para>
 
     <para>
-     Tür bildirimini belirtmek için, tür ismi değiştirge isminden önce
-     gelmelidir. Değiştirgenin öntanımlı değeri &null; olacaksa bildirim &null;
-     kabul edecek şekilde yapılabilir.
-    </para>
-
-    <sect3 xml:id="functions.arguments.type-declaration.types">
-     <title>Geçerli türler</title>
-     <informaltable>
-      <tgroup cols="3">
-       <thead>
-        <row>
-         <entry>Tür</entry>
-         <entry>Açıklama</entry>
-         <entry>Minimum PHP sürümü</entry>
-        </row>
-       </thead>
-       <tbody>
-        <row>
-         <entry>Sınıf/arayüz ismi</entry>
-         <entry>
-          Tür olarak bir sınıf veya arayüz ismi belirtilmişse değiştirge bir
-          &instanceof; olmalıdır.
-         </entry>
-         <entry>PHP 5.0.0</entry>
-        </row>
-        <row>
-         <entry><literal>self</literal></entry>
-         <entry>
-          Tür, yöntemin tanımlandığı sınıf olarak belirtilirse değiştirge bir
-          &instanceof; olmalıdır. Bu sadece sınıfın veya örneğinin
-          yöntemlerinde kullanılabilir.
-         </entry>
-         <entry>PHP 5.0.0</entry>
-        </row>
-        <row>
-         <entry><type>array</type></entry>
-         <entry>
-          Değiştirge geçerli bir dizi olmalıdır.
-         </entry>
-         <entry>PHP 5.1.0</entry>
-        </row>
-        <row>
-         <entry><type>callable</type></entry>
-         <entry>
-          Değiştirge geçerli bir işlev olmalıdır.
-         </entry>
-         <entry>PHP 5.4.0</entry>
-        </row>
-        <row>
-         <entry><type>bool</type></entry>
-         <entry>
-          Değiştirge geçerli bir mantıksal değer olmalıdır.
-         </entry>
-         <entry>PHP 7.0.0</entry>
-        </row>
-        <row>
-         <entry><type>float</type></entry>
-         <entry>
-          Değiştirge geçerli bir gerçel değer olmalıdır.
-         </entry>
-         <entry>PHP 7.0.0</entry>
-        </row>
-        <row>
-         <entry><type>int</type></entry>
-         <entry>
-          Değiştirge geçerli bir tamsayı olmalıdır.
-         </entry>
-         <entry>PHP 7.0.0</entry>
-        </row>
-        <row>
-         <entry><type>string</type></entry>
-         <entry>
-          Değiştirge geçerli bir dizge olmalıdır.
-         </entry>
-         <entry>PHP 7.0.0</entry>
-        </row>
-        <row>
-         <entry><literal>iterable</literal></entry>
-         <entry>
-          Değiştirge ya bir <type>array</type> ya da bir &instanceof; 
-          <classname>Traversable</classname> olmalıdır.
-         </entry>
-         <entry>PHP 7.1.0</entry>
-        </row>
-        <row>
-         <entry><literal>object</literal></entry>
-         <entry>
-          Değiştirge bir <type>object</type> olmalıdır.
-         </entry>
-         <entry>PHP 7.2.0</entry>
-        </row>
-       </tbody>
-      </tgroup>
-     </informaltable>
-     <warning>
-      <para>
-       Yukarıdaki türler için takma ad kullanımı desteklenmemektedir.
-       Ancak, bunlar bir sınıf veya arayüz adı olarak ele alınabilir.
-       Örneğin, <literal>boolean</literal> türünün <type>bool</type> türü 
-       yerine, bir değiştirge gerektiren bir dönüş türü veya &instanceof; 
-       sınıfı bir dönüş değeri veya <literal>boolean</literal> arayüzü veya 
-       bir değiştirge olarak kullanımı:
-      </para>
-      <para>
-       <example>
-        <programlisting role="php">
- <![CDATA[
- <?php
- function test(boolean $param) {}
- test(true);
- ?>
- ]]>
-        </programlisting>
-        &example.outputs;
-        <screen>
- <![CDATA[
- Fatal error: Uncaught TypeError: Argument 1 passed to test() must be an instance of boolean, boolean given, called in - on line 1 and defined in -:1
- ]]>
-        </screen>
-       </example>
-      </para>
-     </warning>
-    </sect3>
-
-    <sect3 xml:id="functions.arguments.type-declaration.examples">
-     &reftitle.examples;
      <example>
-      <title>Temel sınıf türü bildirimi</title>
-      <programlisting role="php">
+     <title>- Değişken uzunlukta değiştirgeler için <literal>...</literal> kullanımı</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
-class C {}
-class D extends C {}
-
-// Bu C sınıfını örnek almıyor.
-class E {}
-
-function f(C $c) {
-    echo get_class($c)."\n";
-}
-
-f(new C);
-f(new D);
-f(new E);
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-C
-D
-
-Fatal error: Uncaught TypeError: Argument 1 passed to f() must be an instance of C, instance of E given, called in - on line 14 and defined in -:8
-Stack trace:
-#0 -(14): f(Object(E))
-#1 {main}
-  thrown in - on line 8
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title>Temel arayüz türü bildirimi</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-interface I { public function f(); }
-class C implements I { public function f() {} }
-
-// Bu I'yi gerçeklemez.
-class E {}
-
-function f(I $i) {
-    echo get_class($i)."\n";
-}
-
-f(new C);
-f(new E);
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-C
-
-Fatal error: Uncaught TypeError: Argument 1 passed to f() must implement interface I, instance of E given, called in - on line 13 and defined in -:8
-Stack trace:
-#0 -(13): f(Object(E))
-#1 {main}
-  thrown in - on line 8
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title>Gönderimli aktarılabilen değiştirgelerde tür bildirimi</title>
-      <simpara>
-       Gönderimli aktarılabilen değiştirgelerde bildirilen tür işlev 
-       çalıştırılırken denetlenir fakat işlevin dönen değiştirgesinin türü 
-       için bu yapılmaz. Dolayısıyla dönen değiştirgenin türü, işlev 
-       döndüğünde değişmiş olabilir.
-      </simpara>
-      <programlisting role="php">
-<![CDATA[
-<?php
-function array_baz(array &$param)
-{
-    $param = 1;
-}
-$var = [];
-array_baz($var);
-var_dump($var);
-array_baz($var);
-?>
-]]>
-      </programlisting>
-      &example.outputs.similar;
-      <screen>
-<![CDATA[
-int(1)
-
-Fatal error: Uncaught TypeError: Argument 1 passed to array_baz() must be of the type array, int given, called in %s on line %d
-]]>
-      </screen>
-     </example>
-     <example>
-      <title>Boş olabilen tür bildirimi</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-class C {}
-
-function f(C $c = null) {
-    var_dump($c);
-}
-
-f(new C);
-f(null);
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-object(C)#1 (0) {
-}
-NULL
-]]>
-      </screen>
-     </example>
-    </sect3>
-
-    <sect3 xml:id="functions.arguments.type-declaration.strict">
-     <title>Kesin tür belirtimi</title>
-
-     <para>
-      Öntanımlı olarak PHP yanlış türde belirtilmiş değerleri eğer mümkünse
-      bilinen bir türe zorlar. Örneğin, bir işleve <type>string</type> türünde
-      beklenirken <type>integer</type> türünde bir değer belirtilmişse
-      <type>string</type> türünde bir değişken elde edilir.
-     </para>
-
-     <para>
-      Dosyaya özel olmak kaydıyla kesin kipi etkin kılmak mümkündür. Kesin kipte sadece tür belirtiminde belirtilmiş türde bir değer kabul edilir, aksi takdirde bir <classname>TypeError</classname> istisnası oluşur. Bu kuralın tek istisnası, <type>float</type> türünde bir değer beklenen bir işleve <type>integer</type> türünde bir değer belirtilebilmesidir. Dahili işlevlerin içinden yapılan işlev çağrıları kesin tür belirtiminden etkilenmez.
-     </para>
-
-     <para>
-      Kesin kipi etkin kılmak için &declare; deyimi
-      <literal>strict_types</literal> bildirimi ile birlikte kullanılır:
-     </para>
-
-     <caution>
-      <para>
-       Kesin kipi etkin kılmak ayrıca
-       <link linkend="functions.returning-values.type-declaration">dönen tür
-       bildirimlerini</link> de etkiler.
-      </para>
-     </caution>
-
-     <note>
-      <para>
-       Kesin kipin uygulanabilmesi için işlev tanımlarının işlev çağrısının
-       yapıldığı kesin kipli dosyada bulunması gerekmez. Ancak kesin kipli
-       olmayan bir dosyadan yapılan bir işlev çağrısı kesin kipli dosyada
-       tanımlı bir işlevi çağırıyorsa çağrıcının tercihine (zayıf tür) uyulur
-       ve değer zorlanabilir.
-      </para>
-     </note>
-
-     <note>
-      <para>
-       Kesin tür sadece sayısal tür bildirimlerine uygulanır dolayısıyla bunun
-       için PHP 7.0.0 ve sonrası gerekir. Bunun sebebi sayısal tür
-       bildirimlerinin bu sürümde eklenmiş olmasıdır.
-      </para>
-     </note>
-
-     <example>
-      <title>Kesin tür örneği</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-declare(strict_types=1);
-
-function sum(int $a, int $b) {
-    return $a + $b;
-}
-
-var_dump(sum(1, 2));
-var_dump(sum(1.5, 2.5));
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-int(3)
-
-Fatal error: Uncaught TypeError: Argument 1 passed to sum() must be of the type integer, float given, called in - on line 9 and defined in -:4
-Stack trace:
-#0 -(9): sum(1.5, 2.5)
-#1 {main}
-  thrown in - on line 4
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title>Zayıf tür örneği</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-function sum(int $a, int $b) {
-    return $a + $b;
-}
-
-var_dump(sum(1, 2));
-
-// bunlar tamsayıya zorlanacaktır; aşağıdaki çıktıya bakın!
-var_dump(sum(1.5, 2.5));
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-int(3)
-int(3)
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title><classname>TypeError</classname> yakalama</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-declare(strict_types=1);
-
-function sum(int $a, int $b) {
-    return $a + $b;
-}
-
-try {
-    var_dump(sum(1, 2));
-    var_dump(sum(1.5, 2.5));
-} catch (TypeError $e) {
-    echo 'Error: '.$e->getMessage();
-}
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-int(3)
-Error: Argument 1 passed to sum() must be of the type integer, float given, called in - on line 10
-]]>
-      </screen>
-     </example>
-    </sect3>
-    </sect2>
-
-   <sect2 xml:id="functions.variable-arg-list">
-    <title>Değiştirge sayısı değişken işlevler</title>
-
-    <simpara>
-      Değiştirge sayısı değişken kullanıcı tanımlı işlevler desteklenmektedir.
-      PHP 5.6 ve sonrasında bu <literal>...</literal> ile, PHP 5.5 ve öncesinde
-      ise <function>func_num_args</function>,
-      <function>func_get_arg</function> ve <function>func_get_args</function>
-      işlevleri sayesinde bu özelliği kolayca kullanabilirsiniz.
-    </simpara>
-
-    <sect3 xml:id="functions.variable-arg-list.new">
-     <title>PHP 5.6 ve sonrasında <literal>...</literal></title>
-
-     <para>
-      PHP 5.6 ve sonrasında, işlevin değişken sayıda değiştirge içerebilmesini sağlamak için değiştirge listesine <literal>...</literal> dizgeciği konulabilir. Değiştirgeler belirtilen değikene bir dizi olarak aktarılır.
-      Örnek:
-
-      <example>
-       <title>Değişkenin değiştirgelerine erişim için <literal>...</literal>
-         kullanımı</title>
-       <programlisting role="php">
-<![CDATA[
 <?php
 function sum(...$numbers) {
     $acc = 0;
@@ -799,23 +454,26 @@ function sum(...$numbers) {
 echo sum(1, 2, 3, 4);
 ?>
 ]]>
-       </programlisting>
-       &example.outputs;
-       <screen>
+     </programlisting>
+     &example.outputs;
+     <screen>
 <![CDATA[
 10
 ]]>
-       </screen>
-      </example>
-     </para>
+     </screen>
+    </example>
+   </para>
 
-     <para>
-      Bir diziyi, bir <classname>Traversable</classname> değişkeni veya bir sabiti değiştirge listesi haline getirmek için işlev çağrılırken de <literal>...</literal> kullanılabilir. Örnek:
-
-      <example>
-        <title> Değiştirgelere erişmek için <literal>...</literal>
+   <para>      
+    Bir diziyi, bir <classname>Traversable</classname> değişkeni veya bir 
+    sabiti değiştirge listesi haline getirmek için işlev çağrılırken de 
+    <literal>...</literal> kullanılabilir. Örnek:
+   </para>
+   <para>
+    <example>
+     <title> Değiştirgelere erişmek için <literal>...</literal>
         kullanımı</title>
-       <programlisting role="php">
+     <programlisting role="php">
 <![CDATA[
 <?php
 function add($a, $b) {
@@ -828,33 +486,28 @@ $a = [1, 2];
 echo add(...$a);
 ?>
 ]]>
-       </programlisting>
-       &example.outputs;
-       <screen>
+     </programlisting>
+     &example.outputs;
+     <screen>
 <![CDATA[
 3
 3
 ]]>
-       </screen>
-      </example>
-     </para>
+     </screen>
+    </example>
+   </para>
 
-     <para>
-      <literal>...</literal> dizgeciğinden önce normal konumsal değiştirgeler
-      belirtilebilir. Bu durumda <literal>...</literal> ile üretilen diziye
-      sadece bir konumsal değiştirge ile eşleşmeyen tokeni izleyen değiştirgeler
-      eklenir.
-     </para>
+   <para>
+    <literal>...</literal> dizgeciğinden önce normal konumsal değiştirgeler
+    belirtilebilir. Bu durumda <literal>...</literal> ile üretilen diziye
+    sadece bir konumsal değiştirge ile eşleşmeyen tokeni izleyen değiştirgeler
+    eklenir.
+   </para>
 
-     <para>
-      <literal>...</literal> dizgeciğinin önüne bir
-      <link linkend="language.oop5.typehinting">tür dayatıcı</link> eklemek de
-      mümkündür. Böyle bir durumda, <literal>...</literal> tarafından işleme
-      sokulacak tüm değiştirgeler dayatılan sınıfın nesneleri olmalıdır
-
-      <example>
-       <title>Değişken değiştirgelerinde tür dayatma</title>
-       <programlisting role="php">
+   <para>
+   <example>
+      <title>Değişken değiştirgelerinde tür bildirimi</title>
+      <programlisting role="php">
 <![CDATA[
 <?php
 function total_intervals($unit, DateInterval ...$intervals) {
@@ -890,7 +543,6 @@ Catchable fatal error: Argument 2 passed to total_intervals() must be an instanc
        <link linkend="functions.arguments.by-reference">gönderimli</link>
        olarak da aktarabilirsiniz.
      </para>
-    </sect3>
 
     <sect3 xml:id="functions.variable-arg-list.old">
      <title>Daha eski PHP sürümlerinde</title>
@@ -903,10 +555,11 @@ Catchable fatal error: Argument 2 passed to total_intervals() must be an instanc
      </para>
 
      <para>
-      PHP 5.5 ve öncesinde yukarıdaki ilk örnek şöyle gerçeklenirdi;
-
+      Eski PHP sürümlerinde yukarıdaki ilk örnek şöyle gerçeklenirdi;
+     </para>
+     <para>
       <example>
-       <title>PHP 5.5 ve öncesinde değişken değiştirgelerine erişim</title>
+       <title>Eski PHP sürümlerinde değişken değiştirgelerine erişim</title>
        <programlisting role="php">
 <![CDATA[
 <?php
@@ -932,225 +585,196 @@ echo sum(1, 2, 3, 4);
      </para>
     </sect3>
    </sect2>
-  </sect1>
+   
+   <sect2 xml:id="functions.named-arguments">
+    <title>İsimli değiştirgeler</title>
+   
+    <para>
+     PHP 8.0.0, var olan konumsal değitirgelerin bir uzantısı olarak isimli 
+     değiştirgeleri tanıttı. İsimli değiştirgeler, değiştirgelerin konuma göre 
+     değil değiştirge adına göre işleve iletilmesine izin verir. Bu, 
+     değiştirgenin anlamını kendi kendine belgelendirir, değiştirgeleri 
+     sıralamadan bağımsız hale getirir ve öntanımlı değerlerin keyfi olarak 
+     atlanmasına izin verir.
+    </para>
 
+    <para>
+     İsimli değiştirgeler, değerin önüne iki nokta üst üste ile değiştirge adı 
+     eklenerek iletilir. Ayrılmış anahtar sözcüklerin değiştirge adları olarak 
+     kullanılmasına izin verilir. Değiştirge adı bir tanımlayıcı olmalıdır, 
+     bir değişkenle belirtilmesine izin verilmez.
+    </para>
+    <para>
+     <example>
+      <title>- İsimli değiştirge sözdizimi</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+işlevim(değiştirgeAdı: $değer);
+array_foobar(array: $değer);
+
+// desteklenmiyor
+işlev_adı($değişkeneSaklanmışDeğiştirgeAdı: $$değer);
+?>
+]]>
+      </programlisting>
+     </example>
+     <example>
+      <title>- Konumsal değiştirgeler karşısında isimli değiştirgeler</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+// Konumsal değiştirgeler:
+array_fill(0, 100, 50);
+
+// İsimli değiştirgeler:
+array_fill(start_index: 0, num: 100, value: 50);
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    İsimli değiştirgelerin aktarılma sırasının bir önemi yoktur.
+   </para>
+   <para>
+    <example>
+     <title>- Farklı değiştirge sırasıyla yukarıdaki örnek</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+array_fill(value: 50, num: 100, start_index: 0);
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+     İsimli değiştirgeler konumsal değiştirgelerle birleştirilebilir. Bu 
+     durumda, isimli değiştirgeler konumsal değiştirgelerden sonra gelmelidir.
+     Sıralarına bakılmaksızın, bir işlevin isteğe bağlı değiştirgelerinden 
+     yalnızca bazılarını belirtmek de mümkündür.
+   </para>
+   <para>
+    <example>
+     <title>- İsimli değiştirgelerle konumsal değiştirgeleri birleştirmek
+     </title>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+htmlspecialchars($string, double_encode: false);
+// Same as
+htmlspecialchars($string, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   
+   <para>
+    Aynı değiştirgeyi birden fazla kullanmak bir Error istisnasına yol açar.
+   </para>
+   <para>
+    <example>
+     <title>- Aynı değiştirgeyi birden fazla kullanırken Error istisnası
+     </title>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+function foo($param) { ... }
+foo(param: 1, param: 2);
+// Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
+foo(1, param: 2);
+// $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
+?>
+]]>
+     </programlisting>
+    </example>
+   </para> 
+   </sect2>
+  </sect1>
+ 
   <sect1 xml:id="functions.returning-values">
    <title>Dönen değerler</title>
 
    <para>
-    Değerler, kullanımı seçime bağlı olan <command>return</command> deyimi
-    kullanılarak döndürülür. Her türde değer döndürülebilir, buna diziler ve
-    nesneler dahildir. <function>return</function> kullanıldığında işlevin
-    çalışması o noktada hemen durdurulur ve denetim işlevin çağrıldığı satıra
-    aktarılır. Daha ayrıntılı bilgi için <function>return</function> bölümüne
-    bakınız.
+    Değerler, isteğe bağlı return deyimi kullanılarak döndürülür. Diziler ve 
+    nesneler dahil herhangi bir tür döndürülebilir. Bu, işlevin çalıştırmayı 
+    hemen bitirmesine ve denetimi çağrıldığı satıra geri aktarmasına neden 
+    olur. Daha fazla bilgi için <function>return</function> işlevine bakın.    
    </para>
+
    <note>
     <para>
-     <function>return</function> belirtilmezse &null; değeri döner.
+     <function>return</function> kullanılmazsa &null; değeri döndürülür.
     </para>
    </note>
 
-   <sect2>
-    <title><code>return</code> kullanımı</title>
-    <para>
-     <example>
-      <title>- <code>return</code> kullanımı</title>
-      <programlisting role="php">
+   <para>
+    <example>
+     <title>- <function>return</function> kullanımı</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 function square($num)
 {
     return $num * $num;
 }
-echo square(4);   // '16' çıktılar.
+echo square(4);   // çıktısı: '16'.
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
-
    <para>
-    Bir işlevden birden fazla değer döndüremezsiniz, ancak böyle bir sonucu
-    bir dizi döndürülerek elde edebilirsiniz.
+    Bir işlev çok sayıda değer döndürebildiği gibi bir dizi döndürerek de aynı 
+    sonuç sağlanabilir.
    </para>
    <para>
     <example>
-     <title>- Bir diziyle birden fazla değerin döndürülmesi</title>
-     <programlisting role="php">
+      <title>- Çok sayıda değeri bir diziyle döndürmek</title>
+      <programlisting role="php">
 <![CDATA[
 <?php
-function küçük_sayılar()
+function small_numbers()
 {
     return array (0, 1, 2);
 }
-list ($sıfır, $bir, $iki) = küçük_sayılar();
+
+list ($zero, $one, $two) = small_numbers();
 ?>
 ]]>
-     </programlisting>
-    </example>
-   </para>
-   <para>
-    Bir işlevden gönderimli bir değer döndürmek için, &amp; işlecini hem
-    işlev bildiriminde hem de dönen değeri bir değişkene atarken
-    kullanmalısınız:
-   </para>
-   <para>
-    <example>
-     <title>- Bir işlevden gönderimli değer döndürmek</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-function &gönderimli_döndür()
-{
-    return $gönderim;
-}
-
-$yenigönderim =& gönderimli_döndür();
-?>
-]]>
-     </programlisting>
-    </example>
-   </para>
-   <simpara>
-    Gönderimler hakkında daha fazla bilgi edinmek için <link
-    linkend="language.references">Gönderimler Hakkında</link> bölümüne
-    bakınız.
-   </simpara>
-  </sect2>
-
-  <sect2 xml:id="functions.returning-values.type-declaration">
-   <title>Dönen tür bildirimleri</title>
-
-   <para>
-    PHP 7'de dönen tür bildirimleri desteği eklenmiştir.
-    <link linkend="functions.arguments.type-declaration">Değiştirge türünde
-    bildirimlere</link> benzer şekilde, dönen tür bildirimlerinde değerin
-    türünü bir işlevden dönen değerin türü belirler. Dönen tür belirtimlerinde
-    kullanılabilen türler
-    <link linkend="functions.arguments.type-declaration.types">değiştirge türü
-    bildirimlerdeki türlerle</link> aynıdır.
-   </para>
-
-   <para>
-    <link linkend="functions.arguments.type-declaration.strict">Kesin tür
-    belirtimi</link> dönen tür belirtimlerini de etkiler. Öntanımlı zayıf
-    kipte, dönen türler istenen türde değilse doğru türe zorlanır. Kesin tipte
-    ise dönen değer doğru türde değilse <classname>TypeError</classname>
-    istisnası oluşur.
-   </para>
-   
-   <para>
-    PHP 7.1.0 ve sonrasında, dönüş değeri, tür adı soru işareti 
-    (<literal>?</literal>) öncelenerek, null olarak işaretlenebilir. 
-    Bu, işlevin belirtilen türü veya &null; değerini döndürdüğünü belirtir.
-   </para>
-
-   <note>
-    <para>
-     Bir ebeveyn yöntem geçersizleştirilirken çocuğun yönteminin ebeveyn
-     üstündeki dönen tür bildirimiyle eşleşmesi gerekir. Eğer ebeveyn bir dönen
-     tür tanımlamıyorsa çocuğun yöntemi de öyle yapabilir.
+      </programlisting>
+     </example>
     </para>
-   </note>
-
-   <sect3 xml:id="functions.returning-values.type-declaration.examples">
-    &reftitle.examples;
-
-    <example>
-     <title>Temel dönen tür bildirimi</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-function sum($a, $b): float {
-    return $a + $b;
-}
-
-// float döneceğini unutmayın.
-var_dump(sum(1, 2));
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-float(3)
-]]>
-      </screen>
-     </example>
-
+    
+    <para>
+     Bir işlevden gönderim döndürmek için hem işlev bildiriminde hem de dönen 
+     değer bir değişkene atandığında gönderim işleci &amp; kullanılır:
+    </para>
+    
+    <para>
      <example>
-      <title>Kesin kip işe karışırsa</title>
+      <title>- Bir işlevden gönderim döndürmek</title>
       <programlisting role="php">
 <![CDATA[
 <?php
-declare(strict_types=1);
-
-function sum($a, $b): int {
-    return $a + $b;
-}
-
-var_dump(sum(1, 2));
-var_dump(sum(1, 2.5));
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-int(3)
-
-Fatal error: Uncaught TypeError: Return value of sum() must be of the type integer, float returned in - on line 5 in -:5
-Stack trace:
-#0 -(9): sum(1, 2.5)
-#1 {main}
-  thrown in - on line 5
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title>Bir nesne döndürmek</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-class C {}
-
-function getC(): C {
-    return new C;
-}
-
-var_dump(getC());
-?>
-]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
-<![CDATA[
-object(C)#1 (0) {
-}
-]]>
-      </screen>
-     </example>
-
-     <example>
-      <title>- Null olabilen dönüş türü bildirimi (7.1.0 ve sonrası)</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-function get_item(): ?string {
-    if (isset($_GET['item'])) {
-        return $_GET['item'];
-    } else {
-        return null;
-    }
+function &returns_reference()
+{
+    return $someref;
 }
 ?>
+
+$newref =& returns_reference();
 ]]>
       </programlisting>
      </example>
-    </sect3>
-   </sect2>
+    </para>
+    <simpara>
+     Gönderimler hakkında daha fazla bilgi için <link
+     linkend="language.references">Gönderimlerle İlgili Herşey</link> bölümüne 
+     bakınız.
+    </simpara>
   </sect1>
 
   <sect1 xml:id="functions.variable-functions">
@@ -1263,7 +887,6 @@ Foo::$variable();  // Bu bağlamda $variable değişkenini okuyan $foo->Variable
     </example>
    </para>
    <para>
-     PHP 5.4.0'dan itibaren bir değişkene saklanmış <type>callable</type> türünde bir işlevi çağırabilirsiniz.
     <example>
      <title>Karmaşık çağrılar</title>
      <programlisting role="php">
@@ -1286,46 +909,22 @@ $func(); // prints "bar"
 $func = array(new Foo, "baz");
 $func(); // prints "baz"
 $func = "Foo::bar";;
-$func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretirdi
+$func(); // "bar" basar
 ?>
 ]]>
      </programlisting>
     </example>
    </para>
-  <para>
-    Ayrıca bakınız: <function>is_callable</function>,
-    <function>call_user_func</function>,
-    <link linkend="language.variables.variable"> değişken değişkenleri</link>
-    ve <function>function_exists</function>.
-   </para>
 
-   <sect2 role="changelog">
-    &reftitle.changelog;
+   <sect2 role="seealso">
+    &reftitle.seealso;
     <para>
-     <informaltable>
-      <tgroup cols="2">
-       <thead>
-        <row>
-         <entry>&Version;</entry>
-         <entry>&Description;</entry>
-        </row>
-       </thead>
-       <tbody>
-        <row>
-         <entry>7.0.0</entry>
-         <entry>
-          'SınıfAdı::yöntemAdı' bir değişken ismi olabilir.
-         </entry>
-        </row>
-        <row>
-         <entry>5.4.0</entry>
-         <entry>
-          Diziler de değişken işlev olabilir.
-         </entry>
-        </row>
-       </tbody>
-      </tgroup>
-     </informaltable>
+     <simplelist>
+      <member><function>is_callable</function></member>
+      <member><function>call_user_func</function></member>
+      <member><function>function_exists</function></member>
+      <member><link linkend="language.variables.variable">değişken değişkenler </link></member>
+     </simplelist>
     </para>
    </sect2>
   </sect1>
@@ -1367,21 +966,25 @@ $func(); // PHP 7.0.0 öncesinde "bar" basar ve ölümcül hata üretirdi
     bulunmaktadır. Bu önemli (ve sıklıkla algılanması güç) farklılıkların
     bilinmesi, doğru PHP kodunun yazılabilmesi için büyük önem taşımaktadır.
    </para>
-   <para>
-    Ayrıca bakınız: <function>function_exists</function>,
-    <link linkend="funcref">İşlev Başvuru Kılavuzu</link>,
-    <function>get_extension_funcs</function> ve
-    <function>dl</function>.
-   </para>
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><function>function_exists</function></member>
+      <member><link linkend="funcref">İşlev Başvuru Kılavuzu</link></member>
+      <member><function>get_extension_funcs</function></member>
+      <member><function>dl</function></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="functions.anonymous">
    <title>Anonim işlevler</title>
    <simpara>
     Anonim işlevler isim belirtmeksizin oluşturulabilen işlevlerdir.
-    Çoğunlukla <link linkend="language.types.callback">geriçağırım
-    işlevi</link> olarak işlev değiştirgelerinde kullanılırsa da kullanımı
-    bununla sınırlı değildir.
+    Çoğunlukla <type>callable</type> türünde değiştirgeler olarak işlev 
+    değiştirgelerinde kullanılırsa da kullanımı bununla sınırlı değildir.
    </simpara>
    <simpara>
     Anonim işlevler 
@@ -1453,7 +1056,7 @@ $example = function () use ($message) {
 };
 $example();
 
-// Miras alınan deşkenin değeri işlevin tanımından gelir, çağrısından değil.
+// Miras alınan değişkenin değeri işlevin tanımından gelir, çağrısından değil.
 $message = 'world';
 $example();
 
@@ -1493,6 +1096,10 @@ string(11) "hello world"
     </screen>
    </example>
 
+   <para>
+    Etki alanından miras alınan değişkenler listesinin sonunda bir virgül varsa 
+    PHP 8.0.0 itibariyle bu virgül yoksayılmaktadır.
+   </para>
    <simpara>
     Üst etki alanından
     miras alınan değişkenler küresel değişkenler gibi ele alınmazlar.
@@ -1592,16 +1199,10 @@ object(Test)#1 (0) {
 }
 ]]>
     </screen>
-    &example.outputs.53;
-    <screen>
-<![CDATA[
-Notice: Undefined variable: this in script.php on line 8
-NULL]]>
-    </screen>
    </example>
 
    <para>
-    PHP 5.4.0 itibariyle, bir sınıf başka bir sınıfın içinde bildirildiğinde 
+    Bir sınıf başka bir sınıfın içinde bildirildiğinde 
     <literal>$this</literal>'i işlevin etki alanı içinde kullanılabilir 
     kılarak özdevinimli olarak ona bağlanır. Bu özdevinimli bağlantı 
     istenmiyorsa bunun yerine <link linkend="functions.anonymous-functions.static">duruk 
@@ -1611,7 +1212,7 @@ NULL]]>
    <sect2 xml:id="functions.anonymous-functions.static">
     <title>Duruk anonim işlevler</title>
     <para>
-     PHP 5.4 itibariyle, anonim işlevler duruk olarak bildirilebilmektedir.
+     Anonim işlevler duruk olarak bildirilebilmektedir.
      Böylece, geçerli sınıfın özdevinimli olarak bunlara bağlanamaması 
      sağlanabilir. Çalışma anında nesneler de özdevinimli olarak bunlara 
      bağlanamayacaktır.
@@ -1694,19 +1295,6 @@ Warning: Cannot bind an instance to a static closure in %s on line %d
           Anonim işlev değişkenleri &link.superglobals;, 
           <varname>$this</varname> veya bir değiştirge ile aynı isimdeki 
           değişkenleri içeremez.
-         </entry>
-        </row>
-        <row>
-         <entry>5.4.0</entry>
-         <entry>
-          Duruk olarak bildirilmek koşuluyla anonim işlevlerde 
-          <varname>$this</varname> kullanılabilir.
-         </entry>
-        </row>
-        <row>
-         <entry>5.3.0</entry>
-         <entry>
-          Anonim işlevler kullanılabilir oldu.
          </entry>
         </row>
        </tbody>

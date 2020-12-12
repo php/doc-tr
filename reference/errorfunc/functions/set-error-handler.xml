@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 80872147aa52367137bd3d168412f70cbe2ddf9c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.set-error-handler" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>set_error_handler</refname>
-  <refpurpose>Kullanıcı tanımlı bir hata eylemcisi bildirir</refpurpose>
+  <refpurpose>Kullanıcı tanımlı bir hata işleyici bildirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>set_error_handler</methodname>
-   <methodparam><type>callback</type><parameter>hata_eylemci</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>hata_türü</parameter><initializer>E_ALL | E_STRICT</initializer></methodparam>
+   <methodparam><type>callable</type><parameter>hata_işleyici</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>hata_türleri</parameter><initializer>E_ALL | E_STRICT</initializer></methodparam>
   </methodsynopsis>
   <para>
    Betikteki hatalarda devreye girmek üzere kullanıcı tanımlı bir işlev
-   (<parameter>hata_eylemci</parameter>) bildirir.
+   (<parameter>hata_işleyici</parameter>) bildirir.
   </para>
   <para>
    Bu işlev çalışma anında oluşan hatalardan kurtulmak için yapılacak
@@ -28,10 +28,11 @@
    <function>set_error_handler</function> ile PHP'ye bildirebilirsiniz.
   </para>
   <para>
-   Bu işlevin çağrılmasıyla PHP'nin standart hata eylemcisi tamamen devre
-   dışı kalacaktır. Bunu asla aklınızdan çıkarmayın.
-   <function>error_reporting</function> ayarları etkisiz olacak ve her durumda
-   sizin hata eylemciniz çağrılacaktır. Ancak,
+   Bu işlevin çağrılmasıyla PHP'nin standart hata işleyicisi 
+   <parameter>hata_türleri</parameter> ile beliirtilen hata türleri için, geri 
+   çağırım işlevi &false; döndürmedikçe tamamen devre dışı kalacaktır. Bunu asla 
+   aklınızdan çıkarmayın. <function>error_reporting</function> ayarları etkisiz 
+   olacak ve her durumda sizin hata işleyiciniz çağrılacaktır. Ancak,
    <link linkend="ini.error-reporting">error_reporting</link> yönergesindeki
    değeri hala okuyabilecek ve buna göre davranabileceksiniz. Özellikle şuna
    dikkat edin: Eğer hataya sebep olan deyimin önüne bir
@@ -41,7 +42,7 @@
   <para>
    Ayrıca şunu da aklınızdan çıkarmayın: Gerektiği takdirde
    <function>die</function> işlevi de sizin
-   sorumluluğunuzdadır. <parameter>hata_eylemci</parameter> işlevi döndükten
+   sorumluluğunuzdadır. <parameter>hata_işleyici</parameter> işlevi döndükten
    sonra betiğin çalışması, hataya sebep olan deyimden sonraki deyimden devam
    edecektir.
   </para>
@@ -50,14 +51,14 @@
    hatalar vardır, bunlar: <constant>E_ERROR</constant>,
    <constant>E_PARSE</constant>, <constant>E_CORE_ERROR</constant>,
    <constant>E_CORE_WARNING</constant>, <constant>E_COMPILE_ERROR</constant>,
-   <constant>E_COMPILE_WARNING</constant> ve
+   üretidiği yerden bağımsız <constant>E_COMPILE_WARNING</constant> ve
    <function>set_error_handler</function> işlevinin çağrıldığı dosyada oluşan
    <constant>E_STRICT</constant> hatalarının çoğu.
   </para>
   <para>
    Eğer betik çalıştırılmadan önce oluşan hatalar varsa (karşıya dosya yükleme
    sırasında oluşan hatalar gibi), bu gibi durumlar için bildirdiğiniz
-   <parameter>hata_eylemci</parameter> işlevi çağrılamayacaktır.
+   <parameter>hata_işleyici</parameter> işlevi çağrılamayacaktır.
   </para>
  </refsect1>
 
@@ -66,19 +67,17 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>hata_eylemci</parameter></term>
+     <term><parameter>hata_işleyici</parameter></term>
      <listitem>
       <para>
-       Kullanıcının tanımlayacağı bu işlev iki değiştirge kabul etmelidir:
-       hata kodu ve hatayı açıklayan bir dizge. Bu iki değiştirgeden sonra
-       isteğe bağlı üç değiştirge daha kabul edilebilir: hatanın oluştuğu
-       dosya adı, hatanın oluştuğu satırın numarası ve hatanın oluştuğu bağlam
-       (hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir dizi).
-       <parameter>hata_eylemci</parameter> işlevinin söz dizimi:
+       Aşağıdaki imzayla bir geri çağırım işlevi. 
+       İşleyiciyi öntanımlı durumuna sıfırlamak için işleve &null; 
+       aktarılabilir. Bir işlev adı yerine, bir nesne başvurusu ve bir yöntem 
+       adı içeren bir dizi de sağlanabilir.
       </para>
       <para>
        <methodsynopsis>
-        <methodname><replaceable>hata_eylemci</replaceable></methodname>
+        <type>bool</type><methodname><replaceable>hata_işleyici</replaceable></methodname>
         <methodparam><type>int</type><parameter>hatano</parameter></methodparam>
         <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
         <methodparam choice="opt"><type>string</type><parameter>betik_adı</parameter></methodparam>
@@ -131,12 +130,19 @@
            alanında etkin değişkenleri içeren bir dizidir. İşlev bu
            değişkenlerde bir değişiklik yapmamalıdır.
           </simpara>
+          <warning xmlns="http://docbook.org/ns/docbook">
+           <simpara>
+            Bu değiştirge PHP 7.2.0 ve sonrasında <emphasis>kullanımdan 
+            kaldırılmıştır</emphasis>. Buna güvenmek son derece cesaret 
+            kırıcıdır.
+           </simpara>
+          </warning>
          </listitem>
         </varlistentry>
        </variablelist>
       </para>
       <para>
-       İşlev &false; döndürdüğü takdirde normal hata eylemcisi kaldığı yerden
+       İşlev &false; döndürdüğü takdirde normal hata işleyici kaldığı yerden
        devam eder.
       </para>
      </listitem>
@@ -145,13 +151,13 @@
      <term><parameter>hata_türü</parameter></term>
      <listitem>
       <para>
-       <parameter>hata_eylemci</parameter> işlevini tetikleyecek hatalar
+       <parameter>hata_işleyici</parameter> işlevini tetikleyecek hatalar
        sabitleriyle, <link linkend="ini.error-reporting">
        error_reporting</link> yönergesine gösterilecek hataların değerleri
        belirtilirken yapıldığı gibi bir bit maskesi olarak belirtilebilir. Bu
        maskenin belirtilmediği durumda, <link linkend="ini.error-reporting">
        error_reporting</link> yönergesinde belirtilen değere bakılmaksızın her
-       hatada <parameter>hata_eylemci</parameter> işlevi çağrılacaktır.
+       hatada <parameter>hata_işleyici</parameter> işlevi çağrılacaktır.
       </para>
      </listitem>
     </varlistentry>
@@ -162,10 +168,10 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   (Varsa) Evvelce tanımlanmış hata eylemcisinin ismini bir dizge olarak
-   döndürür. Eğer yerleşik hata eylemcisi kullanılmışsa &null; döner. Ayrıca
+   (Varsa) Evvelce tanımlanmış hata işleyicinin ismini bir dizge olarak
+   döndürür. Eğer yerleşik bir hata işleyici kullanılmışsa &null; döner. Ayrıca
    belirtilen geriçağırım işlevinin geçersiz olduğu durumda da &null; döner.
-   Eğer evvelki hata eylemcisi bir sınıfın yöntemi ise bu sınıfın ve yöntemin
+   Eğer evvelki hata işleyici bir sınıfın yöntemi ise bu sınıfın ve yöntemin
    isimlerini içeren bir dizi döner.
   </para>
  </refsect1>
@@ -183,32 +189,11 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.2.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-        <varname>$php_errormsg</varname> kullanılması durumunda hata eylemcisi
-        &false; döndürmelidir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>hata_türü</parameter> değiştirgesi kullanılabilir oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>hata_eylemci</parameter> değiştirgesinde bir işlev ismi
-        yerine bir nesne başvurusu ve bir yöntem ismi içeren bir dizi
-        belirtebilmek mümkün oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.2</entry>
-       <entry>
-        <parameter>hata_eylemci</parameter> işlevinin isteğe bağlı ek üç
-        değiştirge (betik ismi, satır numarası ve bağlam) kabul edebilmesi
-        mümkün oldu.
+        <parameter>hata_bağlamı</parameter> kullanımdan kaldırıldı. Bu 
+        değiştirgenin kullanımı bir <constant>E_DEPRECATED</constant> 
+        üretilmesine sebep olur.
        </entry>
       </row>
      </tbody>
@@ -230,9 +215,18 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// hata eylemci işlevi
-function hataEylemcim($hatanum, $ileti, $betik, $satırnum)
+// hata işleyici işlevi
+function hataİşleyicim($hatanum, $ileti, $betik, $satırnum)
 {
+    if (!(error_reporting() & $hatanum)) {
+        // Bu hata kodu error_reporting'e dahil olmaz, bu yüzden 
+        // standart PHP hata işleyicisine düşmesine izin verin
+        return false;
+    }
+
+    // $ileti önceleme gerektirebilir
+    $ileti = htmlspecialchars($ileti);
+
     switch ($hatanum) {
     case E_USER_ERROR:
         echo "<b>HATA</b> [$hatanum] $ileti<br />\n";
@@ -240,7 +234,6 @@ function hataEylemcim($hatanum, $ileti, $betik, $satırnum)
         echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
         echo "Çıkılıyor...<br />\n";
         exit(1);
-        break;
 
     case E_USER_WARNING:
         echo "<b>UYARI</b> [$hatanum] $ileti<br />\n";
@@ -255,7 +248,7 @@ function hataEylemcim($hatanum, $ileti, $betik, $satırnum)
         break;
     }
 
-    /* PHP'nin yerleşik hata eylemcisi çalışmasın */
+    /* PHP'nin yerleşik hata işleyici çalışmasın */
     return true;
 }
 
@@ -286,8 +279,8 @@ function scale_by_log($vect, $scale)
     return $temp;
 }
 
-// kullanıcı tanımlı hata eylemcisini bildirelim
-$old_error_handler = set_error_handler("hataEylemcim");
+// kullanıcı tanımlı hata işleyiciyi bildirelim
+$old_error_handler = set_error_handler("hataİşleyicim");
 
 // Bazı hataları tetikleyelim.
 // Önce sayısal olmayan bir eleman içeren bir dizi tanımlayalım.
@@ -366,7 +359,6 @@ dördüncü durum - ölümcül hata
     <member><function>trigger_error</function></member>
     <member><link linkend="errorfunc.constants">Hata seviyesi
     sabitleri</link></member>
-    <member>&seealso.callback;</member>
    </simplelist>
   </para>
  </refsect1>

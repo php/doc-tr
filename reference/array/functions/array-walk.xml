@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 19af072c3eb88de9b99be2e982af8949f0b68a95 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-walk" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_walk</refname>
@@ -11,9 +11,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>array_walk</methodname>
-   <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>veri</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>object</type></type><parameter role="reference">dizi</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>veri</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
    <parameter>dizi</parameter> dizisinin her elemanına kullanıcı tarafından
@@ -42,24 +42,32 @@
      <listitem>
       <para>
        Normalde, <parameter>işlev</parameter> iki değiştirge alır. İlki
-       <parameter>dizi</parameter> değiştirgesi ikincisi ise indis veya
-       anahtardır.
+       <parameter>dizi</parameter> değiştirgesinin değeri, ikincisi ise indis 
+       veya anahtardır.
       </para>
       <note>
        <para>
         Eğer <parameter>işlev</parameter> işlevinin doğrudan dizinin kendisi
         üzerinde işlem yapması gerekiyorsa işlevin ilk değiştirgesini bir
         <link linkend="language.references">gönderim</link> olarak belirtin.
-        Böylece elemanlar üzerinde yapılan her değişiklik özgün dizide
+        Böylece elemanlar üzerinde yapılan her değişiklik özgün dizide de
         yapılmış olur.
        </para>
       </note>
+      <note>
+        <para>
+          Birçok dahili işlev, (örneğin, <function>strtolower</function>), 
+          beklenenden fazla değiştirge aktarılırsa ve doğrudan 
+          <parameter>işlev</parameter> olarak kullanılamazsa bir uyarı çıktılar.
+        </para>
+      </note>
       <para>
-       Kullanıcılar ekleme/silme gibi işlemlerle geriçağırım işlevinde işlem
-       görmekte olan <parameter>dizi</parameter> üzerinde değişiklik
-       yapmamalıdırlar. Eğer <function>array_walk</function>  uygulaması
-       sırasında dizi değişikliğe uğrarsa bu işlevin davranışı beklendiği gibi
-       olmayabilir.
+       Potansiyel oarak yalnızca <parameter>dizi</parameter> değerleri  
+       değiştirilebilir; yapısı değiştirilemez, yani programcı öğeleri 
+       ekleyemez, ayarlayamaz veya yeniden sıralayamaz. Geri çağırım 
+       <parameter>işlev</parameter>i bu gereksinimi karşılamıyorsa, 
+       <function>array_walk</function> işlevinin davranışı tanımsızdır ve 
+       öngörülemez.
       </para>
      </listitem>
     </varlistentry>
@@ -79,19 +87,19 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success;
+   &true; döner.
   </para>
  </refsect1>
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
-   Eğer <parameter>işlev</parameter> belirtilenden daha fazla değiştirge
-   gerektiriyorsa <function>array_walk</function> işlevinin yaptığı her
+   PHP 7.1.0'dan itibaren, geri çağırım <parameter>işlev</parameter>i 2'den 
+   fazla değiştirge (dizi üyesinin değeri ve anahtarı) gerektiriyorsa, bir 
+   <classname>ArgumentCountError</classname> istisnası üretilir. Evvelce,
+   <parameter>işlev</parameter> belirtilenden daha fazla değiştirge
+   gerektirdiğinde <function>array_walk</function> işlevinin yaptığı her
    <parameter>işlev</parameter> çağrısında <link linkend="errorfunc.constants">
-   E_WARNING</link> seviyesinde bir uyarı üretilir. Bu uyarılar
-   <function>array_walk</function>  işlevinin adının önüne bir <link
-   linkend="language.operators.errorcontrol">@</link> işleci getirilerek veya
-   <function>error_reporting</function> kullanılarak bastırılabilir
+   E_WARNING</link> seviyesinde bir uyarı üretilirdi. 
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -148,12 +156,10 @@ c. meyve: elma
    <simplelist>
     <member><function>array_walk_recursive</function></member>
     <member><function>iterator_apply</function></member>
-    <member><function>create_function</function></member>
     <member><function>list</function></member>
     <member><function>each</function></member>
     <member><function>call_user_func_array</function></member>
     <member><function>array_map</function></member>
-    <member>&seealso.callback;</member>
     <member>&foreach;</member>
    </simplelist>
   </para>

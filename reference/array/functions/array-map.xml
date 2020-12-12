@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 9481fbe0e0281d68ac46a6624132cd771bd3ed0c Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.array-map">
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.array-map" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_map</refname>
   <refpurpose>Belirtilen dizilerin elemanlarına geriçağırım işlevini uygular
@@ -12,16 +12,17 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>array_map</methodname>
-   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
-   <methodparam><type>array</type><parameter>dizi1</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>...</parameter></methodparam>
+   <methodparam><type class="union"><type>callable</type><type>null</type></type><parameter>işlev</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>diziler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>array_map</function> işlevi belirtilen dizilerin elemanlarının
-   her birine <parameter>işlev</parameter> işlevini uygulayıp sonucu bir dizi
-   olarak döndürür. Geriçağırım işlevinin değiştirge sayısı
-   <function>array_map</function> işlevine aktarılan değiştirge sayısını kabul
-   edebilmelidir.
+   <function>array_map</function> işlevi belirtilen dizinin 
+   (<parameter>diziler</parameter> ile daha fazla dizi belirtilmişse, onların 
+   da) ilgili elemanlarının her birine <parameter>işlev</parameter> geri çağırım 
+   işlevini uygulayıp sonucu bir dizi olarak döndürür. Geriçağırım işlevinin 
+   değiştirge sayısı <function>array_map</function> işlevine aktarılan 
+   değiştirge sayısını kabul edebilmelidir.
   </para>
  </refsect1>
 
@@ -33,12 +34,19 @@
      <term><parameter>işlev</parameter></term>
      <listitem>
       <para>
-       Her dizinin her elemanına uygulanacak geri çağırım işlevi.
+       Her dizinin her elemanına uygulanacak <type>callable</type> türünde 
+       geri çağırım işlevi.
+      </para>
+      <para>
+       Çok sayıda diziye bir zip işlemi uygulamak için 
+       <parameter>işlev</parameter>'e değer olarak &null; aktarılabilir. 
+       Sadece <parameter>dizi</parameter> sağlanmışsa,
+       <methodname>array_map</methodname> girilen diziyle döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizi1</parameter></term>
+     <term><parameter>dizi</parameter></term>
      <listitem>
       <para>
        Elemanları <parameter>işlev</parameter> tarafından işlenecek ilk dizi.
@@ -46,11 +54,11 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>array</parameter></term>
+     <term><parameter>diziler</parameter></term>
      <listitem>
       <para>
         Elemanları <parameter>işlev</parameter> tarafından işlenecek diğer
-        diziler.
+        dizilerin ek değişken listesi.
       </para>
      </listitem>
     </varlistentry>
@@ -61,10 +69,17 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen dizilerin elemanlarının her birine <parameter>işlev</parameter>
-   işlevini uyguladıktan sonra oluşan diziyi döndürür.
+   <function>array_map</function> işlevi belirtilen dizinin 
+   (<parameter>diziler</parameter> ile daha fazla dizi belirtilmişse, onların 
+   da) ilgili elemanlarının her birine <parameter>işlev</parameter> geri çağırım 
+   işlevini uygulayıp sonucu bir dizi olarak döndürür.
   </para>
- </refsect1>
+  <para>
+   Döndürülen dizi, yalnız ve yalnız tek bir dizi aktarılırsa, dizi 
+   değiştirgesinin anahtarlarını korur. Birden fazla dizi aktarılırsa, 
+   döndürülen dizi sıralı tamsayı anahtarlara sahip olacaktır.
+  </para>
+</refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -76,11 +91,11 @@
 <?php
 function cube($n)
 {
-    return($n * $n * $n);
+    return ($n * $n * $n);
 }
 
-$a = array(1, 2, 3, 4, 5);
-$b = array_map("cube", $a);
+$a = [1, 2, 3, 4, 5];
+$b = array_map('cube', $a);
 print_r($b);
 ?>
 ]]>
@@ -139,21 +154,21 @@ Array
 <?php
 function show_Spanish($n, $m)
 {
-    return("İspanyolcada $n sayısının ismi:");
+    return("İspanyolcada {$n} sayısının ismi: {$m}");
 }
 
 function map_Spanish($n, $m)
 {
-    return(array($n => $m));
+    return [$n => $m];
 }
 
-$a = array(1, 2, 3, 4, 5);
-$b = array("uno", "dos", "tres", "cuatro", "cinco");
+$a = [1, 2, 3, 4, 5];
+$b = ['uno', 'dos', 'tres', 'cuatro', 'cinco'];
 
-$c = array_map("show_Spanish", $a, $b);
+$c = array_map('show_Spanish', $a, $b);
 print_r($c);
 
-$d = array_map("map_Spanish", $a , $b);
+$d = array_map('map_Spanish', $a , $b);
 print_r($d);
 ?>
 ]]>
@@ -216,13 +231,13 @@ Array
   </para>
   <para>
    <example>
-    <title>- Bir diziler dizisi oluşturmak</title>
+    <title>- Dizileri ziplemek</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$a = array(1, 2, 3, 4, 5);
-$b = array("one", "two", "three", "four", "five");
-$c = array("bir", "iki", "üç", "dört", "beş");
+$a = [1, 2, 3, 4, 5];
+$b = ['one', 'two', 'three', 'four', 'five'];
+$c = ['uno', 'dos', 'tres', 'cuatro', 'cinco'];
 
 $d = array_map(null, $a, $b, $c);
 print_r($d);
@@ -275,10 +290,33 @@ Array
    </example>
   </para>
   <para>
-   Eğer dizi elemanları dizgesel anahtarlar içeriyorsa, sadece aynı anahtara
-   sahip olmayan elemanlar dizgesel anahtarlarıyla içerilir. Eğer aynı
-   anahtara sahip birden fazla eleman varsa dönen dizi bu elemanları daima
-   sayısal indisli olarak içerir.
+   <example>
+    <title>- Tek <parameter>dizi</parameter> ile
+     &null; <parameter>işlev</parameter>
+     
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = [1, 2, 3];
+var_dump(array_map(null, $array));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  int(1)
+  [1]=>
+  int(2)
+  [2]=>
+  int(3)
+}
+]]>
+    </screen>
+   </example>
   </para>
   <para>
    <example>
@@ -287,15 +325,15 @@ Array
     <programlisting role="php">
 <![CDATA[
 <?php
-$arr = array("anahtar" => "değer");
+$arr = ['anahtar' => 'değer'];
 function cb1($a) {
-    return array ($a);
+    return [$a];
 }
 function cb2($a, $b) {
-    return array ($a, $b);
+    return [$a, $b];
 }
-var_dump(array_map("cb1", $arr));
-var_dump(array_map("cb2", $arr, $arr));
+var_dump(array_map('cb1', $arr));
+var_dump(array_map('cb2', $arr, $arr));
 var_dump(array_map(null,  $arr));
 var_dump(array_map(null, $arr, $arr));
 ?>
@@ -346,7 +384,6 @@ array(1) {
     <member><function>array_filter</function></member>
     <member><function>array_reduce</function></member>
     <member><function>array_walk</function></member>
-    <member>&seealso.callback;</member>
    </simplelist>
   </para>
  </refsect1>
