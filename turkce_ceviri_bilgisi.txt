@@ -1,181 +1,215 @@
-$Id$
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="icon" type="image/png" href="images/belgeler-logo.png" />
+    <title>PHP Kılavuzu çevirmeninin kılavuzu</title>
+<style type="text/css">
+/*<![CDATA[*/
+body {
+font-family: "Courier New", courier, monospace;
+font-size: 15px;
+  margin: 0px 10px;
+  padding: 0px;
+  color: black;
+  background-color: white;
+}
+/*]]>*/
+</style>
 
-PHP Belgelerini NASIL çevrilir?
+</head><body>
 
-Herşeyden önce bir CVS çalışma dizinine ihtiyacınız var.
-Bir CVS hesabınız varsa siz zaten ne yapılacağını biliyorsunuzdur.
-Aşağıdaki CVS ile çalışma bölümü şöyle bir okuyup geçin.
-"Bir CVS hesabınız yoksa" dosya sisteminizin uygun bir yerinde
-şu komutu verin:
+<p>PHP Belgeleri NASIL çevrilir?</p>
 
-cvs -d :pserver:cvsread@cvs.php.net:/repository checkout phpdoc-tr
+<p>PHP Belgelelerinin yapısı ve daha pek çok şey hakkında fikir edinmek için
+<a href="http://doc.php.net/tutorial/">http://doc.php.net/tutorial/</a>
+adresindeki belgeyi okuyun.</p>
 
-Parola sorarsa "phpfi"yi deneyin. phpdoc-tr çalışacağımız CVS modülüdür.
-Bu komut phpdoc-tr diye bir dizin açacak ve altına CVS deposundan bu modüle
-ait dosyaları indirecektir. Bundan sonra phpdoc-tr dizininden bahsederken
-"çalışma dizini" diyeceğiz. Bunu yaptıktan sonra yeni bir çeviriye başlamaya
-karar vermeden önce çalışma dizininizde daima
+<p>Bizim çalışacağımız modülün ismi: tr</p>
 
-cvs update -dP
+<p>Önce çalışma dizininizi oluşturun: phpdoc</p>
+<p>Dizine geçin ve şu komutları girin:</p>
 
-komutunu vermelisiniz. Bu komut çalışma dizininizi son haline getirir.
-Onun için bir çeviriyi güncelliyorsanız bu komutu vermeyin. Yoksa çevirdikleriniz
-heba olabilir. tr/ dizininde sadece çevrilmiş ve çevirisi sürmekte olan
-dosyalar vardır. Yani çevireceğiniz dosya tr/ altında varsa başka bir dosya
-seçmeniz gerekecek. Çevireceğiniz dosyayı en/ dizini altından seçip tr/
-altındaki yerine kopyalayacaksınız. Örneğin,
-'phpdoc-tr/en/reference/apache/book.xml' dosyasını gözünüze kestirdiniz
-diyelim. Yapacağınız, çalışma dizininizin içinde
+<pre>
+#GiT hesabı olanlar için komutlar.
+git clone git@git.php.net:/doc/base.git doc-base
+git clone git@git.php.net:/doc/en.git en
+git clone git@git.php.net:/doc/tr.git tr
 
-cp en/reference/apache/book.xml tr/reference/apache/book.xml
+#GiT hesabı olmayanlar için henüz bilgim yok....
+</pre
 
-komutunu vermeye eşdeğer bir işlem olacak.
+<p>Bu komutlar doc-base, en ve tr diye üç dizin açacak ve altına GIT 
+deposundan bu modüllere ait dosyaları indirecektir. Bundan sonra phpdoc/tr 
+dizininden bahsederken "çalışma dizini" diyeceğiz. Bunu yaptıktan sonra yeni
+bir çeviriye başlamaya karar vermeden önce bu üç dizinde de daima</p>
 
-Ama hemen çeviriye girişmeyeceksiniz. Bazı önişlemler var.
-** Bundan sonrası CVS hesabı bulunanları da ilgilendiriyor. **
+<p>git pull</p>
 
-Dosyanın ilk satırı genelde şuna benzer bir girdi içerir:
-<?xml version="1.0" encoding="utf-8"?>
-Bu satıra "XML başlığı" diyelim.
-Burada "utf-8", çeviri yaparken kullanacağınız karakter kodlamasıdır.
-Linux kullanıyorsanız, öntanımlı ayarları değiştirmediyseniz karakter
-kodlamanız UTF-8'dir. Windows kullanıyorsanız, muhtemelen CP1254'tür.
-Karakter kodlaması olarak UTF-8 kullanmayanlar buraya "iso-8859-9"
-yazacaklar. Ancak, dosyayı çevirirken UTF-8 kullanmamış olsanız bile
-dosyanın karakter kodlamasını 'recode', 'iconv' gibi bir araçla UTF-8'e
-dönüştürüp oraya "utf-8" yazmanızı öneririm. PHP ekibi bir gün XML
-dosyalarda UTF-8 kodlanmamış olanlar dönüştürülmeyecek derlerse ve
-o güne kadar biz 7000 dosya çevirmişsek, vay halimize... ISO-8859-9
-kullanımı giderek azalıyor. Herkes dünyayla bütünleşmek adına UTF-8
-kullanmaya çalışıyor. Bu, bir gün olabilir, onun için biz önlemimizi
-şimdiden almalıyız.
+<p>komutunu vermelisiniz. Bu komut çalışma dizininizi son haline getirir.
+Onun için bir çeviriyi güncelliyorsanız bu komutu vermeyin. Yoksa
+çevirdikleriniz heba olabilir. tr/ dizininde sadece çevrilmiş ve çevirisi
+sürmekte olan dosyalar vardır. Yani çevireceğiniz dosya tr/ altında varsa
+başka bir dosya seçmeniz gerekecek. Çevireceğiniz dosyayı en/ dizini altından
+seçip tr/ altındaki yerine kopyalayacaksınız. Örneğin,
+'doc-tr/en/reference/apache/book.xml' dosyasını gözünüze kestirdiniz
+diyelim. Yapacağınız, çalışma dizininizin içinde</p>
 
-Unix ve türevleri dışında bir işletim sistemi kullananların asıl dikkat
-etmesi gereken satırsonu karakteridir. Satırsonu karakterleri
-Unix türünde olmalıdır.
+<p>cp en/reference/apache/book.xml tr/reference/apache/book.xml</p>
 
-XML başlığının altında bulunan CVS sürüm satırına dokunmuyoruz. O satırı
-CVS günceller. O satır bundan sonra yaptığınız çevirinin sürümünü içerecek.
-O satırın altına şöyle bir satır ekleyin:
+<p>komutunu vermeye eşdeğer bir işlem olacak.</p>
 
-<!-- EN-Revision: 1.56 Maintainer: flarecaster Status: ready -->
+<!-- 
+<p>SVN deposuyla çalışmak için masaüstü uygulamaları da var.
+Windows kullananlar için (GPL) http://www.tortoisesvn.net/
+öneririm. Linux kullananlar için seçenek çok. KDE kullananlar için kdesvn'yi
+önerebilirim. RapidSVN'de fena değil ama kdesvn baha daha kullanışlı geldi.
+Masaüstü uygulamalar ilk update'i kendiliğinden yapıyormuş gibi görünebilir,
+buna aldanmayın. Yaptığı işlem çalışma dizininizi güncellemez sadece bilgi
+amaçlıdır. Sizi ilgilendiren değişiklikler olduğunu görüyorsanız bunları
+çalışma dizininize yansıtmak için update işlemini yinelemeniz gerekir.</p>
+-->
 
-Bu satıra "güncelleme satırı" diyelim.
-'1.56' özgün belgenin sürüm numarası, 'flarecaster' çevirmenin translation.xml
-dosyasında yazan kullanıcı adı (nick), sonuncusu ise dosyanın durumunu gösterecek.
-Çeviriye başlarken oraya "working", tamamlandığında "ready" yazacaksınız.
+<p>Ama hemen çeviriye girişmeyeceksiniz. Bazı önişlemler var.</p>
 
-Böylece özgün belgenin sürüm numarası değiştiğinde en/ dizini altındaki
-dosya için
+<p>** Bundan sonrası GIT hesabı bulunanları da ilgilendiriyor. **</p>
 
-cvs diff -u -r<EN-revision> <en/dizin/dosya>
+<p>Dosyanın ilk satırı genelde şuna benzer bir girdi içerir:<br />
+  &lt;?xml version="1.0" encoding="utf-8"?&gt;<br />
+Bu satıra "XML başlığı" diyelim.</p>
 
-komutuyla eski ve yeni sürümler arasındaki farkı kolayca görebilecek,
+<p>Burada "utf-8", çeviri yaparken kullanacağınız karakter kodlamasıdır.</p>
+
+<p>XML başlığının altında bulunan sürüm satırına dokunmuyoruz. 
+O satırın altına şöyle bir satır ekleyin:</p>
+
+<p>&lt;!-- EN-Revision: 123456 Maintainer: flarecaster Status: ready --&gt;</p>
+
+<p>Bu satıra "güncelleme satırı" diyelim.
+'123456' özgün belgenin "commit hash"i olup aslında oldukça uzun bir dizedir,
+'flarecaster' çevirmenin translation.xml dosyasında yazan kullanıcı adı (nick), 
+sonuncusu ise dosyanın durumunu gösterecek. Çeviriye başlarken oraya "wip", 
+tamamlandığında "ready" yazacaksınız.</p>
+
+<p>Böylece özgün belgenin sürüm numarası değiştiğinde en/ dizini altındaki
+dosya için</p>
+
+<p>git diff &lt;EN-revision&gt; &lt;en/dizin/dosya&gt;</p>
+
+<p>komutuyla eski ve yeni sürümler arasındaki farkı kolayca görebilecek,
 tüm dosyayı yeni baştan çevirircesine elden geçirmekten kurtulacağız.
 Yani, çeviriyi güncellemek kolaylaşacak. Tabii, çeviriyi yapan
-güncelleyecek ;-)
+güncelleyecek ;-)</p>
 
-Güncelleme sırasında 1.56 yerine özgün belgenin yeni sürüm numarasını
-yazmayı unutmuyoruz.
+<p>Güncelleme sırasında 123456 yerine özgün belgenin yeni commit hash'ini
+yazmayı unutmuyoruz. Bunu elde etmek için özgün belgenin bulunduğu dizinde
+şu komutu verin: cmhash  &lt;dosya.xml&gt;</p>
 
-Bu iki satır sayesinde çeviri istatistikleri oluşturuluyor:
-http://doc.php.net/php/tr/revcheck.php?p=filesummary
+<p>cmhash bir bash alias. Ev dizinizde .bash_aliases adında bir dosya 
+oluşturun ve içine şu satırı yazın:</p>
+<p>alias cmhash='git log -n1 --format=format:"%H"'</p>
+<p>Böylece her dosya için bu alengirli komutu yazmaktan kurtulursunuz.</p>
 
-Güncelleme satırının altında bazı dosyalarda
+<p>Bu iki satır sayesinde çeviri istatistikleri oluşturuluyor:</p>
+<a href="http://doc.php.net/revcheck.php?p=translators&lang=tr">http://doc.php.net/revcheck.php?p=translators&lang=tr</a>
 
-<!-- CREDITS: Cumhur Onat, Serdar Soydemir, Ekin Koç, Buğra Gökalp Okçu -->
+<p>Güncelleme satırının altında bazı dosyalarda</p>
 
-gibi satırlar göreceksiniz. Bu kişiler o belgenin çevirisiyle evvelce
-ilgilenmiş kişilerdir. Onları böyle bir satırla hatırlamış oluyoruz.
-Eğer siz de bir sahipsiz kalmış bir belgeyi günceleyecek olursanız,
-dosyadaki son çevirmen satırında yazan ismi böyle bir satır oluşturup oraya
-yazacaksınız. Kendi isminizi ise bu satırın altına
+<p>&lt;!-- CREDITS: cumhuronat, tpug, antimon, flarecaster --&gt;</p>
 
-<!-- Last translator: <adınız ve soyadınız> -->
+<p>gibi satırlar göreceksiniz. Bu kişiler o belgenin çevirisiyle evvelce
+ilgilenmiş kişilerdir. Onları böyle bir satırla hatırlamış oluyoruz.</p>
 
-biçeminde ekleyeceksiniz. Bu işlemler bitince çeviriye başlamadan dosyayı
-CVS hesabınız varsa depoya, yoksa ekip liderine göndereceksiniz ki o sizin
-yerinize dosyayı depoya göndersin. Böylece her çeviri başlangıcı öncesi
-verdiğimiz update komutu ile güncellenen çalışma dizinine bakarak bu dosyayı
-bir başkası çevirmeye yeltenmeyecek.
+<p>Sıra geldi çeviride dikkat edilecek hususlara...<br />
+XML dosyalarla çalışırken dosyanın sekme karakterini (09) içermemesi gerekir.
+Eğer metin düzenleyiciniz yapabiliyorsa sekmeleri boşluklara çevirmeyi etkin
+kılın, yapamıyorsa bunu yapabilen bir metin düzenleyici bulun. Bulamıyorsanız,
+sekme yerine boşluk tuşuna basın. Zaten çalışacağınız XML dosyaların
+girintileri 1 karakter uzunlukta.</p>
 
-Sıra geldi çeviride dikkat edilecek hususlara...
-Dosyalar '<para>This extension requires PHP 5.</para>' şeklinde HTML'ye benzer
+<p>78 sütundan daha geniş satırlar kullanmayın. Uzun satırlar farkları komut
+satırından görmek istediğinizde işinizi kolaylaştırmayacaktır.</p>
+
+<p>Dosyalar '&lt;para&gt;This extension requires PHP 5.&lt;/para&gt;' şeklinde HTML'ye benzer
 etiketler arasında bir takım metinler içerir. Bu etiketler XML belgenin yapı
 taşları olduğundan onları çevirmeyeceğiz. Bazı etiketlerin HTML
 etiketlerindeki gibi öznitelikleri vardır, onlara da dokunmuyoruz. Yani,
-yukarıdaki metni <para>Bu eklenti PHP 5 gerektirir.</para> şeklinde
-çevireceğiz.
+yukarıdaki metni &lt;para&gt;Bu eklenti PHP 5 gerektirir.&lt;/para&gt; şeklinde
+çevireceğiz.</p>
 
-Ayrıca dosyalarda bazen & ile başlayıp ; ile biten bazı sözcüklere
+<p>Ayrıca dosyalarda bazen &amp; ile başlayıp ; ile biten bazı sözcüklere
 rastlayacaksınız. Onları cümlenin bir parçası haline getireceksiniz.
 Örneğin,
-<para>You must enable the <literal>foo</literal> setting in &php.ini;</para>
+&lt;para&gt;You must enable the &lt;literal&gt;foo&lt;/literal&gt; setting in &php.ini;&lt;/para&gt;
 yerine
-<para><literal>foo</literal> ayarını &php.ini; içinde yapmış olmalısınız.</para>
+&lt;para&gt;&lt;literal&gt;foo&lt;/literal&gt; ayarını &amp;php.ini; içinde yapmış olmalısınız.&lt;/para&gt;
 yazacaksınız. Ancak bazı durumlarda bunu yapamayabiliriz. Değişken içindeki
 metin parçası cümle içinde kulanıldığında bir yerde doğruyken başka bir
 yerde imla hatasına yol açabilir. Böyle bir durumdan şüphe duyarsanız mevcut
 HTML belgeye bakıp ne yapacağınıza kendiniz karar vermelisiniz. XML belgeyle
 ilişkili HTML belgeye, genellikle, XML belgenin kök etiketindeki xml:id
-değerinin sonuna .html veya .php getirerek ulaşabilirsiniz.
+değerinin sonuna .html veya .php getirerek ulaşabilirsiniz.</p>
 
-Tırnak karakteri yerine &apos; kullanılmışsa siz de onu kullanın. Sizin cümle
-içinde tek tırnak imi kullanmanız gerekirse zor gelmeyecekse yine &apos; kullanın.
+<p>Tırnak karakteri yerine &amp;apos; kullanılmışsa siz de onu kullanın. Sizin cümle
+içinde tek tırnak imi kullanmanız gerekirse zor gelmeyecekse yine &amp;apos; kullanın.
 Böylece `' gibi farklı tırnak imleri yerine tek bir tırnak imi kullanmış oluruz.
 Ayrıca XML belgelerin HTML veya PHP'ye dönüştürülmesi sırasında olası bir
 tırnak ayırma hatasını da önlemiş oluruz. Bu durum belgelerin kılavuz
 sayfaları üretilirken bilhassa önem kazanmaktadır. Kılavuz (man) sayfalarında
-' iminden başkası (&apos; olur, kendileri) görüntülenmez. Yani &apos; yerine
+' iminden başkası (&amp;apos; olur, kendileri) görüntülenmez. Yani &amp;apos; yerine
 başka bir tırnak imi kullanmışsanız kılavuz sayfasında o tırnağı
-bulamayabilirsiniz.
+bulamayabilirsiniz.</p>
 
-Çeviri bittikten sonra güncelleme satırındaki 'working' dizgesini
-'ready' yapmayı unutmayın.
+<p>Çeviri bittikten sonra güncelleme satırındaki 'wip' dizgesini
+'ready' yapmayı unutmayın.</p>
 
-Linux kullananların çeviriyi kate üzerinde yapmasını öneririm. XML
-dosyaları renklendirdiğinden çeviri daha kolay olur. Ayrıca XML dosyanın
-geçerliliğini de kate'e sınatabilirsiniz. Bazı etiketleri yanlışlıkla
-silerseniz, depoya hatalı dosya teslim etmekten kurtulabilirsiniz.
+<p>Linux kullananların çeviriyi kate üzerinde yapmasını öneririm. XML
+dosyaları renklendirdiğinden çeviri daha kolay olur.</p>
 
-Ama siz siz olun buna da fazla güvenmeyin. Çünkü kate DTD ile ilgili hatalara
-siz zorlamadıkça bakmaz. Son olarak dosyayı teslim etmeden önce çalışma
-dizininizde şu komutunu kullanın:
+<p>Son olarak dosyayı teslim etmeden önce
+phpdoc/doc-base dizininde şu komutunu kullanın:</p>
 
-$ php configure.php --with-lang=tr
+<p>$ php configure.php --with-lang=tr</p>
 
-Belgenizde kate'in saptayamadığı bir hata varsa bu komut size bilgi verir.
-Komut hata vermemişse ve bir CVS hesabınız varsa dosyayı depoya
-gönderebilirsiniz, CVS hesabınız yoksa dosyayı ekip liderine göndermelisiniz.
+<p>Komut hata vermemişse ve bir GiT hesabınız varsa dosyayı depoya
+gönderebilirsiniz, GiT hesabınız yoksa dosyayı ekip liderine göndermelisiniz.
 Verdiği hatayı nasıl gidereceğinizi bilmiyorsanız listedekilere sorunuz.
 (Burada artık esr'nin ünlü belgesinden söz etmeyelim.) Hatalı dosyayı bana
-gönderebilirsiniz ama ASLA ve ASLA depoya teslim etmeyin. Bunu yaparsanız,
-site derlenemez ve dilimizi yine desteklenmeyen diller arasında buluruz.
-Unutmayın sizler bir programlama dilinin belgesini çeviriyorsunuz.
-Hele CVS hesabı olanlardan böyle hatalar hiç beklenmiyor. Bu bakımdan
-böyle bir durumun süreklilik kazanması halinde PHP ekibi hakkımızda
-ne karar verirse haklıdır.
+gönderebilirsiniz ama ASLA ve ASLA depoya teslim etmeyin.</p>
 
-*********************
-Aşağıda bilinen İngilizce terimlerin Türkçe karşılıkları yazılmıştır.
-AMACIMIZ AYNI TERİMLERİ KULLANMAKTIR. TERİMDEN EMİN DEĞİLSENIZ BURAYA BAKIN.
-BURADA OLMAYAN TERİMLERİ EN ÜSTE EKLEYİNİZ.
-Mevcut terimleri değiştirmeyin. Bu terimler belgeler.org'da ve Apache
-belgelerinde kullanılan terimlerdir. Önerinizi tartışmak isterseniz,
-listeye yazın tartışalım.
+<p>Git hesabı olanlar için teslimat işlemleri:</p>
+<p>git uygulaması yamayı depoya teslim ederken bir başlık ekliyor. 
+Bu başlıktaki bilgileri oluşturmak için kullanacağınız örnek komutlar: 
+(Bu bilgiler evdizininizdeki .gitconfig dosyasına yazılıyor.)</p>
 
-Liste demişken,
-http://lists.sourceforge.net/mailman/listinfo/belgeler-phpdoc
-adresinden iletişim listemize üye olmayı ihmal etmeyin. Aksi
-takdirde kim kime dum duma, bir yere varamayız.
+<pre>
+$ git config --global user.name "John Doe"
+$ git config --global user.email johndoe@example.com
+</pre>
 
-================================================
+<p>Dosyayı depoya göndermek için dosyanın bulunduğu dizinde şu komutları verin:</p>
+
+<pre>
+git commit -m"açıklamayı buraya yazın" &lt;dosya.xml&gt;
+git push
+</pre>
+
+
+<p>*********************</p>
+
+<p>Aşağıda İngilizce terimlerin bu çeviride kullandığımız Türkçe karşılıkları yazılmıştır.
+AMACIMIZ AYNI TERİMLERİ KULLANMAK, OKUYUCU FARKLI TERİMLERLE KAVRAM KARGAŞASI
+İÇİNDE BIRAKMAMAKTIR.<br />
+================================================<br />
+<pre>
 _               Altçizgi imi
-&               Ve imi
+&amp;               Ve imi
 Abstract        Metin için "Özet" ifadeler için "soyut" veya "mutlak"
 Argument        Değiştirge
 Array           Dizi
-Associative Array   İlişkisel Dizi
+Associative Array  İlişkisel Dizi
 Attribute       Öznitelik
 Authentication  Kimlik doğrulama
 Authorization   Yetkilendirme
@@ -192,10 +226,8 @@ Class           Sınıf
 Compile         Derleme
 Configuration   Yapılandırma
 Constants       Sabitler (Değişmezler değil!)
-Constructor     Kurucu
 Control Structure    Denetim Yapısı
 Default         Öntanımlı
-Destructor      Yıkıcı
 Detail          Ayrıntı (lütfen "detay" diye çevirmeyin)
 Digest          Özet
 Directive       Yönerge
@@ -209,11 +241,9 @@ Extention       Eklenti
 Float           Gerçek sayı, kayan noktalı sayı
 Form            Form
 Function        İşlev
-Hashing         Karıştırma
-Heredoc         Yorumlu metin
 Idle            Boşakoşum
-Include         dahil etme, içerme
-Index          (diziler için) indis
+Include         dahil etme
+Index           (diziler için) indis
 Initialize      İlklendirmek
 Instantiate     Örnekleme (sınıfın nesnel bir örneğini oluşturma)
 Interpreter     Yorumlayıcı
@@ -225,52 +255,50 @@ mixed           karışık
 Module          Modül
 Multithread     Çok evreli
 Multibyte       Çok baytlı
-Nowdoc          Yorumsuz metin
 Object          Nesne
 Operand	        Terim
 Operator        İşleç
 Original        Özgün
-Output          Çıktı
+Outputs         Çıktılar
 Override        Geçersiz kılmak
 Parameter       Değiştirge
 Parse error     Çözümleme hatası
 Parser          Çözümleyici
 Pass into       İçe aktarmak
 Pointer         Fare oku sözkonusu ise "imleç", C tarzı ise "gösterici"
-Precedence      Öncelik
-Predefined      Öntanımlı
+Predefined      Önceden tanımlanmış
 Procedure       Yordam
 Protocol        Protokol
 Ouery string    Sorgu dizgesi
-Reference       Gönderim; atıf yapmak
+Reference       gönderim, atıf yapmak
 Regular expression	Düzenli ifade
 Resource        Özkaynak
 root user       root kullanıcı (Linux'ta en yetkili kullanıcı root'dur).
 Runtime         Çalışma anı
 Scalar          Sayıl
 Scope           Etki Alanı
-Serialize       Dizeleştirme
+Serialize       Dizgileştirme
 Server          Sunucu
 single quote    tek tırnak '
 Slash           Bölü imi
 Static          Duruk
 Statement       Deyim
-String          Dize
+String          Dizge
 Script          Betik
 Scripting       Kodlama, kod yazma
 Ternary         Üç terimli
 Thread          Evre
 Tag             İmlenim dilleri (*ML) için "etiket"
-Trait           Nitelik
 Type            "Tür" veya "veri türü"
-Type casting    Tür çarpıtma
 Unary           Tek terimli
 Unserialize     Nesneleştirme
 Validation      Geçerlilik
 Variable        Değişken
 Vector          Yöney
-
-Version-Revision-Patch		Biz bunun tamamına ve parçalarına sürüm numarası
-diyoruz. Bu kılavuzun okuyucusu için sürüm numarasını oluşturan  parçaların
-isimlerinin bir önemi olmayacaktır.
+Web Server      HTTP Sunucusu
+Widget          Gereç
+Version.Revision.Patch   Biz bunun tamamına ve parçalarına sürüm numarası
+                diyoruz. Bu kılavuzun okuyucusu için sürüm numarasını oluşturan
+                parçaların isimlerinin bir önemi olmayacaktır.
 ================================================
+</pre></p></body></html>
