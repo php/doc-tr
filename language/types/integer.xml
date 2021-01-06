@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ad6c4032099abf8dfc50b382bbd7800aac08f5a6 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d494ffa4d9f83b60fe66972ec2c0cf0301513b4a Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
- <title><code>integer</code></title>
+ <title><code>int</code></title>
 
  <simpara>
-  Bir <type>integer</type> türünde değer şu kümeden bir tamsayıdır:
+  Bir <type>int</type> türünde değer şu kümeden bir tamsayıdır:
   &#8484; = {..., -2, -1, 0, 1, 2, ...}.
  </simpara>
 
@@ -32,18 +32,14 @@
  </itemizedlist>
 
  <sect2 xml:id="language.types.integer.syntax">
-  <title>Syntax</title>
+  <title>Sözdizimi</title>
 
   <simpara>
-   <type>integer</type> türünde değerler  onluk, sekizlik veya onaltılık
+   <type>int</type> türünde değerler  onluk, sekizlik veya onaltılık
    tabanda belirtilebilirler.
    <link linkend="language.operators.arithmetic">değil işleci</link>
-   negatif bir tamsayı belirtmekte kullanılabilir.
+   negatif bir <type>int</type> belirtmekte kullanılabilir.
   </simpara>
-
-  <para>
-   İkil <type>integer</type> sayılar PHP 5.4.0 ve sonrasında kullanılabilir.
-  </para>
 
   <para>
    Sekizlik gösterimde sayıların önüne <literal>0</literal> (sıfır),
@@ -51,8 +47,14 @@
    <literal>0b</literal> getirilir.
   </para>
 
+  <para>
+   PHP 7.4.0'dan itibaren, tamsayı değişmezleri, değişmez değerlerin daha
+   iyi okunabilirliği için rakamlar arasında alt çizgi (<literal>_</literal>)
+   içerebilir. Bu alt çizgiler PHP'nin tarayıcısı tarafından kaldırılır.
+  </para>
+
   <example>
-   <title>- Tamsayı sayıllar</title>
+   <title>- Tamsayı değişmezler</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -61,66 +63,58 @@ $a = -123; // negatif bir sayı
 $a = 0123; // sekizlik tabanda bir sayı (onluk: 83)
 $a = 0x1A; // onaltılık tabanda bir sayı (onluk: 26)
 $a = 0b11111111; // ikil sayı (onluk: 255)
+$a = 1_234.567; // onluk tabanda bir sayı (PHP 7.4.0 ve sonrası)
 ?>
 ]]>
    </programlisting>
   </example>
 
   <para>
-   Biçimsel olarak <type>integer</type> sayılların yapısı:
+   Biçimsel olarak PHP 7.4.0 ve sonrasında <type>int</type> değişmezlerin yapısı
+   (öncesinde altçizgilere izin verilmezdi):
   </para>
 
   <informalexample>
    <programlisting>
 <![CDATA[
-onluk     : [1-9][0-9]*
+onluk     : [1-9][0-9]*(_[0-9]+)*
           | 0
 
-onaltılık : 0[xX][0-9a-fA-F]+
+onaltılık : 0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*
 
-sekizlik  : 0[0-7]+
+sekizlik  : 0[0-7]+(_[0-7]+)*
 
-ikil      : 0[bB][01]+
+ikil      : 0[bB][01]+(_[01]+)*
 
-tamsayı     : onluk
-            | onaltılık
-            | sekizlik
-            | ikil
+tamsayı   : onluk
+          | onaltılık
+          | sekizlik
+          | ikil
 ]]>
    </programlisting>
   </informalexample>
 
   <para>
-   Bir <type>integer</type> türün genişliği platforma göre değişir. 32 bitlik
+   Bir <type>intr</type> türün genişliği platforma göre değişir. 32 bitlik
    sistemlerde azami değer 2 milyon civarında iken 64 bitlik sistemlerde 9E18
    civarındadır. PHP işaretsiz tamsayıları (C'deki unsigned) desteklemez.
-   <type>integer</type> türün genişliği <constant>PHP_INT_SIZE</constant> 
-   sabitine, olası en büyük değeri PHP 5.0.5'te <constant>PHP_INT_MAX</constant> 
-   sabitine ve en küçük değeri ise PHP 7'de <constant>PHP_INT_MIN</constant> 
+   <type>int</type> türün genişliği <constant>PHP_INT_SIZE</constant> 
+   sabitine, olası en büyük değeri <constant>PHP_INT_MAX</constant> 
+   sabitine ve en küçük değeri ise <constant>PHP_INT_MIN</constant> 
    sabitine atanmıştır.
   </para>
-
-  <warning>
-   <para>
-    PHP 7 öncesinde, sekizlik bir değer içinde geçersiz bir rakam kullanılmışsa 
-    (8, 9 gibi) o ve kalan tüm rakamlar yok sayılır, PHP 7 ve sonrasında bir çözümleme hatası çıktılanır.
-   </para>
-  </warning>
  </sect2>
 
  <sect2 xml:id="language.types.integer.overflow">
   <title>Tamsayılarda taşma</title>
 
   <para>
-   PHP, <type>integer</type> türünde bir değerin bellekte
-   <type>integer</type> türüne ayrılan genişliğe sığmadığını saptarsa
-   <type>float</type> türünde bir değer olarak ele alır ve bu durum yapılan
-   bir işlem sırasında ortaya çıkmışsa işlemden dönen değer
-   <type>float</type> türünde olur.
+   PHP, <type>int</type> türünde bir değerin bellekte <type>int</type> türüne
+   ayrılan genişliğe sığmadığını saptarsa <type>float</type> türünde bir değer olarak ele alır ve bu durum yapılan bir işlem sırasında ortaya çıkmışsa işlemden dönen değer <type>float</type> türünde olur.
   </para>
 
   <example>
-   <title>32 bitlik sistemlerde tamsayı taşması</title>
+   <title>- 32 bitlik sistemlerde tamsayı taşması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -158,10 +152,11 @@ var_dump($büyük_sayı);                     // float(5.0E+19)
   </example>
 
   <para>
-   PHP'de sonucun <type>integer</type> türünde elde edileceği bir bölme
-   işlemi mevcut değildir. <literal>1/2</literal> işleminin sonucu
+   PHP'de sonucun <type>int</type> türünde elde edileceği bir bölme
+   işleci mevcut değildir, bunu sağlamak için <function>intdiv</function>
+   işlevini kullanın. <literal>1/2</literal> işleminin sonucu
    <type>float</type> türünde <literal>0.5</literal> değeridir. Bu değer
-   (<type>integer</type>) ile çarpıtılarak sıfıra yuvarlamak suretiyle bir
+   (<type>int</type>) ile çarpıtılarak sıfıra yuvarlamak suretiyle bir
    tamsayıya dönüştürülebilirse de <function>round</function> işlevini
    kullanırsanız dönüşümün nasıl yapılacağını kendiniz belirleyebilirsiniz.
   </para>
@@ -180,20 +175,20 @@ var_dump(round(25/7));  // float(4)
  </sect2>
 
  <sect2 xml:id="language.types.integer.casting">
-  <title><code>integer</code> türüne dönüşüm</title>
+  <title><code>int</code> türüne dönüşüm</title>
 
   <simpara>
-   Bir değeri doğrudan <type>integer</type> türüne dönüştürmek için
+   Bir değeri doğrudan <type>int</type> türüne dönüştürmek için
    <literal>(int)</literal> veya <literal>(integer)</literal> çarpıtmasını
    kullanabilirsiniz. Ancak, çoğu durumda türü çarpıtmak gerekmez, bir
-   tamsayı değer gerektiren bir işlev veya denetim yapısı, değeri özdevinimli
-   olarak <type>integer</type> türüne dönüştürecektir. Ayrıca, bir değer
-   <type>integer</type> türüne <function>intval</function> işleviyle de
+   <type>int</type> değer gerektiren bir işlev veya denetim yapısı, değeri
+   kendiliğinden <type>int</type> türüne dönüştürecektir. Ayrıca, bir değer
+   <type>int</type> türüne <function>intval</function> işleviyle de
    dönüştürülebilir.
   </simpara>
 
   <simpara>
-   Bir <type>resource</type> bir <type>integer</type> sayıya dönüştürülürse, 
+   Bir <type>resource</type> bir <type>inte</type> sayıya dönüştürülürse, 
    sonuç, PHP tarafından çalışma anında özkaynağa atanan eşsiz özkaynak 
    numarası olacaktır.
   </simpara>
@@ -204,7 +199,7 @@ var_dump(round(25/7));  // float(4)
   </simpara>
 
   <sect3 xml:id="language.types.integer.casting.from-boolean">
-   <title><link linkend="language.types.boolean"><code>boolean</code></link>
+   <title><link linkend="language.types.boolean"><code>bool</code></link>
    türünden dönüşüm</title>
 
    <simpara>
@@ -218,30 +213,29 @@ var_dump(round(25/7));  // float(4)
    türünden dönüşüm</title>
 
    <simpara>
-    <type>float</type> türünden <type>integer</type> türüne dönüşümde sayı
+    <type>float</type> türünden <type>int</type> türüne dönüşümde sayı
     <emphasis>sıfıra yaklaştırılarak</emphasis> yuvarlanır.
    </simpara>
 
    <para>
-    Dönüşüm sonucu <type>integer</type> türüne ayrılan genişliğe (normalde
-    32 bitlik sistemlerde <literal>+/- 2.15e+9 = 2^31</literal>, Windows dışındaki
-    64 bitlik sistemlerde ise <literal>+/- 9.22e+18 = 2^63</literal>) sığmıyorsa,
-    <type>float</type> türün hassasiyeti <type>integer</type> türünde tam bir
-    sonuç vermeyeceğinden sonuç tanımsızdır. Bu durumda ne bir uyarı ne de bir
-    bilgi verilir!
+    Dönüşüm sonucu <type>int</type> türüne ayrılan genişliğe (normalde
+    32 bitlik sistemlerde <literal>+/- 2.15e+9 = 2^31</literal>,
+    64 bitlik sistemlerde ise <literal>+/- 9.22e+18 = 2^63</literal>)
+    sığmıyorsa, <type>float</type> türün hassasiyeti <type>int</type> türünde
+    tam bir sonuç vermeyeceğinden sonuç tanımsızdır. Bu durumda ne bir uyarı
+    ne de bir bilgi verilir!
    </para>
 
    <note>
     <para>
-     PHP 7.0.0 ve sonrasında, tanımsız ve platforma bağlı olmak yerine
-     <type>integer</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır 
+     <type>int</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır 
      olacaktır. 
     </para>
    </note>
 
    <warning>
     <para>
-     Ondalık kısmı <type>integer</type> türüne asla dönüştürmeyin, yoksa
+     Ondalık kısmı <type>int</type> türüne asla dönüştürmeyin, yoksa
      beklenmedik sonuçlar elde edebilirsiniz.
     </para>
 
@@ -263,11 +257,12 @@ echo (int) ( (0.1+0.7) * 10 ); // çıktısı: 7!
   </sect3>
 
   <sect3 xml:id="language.types.integer.casting.from-string">
-   <title><code><type>string</type></code> türünden dönüşüm</title>
+   <title><type>string</type> türünden dönüşüm</title>
 
    <simpara>
-    <link linkend="language.types.string.conversion">Dizgelerin sayılara
-    dönüşümü</link> bölümüne bakınız.
+    Dize <link linkend="language.types.numeric-strings">sayısal</link>
+    veya öncü sayısal ise, karşılık gelen tamsayı değerine çözümlenir,
+    aksi takdirde sıfıra (<literal>0</literal>) dönüştürülür.
    </simpara>
   </sect3>
 
@@ -284,7 +279,7 @@ echo (int) ( (0.1+0.7) * 10 ); // çıktısı: 7!
 
    <caution>
     <simpara>
-     Diğer türlerden <type>integer</type> türüne dönüşümün nasıl davranacağı
+     Diğer türlerden <type>int</type> türüne dönüşümün nasıl davranacağı
      henüz kesin olarak tanımlanmamıştır. Gözlemlediğiniz bir davranışın
      doğruluğuna güvenmeyiniz, ileride bu davranış hiçbir bilgi verilmeden
      değiştirilebilir.

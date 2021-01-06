@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 0c78bb07f50f45b24c2ea170762f3cd8a1d22fec Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d494ffa4d9f83b60fe66972ec2c0cf0301513b4a Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.string">
  <title><code>string</code></title>
 
@@ -14,9 +14,7 @@
 
  <note>
   <simpara>
-   PHP 7.0.0 ve sonrasında, 64 bitlik derlemelerde dize uzunluğu ile ilgili bir 
-   sınırlama yoktur. 32 bitlik derlemelerde ve erken dönem sürümlerde dize 
-   uzunluğu en fazla 2GB (2147483647 bayt) olabilir. 
+   32 bitlik derlemelerde, dize uzunluğu en fazla 2GB (2147483647 bayt) olabilir. 
   </simpara>
  </note>
 
@@ -49,7 +47,7 @@
    <listitem>
     <simpara>
      <link linkend="language.types.string.syntax.nowdoc">yorumsuz metin
-     </link> (nowdoc) - (PHP 5.3.0 ve sonrası)
+     </link> (nowdoc)
     </simpara>
    </listitem>
   </itemizedlist>
@@ -147,15 +145,15 @@ echo 'Variables do not $expand $either';
       </row>
       <row>
        <entry><literal>\v</literal></entry>
-       <entry>düşey sekme (VT veya ASCII 11 (0x0B)) (PHP 5.2.5 ve sonrası)</entry>
+       <entry>düşey sekme (VT veya ASCII 11 (0x0B))</entry>
       </row>
       <row>
        <entry><literal>\e</literal></entry>
-       <entry>escape (ESC veya ASCII 27 (0x1B) (PHP 5.4.4 ve sonrası)</entry>
+       <entry>escape (ESC veya ASCII 27 (0x1B)</entry>
       </row>
       <row>
        <entry><literal>\f</literal></entry>
-       <entry>sayfa ileri (FF veya ASCII 12 (0x0C)) (PHP 5.2.5 ve sonrası)</entry>
+       <entry>sayfa ileri (FF veya ASCII 12 (0x0C))</entry>
       </row>
       <row>
        <entry><literal>\\</literal></entry>
@@ -188,8 +186,7 @@ echo 'Variables do not $expand $either';
        <entry><literal>\u{[0-9A-Fa-f]+}</literal></entry>
        <entry>
         Bu düzenli ifade ile eşleşen dizilim bir Unicode karakter kodu olup,
-        dizeye karakter kodunun UTF-8 gösterimini çıktılar 
-        (PHP 7.0.0'da eklendi).
+        dizeye karakter kodunun UTF-8 gösterimini çıktılar. 
        </entry>
       </row>
      </tbody>
@@ -198,8 +195,7 @@ echo 'Variables do not $expand $either';
 
    <para>
     Tersbölü imini bunlardan başka bir karakterin önünde kullanırsanız,
-    tersbölü imi karakterle birlikte basılır. PHP 5.1.1'den önce,
-    <literal>\{$var}</literal> içindeki tersbölü imi basılmıyordu.
+    tersbölü imi karakterle birlikte basılır.
    </para>
 
    <para>
@@ -294,9 +290,8 @@ EOT;
     </example>
     
     <para>
-     Yorumlu metinler sınıf özelliklerini ilklendirmek için kullanılamaz.
-     PHP 5.3 ve sonrasında, bu sınırlama sadece değişken içeren yorumlu 
-     metinler için geçerlidir.
+     Değişken içeren yorumlu  metinler sınıf özelliklerini ilklendirmek için 
+     kullanılamaz.
     </para>
    </warning>
 
@@ -374,7 +369,7 @@ EOD
    </example>
 
    <para>
-    PHP 5.3.0 ve sonrasında, duruk değişkenleri ve sınıf özelliklerini veya
+    Duruk değişkenleri ve sınıf özelliklerini veya
     sabitlerini yorumlu metin sözdizimini kullanarak ilklendirmek mümkündür:
    </para>
 
@@ -408,7 +403,7 @@ FOOBAR;
    </example>
 
    <para>
-    PHP 5.3.0 ve sonrasında, yorumlu metinlerin açılış betimleyicisi 
+    Yorumlu metinlerin açılış betimleyicisi 
     seçimlik olarak çift tırnaklarla kapatılabilir:
    </para>
 
@@ -455,12 +450,27 @@ TIRNAKLI;
 <![CDATA[
 <?php
 $str = <<<'EOD'
-Yorumlu metin sözdizimi
-kullanılarak çok sayıda
-satıra bölünmüş dize örneği.
+Yorumlu metin sözdizimi kullanılarak çok sayıda satıra bölünmüş 
+dize örneği. Tersbölüler daima birebir ele alınır, 
+örn, \\ and \'
 EOD;
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Yorumlu metin sözdizimi kullanılarak çok sayıda satıra bölünmüş 
+dize örneği. Tersbölüler daima birebir ele alınır, 
+örn, \\ and \'
+]]>
+    </screen>
+   </example>
 
-/* Değişkenli daha karmaşık bir örnek. */
+   <example>
+    <title>- Değişkenli yorumsuz metin örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
 class foo
 {
     public $foo;
@@ -507,13 +517,6 @@ EOT;
 ]]>
     </programlisting>
    </example>
-
-   <note>
-    <para>
-     Yorumlu metin desteği PHP 5.3.0'da eklenmiştir.
-    </para>
-   </note>
-
   </sect3>
 
   <sect3 xml:id="language.types.string.parsing">
@@ -721,12 +724,6 @@ echo "Adı \$object->getName() yönteminin dönüş değeri olan değişkenin de
 echo "This is the return value of getName(): {getName()}";
 ?>
 ]]>
-<!-- maybe it's better to leave this out??
-// this works, but i disencourage its use, since this is NOT
-// involving functions, rather than mere variables, arrays and objects.
-$beer = 'Heineken';
-echo "I'd like to have another {${ strrev('reeb') }}, hips";
- -->
      </programlisting>
     </informalexample>
 
@@ -762,11 +759,11 @@ echo "{$foo->{$baz[1]}}\n";
 
     <note>
      <para>
-      İşlev ve yöntem çağrılarının, duruk sınıf değişkenlerinin ve sınıf
-      sabitlerinin <literal>{$}</literal> içinde çağrılması PHP 5'ten
-      beri çalışmaktadır. Erişilen değer, dizenin tanımlandığı etki alanındaki
-      bir değişkenin ismi olarak yorumlanır. Kaşlı ayraçların tek başına
-      kullanımı (<literal>{}</literal>), duruk sınıf değişkenlerinin veya sınıf
+      <literal>{$}</literal> içindeki işlev ve yöntem çağrılarından,
+      duruk sınıf değişkenlerinden ve sınıf sabitlerinden erişilen değer,
+      dizenin tanımlandığı etki alanındaki bir değişkenin ismi olarak
+      yorumlanır. Kaşlı ayraçların tek başına kullanımı 
+      (<literal>{}</literal>), duruk sınıf değişkenlerinin veya sınıf
       sabitlerinin değerlerine veya işlev ve yöntemlerin dönüş değerlerine
       erişim için kullanılmaz.
      </para>
@@ -883,14 +880,12 @@ $str[strlen($str)-1] = 'e';
    </example>
 
    <para>
-    PHP 5.4 ve sonrasında, dizi başlangıçları ya tamsayı ya da tamsayı 
-    benzeri dize olmalıdır, aksi takdirde bir uyarı çıktılanır. Evvelce,  
-    <literal>"foo"</literal> gibi bir başlangıç belirtimi sessizce 
-    <literal>0</literal> belirtimi olarak ele alınırdı.
+    Dizi başlangıçları ya tamsayı ya da tamsayı benzeri dize olmalıdır,
+    aksi takdirde bir uyarı yavrulanır.
    </para>
 
    <example>
-    <title>- PHP 5.3 ve PHP 5.4 arasındaki farklar</title>
+    <title>- Geçersiz dize başlangıçları örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -910,20 +905,7 @@ var_dump(isset($str['1x']));
 ?>
 ]]>
     </programlisting>
-    &example.outputs.53;
-    <screen>
-<![CDATA[
-string(1) "b"
-bool(true)
-string(1) "b"
-bool(true)
-string(1) "a"
-bool(true)
-string(1) "b"
-bool(true)
-]]>
-    </screen>
-    &example.outputs.54;
+    &example.outputs;
     <screen>
 <![CDATA[
 string(1) "b"
@@ -944,12 +926,18 @@ bool(false)
 
    <note>
     <para>
-     Diğer türlerdeki değişkenlere (uygun arayüzleri gerçekleyen nesneler ve 
-     diziler hariç) <literal>[]</literal> veya <literal>{}</literal> 
-     kullanarak erişme çabası &null; dönmesiyle sonuçlanır.
+     Dize değişmezleri içindeki karakterlere <literal>[]</literal> veya 
+     <literal>{}</literal> kullanılarak erişilebilir.
     </para>
    </note>
 
+   <note>
+    <para>
+     <literal>{}</literal> sözdizimini kullanarak dize değişmezleri içindeki
+     karakterlere erişim PHP 7.4'te kullanımdan kaldırılmıştır. PHP 8.0'da
+     ise tamemen kaldırılmıştır.
+    </para>
+   </note>
   </sect3>
  </sect2><!-- end syntax -->
 
@@ -1003,11 +991,11 @@ bool(false)
   </para>
 
   <para>
-    <type>boolean</type> türündeki &true; değeri <type>string</type>
+    <type>bool</type> türündeki &true; değeri <type>string</type>
     türündeki <literal>"1"</literal> değerine dönüştürülür.
-    <type>boolean</type> türündeki &false; değeri <type>string</type>
+    <type>bool</type> türündeki &false; değeri <type>string</type>
     türündeki <literal>""</literal> değerine (boş dizeye) dönüştürülür. Bu
-    şekilde, <type>boolean</type> ve <type>string</type> değerler arasında
+    şekilde, <type>bool</type> ve <type>string</type> değerler arasında
     her iki yönde de dönüşüm yapılabilmektedir.
   </para>
 
@@ -1020,7 +1008,9 @@ bool(false)
 
   <note>
    <para>
-    Ondalık nokta karakteri betiğin çalıştığı yerele (LC_NUMERIC) özgüdür.
+    PHP 8.0.0 itibariyle, ondalık nokta karakteri daima
+    <literal>.</literal> (nokta)'dır. PHP 8.0.0 öncesinde
+    betiğin çalıştığı yerele (LC_NUMERIC) özgüdür.
     Bakınız: <function>setlocale</function> işlevi.
    </para>
   </note>
@@ -1066,79 +1056,7 @@ bool(false)
   <para>
    Çoğu PHP değeri kalıcı olarak saklamak amacıyla dizelere
    dönüştürülebilir. Bu yönteme dizeleştirme adı verilir ve
-   <function>serialize</function> işlevi tarafından gerçekleştirilir. Eğer
-   PHP motoru <link linkend="ref.wddx">WDDX</link> desteğiyle derlenmişse PHP
-   değerleri ayrıca iyi biçimli XML metin olarak da dizeleştirilebilir.
-  </para>
-
- </sect2>
-
- <sect2 xml:id="language.types.string.conversion">
-  <title>Dizgelerin sayılara dönüşümü</title>
-
-  <simpara>
-   Bir dize, sayısal bir bağlamda değerlendirildiğinde sonuçlanacak değer ve
-   türün nasıl belirleneceği aşağıda açıklanmıştır.
-  </simpara>
-
-  <simpara>
-   Dizge, '.', 'e' veya 'E' karakterlerini içermiyorsa ve sayısal değeri
-   <constant>PHP_INT_MAX</constant> ile tanımlanan genişlikte bir tamsayı
-   ise <type>string</type> tür bir <type>integer</type> tür olarak, aksi
-   takdirde bir <type>float</type> olarak değerlendirilir.
-  </simpara>
-
-  <para>
-   Değerin dizenin başında belirtileceği varsayılır. Eğer dize geçerli bir
-   sayısal veri ile başlıyorsa sayısal değer olarak bu kullanılır. Aksi
-   takdirde değer 0 (sıfır) olacaktır. Geçerli sayısal veri isteğe bağlı bir
-   işaret ile başlar, bir veya daha fazla sayıda rakam ile isteğe bağlı bir
-   ondalık nokta içerebilir ve isteğe bağlı bir üstel gösterimle sona erer.
-   Üs, 'e' veya 'E' harfini takibeden bir veya daha fazla rakamdan oluşur.
-  </para>
-
-  <informalexample>
-   <programlisting role="php">
-<![CDATA[
-<?php
-$foo = 1 + "10.5";                // $foo float'tır (11.5)
-$foo = 1 + "-1.3e3";              // $foo float'tır (-1299)
-$foo = 1 + "bob-1.3e3";           // $foo integer'dir (1)
-$foo = 1 + "bob3";                // $foo integer'dir (1)
-$foo = 1 + "10 Small Pigs";       // $foo integer'dir (11)
-$foo = 4 + "10.2 Little Piggies"; // $foo float'tır (14.2)
-$foo = "10.0 pigs " + 1;          // $foo float'tır (11)
-$foo = "10.0 pigs " + 1.0;        // $foo float'tır (11)
-?>
-]]>
-   </programlisting>
-  </informalexample>
-
-  <simpara>
-   Bu dönüşüm nakkında daha ayrıntılı bilgi edinmek için strtod(3) Unix
-   kılavuz sayfasına bakınız.
-  </simpara>
-
-  <para>
-   Bu bölümdeki örneklerden birini denemek isterseniz örnekleri
-   kopyala/yapıştır yöntemiyle aşağıdaki satıra yerleştirip neler olup
-   bittiğini görebilirsiniz:
-  </para>
-
-  <informalexample>
-   <programlisting role="php">
-<![CDATA[
-<?php
-echo "\$foo==$foo; " . gettype ($foo) . " türündedir<br />\n";
-?>
-]]>
-   </programlisting>
-  </informalexample>
-
-  <para>
-   Tamsayıya dönüştürerek C'deki gibi bir karakterin kodunu alabilmeyi
-   beklemeyin. Karakter/ASCII kod dönüşümleri için <function>ord</function> ve
-   <function>chr</function> işlevlerini kullanınız.
+   <function>serialize</function> işlevi tarafından gerçekleştirilir.
   </para>
  </sect2>
  

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 95bdd6883b5dde9504701777ba81b3c5f15df52b Maintainer: erdemkeren Status: ready -->
+<!-- EN-Revision: a71742330defbc0edfbc6822b4f947bf437b2f70 Maintainer: erdemkeren Status: ready -->
 <sect1 xml:id="language.types.callable">
  <title>Geriçağırımlar / Çağırılılabilirler</title>
  
  <para>
-  Geriçağırımlar PHP 5.4.&apos;ten itibaren <type>callable</type> tür ipucu
-  ile belirtilebilirler.
-  Bu belgelerde <type>callback</type> tür bilgisi aynı amaçla kullanıldı.
+  Geriçağırımlar <type>callable</type> tür ipucu ile belirtilebilir.
  </para>
 
  <para>
@@ -39,19 +37,24 @@
 
   <para>
     Duruk sınıf yöntemleri, 0 indisinde nesne yerine sınıf adı kullanılarak,
-    sınıfın nesnesi örneklendirilmeden de aktarılabilir.
-    PHP 5.2.3.&apos;ten itibaren, <literal>'SınıfAdı::yöntemAdı'</literal>
-    kullanarak aktarmak da mümkündür.
+    sınıfın nesnesi örneklendirilmeden
+    ya da <literal>'SınıfAdı::yöntemAdı'</literal> kullanılarak aktarılabilir.
   </para>
 
   <para>
     Kullanıcı tanımlı işlevler haricinde,
-   <link linkend="functions.anonymous">isimsiz işlevler</link> de geriçağırım
-   değiştirgesi olarak aktarılabilirler.
+   <link linkend="functions.anonymous">isimsiz işlevler</link> ve
+   <link linkend="functions.arrow">ok işlevleri</link> de geriçağırım
+   değiştirgesi olarak aktarılabilir.
   </para>
 
   <para>
-   <example>
+   Genel olarak, <link linkend="object.invoke">__invoke()</link> gerçekleyen
+   her nesne bir geriçağırım değiştirgesi olarak aktarılabilir.
+  </para>
+
+  <para>
+  <example>
     <title>
      Geriçağırım işlev örnekleri
     </title>
@@ -81,10 +84,10 @@ call_user_func(array('BenimSinifim', 'benimGericagirimYontemim'));
 $nesne = new BenimSinifim();
 call_user_func(array($nesne, 'benimGericagirimYontemim'));
 
-// Tür 4: Duruk sınıf yöntemi çağrısı (PHP 5.2.3 itibariyle)
+// Tür 4: Duruk sınıf yöntemi çağrısı
 call_user_func('BenimSinifim::benimGericagirimYontemim');
 
-// Tür 5: İlişkisel duruk sınıf yöntem çağrısı (PHP 5.3.0 itibariyle)
+// Tür 5: İlişkisel duruk sınıf yöntem çağrısı
 class A {
     public static function kim() {
         echo "A\n";
@@ -99,7 +102,7 @@ class B extends A {
 
 call_user_func(array('B', 'parent::kim')); // A
 
-// Tür 6: Nesneler, __invoke uyguluyorlarsa çağırılabilir olarak kullanılabilirler (PHP 5.3 sonrası)
+// Tür 6: Nesneler, __invoke uyguluyorlarsa çağırılabilir olarak kullanılabilirler 
 class C {
     public function __invoke($ad) {
         echo 'Merhaba ', $ad, "\n";

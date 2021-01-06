@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 646e6eb3e3eaf0cb40127405a01ed5e3f479799f Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -434,7 +434,7 @@ x eksi bir eşittir 3, ya da ben öyle umdum
       <row>
        <entry>$a ** $b</entry>
        <entry>Üs</entry>
-       <entry><varname>$a</varname> üssü <varname>$b</varname>. PHP 5.6 ile eklendi.</entry>
+       <entry><varname>$a</varname> üssü <varname>$b</varname>.</entry>
       </row>
      </tbody>
     </tgroup>
@@ -468,10 +468,15 @@ echo (-5 % -3)."\n";         // -2 basar
      </programlisting>
     </informalexample>
    </para>
-   <simpara>
-    <link linkend="ref.math">Matematik işlevleri</link> bölümüne de bakınız.
-   </simpara>
-
+   
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><link linkend="ref.math">Matematik işlevleri</link></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.assignment">
@@ -567,10 +572,7 @@ print "$b\n"; // bu da 4 basar, $b, $a'ya bir gönderimdi ve $a değişti
      <link linkend="language.oop5.basic.new">new</link> işleci özdevinimli     
      olarak bir gönderim döndürür. Dolayısıyla, 
      <link linkend="language.oop5.basic.new">new</link> sonucunu gönderimli 
-     atamaya PHP 7.0.0 ve sonrasında izin verilmez.
-     PHP 5.3.0 ve sonrasında bir <constant>E_DEPRECATED</constant> 
-     iletisiyle, önceki sürümlerde ise bir <constant>E_STRICT</constant> 
-     iletisiyle sonuçlanır.
+     atamak bir hatadır.
     </para>
     <para>
      Örneğin bu kod bir hata veya uyarı ile sonuçlanır:
@@ -584,25 +586,11 @@ $o = &new C;
 ?>
 ]]>
       </programlisting>
-      &example.outputs.7;
+      &example.outputs;
       <screen>
 <![CDATA[
 Parse error: syntax error, unexpected 'new' (T_NEW) in …
 // Çözümleme hatası: sözdizimi hatası, beklenmeyen 'new' (T_NEW) in …
-]]>
-      </screen>
-      &example.outputs.53;
-      <screen>
-<![CDATA[
-Deprecated: Assigning the return value of new by reference is deprecated in …
-// Kullanım dışı: Dönen new değerini gönderimli atama artık kullanılmıyor- …
-]]>
-      </screen>
-      &example.outputs.5;
-      <screen>
-<![CDATA[
-Strict Standards: Assigning the return value of new by reference is deprecated in …
-// Katı Kurallar: Dönen new değerini gönderimli atama artık kullanılmıyor- …
 ]]>
       </screen>
     </informalexample>
@@ -627,7 +615,7 @@ Strict Standards: Assigning the return value of new by reference is deprecated i
       <tbody>
        <row>
         <entry>$a += $b</entry>
-        <entry>$a = $a + b</entry>
+        <entry>$a = $a + +$b</entry>
         <entry>Toplama</entry>
        </row>
        <row>
@@ -724,14 +712,17 @@ Strict Standards: Assigning the return value of new by reference is deprecated i
     </informaltable>
    </sect2>
    
-   <sect2 xml:id="language.operators.assignment.see-also">
+   <sect2 role="seealso" xml:id="language.operators.assignment.see-also">
+    &reftitle.seealso;
     <para>
-     Kılavuzun <link linkend="language.operators.arithmetic">
-     aritmetik işleçler</link>, 
-     <link linkend="language.operators.bitwise">bitsel işleçler</link>, 
-     <link linkend="language.operators.string">dize işleçleri</link> ve 
-     <link linkend="language.operators.comparison.coalesce">null birleşim 
-     işleçleri</link> bölümlerine de bakınız.
+     <simplelist>
+      <member><link linkend="language.operators.arithmetic">aritmetik
+       işleçler</link></member>
+      <member><link linkend="language.operators.bitwise">bitsel 
+       işleçler</link></member>
+      <member><link linkend="language.operators.comparison.coalesce">null 
+       birleşim işleçleri</link></member>
+     </simplelist>
     </para>
    </sect2>
   </sect1>
@@ -1378,29 +1369,27 @@ function p($snç, $dgr, $op, $hane, $ilt = '') {
   </para>
    <warning>
     <para>
-     PHP 7.0 öncesinde, tamsayıları, sistem uzun tamsayı genişliğinden büyük 
-     veya ona eşit olan değerlere göre veya negatif sayılara göre kaydırmak, 
-     tanımlanmamış davranışlarla sonuçlanır. Başka bir deyişle, PHP 5.x 
-     kullanıyorsanız, 32 bitlik sistemlerde 31 bitten, 64 bitlik sistemlerde 
-     63 bitten fazla kaydırma yapmayın.
-    </para>
-    <para>
-     Use functions from the <link linkend="book.gmp">gmp</link> extension for
-     bitwise manipulation on numbers beyond <literal>PHP_INT_MAX</literal>'ın 
-     ötesindeki sayılar üzerinde bitsel işlemler için 
-     <link linkend="book.gmp">gmp</link> eklentisindeki işlevleri kullanın.
+     <literal>PHP_INT_MAX</literal>'ın ötesindeki sayılar üzerinde bitsel
+     işlemler için <link linkend="book.gmp">gmp</link> eklentisindeki
+     işlevleri kullanın.
     </para>
    </warning>
-   <para>
-    Ayrıca bakınız:
-    <function>pack</function>,
-    <function>unpack</function>,
-    <function>gmp_and</function>,
-    <function>gmp_or</function>,
-    <function>gmp_xor</function>,
-    <function>gmp_testbit</function>,
-    <function>gmp_clrbit</function>
-   </para>
+
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+<!-- <link linkend="language.oop5.basic.class.class">::class</link> -->
+      <member><function>pack</function></member>
+      <member><function>unpack</function></member>
+      <member><function>gmp_and</function></member>
+      <member><function>gmp_or</function></member>
+      <member><function>gmp_xor</function></member>
+      <member><function>gmp_testbit</function></member>
+      <member><function>gmp_clrbit</function></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.comparison">
@@ -1488,21 +1477,28 @@ function p($snç, $dgr, $op, $hane, $ilt = '') {
        <entry>
         <varname>$a</varname> küçük, eşit veya büyük <varname>$b</varname> 
         olduğunda, bir tamsayı da sırasıyla küçük, eşit veya büyük sıfırdır. 
-        PHP 7 ve sonrasında kullanılabilir.
        </entry>
       </row>
      </tbody>
     </tgroup>
    </table>
    <para>
-    Bir sayıyı bir dize ile veya iki sayısal dizgeyi karşılaştırmak
-    isterseniz dize önce <link linkend="language.types.string.conversion">bir
-    sayıya dönüştürülür</link> ve karşılaştırma sayısal olarak yapılır. Bu
-    kurallar ayrıca <link linkend="control-structures.switch">switch</link>
-    deyimine de uygulanır. === veya !== ile tür ve dolayısıyla değer
-    karşılaştırıldığından böyle karşılaştırmalarda tür dönüşümü yapılmaz.
-    <informalexample>
-     <programlisting role="php">
+    Her iki terim de sayısal dize ise veya bir terim sayı ve diğeri sayısal
+    dizeyse, karşılaştırma sayısal olarak yapılır. Bu kurallar ayrıca
+    <link linkend="control-structures.switch">switch</link> deyimine de
+    uygulanır. <literal>===</literal> veya <literal>!==</literal> ile tür
+    ve dolayısıyla değer karşılaştırıldığından böyle karşılaştırmalarda
+    tür dönüşümü yapılmaz.
+   </para>
+
+   <warning>
+    <para>
+     PHP 8.0.0'dan önce, bir dize bir sayı veya sayısal bir dizeyle
+     karşılaştırılırsa, karşılaştırma yapılmadan önce dize bir sayıya
+     dönüştürülürdü. Bu, aşağıdaki örnekte görülebileceği gibi şaşırtıcı
+     sonuçlara yol açabilir:
+     <informalexample>
+      <programlisting role="php">
 <![CDATA[
 <?php
 var_dump(0 == "a"); // 0 == 0 -> doğru
@@ -1520,7 +1516,13 @@ case "a": // burası hiç işlem görmez, çünkü "a" daima 0 ile eşleşir
 }
 ?>
 ]]>
-     </programlisting>
+      </programlisting>
+     </informalexample>
+    </para>
+   </warning>
+
+   <para>
+    <informalexample>
      <programlisting role="php">
 <![CDATA[
 <?php  
@@ -1610,10 +1612,8 @@ echo $a <=> $b; // 1
        </entry>
       </row>
       <row>
-       <entry><type>string</type>, <type>resource</type> veya
-       <type>number</type></entry>
-       <entry><type>string</type>, <type>resource</type> veya
-       <type>number</type></entry>
+       <entry><type>string</type>, <type>resource</type>, <type>int</type> veya <type>float</type></entry>
+       <entry><type>string</type>, <type>resource</type>, <type>int</type> veya <type>float</type></entry>
        <entry>Diziler ve özkaynaklar sayılara dönüştürülür, sayısal
        karşılaştırma yapılır.</entry>
       </row>
@@ -1688,16 +1688,8 @@ function standard_dizi_karşılaştır($trm1, $trm2)
     </example>
    </para>
 
-   <para>
-    Ayrıca, <function>strcasecmp</function>, <function>strcmp</function>
-    işlevlerine, <link linkend="language.operators.array">Dizi
-    işleçleri</link>ne ve <link linkend="language.types">Türler</link>
-    bölümüne de bakınız.
-   </para>
-
    <warning>
-    <title>Gerçek sayıların karşılaştırılması</title>
-
+    <title>Kayan noktalı sayıların karşılaştırılması</title>
     <para>
      <type>float</type> türlerinin dahili gösteriminden dolayı iki
      <type>float</type> sayının eşitliğine bakamazsınız.
@@ -1708,6 +1700,19 @@ function standard_dizi_karşılaştır($trm1, $trm2)
      bakınız.
     </para>
    </warning>
+
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><function>strcasecmp</function></member>
+      <member><function>strcmp</function></member>
+      <member><link linkend="language.operators.array">Dizi
+       işleçleri</link></member>
+      <member><link linkend="language.types">Türler</link></member>
+     </simplelist>
+    </para>
+   </sect2>
 
    <sect2 xml:id="language.operators.comparison.ternary">
     <title>Üç Terimli İşleç</title>
@@ -1739,10 +1744,11 @@ if (empty($_POST['action'])) {
      <replaceable>ifade3</replaceable>'dir.
     </para>
     <para>
-     PHP 5.3'ten itibaren üç terimli işlecin orta parçasını dışarda bırakmak
-     mümkündür. <literal>ifade1 ?: ifade3</literal> ifadesinin sonucu
-     <replaceable>ifade1</replaceable> &true; ise <replaceable>ifade1</replaceable>
-     ile değilse <replaceable>ifade3</replaceable>'tür.
+     Üç terimli işlecin orta parçasını dışarda bırakmak mümkündür.
+     <literal>ifade1 ?: ifade3</literal> ifadesi
+     <replaceable>ifade1</replaceable> &true; ise 
+     <replaceable>ifade1</replaceable> ile,
+     değilse <replaceable>ifade3</replaceable> ile döner.
     </para>
     <note>
      <simpara>
@@ -1758,7 +1764,9 @@ if (empty($_POST['action'])) {
      <para>
       Üç terimli işleçleri iç içe kullanmanız önerilmez. PHP'nin böyle bir
       işlemin tek bir deyimde yapılmak istenmesi durumundaki davranışı
-      beklendiği gibi olmayabilir.
+      diğer dillerle karşılaştırıldığında beklendiği gibi olmayabilir.
+      Aslında PHP 8.0.0'dan önce, üçlü ifadeler diğer programlama dilleri
+      gibi sağdan sola yerine soldan sağa değerlendiriliyordu.
       <example>
        <title>- İç içe üç terimli davranışı</title>
        <programlisting role="php">
@@ -1767,7 +1775,7 @@ if (empty($_POST['action'])) {
 // ilk bakışta aşağıdaki deyimin sonucu 'true' olacak sanılır.
 echo (true?'true':false?'t':'f');
 
-// ancak gerçekte çıktı 't' olur.
+// ancak gerçekte çıktı 't' olur, PHP 8.0.0 öncesinde.
 // Çünkü üç terimli ifade soldan sağa değerlendirilir.
 
 // Aynı deyimi şöyle yazarsanız, durum anlaşılır hale gelir
@@ -1787,7 +1795,7 @@ echo ((true ? 'true' : false) ? 't' : 'f');
    <sect2 xml:id="language.operators.comparison.coalesce">
     <title>Null kaynaşma işleci</title>
     <para>
-     "??" (veya null kaynaşma) işleci, PHP 7 ve sonrasında kullanılabilir.
+     "??" null kaynaşma işleci adını alır.
      <example>
       <title>- Öntanımlı değer atama</title>
       <programlisting role="php">
@@ -1813,8 +1821,9 @@ if (isset($_POST['action'])) {
      değilse <replaceable>ifade1</replaceable>'dir.
     </para>
     <para>
-     Aslında, bu işleç sol taraf değeri mevcut değilse <function>isset</function> 
-     gibi bir uyarı çıktılamaz. Bu, özellikle dizi anahtarlarında kullanışlıdır.
+     Aslında, bu işleç sol taraf değeri mevcut değilse
+     <function>isset</function> gibi bir uyarı ya da bilgi çıktılamaz.
+     Bu, özellikle dizi anahtarlarında kullanışlıdır.
     </para>
     <note>
      <simpara>
@@ -1900,11 +1909,6 @@ $değer = @$cache[$key];
      yapılarının başına <literal>@</literal> koyamazsınız.
     </simpara>
    </note>
-   <simpara>
-    Ayrıca, <function>error_reporting</function> işlevine ve
-    <link linkend="ref.errorfunc">Hata İşleme ve Günce Kayıt
-    İşlevleri</link> bölümüne bakınız.
-   </simpara>
    <warning>
     <para>
      Şu an <literal>@</literal> hata denetim işleci, betiğin çalışmasını
@@ -1915,6 +1919,16 @@ $değer = @$cache[$key];
      sonlanıverebilir.
     </para>
    </warning>
+
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><function>error_reporting</function></member>
+      <member><link linkend="ref.errorfunc">Hata İşleme İşlevleri</link></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.execution">
@@ -1949,12 +1963,20 @@ echo "<pre>$output</pre>";
      özel bir anlamı yoktur.
     </para>
    </note>
-   <para>
-    Ayrıca, <link linkend="ref.exec">Program Çalıştırma İşlevleri</link>,
-    <function>popen</function>, <function>proc_open</function> işlevleri ve
-    <link linkend="features.commandline">PHP'nin komut satırından
-    kullanılması</link> bölümüne de bakınız.
-   </para>
+   
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><link linkend="ref.exec">Program Çalıştırma
+       İşlevleri</link></member>
+      <member><function>popen</function></member>
+      <member><function>proc_open</function></member>
+      <member><link linkend="features.commandline">PHP'nin komut satırından
+       kullanılması</link></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.increment">
@@ -2239,10 +2261,17 @@ $a .= "Dünyalı!";     // $a artık "Merhaba Dünyalı!" içeriyor
      </programlisting>
     </informalexample>
    </para>
-   <para>
-    Ayrıca, <type>string</type> türünün açıklamasına ve <link
-    linkend="ref.strings">Dizge İşlevleri</link> bölümüne bakınız.
-   </para>
+
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><link linkend="language.types.string"><type>string</type>
+       türü</link></member>
+      <member><link linkend="ref.strings">Dizge İşlevleri</link></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.array">
@@ -2372,11 +2401,19 @@ var_dump($a === $b); // bool(false)
      </programlisting>
     </example>
    </para>
-   <para>
-    Ayrıca, <type>array</type> türünün açıklamasına ve <link
-    linkend="ref.array">Dizi İşlevleri</link> bölümüne de bakınız.
-   </para>
+
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><link linkend="language.types.array"><type>array</type> 
+       türü</link></member>
+      <member><link linkend="ref.array">Dizi İşlevleri</link></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
+  
   <sect1 xml:id="language.operators.type">
    <title>Tür İşleçleri</title>
    <para>
@@ -2592,43 +2629,20 @@ bool(false)
      </screen>
     </example>
    </para>
-   <para>
-    Burada bilmeniz gereken bir kaç zorluk vardır.  PHP 5.1.0 öncesinde,
-    <literal>instanceof</literal> işleci, sınıf mevcut değilse 
-    <function>__autoload</function> çağrısı yapardı.
-    Buna ek olarak, sınıf yüklenmemişse bir ölümcül hata oluşurdu. Bunun
-    olmaması için bir <literal>devingen sınıf gönderimi</literal> veya sınıf
-    ismini içeren bir dize değişkeni kullanılabilir:
-    <example>
-     <title>- PHP 5.0'da <literal>instanceof</literal> ile ölümcül hatalardan ve
-     sınıf ismi aramalarından kaçınmak</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-$d = 'BaşkaSınıf';
-var_dump($a instanceof $d); // burada ölümcül hata oluşmaz
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-bool(false)
-]]>
-     </screen>
-    </example>
-   </para>
    <simpara>
-     <literal>instanceof</literal> işleci PHP 5'ten itibaren mevcuttur.
-     Evvelce <function>is_a</function> işlevi kullanılırdı fakat
-     <literal>instanceof</literal> kullanımını teşvik etmek için
-     <function>is_a</function> kullanımı önerilmemekteyse de PHP 5.3.0'dan
-     itibaren bundan vazgeçilmiştir.
+    <literal>instanceof</literal> işleci yerine kullanılabilecek
+    bir işlev de vardır: <function>is_a</function>
    </simpara>
-   <para>
-    Ayrıca, <function>get_class</function> ve <function>is_a</function>
-    işlevlerine de bakınız.
-   </para>
+   
+   <sect2 role="seealso">
+    &reftitle.seealso;
+    <para>
+     <simplelist>
+      <member><function>get_class</function></member>
+      <member><function>is_a</function></member>
+     </simplelist>
+    </para>
+   </sect2>
   </sect1>
  </chapter>
 

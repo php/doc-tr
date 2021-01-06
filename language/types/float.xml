@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 61a86c26f708df9ce93adfefb5ce2afac45433a5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d494ffa4d9f83b60fe66972ec2c0cf0301513b4a Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.float" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title><code>float</code></title>
 
@@ -16,21 +16,23 @@
 $a = 1.234;
 $b = 1.2e3;
 $c = 7E-10;
+$d = 1_234.567; // PHP 7.4.0 ve sonrası
 ?>
 ]]>
   </programlisting>
  </informalexample>
 
  <para>
-  Biçimsel olarak:
+  Biçimsel olarak PHP 7.4.0 ve sonrasında (öncesinde altçizgilere izin
+  verilmezdi):
  </para>
 
  <informalexample>
   <programlisting>
 <![CDATA[
-LNUM          [0-9]+
-DNUM          ([0-9]*[\.]{LNUM}) | ({LNUM}[\.][0-9]*)
-USTEL_DNUM    [+-]?(({LNUM} | {DNUM}) [eE][+-]? {LNUM})
+LNUM          [0-9]+(_[0-9]+)*
+DNUM          ([0-9]*(_[0-9]+)*[\.]{LNUM}) | ({LNUM}[\.][0-9]*(_[0-9]+)*)
+EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
 ]]>
   </programlisting>
  </informalexample>
@@ -83,16 +85,35 @@ USTEL_DNUM    [+-]?(({LNUM} | {DNUM}) [eE][+-]? {LNUM})
  <sect2 xml:id="language.types.float.casting">
   <title><code>float</code> türüne dönüşüm</title>
 
-  <para>
-   <type>string</type> türleri <type>float</type> türlere dönüştürmek için
-   gereken bilgileri <link linkend="language.types.string.conversion"
-   >Dizgelerin sayılara dönüşümü</link> bölümünde bulabilirsiniz. Diğer
-   türlerden <type>float</type> türüne dönüşüm için değer önce
-   <type>integer</type> türüne dönüştürülür. Daha fazla bilgi için <link
-   linkend="language.types.integer.casting"><literal>integer</literal> türüne
-   dönüşüm</link> bölümüne bakınız. PHP 5 itibariyle, bir <type>object</type>
-   tür <type>float</type> türe dönüştürülmeye çalışılırsa bir uyarı üretilir.
-  </para>
+  <sect3 xml:id="language.types.float.casting.from-string">
+   <title>Dizelerden</title>
+
+   <simpara>
+    Dize <link linkend="language.types.numeric-strings">sayısal</link> veya
+    öncü sayısal ise, karşılık gelen <type>float</type> değere çözümlenir,
+    aksi takdirde sıfıra (<literal>0</literal>) dönüştürülür.
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.float.casting.from-other">
+   <title>Diğer türlerden</title>
+
+   <para>
+    Diğer türlerdeki değerler için, dönüşüm, değerin önce <type>int</type>'e 
+    ardından <type>float</type>'a dönüştürülmesiyle gerçekleştirilir. 
+    Daha fazla bilgi için bkz. 
+    <link linkend="language.types.integer.casting"><type>int</type> türüne
+    dönüşüm</link>.
+   </para>
+
+   <note>
+    <para>
+     Belirli türlerin <type>int</type> türüne dönüştürülürken tanımlanmamış
+     davranışları olup, bu ayrıca <type>float</type> türüne dönüştürülürken de
+     geçerlidir.
+    </para>
+   </note>
+  </sect3>
  </sect2>
 
  <sect2 xml:id="language.types.float.comparison">
