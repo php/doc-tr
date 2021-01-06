@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 74a8bfdfceb206ee8fe5751d841a205049a9fe35 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6de2e5772f11997fb9a8c0fa2406fbb2c73b3579 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.array">
  <title><code>array</code></title>
 
@@ -50,10 +50,12 @@ array(
     kolaylaştırdığından sondaki virgülün konulması tercih edilir.
    </para>
    
-   <para>
-    PHP 5.4 ve sonrasında ayrıca, <literal>array()</literal> yerine 
-    <literal>[]</literal> kullanan kısa dizi sözdizimini de kullanabilirsiniz.
-   </para>
+   <note>
+    <para>
+     <literal>array()</literal> yerine <literal>[]</literal> kullanılan 
+     kısa bir dizi sözdizimi de vardır.
+    </para>
+   </note>
    
    <example>
     <title>- Basit bir dizi</title>
@@ -65,7 +67,7 @@ $array = array(
     "bar" => "foo",
 );
 
-// PHP 5.4 ve sonrası
+// Kısa dizi sözdizimi kullanımı
 $array = [
     "foo" => "bar",
     "bar" => "foo",
@@ -76,7 +78,7 @@ $array = [
    </example>
 
    <para xml:id="language.types.array.key-casts">
-    Bir <replaceable>anahtar</replaceable> ya <type>integer</type>  ya da
+    Bir <replaceable>anahtar</replaceable> ya <type>int</type>  ya da
     <type>string</type> türünde olabilir. Bir <replaceable>değer</replaceable> 
     ise herhangi bir türde olabilir.
    </para>
@@ -87,7 +89,7 @@ $array = [
      <listitem>
       <simpara>
        Geçerli onluk tamsayı içeren bir <type>string</type> <literal>+</literal> 
-       imi ile başlamadıkça <type>integer</type> türüne çarpıtılır. Yani, 
+       imi ile başlamadıkça <type>int</type> türüne çarpıtılır. Yani, 
        <literal>"8"</literal> anahtarı aslında <literal>8</literal> olarak 
        saklanır. Diğer yandan, <literal>"08"</literal> geçerli bir onluk 
        tamsayı olmadığından tür çarpıtmasına uğramaz.
@@ -95,14 +97,14 @@ $array = [
      </listitem>
      <listitem>
       <simpara>
-       <type>Float</type> türler ondalık kısmı kırpılarak <type>integer</type> 
+       <type>Float</type> türler ondalık kısmı kırpılarak <type>int</type> 
        türüne çarpıtılır. Yani, <literal>8.7</literal> anahtarı aslında 
-       <literal>8</literal> olarak saklanır..
+       <literal>8</literal> olarak saklanır.
       </simpara>
      </listitem>
      <listitem>
       <simpara>
-       <type>Bool</type> türler <type>integer</type> türüne çarpıtılır. Yani
+       <type>Bool</type> türler <type>int</type> türüne çarpıtılır. Yani
        <literal>true</literal> anahtarı <literal>1</literal>,
        <literal>false</literal> anahtarı da <literal>0</literal> olarak saklanır.
       </simpara>
@@ -161,12 +163,12 @@ array(1) {
    
    <para>
     PHP indisli ve ilişkisel diziler arasında bir ayrım yapmadığından 
-    <type>integer</type> ve <type>string</type> türündeki anahtarlar aynı anda 
+    <type>int</type> ve <type>string</type> türündeki anahtarlar aynı anda 
     bulunabilir.
    </para>
    
    <example>
-    <title>- Karışık <type>integer</type> ve <type>string</type> anahtarlar</title>
+    <title>- Karışık <type>int</type> ve <type>string</type> anahtarlar</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -198,8 +200,8 @@ array(4) {
 
    <para>
     <replaceable>anahtar</replaceable> belirtmek isteğe bağlıdır. Bir anahtar 
-    belirtmeksizin bir değer atanıyorsa bu değer, mevcut <type>integer</type>
-    anahtarların en büyüğüne bir eklenerek elde edilen <type>integer</type> 
+    belirtmeksizin bir değer atanıyorsa bu değer, mevcut <type>int</type>
+    anahtarların en büyüğüne bir eklenerek elde edilen <type>int</type> 
     anahtarlı elemana atanır. 
    </para>
 
@@ -318,17 +320,9 @@ string(3) "foo"
      ve <literal>$dizi{42}</literal> aynı şeyi yapar).
     </para>
    </note>
-   <para>
-    PHP 5.4 ve sonrasında, bir işlev veya yöntem çağrısının sonucunu doğrudan 
-    bir diziye atamak mümkündür. Evvelce bu işlem için geçici bir değişken 
-    kullanılırdı.
-   </para>
-   <para>
-    PHP 5.5 ve sonrasında bir diziyi başka bir diziye atamak mümükündür.
-   </para>
    
    <example>
-    <title>Array dereferencing</title>
+    <title>- Dizi başvurusu</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -336,14 +330,9 @@ function getArray() {
     return array(1, 2, 3);
 }
 
-// PHP 5.4 ve sonrasında
 $ikinciEleman = getArray()[1];
 
-// evvelce
-$tmp = getArray();
-$ikinciEleman = $tmp[1];
-
-// PHP 5.5 ve sonrasında
+// veya
 list(, $ikinciEleman) = getArray();
 ?>
 ]]>
@@ -359,9 +348,11 @@ list(, $ikinciEleman) = getArray();
    </note>
    <note>
     <para>
-     <type>string</type> türünde olmayan birebir değeri başka bir diziye atama 
-     işlemi sessiz bir &null; atamasıyla sonuçlanır, yani bir hata iletisi 
-     çıktılanmaz.
+     <type>string</type> türünde olmayan bir sayıl değeri başka bir diziye atama 
+     işlemi sessiz bir &null; atamasıyla sonuçlanır. 
+     PHP 7.4.0 öncesinde, bir hata iletisi çıktılanmazdı.
+     PHP 7.4.0 ve sonrasında, bir <constant>E_NOTICE</constant> çıktılanırken,
+     PHP 8.0.0 ve sonrasında, bir <constant>E_WARNING</constant> çıktılanır.
     </para>
    </note>
 
@@ -384,7 +375,7 @@ list(, $ikinciEleman) = getArray();
 $dizi[<replaceable>anahtar</replaceable>] = <replaceable>değer</replaceable>;
 $dizi[] = <replaceable>değer</replaceable>;
 
-// <replaceable>anahtar</replaceable> sadece <type>integer</type> veya <type>string</type> türünde olabilir.
+// <replaceable>anahtar</replaceable> sadece <type>int</type> veya <type>string</type> türünde olabilir.
 // <replaceable>değer</replaceable> herhangi bir türde olabilir.</synopsis>
 
    <para>
@@ -430,9 +421,9 @@ unset($dizi);    // Dizinin tamamını siler
    <note>
     <para>
      Yukarıda değinildiği gibi, bir diziye yeni değeri bir anahtar
-     belirtmeden atamak, mevcut en büyük tamsayı indisine bir eklenerek elde
-     edilen anahtar (en azından <literal>0</literal> değil) kullanılarak 
-     gerçekleşir. Dizide henüz bir tamsayı indis
+     belirtmeden atamak, mevcut en büyük <type>int</type> indisine bir
+     eklenerek elde edilen anahtar (en azından <literal>0</literal> değil)
+     kullanılarak gerçekleşir. Dizide henüz bir <type>int</type> indis
      yoksa anahtar olarak <literal>0</literal> (sıfır) kullanılır.
     </para>
 
@@ -791,8 +782,8 @@ $error_descriptions[8] = "Bu sadece bilgilendirici bir uyarı";
   <title>Diziye dönüşüm</title>
 
   <para>
-   <type>integer</type>, <type>float</type>, <type>string</type>,
-   <type>boolean</type> veya <type>resource</type> türünde bir değeri
+   <type>int</type>, <type>float</type>, <type>string</type>,
+   <type>bool</type> veya <type>resource</type> türünde bir değeri
    <type>array</type> türünde bir değere dönüştürme işlemi, sıfır indisli bir
    elemana bu değerin atanması ile sonuçlanır. Başka bir deyişle,
    <literal>(array)$sayılDeğer</literal> ile
