@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 8c23c19594da5936b03a667e80f6925e3765c073 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a71742330defbc0edfbc6822b4f947bf437b2f70 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.references" xmlns="http://docbook.org/ns/docbook">
   <title>Gönderimlerle İlgili Herşey</title>
 
@@ -92,15 +92,10 @@ $foo =& dğşkn_bul($bar);
 ]]>
      </programlisting>
     </informalexample>
-    PHP 5'ten beri, <link linkend="language.oop5.basic.new">new</link>
-    özdevinimli olarak gönderim döndürmekte, bu bakımdan böyle bir bağlamda
-    <literal>=&amp;</literal> kullanımı önerilmemekte ve kullanıldığında
-    PHP 5.3 ve sonrasında <constant>E_DEPRECATED</constant> ve öncesinde 
-    <constant>E_STRICT</constant> seviyesinde ileti üretmektedir.
-    PHP 7.0 itibariyle sözdizimsel olarak geçersizdir.
-    (Teknik olrarak, PHP5'teki fark, nesne değişkenleri, özkaynaklara çok benzer, 
-    gerçek nesne verisinin salt bir göstergesidir, bu nedenle bu nesne 
-    gönderimleri, evvelce aynı anlamda kullanılan "gönderimler" değildir.)  
+    <link linkend="language.oop5.basic.new">new</link> özdevinimli olarak
+    gönderim döndürür, bu bakımdan sözdizimsel olarak geçersizdir. Daha fazla
+    bilgi için bkz, <link linkend="language.oop5.references">Nesneler ve
+    Gönderimler</link>
    </para>
    <warning>
     <para>
@@ -162,9 +157,9 @@ echo $ref; // 3 - yinelenen dizinin son elemanı
    </note>
     <para>
      Tam olarak gönderime göre atama olmamakla birlikte,
-     <link linkend="function.array"><literal>array()</literal></link> dil 
-     oluşumu ile oluşturulan ifadeler, eklenecek dizi öğesi 
-     <literal>&amp;</literal> ile öncelenerek öyleymiş gibi davranabilir. 
+     <link linkend="function.array"><literal>array()</literal></link> dil
+     oluşumu ile oluşturulan ifadeler, eklenecek dizi öğesi
+     <literal>&amp;</literal> ile öncelenerek öyleymiş gibi davranabilir.
      Örnek:
      <informalexample>
       <programlisting role="php">
@@ -181,10 +176,10 @@ $arr[0]++; $arr[1]++; $arr[2]++;
      </informalexample>
     </para>
     <para>
-     Bununla birlikte, dizilerdeki gönderimlerin potansiyel olarak tehlikeli 
-     olduğunu unutmayın. Bir ifadenin sağ tarafında yapılan bir gönderimli 
-     (gönderime göre değil) atama yapılması sol tarafı bir gönderim haline 
-     getirmez, fakat dizilerin içinde bu normal atamalar korunur. Bu ayrıca, 
+     Bununla birlikte, dizilerdeki gönderimlerin potansiyel olarak tehlikeli
+     olduğunu unutmayın. Bir ifadenin sağ tarafında yapılan bir gönderimli
+     (gönderime göre değil) atama yapılması sol tarafı bir gönderim haline
+     getirmez, fakat dizilerin içinde bu normal atamalar korunur. Bu ayrıca,
      dizilerin değerleriyle aktarıldığı işlev çağrılarında da uygulanır. Örnek:
      <informalexample>
       <programlisting role="php">
@@ -207,8 +202,8 @@ $arr2[0]++;
 ]]>
       </programlisting>
      </informalexample>
-     Başka bir deyişle, dizilerin gönderim davranışı her eleman için ayrı 
-     tanımlanır; elemanların tek tek gönderim davranışı dizi taşıyıcısının 
+     Başka bir deyişle, dizilerin gönderim davranışı her eleman için ayrı
+     tanımlanır; elemanların tek tek gönderim davranışı dizi taşıyıcısının
      gönderim durumundan bağımsızdır.
     </para>
   </sect2>
@@ -312,10 +307,7 @@ foo($a);
       İşlevin çağrıldığı yerde gönderim yapıldığına dair bir belirtinin
       olmadığına dikkat ediniz; gönderim sadece işlevin üzerindedir. İşlev
       tanımı değiştirgeyi gönderimle gerektiği gibi aktarmak için tek başına
-      yeterlidir. &amp; imini <literal>işlev(&amp;$a);</literal> biçeminde 
-      kullandığınız takdirde "Çağrı sırasında gönderimle aktarım" anlamına 
-      gelen uyarıyı PHP 5.3.0 ve sonrasında almazsınız. 5.4.0 sonrasında bu 
-      uyarı kaldırıldığından böyle bir kullanım ölümcül hata ile sonuçlanır.
+      yeterlidir.
      </simpara>
     </note>
   </para>
@@ -370,8 +362,7 @@ function bar() // Dikkat, & yok
     $a = 5;
     return $a;
 }
-foo(bar()); // PHP 5.0.5'ten beri ölümcül hata üretmekte
-            // 5.1.1 den beri katı standartlar uyarısı, 7.0.0 dan beri uyarı
+foo(bar()); // Bir uyarı üretir
 
 foo($a = 5); // Bir ifade, değişken değil
 foo(5);      // Ölümcül hata üretir
@@ -438,11 +429,7 @@ echo $değerim;                   // 2 basar
       bir gönderim döndürmek isterseniz bir değişkeni değil de bir ifadenin
       sonucunu döndürmeye çalışmış olacağınızdan bu istediğinizi
       yapmayacaktır. Bir işlevden gönderimle sadece değişkenleri
-      döndürebilirsiniz, başka bir şey döndüremezsiniz. PHP 
-      5.1.0'dan beri gönderimle döndürme söz dizimini kullanan bir işlevden
-      bir devingen ifadenin veya bir <literal>new</literal> işlecinin
-      sonucunu döndürmeye çalışmak <constant>E_NOTICE</constant> seviyesinden
-      bir hata oluşturmaktadır.
+      döndürebilirsiniz, başka bir şey döndüremezsiniz.
     </simpara>
    </note>
    <para>
@@ -457,11 +444,11 @@ function &collector() {
 }
 $collection = &collector();
 $collection[] = 'foo';
-?> 
+?>
 ]]>
      </programlisting>
     </informalexample>
-    Dönen gönderimi bir gönderim umarak başka bir işleve aktarmak için bu 
+    Dönen gönderimi bir gönderim umarak başka bir işleve aktarmak için bu
     sözdizimini kullanabilirsiniz:
     <informalexample>
      <programlisting role="php">
@@ -472,15 +459,15 @@ function &collector() {
   return $collection;
 }
 array_push(collector(), 'foo');
-?> 
+?>
 ]]>
      </programlisting>
     </informalexample>
    </para>
    <note>
     <simpara>
-      <literal>array_push(&amp;collector(), 'foo');</literal> ifadesinin 
-      çalış<emphasis>MA</emphasis>yacağına, ölümcül hatayla sonuçlanacağına 
+      <literal>array_push(&amp;collector(), 'foo');</literal> ifadesinin
+      çalış<emphasis>MA</emphasis>yacağına, ölümcül hatayla sonuçlanacağına
       dikkat edin.
     </simpara>
    </note>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 6f439ae86a3c09188e2274dd895ec543181ceb9f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a71742330defbc0edfbc6822b4f947bf437b2f70 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.constants" xmlns="http://docbook.org/ns/docbook">
   <title>Sabitler</title>
@@ -10,21 +10,29 @@
     anlaşılacağı gibi, betiğin çalışması sırasında bu değer değiştirilemez
     (aslında birer sabit olmayan <link
     linkend="language.constants.predefined">sihirli sabitler</link>
-    hariç). Sabitler öntanımlı olarak büyük-küçük harf duyarlıdır.
+    hariç). Sabitler harf büyüklüğüne duyarlıdır.
     Geleneksel olarak, sabit isimleri daima büyük harfle yazılır.
   </simpara>
+
+  <note>
+   <para>
+    PHP 8.0.0'dan önce, <function>define</function> işlevi kullanılarak
+    tanımlanan sabitler harf büyüklüğüne duyarsız olabilir.
+   </para>
+  </note>
+
   <para>
     Bir sabite verilen isim PHP'de varolan diğer tüm isimlerle aynı
     kurallara tabidir. Geçerli bir sabit ismi bir harfle ya da alt çizgi imi
     ile başlar, herhangi bir sayıda harf, rakam ya da alt çizgi ile
     devam eder. Bir sabit ismi düzenli ifade olarak, şu şekilde ifade
-    edilebilir: 
-   <code>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*</code>
+    edilebilir:
+   <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>
   </para>
   <para>
-   Geçersiz ismleri ve PHP kullanımına ayrılmış isimleri 
-   <function>define</function> işlevi ile tanımlamak mümkünse de bunların 
-   değeri sadece <function>constant</function> işlevi ile elde edilebilir. 
+   Geçersiz ismleri ve PHP kullanımına ayrılmış isimleri
+   <function>define</function> işlevi ile tanımlamak mümkünse de bunların
+   değeri sadece <function>constant</function> işlevi ile elde edilebilir.
    Ancak, bu tavsiye edilmez.
   </para>
     &tip.userlandnaming;
@@ -54,45 +62,52 @@ define("__FOO__", "bir şey");
   </para>
   <note>
    <simpara>
-    Burada bir harften söz ettiğimiz zaman, ASCII a-Z veya A-Z arasındaki ki
-    bir karakterden veya karakter kodu 127-255 (<literal>0x7f-0xff</literal>)
-    arasındaki bir karakterden bahsetmiş oluyoruz.
+    Burada bir harften söz ettiğimiz zaman, ASCII a-Z, A-Z ve karakter kodu
+    128-255 (<literal>0x80-0xff</literal>) arasındaki bir karakterden bahsetmiş
+    oluyoruz.
    </simpara>
   </note>
 
   <simpara>
-    Süper küresellerde olduğu gibi, sabitlerin etki alanı da betiklerin
-    genelidir. "Etki alanı" hakkında daha ayrıntılı bilgi edinmek için <link
-    linkend="language.variables.scope">Değişken Etki Alanı</link>
+    <link linkend="language.variables.predefined">Süper küresellerde</link>
+    olduğu gibi, sabitlerin etki alanı da küreseldir. Sabitlere etki alanı
+    dikkate alınmaksızın bir komut dosyasının herhangi bir yerinden
+    erişilebilir."Etki alanı" hakkında daha ayrıntılı bilgi edinmek için
+    <link linkend="language.variables.scope">Değişken Etki Alanı</link>
     bölümünü okuyunuz.
   </simpara>
+
+  <note>
+   <simpara>
+    PHP 7.1.0'dan itibaren, bir sınıf sabitinin görünürlüğü protected
+    veya private olarak bildirebilir, bu da onları yalnızca tanımlandığı
+    sınıfın hiyerarşik etki alanında kullanılabilir hale getirir.
+   </simpara>
+  </note>
 
   <sect1 xml:id="language.constants.syntax">
    <title>Söz dizimi</title>
    <simpara>
-    Bir sabiti <function>define</function> işlevini kullanarak veya 
-    PHP 5.3.0'dan itibaren sınıf tanımlarının dışında <literal>const</literal> 
-    anahtar sözcüğünü kullanarak tanımlayabilirsiniz. 
-    <function>define</function> bir sabitin keyfî bir ifadede tanımlanmasına 
-    izin verir. <literal>const</literal> ile ilgili kısıtlamalara aşağıdaki 
-    paragrafta yer verilmiştir. Bir sabit tanımlandıktan sonra asla 
-    değiştirilemez ve tanımsız yapılamaz.
+    Bir sabit <function>define</function> işlevi veya
+    <literal>const</literal> anahtar sözcüğü kullanılarak tanımlanabilir.
+    <function>define</function> bir sabitin rastgele bir ifadede tanımlanmasına
+    izin verir. <literal>const</literal> anahtar sözcüğünün ise aşağıdaki
+    paragrafta açıklanan bazı kısıtlamaları vardır. Bir sabit tanımlandıktan
+    sonra asla değiştirilemez ve tanımsız yapılamaz.
    </simpara>
    <simpara>
-    PHP 5.6.0 öncesinde, <literal>const</literal> kullanılırken
-    sabitlere yalnızca bir sayıl değer (<type>boolean</type>,
-    <type>integer</type>, <type>float</type> veya <type>string</type>)
-    atanabilirdi. PHP 5.6 itibariyle, bir sabiti sayısal bir ifade hatta bir 
-    <type>array</type> sabit olarak tanımlamak mümkündür. Sabitleri 
-    <type>resource</type> olarak tanımlamak mümkünse de, umulmadık 
-    sonuçlara yol açabileceğinden bundan kaçınılmalıdır.
+    <literal>const</literal> anahtar sözcüğü kullanılırken, yalnızca sayıl
+    (<type>bool</type>, <type>int</type>, <type>float</type> ve
+    <type>string</type>) ifadeler ve yalnızca sayıl ifadeler içeren sabit
+    dizileri kabul edilir. Sabitleri <type>resource</type> olarak tanımlamak
+    mümkünse de, umulmadık sonuçlara yol açabileceğinden bundan kaçınılmalıdır.
    </simpara>
    <simpara>
-    Bir sabitin değerini basitçe ismini belirterek alabilirsiniz.
+    Bir sabitin değerine basitçe ismi belirtilerek erişilebilir.
     Değişkenlerin aksine, sabitlerin önüne <literal>$</literal> imi
-    ekleme<emphasis>ME</emphasis>niz gerekir. Bunun yanında, bir sabitin 
-    ismini devingen şekilde kullanmak isterseniz, sabitin değerini okumak 
-    için <function>constant</function> işlevini de kullanabilirsiniz.
+    ekleme<emphasis>ME</emphasis>niz gerekir. Bir sabitin
+    ismi devingen olarak belirtiliyorsa, sabitin değerini okumak
+    için <function>constant</function> işlevini kullanmak mümkündür.
     Tanımlanmış sabitlerin tamamının bir listesini almak için,
     <function>get_defined_constants</function> işlevini kullanabilirsiniz.
    </simpara>
@@ -104,34 +119,32 @@ define("__FOO__", "bir şey");
     </simpara>
    </note>
    <simpara>
-    Tanımlanmamış bir sabit ismi kullanırsanız, PHP, bir sabit değil bir
-    sayıl değer kullanmak istediğinizi varsayar ve sabiti <type>string</type>
-    türünde bir değer (SABIT yerine "SABIT" ) olarak ele alır. PHP 7.2.0 ve 
-    sonrasında bu önerilmemekta olup böyle bir durumda bir 
-    <constant>E_WARNING</constant> çıktılanır (evvelce bir <link 
-    linkend="ref.errorfunc">E_NOTICE</link> çıktılanırdı). Ayrıca, 
-    <code>$foo[bar]</code> kullanımının (evvelce
-    <function>define</function> işleviyle <literal>bar</literal> isminde bir
-    sabit tanımlamamışsanız) neden yanlış olduğuyla ilgili açıklamayı <link
-    linkend="language.types.array.foo-bar"><code>$foo[bar]</code> neden
-    yanlıştır?</link> başlığı altında bulabilirsiniz. Bu <link
-    linkend="language.namespaces.rules">(tamamen) nitelenmiş sabitlere</link>
-    uygulanmaz, çünkü tanımsızsa ölümcül bir hataya yol açar. Bir
-    sabitin tanımlı olup olmadığını <function>defined</function> işlevi
-    sayesinde kolayca öğrenebilirsiniz.
+    Tanımlanmamış bir sabit kullanırsanız, bir <classname>Error</classname>
+    yavrulanır. PHP 8.0.0 öncesinde, tanımsız sabitler çıplak bir kelime
+    dizesi olarak yorumlanır (SABIT yerine "SABIT" gibi). PHP 7.2.0 ve
+    sonrasında bu kullanım önerilmemekte olup böyle bir durumda bir
+    <constant>E_WARNING</constant> çıktılanır. PHP 7.2.0 öncesinde ise <link
+    linkend="ref.errorfunc">E_NOTICE</link> seviyesinde bir hata çıktılanırdı.
+    Ayrıca <link linkend="language.types.array.foo-bar">$foo[bar]</link>'ın
+    (bar bir sabit olmadıkça) neden yanlış olduğuna dair açıklamaya da bakın.
+    Bu durum, tanımlanmadıkları takdirde daima bir <classname>Error</classname>
+    yavrulayan <link linkend="language.namespaces.rules">(tamamen) nitelenmiş
+    sabitlere</link> uygulanmaz.
    </simpara>
+
+   <note>
+    <simpara>
+     Bir sabitin atanıp atanmadığına bakmak için <function>defined</function>
+     işlevini kullanın.
+    </simpara>
+   </note>
+
    <para>
     <emphasis>Sabitler ve değişkenler arasındaki farklar:</emphasis>
     <itemizedlist>
      <listitem>
       <simpara>
         Bir sabit ismi <literal>$</literal> imi ile başlamaz.
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-        PHP 5.3 ve öncesinde, sabitler basit bir atama ile değil, sadece
-        <function>define</function> işlevi kullanılarak tanımlanabilirler.
       </simpara>
      </listitem>
      <listitem>
@@ -148,14 +161,7 @@ define("__FOO__", "bir şey");
      </listitem>
      <listitem>
       <simpara>
-        Bir sabit sadece bir sayıl değerlerle (<type>boolean</type>,
-        <type>integer</type>, <type>float</type> veya <type>string</type>
-        türünde bir değerle) sonuçlanabilir. PHP 5.6 ve sonrasında
-        <literal>const</literal> sözcüğünü kullanarak (örneğin, 
-        <literal>const FOO = array(1,2,3)[0];</literal>), PHP 7.0 ve 
-        sonrasında ise <function>define</function> kullanarak dizi sabitler 
-        tanımlamak mümkünse de sonuçta değerin izin verilen türde olması 
-        gerekir.
+        Bir sabit sadece sayıl değerlere veya dizilere çözümlenebilir.
        </simpara>
      </listitem>
     </itemizedlist>
@@ -169,7 +175,8 @@ define("__FOO__", "bir şey");
 <?php
 define("CONSTANT", "Merhaba dünya.");
 echo CONSTANT; // "Merhaba dünya" çıktılar.
-echo Constant; // "Constant" çıktılar ve bir uyarı gösterir.
+echo Constant; // Hata verir: Tanımlanmamış sabit "Constant"
+               // PHP 8.0.0 öncesinde. "Constant" çıktılanıp bir uyarı verilirdi.
 ?>
 ]]>
      </programlisting>
@@ -182,19 +189,19 @@ echo Constant; // "Constant" çıktılar ve bir uyarı gösterir.
       <programlisting role="php">
 <![CDATA[
 <?php
-// PHP 5.3.0 ve sonrasında çalışır
+// Basit sayıl değer
 const SABIT = 'Merhaba Dünya';
 
 echo SABIT;
 
-// PHP 5.6.0 ve sonrasında çalışır
+// Sayıl ifade
 const DIGER_SABIT = SABIT.'; Elveda Dünya';
 echo DIGER_SABIT;
 
 const HAYVANLAR = array('köpek', 'kedi', 'kuş');
 echo HAYVANLAR[1]; // "kedi" çıktılanır
 
-// PHP 7 ve sonrasında çalışır
+// Sabit dizisi
 define('HAYVANLAR', array(
     'köpek',
     'kedi',
@@ -218,18 +225,15 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
     </para>
    </note>
 
-   <note>
+   <sect2 role="seealso">
+    &reftitle.seealso;
     <para>
-     <literal>const</literal> anahtar sözcüğü ile tanımlanan sabitler daima harf 
-     büyüklüğüne duyarlıyken <function>define</function> ile tanımlanan sabitler 
-     harf büyüklüğüne duyarlı olmayabilir.
+     <simplelist>
+      <member><link linkend="language.oop5.constants">Sınıf
+       Sabitleri</link></member>
+     </simplelist>
     </para>
-   </note>
-
-   <simpara>
-    Ayrıca, <link linkend="language.oop5.constants">Sınıf Sabitleri</link>
-    belgesine de bakınız.
-   </simpara>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.constants.predefined">
@@ -246,19 +250,19 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
    <para>
     Değerleri kullanıldıkları yere göre değişen dokuz sihirli sabit vardır.
     Örneğin, <constant>__LINE__</constant> sabitinin değeri betiğin hangi
-    satırında kullanıldığına bağlıdır. Çalışma zamanında çözümlenen sırada 
+    satırında kullanıldığına bağlıdır. Çalışma zamanında çözümlenen sırada
     sabitlerin tersine "sihirli" sabitlerin tamamı derleme sırasında çözümlenir.
-    Bu özel sabitler büyük-küçük harf farkına duyarsızdır ve aşağıda 
+    Bu özel sabitler büyük-küçük harf farkına duyarsızdır ve aşağıda
     listelenmişlerdir:
    </para>
    <para>
     <table>
-     <title>Birkaç "sihirli" PHP sabiti</title>
+     <title>PHP'nin sihirli sabitleri</title>
      <tgroup cols="2">
       <thead>
        <row>
-        <entry>İsim</entry>
-        <entry>Açıklama</entry>
+        <entry>&Name;</entry>
+        <entry>&Description;</entry>
        </row>
       </thead>
       <tbody>
@@ -296,10 +300,7 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
         <entry><constant>__CLASS__</constant></entry>
         <entry>
           Sınıf ismi. Bildirildiği isim alanını
-          (<literal>Foo\Bar</literal> gibi) içerir. PHP 5.4 ve sonrasında
-          __CLASS__ ayrıca kalıtsal özelliklerin içinde de çalışır. Böyle bir
-          yöntemin içinde kullanıldığında __CLASS__, kalıtsal özelliğin içinde
-          kullanıldığı sınıfın ismidir.
+          (<literal>Foo\Bar</literal> gibi) içerir. Kalıtsal özelliklerin içinde kullanıldığında __CLASS__, içinde kullanıldığı sınıfın ismidir.
         </entry>
        </row>
        <row xml:id="constant.trait">
@@ -322,87 +323,26 @@ echo HAYVANLAR[1]; // "kedi" çıktılanır
         </entry>
        </row>
        <row xml:id="constant.coloncolonclass">
-        <entry><constant>ClassName::class</constant></entry>
+        <entry><constant><replaceable>SınıfAdı</replaceable>::class</constant></entry>
         <entry>
-         Tamamen nitelenmiş sınıf ismi. Ayrıca bkz, 
-         <link linkend="language.oop5.basic.class.class">::class</link>.
+         Tamamen nitelenmiş sınıf ismi.
         </entry>
        </row>
       </tbody>
      </tgroup>
     </table>
    </para>
-   <para>
-    Ayrıca bakınız:
-    <function>get_class</function>,
-    <function>get_object_vars</function>,
-    <function>file_exists</function>&listendand;
-    <function>function_exists</function>.
-   </para>
 
-   <sect2 xml:id="language.constants.predefined.changelog">
-    &reftitle.changelog;
+   <sect2 role="seealso">
+    &reftitle.seealso;
     <para>
-     <informaltable>
-      <tgroup cols="2">
-       <thead>
-        <row>
-         <entry>&Version;</entry>
-         <entry>&Description;</entry>
-        </row>
-       </thead>
-       <tbody>
-        <row>
-         <entry>5.5.0</entry>
-         <entry>
-          Sihirli sabit <constant>::class</constant> eklendi.
-         </entry>
-        </row>
-        <row>
-         <entry>5.4.0</entry>
-         <entry>
-          <constant>__TRAIT__</constant> sabiti eklendi
-         </entry>
-        </row>
-        <row>
-         <entry>5.3.0</entry>
-         <entry>
-          <constant>__DIR__</constant> ve <constant>__NAMESPACE__</constant>
-          sabitleri eklendi
-         </entry>
-        </row>
-        <row>
-         <entry>5.0.0</entry>
-         <entry>
-          <constant>__METHOD__</constant> sabiti eklendi
-         </entry>
-        </row>
-        <row>
-         <entry>5.0.0</entry>
-         <entry>
-          Bu sürümden önce bazı sihirli sabitlerin değerleri daima küçük
-          harfliydi. Şimdi bunların hepsi harf büyüklüğüne duyarlıdır (isimler
-          bildirildikleri gibi içerilir).
-         </entry>
-        </row>
-        <row>
-         <entry>4.3.0</entry>
-         <entry>
-          <constant>__FUNCTION__</constant> ve <constant>__CLASS__</constant>
-          sabitleri eklendi
-         </entry>
-        </row>
-        <row>
-         <entry>4.0.2</entry>
-         <entry>
-          <constant>__FILE__</constant> daima sembolik bağları çözümlenmiş
-          mutlak bir yol içerir, halbuki eski sürümlerde bazı durumlarda göreli
-          yollar da içerirdi.
-         </entry>
-        </row>
-       </tbody>
-      </tgroup>
-     </informaltable>
+     <simplelist>
+      <member><link linkend="language.oop5.basic.class.class">::class</link></member>
+      <member><function>get_class</function></member>
+      <member><function>get_object_vars</function></member>
+      <member><function>file_exists</function></member>
+      <member><function>function_exists</function></member>
+     </simplelist>
     </para>
    </sect2>
   </sect1>
