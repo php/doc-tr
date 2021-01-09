@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: d4a5d793eb4ee97edc8653da56ea5139435ce9fc Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d65981e8ecf8def27d75b1899dfd1dfff7d29277 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
-<chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook">
+<chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+
  <title>PCRE düzenli ifade sözdizimi</title>
  <titleabbrev>Şablon Sözdizimi</titleabbrev>
 
@@ -48,10 +49,31 @@
       </informalexample>
      </para>
      <para>
-      Bir ayırıcının bir şablon içinde kendisiyle eşleşmesi gerekiyorsa önüne
-      bir tersbölü imi konmalıdır. Eğer ayırıcı şablon içinde çok sık
-      kullanılıyorsa başka bir ayırıcı seçmek okunabilirlik açısından daha
-      iyidir.
+      Açma ve kapama parantezlerinin sırasıyla başlangıç ve bitiş sınırlayıcısı
+      olduğu köşeli parantez tarzı sınırlayıcıları da kullanmak mümkündür.
+      <literal>()</literal>,  <literal>{}</literal>, <literal>[]</literal> ve
+      <literal>&lt;&gt;</literal> çiftlerinin tümü, geçerli köşeli ayraç tarzı
+      sınırlayıcı çiftleridir.
+      <informalexample>
+       <programlisting>
+<![CDATA[
+(this [is] a (pattern))
+{this [is] a (pattern)}
+[this [is] a (pattern)]
+<this [is] a (pattern)>
+]]>
+       </programlisting>
+      </informalexample>
+      Köşeli ayraç stili sınırlayıcılarının, kalıp içinde meta karakterler
+      olarak kullanıldıklarında öncelenmesi gerekmez, ancak diğer
+      sınırlayıcılarda olduğu gibi, değişmez karakterler olarak
+      kullanıldıklarında bunların da öncelenmesi gerekir.
+     </para>
+     <para>
+      Sınırlayıcının kalıp içinde eşleştirilmesi gerekiyorsa, tersbölü çizgisi
+      kullanılarak öncelenmesi gerekir. Sınırlayıcı sık sık kalıbın içinde
+      görünüyorsa, okunabilirliği artırmak için başka bir sınırlayıcı seçmek
+      daha iyidir.
       <informalexample>
        <programlisting>
 <![CDATA[
@@ -60,21 +82,9 @@
 ]]>
        </programlisting>
       </informalexample>
-      Bir dizgeyi bir şablon içine yerleştirmek için
-      <function>preg_quote</function> işlevi kullanılabilir ve işlevin ikinci
-      değiştirgesinde tersbölü ile öncelenecek ayırıcı belirtilebilir.
-     </para>
-     <para>
-      Şimdiye kadar bahsedilen ayırıcılara ek olarak ayraç tarzı ayırıcılar da
-      kullanmak mümkündür. Aşağıdaki örnekteki gibi, şablon kaşlı ayraçlar
-      arasına da alınabilir.
-      <informalexample>
-       <programlisting>
-<![CDATA[
-{this is a pattern}
-]]>
-       </programlisting>
-      </informalexample>
+     <function>preg_quote</function> işlevi, bir bir kalıba yerleştirmek için
+     bir dizeyi öncelemekte kullanılabilirve isteğe bağlı ikinci değiştirgesi,
+     öncelenecek sınırlayıcıyı belirtmek için kullanılabilir.
      </para>
      <para>
       Şablonu sonalndıran ayırıcının ardına bir
@@ -101,105 +111,110 @@
      <para>
       İki ayrı işleç ailesi vardır: Köşeli ayraçların içindekiler ve
       dışındakiler. Köşeli ayraçların dışındaki işleçler şunlardır:
-      <variablelist>
-       <varlistentry>
-        <term><emphasis>\</emphasis></term>
-        <listitem><simpara>çeşitli kullanımları olan genel önceleme
-        karakteri</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>^</emphasis></term>
-        <listitem><simpara>konu başlangıcıyla eşleşme işleci (satır kipinde
-        veya çok satırlı kipte)</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>$</emphasis></term>
-        <listitem><simpara>konu sonuyla eşleşme işleci (satır kipinde veya
-        çok satırlı kipte)</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>.</emphasis></term>
-        <listitem><simpara>(öntanımlı olarak) satırsonu hariç herhangi bir
-        karakterle eşleşme işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>[</emphasis></term>
-        <listitem><simpara>Karakter sınıfı tanımı başlatma
-        işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>]</emphasis></term>
-        <listitem><simpara>Karakter sınıfı tanımı bitirme
-        işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>|</emphasis></term>
-        <listitem><simpara>VEYA işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>(</emphasis></term>
-        <listitem><simpara>alt şablon başlatma işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>)</emphasis></term>
-        <listitem><simpara>alt şablon bitirme işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>?</emphasis></term>
-        <listitem><simpara>"(" işlecinin anlamını genişletir; 0 veya 1 kere
-        eşleşir, ayrıca tamahkarlığa son verilir.
-        (bkz. <link linkend="regexp.reference.repetition">Yineleme</link>)
-        </simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>*</emphasis></term>
-        <listitem><simpara>0 veya daha fazlasıyla eşleşme
-        işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>+</emphasis></term>
-        <listitem><simpara>1 veya daha fazlasıyla eşleşme
-        işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>{</emphasis></term>
-        <listitem><simpara>Yineleme başlatma işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>}</emphasis></term>
-        <listitem><simpara>Yineleme bitirme işleci </simpara></listitem>
-       </varlistentry>
-      </variablelist>
+   <table>
+     <title>Köşeli ayraçların dışındaki düzenli ifade işleçleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>İşleç</entry><entry>Açıklama</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>\</entry>
+        <entry>çeşitli kullanımları olan genel önceleme karakteri</entry>
+      </row>
+      <row>
+       <entry>^</entry>
+       <entry>konu başlangıcıyla eşleşme işleci (satır kipinde veya çok
+        satırlı kipte)</entry>
+      </row>
+      <row>
+       <entry>$</entry>
+       <entry>konu sonuyla eşleşme işleci (satır kipinde veya çok satırlı
+        kipte)</entry>
+      </row>
+      <row>
+       <entry>.</entry>
+       <entry>(öntanımlı olarak) satırsonu hariç herhangi bir karakterle
+        eşleşme işleci</entry>
+      </row>
+      <row>
+       <entry>[</entry>
+       <entry>Karakter sınıfı tanımı başlatma işleci</entry>
+      </row>
+      <row>
+       <entry>]</entry>
+       <entry>Karakter sınıfı tanımı bitirme işleci</entry>
+      </row>
+      <row>
+       <entry>|</entry><entry>VEYA işleci</entry>
+      </row>
+      <row>
+       <entry>(</entry><entry>alt kalıp başlatma işleci</entry>
+      </row>
+      <row>
+       <entry>)</entry><entry>alt kalıp bitirme işleci</entry>
+      </row>
+      <row>
+       <entry>?</entry>
+       <entry>"(" işlecinin anlamını genişletir; 0 veya 1 kere
+        eşleşir, ayrıca tamahkarlığa son verilir. (bkz. <link
+         linkend="regexp.reference.repetition">Yineleme</link>)</entry>
+      </row>
+      <row>
+       <entry>*</entry>
+       <entry>0 veya daha fazlasıyla eşleşme işleci</entry>
+      </row>
+      <row>
+       <entry>+</entry>
+       <entry>1 veya daha fazlasıyla eşleşme işleci</entry>
+      </row>
+      <row>
+       <entry>{</entry>
+       <entry>en küçük/en büyük ile eşleşme başlatma işleci</entry>
+      </row>
+      <row>
+       <entry>}</entry>
+       <entry>en küçük/en büyük ile eşleşme bitirme işleci</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
 
-      Köşeli ayraçların içinde kalan kısım "karakter sınıfı" adını alır.
-      Bir karakter sınıfı içinde özel anlamı olan işleçler şunlardır:
+   Köşeli ayraçların içinde kalan kısım <link
+   linkend="regexp.reference.character-classes">karakter sınıfı</link>
+   adını alır. Bir karakter sınıfı içinde özel anlamı olan işleçler şunlardır:
 
-      <variablelist>
-       <varlistentry>
-        <term><emphasis>\</emphasis></term>
-        <listitem><simpara>genel önceleme karakteri</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>^</emphasis></term>
-        <listitem><simpara>sınıfın ilk karakteri olduğu takdirde sınıfla
-        eşleşmeme işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>-</emphasis></term>
-        <listitem><simpara>karakter aralığı işleci</simpara></listitem>
-       </varlistentry>
-       <varlistentry>
-        <term><emphasis>]</emphasis></term>
-        <listitem><simpara>karakter sınıfı bitirme işleci</simpara></listitem>
-       </varlistentry>
-      </variablelist>
-
-      Aşağıdaki bölümlerde bu işleçler ayrı ayrı açıklanmıştır.
+   <table>
+     <title>Köşeli ayraçların içindeki düzenli ifade işleçleri
+      (<emphasis>karakter sınıfları</emphasis>)</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>İşleç</entry><entry>Açıklama</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>\</entry><entry>genel önceleme karakteri</entry>
+      </row>
+      <row>
+       <entry>^</entry><entry>sınıfın ilk karakteri olduğu takdirde sınıfla
+        eşleşmeme işleci</entry>
+      </row>
+      <row>
+       <entry>-</entry><entry>karakter aralığı işleci</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+      Aşağıdaki bölümlerde bu işleçlerin kullanımı ayrı ayrı açıklanmıştır.
      </para>
     </section>
 
-    <section xml:id="regexp.reference.backslash">
-     <title>Tersbölü</title>
+    <section xml:id="regexp.reference.escape">
+     <title>Önceleme karakteri</title>
      <para>
       Tersbölü karakterinin çeşitli kullanımları vardır.
       <emphasis>Tersbölünün ilk kullanım çeşidinde</emphasis>, bir harfin
@@ -219,7 +234,7 @@
      <note>
       <para>
        Tek ve çift tırnaklı PHP <link linkend="language.types.string.syntax">
-       dizgeleri</link> içinde tersbölü karakteri özel olarak ele alınır. Bir
+       dizeleri</link> içinde tersbölü karakteri özel olarak ele alınır. Bir
        \ ile eşleşen \\ düzenli ifadesi, PHP kodu içinde "\\\\" veya '\\\\'
        olarak belirtilmelidir.
       </para>
@@ -288,15 +303,19 @@
         <listitem><simpara>satırbaşı (onaltılık 0D)</simpara></listitem>
        </varlistentry>
        <varlistentry>
+        <term><emphasis>\R</emphasis></term>
+        <listitem>
+         <simpara>satırsonu:\n, \r ve \r\n ile eşleşir</simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
         <term><emphasis>\t</emphasis></term>
         <listitem><simpara>sekme (onaltılık 09)</simpara></listitem>
        </varlistentry>
        <varlistentry>
         <term><emphasis>\xhh</emphasis></term>
         <listitem>
-         <simpara>onaltılık kodu hh olan karakter, daha fazla bilgi için bkz.
-          <link linkend="regexp.reference.unicode">unicode özellikleri</link>.
-         </simpara>
+         <simpara>onaltılık kodu hh olan karakter</simpara>
         </listitem>
        </varlistentry>
        <varlistentry>
@@ -484,6 +503,12 @@
      eşleşir.
     </para>
     <para>
+     "Boşluk" karakterleri HT (9), LF (10), FF (12), CR (13) ve boşluktur (32).
+     Bununla birlikte, yerele özgü eşleştirme gerçekleşiyorsa, 128-255
+     aralığındaki kodlar sahip karakterler de boşluk karakterleri olarak
+     kabul edilebilir, örneğin, NBSP (A0).
+    </para>
+    <para>
      Bir "sözcük" karakteri herhangi bir harf, rakam veya alt çizgi karakteri
      olabilir, yani, bir Perl sözcüğünün parçası olabilen her karakter bir
      "sözcük" karakteri olabilir. Harflerin ve rakamların tanımı PCRE'nin
@@ -559,7 +584,9 @@
      <literal>\A</literal>, <literal>\Z</literal> ve
      <literal>\z</literal> tez işleçleri, seçeneklerle belirlenen şekilde
      dizgenin en başı ve dizgenin en sonu ile eşleşen geleneksel şapka ve
-     dolar imli işleçlerden (aşağıda açıklanmıştır) farklı olup
+     dolar imli işleçlerden
+     (<link linkend="regexp.reference.anchors">çıpalar</link> altında
+     açıklanmıştır) farklı olup
      <link linkend="reference.pcre.pattern.modifiers">PCRE_MULTILINE</link>
      veya <link linkend="reference.pcre.pattern.modifiers">
      PCRE_DOLLAR_ENDONLY</link> seçeneğinden etkilenmezler.
@@ -718,7 +745,7 @@
       </tgroup>
      </table>
      <para>
-      "Greek" veya "InMusicalSymbols" gibi ek özellikler PCRE tarafından
+      "InMusicalSymbols" gibi ek özellikler PCRE tarafından
       desteklenmemektedir.
      </para>
      <para>
@@ -727,17 +754,196 @@
       daima sadece büyük harflerle eşleşecektir.
      </para>
      <para>
-      <literal>\X</literal> işleci, bir ek Evrenkod dizilimi biçimindeki
-      herhangi bir Evrenkod karakteri ile eşleşir.  <literal>\X</literal>
-      işleci <literal>(?>\PM\pM*)</literal> şablonuna eşdeğerdir.
+      Evrenkod karakter kümeleri, belirli dillere ait olarak tanımlanır.
+      Bu kümelerden birindeki bir karakter, bir dil adı kullanılarak
+      eşleştirilebilir. Örneğin:
      </para>
+     <itemizedlist>
+      <listitem>
+       <simpara><literal>\p{Greek}</literal></simpara>
+      </listitem>
+      <listitem>
+       <simpara><literal>\P{Han}</literal></simpara>
+      </listitem>
+     </itemizedlist>
      <para>
-      Yani, bir im olmayan karakteri izleyen sıfır veya daha fazla sayıda im
-      karakteri ile eşleşir ve bu dizilim bir atomik grup olarak ele alınır
-      (aşağıya bakın). İm karaterleri genellikle kendilerinden önceki
-      karakterleri etkileyen aksanlardır.
-     </para>
-     <para>
+       Tanımlanmış bir dilin parçası olmayanlar ortak
+       (<literal>Common</literal>) olarak bir araya toplanır.
+       Mevcut dil listesi:
+    </para>
+  <table>
+   <title>Desteklenen Diller</title>
+   <tgroup cols="5">
+    <tbody>
+     <row>
+      <entry><literal>Arapça</literal></entry>
+      <entry><literal>Ermenice</literal></entry>
+      <entry><literal>Avestan</literal></entry>
+      <entry><literal>Balice</literal></entry>
+      <entry><literal>Bamum</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Batak</literal></entry>
+      <entry><literal>Bengali</literal></entry>
+      <entry><literal>Bopomofo</literal></entry>
+      <entry><literal>Brahmi</literal></entry>
+      <entry><literal>Braille</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Bugice</literal></entry>
+      <entry><literal>Buhid</literal></entry>
+      <entry><literal>Kanadalı_Aborijin</literal></entry>
+      <entry><literal>Karya</literal></entry>
+      <entry><literal>Çakma</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Cham</literal></entry>
+      <entry><literal>Çeroki</literal></entry>
+      <entry><literal>Ortak</literal></entry>
+      <entry><literal>Kıpti</literal></entry>
+      <entry><literal>Çivi Yazısı</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Kıbrıslı</literal></entry>
+      <entry><literal>Kiril</literal></entry>
+      <entry><literal>Deseret</literal></entry>
+      <entry><literal>Devanagari</literal></entry>
+      <entry><literal>Mısır_Hiyeroglifleri</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Etiyopyalı</literal></entry>
+      <entry><literal>Gürcü</literal></entry>
+      <entry><literal>Glagolitik</literal></entry>
+      <entry><literal>Gotik</literal></entry>
+      <entry><literal>Yunan</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Gujarati</literal></entry>
+      <entry><literal>Gurmukhi</literal></entry>
+      <entry><literal>Han</literal></entry>
+      <entry><literal>Hangul</literal></entry>
+      <entry><literal>Hanunoo</literal></entry>
+     </row>
+     <row>
+      <entry><literal>İbranice</literal></entry>
+      <entry><literal>Hiragana</literal></entry>
+      <entry><literal>İmparatorluk_Aramice</literal></entry>
+      <entry><literal>Miras</literal></entry>
+      <entry><literal>Yazıtlı_Pehlevi</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Yazıtlı_Partiyalı</literal></entry>
+      <entry><literal>Cavaca</literal></entry>
+      <entry><literal>Kaithi</literal></entry>
+      <entry><literal>Kannada</literal></entry>
+      <entry><literal>Katakana</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Kayah_Li</literal></entry>
+      <entry><literal>Kharoshthi</literal></entry>
+      <entry><literal>Kımer</literal></entry>
+      <entry><literal>Lao</literal></entry>
+      <entry><literal>Latince</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Lepcha</literal></entry>
+      <entry><literal>Limbu</literal></entry>
+      <entry><literal>Doğrusal_B</literal></entry>
+      <entry><literal>Lisu</literal></entry>
+      <entry><literal>Likyaca</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Lidyaca</literal></entry>
+      <entry><literal>Malayalamca</literal></entry>
+      <entry><literal>Mandaik</literal></entry>
+      <entry><literal>Meetei_Mayek</literal></entry>
+      <entry><literal>Meroitik_Elyazısı</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Meroitik_Hiyeroglifler</literal></entry>
+      <entry><literal>Miao</literal></entry>
+      <entry><literal>Moğolca</literal></entry>
+      <entry><literal>Myanmar</literal></entry>
+      <entry><literal>New_Tai_Lue</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Nko</literal></entry>
+      <entry><literal>Ogham</literal></entry>
+      <entry><literal>Eski_İtalik</literal></entry>
+      <entry><literal>Eski_Farsça</literal></entry>
+      <entry><literal>Eski_Güney_Arapçası</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Eski_Türk</literal></entry>
+      <entry><literal>Ol_Chiki</literal></entry>
+      <entry><literal>Oriya</literal></entry>
+      <entry><literal>Osmanya</literal></entry>
+      <entry><literal>Phags_Pa</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Fenike</literal></entry>
+      <entry><literal>Rejang</literal></entry>
+      <entry><literal>Runik</literal></entry>
+      <entry><literal>Samiriyeli</literal></entry>
+      <entry><literal>Saurashtra</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Sharada</literal></entry>
+      <entry><literal>Shavian</literal></entry>
+      <entry><literal>Sinhala</literal></entry>
+      <entry><literal>Sora_Sompeng</literal></entry>
+      <entry><literal>Sundaca</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Syloti_Nagri</literal></entry>
+      <entry><literal>Süryanice</literal></entry>
+      <entry><literal>Tagalog</literal></entry>
+      <entry><literal>Tagbanwa</literal></entry>
+      <entry><literal>Tai_Le</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Tai_Tham</literal></entry>
+      <entry><literal>Tai_Viet</literal></entry>
+      <entry><literal>Takri</literal></entry>
+      <entry><literal>Tamil</literal></entry>
+      <entry><literal>Telugu</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Thaana</literal></entry>
+      <entry><literal>Thai</literal></entry>
+      <entry><literal>Tibetçe</literal></entry>
+      <entry><literal>Tifinagh</literal></entry>
+      <entry><literal>Ugaritik</literal></entry>
+     </row>
+     <row>
+      <entry><literal>Vai</literal></entry>
+      <entry><literal>Yi</literal></entry>
+      <entry />
+      <entry />
+      <entry />
+      <entry />
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+  <para>
+   <literal>\X</literal> öncelemi, bir Evrenkod genişletilmiş grafem kümesiyle
+   eşleşir. Genişletilmiş bir grafem kümesi, tek bir glif oluşturmak için
+   birleşen bir veya daha fazla Evrenkod karakteridir. Gerçekte, bu, Evrenkod
+   eşdeğeri olarak düşünülebilir. Çünkü onu oluşturmak için gerçekte kaç
+   karakter kullanıldığına bakılmaksızın, oluşturulmuş bir karakterle
+   eşleşecektir.
+  </para>
+  <para>
+   8.32'den daha eski PCRE sürümlerinde (birlikte verilen PCRE kitaplığını
+   kullanırken 5.4.14'ten önceki PHP sürümlerine karşılık gelir),
+   <literal>\X</literal> ile <literal>(?>\PM\pM*)</literal> eşdeğerdir. Yani,
+   "mark" özelliği olmayan bir karakterle, ardından "mark" özelliğine sahip
+   sıfır veya daha fazla karakterle eşleşir ve diziyi bir atomik grup olarak
+   ele alır (aşağıya bakın). "Mark" özelliğine sahip karakterler tipik olarak
+   önceki karakteri etkileyen aksanlardır.
+  </para>
+  <para>
       Evrenkodlu karakterlerle eşleşme hızlı değildir, çünkü
       PCRE on beş binden fazla karakter içeren bir kümeyi araştırmak
       zorundadır. <literal>\d</literal> ve <literal>\w</literal> gibi
@@ -746,8 +952,8 @@
      </para>
     </section>
 
-    <section xml:id="regexp.reference.circudollar">
-     <title>Şapka ve Dolar İmi</title>
+    <section xml:id="regexp.reference.anchors">
+     <title>Çıpalar - Şapka ve Dolar İmi</title>
      <para>
       Bir karakter sınıfının dışında, öntanımlı eşleşme kipinde, şapka imi (<literal>^</literal>),
       eğer geçerli eşleşme noktası eşleşmeye konu dizgenin başlangıcındaysa
@@ -830,8 +1036,8 @@
      </para>
     </section>
 
-    <section xml:id="regexp.reference.squarebrackets">
-     <title>Köşeli Ayraçlar</title>
+    <section xml:id="regexp.reference.character-classes">
+     <title>Karakter Sınıfları - Köşeli Ayraçlar</title>
      <para>
       Bir karakter sınıfı [ köşeli ayracıyla ] köşeli ayracı arasına alınarak
       tanımlanır. Bir karakter sınıfı içinde ] köşeli ayracının özel bir
@@ -957,12 +1163,16 @@
      </para>
      <para>
       UTF-8 kipinde, 128'den büyük değerli karakterler POSIX karakter
-      sınıflarının hiçbiriyle eşleşmeyecektir.
+      sınıflarının hiçbiriyle eşleşmeyecektir. PHP 5.3.0 ve libpcre 8.10'dan
+      itibaren bazı karakter sınıfları Evrenkod karakter özelliklerini
+      kullanacak şekilde değiştirilmiştir, bu durumda söz konusu kısıtlama
+      geçerli değildir. Ayrıntılar için <link
+       xlink:href="&url.pcre.man;">PCRE(3) kılavuzuna</link> bakın.
      </para>
     </section>
 
-    <section xml:id="regexp.reference.verticalbar">
-     <title>Boru Karakteri</title>
+    <section xml:id="regexp.reference.alternation">
+     <title>Değişim - Boru Karakteri</title>
      <para>
       Boru karakteri bir şablon içinde olasılıkları ayırmak için kullanılır.
       Örneğin, <literal>Hasan|Hüseyin</literal> şablonu hem "Hasan" hem de
@@ -1020,7 +1230,8 @@
          <row>
           <entry><literal>X</literal></entry>
           <entry><link linkend="reference.pcre.pattern.modifiers">
-          PCRE_EXTRA</link> için</entry>
+          PCRE_EXTRA</link> için (PHP 7.3.0 ve sonrasında artık
+          desteklenmiyor.)</entry>
          </row>
          <row>
           <entry><literal>J</literal></entry>
@@ -1114,8 +1325,9 @@
      hesaba katılmaz. Örneğin, "the  white  queen" dizgesini <literal>the
      ((?:red|white) (king|queen))</literal> şablonu ile eşleştirmek istersek
      "white queen" ve  "queen" alt dizgeleri 1 ve 2 olarak numaralanır.
-     Yakalayan alt şablonların azami sayısı 99, yakalayan ve yakalamayan alt
-     şablonların azami sayısı ise 200'dür.
+     Yakalayan alt şablonların azami sayısı 65535'tir. Bununla birlikte,
+     libpcre'nin yapılandırma seçeneklerine bağlı olarak bu kadar büyük
+     şablonları derlemek mümkün olmayabilir.
     </para>
     <para>
      Uygun bir kısaltma olarak, yakalamayan bir alt şablonun başlangıcında bir
@@ -1351,10 +1563,12 @@
 
      <para>
       İsimli alt şablonlarla ilgili geriye gönderimler
-      <literal>(?P=isim)</literal> veya PHP 5.2.4 sürümünden beri ayrıca,
-      <literal>\k&lt;isim&gt;</literal>, <literal>\k'isim'</literal>,
-      <literal>\k{isim}</literal> veya <literal>\g{isim}</literal>
-      biçeminde olabilmektedir.
+      <literal>(?P=ad)</literal> ile veya PHP 5.2.2'den beri
+      <literal>\k&lt;ad&gt;</literal> veya <literal>\k'ad'</literal> ile
+      sağlanabilir. Ayrıca, <literal>\k{ad}</literal> ve
+      <literal>\g{ad}</literal> için PHP 5.2.4 ve
+      <literal>\g&lt;ad&gt;</literal> ve <literal>\g'ad'</literal> için
+      PHP 5.2.7 destek ekledi.
      </para>
     </section>
 
@@ -1363,7 +1577,7 @@
      <para>
       Bir tez, herhangi bir karakterin tüketilmediği bir eşleşme noktasının
       öncesinde veya sonrasındaki karakterler üzerinde yapılacak bir sınama
-      belirtir. Basit savlar yukarıda da açıklandığı gibi \b,
+      belirtir. Basit savlar <link linkend="regexp.reference.escape">önceleme karakteri</link> altında açıklandığı gibi \b,
       \B,  \A,  \Z,  \z, ^ ve $ olarak kodlanabilir. Birden fazla alt
       şablondan oluşan daha karmaşık savlar da düzenlenebilir. Bunların iki
       çeşidi vardır: Eşleşmeye konu dizge içinde geçerli konumun
@@ -1570,8 +1784,15 @@
       karakterlerinin yok sayılmakta olduğunu
       (<link linkend="reference.pcre.pattern.modifiers">PCRE_EXTENDED</link>
       seçeneği) varsayarak boşluklarla üç parçaya bölünmüş şu şablonu ele
-      alalım: <literal>( \( )?    [^()]+    (?(1) \) )</literal>
+      alalım:
      </para>
+  <informalexample>
+   <programlisting>
+<![CDATA[
+( \( )?    [^()]+    (?(1) \) )
+]]>
+   </programlisting>
+  </informalexample>
      <para>
       İlk parça bir açan yaylı ayraç ile eşleşir ve karakter mevcut olduğu
       takdirde bu, ilk yakalayan alt dizge olur. İkinci parça yaylı ayraç
