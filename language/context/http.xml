@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 73b8b5c0299a67b34a77afd1929b953feb128ce1 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a8aca5fb3fa39285aa22a856cffcb2bbedc15d5b Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.http" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>HTTP bağlamı seçenekleri</refname>
@@ -92,7 +92,7 @@
     <varlistentry xml:id="context.http.request-fulluri">
      <term>
       <parameter>request_fulluri</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -109,7 +109,7 @@
     <varlistentry xml:id="context.http.follow-location">
      <term>
       <parameter>follow_location</parameter>
-      <type>integer</type>
+      <type>int</type>
      </term>
      <listitem>
       <para>
@@ -124,7 +124,7 @@
     <varlistentry xml:id="context.http.max-redirects">
      <term>
       <parameter>max_redirects</parameter>
-      <type>integer</type>
+      <type>int</type>
      </term>
      <listitem>
       <para>
@@ -149,13 +149,6 @@
       <para>
        <literal>1.0</literal> öntanımlıdır.
       </para>
-      <note>
-       <para>
-        PHP'nin 5.3.0 sürümünden önce parçalı aktarım gerçeklenmemişti.
-        Dolayısıyla bu değeri <literal>1.1</literal> olarak belirtirseniz,
-        <literal>1.1</literal> uyumluluğundan kendiniz sorumlu olursunuz.
-       </para>
-      </note>
      </listitem>
     </varlistentry>
     <varlistentry xml:id="context.http.timeout">
@@ -178,7 +171,7 @@
     <varlistentry xml:id="context.http.ignore-errors">
      <term>
       <parameter>ignore_errors</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -190,75 +183,6 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </para>
- </refsect1><!-- }}} -->
-
- <refsect1 role="changelog"><!-- {{{ -->
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.4</entry>
-       <entry>
-        Eklendi: <parameter>follow_location</parameter>.
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Değişti: <parameter>protocol_version</parameter> yönergesine
-        <literal>1.1</literal> atandığında parçalı aktarım kodlaması artık
-        desteklenmektedir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.2.10</entry>
-       <entry>
-        Eklendi: <parameter>ignore_errors</parameter>
-       </entry>
-      </row>
-      <row>
-       <entry>5.2.10</entry>
-       <entry>
-        Değişti: Artık <parameter>header</parameter> sayısal indisli bir dizi
-        olabilmektedir.
-        </entry>
-       </row>
-      <row>
-       <entry>5.2.1</entry>
-       <entry>
-        Eklendi: <parameter>timeout</parameter>
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        Eklendi: HTTP vekilleri üzerinden HTTPS vekaleti
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        Eklendi: <parameter>max_redirects</parameter>
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        Eklendi: <parameter>protocol_version</parameter>
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1><!-- }}} -->
 
@@ -297,7 +221,7 @@ $sonuç = file_get_contents('http://mesela.dom/submit.php', false, $bağlam);
   </para>
   <para>
    <example xml:id="context.http.example-fetch-ignore-redirect"><!-- {{{ -->
-    <title>Başlıklar ve içerik alınırken yönlendirmeleri yoksaymak </title>
+    <title>- Başlıklar ve içerik alınırken yönlendirmeleri yoksaymak </title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -344,9 +268,9 @@ fclose($stream);
   <note>
    <title>HTTP durum satırı</title>
    <simpara>
-    Bu akım sarmalayıcı bir yönlendirmeyi izlerken 
-    <function>stream_get_meta_data</function> tarafından döndürülen 
-    <literal>wrapper_data</literal>, gerçekte <literal>0</literal> indisinde 
+    Bu akım sarmalayıcı bir yönlendirmeyi izlerken
+    <function>stream_get_meta_data</function> tarafından döndürülen
+    <literal>wrapper_data</literal>, gerçekte <literal>0</literal> indisinde
     içerik verisine uygulanan HTTP durum satırını içermeyebilir.
    </simpara>
    <screen>
@@ -364,7 +288,8 @@ array (
    </screen>
    <simpara>
     İlk istek <literal>301</literal> (kalıcı yönlendirme) ile döndü, dolayısıyla
-    akım sarmalayıcı özdevinimli olarak yönlendirmeyi izleyip bir <literal>200</literal> yanıtı aldı (indis = <literal>4</literal>).
+    akım sarmalayıcı otomatik olarak yönlendirmeyi izleyip bir
+    <literal>200</literal> yanıtı aldı (indis = <literal>4</literal>).
    </simpara>
   </note>
  </refsect1>

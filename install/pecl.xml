@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f6cddcda4d418653147ed1361ef9b51b3753c244 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2221e0e7e0de8207ca4766892f1cdbb6be7d30a7 Maintainer: nilgun Status: ready -->
 <chapter xml:id="install.pecl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>PECL eklentilerinin kurulması</title>
 
@@ -26,7 +26,7 @@
     Burada genel olarak eklentinin paylaşımlı olarak derlenmesi, kurulması ve
     yüklenmesi üzerinde durulacaktır. Sonraki bölümlerde açıklanan yöntemler
     eklentiyi nasıl derleyip kuracağınızla ilgili çeşitli talimatlar içerir,
-    fakat bunları sizin yerinize özdevinimli olarak yüklemezler. Eklentiler
+    fakat bunları sizin yerinize otomatik olarak yüklemezler. Eklentiler
     bir <link linkend="ini.extension">extension</link> yönergesi eklenerek
     yüklenebilirler. Bunun için &php.ini; dosyasını veya
     <function>dl</function> işlevini kullanabilirsiniz.
@@ -49,7 +49,7 @@
    <listitem>
     <simpara>
       <literal>pecl install eklenti</literal> komutu eklenti kodunu
-      özdevinimli olarak indirir, dolayısıyla ayrı bir indirme işlemine gerek
+      otomatik olarak indirir, dolayısıyla ayrı bir indirme işlemine gerek
       kalmaz.
     </simpara>
    </listitem>
@@ -112,20 +112,20 @@ $ svn checkout http://svn.php.net/repository/pecl/extname/trunk eklenti
   </para>
   <para>
     Bir eklentiyi yüklemek için sisteminizde o eklentinin ".dll" dosyasının
-    bulunması gerekir. Tüm eklentiler özdevinimli olarak belirli aralıklarla
+    bulunması gerekir. Tüm eklentiler otomatik olarak belirli aralıklarla
     PHP Grubu tarafından derlenirler (bunları indirmek için sonraki bölüme
     bakınız).
   </para>
   <para>
     Bir eklentiyi PHP içinde derlemek için <link
-    linkend="install.windows.legacy.building">Kaynak kod paketinden 
+    linkend="install.windows.legacy.building">Kaynak kod paketinden
     derleme</link> belgesine bakınız.
   </para>
   <para>
     Bir eklentiyi tek başına (yani bir DLL olarak) derlemek için  <link
-    linkend="install.windows.legacy.building">Kaynak kod paketinden 
-    derleme</link> belgesine bakınız. Eğer DLL dosyası ne PHP dağıtımınızda ne 
-    de PECL sitesinde mevcutsa, eklentiyi kullanmaya başlamadan önce derlemek 
+    linkend="install.windows.legacy.building">Kaynak kod paketinden
+    derleme</link> belgesine bakınız. Eğer DLL dosyası ne PHP dağıtımınızda ne
+    de PECL sitesinde mevcutsa, eklentiyi kullanmaya başlamadan önce derlemek
     zorunda kalabilirsiniz.
   </para>
 
@@ -142,10 +142,11 @@ $ svn checkout http://svn.php.net/repository/pecl/extname/trunk eklenti
    </para>
    <para>
     Bununla birlikte, çekirdek eklentilerle sağlanmamış bir işlevselliğe
-    ihtiyaç duyarsanız, PECL sitesinde bakabilirsiniz. PHP Eklentileri Halk
-    Kütüphanesi (PECL -  PHP Extension Community Library) bir PHP Eklentileri
-    deposu olup PHP eklentilerinin geliştirilmesi ve indirilmesi için
-    barındırma oluşumlarını ve bilinen tüm eklentilerin bir dizinini içerir.
+    ihtiyaç duyarsanız, <link xlink:href="&url.pecl;">PECL sitesine</link>
+    bakabilirsiniz. PHP Eklentileri Halk Kütüphanesi (PECL -  PHP Extension
+    Community Library) bir PHP Eklentileri deposu olup PHP eklentilerinin
+    geliştirilmesi ve indirilmesi için barındırma oluşumlarını ve bilinen
+    tüm eklentilerin bir dizinini içerir.
    </para>
    <para>
     Kendi kullanımınız için bir eklenti geliştiriyorsanız PECL'de
@@ -197,7 +198,7 @@ $ svn checkout http://svn.php.net/repository/pecl/extname/trunk eklenti
    </para>
    <para>
     <example>
-     <title><function>phpinfo</function> kullanımı</title>
+     <title>- <function>phpinfo</function> kullanımı</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -227,6 +228,14 @@ sürücü:\\dizin\yolu\php\executable\php.exe -i
     eklentinin belirtildiği satırın başındaki noktalı virgülü silmek
     olacaktır.
     <screen>
+   </para>
+   <para>
+    PHP 7.2.0 ve üzeri sürümlerde, eklentinin dosya adı yerine eklenti adının
+    kullanılabileceğini unutmayın. Bu işletim sisteminden bağımsız ve daha
+    kolay olduğundan, özellikle yeni başlayanlar için, yüklenecek eklentileri
+    belirlemenin önerilen yolu haline gelir. Dosya adları, önceki sürümlerle
+    uyumluluk için desteklenmeye devam etmektedir.
+   </para>
 <![CDATA[
 ;extension=php_eklenti.dll
 ]]>
@@ -236,13 +245,20 @@ sürücü:\\dizin\yolu\php\executable\php.exe -i
 extension=php_eklenti.dll
 ]]>
     </screen>
-   </para>
+    <screen>
+<![CDATA[
+; PHP 7.2 ve sonrasında şunu tercih edin:
+extension=eklenti
+zend_extension=diğer_eklenti
+]]>
+    </screen>
    <para>
     Bununla birlikte, bazı HTTP sunucuları, PHP çalıştırılabilirinin yanına
     konmuş php.ini dosyasını kullanmadıklarından eklentinizi
     göremeyebilirler. HTTP sunucunuzun kullandığı
     <filename>php.ini</filename> dosyasının bulunduğu yeri
     <function>phpinfo</function> işlevini kullanarak öğrenebilirsiniz:
+   </para>
     <screen>
 <![CDATA[
 Configuration File (php.ini) Path C:\WINDOWS
@@ -253,7 +269,6 @@ Configuration File (php.ini) Path C:\WINDOWS
 Loaded Configuration File         C:\Program Files\PHP\5.2\php.ini
 ]]>
     </screen>
-   </para>
    <para>
     Eklentiyi etkin kıldıktan sonra  <filename>php.ini</filename> dosyanızı
     kaydedin ve HTTP sunucunuzu yeniden başlattıktan sonra tekrar
@@ -487,9 +502,9 @@ Options:
  </sect1>
 
  <sect1 xml:id="install.pecl.static">
-  <title>PECL eklentilerinin PHP içinde duruk olarak derlenmesi</title>
+  <title>PECL eklentilerinin PHP içinde statik olarak derlenmesi</title>
   <simpara>
-    Bazen bir PECL eklentisini PHP çalıştırılabilirinin içinde duruk olarak
+    Bazen bir PECL eklentisini PHP çalıştırılabilirinin içinde statik olarak
     derlemeniz gerekebilir. Bunu yapmak için eklentiyi
     <filename>/php/kaynak/dizininiz/ext/</filename> dizinine yerleştirmeniz
     ve PHP kaynak paketinin <code>configure</code> betiğini yeniden

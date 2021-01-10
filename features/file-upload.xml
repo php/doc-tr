@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2bb07c8c43f028c665a33bfc08a22639e9e35dc6 Maintainer: yasar  Status: ready -->
-<!-- CREDITS: mesut -->
+<!-- EN-Revision: 1de9b77d0306d3589e8fe27e4fa587718eb691c2 Maintainer: nilgun  Status: ready -->
+<!-- CREDITS: mesut, yasar -->
  <chapter xml:id="features.file-upload" xmlns="http://docbook.org/ns/docbook">
   <title>Karşıya dosya yükleme</title>
 
@@ -156,9 +156,6 @@
      <programlisting role="php">
 <![CDATA[
 <?php
-// 4.1.0'dan önceki PHP sürümlerinde, $_FILES yerine
-// $HTTP_POST_FILES kullanılmalıdır.
-
 $dizin = '/var/siteler/uploads/';
 $yuklenecek_dosya = $dizin . basename($_FILES['kulldosyasi']['name']);
 
@@ -229,6 +226,9 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     if ($hata == UPLOAD_ERR_OK) {
         $tmp_name = $_FILES["resimler"]["tmp_name"][$anahtar];
         $name = $_FILES["resimler"]["name"][$anahtar];
+        // basename() dosya sisteminin geçiş saldırılarını engelleyebilir;
+        // dosya adının daha fazla doğrulanması/temizliği uygun olabilir
+        $name = basename($_FILES["resimler"]["name"][$anahtar]);
         move_uploaded_file($tmp_name, "data/$name");
     }
 }
@@ -409,7 +409,7 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     kullanarak çoklu dosya gönderilebilir.
    </simpara>
    <simpara>
-    Ayrıca bilgilerin özdevinimli olarak dizilerde düzenlendiği bir eşzamanlı
+    Ayrıca bilgilerin otomatik olarak dizilerde düzenlendiği bir eşzamanlı
     dosya gönderimi de mümkündür. Bunun için, HTML formunda birden fazla input
     için aynı dizi söz dizimini kullanmalısınız:
    </simpara>
@@ -433,8 +433,7 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     <varname>$_FILES['kullanici_dosyasi']</varname>,
     <varname>$_FILES['kullanici_dosyasi']['name']</varname> ve
     <varname>$_FILES['kullanici_dosyasi']['size']</varname> dizileri
-    ilklendirilir (4.1.0'dan önceki PHP sürümleri için
-    <varname>$HTTP_POST_FILES</varname>).
+    ilklendirilir.
     <link linkend="ini.register-globals">register_globals</link> değeri "on"
     olduğunda, yüklenen dosyalar içinde küreseller ilklendirilir. Bunlardan
     her biri gönderilen dosyanın değerine uygun olarak sayısal indisli bir
@@ -542,6 +541,16 @@ fclose($putdata);
     </example>
    </para>
   </sect1>
+
+  <sect1 xml:id="features.file-upload.errors.seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="security.filesystem">Dosya Sistemi
+    Güvenliği</link></member>
+   </simplelist>
+  </para>
+ </sect1>
 
  </chapter>
 
