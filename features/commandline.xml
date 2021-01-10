@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 17fc359d7eb75d7d6199db77518924f2d351ed8b Maintainer: yasar  Status: ready -->
-
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: yasar  Status: ready -->
 <chapter xml:id="features.commandline" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>PHP'nin komut satırından kullanımı</title>
  <titleabbrev>Komut satırından kullanım</titleabbrev>
@@ -1108,7 +1107,7 @@ php -r 'print_r(get_defined_constants());'
       (<literal>stdin</literal>) yollamak suretiyle.
     </para>
     <para>
-     Bu, PHP kodunu devingen olarak oluşturma ve bunu çalıştırma yeteneği
+     Bu, PHP kodunu dinamik olarak oluşturma ve bunu çalıştırma yeteneği
       sağlar. Örneğin:
     </para>
     <informalexample>
@@ -1270,7 +1269,7 @@ Bu tek seçenekli bir komut satırı PHP betiğidir.
   kontrol ettik. Ayrıca eğer değiştirge <option>--help</option>,
   <option>-help</option>, <option>-h</option> veya <option>-?</option> ise
   yardım iletisini yazdırdık ve <varname>$argv[0]</varname> ile betik adını
-  devingen olarak yazdırdık. Bunlardan başka değiştirgeler aldıysak bunlar
+  dinamik olarak yazdırdık. Bunlardan başka değiştirgeler aldıysak bunlar
   yerine onları yazdırdık.
  </para>
  <para>
@@ -1305,13 +1304,22 @@ Bu tek seçenekli bir komut satırı PHP betiğidir.
    >Readline</link> eklentisinin belgesine bakınız.
  </para>
  <para>
-  Windows üzerindeyseniz PHP, 
-  <link linkend="install.windows.legacy.commandline">Microsoft Windows 
+  Windows üzerindeyseniz PHP,
+  <link linkend="install.windows.legacy.commandline">Microsoft Windows
   üzerinde PHP Komut Satırı</link>
   bölümünde açıklandığı gibi <literal>.php</literal> uzantısına veya
   <filename>C:\php\php.exe</filename> çalıştırılabilirinin belirtilmesine
   gerek kalmadan çalıştırılmak üzere yapılandırılabilir.
  </para>
+
+  <note>
+   <para>
+    Windows'ta PHP'yi gerçek bir kullanıcı hesabı altında çalıştırmanız
+    önerilir. Aksi takdirde, bir ağ hizmeti altında çalışırken, "Hesap
+    adları ile güvenlik kimlikleri arasında hiçbir eşleştirme yapılmadığı"
+    için belirli işlemler başarısız olur.
+   </para>
+  </note>
  </section>
  <!--}}}-->
 
@@ -1426,7 +1434,9 @@ php -r 'fwrite(STDERR, "stderr\n");'
    PHP 5.1.0'dan itibaren, PHP <option
    role="configure">--with-readline</option> seçeneği ile derlenmişse,
    &cli.sapi; <option>-a</option> seçeneği kullanıldığında etkileşimli bir
-   kabuk açar.
+   kabuk açar. PHP 7.1.0'dan itibaren etkileşimli kabuk,
+   <link linkend="book.readline">readline eklentisi</link> etkinse, Windows
+   altında da kullanılabilmektedir.
   </para>
 
   <para>
@@ -1704,6 +1714,37 @@ php >
    </tgroup>
   </table>
 
+  <table>
+   <title>Changelog</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Yerleşik HTTP sunucusuna birden çok eşzamanlı istek gerektiren kodu
+       sınamak için sunucuyu birden çok workers modülünü çatallayacak şekilde
+       yapılandırabilirsiniz. Sunucuyu başlatmadan önce
+       <envar>PHP_CLI_SERVER_WORKERS</envar> ortam değişkenini istenen workers
+       modülü sayısına ayarlayın. Bu, Windows'ta desteklenmez.
+       <warning>
+        <para>
+         Bu <emphasis>deneysel</emphasis> özellik, üretimde kullanım için
+         tasarlanmamıştır. Genel olarak, yerleşik HTTP Sunucuları üretimde
+         kullanım için tasarlanmamıştır.
+        </para>
+       </warning>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
   <example>
    <title>HTTP sunucusunun başlatılması</title>
    <programlisting role="shell">
@@ -1742,7 +1783,10 @@ Press Ctrl-C to quit.
 ]]>
    </screen>
   </example>
-
+   <para>
+    PHP 7.4.0'dan önce, sembolik bağlantılı statik kaynaklara, yönlendirici
+    betiği bunları işlemediği sürece Windows'ta erişilemezdi.
+   </para>
   <example>
    <title>- Belge kök dizini belirterek başlatma</title>
    <programlisting role="shell">
@@ -1789,7 +1833,7 @@ $ php -S localhost:8000 router.php
   </example>
 
   <example>
-   <title>Checking for CLI Web Server Use</title>
+   <title>- CLI Sunucusunda kullanmadan önce betiği sınamak</title>
 <para>
   Bir yönlendirici betiği geliştirici CLI sunucusunda kullandıktan sonra asıl
   HTTP sunucusunda yeniden kullanmak:
@@ -1839,14 +1883,19 @@ $ php -S localhost:8000 router.php
 
   <example>
    <title>CLI sunucusuna uzak makinelerden erişim</title>
-<para>
-  HTTP sunucusuna port 8000'den şöyle erişebilirsiniz:
-</para>
+   <para>
+    HTTP sunucusuna port 8000'den şöyle erişebilirsiniz:
+   </para>
    <programlisting role="shell">
 <![CDATA[
 $ php -S 0.0.0.0:8000
 ]]>
    </programlisting>
+   <warning>
+    <para>
+      Yerleşik HTTP sunucusu internette kullanılmamalıdır.
+    </para>
+   </warning>
   </example>
 
  </section>
@@ -1886,7 +1935,7 @@ $ php -S 0.0.0.0:8000
      <varlistentry xml:id="ini.cli-server.color">
       <term>
        <parameter>cli_server.color</parameter>
-       <type>boolean</type>
+       <type>bool</type>
       </term>
       <listitem>
        <para>
