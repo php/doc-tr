@@ -66,7 +66,7 @@ $a = strlen('selam'); // "İsim alanlarının kullanımı: Son çare olarak
 
 $d = \isim\alanım\SABİTİM;        // isim alanı işleci ve __NAMESPACE__
 $d = __NAMESPACE__ . '\SABİTİM';  // sabiti" bölümüne bakınız
-echo constant($d); // "İsim alanları ve devingen dil özellikleri"
+echo constant($d); // "İsim alanları ve dinamik dil özellikleri"
                    // bölümüne bakınız
 ?>
 ]]>
@@ -331,7 +331,7 @@ echo Projem\Bağlantı::başlat();
     <listitem>
      <simpara>
       <literal>$a = new fan();</literal> veya
-      <literal>fan::durukyöntem();</literal> gibi bir nitelenmemiş isim veya
+      <literal>fan::statikyöntem();</literal> gibi bir nitelenmemiş isim veya
       öneksiz bir sınıf ismi.  Eğer geçerli isim alanı ismi
       <literal>geçerlisimalanı</literal> ise bu isim,
       <literal>geçerlisimalanı\fan</literal> olarak çözümlenir. Eğer kod küresel
@@ -348,7 +348,7 @@ echo Projem\Bağlantı::başlat();
     <listitem>
      <simpara>
       <literal>$a = new altisimalanı\fan();</literal> veya
-      <literal>altisimalanı\fan::durukyöntem();</literal> gibi bir nitelenmemiş
+      <literal>altisimalanı\fan::statikyöntem();</literal> gibi bir nitelenmemiş
       isim veya öneksiz bir sınıf ismi. Eğer geçerli isim alanı ismi
       <literal>geçerlisimalanı</literal> ise bu isim,
       <literal>geçerlisimalanı\altisimalanı\fan</literal> olarak çözümlenir. Eğer
@@ -359,7 +359,7 @@ echo Projem\Bağlantı::başlat();
     <listitem>
      <simpara>
       <literal>$a = new \geçerlisimalanı\fan();</literal> veya
-      <literal>\geçerlisimalanı\fan::durukyöntem();</literal> gibi tamamen
+      <literal>\geçerlisimalanı\fan::statikyöntem();</literal> gibi tamamen
       nitelenmiş isim veya küresel önekli bir isim. Bu isim daima kodda
       belirtildiği gibi <literal>geçerlisimalanı\fan</literal> olarak çözümlenir.
      </simpara>
@@ -379,7 +379,7 @@ const FAN = 1;
 function fan() {}
 class fan
 {
-    static function durukyöntem() {}
+    static function statikyöntem() {}
 }
 ?>
      ]]>
@@ -395,23 +395,23 @@ const FAN = 2;
 function fan() {}
 class fan
 {
-    static function durukyöntem() {}
+    static function statikyöntem() {}
 }
 
 /* Nitelenmemiş isim */
 fan();              // Fan\Fin\fan işlevine çözümlenir
-fan::durukyöntem(); // Fan\Fin\fan sınıfının durukyöntem yöntemine çözümlenir
+fan::statikyöntem(); // Fan\Fin\fan sınıfının statikyöntem yöntemine çözümlenir
 echo FAN;           // Fan\Fin\FAN sabitine çözümlenir
 
 /* Nitelenmiş isim */
 altisimalanı\fan(); // Fan\Fin\altisimalanı\fan işlevine çözümlenir
-altisimalanı\fan::durukyöntem(); // Fan\Fin\altisimalanı\fan sınıfının
-                                 // durukyöntem yöntemine çözümlenir
+altisimalanı\fan::statikyöntem(); // Fan\Fin\altisimalanı\fan sınıfının
+                                 // statikyöntem yöntemine çözümlenir
 echo altisimalanı\FAN; // Fan\Fin\altisimalanı\FAN sabitine çözümlenir
 
 /* Tamamen nitelenmiş isim */
 \Fan\Fin\fan();              // Fan\Fin\fan işlevine,
-\Fan\Fin\fan::durukyöntem(); // Fan\Fin\fan sınıfının durukyöntem yöntemine,
+\Fan\Fin\fan::statikyöntem(); // Fan\Fin\fan sınıfının statikyöntem yöntemine,
 echo \Fan\Fin\FAN;           // Fan\Fin\FAN sabitine çözümlenir
 ?>
      ]]>
@@ -446,11 +446,11 @@ $c = new \Exception('error'); // Exception küresel sınıfını örnekler
  </sect1>
 
  <sect1 xml:id="language.namespaces.dynamic">
-  <title>İsim alanları ve devingen dil özellikleri</title>
+  <title>İsim alanları ve dinamik dil özellikleri</title>
   <?phpdoc print-version-for="namespaces"?>
   <para>
    PHP'nin isim alanları gerçeklenimi bir programlama dili olarak PHP'nin
-   kendi devingen doğasından etkilenir. Örnek olarak aşağıdaki kodu isim
+   kendi dinamik doğasından etkilenir. Örnek olarak aşağıdaki kodu isim
    alanlı koda dönüştürmek istersek:
    <example>
     <title>- Devingen olarak erişilen elemanlar</title>
@@ -481,7 +481,7 @@ echo constant('sabitadı'), "\n"; // küresel basar
     </programlisting>
    </example>
    Tamamen nitelenmiş isim kullanmak gerekir (isim alanı önekli sınıf adı).
-   Bir devingen sınıf, işlev veya sabit ismi içinde bir nitelenmiş isim ile
+   Bir dinamik sınıf, işlev veya sabit ismi içinde bir nitelenmiş isim ile
    tamamen nitelenmiş isim arasında bir fark olmadığından baştaki ters
    bölünün gereksiz oluşuna dikkat edin.
    <example>
@@ -562,7 +562,7 @@ echo '"', __NAMESPACE__, '"'; // "" basar
 ]]>
     </programlisting>
    </example>
-   <constant>__NAMESPACE__</constant> sabiti devingen olarak oluşturulan
+   <constant>__NAMESPACE__</constant> sabiti dinamik olarak oluşturulan
    isimler için kullanışlıdır.
    <example>
     <title>- Devingen isim oluşturmak için __NAMESPACE__ kullanımı</title>
@@ -599,7 +599,7 @@ namespace\fin\fon(); // Projem\fin\fon() işlevini çağırır
 
 namespace\işlev();   // Projem\işlev() işlevini çağırır
 namespace\alt\işlev();    // Projem\alt\işlev() işlevini çağırır
-namespace\isim::yöntem(); // Projem\isim sınıfının duruk "yöntem"
+namespace\isim::yöntem(); // Projem\isim sınıfının statik "yöntem"
                           // yöntemini çağırır
 $a = new namespace\alt\isim(); // Projem\alt\isim sınıfını örnekler
 $b = namespace\SABİT;     // Projem\SABİT sabitinin değerini $b'ye atar
@@ -615,7 +615,7 @@ $b = namespace\SABİT;     // Projem\SABİT sabitinin değerini $b'ye atar
 
 namespace\işlev();        // işlev() işlevini çağırır
 namespace\alt\işlev();    // alt\işlev() işlevini çağırır
-namespace\isim::yöntem(); // isim sınıfının duruk "yöntem" yöntemini çağırır
+namespace\isim::yöntem(); // isim sınıfının statik "yöntem" yöntemini çağırır
 $a = new namespace\alt\isim(); // alt\isim sınıfını örnekler
 $b = namespace\SABİT;     // SABİT sabitinin değerini $b'ye atar
 ?>
@@ -700,10 +700,10 @@ iAadı\altia\işlev();     // Bir\Tam\iAadı\altia\işlev işlevini çağırır
    </example>
   </para>
   <para>
-   İthal işlemi derleme sırasında yerine getirilir ve dolayısıyla devingen
+   İthal işlemi derleme sırasında yerine getirilir ve dolayısıyla dinamik
    sınıf, işlev ve sabit isimlerini etkilemez.
    <example>
-    <title>- İthal işlemi ve devingen isimler</title>
+    <title>- İthal işlemi ve dinamik isimler</title>
     <programlisting role="php">
      <![CDATA[
 <?php
@@ -1040,47 +1040,47 @@ F();        // Varsa "A" isim alanında tanımlı "F", yoksa küresel "F"
 //sınıf adı çağrıları
 
 new B();    // Varsa "A" isim alanında tanımlı "B" örneklenir
-            // Yoksa "A\B" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // Yoksa "A\B" sınıfı otomatik olarak yüklenmeye çalışılır
 
 new D();    // ithal kuralları ile, "B" isim alanında tanımlı "D" örneklenir
-            // yoksa "B\D" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // yoksa "B\D" sınıfı otomatik olarak yüklenmeye çalışılır
 
 new F();    // ithal kuralları ile, "C" isim alanında tanımlı "E" örneklenir
-            // yoksa "C\E" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // yoksa "C\E" sınıfı otomatik olarak yüklenmeye çalışılır
 
 new \B();   // Varsa küresel alanda tanımlı "B" örneklenir
-            // yoksa "B" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // yoksa "B" sınıfı otomatik olarak yüklenmeye çalışılır
 
 new \D();   // Varsa küresel alanda tanımlı "D" örneklenir
-            // yoksa "D" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // yoksa "D" sınıfı otomatik olarak yüklenmeye çalışılır
 
 new \F();   // Varsa küresel alanda tanımlı "F" örneklenir
-            // yoksa "F" sınıfı özdevinimli olarak yüklenmeye çalışılır
+            // yoksa "F" sınıfı otomatik olarak yüklenmeye çalışılır
 
-// başka bir isim alanından duruk yöntem/isim alanı işlevleri
+// başka bir isim alanından statik yöntem/isim alanı işlevleri
 
 B\fan();    // "A\B" isim alanında tanımlı "fan" çağrılır
 
 B::fan();   // "A" isim alanında tanımlı "B" sınıfının "fan" yöntemi çağrılır
-            // "A\B" sınıfı yoksa, "A\B" özdevinimli yüklenmeye çalışılır
+            // "A\B" sınıfı yoksa, "A\B" otomatik yüklenmeye çalışılır
 
 D::fan();   // ithal kuralları ile, "B" isim alanında tanımlı "D" sınıfının
             // "fan" yöntemi çağrılır; "B\D"  sınıfı yoksa, "B\D"
-            // özdevinimli yüklenmeye çalışılır
+            // otomatik yüklenmeye çalışılır
 
 \B\fan();   // "B" isim alanında tanımlı "fan" çağrılır
 
 \B::fan();  // Küresel alandaki "B" sınıfının "fan" yöntemi çağrılır
-            // "B" sınıfı yoksa, "B" özdevinimli yüklenmeye çalışılır
+            // "B" sınıfı yoksa, "B" otomatik yüklenmeye çalışılır
 
-// geçerli isim alanının duruk yöntemleri ve isim alanı işlevleri
+// geçerli isim alanının statik yöntemleri ve isim alanı işlevleri
 
 A\B::fan();   // "A\A" isim alanında tanımlı "B" sınıfının "fan" yöntemi
-              // çağrılır; "A\A\B" sınıfı yoksa, "A\A\B" özdevinimli
+              // çağrılır; "A\A\B" sınıfı yoksa, "A\A\B" otomatik
               // yüklenmeye çalışılır
 
 \A\B::fan();  // "A" isim alanında tanımlı "B" sınıfının "fan" yöntemi
-              // çağrılır; "A\B" sınıfı yoksa, "A\B" özdevinimli yüklenmeye
+              // çağrılır; "A\B" sınıfı yoksa, "A\B" otomatik yüklenmeye
               // çalışılır
 ?>
 ]]>
@@ -1322,7 +1322,7 @@ namespace fon;
 use fan\fin as fon;
 
 $a = new bir\isim(); // "fon\bir\isim" sınıfını örnekler
-fon\bar::isim(); // "fan\fin\bar" sınıfının "isim" duruk yöntemi çağrılır
+fon\bar::isim(); // "fan\fin\bar" sınıfının "isim" statik yöntemi çağrılır
 bir\bar();        // "fon\bir\bar" işlevi çağrılır
 $a = bir\BAR;    // $a değişkenine "fon\bir\BAR" sabitinin değeri atanır
 ?>
@@ -1356,7 +1356,7 @@ namespace fon;
 use fan\fin as fon;
 
 $a = new isim(); // "fon\isim" sınıfı örneklenir
-fon::isim();     // "fan\fin" sınıfının "isim" duruk yöntemi çağrılır
+fon::isim();     // "fan\fin" sınıfının "isim" statik yöntemi çağrılır
 ?>
 ]]>
      </programlisting>

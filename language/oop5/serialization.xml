@@ -6,103 +6,103 @@
   <title>Oturumlardaki nesnelerin dizgeleştirilmesi</title>
 
   <para>
-   <function>serialize</function> işlevi PHP'de saklanmış bir değerin 
-   bayt-akımı gösterimini içeren bir dizge döndürür. Özgün değişken değerlerini 
-   yeniden oluşturmak için <function>unserialize</function> işlevi 
-   kullanılabilir. Bir nesneyi saklamak için dizgeleştirme kullanımı nesnenin 
-   içindeki tüm değişkenleri saklar. Nesnenin yöntemleri saklanmaz sadece 
+   <function>serialize</function> işlevi PHP'de saklanmış bir değerin
+   bayt-akımı gösterimini içeren bir dizge döndürür. Özgün değişken değerlerini
+   yeniden oluşturmak için <function>unserialize</function> işlevi
+   kullanılabilir. Bir nesneyi saklamak için dizgeleştirme kullanımı nesnenin
+   içindeki tüm değişkenleri saklar. Nesnenin yöntemleri saklanmaz sadece
    sınıf ismi saklanır.
   </para>
-  
+
   <para>
-   Bir nesne için <function>unserialize</function> kullanabilmek için sınıf 
-   nesnesinin tanımlı olması gerekir. Yani, A sınıfının bir nesnesi varsa ve 
-   siz onu dizgeleştiriseniz, A sınıfının ismini ve içerdiği tüm değişkenlerin 
-   değerlerini içeren bir dizge alırsınız. Başka bir dosyada bu dizgeyi 
-   <function>unserialize</function> ile dönüştürmek isterseniz, bu dosyada 
+   Bir nesne için <function>unserialize</function> kullanabilmek için sınıf
+   nesnesinin tanımlı olması gerekir. Yani, A sınıfının bir nesnesi varsa ve
+   siz onu dizgeleştiriseniz, A sınıfının ismini ve içerdiği tüm değişkenlerin
+   değerlerini içeren bir dizge alırsınız. Başka bir dosyada bu dizgeyi
+   <function>unserialize</function> ile dönüştürmek isterseniz, bu dosyada
    daha önce A sınıfını tanımlamış ve nesnesini oluşturmuş olmalısınız.
-   Bu, örneğin, A sınıfının tanımını bir include dosyasında saklayıp bu 
-   dosyayı betiğinize dahil ederek veya  
-   <function>spl_autoload_register</function> işlevini kullanarak 
+   Bu, örneğin, A sınıfının tanımını bir include dosyasında saklayıp bu
+   dosyayı betiğinize dahil ederek veya
+   <function>spl_autoload_register</function> işlevini kullanarak
    yapabilirsiniz.
   </para>
-  
+
   <informalexample>
    <programlisting role="php">
 <![CDATA[
 <?php
 // classa.inc:
-  
+
   class A {
       public $one = 1;
-    
+
       public function show_one() {
           echo $this->one;
       }
   }
-  
+
 // page1.php:
 
   include("classa.inc");
-  
+
   $a = new A;
   $s = serialize($a);
   // $s'i page2.php'nin bulabileceği bir yere sakla
   file_put_contents('store', $s);
 
 // page2.php:
-  
+
   // unserialize işlevinin düzgün çalışması için gerekli
   include("classa.inc");
 
   $s = file_get_contents('store');
   $a = unserialize($s);
 
-  // şimdi show_one() işlevini kullanabiliriz.  
+  // şimdi show_one() işlevini kullanabiliriz.
   $a->show_one();
 ?>
 ]]>
    </programlisting>
   </informalexample>
-  
+
   <para>
-   Bir uygulama oturumları kullanıyorsa ve nesneleri kaydetmek için 
-   <function>session_register</function> işlevini kullanırsa, bu nesneler her 
-   PHP sayfasının sonunda otomatik olarak dizgeleştirilir ve sonraki 
-   sayfaların her birinde özdevinimli olarak nesneleştirilir. Yani, bu 
-   nesneler, oturumun bir parçası haline geldiklerinde, uygulama sayfalarının 
-   herhangi birinde görünebilir. Bununla birlikte, 
+   Bir uygulama oturumları kullanıyorsa ve nesneleri kaydetmek için
+   <function>session_register</function> işlevini kullanırsa, bu nesneler her
+   PHP sayfasının sonunda otomatik olarak dizgeleştirilir ve sonraki
+   sayfaların her birinde otomatik olarak nesneleştirilir. Yani, bu
+   nesneler, oturumun bir parçası haline geldiklerinde, uygulama sayfalarının
+   herhangi birinde görünebilir. Bununla birlikte,
    <function>session_register</function> işlevi PHP 5.4.0'da kaldırıldı.
   </para>
-  
+
   <para>
-   Bir uygulama, uygulamada daha sonra kullanmak için nesneleri 
-   dizgeleştiriyorsa, uygulamanın o nesnenin sınıf tanımını uygulama boyunca 
-   içermesi şiddetle tavsiye edilir. Bunu yapmamak, bir nesnenin sınıf 
-   tanımlaması olmaksızın nesneleştirilmesiyle sonuçlanabilir, bu da PHP'nin 
-   nesneyi hiçbir yöntemi olmayan bir 
-   <classname>__PHP_Incomplete_Class_Name</classname> sınıfına sokmasına 
+   Bir uygulama, uygulamada daha sonra kullanmak için nesneleri
+   dizgeleştiriyorsa, uygulamanın o nesnenin sınıf tanımını uygulama boyunca
+   içermesi şiddetle tavsiye edilir. Bunu yapmamak, bir nesnenin sınıf
+   tanımlaması olmaksızın nesneleştirilmesiyle sonuçlanabilir, bu da PHP'nin
+   nesneyi hiçbir yöntemi olmayan bir
+   <classname>__PHP_Incomplete_Class_Name</classname> sınıfına sokmasına
    neden olur ve sonuçta nesne işe yaramaz hale gelir.
   </para>
-  
+
   <para>
-   Yani, yukarıdaki örnekte, eğer <literal>session_register("a")</literal> 
-   çalıştırarak <varname>$a</varname> bir oturumun parçası haline gelirse, 
+   Yani, yukarıdaki örnekte, eğer <literal>session_register("a")</literal>
+   çalıştırarak <varname>$a</varname> bir oturumun parçası haline gelirse,
    <literal>classa.inc</literal> dosyasını yalnız <filename>page1.php</filename>
-   ve <filename>page2.php</filename> dosyalarına değil tüm sayfa dosyalarına 
+   ve <filename>page2.php</filename> dosyalarına değil tüm sayfa dosyalarına
    dahil etmelisiniz.
   </para>
 
   <para>
-   Yukarıdaki tavsiyenin ötesinde, <link linkend="object.sleep">__sleep()</link> 
-   ve <link linkend="object.wakeup">__wakeup()</link> yöntemlerini kullanarak 
-   da bir nesne üzerinde dizgeleştirme ve yeniden nesneleştirme yapabileceğinizi 
-   unutmayın. <link linkend="object.sleep">__sleep()</link> kullanımı ayrıca, 
-   nesne özelliklerinin tamamının değil sadece bir kısmının dizgeleştirilmesini 
+   Yukarıdaki tavsiyenin ötesinde, <link linkend="object.sleep">__sleep()</link>
+   ve <link linkend="object.wakeup">__wakeup()</link> yöntemlerini kullanarak
+   da bir nesne üzerinde dizgeleştirme ve yeniden nesneleştirme yapabileceğinizi
+   unutmayın. <link linkend="object.sleep">__sleep()</link> kullanımı ayrıca,
+   nesne özelliklerinin tamamının değil sadece bir kısmının dizgeleştirilmesini
    de sağlar.
   </para>
  </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
