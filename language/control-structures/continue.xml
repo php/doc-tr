@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ac33a4e7912f908119fa171248c917b25651c778 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7104ee97ced1768a3231588dfc0bc0d7eb1117ad Maintainer: nilgun Status: ready -->
 <sect1 xml:id="control-structures.continue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- <title><literal>continue</literal></title>
+ <title>continue</title>
  <?phpdoc print-version-for="continue"?>
  <simpara>
   <literal>continue</literal> deyimi döngü yapılarının içinde kullanılır.
@@ -14,16 +14,16 @@
    PHP'de <link linkend="control-structures.switch">switch</link> deyimi
    <literal>continue</literal> deyiminin kullanılabileceği döngülerden
    biri olarak kabul edilmektedir. <literal>continue</literal> deyimi
-   sayısal değer içermeyen <literal>break</literal> gibi davranır. Eğer
-   <literal>switch</literal> bir döngü içindeyse <literal>continue 2</literal> 
+   sayısal değer içermeyen <literal>break</literal> gibi davranır, ancak
+   bu muhtemelen bir hata olduğundan bir uyarıya sebep olacaktır. Eğer
+   <literal>switch</literal> bir döngü içindeyse <literal>continue 2</literal>
    dıştaki döngünün sonraki yinelemesinden devam eder.
   </simpara>
  </note>
  <simpara>
   <literal>continue</literal> deyimi ile seçime bağlı sayısal bir değer
-  kullanılarak, atlama işleminin kaç seviye üstteki döngüye kadar
-  uygulanacağı belirtilebilir. Öntanımlı değer <literal>1</literal> olup 
-  geçerli döngünün sonuna atlanır.
+  kullanılarak, kaç seviye döngünün sonuna atlanacağı belirtilebilir.
+  Öntanımlı değer <literal>1</literal> olup geçerli döngünün sonuna atlanır.
  </simpara>
  <para>
   <informalexample>
@@ -84,27 +84,6 @@ for ($i = 0; $i < 5; ++$i) {
 4
 ]]>
    </screen>
-   <para>
-    Ancak çıktı PHP 5.4.0 öncesinde şu şekilde olacaktır:
-   </para>
-   <screen>
-<![CDATA[
-2
-]]>
-   </screen>
-   <para>
-    Çünkü <literal>continue print "$i\n";</literal> satırının tamamı tek bir 
-    ifade olarak değerlendirilir, dolayısıyla <function>print</function> 
-    sadece <literal>$i == 2</literal> doğruysa çağrılır. 
-    (<literal>print</literal>'in dönen değeri <literal>continue</literal> için 
-    sayısal değer olur.)
-   </para>
-   <note>
-    <para>
-      PHP 5.4.0 ve sonrasında yukarıdaki örnek 
-      <constant>E_COMPILE_ERROR</constant> hatasıyla sonuçlanır.
-    </para>
-   </note>
   </informalexample>
  </para>
  <para>
@@ -119,26 +98,11 @@ for ($i = 0; $i < 5; ++$i) {
     </thead>
     <tbody>
      <row>
-      <entry>7.0.0</entry>
+      <entry>7.3.0</entry>
       <entry>
-       <literal>switch</literal> veya bir döngü dışındaki 
-       <literal>continue</literal> deyimleri artık derleme sırasında saptanmakta 
-       ve bir <constant>E_COMPILE_ERROR</constant> çıktılanmaktadır, evvelce 
-       çalışma anında saptanırdı.
-      </entry>
-     </row>
-     <row>
-      <entry>5.4.0</entry>
-      <entry>
-       <literal>continue 0;</literal> artık geçerli değildir. Önceki 
-       sürümlerde <literal>continue 1;</literal> ile aynı kabul edilirdi.
-      </entry>
-     </row>
-     <row>
-      <entry>5.4.0</entry>
-      <entry>
-       Sayı yerine değişken aktarımı kaldırıldı.
-       (örn, <literal>$num = 2; continue $num;</literal>)
+       <literal>switch</literal> içinde bir <literal>break</literal> deyimi
+       gibi davranmaya çalışan bir <literal>continue</literal> bir
+       <constant>E_WARNING</constant> tetikleyecektir.
       </entry>
      </row>
     </tbody>

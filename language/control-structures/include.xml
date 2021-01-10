@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: c5c902b47755cf0c0761e90cce4cc8ee1eb9426e Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4774ba9dba917de68290c5d8bede51cf040d6fcd Maintainer: nilgun Status: ready -->
 <sect1 xml:id="function.include" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>include</title>
  <?phpdoc print-version-for="include"?>
@@ -14,11 +14,15 @@
   yönergesinde belirtilen yollarda aranır. Dosya
   <link linkend="ini.include-path">include_path</link> içinde yoksa
   <literal>include</literal> son çare olarak çağrıcı betiğin kendi dizinine ve o
-  anki çalışma dizinine bakar, bulamazsa bir
-  <link linkend="errorfunc.constants.errorlevels.e-warning">uyarı</link>
+  anki çalışma dizinine bakar, bulamazsa bir <constant>E_WARNING</constant>
   çıktılar; <function>require</function> için bu davranış bir
-  <link linkend="errorfunc.constants.errorlevels.e-error">ölümcül hata</link>
-  olarak kendini gösterir.
+  <constant>E_ERROR</constant> olarak kendini gösterir.
+ </simpara>
+ <simpara>
+  Son <constant>E_WARNING</constant> veya <constant>E_ERROR</constant>
+  çıktılanmadan önce, dosyaya erişilemiyorsa, <literal>include</literal> ve
+  <literal>require</literal>, her ikisi de sırayla ek
+  <constant>E_WARNING</constant>'leri çıktılar.
  </simpara>
  <simpara>
   Bir dizin belirtilmişse - mutlak (Windows'ta bir sürücü harfi veya
@@ -150,13 +154,7 @@ include 'http://mesela.dom/dosya.txt?foo=1&bar=2';
 include 'dosya.php?foo=1&bar=2';
 
 // Çalışır.
-include 'http://mesela.dom/dosya.php?foo=1&bar=2';
-
-$foo = 1;
-$bar = 2;
-include 'dosya.txt';  // Çalışır.
-include 'dosya.php';  // Çalışır.
-
+include 'http://www.example.com/dosya.php?foo=1&bar=2';
 ?>
 ]]>
    </programlisting>
@@ -183,9 +181,10 @@ include 'dosya.php';  // Çalışır.
   bakınız.
  </para>
  <simpara>
-  <literal>return</literal> kullanımı: <literal>include</literal> başarısız olursa <literal>FALSE</literal> döndürür ve bir uyarı verir. Başarılı olursa, içerildikleri dosya tarafından aksi belirtilmedikçe <literal>1</literal> döndürür.
-
-  Dahil edilen dosyanın içersinde, bu
+  <literal>return</literal> kullanımı: <literal>include</literal> başarısız
+  olursa <literal>FALSE</literal> döndürür ve bir uyarı verir. Başarılı
+  olursa, içerildikleri dosya tarafından aksi belirtilmedikçe
+  <literal>1</literal> döndürür. Dahil edilen dosyanın içersinde, bu
   dosyanın işlenmesi durdurmak ve dahil eden betiğe geri dönmek için
   <function>return</function> kullanılabilir. Ayrıca, dahil edilen
   dosyalardan değer döndürmek de mümkündür. Normal bir işlevde olduğu
@@ -208,7 +207,7 @@ include 'dosya.php';  // Çalışır.
 <![CDATA[
 <?php
 // çalışmaz, include(('vars.php') == TRUE) olarak değerlendirilir,
-// sonuç include('') olur
+// sonuç include('1') olur
 if (include('vars.php') == TRUE) {
     echo 'TAMAM';
 }
@@ -271,11 +270,9 @@ echo $bar; // 1 basar
   Dahil edilen dosyanın içinde tanımlanmış işlevler varsa,
   <function>return</function> deyiminden önce ya da sonra olduğundan
   bağımsız olarak ana betik içersinde kullanılabilirler. Dosya iki defa
-  dahil edilmişse, PHP 5 ölümcül hata verir çünkü bildirilmiş işlevler
-  tekrar bildirilmeye calışılmış olur. PHP 4 ise
-  <function>return</function>'den sonra tanımlanmış işlevler için
-  şikayetçi olmayacaktır. Dosyanın halihazırda dahil edilip edilmediğini
-  kendiniz tespit edip koşula bağlı <function>return</function>
+  dahil edilmişse, PHP ölümcül hata verir çünkü bildirilmiş işlevler
+  tekrar bildirilmeye calışılmış olur. Dosyanın halihazırda dahil edilip
+  edilmediğini kendiniz tespit edip koşula bağlı <function>return</function>
   çalıştırmak yerine, <function>include_once</function> kullanmanız
   önerilir.
  </para>
