@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 28d123ef985df5a7b86f3601e035968ee1b3b142 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0ad6aa08fb58311737ae61515d12651d7f14626e Maintainer: nilgun Status: ready -->
 <appendix xml:id="userlandnaming" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Kullanıcı Alanı İsimlendirme Kılavuzu</title>
  <para>
@@ -53,7 +53,7 @@
    </listitem>
    <listitem>
     <para>
-     PHP, eklentilerin küresel betimleyicilerinin önüne ekenti isimlerini
+     PHP, eklentilerin küresel betimleyicilerinin önüne eklenti isimlerini
      getirir (geçmişten kalma bazı istisnalar vardır). Örnekler:
     </para>
 
@@ -99,19 +99,49 @@
  <section xml:id="userlandnaming.tips">
   <title>İpuçları</title>
   <para>
-   İleriye yönelik güçlü kodlar yazmak istiyorsanız, küresel alana
-   yerleştireceğiniz bütün isimlere alt çizgi imi aracılığıyla uygun bir önek
-   veya sonek koymanızı öneririz. Diğer projelerin isim alanları ile
-   çakışmalardan kaçınmak için bu projelerde kullanılan önek ve sonekler için
-   bir araştırma yapmanızı ve seçtiğiniz öneki veya soneki ilan etmenizi
-   öneririz. Örnekler
+   Geleceğe yönelik kod yazmak için, genel isim alanına çok sayıda değişken,
+   işlev veya sınıf yerleştirmemeniz önerilir. Bu, 3. taraf koduyla
+   adlandırma çakışmalarının yanı sıra gelecekte dile yapılacak olası
+   eklemeleri de önleyecektir.
   </para>
+  <para>
+   İşlevlerin ve sınıfların adlandırma çakışmalarını önlemenin yaygın bir
+   yolu, bunları kendi <link linkend="language.namespaces">isim
+   alanlarına</link> eklemektir.
+  </para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+namespace Projem;
 
-  <itemizedlist>
-   <listitem><para>MyPx_someFunc()</para></listitem>
-   <listitem><para>Foo_Date</para></listitem>
-   <listitem><para>$asdf_dbh</para></listitem>
-  </itemizedlist>
+function işlevim() {
+    return true;
+}
+
+\Projem\işlevim();
+]]>
+   </programlisting>
+  </informalexample>
+  <para>
+   Bu, halihazırda kullanılan isim alanlarını takip etmenizi gerektiriyor,
+   ancak bir isim alanına karar verdiğinizde, tekrar çatışmaları düşünmek
+   zorunda kalmadan tüm işlevleri ve sınıfları ona ekleyebilirsiniz.
+  </para>
+  <para>
+   Üçüncü taraf koduyla adlandırma çakışmalarını önlemek için genel kapsama
+   eklenen değişkenlerin sayısını sınırlamak en iyi uygulama olarak kabul
+   edilir.
+  </para>
+  <note>
+   <title>Değişken etki alanı</title>
+   <para>
+    PHP'nin <link linkend="language.variables.scope">etki alanı belirleme
+    kuralları</link> nedeniyle, işlev ve yöntemlerin içinde tanımlanan
+    değişkenler genel kapsamda olmadığından küresel etki alanında tanımlanan
+    diğer değişkenlerle çakışamaz.
+   </para>
+  </note>
  </section>
 
 </appendix>
