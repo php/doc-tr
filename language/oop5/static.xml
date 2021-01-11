@@ -6,12 +6,13 @@
   <title><code>static</code> Anahtar Sözcüğü</title>
   <tip>
    <simpara>
-    Bu sayfada duruk yöntem ve özellikleri tanımlamak için  <literal>static</literal> anahtar sözcüğünün kullanımı açıklanmıştır.
+    Bu sayfada statik yöntem ve özellikleri tanımlamak için
+    <literal>static</literal> anahtar sözcüğünün kullanımı açıklanmıştır.
     <literal>static</literal> ayrıca,
-    <link linkend="language.variables.scope.static">duruk değişkenleri 
-    tanımlamak</link> ve 
-    <link linkend="language.oop5.late-static-bindings">duruk içselleştirim</link>
-    için de kullanılır. Lütfen <literal>static</literal> anahtar sözcüğünün 
+    <link linkend="language.variables.scope.static">statik değişkenleri
+    tanımlamak</link> ve
+    <link linkend="language.oop5.late-static-bindings">statik içselleştirim</link>
+    için de kullanılır. Lütfen <literal>static</literal> anahtar sözcüğünün
     anlamları hakkında bilgi edinmek için bu sayfalara bakınız.
    </simpara>
   </tip>
@@ -19,7 +20,7 @@
     Sınıf özelliklerinin ya da yöntemlerinin <code>static</code> olarak
     tanımlanması, o özelliklerin ve yöntemlerin sınıf örneğinin oluşturulmasına
     gerek kalmadan erişilebilir olmalarını sağlar. Ancak, <code>static</code>
-    olarak bildirilmiş bir özelliğe (duruk özellik) örneklenmiş sınıf
+    olarak bildirilmiş bir özelliğe (statik özellik) örneklenmiş sınıf
     nesnesinden erişilemez (ise de <code>static</code> olarak bildirilmiş bir
     yöntemle erişebilir).
   </para>
@@ -32,61 +33,61 @@
   </para>
 
   <sect2 xml:id="language.oop5.static.methods">
-   <title>Duruk Yöntemler</title>
+   <title>Statik Yöntemler</title>
 
   <para>
-    Duruk yöntemlerin, nesnenin bir örneği oluşturulmadan erişilebilir
+    Statik yöntemlerin, nesnenin bir örneği oluşturulmadan erişilebilir
     olmalarından dolayı, <varname>$this</varname> sözde değişkeni,
     <code>static</code> olarak bildirilmiş bir yöntemin içinde kullanılamaz.
   </para>
 
    <caution>
     <simpara>
-     PHP 5'te, duruk olmayan özellikler durukmuş gibi çağrılırsa 
+     PHP 5'te, statik olmayan özellikler statikmiş gibi çağrılırsa
      <constant>E_STRICT</constant> seviyesinde bir uyarı üretilir.
     </simpara>
    </caution>
 
    <warning>
     <simpara>
-     PHP 7'de, duruk olmayan yöntemlerin duruk olarak çağrılması artık 
-     önerilmemekte olup bir <constant>E_DEPRECATED</constant> uyarısı 
-     üretir.warning. duruk olmayan yöntemlerin duruk olarak çağrılması
+     PHP 7'de, statik olmayan yöntemlerin statik olarak çağrılması artık
+     önerilmemekte olup bir <constant>E_DEPRECATED</constant> uyarısı
+     üretir.warning. statik olmayan yöntemlerin statik olarak çağrılması
      desteği yakında kaldırılabilir.
     </simpara>
    </warning>
 
    <example>
-    <title>- Duruk yöntem örneği</title>
+    <title>- Statik yöntem örneği</title>
      <programlisting role="php">
 <![CDATA[
 <?php
 class Foo {
-    public static function durukYöntem() {
+    public static function statikYöntem() {
         // ...
     }
 }
 
-Foo::durukYöntem();
+Foo::statikYöntem();
 $classname = 'Foo';
-$classname::durukYöntem(); // PHP 5.3.0 ve sonrası
-?> 
+$classname::statikYöntem(); // PHP 5.3.0 ve sonrası
+?>
 ]]>
      </programlisting>
    </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.static.properties">
-   <title>Duruk Özellikler</title>
+   <title>Statik Özellikler</title>
    <para>
-    Duruk özelliklere, nesne üzerinden ok işleci (-&gt;) kullanılarak
+    Statik özelliklere, nesne üzerinden ok işleci (-&gt;) kullanılarak
     erişilemez.
    </para>
    <para>
-    PHP 5.6 öncesinde diğer duruk değişkenlerde olduğu gibi duruk özellikler 
-    de sadece bir sayıl veya sabit kullanılarak ilklendirilebilir; ifadelere 
-    izin verilmez. PHP 5.6.0 ve sonrasında &const; için geçerli kurallar 
-    uygulanır: bazı sınırlı ifadeler mümkündür, bunlar derleme sırasında 
+    PHP 5.6 öncesinde diğer statik değişkenlerde olduğu gibi statik özellikler
+    de sadece bir sayıl veya sabit kullanılarak ilklendirilebilir; ifadelere
+    izin verilmez. PHP 5.6.0 ve sonrasında &const; için geçerli kurallar
+    uygulanır: bazı sınırlı ifadeler mümkündür, bunlar derleme sırasında
     değerlendirilir.
    </para>
 
@@ -97,40 +98,40 @@ $classname::durukYöntem(); // PHP 5.3.0 ve sonrası
     sözcük olamaz.
    </para>
    <example>
-    <title>- Duruk özellik örneği</title>
+    <title>- Statik özellik örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 class Falanca
 {
-    public static $duruk = 'falanca';
+    public static $statik = 'falanca';
 
-    public function durukDeğer() {
-        return self::$duruk;
+    public function statikDeğer() {
+        return self::$statik;
     }
 }
 
 class Feşmekan extends Falanca
 {
-    public function falancaDuruk() {
-        return parent::$duruk;
+    public function falancaStatik() {
+        return parent::$statik;
     }
 }
 
 
-print Falanca::$duruk . "\n";
+print Falanca::$statik . "\n";
 
 $falanca = new Falanca();
-print $falanca->durukDeğer() . "\n";
-print $falanca->duruk . "\n";      // Tanımsız "Özellik" duruk
+print $falanca->statikDeğer() . "\n";
+print $falanca->statik . "\n";      // Tanımsız "Özellik" statik
 
-print $falanca::$duruk . "\n";
+print $falanca::$statik . "\n";
 $sınıfadı = 'Falanca';
-print $sınıfadı::$duruk . "\n"; // PHP 5.3.0 ve sonrası
+print $sınıfadı::$statik . "\n"; // PHP 5.3.0 ve sonrası
 
-print Feşmekan::$duruk . "\n";
+print Feşmekan::$statik . "\n";
 $feşmekan = new Feşmekan();
-print $feşmekan->falancaDuruk() . "\n";
+print $feşmekan->falancaStatik() . "\n";
 ?>
 ]]>
     </programlisting>

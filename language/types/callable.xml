@@ -3,16 +3,16 @@
 <!-- EN-Revision: a71742330defbc0edfbc6822b4f947bf437b2f70 Maintainer: erdemkeren Status: ready -->
 <sect1 xml:id="language.types.callable">
  <title>Geriçağırımlar / Çağırılılabilirler</title>
- 
+
  <para>
   Geriçağırımlar <type>callable</type> tür ipucu ile belirtilebilir.
  </para>
 
  <para>
   <function>call_user_func</function> ya da <function>usort</function> gibi
-  bazı işlevler değiştirge olarak kullanıcı tarafından belirlenen 
+  bazı işlevler değiştirge olarak kullanıcı tarafından belirlenen
   geriçağırım işlevleri kabul eder. Geriçağırım işlevleri basit işlevler
-  olabileceği gibi, duruk işlevler de dâhil olmak üzere <type>object</type>
+  olabileceği gibi, statik işlevler de dâhil olmak üzere <type>object</type>
   türünde nesne yöntemleri de olabilirler.
  </para>
 
@@ -23,9 +23,9 @@
     Bir PHP işlevi adı ile <type>string</type> türünde aktarılır. Her türlü
     yerleşik ve kullanıcı tanımlı işlev kullanılabilir, ancak;
    <function>array</function>, <function>echo</function>,
-   <function>empty</function>, <function>eval</function>, 
-   <function>exit</function>, <function>isset</function>, 
-   <function>list</function>, <function>print</function> ya da 
+   <function>empty</function>, <function>eval</function>,
+   <function>exit</function>, <function>isset</function>,
+   <function>list</function>, <function>print</function> ya da
    <function>unset</function> gibi dil sabitleri müstesna.
   </para>
 
@@ -36,7 +36,7 @@
   </para>
 
   <para>
-    Duruk sınıf yöntemleri, 0 indisinde nesne yerine sınıf adı kullanılarak,
+    Statik sınıf yöntemleri, 0 indisinde nesne yerine sınıf adı kullanılarak,
     sınıfın nesnesi örneklendirilmeden
     ya da <literal>'SınıfAdı::yöntemAdı'</literal> kullanılarak aktarılabilir.
   </para>
@@ -55,12 +55,12 @@
 
   <para>
   <example>
-    <title>
+    <title>-
      Geriçağırım işlev örnekleri
     </title>
     <programlisting role="php">
 <![CDATA[
-<?php 
+<?php
 
 // Örnek bir geriçağırım işlevi
 function benim_gericagirim_islevim() {
@@ -75,19 +75,19 @@ class BenimSinifim {
 }
 
 // Tür 1: Basit geriçağırım
-call_user_func('benim_gericagirim_islevim'); 
+call_user_func('benim_gericagirim_islevim');
 
-// Tür 2: Duruk sınıf yöntemi çağrısı
+// Tür 2: Statik sınıf yöntemi çağrısı
 call_user_func(array('BenimSinifim', 'benimGericagirimYontemim'));
 
 // Tür 3: Nesne yöntem çağrısı
 $nesne = new BenimSinifim();
 call_user_func(array($nesne, 'benimGericagirimYontemim'));
 
-// Tür 4: Duruk sınıf yöntemi çağrısı
+// Tür 4: Statik sınıf yöntemi çağrısı
 call_user_func('BenimSinifim::benimGericagirimYontemim');
 
-// Tür 5: İlişkisel duruk sınıf yöntem çağrısı
+// Tür 5: İlişkisel statik sınıf yöntem çağrısı
 class A {
     public static function kim() {
         echo "A\n";
@@ -102,7 +102,7 @@ class B extends A {
 
 call_user_func(array('B', 'parent::kim')); // A
 
-// Tür 6: Nesneler, __invoke uyguluyorlarsa çağırılabilir olarak kullanılabilirler 
+// Tür 6: Nesneler, __invoke uyguluyorlarsa çağırılabilir olarak kullanılabilirler
 class C {
     public function __invoke($ad) {
         echo 'Merhaba ', $ad, "\n";
@@ -118,7 +118,7 @@ call_user_func($c, 'PHP!');
   </para>
   <para>
    <example>
-    <title>
+    <title>-
      Örtme kullanan Geriçağırım örneği
     </title>
    <programlisting role="php">
@@ -154,7 +154,7 @@ print implode(' ', $yeni_sayilar);
  </sect2>
 
 </sect1>
- 
+
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

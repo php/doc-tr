@@ -2,29 +2,31 @@
 <!-- $Revision$ -->
 <!-- EN-Revision: bae6b5c7e070e7969cd99e5d72f9110878a4a538 Maintainer: nilgun Status: ready -->
  <sect1 xml:id="language.oop5.late-static-bindings" xmlns="http://docbook.org/ns/docbook">
-  <title>Duruk İçselleştirim</title>
+  <title>Statik İçselleştirim</title>
   <para>
-   PHP 5.3.0'dan itibaren, miras alınan duruk bağlamın çağrıldığı nesne
-   bağlamında değerlendirilmesini sağlayan ve duruk içselleştirim (İng.:
+   PHP 5.3.0'dan itibaren, miras alınan statik bağlamın çağrıldığı nesne
+   bağlamında değerlendirilmesini sağlayan ve statik içselleştirim (İng.:
    <literal>late static bindings</literal>) adı verilen bir özellik eklenmiştir.
   </para>
 
   <para>
-   Daha kesin olarak, duruk içselleştirim son "ötelenmeyen çağrıda" bahsi 
-   geçen sınıfın saklanmasıyla çalışır. Duruk yöntem çağrısı durumunda sınıfın 
-   adı açıkça (genellikle 
+   Daha kesin olarak, statik içselleştirim son "ötelenmeyen çağrıda" bahsi
+   geçen sınıfın saklanmasıyla çalışır. Statik yöntem çağrısı durumunda sınıfın
+   adı açıkça (genellikle
    <link linkend="language.oop5.paamayim-nekudotayim"><literal>::</literal></link>
-   işlecinin sol tarafında) belirtilmiştir. Duruk olmayan yöntem çağrısı 
+   işlecinin sol tarafında) belirtilmiştir. Statik olmayan yöntem çağrısı
    durumunda söz konusu sınıf, nesnenin sınıfıdır. Bir "ötelenen çağrı",
-   bir <literal>self::</literal>, <literal>parent::</literal>, 
-   <literal>static::</literal> yöntemi veya sınıf hiyerarşisi üzerinden 
+   bir <literal>self::</literal>, <literal>parent::</literal>,
+   <literal>static::</literal> yöntemi veya sınıf hiyerarşisi üzerinden
    gidiliyorsa <function>forward_static_call</function> çağrısıdır.
    <!-- technically, static:: may be non forwarding, but it's irrelevant -->
-   <function>get_called_class</function> işlevi, çağrılan sınıfın ismini bir dize olarak almakta kullanılabilir ve bağlamını <literal>static::</literal> belirler.
+   <function>get_called_class</function> işlevi, çağrılan sınıfın ismini bir
+   dize olarak almakta kullanılabilir ve bağlamını <literal>static::</literal>
+   belirler.
   </para>
 
   <para>
-    "<literal>Duruk içselleştirme</literal>", <literal>static::</literal>
+    "<literal>Statik içselleştirme</literal>", <literal>static::</literal>
     yöntemin çalışma anında, tanımlandığı nesnenin bağlamında değil,
     çağrıldığı nesnenin bağlamında değerlendirilmesi olgusunu betimler.
   </para>
@@ -32,10 +34,10 @@
   <sect2 xml:id="language.oop5.late-static-bindings.self">
    <title><code>self::</code> ile ilgili sınırlamalar</title>
    <para>
-    <literal>self::</literal> veya <literal>__CLASS__</literal> gibi bulunduğu sınıfa
-    duruk gönderim yapan öğeler, örnekten de görüleceği üzere, yöntemi miras
-    alan sınıf bağlamında değil, yöntemin ait olduğu sınıf bağlamında
-    değerlendirilirler:
+    <literal>self::</literal> veya <literal>__CLASS__</literal> gibi
+    bulunduğu sınıfa statik gönderim yapan öğeler, örnekten de görüleceği üzere,
+    yöntemi miras alan sınıf bağlamında değil, yöntemin ait olduğu sınıf
+    bağlamında değerlendirilirler:
    </para>
    <example>
     <title>- <code>self::</code> kullanımı</title>
@@ -72,10 +74,10 @@ A
   </sect2>
 
   <sect2 xml:id="language.oop5.late-static-bindings.usage">
-   <title>Duruk İçselleştirimin uygulanması</title>
+   <title>Statik İçselleştirimin uygulanması</title>
 
    <para>
-    Duruk içselleştirimde çözümlemenin, gönderimin çalışma anında ilk
+    Statik içselleştirimde çözümlemenin, gönderimin çalışma anında ilk
     çağrıldığı sınıfla sınırlandırılması, gönderim için özel bir anahtar
     sözcük kullanılarak sağlanır. Temel olarak, böyle bir anahtar sözcük,
     yukarıdaki örnekteki <literal>dene()</literal> yönteminin aşağıdaki gibi
@@ -94,7 +96,7 @@ class A {
         echo __CLASS__;
     }
     public static function dene() {
-        static::kimsin(); // Burada duruk içselleştirim yapılıyor
+        static::kimsin(); // Burada statik içselleştirim yapılıyor
     }
 }
 
@@ -117,15 +119,15 @@ B
    </example>
    <note>
     <para>
-     Duruk olmayan bağlamlarda, çağrılan sınıf, nesne örneğini sınıfı 
-     olacaktır. <literal>$this-></literal> aynı bağlamdaki private yöntemleri 
-     çağırmayı denerken, <literal>static::</literal> kullanımı farklı sonuçlar 
-     verebilir. <literal>static::</literal> ile ilgili diğer bir fark, sadece 
-     duruk özellikler için kullanılabilmesidir.
+     Statik olmayan bağlamlarda, çağrılan sınıf, nesne örneğinin sınıfı
+     olacaktır. <literal>$this-></literal> aynı bağlamdaki private yöntemleri
+     çağırmayı denerken, <literal>static::</literal> kullanımı farklı sonuçlar
+     verebilir. <literal>static::</literal> ile ilgili diğer bir fark, sadece
+     statik özellikler için kullanılabilmesidir.
     </para>
    </note>
    <example>
-    <title>- Duruk olmayan bağlamda <code>static::</code> kullanımı</title>
+    <title>- Statik olmayan bağlamda <code>static::</code> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -171,13 +173,13 @@ Fatal error:  Call to private method C::foo() from context 'A' in /tmp/test.php 
    </example>
    <note>
     <para>
-     Duruk içselleştirimin çözümlemesi duruk çağrının tamamen çözümlendiği
+     Statik içselleştirimin çözümlemesi statik çağrının tamamen çözümlendiği
      noktada durdurulur, daha öteye gidilmez. Diğer taraftan,
-     <literal>parent::</literal> veya <literal>self::</literal> gibi anahtar sözcükler
-     kullanılarak yapılan duruk çağrılar çağrı bilgisini ötelerler.
+     <literal>parent::</literal> veya <literal>self::</literal> gibi anahtar
+     sözcükler kullanılarak yapılan statik çağrılar çağrı bilgisini öteler.
     </para>
     <example>
-     <title>Ötelenen ve ötelenmeyen çağrılar</title>
+     <title>- Ötelenen ve ötelenmeyen çağrılar</title>
      <programlisting role="php">
 <![CDATA[
 <?php
