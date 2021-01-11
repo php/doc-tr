@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: fe776e93a129855c2abb623341318f9f1813e57e Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8358db82c0c9c91de1e7fe4b9d8b1dcbf2b24975 Maintainer: nilgun Status: ready -->
    <sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Unix sistemler ve Apache 2.x</title>
     <para>
@@ -28,35 +28,34 @@
      kurulan Apache sürümünün sürüm numarası yazılmalıdır.
     </para>
     <para>
-     Apache 2.x'in şu an iki sürümü mevcuttur: 2.0 ve 2.2. Bunlardan birini
-     seçmek için çeşitli sebepler olabilirse de 2.2 şu an için en son ve
-     önerilen sürümdür. Ancak, burada sözü edilen talimatlar hem 2.0 hem de 2.x
-     için çalışır.
+     Apache 2.x'in şu an iki sürümü mevcuttur: 2.4 ve 2.2. Bunlardan birini
+     seçmek için çeşitli sebepler olabilirse de 2.4 şu an için en son ve
+     önerilen sürümdür. Ancak, burada sözü edilen talimatlar hem 2.4 hem de 2.2
+     için çalışır. Apache httpd 2.2 resmen sonlandırılmış olup yeni
+     geliştirmeler yapılmamakta ve yama çıkarılmamaktadır.
     </para>
     <orderedlist>
      <listitem>
      <para>Apache HTTP sunucusunu edindikten sonra şu komutları verin:
      </para>
-     <example>
+     <informalexample>
       <screen>
 <![CDATA[
-gzip -d httpd-2_x_NN.tar.gz
-tar -xf httpd-2_x_NN.tar
+tar -xzf httpd-2.x.NN.tar.gz
 ]]>
       </screen>
-     </example>
+     </informalexample>
      </listitem>
 
      <listitem>
      <para>Benzer işlemleri PHP için de yapın:</para>
-     <example>
+     <informalexample>
      <screen>
 <![CDATA[
-gunzip php-NN.tar.gz
-tar -xf php-NN.tar
+tar -xzf php-NN.tar.gz
 ]]>
      </screen>
-     </example>
+     </informalexample>
      </listitem>
 
      <listitem>
@@ -65,7 +64,7 @@ tar -xf php-NN.tar
       derleneceğini Apache kurulumu belgesinden öğrenebilirsinz.
      </para>
 
-     <example>
+     <informalexample>
      <screen>
 <![CDATA[
 cd httpd-2_x_NN
@@ -74,7 +73,7 @@ make
 make install
 ]]>
      </screen>
-     </example>
+     </informalexample>
      </listitem>
 
      <listitem>
@@ -82,21 +81,21 @@ make install
     Böylece standart prefork MPM'si ve yüklenebilir modül desteği ile Apache
     2.x.NN /usr/local/apache2 altına kurulmuş oldu. Kurulumu denemek için
     Apache HTTP sunucusunu normal yollardan başlatabilirsiniz. Örnek:
-    <example>
+    <informalexample>
     <screen>
 <![CDATA[
 /usr/local/apache2/bin/apachectl start
 ]]>
     </screen>
-    </example>
+    </informalexample>
     PHP yapılandırması ile çalıştırmak üzere sunucuyu durdurun:
-    <example>
+    <informalexample>
     <screen>
 <![CDATA[
 /usr/local/apache2/bin/apachectl stop
 ]]>
     </screen>
-    </example>
+    </informalexample>
  </para>
  </listitem>
 
@@ -114,7 +113,7 @@ make install
    kurduysanız apxs yolunu buna uygun olarak ayarlamalısınız. Bazı dağıtımlar
    apxs yerine apxs2 ismini kullanır, buna dikkat edin.
   </para>
-  <example>
+  <informalexample>
    <screen>
 <![CDATA[
 cd ../php-NN
@@ -123,11 +122,11 @@ make
 make install
 ]]>
       </screen>
-     </example>
+     </informalexample>
    <para>
     Eğer kurulumdan sonra yapılandırmanızı değiştirmek isterseniz sadece
     configure, make ve make install adımlarını yinelemeniz yeterli olacaktır.
-    Yeni modülün etkin olabilmesi için Apache'yi yeniden başlatmanız gerekir. 
+    Yeni modülün etkin olabilmesi için Apache'yi yeniden başlatmanız gerekir.
     Apache'yi yeniden derlemeniz gerekmez.
 
     Aksi özellikle belirtilmedikçe 'make install' ile phpize gibi çeşitli PHP
@@ -142,13 +141,13 @@ make install
    <para>
     php.ini dosyanızı yapılandırın.
    </para>
-     <example>
+     <informalexample>
      <screen>
 <![CDATA[
 cp php.ini-development /usr/local/lib/php.ini
 ]]>
       </screen>
-     </example>
+     </informalexample>
 
    <para>
     PHP seçeneklerini ayarlamak için .ini dosyanızı düzenleyebilirsiniz. .ini
@@ -170,13 +169,27 @@ cp php.ini-development /usr/local/lib/php.ini
     göstermelidir. Yukarıdaki 'make install' bunu sizin yerinize yapmıştır
     ama emin olmak için siz yine de bir bakın.
    </para>
-   <example>
-    <programlisting role="apache-conf">
+      <informalexample>
+       <para>
+        PHP 7 için:
+       </para>
+       <programlisting role="apache-conf">
+<![CDATA[
+LoadModule php7_module modules/libphp7.so
+]]>
+       </programlisting>
+     </informalexample>
+
+      <informalexample>
+       <para>
+        PHP 5 için:
+       </para>
+       <programlisting role="apache-conf">
 <![CDATA[
 LoadModule php5_module modules/libphp5.so
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
   </listitem>
   <listitem>
    <para>
@@ -189,7 +202,7 @@ LoadModule php5_module modules/libphp5.so
     ekledik. Başka uzantıları da buraya ekleyebilirsiniz. Bunları aralarında
     boşluk bırakarak aynı satıra yazabilirsiniz.
    </para>
-   <example>
+   <informalexample>
     <programlisting role="apache-conf">
 <![CDATA[
 <FilesMatch \.php$>
@@ -197,13 +210,13 @@ LoadModule php5_module modules/libphp5.so
 </FilesMatch>
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
    <para>
     Veya .php, .php2, .php3, .php4, .php5, .php6 ve .phtml gibi dosyalar
     dışında hiçbir dosyanın PHP tarafından çalıştırılmamasını şöyle
     sağlayabilirsiniz:
    </para>
-   <example>
+   <informalexample>
     <programlisting role="apache-conf">
 <![CDATA[
 <FilesMatch "\.ph(p[2-6]?|tml)$">
@@ -211,12 +224,12 @@ LoadModule php5_module modules/libphp5.so
 </FilesMatch>
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
    <para>
     PHP kaynak kodlarını renklendirilmiş olarak göstermek için .phps
     uzantısını da yapılandırmanıza ekleyebilirsiniz. Bu, şöyle yapılır:
    </para>
-   <example>
+   <informalexample>
     <programlisting role="apache-conf">
 <![CDATA[
 <FilesMatch "\.phps$">
@@ -224,19 +237,19 @@ LoadModule php5_module modules/libphp5.so
 </FilesMatch>
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
    <para>
      .php dosyalarının uzantılarını .phps olarak değiştirmeden kaynak kodlarını
     renklendirilmiş olarak göstermek isterseniz bunu şöyle yapabilirsiniz:
    </para>
-   <example>
+   <informalexample>
     <programlisting role="apache-conf">
 <![CDATA[
 RewriteEngine On
 RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
    <para>
      PHP kaynak süzgeci, gizli kalması gereken bilgiler içeren genel kullanıma
     açık sunucularda kullanılmamalıdır. Aksi takdirde gizli kalması gereken
@@ -248,21 +261,21 @@ RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
     Artık Apache'yi başlatabilirsiniz. Bunun için Apache'yi her zaman ki gibi
     başlatmanız yetecektir:
    </para>
-   <example>
+   <informalexample>
     <screen>
 <![CDATA[
 /usr/local/apache2/bin/apachectl start
 ]]>
     </screen>
-   </example>
+   </informalexample>
    <para>VEYA</para>
-   <example>
+   <informalexample>
     <screen>
 <![CDATA[
 service httpd restart
  ]]>
     </screen>
-   </example>
+   </informalexample>
 
       </listitem>
      </orderedlist>
@@ -279,13 +292,13 @@ service httpd restart
      Bunu yapmak için 3. şıkta derleme seçeneklerinize şu seçeneğini
      ekleyebilirsiniz:
     </para>
-    <example>
+    <informalexample>
     <screen>
 <![CDATA[
 --with-mpm=worker
 ]]>
     </screen>
-    </example>
+    </informalexample>
     <para>
      Bunu yapmadan önce, bunun olası sonuçları hakkında
      bilgi sahibi olmaya, azından ne gibi etkilerinin olacağını anlamaya
