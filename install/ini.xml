@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ad46822c2c912ebf70885ff9faa3a7e366555e1f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e443388d4249fea383d6ec2d1a338be220cf95ee Maintainer: nilgun Status: ready -->
 <chapter xml:id="configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Çalışma Anı Yapılandırması</title>
  <sect1 xml:id="configuration.file">
@@ -20,8 +20,7 @@
      <para>
       SAPI modülüne özgü konum (Apache 2'de <literal>PHPIniDir</literal>
       yönergesi, CGI ve CLI için <literal>-c</literal> komut satırı seçeneği,
-      NSAPI'de <literal>php_ini</literal> değiştirgesi, THTTPD'de
-      <literal>PHP_INI_PATH</literal> ortam değişkeni)
+      NSAPI'de <literal>php_ini</literal> değiştirgesi)
      </para>
     </listitem>
     <listitem>
@@ -33,21 +32,34 @@
     </listitem>
     <listitem>
      <para>
-      PHP 5.2.0'dan itibaren, PHP'nin farklı sürümlerine ait
-      <literal>php.ini</literal> dosyaları için Windows kayıt defterinde
-      sırayla aşağıdaki yerlere bakılmaktadır:
+      PHP 5.2.0'dan itibaren, <literal>php.ini</literal> dosyasının konumu
+      PHP'nin farklı sürümleri için ayarlanabilmektedir. Kayıt defteri
+      anahtarlarının kökü, kurulu işletim sistemi ve PHP'nin 32 veya 64 bit
+      oluşuna bağlıdır. 32 bit işletim sisteminde 32 bit PHP veya 64 bit
+      işletim sisteminde 64 bit PHP için [(HKEY_LOCAL_MACHINE\SOFTWARE\PHP],
+      64 bit işletim sisteminde 32 bit PHP sürümü için bunu yerine
+      [HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP]] kullanın. Aynı bitlik
+      kurulum için kayıt defteri anahtarları aşağıdaki sırayla incelenir:
       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y.z]</literal>,
       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y]</literal> ve
       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x]</literal>.
       Burada x, y ve z harfleri PHP'nin ana, alt ve yama sürümlerini
-      belirtir. Bu anahtarlarda bir <literal>IniFilePath</literal> değeri
-      varsa ilk bulunan <literal>php.ini</literal> konumu kullanılır.
+      belirtir. 64 bit işletim sisteminde PHP'nin 32 bit sürümleri için kayıt
+      defteri anahtarları aşağıdaki sırayla incelenir:
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6421Node\PHP\x.y.z]</literal>,
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6421Node\PHP\x.y]</literal> ve
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6421Node\PHP\x]</literal>.
+      Burada x, y ve z harfleri PHP'nin ana, alt ve yama sürümlerini
+      belirtir.  Bu anahtarlarda bir <literal>IniFilePath</literal> değeri
+      varsa ilk bulunan <literal>php.ini</literal> konumu kullanılır
+      (sadece Windows).
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP]</literal> anahtarının
-      <literal>\IniFilePath</literal> değeri. (Windows Kayıt Defteri kaydı)
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP]</literal> or
+      <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP]</literal>
+      anahtarının <literal>\IniFilePath</literal> değeri (sadece Windows).
      </para>
     </listitem>
     <listitem>
@@ -89,7 +101,7 @@
   </para>
   <para>
    <example>
-    <title>&php.ini; Ortam Değişkenleri</title>
+    <title>- &php.ini; Ortam Değişkenleri</title>
       <programlisting role="ini">
  <![CDATA[
 ; PHP_MEMORY_LIMIT'in ortamdan alınışı
@@ -137,6 +149,62 @@ include_path = ".;c:\php\lib"
    <literal>open_basedir = ${open_basedir} ":/new/dir"</literal>.
   </para>
 
+  <sect2 xml:id="configuration.file.scan">
+   <title>Taram Dizinleri</title>
+
+   <para>
+    PHP'yi, &php.ini;'yi okuduktan sonra bir dizindeki .ini dosyalarını
+    tarayacak şekilde yapılandırmak mümkündür. Bu,
+    <option role="configure">--with-config-file-scan-dir</option> seçeneği
+    ayarlanarak derleme sırasında yapılabilir. PHP 5.2.0 ve sonrasında, tarama
+    dizini daha sonra çalışma anında <varname>PHP_INI_SCAN_DIR</varname> ortam
+    değişkeni ayarlanarak geçersiz kılınabilir.
+   </para>
+
+   <para>
+    Birden fazla dizini platforma özgü yol ayırıcıyla ayırarak taramak
+    mümkündür (Windows, NetWare ve RISC OS için <literal>;</literal> diğer
+    tüm platformlarda <literal>:</literal> kullanılır. PHP'nin kullandığı
+    değer <constant>PATH_SEPARATOR</constant> sabiti olarak mevcuttur).
+    <varname>PHP_INI_SCAN_DIR</varname>'de boş bir dizin verilmişse,
+    PHP ayrıca derleme sırasında
+    <option role="configure">--with-config-file-scan-dir</option> seçeneği
+    ile verilen dizini de tarayacaktır.
+   </para>
+
+   <para>
+    PHP her dizinde, PHP <literal>.ini</literal> uzantılı tüm dosyaları
+    alfabetik sırayla tarar. <function>php_ini_scanned_files</function>
+    işlevi ile veya PHP'yi <option>--ini</option> seçeneğiyle çalıştırarak
+    yüklenen dosyaların bir listesi ve sırası elde edilebilir.
+   </para>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+PHP'nin --with-config-file-scan-dir=/etc/php.d ile yapılandırıldığını
+ve yol ayırıcının : olduğunu varsayalım ...
+
+$ php
+  PHP /etc/php.d/*.ini dosyalarının tamamını
+  yapılandırma dosyaları olarak yükler
+
+$ PHP_INI_SCAN_DIR=/usr/local/etc/php.d php
+  PHP /usr/local/etc/php.d/*.ini dosyalarının tamamını
+  yapılandırma dosyaları olarak yükler
+
+$ PHP_INI_SCAN_DIR=:/usr/local/etc/php.d php
+  PHP /etc/php.d/*.ini ve ardından /usr/local/etc/php.d/*.ini
+  dosyalarının tamamını yapılandırma dosyaları olarak yükler
+
+$ PHP_INI_SCAN_DIR=/usr/local/etc/php.d: php
+  PHP /usr/local/etc/php.d/*.ini ve ardından /etc/php.d/*.ini
+  dosyalarının tamamını yapılandırma dosyaları olarak yükler
+]]>
+    </screen>
+   </informalexample>
+  </sect2>
+
   <sect2 xml:id="configuration.file.changelog">
    &reftitle.changelog;
    <para>
@@ -164,6 +232,14 @@ include_path = ".;c:\php\lib"
         </entry>
        </row>
        <row>
+        <entry>5.2.0</entry>
+        <entry>
+         <varname>PHP_INI_SCAN_DIR</varname> ortam değişkeni, yapılandırma
+         betiği aracılığıyla tarama dizini kümesini geçersiz kılacak şekilde
+         ayarlanabilir.
+        </entry>
+       </row>
+       <row>
         <entry>5.1.0</entry>
         <entry>
          I. ini dosyalarının içindeki mevcut .ini değişkenlerine atıfta bulunmak
@@ -184,8 +260,8 @@ include_path = ".;c:\php\lib"
    PHP 5.3.0'dan beri, dizinler için .htaccess tarzı INI dosyaları
    desteklenmektedir. Bu dosyalar <emphasis>sadece</emphasis> CGI/FastCGI SAPI
    tarafından işlenir. Bu işlevsellik ile PECL htscanner eklentisi atıl duruma
-   düşmüştür. Apache kullanıyorsanız aynı etkiyi elde etmek için &htaccess;
-   dosyalarını kullanın.
+   düşmüştür. PHP'yi Apache modülü olarak çalıştırıyorsanız aynı etkiyi elde
+   etmek için &htaccess; dosyalarını kullanın.
   </simpara>
 
   <simpara>
@@ -203,22 +279,21 @@ include_path = ".;c:\php\lib"
 
   <simpara>
    Kullanıcı INI dosyalarını denetlemek için iki yeni INI yönergesi
-   kullanılmaktadır: <literal>user_ini.filename</literal> ve
-   <literal>user_ini.cache_ttl</literal>.
-   <!--
-       <link linkend="ini.user-ini.filename">user_ini.filename</link> and
-       <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link>
-   -->
+   kullanılmaktadır:
+   <link linkend="ini.user-ini.filename">user_ini.filename</link> ve
+   <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link>
   </simpara>
 
   <simpara>
-   <literal>user_ini.filename</literal> ile PHP'nin dizinlerde arayacağı
-   dosyanın ismi belirtilir. <literal>.user.ini</literal> öntanımlı değerdir.
+   <link linkend="ini.user-ini.filename">user_ini.filename</link> ile
+   PHP'nin dizinlerde arayacağı dosyanın ismi belirtilir.
+   <literal>.user.ini</literal> öntanımlı değerdir.
   </simpara>
 
   <simpara>
-   <literal>user_ini.cache_ttl</literal> ile kullanıcı INI dosyalarının ne
-   sıklıkta denetleneceği belirtilir. 300 saniye (5 dakika) öntanımlı
+   <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link> ile
+   kullanıcı INI dosyalarının ne sıklıkta denetleneceği belirtilir.
+   300 saniye (5 dakika) öntanımlı
    değerdir.
   </simpara>
  </sect1>
@@ -423,7 +498,8 @@ include_path = ".;c:\php\lib"
      bulunan PHP sabitleri çözümlenmez. Sadece,
      <constant>PHP_INI_USER</constant> türü değişebilir yapılandırma
      değerleri bu yolla atanabilir,  <constant>PHP_INI_PERDIR</constant>
-     değerleri atanamaz.
+     değerleri atanamaz, çünkü bu yapılandırma değerleri her istekte yeniden
+     okunur.
     </simpara>
   </sect2>
 
