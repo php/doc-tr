@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 6972146ba296cdc7f8e1f808815a04f11b1a7ea2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <refentry xml:id="context.ssl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
  <refnamediv>
   <refname>SSL  bağlamı seçenekleri</refname>
@@ -34,7 +34,7 @@
     <varlistentry xml:id="context.ssl.verify-peer">
      <term>
       <parameter>verify_peer</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -48,7 +48,7 @@
     <varlistentry xml:id="context.ssl.verify-peer-name">
      <term>
       <parameter>verify_peer_name</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -62,7 +62,7 @@
     <varlistentry xml:id="context.ssl.allow-self-signed">
      <term>
       <parameter>allow_self_signed</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -112,7 +112,7 @@
        Yerel sertifikanın dosya sistemindeki yeri. Sertifikanızı ve özel
        anahtarınızı içeren PEM kodlamalı bir dosya olmalıdır. Seçimlik olarak
        sertifika sağlayıcıların sertifika zincirini içerebilir. Ayrıca,
-       özel anahtar <literal>local_pk</literal> ile belirtilen bir dosyayı da 
+       özel anahtar <literal>local_pk</literal> ile belirtilen bir dosyayı da
        içerebilir.
      </para>
      </listitem>
@@ -124,7 +124,7 @@
      </term>
      <listitem>
       <para>
-       Dosya sisteminde sertifika (<literal>local_cert</literal>) ve özel anahtar 
+       Dosya sisteminde sertifika (<literal>local_cert</literal>) ve özel anahtar
        için ayrı dosyalar olması durumunda yerel özel anahtar dosyasının yolu.
       </para>
      </listitem>
@@ -140,29 +140,10 @@
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry xml:id="context.ssl.cn-match">
-     <term>
-      <parameter>CN_match</parameter>
-      <type>string</type>
-     </term>
-     <listitem>
-      <para>
-       Beklenen bilinen isim (Common Name). PHP sınırlı bir dosya kalıbı
-       eşletirmesi yapmaya çalışır. Eğer bu bilinen isim bununla eşleşmiyorsa
-       bağlantı gerçekleşmeyecektir.
-      </para>
-      <note>
-        <simpara>
-         Bu seçeneğin kullanımı önerilmemektedir. PHP 5.6.0 itibariyle
-         <parameter>peer_name</parameter> kullanılmalıdır.
-        </simpara>
-      </note>
-    </listitem>
-    </varlistentry>
     <varlistentry xml:id="context.ssl.verify-depth">
      <term>
       <parameter>verify_depth</parameter>
-      <type>integer</type>
+      <type>int</type>
      </term>
      <listitem>
       <para>
@@ -192,7 +173,7 @@
     <varlistentry xml:id="context.ssl.capture-peer-cert">
      <term>
       <parameter>capture_peer_cert</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -204,7 +185,7 @@
     <varlistentry xml:id="context.ssl.capture-peer-cert-chain">
      <term>
       <parameter>capture_peer_cert_chain</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -216,7 +197,7 @@
     <varlistentry xml:id="context.ssl.sni-enabled">
      <term>
       <parameter>SNI_enabled</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -225,29 +206,10 @@
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry xml:id="context.ssl.sni-server-name">
-     <term>
-      <parameter>SNI_server_name</parameter>
-      <type>string</type>
-     </term>
-     <listitem>
-      <para>
-       Atanan değer sunucu ismi belirteci için sunucu ismi olarak kullanılır.
-       Bir değer atanmazsa, sunucu ismi akım açılırken kullanılan konak ismine
-       dayanarak tahmin edilir.
-      </para>
-      <note>
-        <simpara>
-         Bu seçeneğin kullanımı önerilmemektedir. PHP 5.6.0 itibariyle
-         <parameter>peer_name</parameter> kullanılmalıdır.
-        </simpara>
-      </note>
-     </listitem>
-    </varlistentry>
     <varlistentry xml:id="context.ssl.disable-compression">
      <term>
       <parameter>disable_compression</parameter>
-      <type>boolean</type>
+      <type>bool</type>
      </term>
      <listitem>
       <para>
@@ -275,6 +237,23 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry xml:id="context.ssl.security-level">
+     <term>
+      <parameter>security_level</parameter>
+      <type>int</type>
+     </term>
+     <listitem>
+      <para>
+       Güvenlik seviyesini belirler. Belirtilmezse kütüphane öntanımlı güvenlik
+       seviyesi kullanılır. Güvenlik seviyeleri için bkz:
+       <link xlink:href="&url.openssl.security-level;">
+       SSL_CTX_get_security_level(3)</link>.
+      </para>
+      <para>
+       PHP 7.2.0 ve OpenSSL 1.1.0 itibariyle kullanılabilir.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1><!-- }}} -->
@@ -292,25 +271,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.6.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-       <parameter>peer_fingerprint</parameter> ve
-       <parameter>verify_peer_name</parameter> eklendi.
-        <parameter>verify_peer</parameter> için öntanımlı değer &true; oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>5.4.13</entry>
-       <entry>
-        <parameter>disable_compression</parameter> eklendi.
-        OpenSSL &gt;= 1.0.0 gerekir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.2</entry>
-       <entry>
-        <parameter>SNI_enabled</parameter> ve
-        <parameter>SNI_server_name</parameter> eklendi.
+        <parameter>security_levels</parameter> değiştirgesi eklendi.
+        OpenSSL &gt;= 1.1.0. gerekir.
        </entry>
       </row>
      </tbody>
