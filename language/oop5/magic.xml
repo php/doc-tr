@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ec77057bf375ae4d50ffe24aa6f6a5dc629c10f3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
@@ -15,6 +15,8 @@
    <link linkend="object.unset">__unset()</link>,
    <link linkend="object.sleep">__sleep()</link>,
    <link linkend="object.wakeup">__wakeup()</link>,
+   <link linkend="object.serialize">__serialize()</link>,
+   <link linkend="object.unserialize">__unserialize()</link>,
    <link linkend="object.tostring">__toString()</link>,
    <link linkend="object.invoke">__invoke()</link>,
    <link linkend="object.set-state">__set_state()</link>,
@@ -25,6 +27,13 @@
    işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
    ismi olarak kullanamazsınız.
   </para>
+
+  <note>
+   <simpara>
+    Tüm sihirli yöntemler <emphasis>KESİNLİKLE</emphasis>
+    <literal>public</literal> olarak bildirilmelidir.
+   </simpara>
+  </note>
 
   <caution>
    <simpara>
@@ -41,23 +50,26 @@
    </title>
 
    <methodsynopsis xml:id="object.sleep">
-    <modifier>public</modifier> <type>array</type><methodname>__sleep</methodname>
+    <modifier>public</modifier>
+    <type>array</type><methodname>__sleep</methodname>
     <void/>
    </methodsynopsis>
+
    <methodsynopsis xml:id="object.wakeup">
+    <modifier>public</modifier>
     <type>void</type><methodname>__wakeup</methodname>
     <void/>
    </methodsynopsis>
 
    <para>
-    <function>serialize</function> işlevi, sınıfınızın
+    <function>serialize</function> işlevi, sınıfın
     <link linkend="object.sleep">__sleep()</link>
     adında sihirli bir işleve sahip olup olmadığına bakar. Böyle bir işlev
-    varsa herhangi bir serileştirme işleminden önce bu işlev çalıştırılır.
-    Bu işlev ile nesne üzerinde temizlik yapabilir ve serileştirilmesi
+    varsa herhangi bir dizileştirme işleminden önce bu işlev çalıştırılır.
+    Bu işlev ile nesne üzerinde temizlik yapabilir ve dizileştirilmesi
     gereken nesnenin tüm değişken isimlerinin bir dizi halinde döndürülmesini
     sağlayabilirsiniz. Eğer işlev hiçbir şey döndürmemişse &null;
-    serileştirilir ve bir <constant>E_NOTICE</constant> çıktılanır.
+    dizileştirilir ve bir <constant>E_NOTICE</constant> çıktılanır.
    </para>
    <note>
     <para>
@@ -70,10 +82,9 @@
    </note>
    <para>
     <link linkend="object.sleep">__sleep()</link> işlevinin asıl kullanım
-    amacı askıdaki veriyi
-    göndermek gibi temizliğe benzer işlemler yapmaktır. Ayrıca, tümüyle
-    kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu olduğunda da bu
-    işlevden yararlanabilirsiniz.
+    amacı askıdaki veriyi göndermek gibi temizliğe benzer işlemler yapmaktır.
+    Ayrıca, tümüyle kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu
+    olduğunda da bu işlevden yararlanabilirsiniz.
    </para>
    <para>
     <function>unserialize</function> işlevi tersine bir işlem yaparak
@@ -84,9 +95,8 @@
    </para>
    <para>
     <link linkend="object.wakeup">__wakeup()</link> işlevinin asıl kullanım
-    amacı, serileştirme
-    sırasında kaybedilebilen veritabanı bağlantılarını yeniden oluşturmak ve
-    diğer ilklendirme işlemlerini yeniden yapmaktır.
+    amacı, dizileştirme sırasında kaybedilebilen veritabanı bağlantılarını
+    yeniden oluşturmak ve diğer ilklendirme işlemlerini yeniden yapmaktır.
    </para>
    <example>
     <title>- Uyutma ve uyandırma</title>
@@ -127,12 +137,125 @@ class Bağlantı
    </example>
   </sect2>
 
-  <sect2 xml:id="language.oop5.magic.tostring">
-   <title><link linkend="object.tostring">__toString()</link></title>
-   <methodsynopsis xml:id="object.tostring">
-    <modifier>public</modifier> <type>string</type><methodname>__toString</methodname>
+  <sect2 xml:id="language.oop5.magic.serialize">
+   <title>
+    <link linkend="object.serialize">__serialize()</link> ve
+    <link linkend="object.unserialize">__unserialize()</link>
+   </title>
+
+   <methodsynopsis xml:id="object.serialize">
+    <modifier>public</modifier> <type>array</type><methodname>__serialize</methodname>
     <void/>
    </methodsynopsis>
+   <methodsynopsis xml:id="object.unserialize">
+    <modifier>public</modifier> <type>void</type><methodname>__unserialize</methodname>
+    <methodparam><type>array</type><parameter>data</parameter></methodparam>
+   </methodsynopsis>
+
+   <para>
+    <function>serialize</function> işlevi, sınıfın
+    <link linkend="object.serialize">__serialize()</link> sihirli adına
+    sahip bir işlevinin olup olmadığına bakar. Varsa, bu işlev herhangi
+    bir dizileştirmeden önce çalıştırılır. Nesnenin dizileştirilmiş biçimini
+    temsil eden ilişkisel bir anahtar/değer çiftleri dizisi oluşturmalı ve
+    döndürmelidir. Hiçbir dizi döndürülmezse, bir
+    <classname>TypeError</classname> yavrulanır.
+   </para>
+   <note>
+    <para>
+     Aynı nesnede hem <link linkend="object.serialize">__serialize()</link>
+     hem de <link linkend="object.sleep">__sleep()</link> tanımlanmışsa,
+     sadece <link linkend="object.serialize">__serialize()</link>
+     çağrılır. <link linkend="object.sleep">__sleep()</link> ise yok
+     sayılır. Nesne <link linkend="class.serializable">Serializable</link>
+     arayüzünü gerçekliyorsa, arayüzün <literal>serialize()</literal> yöntemi
+     yok sayılır ve yerine <link linkend="object.serialize">__serialize()</link>
+     kullanılır.
+    </para>
+   </note>
+   <para>
+    <link linkend="object.serialize">__serialize()</link> yönteminin
+    amaçlanan kullanımı, nesnenin dizileştirmeye uygun keyfi bir gösterimini
+    tanımlamaktır. Dizinin öğeleri, nesnenin özelliklerine karşılık gelebilir,
+    ancak bu gerekli değildir.
+   </para>
+   <para>
+    <function>unserialize</function> işlevi ise tersine sınıfın
+    <link linkend="object.unserialize">__unserialize()</link> sihirli adına
+    sahip bir işlevinin olup olmadığına bakar. Varsa, bu işlev
+    <link linkend="object.serialize">__serialize()</link> işlevinden
+    döndürülen geri yüklenmiş diziye aktarılır. Daha sonra nesnenin
+    özelliklerini uygun şekilde bu diziden geri yükleyebilir.
+   </para>
+   <note>
+    <para>
+     Aynı nesnede hem <link linkend="object.unserialize">__unserialize()</link>
+     hem de <link linkend="object.wakeup">__wakeup()</link> tanımlanmışsa,
+     yalnızca <link linkend="object.unserialize">__unserialize()</link>
+     çağrılır. <link linkend="object.wakeup">__wakeup()</link> ise yok sayılır.
+    </para>
+   </note>
+   <note>
+    <para>
+     Özellik PHP 7.4.0'dan beri kullanılabilmektedir.
+    </para>
+   </note>
+   <example>
+    <title>- Dizileştirme ve Nesneleştirme</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Connection
+{
+    protected $link;
+    private $dsn, $username, $password;
+
+    public function __construct($dsn, $username, $password)
+    {
+        $this->dsn = $dsn;
+        $this->username = $username;
+        $this->password = $password;
+        $this->connect();
+    }
+
+    private function connect()
+    {
+        $this->link = new PDO($this->dsn, $this->username, $this->password);
+    }
+
+    public function __serialize(): array
+    {
+        return [
+          'dsn' => $this->dsn,
+          'user' => $this->username,
+          'pass' => $this->password,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->dsn = $data['dsn'];
+        $this->username = $data['user'];
+        $this->password = $data['pass'];
+
+        $this->connect();
+    }
+}?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+
+  <sect2 xml:id="language.oop5.magic.tostring">
+   <title><link linkend="object.tostring">__toString()</link></title>
+
+   <methodsynopsis xml:id="object.tostring">
+    <modifier>public</modifier>
+    <type>string</type><methodname>__toString</methodname>
+    <void/>
+   </methodsynopsis>
+
    <para>
     <link linkend="object.tostring">__toString()</link> yöntemi, sınıf bir
     dizgeye dönüştürüldüğünde sınıfın nasıl tepki vereceğine karar vermeyi
@@ -142,9 +265,8 @@ class Bağlantı
    </para>
    <warning>
     <simpara>
-     You cannot throw an exception from within a
      <link linkend="object.tostring">__toString()</link> yöntemin içinden
-     bir istisna oluşturamazsınız. Bunu yapılması ölümcül hata ile
+     bir istisna yavrulatılamaz. Bunun yapılması ölümcül hata ile
      sonuçlanır.
     </simpara>
    </warning>
@@ -198,10 +320,12 @@ Merhaba
 
   <sect2 xml:id="language.oop5.magic.invoke">
    <title><link linkend="object.invoke">__invoke()</link></title>
+
    <methodsynopsis xml:id="object.invoke">
     <type>mixed</type><methodname>__invoke</methodname>
-    <methodparam choice="opt"><parameter>...</parameter></methodparam>
+    <methodparam rep="repeat"><parameter>values</parameter></methodparam>
    </methodsynopsis>
+
    <para>
     <link linkend="object.invoke">__invoke()</link> yöntemi, bir betik bir nesneyi bir işlev olarak çağırmaya çalışırsa çağrılır.
    </para>
@@ -240,10 +364,13 @@ bool(true)
 
   <sect2 xml:id="language.oop5.magic.set-state">
    <title><link linkend="object.set-state">__set_state()</link></title>
+
    <methodsynopsis xml:id="object.set-state">
-    <modifier>static</modifier> <type>object</type><methodname>__set_state</methodname>
+    <modifier>static</modifier>
+    <type>object</type><methodname>__set_state</methodname>
     <methodparam><type>array</type><parameter>özellikler</parameter></methodparam>
    </methodsynopsis>
+
    <para>
     Bu <link linkend="language.oop5.static">statik</link> yöntem, PHP 5.1.0
     sürümünden beri <function>var_export</function> tarafından ihraç edilen
@@ -317,10 +444,12 @@ object(A)#2 (2) {
 
   <sect2 xml:id="language.oop5.magic.debuginfo">
    <title><link linkend="object.debuginfo">__debugInfo()</link></title>
+
    <methodsynopsis xml:id="object.debuginfo">
     <type>array</type><methodname>__debugInfo</methodname>
     <void/>
    </methodsynopsis>
+
    <para>
     Gösterilmesi gereken özelliklerini döndürmek için bir nesne
     dökümleneceği zaman bu yöntem <function>var_dump</function> tarafından
@@ -330,7 +459,7 @@ object(A)#2 (2) {
     Bu özellik PHP 5.6.0 sürümünde eklendi.
    </para>
    <example>
-    <title><link linkend="object.debuginfo">__debugInfo()</link>
+    <title>- <link linkend="object.debuginfo">__debugInfo()</link>
       kullanımı</title>
     <programlisting role="php">
 <![CDATA[
