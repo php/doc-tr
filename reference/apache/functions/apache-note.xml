@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 6230e6c0d5984e5f5748612b5be2343797b4fb03 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a331ac8a86bb5929b79be9a369fac1e3af516241 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: faruk, behzat -->
 <!-- splitted from ./en/functions/apache.xml, last change in rev 1.2 -->
 <refentry xml:id="function.apache-note" xmlns="http://docbook.org/ns/docbook">
@@ -12,9 +12,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>apache_note</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>apache_note</methodname>
    <methodparam><type>string</type><parameter>not_adı</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>not_değeri</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>note_değeri</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev Apache'nin <literal>table_get</literal> ve <literal>table_set</literal> işlevleri
@@ -54,12 +54,34 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-    Tek değiştirge ile çağrılırsa <literal>not_adı</literal> notunun
-    o anki değerini döndürür. Eğer iki değiştirge ile çağrılırsa
-    <literal>not_değeri</literal> değerini <literal>not_adı</literal> notuna atar ve
-    <literal>not_adı</literal> notunun önceki değerini döndürür. Eğer işlem başarısız olursa
-    &false; döner.
+   <parameter>not_değeri</parameter> verilmezse ya da &null; ise
+   <literal>not_adı</literal> notunun o anki değerini döndürür. Aksi
+   takdirde <literal>not_değeri</literal> değerini <literal>not_adı</literal>
+   notuna atar ve <literal>not_adı</literal> notunun önceki değerini döndürür.
+   Eğer işlem başarısız olursa &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>note_değeri</parameter> artık boş olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
