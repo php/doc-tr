@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: af6fdf16ab44bcf4d045407963e43c3d9dd2ff29 Maintainer: nilgun Status: ready -->
+
+<refentry xml:id="wrappers.audio" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
+ <refnamediv>
+  <refname>ogg://</refname>
+  <refpurpose>Ses akımları</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description"><!-- {{{ -->
+  &reftitle.description;
+  <para>
+   <filename>ogg://</filename> sarmalayıcısı aracılığıyla okumak için açılan
+   dosyalar, <literal>OGG/Vorbis</literal> çözücü bileşeni kullanılarak
+   kodlanmış sıkıştırılmış ses olarak değerlendirilir. Benzer şekilde,
+   <filename>ogg://</filename> sarmalayıcı aracılığıyla yazmak veya eklemek
+   için açılan dosyalar sıkıştırılmış ses verileri olarak yazılır.
+   <function>stream_get_meta_data</function> işlevi, okuma için açılmış bir
+   <literal>OGG/Vorbis</literal> dosyasında kullanıldığında, satıcı etiketi,
+   dahil edilen yorumlar, kanal sayısı, örnekleme hızı ve
+   <parameter>bitrate_lower</parameter>, <parameter>bitrate_upper</parameter>,
+   <parameter>bitrate_nominal</parameter> ve
+   <parameter>bitrate_window</parameter> tarafından açıklanan kodlama oranı
+   aralığı dahil olmak üzere akış hakkında çeşitli ayrıntıları döndürür.
+  </para>
+
+  <simpara><filename>ogg://</filename> (PECL)</simpara>
+  <note>
+   <title>Bu sarmalayıcı öntanımlı olarak etkin değildir</title>
+   <simpara>
+    <filename>ogg://</filename> sarmalayıcıyı kullanmak için,
+    <link xlink:href="&url.pecl;">PECL</link>'de bulunan
+    <link xlink:href="&url.pecl.package;oggvorbis">OGG/Vorbis</link>
+    uzantısını kurmanız gerekir.
+   </simpara>
+  </note>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="usage"> <!-- {{{ -->
+  &reftitle.usage;
+  <itemizedlist>
+   <listitem><simpara><filename>ogg://soundfile.ogg</filename></simpara></listitem>
+   <listitem><simpara><filename>ogg:///dosyaya/yol/soundfile.ogg</filename></simpara></listitem>
+   <listitem><simpara><filename>ogg://http://www.example.com/path/to/soundstream.ogg</filename></simpara></listitem>
+  </itemizedlist>
+ </refsect1> <!-- }}} -->
+
+ <refsect1 role="options"><!-- {{{ -->
+  &reftitle.options;
+  <para>
+   <table>
+    <title>Sarmalayıcı Özeti</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Özellik</entry>
+       <entry>Destek</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><link linkend="ini.allow-url-fopen">allow_url_fopen</link> ile
+         sınırlı</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+       <entry>Okumaya izin</entry>
+       <entry>Evet</entry>
+      </row>
+      <row>
+       <entry>Yazmaya izin</entry>
+       <entry>Evet</entry>
+      </row>
+      <row>
+       <entry>Eklemeye izin</entry>
+       <entry>Evet</entry>
+      </row>
+      <row>
+       <entry>Aynı anda okumaya ve yazmaya izin</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+        <entry><function>stat</function> desteği</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+       <entry><function>unlink</function> desteği</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+       <entry><function>rename</function> desteği</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+       <entry><function>mkdir</function> desteği</entry>
+       <entry>Hayır</entry>
+      </row>
+      <row>
+       <entry><function>rmdir</function> desteği</entry>
+       <entry>Hayır</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+  <!-- FIXME: This should not be here! context.audio... -->
+  <para>
+   <table>
+    <title>Bağlam seçenekleri</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>İsim</entry>
+       <entry>Kullanım</entry>
+       <entry>Öntanımlı</entry>
+       <entry>Kip</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>pcm_mode</literal></entry>
+       <entry>
+        Okurken uygulanacak PCM kodlaması:
+        <constant>OGGVORBIS_PCM_U8</constant>,
+        <constant>OGGVORBIS_PCM_S8</constant>,
+        <constant>OGGVORBIS_PCM_U16_BE</constant>,
+        <constant>OGGVORBIS_PCM_S16_BE</constant>,
+        <constant>OGGVORBIS_PCM_U16_LE</constant>, veya
+        <constant>OGGVORBIS_PCM_S16_LE</constant>.
+        (8'e karşı 16 bit, işaretli veya işaretsiz, büyük veya küçük dip)
+       </entry>
+       <entry>OGGVORBIS_PCM_S16_LE</entry>
+       <entry>Okuma</entry>
+      </row>
+      <row>
+       <entry><literal>rate</literal></entry>
+       <entry>
+        Girdi verisinin  Hz cinsinden örnekleme hızı
+       </entry>
+       <entry>44100</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>bitrate</literal></entry>
+       <entry>
+        Tamsayı olarak verildiğinde, kodlanacak sabit bit hızı (16000'den
+        131072'ye kadar). Gerçek sayı olarak verildiğinde, kullanılacak
+        değişken bit hızı (-1.0'dan 1.0'a kadar)
+       </entry>
+       <entry>128000</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>channels</literal></entry>
+       <entry>
+        Kodlanacak ses kanalı sayısı, genelde 1 (Mono) veya 2 (Stereo). 16'ya kadar çıkabilir.
+       </entry>
+       <entry>2</entry>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+      <row>
+       <entry><literal>comments</literal></entry>
+       <entry>
+        Parça başlığına kodlanacak dize değerleri dizisi.
+       </entry>
+       <entry/>
+       <entry>Yazma/Ekleme</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </refsect1> <!-- }}} -->
+
+ <refsect1 role="examples"><!-- {{{ -->
+  &reftitle.examples;
+ </refsect1><!-- }}} -->
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
