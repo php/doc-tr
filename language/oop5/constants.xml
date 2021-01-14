@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b08540046ece3586e543293d3c01630d9127b285 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a9edd62d087ab1eb6292c795b7256e14ff9f1234 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.constants" xmlns="http://docbook.org/ns/docbook">
   <title>Sınıf Sabitleri</title>
   <para>
-   Sabitlerin her sınıf için ayrı ayrı tanımlanabilmesi mümkündür. Sabitler
-   diğer değişkenlerden tanımlanmaları ve kullanılmaları sırasında başlarına
-   getirilmeyen <varname>$</varname> imi sayesinde ayrılırlar.
+   <link linkend="language.constants">Sabit</link> değerlerinin her sınıf için
+   ayrı ayrı tanımlanabilmesi mümkündür.
    Sabit sınıflarının öntanımlı görünülüğü <literal>public</literal>'tir.
   </para>
-  <para>
-   Değer, örneğin, bir değişken, bir sınıf özelliği, bir matematiksel işlemin
-   sonucu veya bir işlev çağrısı değil, bir <literal>sabit</literal> ifade
-   olmalıdır.
-  </para>
+  <note>
+   <para>
+    Sınıf sabitlerini bir çocuk sınıf yeniden tanımlayabilir.
+   </para>
+  </note>
   <para>
    Ayrıca, sınıf arayüzlerinin de kendi sabitlerinin olması mümkündür.
    Örnekler için <link linkend="language.oop5.interfaces">Nesne
    Arayüzleri</link> belgesine bakınız.
   </para>
   <para>
-   PHP 5.3.0&apos;dan itibaren, bir sınıfa bir değişken kullanarak atıfta bulunmak
-   mümkündür. Değişkenin değeri, <literal>self</literal>,
-   <literal>parent</literal>, <literal>static</literal> gibi bir anahtar sözcük
-   olamaz.
+   Bir sınıfa bir değişken kullanarak atıfta bulunmak mümkündür. Değişkenin
+   değeri, <literal>self</literal>, <literal>parent</literal>,
+   <literal>static</literal> gibi bir anahtar sözcük olamaz.
   </para>
   <para>
    Sınıf sabitlerinin her sınıf örneği için değil her sınıf için bir kere
@@ -47,47 +45,20 @@ class MyClass
 echo MyClass::constant . "\n";
 
 $classname = "MyClass";
-echo $classname::CONSTANT . "\n"; // PHP 5.3.0'dan itibaren
+echo $classname::CONSTANT . "\n";
 
 $class = new MyClass();
 $class->showConstant();
 
-echo $class::CONSTANT."\n"; // PHP 5.3.0'dan itibaren
+echo $class::CONSTANT."\n";
 ?>
 ]]>
    </programlisting>
   </example>
-
-  <example>
-   <title>- Statik veri örneği</title>
-   <programlisting role="php">
-<![CDATA[
-<?php
-class foo {
-    // PHP 5.3.0'dan itibaren
-    const BAR = <<<'EOT'
-bar
-EOT;
-    // PHP 5.3.0'dan itibaren
-    const BAZ = <<<EOT
-baz
-EOT;
-}
-?>
-]]>
-   </programlisting>
-  </example>
-  <note>
-   <para>
-    Statik veri bağlamında yorumlanan çok satırlı metinler (heredoc) ve
-    yorumlanmayan çok satırlı metinlerle (nowdoc) ssbitlerin ilklendirilmesi
-    desteği desteği 5.3.0'da eklenmiştir.
-   </para>
-  </note>
   <para>
-    Özel <constant>::class</constant> sabiti desteği 5.5.0'da eklenmiş olup,
+    Özel <constant>::class</constant> sabiti ile
     derleme sırasında tamamen nitelenmiş sınıf ismi çözünürlüğü mümkün
-    kılınmıştır ve isim alanlı sınıflar için kulllanışlıdır:
+    olup isim alanlı sınıflar için kulllanışlıdır:
   </para>
  <example>
   <title>- İsim alanlı ::class örneği</title>
@@ -104,15 +75,15 @@ namespace foo {
 ]]>
   </programlisting>
  </example>
+
  <example>
-  <title>Sabit ifadesi örneği</title>
+  <title>- Sınıf sabitinde ifade kullanımı</title>
   <programlisting role="php">
 <![CDATA[
 <?php
 const BİR = 1;
 
 class foo {
-    // PHP 5.6.0 ve sonrası
     const İKİ = BİR * 2;
     const ÜÇ = BİR + self::İKİ;
     const CÜMLE = 'ÜÇ için değer: '.self::THREE;
@@ -120,24 +91,15 @@ class foo {
 ?>
 ]]>
   </programlisting>
-  <para>
-   Bir sınıf sabiti bağlamında sayısal ve dize sabitlerini ve/veya sabitleri
-   içeren bir sayısal ifade sağlamak mümkündür.
-  </para>
- </example>
- <note>
-  <para>
-   Sabit ifadesi desteği PHP 5.6.0'da eklendi.
-  </para>
- </note>
+  </example>
 
- <example>
-  <title>- Sınıf sabiti görünürlük değiştiricileri</title>
-  <programlisting role="php">
+  <example>
+   <title>- Sınıf sabiti görünürlük değiştiricileri (PHP 7.1.0 ve sonrası)
+   </title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 class Foo {
-    // PHP 7.1.0 ve sonrası
     public const BAR = 'bar';
     private const BAZ = 'baz';
 }

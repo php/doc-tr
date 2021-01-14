@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4528db2d91279a8f120bacfd84e48f7e2281d923 Maintainer: nilgun Status: ready-->
+<!-- EN-Revision: a9edd62d087ab1eb6292c795b7256e14ff9f1234 Maintainer: nilgun Status: ready-->
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
@@ -47,24 +47,17 @@ class BasitSınıf
    <para>
     Bir nesne bağlamı içinden bir yöntem çağırmak için <varname>$this</varname>
     diye bir sözde değişken kullanılır. <varname>$this</varname> çağrılan
-    nesneye bir gönderimdir (normalde yöntemin ait olduğu nesnedir, ancak eğer
-    nesne diğer nesnenin bağlamından <link linkend="language.oop5.static">statik
-    olarak</link> çağrılıyorsa, bu başka bir nesne de olabilir). PHP 7.0.0
-    itibariyle, uyumsuz bir bağlamda statik olmayan yöntemin statik olarak
-    çağrılması,  yöntem içinde tanımlanmamış olarak $this ile sonuçlanır.
-    Uyumsuz bir bağlamda statik olmayan yöntemin statik olarak çağrılması
-    PHP 5.6.0'da önerilmemektedir. PHP 7.0.0 itibariyle, statik olmayan
-    yöntemin statik olarak çağrılması genel plarak önerilmemektedir (uyumlu
-    bir bağlamdan çağrılsa bile). PHP 5.6.0 öncesinde böyle çağrılar zaten
-    E_STRICT seviyesinde bir uyarı tetiklemektedir.
+    nesneye bir gönderimdir.
+   </para>
+   <warning>
+    <para>
+     Statik olmayan yöntemin statik olarak çağrılması
+     <classname>Error</classname> yavrulanmasına sebep olur.
+     PHP 8.0.0 öncesinde bunun kullanımdışı olduğuna dair bir uyarı verilir ve
+     tanımlanmamış olarak $this ile sonuçlanırdı.
    </para>
    <example xml:id="language.oop5.basic.class.this">
     <title>- <varname>$this</varname> sözde değişkeninin kullanımı</title>
-     <simpara>
-      Bu örnekte hata raporlamanın iptal edildiği varsayılmıştır. Aksi
-      takdirde, aşağıdaki kod, PHP sürümüne bağlı olarak E_DEPRECATED ve
-      E_STRICT uyarılarını tetiklerdi.
-     </simpara>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -102,25 +95,36 @@ B::bar();
 ?>
 ]]>
      </programlisting>
-     &example.outputs.5;
-     <screen>
-<![CDATA[
-$this tanımlı (A)
-$this tanımsız.
-$this tanımlı (B)
-$this tanımsız.
-]]>
-     </screen>
      &example.outputs.7;
      <screen>
 <![CDATA[
 $this is defined (A)
+
+Deprecated: Non-static method A::foo() should not be called statically in %s  on line 27
 $this is not defined.
+
+Deprecated: Non-static method A::foo() should not be called statically in %s  on line 20
 $this is not defined.
+
+Deprecated: Non-static method B::bar() should not be called statically in %s  on line 32
+
+Deprecated: Non-static method A::foo() should not be called statically in %s  on line 20
 $this is not defined.
 ]]>
      </screen>
+     &example.outputs.8;
+     <screen>
+<![CDATA[
+$this is defined (A)
+
+Fatal error: Uncaught Error: Non-static method A::foo() cannot be called statically in %s :27
+Stack trace:
+#0 {main}
+  thrown in %s  on line 27
+]]>
+     </screen>
     </example>
+   </warning>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.new">
@@ -202,8 +206,7 @@ object(BasitSınıf)#1 (1) {
     </screen>
    </example>
    <para>
-    Bir nesnenin örneğini oluşturmak için PHP 5.3.0 ve sonrasında yeni yollar
-    kullanılabilmektedir:
+    Bir nesnenin örneğini oluşturmak için yeni yollar kullanılabilmektedir:
    </para>
    <example>
     <title>- Yeni nesneler oluşturmak</title>
@@ -243,8 +246,8 @@ bool(true)
     </screen>
    </example>
    <para>
-    PHP 5.4.0 yeni oluşturulmuş bir nesnenin üyesine tek bir ifadede erişme
-    imkanını sağladı:
+    Yeni oluşturulmuş bir nesnenin üyesine tek bir ifadede erişmek
+    mümkündür:
    </para>
    <example>
     <title>- Yeni oluşturulmuş bir nesnenin üyesine erişim</title>
@@ -305,7 +308,7 @@ yöntem
     Bunun anlamı: Bir özelliğe atanmış bir
     <link linkend="functions.anonymous">anonim işlevi</link> doğrudan çağırmak
     mümkün değildir. Bunun yerine, özellik önce örneğin bir değişkene
-    atanmalıdır. PHP 7.0.0 itibariyle, böyle bir özelliği parantez içine
+    atanmalıdır. Böyle bir özelliği parantez içine
     alarak doğrudan çağırmak mümkündür.
    </para>
    <example>
@@ -326,11 +329,6 @@ class Foo
 
 $obj = new Foo();
 
-// PHP 5.3.0 ve sonrası:
-$func = $obj->bar;
-echo $func(), PHP_EOL;
-
-// PHP 7.0.0 ve sonrası:
 echo ($obj->bar)(), PHP_EOL;
 ]]>
     </programlisting>
@@ -347,12 +345,12 @@ echo ($obj->bar)(), PHP_EOL;
    <title><code>extends</code> Anahtar Sözcüğü</title>
    <para>
     Bir sınıfın bildiriminde <code>extends</code> anahtar sözcüğü
-    kullanılarak başka bir sınıfın yöntemleri ve özellikleri miras alınabilir.
+    kullanılarak başka bir sınıfın sabit, yöntem ve özellikleri miras alınabilir.
     Çok sayıda sınıfı miras alarak genişlemek mümkün değildir, bir sınıf
     sadece bir ana sınıfı miras alabilir.
    </para>
    <para>
-    Miras alınan yöntemler ve özellikler, ebeveyn sınıfta tanımlı
+    Miras alınan sabit, yöntem ve özellikler, ebeveyn sınıfta tanımlı
     isimleriyle yeniden bildirilerek geçersiz kılınabilir; bu sadece ebeveyn
     sınıfın <link linkend="language.oop5.final">final</link> tanımlı yöntemleri
     için yapılamaz. Geçersiz kılınmış yöntemlere ve statik özelliklere <link

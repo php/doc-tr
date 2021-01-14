@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 7e52ec86851a62d1d00109ccffa5dab5c73e5cc2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a9edd62d087ab1eb6292c795b7256e14ff9f1234 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.static" xmlns="http://docbook.org/ns/docbook">
   <title><code>static</code> Anahtar Sözcüğü</title>
@@ -25,13 +25,6 @@
     yöntemle erişebilir).
   </para>
 
-  <para>
-    PHP 4 ile uyumluluğun sağlanabilmesi için, eğer bir özellik veya yöntem
-    için hiçbir <link linkend="language.oop5.visibility" >görünürlük</link>
-    tanımı yapılmamışsa <literal>public</literal> olarak tanımlanmış
-    varsayılır.
-  </para>
-
   <sect2 xml:id="language.oop5.static.methods">
    <title>Statik Yöntemler</title>
 
@@ -41,20 +34,16 @@
     <code>static</code> olarak bildirilmiş bir yöntemin içinde kullanılamaz.
   </para>
 
-   <caution>
-    <simpara>
-     PHP 5'te, statik olmayan özellikler statikmiş gibi çağrılırsa
-     <constant>E_STRICT</constant> seviyesinde bir uyarı üretilir.
-    </simpara>
-   </caution>
-
    <warning>
-    <simpara>
-     PHP 7'de, statik olmayan yöntemlerin statik olarak çağrılması artık
-     önerilmemekte olup bir <constant>E_DEPRECATED</constant> uyarısı
-     üretir.warning. statik olmayan yöntemlerin statik olarak çağrılması
-     desteği yakında kaldırılabilir.
-    </simpara>
+    <para>
+     Statik olmayan yöntemlerin statik olarak çağrılması
+     bir <classname>Error</classname> yavrulanmasına sebep olur.
+    </para>
+    <para>
+     PHP 8.0.0 öncesinde ise, statik olmayan yöntemlerin statik olarak
+     çağrılması önerilmemekte ve bir <constant>E_DEPRECATED</constant>
+     uyarısı üretmekteydi.
+    </para>
    </warning>
 
    <example>
@@ -70,7 +59,7 @@ class Foo {
 
 Foo::statikYöntem();
 $classname = 'Foo';
-$classname::statikYöntem(); // PHP 5.3.0 ve sonrası
+$classname::statikYöntem();
 ?>
 ]]>
      </programlisting>
@@ -84,16 +73,14 @@ $classname::statikYöntem(); // PHP 5.3.0 ve sonrası
     erişilemez.
    </para>
    <para>
-    PHP 5.6 öncesinde diğer statik değişkenlerde olduğu gibi statik özellikler
-    de sadece bir sayıl veya sabit kullanılarak ilklendirilebilir; ifadelere
-    izin verilmez. PHP 5.6.0 ve sonrasında &const; için geçerli kurallar
-    uygulanır: bazı sınırlı ifadeler mümkündür, bunlar derleme sırasında
-    değerlendirilir.
+    Diğer statik değişkenlerde olduğu gibi statik özellikler
+    &const; ifadeleri için geçerli kurallarla ilklendirilebilir: Bazı
+    sınırlı ifadeler mümkündür, bunlar derleme sırasında değerlendirilir.
    </para>
 
    <para>
-    PHP 5.3.0 ve sonrasında, bir sınıfa bir değişken kullanarak gönderim
-    yapılabilmektedir. Böyle bir değişkenin değeri <literal>self</literal>,
+    Bir sınıfa bir değişken kullanarak gönderim yapılabilir.
+    Böyle bir değişkenin değeri <literal>self</literal>,
     <literal>parent</literal> veya <literal>static</literal> gibi bir anahtar
     sözcük olamaz.
    </para>
@@ -127,7 +114,7 @@ print $falanca->statik . "\n";      // Tanımsız "Özellik" statik
 
 print $falanca::$statik . "\n";
 $sınıfadı = 'Falanca';
-print $sınıfadı::$statik . "\n"; // PHP 5.3.0 ve sonrası
+print $sınıfadı::$statik . "\n";
 
 print Feşmekan::$statik . "\n";
 $feşmekan = new Feşmekan();
