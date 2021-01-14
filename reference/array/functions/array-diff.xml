@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ba15ed813ede4db6505d1c387c1c2e4814a5cd55 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-diff" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_diff</refname>
@@ -11,14 +11,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>array_diff</methodname>
-   <methodparam><type>array</type><parameter>dizi1</parameter></methodparam>
-   <methodparam><type>array</type><parameter>dizi2</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter> ...</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>diziler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizi1</parameter> ile bir veya daha fazla diziyi
+   <parameter>dizi</parameter> ile bir veya daha fazla diziyi
    karşılaştırır ve diğer dizilerde bulunmayan değerleri
-   <parameter>dizi1</parameter> içinde döndürür.
+   <parameter>dizi</parameter> içinde döndürür.
   </para>
  </refsect1>
 
@@ -27,7 +26,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dizi1</parameter></term>
+     <term><parameter>dizi</parameter></term>
      <listitem>
       <para>
        Karşılaştırılacak dizi.
@@ -35,15 +34,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizi2</parameter></term>
-     <listitem>
-      <para>
-       Karşılaştırılacak diğer dizi.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>...</parameter></term>
+     <term><parameter>diziler</parameter></term>
      <listitem>
       <para>
        Karşılaştırılacak diğer diziler.
@@ -57,8 +48,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Diğer tüm değiştirgelerde mevcut olmayan <parameter>dizi1</parameter>
-   girdilerinden oluşan bir dizi döner.
+   Diğer dizilerde mevcut olmayan <parameter>dizi</parameter>
+   girdilerinden oluşan bir dizi ile döner. <parameter>dizi</parameter>
+   içindeki anahtarlar korunur.
   </para>
  </refsect1>
 
@@ -91,18 +83,56 @@ Array
     </screen>
    </example>
   </para>
+
+  <para>
+   <example>
+    <title>- Eşleşmeyen türler ile <function>array_diff</function></title>
+    <para>
+     İki elemanın eşit olması için sadece ve sadece
+     <literal>(string) $elem1 === (string) $elem2</literal> olmalıdır.
+     Başka bir deyişle, <link linkend="language.types.string.casting">dize
+     gösterimleri</link> aynı olmalıdır.
+    </para>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+// dizi dizeye dönüşürülemezse bir uyarı üretilir.
+$source = [1, 2, 3, 4];
+$filter = [3, 4, [5], 6];
+$result = array_diff($source, $filter);
+
+// nesneler dizeye dönüştürülebildiğinden burada sorun çıkmaz.
+class S {
+  private $v;
+
+  public function __construct(string $v) {
+    $this->v = $v;
+  }
+
+  public function __toString() {
+    return $this->v;
+  }
+}
+
+$source = [new S('a'), new S('b'), new S('c')];
+$filter = [new S('b'), new S('c'), new S('d')];
+
+$result = array_diff($source, $filter);
+
+// $result tek bir S('a') örneği içerir
+?>
+]]>
+    </programlisting>
+    <para>
+     Başka bir karşılaştırma işlevi kullanmak isterseniz
+     <function>array_udiff</function> işlevine bakın.
+    </para>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
   &reftitle.notes;
-  <note>
-   <para>
-    İki elemanın eşit olması için sadece ve sadece
-    <literal>(string) $elem1 === (string) $elem2</literal> olmalıdır. Başka
-    bir deyişle, dizgesel gösterimler aynı olmalıdır.
-    <!-- TODO: example of it... -->
-   </para>
-  </note>
   <note>
    <para>
     Bu işlev n boyutlu bir dizinin sadece bir boyutunu karşılaştırır. Daha
@@ -118,6 +148,7 @@ Array
   <para>
    <simplelist>
     <member><function>array_diff_assoc</function></member>
+    <member><function>array_udiff</function></member>
     <member><function>array_intersect</function></member>
     <member><function>array_intersect_assoc</function></member>
    </simplelist>

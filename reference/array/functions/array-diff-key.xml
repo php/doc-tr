@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-diff-key" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_diff_key</refname>
@@ -12,12 +12,11 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>array_diff_key</methodname>
-   <methodparam><type>array</type><parameter>dizi1</parameter></methodparam>
-   <methodparam><type>array</type><parameter>dizi2</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>...</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>diziler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizi1</parameter> ile <parameter>dizi2</parameter>'yi
+   <parameter>dizi</parameter> ile <parameter>diziler</parameter>'i
    karşılaştırır ve farkı döndürür. Değerler yerine anahtarları
    karşılaştırması dışında <function>array_diff</function> işlevi gibidir.
   </para>
@@ -29,7 +28,7 @@
    <variablelist>
 
     <varlistentry>
-     <term><parameter>dizi1</parameter></term>
+     <term><parameter>dizi</parameter></term>
      <listitem>
       <para>
        Karşılaştırılacak dizi.
@@ -38,16 +37,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><parameter>dizi2</parameter></term>
-     <listitem>
-      <para>
-       Karşılaştırılacak diğer dizi.
-      </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><parameter>...</parameter></term>
+     <term><parameter>diziler</parameter></term>
      <listitem>
       <para>
        Karşılaştırılacak diğer diziler.
@@ -62,17 +52,10 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Diğer tüm değiştirgelerde mevcut olmayan <parameter>dizi1</parameter>
+   Diğer dizilerde mevcut olmayan <parameter>dizi</parameter>
    anahtarlarından oluşan bir dizi döner.
   </para>
  </refsect1>
-
-<!--
- <refsect1 role="errors">
-  &reftitle.errors;
-  &errors.no.unusual.errors;
- </refsect1>
--->
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -81,16 +64,41 @@
     <title>- <function>array_diff_key</function> örneği</title>
     <para>
      İki anahtarın eşit olması için sadece ve sadece
-     <literal>(string) $anahtar1 === (string) $anahtar2</literal> olmalıdır.
-     Başka bir deyişle, anahtarların dizgesel gösterimleri aynı olmalıdır.
+     <literal>(string) $elem1 === (string) $elem2</literal> olmalıdır.
+     Başka bir deyişle, <link linkend="language.types.string.casting">dize
+     gösterimleri</link> aynı olmalıdır.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-$array1 = array('blue'  => 1, 'red'  => 2, 'green'  => 3, 'purple' => 4);
-$array2 = array('green' => 5, 'blue' => 6, 'yellow' => 7, 'cyan'   => 8);
+$array1 = array('blue' => 1, 'red' => 2, 'green' => 3, 'purple' => 4);
+$array2 = array('green' => 5, 'yellow' => 7, 'cyan' => 8);
 
 var_dump(array_diff_key($array1, $array2));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  ["blue"]=>
+  int(1)
+  ["red"]=>
+  int(2)
+  ["purple"]=>
+  int(4)
+}
+]]>
+    </screen>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array1 = array('blue' => 1, 'red'  => 2, 'green' => 3, 'purple' => 4);
+$array2 = array('green' => 5, 'yellow' => 7, 'cyan' => 8);
+$array3 = array('blue' => 6, 'yellow' => 7, 'mauve' => 8);
+
+var_dump(array_diff_key($array1, $array2, $array3));
 ?>
 ]]>
     </programlisting>

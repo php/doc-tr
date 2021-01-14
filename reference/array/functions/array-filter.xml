@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 27acde0b15f7131bbc5239a14073d63307770b18 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-filter" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_filter</refname>
@@ -13,15 +13,20 @@
   <methodsynopsis>
    <type>array</type><methodname>array_filter</methodname>
    <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>callable</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenek</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>callable</type><type>null</type></type><parameter>işlev</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizi</parameter> dizisinin her elemanını sırayla
    <parameter>işlev</parameter> işlevine aktarır. Eğer
    <parameter>işlev</parameter> &true; dönerse o <parameter>dizi</parameter>
-   elemanı sonuç dizisine konur, yoksa konmaz. Dizideki anahtarlar korunur.
+   elemanı sonuç dizisine konur, yoksa konmaz.
   </para>
+  <para>
+   Dizideki anahtarlar korunur. <parameter>dizi</parameter> sıralıysa dönen
+   dizi de boşluklar olabilir. Boşluklardan kurtulmak için dizi
+   <function>array_values</function> işlevi ile yeniden sıralanabilir.
+   </para>
 </refsect1>
 
  <refsect1 role="parameters">
@@ -46,14 +51,15 @@
       </para>
       <para>
        Bu değiştirgede bir geriçağırım işlevi belirtilmezse,
-       <link linkend="language.types.boolean.casting">boolean türüne
-       dönüşüm</link> yapıldığında &false; döndüren elemanlar süzülür.
+       <parameter>dizi</parameter>nin tüm boş girdileri silinir.
+       PHP'nin boşu nasıl tanımladığını görmek için
+       <function>empty</function> işlevine bakınız.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><parameter>seçenek</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
        <parameter>işlev</parameter> işlevine hangi değiştirgelerin
@@ -61,13 +67,17 @@
        <itemizedlist>
         <listitem>
          <simpara><constant>ARRAY_FILTER_USE_KEY</constant> -
-          <parameter>işlev</parameter> işlevine tek değiştirge olarak değer değil anahtar aktarılır.</simpara>
+          <parameter>işlev</parameter> işlevine tek değiştirge olarak değer
+          değil anahtar aktarılır.</simpara>
         </listitem>
         <listitem>
          <simpara><constant>ARRAY_FILTER_USE_BOTH</constant> -
-           <parameter>işlev</parameter> işlevine değiştirge olarak sadece değer değil anahtar da aktarılır.</simpara>
+           <parameter>işlev</parameter> işlevine değiştirge olarak sadece değer
+           değil anahtar da aktarılır.</simpara>
         </listitem>
        </itemizedlist>
+       Belirtilmezse, <parameter>işlev</parameter> işlevine tek değiştirge
+       olarak aktarılacak değer öntanımlı olarak <literal>0</literal>'dır.
       </para>
      </listitem>
     </varlistentry>
@@ -95,9 +105,15 @@
     </thead>
     <tbody>
      <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>işlev</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
       <entry>5.6.0</entry>
       <entry>
-       Seçimlik <parameter>seçenek</parameter> değiştirgesi ve
+       Seçimlik <parameter>kip</parameter> değiştirgesi ve
        <constant>ARRAY_FILTER_USE_KEY</constant> ile
        <constant>ARRAY_FILTER_USE_BOTH</constant> sabiti eklendi.
       </entry>
@@ -106,13 +122,6 @@
    </tgroup>
   </informaltable>
  </refsect1>
-
-<!--
- <refsect1 role="errors">
-  &reftitle.errors;
-  &errors.no.unusual.errors;
- </refsect1>
--->
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -125,17 +134,17 @@
 function tek($var)
 {
    //tamsayı girdi tek sayı mı diye bakar
-    return($var & 1);
+    return $var & 1;
 }
 
 function cift($var)
 {
    //tamsayı girdi çift sayı mı diye bakar
-    return(!($var & 1));
+    return !($var & 1);
 }
 
-$array1 = array("a"=>1, "b"=>2, "c"=>3, "d"=>4, "e"=>5);
-$array2 = array(6, 7, 8, 9, 10, 11, 12);
+$array1 = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5];
+$array2 = [6, 7, 8, 9, 10, 11, 12];
 
 echo " Tek:\n";
 print_r(array_filter($array1, "tek"));
@@ -172,13 +181,15 @@ Array
 <![CDATA[
 <?php
 
-$girdi = array(
-             0 => 'foo',
-             1 => false,
-             2 => -1,
-             3 => null,
-             4 => ''
-          );
+$entry = [
+    0 => 'foo',
+    1 => false,
+    2 => -1,
+    3 => null,
+    4 => '',
+    5 => '0',
+    6 => 0,
+];
 
 print_r(array_filter($girdi));
 ?>
@@ -196,8 +207,8 @@ Array
     </screen>
    </example>
    <example>
-    <title><function>array_filter</function> ile
-      <parameter>seçenek</parameter> kullanımı
+    <title>- <function>array_filter</function> ile
+      <parameter>kip</parameter> kullanımı
     </title>
     <programlisting role="php">
 <![CDATA[
