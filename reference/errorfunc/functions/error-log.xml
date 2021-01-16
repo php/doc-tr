@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9af43469f46843451955b8926fe470a9f3d45034 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.error-log" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>error_log</refname>
-  <refpurpose>Bir yerlere bir hata iletisi gönderir</refpurpose>
+  <refpurpose>Tanımlı hata işleme yordamlarına bir hata iletisi gönderir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -17,8 +17,8 @@
    <methodparam choice="opt"><type>string</type><parameter>ek_başlıklar</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Bir hata iletisini, HTTP sunucusunun hata günlüğüne, bir
-   <acronym>TCP</acronym> portuna veya bir dosyaya gönderir.
+   Bir hata iletisini, HTTP sunucusunun hata günlüğüne
+   veya bir dosyaya gönderir.
   </para>
  </refsect1>
 
@@ -75,7 +75,7 @@
            <entry>
             <parameter>ileti</parameter>, <parameter>hedef</parameter>
             dosyasına eklenir. <parameter>ileti</parameter> dizgesinin sonuna
-            satırsonu karakteri özdevinimli olarak eklenir.
+            satırsonu karakteri otomatik olarak eklenir.
            </entry>
           </row>
           <row>
@@ -119,31 +119,25 @@
    &return.success;
   </para>
  </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-     <row>
-       <entry>5.2.7</entry>
-       <entry>
-        <parameter>günlük_türü</parameter> değiştirgesi kullanılabilir oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <simpara>
+    <function>error_log</function> ikil olarak güvenli değildir.
+    <parameter>ileti</parameter> boş karakterle kırpılacaktır.
+   </simpara>
+  </warning>
+  <tip>
+   <simpara>
+    <parameter>ileti</parameter> boş karakter içermemelidir.
+    <parameter>ileti</parameter>'nin dosya, posta, syslog ve benzerlerine
+    gönderilebileciğini unutmayın. <function>error_log</function> işlevini
+    çağırmadan önce uygun bir dönüşüm/önceleme işlevini,
+    <function>rawurlencode</function> veya <function>addslashes</function>
+    işlevini kullanın.
+   </simpara>
+  </tip>
+  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>

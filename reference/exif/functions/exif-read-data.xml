@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f8de748ed5a79296bc7b0b132ac151f8222f53ca Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/image.xml, last change in rev 1.78 -->
 <refentry xml:id="function.exif-read-data" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>exif_read_data</refname>
-  <refpurpose>Bir <acronym>JPEG</acronym> veya <acronym>TIFF</acronym>
-  resminden <acronym>EXIF</acronym> başlıklarını okur</refpurpose>
+  <refpurpose>Bir resim dosyasından <acronym>EXIF</acronym> başlıklarını okur</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>exif_read_data</methodname>
-   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>bölümler</parameter><initializer>NULL</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>diziler</parameter><initializer>false</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>küçük_örnek</parameter><initializer>false</initializer></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>exif_read_data</methodname>
+   <methodparam><type class="union"><type>kaynak</type><type>string</type></type><parameter>file</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>bölümler</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>diziler</parameter><initializer>&false;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>küçük_örnek</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>exif_read_data</function> işlevi bir <acronym>JPEG</acronym>
-   veya <acronym>TIFF</acronym> resminden <acronym>EXIF</acronym> başlıklarını
-   okur. Böylece sayısal kameralar tarafından üretilen temel veriler
-   okunabilir.
+    Bir resim dosyasından <acronym>EXIF</acronym> başlıklarını okur Böylece
+    sayısal kameralar tarafından üretilen temel veriler okunabilir.
   </para>
   <para>
    Exif başlıkları sayısal kameralar tarafından üretilen JPEG/TIFF resimlerde
@@ -66,7 +63,7 @@
   </para>
   <note>
    <para>
-    Windows ME/XP bir kameraya bağlanırken Exif başlıklarını temizler.
+    Windows Me/XP bir kameraya bağlanırken Exif başlıklarını temizler.
    </para>
   </note>
  </refsect1>
@@ -75,10 +72,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dosya</parameter></term>
+     <term><parameter>kaynak</parameter></term>
      <listitem>
       <para>
-       Okunacak resim dosyasının ismi. Bir <acronym>URL</acronym> belirtilemez.
+       Resim dosyasının yeri. Bir dosya yolu (akım sarmalayıcılar
+       belirtilebilir) veya <type>resource</type> türünde bir akım.
       </para>
      </listitem>
     </varlistentry>
@@ -103,7 +101,7 @@
            <entry>
             <literal>html</literal>, <literal>Width</literal>,
             <literal>Height</literal>, <literal>IsColor</literal> (html,
-            genişlik, yükseklik, Renklidir) ve varsa başkaları. 
+            genişlik, yükseklik, Renklidir) ve varsa başkaları.
             <literal>Height</literal> ve <literal>Width</literal>,
             <function>getimagesize</function> işlevinin yaptığı gibi
             hesaplanır, dolayısıyla bunlar döndürülen başlığın parçaları
@@ -181,6 +179,17 @@
    <function>exif_read_data</function> işlevi &false; döndürür.
   </para>
  </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Desteklenmeyen başlıklar veya olası hata durumlarında
+   <constant>E_WARNING</constant> ve/veya <constant>E_NOTICE</constant>
+   seviyesinde hata üretilebilir, fakat işlev hala anlaşılabilir bilgileri
+   okumaya çalışır.
+  </para>
+ </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -194,36 +203,79 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Diziler dahil gömülü tüm <acronym>IFD</acronym> verisi okunabilir oldu.
-        Ayrıca, gömülü küçük resim örneğinin <literal>THUMBNAIL</literal> alt
-        dizisinde döndürülebilmesi mümkün oldu. Ayrıca, dönen değerlerle
-        ilgili bir azami uzunluk artık söz konusu değil (bellek miktarı ile
-        sınırlı).
+        <parameter>bölümler</parameter> artık boş olabiliyor.
        </entry>
       </row>
       <row>
-       <entry>4.3.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-        PHP <link linkend="ref.mbstring">mbstring</link> desteğine sahipse,
-        kullanıcı açıklamalarının kodlaması özdevinimli olarak
-        değiştirilebiliyor. Ayrıca, eğer kullanıcı açıklaması
-        Evrenkod veya <literal>JIS</literal>
-        kodlaması kullanıyorsa kodlama  &php.ini; içindeki ayara uygun olarak
-        özdevinimli değiştirilebiliyor.
+        <parameter>kaynak</parameter> değiştirgesi normal dosyalardan başka
+        artık akımları da destekliyor.
        </entry>
       </row>
       <row>
-       <entry>4.3.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-        Eğer resim bir <literal>IFD0</literal> verisi içeriyorsa
-        <literal>COMPUTED</literal> bölümü artık, kıymetli
-        baytın başta olduğu bayt sıralamasının kullanıldığı (motorola) bayt
-        sıralaması için 1, diğeri (intel) için 0 değerini içeren bir
-        <literal>ByteOrderMotorola</literal> girdisine sahip. Eğer veri türü
-        yanlışsa, <literal>COMPUTED</literal> ve <literal>UserComment</literal>
-        artık herhangi bir telif hakkı girdisi içermiyor.
+        Aşağıdaki EXIF biçemlerine destek eklendi:
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          Samsung
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          DJI
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Panasonic
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Sony
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Pentax
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Minolta
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Sigma/Foveon
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          AGFA
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Kyocera
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Ricoh
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          Epson
+         </simpara>
+        </listitem>
+       </itemizedlist>
        </entry>
       </row>
      </tbody>
@@ -291,6 +343,78 @@ THUMBNAIL.Thumbnail.Height: 1
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- PHP 7.2.0 itibariyle <function>exif_read_data</function>
+      akımları destekliyor</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Bir dosya açar, bu ikil kipte olmalı
+$fp = fopen('/path/to/image.jpg', 'rb');
+
+if (!$fp) {
+    echo 'Hata: Resim okumak için açılamadı';
+    exit;
+}
+
+// Exif başlıklarını okumaya çalış
+$headers = exif_read_data($fp);
+
+if (!$headers) {
+    echo 'Hata: Exif başlıkları okunamadı';
+    exit;
+}
+
+// 'COMPUTED' başlıklarını bas
+echo 'EXIF Headers:' . PHP_EOL;
+
+foreach ($headers['COMPUTED'] as $header => $value) {
+    printf(' %s => %s%s', $header, $value, PHP_EOL);
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen role="php">
+<![CDATA[
+EXIF Headers:
+ Height => 576
+ Width => 1024
+ IsColor => 1
+ ByteOrderMotorola => 0
+ ApertureFNumber => f/5.6
+ UserComment =>
+ UserCommentEncoding => UNDEFINED
+ Copyright => Denis
+ Thumbnail.FileType => 2
+ Thumbnail.MimeType => image/jpeg
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <link linkend="ref.mbstring">mbstring</link> etkinse,
+    unicode karakterleri işlemeye çalışır ve  <link
+    linkend="ini.exif.decode-unicode-motorola">exif.decode_unicode_motorola</link>
+    ve <link linkend="ini.exif.decode-unicode-intel">exif.decode_unicode_intel</link>
+    ile belirtilen karakter kümesini seçer. Exif eklentisi karakter kodlamasını
+    bulmaya çalışmaz. Kullanıcı <function>exif_read_data</function> işlevini
+    çağırmadan önce bu iki ini yönergesinden birine uygun karakter kodlamasını
+    belirtmelidir.
+   </para>
+  </note>
+  <note>
+   <para>
+    <parameter>kaynak</parameter> değiştirgesi işleve bir akım aktarmak için
+    kullanılmışsa, akım araştırılabilri olmalıdır. Bu işlev döndükten sonra
+    dosya göstericisinin yeri değişmeyecektir.
+   </para>
+  </note>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
@@ -298,6 +422,7 @@ THUMBNAIL.Thumbnail.Height: 1
    <simplelist>
     <member><function>exif_thumbnail</function></member>
     <member><function>getimagesize</function></member>
+    <member><xref linkend="wrappers"/></member>
    </simplelist>
   </para>
  </refsect1>

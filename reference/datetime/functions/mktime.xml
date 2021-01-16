@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
-<!-- splitted from ./en/functions/datetime.xml, last change in rev 1.2 -->
+<!-- EN-Revision: 9d45296587225c85e4dab73cc27865ca32e17d3c Maintainer: behzat Status: ready -->
 <refentry xml:id="function.mktime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mktime</refname>
@@ -11,14 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>mktime</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>saat</parameter><initializer>date("H")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>dakika</parameter><initializer>date("i")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>saniye</parameter><initializer>date("s")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ay</parameter><initializer>date("n")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>gün</parameter><initializer>date("j")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>yıl</parameter><initializer>date("Y")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ysu_var</parameter><initializer>-1</initializer></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>mktime</methodname>
+   <methodparam><type>int</type><parameter>saat</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>dakika</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>saniye</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>ay</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>gün</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>yıl</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Verilen değiştirge düzenine göre Unix zaman damgasını döndürür. Bu zaman
@@ -34,13 +32,11 @@
 
  <refsect1 role="notes">
   &reftitle.notes;
-  <note>
-   <para>
-    PHP 5.1'den itibaren, <function>mktime</function> değiştirgesiz
-    çağrıldığına bir  <constant>E_STRICT</constant> uyarısı çıktılamaktadır.
-    Böyle durumlarda <function>time</function> işlevini kullanmalısınız.
-   </para>
-  </note>
+  <simpara>
+   <function>mktime</function> işlevinin değiştirgesiz çağrılmasının kullanımı
+   önerilmemektedir. Geçerli zaman damgasını almak için
+   <function>time</function> kullanılabilir.
+  </simpara>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -50,7 +46,11 @@
      <term><parameter>saat</parameter></term>
      <listitem>
       <para>
-       Saat sayısı.
+       <parameter>ay</parameter>, <parameter>gün</parameter> ve
+       <parameter>yıl</parameter>'a göre saptanan günün başlangıcına göreli
+       saat sayısı. Negatif değerler günün geceyarısından önceki saatine
+       karşılıktır. 23'ten büyük değerler ertesi günün uygun saatine
+       karşılıktır.
       </para>
      </listitem>
     </varlistentry>
@@ -58,7 +58,9 @@
      <term><parameter>dakika</parameter></term>
      <listitem>
       <para>
-       Dakika sayısı.
+       <parameter>saat</parameter>'in başlangıcına göreli dakika sayısı.
+       Negatif değerler önceki saatin dakikalarına, 59'dan büyük değerler ise
+       sonraki saatin dakikalarına karşılıktır.
       </para>
      </listitem>
     </varlistentry>
@@ -66,7 +68,9 @@
      <term><parameter>saniye</parameter></term>
      <listitem>
       <para>
-       Son dakikanın geçen saniye sayısı.
+       <parameter>dakika</parameter>'nın başlangıcına göreli saniye sayısı.
+       Negatif değerler önceki dakikanın saniyelerine, 59'dan büyük değerler ise
+       sonraki dakikanın saniyelerine karşılıktır.
       </para>
      </listitem>
     </varlistentry>
@@ -74,7 +78,10 @@
      <term><parameter>ay</parameter></term>
      <listitem>
       <para>
-       Ay sayısı.
+       Önceki yıl sonuna göreli ay sayısı. 1-12 arasındaki değerler ilgili yılın
+       normal takvim aylarına karşılıktır. 1'den küçük (negatifler dahil)
+       değerler ters sırada önceki yılın aylarına karşılıktır, yani 0 Aralık,
+       -1 Kasım, vb.
       </para>
      </listitem>
     </varlistentry>
@@ -82,7 +89,11 @@
      <term><parameter>gün</parameter></term>
      <listitem>
       <para>
-       Gün sayısı.
+       Önceki ayın sonuna göreli gün sayısı. 1'den 28, 29, 30 veya 31'e kadar
+       (aya bağlı olarak) değerler ilgili ayın normal günlerine karşılıktır.
+       1'dek küçükler (negatifler dahil) önceki ayın günlerine karşılıktır, yani
+       0 önceki ayın son günü, -1 daha önceki günü vb. İlgili ayın gün
+       sayısından büyük değerler sonraki ayın günlerine karşılıktır.
       </para>
      </listitem>
     </varlistentry>
@@ -124,6 +135,11 @@
         kullanılmalıdır.
        </para>
       </note>
+      <note>
+       <para>
+        Bu değiştirge PHP 7.0.0'da kaldırıldı.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -134,8 +150,8 @@
   &reftitle.returnvalues;
   <para>
    <function>mktime</function> işlevi verilen değiştirgelerden elde edilen Unix
-   zaman damgası döndürür. Eğer değiştirge geçersiz ise işlev &false;
-   değeriyle döner (PHP 5.1 sürümünden önce <literal>-1</literal> dönerdi).
+   zaman damgası döndürür. Eğer değiştirgeler geçersiz ise işlev &false;
+   değeriyle döner.
   </para>
  </refsect1>
 
@@ -157,34 +173,20 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Artık <function>mktime</function> işlevi,
-        <parameter>ysu_var</parameter> değiştirgesi kullanılırsa
-        <constant>E_DEPRECATED</constant> uyarısı vermektedir.
+        <parameter>saat</parameter> artık seçimlik değil.
        </entry>
       </row>
       <row>
-       <entry>5.1.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>ysu_var</parameter> değiştirgesinin kullanımı artık
-        önerilmemektedir. İşlev hata durumunda <literal>-1</literal> yerine,
-        &false; değeri döndürür olmuştur. İşlev, yıl, ay ve gün
-        değiştirgelerinde sıfır kabul edecek şekilde düzeltilmiştir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <function>mktime</function> değiştirgesiz çağrıldığına bir
-        <constant>E_STRICT</constant> uyarısı çıktılamaktadır. Böyle durumlarda
-        <function>time</function> işlevini kullanmalısınız.
+        <parameter>dakika</parameter>, <parameter>saniye</parameter>,
+        <parameter>ay</parameter>, <parameter>gün</parameter> ve
+        <parameter>yıl</parameter> artık boş olabiliyor.
         </entry>
        </row>
-
-      &date.timezone.errors.changelog;
-
-     </tbody>
+      </tbody>
     </tgroup>
    </informaltable>
   </para>
@@ -217,7 +219,7 @@ echo date('c', mktime(1, 2, 3, 4, 5, 2006));
     <para>
      <function>mktime</function> işlevi tarih hesaplamaları ve
      geçerlilik denetimi için kullanışlıdır. Aralık dışına çıkan değerleri
-     (ayın 32'si gibi) özdevinimli olarak doğru hesaplar. Örneğin, aşağıdaki
+     (ayın 32'si gibi) otomatik olarak doğru hesaplar. Örneğin, aşağıdaki
      satırların üreteceği dizge "Jan-01-1998" olacaktır.
     </para>
     <programlisting role="php">
@@ -234,7 +236,7 @@ echo date("M-d-Y", mktime(0, 0, 0, 1, 1, 98));
   </para>
   <para>
    <example>
-    <title>- Gelecek ayın son günü</title>
+    <title>- Ayın son günü</title>
     <para>
      Verilen herhangi bir ayın son günü, gelecek ayın -1'inci değil 0'ıncı günü olarak ifade edilebilir. Aşağıdaki iki örnek de
      "2000 Şubat'ının son günü: 29" dizgesi üretilecektir.
@@ -268,6 +270,7 @@ echo strftime("2000 Şubat'ının son günü: %d", $songün);
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>checkdate</function></member>
     <member><function>gmmktime</function></member>
     <member><function>date</function></member>
     <member><function>time</function></member>

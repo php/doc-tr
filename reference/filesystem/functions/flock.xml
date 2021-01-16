@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 7f5fbb545cb862865ea31d8fa49b86135fc91982 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.flock">
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.flock" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>flock</refname>
-  <refpurpose>Taşınabilir tavsiye niteliğinde dosya kilitleme</refpurpose>
+  <refpurpose>Öneri niteliğinde taşınabilir dosya kilitleme</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>flock</methodname>
-   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>akım</parameter></methodparam>
    <methodparam><type>int</type><parameter>işlem</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">engellensin</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">engellensin</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>flock</function> işlevi, sanal olarak her platformda (çoğu Unix
@@ -21,8 +21,8 @@
    modeli oluşturmanızı mümkün kılar.
   </para>
   <para>
-   Kilit, <function>fclose</function> işlevi ile serbest bırakılır (ayrıca,
-   betik sonlandığında özdevinimli olarak çağrılır).
+   PHP 5.3.2 öncesinde, kilit, <function>fclose</function> işlevi ile serbest
+   bırakılırdı (ayrıca, betik sonlandığında otomatik olarak çağrılır).
   </para>
   <para>
    PHP, tavsiye niteliğinde dosyaların tamamını kilitlemenin taşınabilir bir
@@ -40,9 +40,9 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dt</parameter></term>
+     <term><parameter>akım</parameter></term>
      <listitem>
-       &fs.validfp.all;
+       &fs.file.pointer;
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -72,8 +72,9 @@
        </itemizedlist>
       </para>
       <para>
-       Kilitleme sırasında  işlevinin engelleme yapmasını istemiyorsanız
-       <constant>LOCK_NB</constant> eklemek de mümkündür (Windows'ta
+       Kilitleme sırasında işlevin engelleme yapmasını istemiyorsanız
+       yukarıdaki işlemlerden birine bir bit maskesi olarak
+       <constant>LOCK_NB</constant> eklemek mümkündür (Windows'ta
        desteklenmez).
       </para>
      </listitem>
@@ -82,7 +83,7 @@
      <term><parameter>engellesin</parameter></term>
      <listitem>
       <para>
-       Kilidin engellemesi için isteğe bağlı üçüncü değiştirgeye &true; atanır
+       Kilidin engellemesi için isteğe bağlı üçüncü değiştirgeye 1 atanır
        (EWOULDBLOCK errno kuralı).
       </para>
      </listitem>
@@ -98,33 +99,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.1</entry>
-       <entry>
-        <literal>LOCK_XXX</literal> sabitleri eklendi. Daha önce
-        <constant>LOCK_SH</constant> için 1, <constant>LOCK_EX</constant> için
-        2, <constant>LOCK_UN</constant> için 3 ve <constant>LOCK_NB</constant>
-        için 4 belirtilmesi zorunluydu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -136,9 +110,10 @@
 
 $dt = fopen("/tmp/lock.txt", "w");
 
-if (flock($dt, LOCK_EX)) { // ayrıcalıklı bir kilit oluşturalım
+if (flock($dt, LOCK_EX)) { // ayrıcalıklı bir kilit elde edelim
     ftruncate($fp, 0);  // dosyayı kırp
     fwrite($dt, "Buraya bir şeyler yazalım\n");
+    fflush($dt);            // kilidi bırakmadan önce çıkışı temizleyelim
     flock($dt, LOCK_UN); // kilidi serbest bırakalım
 } else {
     echo "Kilit edinilemedi!";
@@ -151,6 +126,29 @@ fclose($dt);
     </programlisting>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- <constant>LOCK_NB</constant> kullanarak <function>flock</function>
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$fp = fopen('/tmp/lock.txt', 'r+');
+
+/* LOCK_EX işlemi üstünde LOCK_NB'yi etkinleştirelim */
+if(!flock($fp, LOCK_EX | LOCK_NB)) {
+    echo 'Kilit edinilemedi';
+    exit(-1);
+}
+
+/* ... */
+
+fclose($fp);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
@@ -158,6 +156,12 @@ fclose($dt);
   <note>
    <para>
     <function>flock</function> işlevi Windows altında zorunlu olarak kilitler.
+    <function>flock</function>, Windows'ta tavsiye niteliğinde kilitleme yerine
+    zorunlu kilitlemeyi kullanır. Zorunlu kilitleme, Linux ve System V tabanlı
+    işletim sistemlerinde, fcntl() sistem çağrısı tarafından desteklenen olağan
+    mekanizma yoluyla desteklenir: yani, söz konusu dosya setgid izin bitine
+    sahipse ve grup yürütme biti temizlenmişse. Linux'ta, bunun çalışması için
+    dosya sisteminin de mand seçeneğiyle bağlanması gerekecektir.
    </para>
   </note>
   <note>
@@ -169,18 +173,21 @@ fclose($dt);
     kullanmanız gerekir.
    </para>
   </note>
+  <note>
+   <para>
+    Yalnızca yerel dosyalar için <function>fopen</function> tarafından
+    döndürülen dosya göstericilerinde veya
+    <function>streamWrapper::stream_lock</function> yöntemini uygulayan
+    kullanıcı alanı akımların dosya göstericilerinde kullanılabilir.
+   </para>
+  </note>
   <warning>
    <para>
-    Ardıl kodda <parameter>dt</parameter> değiştirgesine başka bir değer
+    Ardıl kodda <parameter>akım</parameter> değiştirgesine başka bir değer
     atanması kilidin serbest kalmasına sebep olur.
    </para>
   </warning>
   <warning>
-   <para>
-    <function>flock</function> işlevi NFS ve diğer bir çok ağ dosya sistemi
-    üzerinde çalışmaz. Ayrıntılı bilgi için işletim sisteminizin belgelerine
-    bakınız.
-   </para>
    <para>
     Bazı işletim sistemlerinde <function>flock</function> işlevi süreç
     seviyesinde gerçeklenmiştir. ISAPI gibi çok evreli bir API
@@ -191,7 +198,7 @@ fclose($dt);
    <para>
     <function>flock</function> işlevi, <literal>FAT</literal> ve türevleri
     gibi artık antika olmuş dosya sistemlerinde desteklenmez ve bu ortamlarda
-    daima &false; döndürür (özellikle Windows 98 için).
+    daima &false; döndürür.
    </para>
   </warning>
  </refsect1>

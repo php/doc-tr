@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.tempnam">
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.tempnam" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>tempnam</refname>
   <refpurpose>Eşsiz bir isimle dosya oluşturur</refpurpose>
@@ -10,15 +10,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>tempnam</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>tempnam</methodname>
    <methodparam><type>string</type><parameter>dizin</parameter></methodparam>
    <methodparam><type>string</type><parameter>önek</parameter></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen dizinde eşsiz bir isimle bir dosya oluşturur ve erişim
-   izinlerini 0600'e ayarlar. Eğer belirtilen dizin mevcut değilse
-   <function>tempnam</function> sistem geçici dizininde bir dosya oluşturup
-   bunun ismini döndürür.
+   izinlerini 0600'e ayarlar. Eğer belirtilen dizin mevcut değilse veya
+   yazılabilir değilse <function>tempnam</function> sistem geçici dizininde
+   bir dosya oluşturup bunun ismini içeren tam dosya yolunu döndürür.
   </para>
  </refsect1>
 
@@ -42,7 +42,8 @@
       </para>
       <note>
        <simpara>
-        Windows önekin sadece ilk üç karakterini kullanır.
+        Önekin sadece ilk 63 karakteri kullanılır.
+        Windows ise önekin sadece ilk üç karakterini kullanır.
        </simpara>
       </note>
      </listitem>
@@ -54,49 +55,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda &false; aksi takdirde yeni geçici dosyanın ismiyle
-   döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.6</entry>
-       <entry>
-        PHP 4.0.6 öncesinde, <function>tempnam</function> işlevinin davranışı
-        sisteme bağlıydı. Windows'ta <varname>TMP</varname> ortam değişkeni
-        <parameter>dizin</parameter> ile belirtilen dizini geçersiz kılar,
-        Linux üzerinde TMPDIR ortam değişkeninin önceliği vardır, SVR4'te ise
-        eğer <parameter>dizin</parameter> mevcut bir dizini gösteriyorsa daima
-        bu dizin kullanılır. Tereddüt ederseniz sistem belgelerinizde
-        tempnam(3) işlevinin açıklamasına bakınız.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.3</entry>
-       <entry>
-        Bu işlevin davranışı 4.0.3 sürümünde değişti. Geçici dosya, dosyanın
-        bulunacağı dosya sisteminde, betiğin dosyayı oluşturmakta
-        gecikmesinden önce ve dosya isminin oluşturulduğu an arasında yarış
-        koşullarının oluşmasını engellemek için de oluşturulur. İhtiyacınız
-        kalmadığında dosyanın silinmesini isterseniz bu özdevinimli olarak
-        yapılmayacaktır.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Başarısızlık durumunda &false; aksi takdirde yeni geçici dosyanın tam dosya
+   yolu ile döner.
   </para>
  </refsect1>
 
