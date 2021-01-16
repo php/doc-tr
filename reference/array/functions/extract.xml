@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.extract" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>extract</refname>
@@ -10,9 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>extract</methodname>
-   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>çıkarım_türü</parameter><initializer>EXTR_OVERWRITE</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>önek</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>EXTR_OVERWRITE</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>önek</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir dizideki değişkenleri simge tablosuna dahil eder.
@@ -21,7 +21,15 @@
    Her anahtarın geçerli bir değişken adı olup olmadığına bakmaktan başka bu
    değişkenlerin simge tablosundakilerle çakışıp çakışmadığına da bakar.
   </para>
+  <warning>
+   <para>
+    Kullanıcı girdisi (örn, <varname>$_GET</varname>,
+    <varname>$_FILES</varname>) gibi güvensiz veriler üzerinde
+    <function>extract</function> işlevini kullanmayın.
+   </para>
+  </warning>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -32,7 +40,7 @@
       <para>
        Bir ilişkisel dizi. Bu işlev anahtarları değişken ismi, değerleri de
        değişkenin değeri olarak değerlendirir. Her anahtar/değer çifti için
-       simge tablosunda <parameter>çıkarım_türü</parameter> ve
+       simge tablosunda <parameter>seçenekler</parameter> ve
        <parameter>önek</parameter>'e uygun bir değişken oluşturulur.
       </para>
       <para>
@@ -44,7 +52,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>çıkarım_türü</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
        Geçersiz veya sayısal anahtarların ve çakışmaların ele alınma yöntemini
@@ -126,7 +134,7 @@
        </variablelist>
       </para>
       <para>
-       <parameter>çıkarım_türü</parameter> belirtilmezse
+       <parameter>seçenekler</parameter> belirtilmezse
        <constant>EXTR_OVERWRITE</constant> belirtilmiş sayılır.
       </para>
      </listitem>
@@ -135,13 +143,13 @@
      <term><parameter>önek</parameter></term>
      <listitem>
       <para>
-       Bu değiştirge sadece <parameter>çıkarım_türü</parameter> olarak
+       Bu değiştirge sadece <parameter>seçenekler</parameter> olarak
        <constant>EXTR_PREFIX_SAME</constant>,
        <constant>EXTR_PREFIX_ALL</constant>,
        <constant>EXTR_PREFIX_INVALID</constant>
        veya <constant>EXTR_PREFIX_IF_EXISTS</constant> belirtilmişse
        anlamlıdır. Önekli bir sonuç geçerli bir değişken ismi oluşturmuyorsa
-       simge tablosuna dahil edilmez. Önekler dizi anahtarlarından özdevinimli
+       simge tablosuna dahil edilmez. Önekler dizi anahtarlarından otomatik
        olarak bir altçizgi karakteri ile ayrılırlar.
       </para>
      </listitem>
@@ -155,46 +163,7 @@
    Simge tablosuna başarıyla eklenen değişkenlerin sayısı.
   </para>
  </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <constant>EXTR_REFS</constant> seçeneği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <constant>EXTR_IF_EXISTS</constant> ve
-        <constant>EXTR_PREFIX_IF_EXISTS</constant>
-        eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.5</entry>
-       <entry>
-        Dahil edilen değişken sayısını döndürür oldu.
-        <constant>EXTR_PREFIX_INVALID</constant> eklendi.
-        <constant>EXTR_PREFIX_ALL</constant> sayısal isimli değişkenleri
-        de içerir oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -255,7 +224,7 @@ mavi, büyük, küre, orta
     linkend="security.globals">register_globals</link> yönergesinin 'On'
     olmasını gerektiren eski kodları geçici olarak çalıştırmak isterseniz
     <constant>EXTR_SKIP</constant> gibi üste yazmayan
-    <parameter>çıkarım_türü</parameter> değerlerini kullanmaya ve <link
+    <parameter>seçenekler</parameter> değerlerini kullanmaya ve <link
     linkend="ini">&php.ini;</link> dosyasındaki <link
     linkend="ini.variables-order">variables_order</link> yönergesinde tanımlı
     sırada çıkartmaya çalışın.
@@ -346,6 +315,7 @@ string(1) "/"
   <para>
    <simplelist>
     <member><function>compact</function></member>
+    <member><function>list</function></member>
    </simplelist>
   </para>
  </refsect1>

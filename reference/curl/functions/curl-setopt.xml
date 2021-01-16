@@ -11,7 +11,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>curl_setopt</methodname>
-   <methodparam><type>resource</type><parameter>ct</parameter></methodparam>
+   <methodparam><type>CurlHandle</type><parameter>tanıtıcı</parameter></methodparam>
    <methodparam><type>int</type><parameter>seçenek</parameter></methodparam>
    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
   </methodsynopsis>
@@ -41,40 +41,42 @@
       </para>
       <para>
        <parameter>değer</parameter> değiştirgesine aşağıdaki
-       <parameter>seçenek</parameter>'ler için bir mantıksal değer
-       atanmalıdır:
+       <parameter>seçenek</parameter>'ler için bir mantıksal
+       (<type>bool</type>) değer atanmalıdır:
        <informaltable>
         <tgroup cols="3">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
+           <entry valign="top">Ek bilgi</entry>
           </row>
          </thead>
          <tbody>
           <row>
-           <entry><constant>CURLOPT_AUTOREFERER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_AUTOREFERER</constant></entry>
+           <entry valign="top">
             Bir <literal>Location:</literal> yönlendirmesini izleyen bir
-            isteğin <literal>Referer:</literal> başlığının özdevinimli
+            isteğin <literal>Referer:</literal> başlığının otomatik
             olarak atanması için &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_BINARYTRANSFER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_BINARYTRANSFER</constant></entry>
+           <entry valign="top">
             <constant>CURLOPT_RETURNTRANSFER</constant> kullanıldığında ham
             çıktı dönmesi için &true; olmalıdır.
            </entry>
-           <entry>
+           <entry valign="top">
+            PHP 5.1.3 itibariyle, bu seçenek etkisizdir:
+            <constant>CURLOPT_RETURNTRANSFER</constant> kullanıldığında daima
+            ham çıktı dönecektir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_COOKIESESSION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_COOKIESESSION</constant></entry>
+           <entry valign="top">
             Oturumu yeni bir çerez oturumu olarak imlemek için &true;
             olmalıdır. libcurl'un önceki oturumdan yüklenecek oturum
             çerezlerini yoksaymasına sebep olur. Öntanımlı olarak libcurl,
@@ -82,184 +84,311 @@
             saklar ve yükler. Oturum çerezleri için belli bir zaman aşımı
             yoktur ve atandıkları oturum boyunca etkindirler.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_CERTINFO</constant></entry>
+           <entry valign="top">
+            Güvenli aktarımlarda SSL sertifika bilgisini standart hataya
+            çıktılamak için  &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.19.1'de eklendi.
+            PHP 5.3.2'den beri kullanılabilir.
+            Etkisi oması için <constant>CURLOPT_VERBOSE</constant> gerekir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_CRLF</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CONNECT_ONLY</constant>
+           </entry>
+           <entry valign="top">
+            Bağlantıyı kurup gerekli tüm vekil kimlik kanıtlamasını yapmasını
+            ama hiçbir veryi aktarmamasını kütüphaneye söylemek için &true;. Bu
+            seçenek HTTP, SMTP ve POP3 için gerçeklenmiştir.
+           </entry>
+           <entry valign="top">
+            cURL 7.15.2'de eklendi.
+            PHP 5.5.0'dan beri kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_CRLF</constant></entry>
+           <entry valign="top">
             Aktarım sırasında Unix satırsonlarını CRLF satırsonlarına
             dönüştürmek için &true; olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_DISALLOW_USERNAME_IN_URL</constant></entry>
+           <entry valign="top">
+            Bir kullanıcı adı içeren URL'lere izin vermemek için &true;.
+            Kullanıcı adlarına öntanımlı olarak izin verilir.
+            </entry>
+            <entry valign="top">
+            cURL 7.61.0'da eklendi. PHP 7.3.0'dan beri kullanılabilir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_DNS_SHUFFLE_ADDRESSES</constant></entry>
+           <entry valign="top">
+            Bir isim çözümlendiğinde ve birden fazla IP adresi döndürüldüğünde,
+            tüm döndürülen adreslerin sırasını rastgele bir sırayla
+            kullanılacak şekilde karıştırmak için &true;. Bu, IPv4'ün IPv6'dan
+            önce veya tam tersi şekilde kullanılmasına neden olabilir.
+           </entry>
+           <entry valign="top">
+            cURL 7.60.0'da eklendi. PHP 7.3.0'dan beri kullanılabilir..
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_DNS_USE_GLOBAL_CACHE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HAPROXYPROTOCOL</constant></entry>
+           <entry valign="top">
+            Bağlantının başlangıcında bir HAProxy PROXY protokolü v1 başlığı
+            göndermek için &true;.
+            Öntanımlı eylem bu başlığı göndermemektir.
+           </entry>
+           <entry valign="top">
+            cURL 7.60.0'da eklendi. PHP 7.3.0'dan beri kullanılabilir..
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_COMPRESSION</constant></entry>
+           <entry valign="top">
+            Yerleşik SSH sıkıştırmasını etkin kılmak için &true;.
+            Bu bir istektir, emir değil; sunucu yerine getirmeyebilir.
+           </entry>
+           <entry valign="top">
+            cURL 7.56.0'da eklendi. PHP 7.3.0'dan beri kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_DNS_USE_GLOBAL_CACHE</constant></entry>
+           <entry valign="top">
             Küresel DNS önbelleğini kullanmak için &true; olmalıdır. Bu
-            seçenek evreler bakımından güvenli değildir ve öntanımlı olarak
-            etkindir.
+            seçenek evreler bakımından güvenli değildir.
+            PHP evresiz kullanım için derlenmişse şartlı ve öntanımlı olarak
+            etkindir (CLI, FCGI, Apache2-Prefork, vb.).
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FAILONERROR</constant></entry>
-           <entry>
-            Dönen HTTP kodunun 400'e eşit veya büyük olması durumunda sessiz
-            kalmak için &true; olmalıdır. Öntanımlı davranış kodu yok sayıp
-            sayfayı normal olarak döndürmektir.
+           <entry valign="top"><constant>CURLOPT_FAILONERROR</constant></entry>
+           <entry valign="top">
+            Dönen HTTP kodunun 400'e eşit veya büyük olması durumunda ayrıntılı
+            olarak başarısız olmak için &true; olmalıdır. Öntanımlı davranış
+            kodu yok sayıp sayfayı normal olarak döndürmektir.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FILETIME</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSL_FALSESTART</constant></entry>
+           <entry valign="top">
+            TLS yanlış başlatmayı etkinleştirmek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.42.0'da eklendi. PHP 7.0.7'dan beri kullanılabilir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_FILETIME</constant></entry>
+           <entry valign="top">
             Uzak belgenin değişiklik tarihi alınmaya çalışılacaksa &true;
             olmalıdır. Bu değer, <function>curl_getinfo</function> ile
-            <parameter>CURLINFO_FILETIME</parameter> seçeneği kullanılarak
+            <constant>CURLINFO_FILETIME</constant>  seçeneği kullanılarak
             alınabilir.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FOLLOWLOCATION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FOLLOWLOCATION</constant></entry>
+           <entry valign="top">
             HTTP başlığının bir parçası olarak sunucunun gönderdiği
             <literal>"Location: "</literal> başlığını izlemek için &true;
             olmalıdır. Bu izleme, <constant>CURLOPT_MAXREDIRS</constant>
             tanımlanmadıkça ardışıktır, yani PHP gönderilen tüm
             <literal>"Location: "</literal> başlıklarını izleyecektir.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FORBID_REUSE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FORBID_REUSE</constant></entry>
+           <entry valign="top">
             İşlem bittiğinde yeniden kullanım için havuzlanmaksızın ve
             beklemeksizin bağlantının mutlaka kapatılması için
             &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FRESH_CONNECT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FRESH_CONNECT</constant></entry>
+           <entry valign="top">
             Önbellektekini kullanmaksızın yeni bir bağlantı açmak için
             &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FTP_USE_EPRT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FTP_USE_EPRT</constant></entry>
+           <entry valign="top">
             Etkin FTP indirmeleri yapılırken EPRT (ve LPRT) kullanmak için
             &true; olmalıdır. EPRT ve LPRT'yi iptal edip sadece PORT
             kullanmak için &false; kullanın.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FTP_USE_EPSV</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FTP_USE_EPSV</constant></entry>
+           <entry valign="top">
             PASV'ye dönmeden önce FTP aktarımı için önce EPSV komutunu
             denemek için &true; olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_FTP_CREATE_MISSING_DIRS</constant></entry>
+           <entry valign="top">
+            Bir FTP işlemi şu anda mevcut olmayan bir dosya yolu ile
+            karşılaştığında eksik dizinleri oluşturmak için &true;.
+           </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_FTPAPPEND</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FTPAPPEND</constant></entry>
+           <entry valign="top">
             Uzak dosyanın üzerine yazmak yerine sonuna ekleme yapmak için
             &true; olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TCP_NODELAY</constant></entry>
+           <entry valign="top">
+            Ağdaki küçük paketlerin sayısını en aza indirmeye çalışan TCP'nin
+            Nagle algoritmasını devre dışı bırakmak için &true;.
+           </entry>
+           <entry valign="top">
+            libcurl 7.11.2 ve üstü ile derlenmiş PHP 5.2.1 ve üstü sürümlerde
+            kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_FTPASCII</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FTPASCII</constant></entry>
+           <entry valign="top">
             <constant>CURLOPT_TRANSFERTEXT</constant> için takma addır; onun
             yerine bunu kullanın.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_FTPLISTONLY</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FTPLISTONLY</constant></entry>
+           <entry valign="top">
             Sadece FTP dizinindeki isimler listelenecekse &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_HEADER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HEADER</constant></entry>
+           <entry valign="top">
             Çıktıda başlık bulunması için &true; olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry><constant>CURLINFO_HEADER_OUT</constant></entry>
+           <entry valign="top">
+            Tanıtıcının istek dizesini izlemek için &true;.
+           </entry>
+           <entry valign="top">
+            PHP 5.1.3 itibariyle kullanılabilir.
+            <constant>CURLINFO_</constant> öneki özellikle konmuştur.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_HTTPGET</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HTTP09_ALLOWED </constant></entry>
+           <entry valign="top">
+            HTTP/0.9 yanıtlarına izin verilecek mi? libcurl 7.66.0 itibariyle
+            &false; öncesinde &true;.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= 7.64.0 ile derlenmiş PHP 7.3.15 ve 7.4.3 itibariyle
+            kullanılabilir.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HTTPGET</constant></entry>
+           <entry valign="top">
             HTTP istek yönteminin GET olması için &true; olmalıdır. GET
             öntanımlı olduğundan bu sadece istek yöntemi değiştiğinde işe
             yarar.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_HTTPPROXYTUNNEL</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HTTPPROXYTUNNEL</constant></entry>
+           <entry valign="top">
             Belirtilen HTTP vekili üzerinden tünel kullanılacaksa &true;
             olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HTTP_CONTENT_DECODING</constant></entry>
+           <entry valign="top">
+            Ham HTTP gövdesini almak için &false;.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= 7.16.2 ile derlenmiş PHP 5.5.0 ve sonrasında
+            kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_MUTE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_KEEP_SENDING_ON_ERROR</constant></entry>
+           <entry valign="top">
+            Döndürülen HTTP kodu 300'e eşit veya daha büyükse istek gövdesini
+            göndermeye devam etmek için &true;. Öntanımlı eylem göndermeyi
+            durdurmak ve akışı veya bağlantıyı kapatmak olacaktır. Elle NTLM
+            kimlik doğrulaması için uygundur. Çoğu uygulamanın bu seçeneğe
+            ihtiyacı yoktur.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= 7.51.0 ile derlenmiş PHP 7.3.0 ve üstü ile
+            kullanılabilir.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MUTE</constant></entry>
+           <entry valign="top">
             cURL işlevleriyle ilgili olarak tamamen sessiz kalınması için
             &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry valign="top">
+            cURL 7.15.5'te kaldırıldı. (Yerine
+            <constant>CURLOPT_RETURNTRANSFER</constant> kullanılabilir)
+            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_NETRC</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_NETRC</constant></entry>
+           <entry valign="top">
             Bağlantı kurulan uzak site için kullanıcı adını ve parolasını
             bulmak amacıyla <filename>~/.netrc</filename> dosyasına
             bakılmasını sağlamak için &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_NOBODY</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_NOBODY</constant></entry>
+           <entry valign="top">
             Çıktıdaki gövdeyi dışlamak için &true; olmalıdır. Ardından istek
             yöntemi HEAD yapılır. Bunu &false; olarak değiştirmek yöntemi
             GET yapmaz.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_NOPROGRESS</constant></entry>
-           <entry><para>
+           <entry valign="top"><constant>CURLOPT_NOPROGRESS</constant></entry>
+           <entry valign="top"><para>
             cURL aktarımının gelişim göstergesini kapatmak için &true;
             olmalıdır.
             <note>
@@ -269,105 +398,198 @@
              </para>
             </note>
             </para></entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_NOSIGNAL</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_NOSIGNAL</constant></entry>
+           <entry valign="top">
             PHP sürecine bir sinyal gönderilmesine sebep olan cURL
             işlevlerini yoksaymak için &true; olmalıdır. Çok evreli
             SAPI'lerde, öntanımlı olarak böyledir; dolayısıyla zaman aşımı
             seçenekleri hala kullanılabilir olur.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10'da eklendi.
            </entry>
           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_PATH_AS_IS</constant></entry>
+           <entry valign="top">
+            Nokta nokta dizilerini işlememek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.42.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
           <row>
-           <entry><constant>CURLOPT_POST</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PIPEWAIT</constant></entry>
+           <entry valign="top">
+            Boruhattı ve çoklamaları beklemek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.43.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_POST</constant></entry>
+           <entry valign="top">
             Normal bir HTTP POST yapmak için &true; olmalıdır. Bu, HTML
             formlarında sıklıkla kullanılan normal
             <literal>application/x-www-form-urlencoded</literal> çeşididir.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_PUT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PUT</constant></entry>
+           <entry valign="top">
             Bir dosyaya HTTP PUT yapmak için &true; olmalıdır. Bu dosya
             <constant>CURLOPT_INFILE</constant> ve
             <constant>CURLOPT_INFILESIZE</constant> ile atanmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_RETURNTRANSFER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_RETURNTRANSFER</constant></entry>
+           <entry valign="top">
             Aktarımı doğrudan çıktılamak yerine bir dizge olarak
             <function>curl_exec</function> işlevinden döndürmek için &true;
             olmalıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SASL_IR</constant></entry>
+           <entry valign="top">
+            İlk yanıtı ilk pakette göndermeyi etkinleştirmek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.31.10'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_SSL_ENABLE_ALPN</constant></entry>
+           <entry valign="top">
+            HTTP2 ile uzlaşmak için kullanılan SSL anlaşmasında  (SSL arka uç
+            libcurl bunu destekliyorsa) ALPN'yi devredışı bırakmak için &false;
+           </entry>
+           <entry valign="top">
+            cURL 7.36.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSL_VERIFYPEER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSL_ENABLE_NPN</constant></entry>
+           <entry valign="top">
+            HTTP2 ile uzlaşmak için kullanılan SSL anlaşmasında  (SSL arka uç
+            libcurl bunu destekliyorsa) NPN'yi devredışı bırakmak için &false;
+           </entry>
+           <entry valign="top">
+            cURL 7.36.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSL_VERIFYPEER</constant></entry>
+           <entry valign="top">
             cURL'un eş sertifikasını doğrulamayı durdurması için &false;
             olmalıdır. Doğrulayıcı diğer sertifikalar
             <constant>CURLOPT_CAINFO</constant> seçeneği ile
             belirtilebileceği gibi <constant>CURLOPT_CAPATH</constant>
-            seçeneği ile bir sertifika dizini de belirtilebilir. Ayrıca,
-            <constant>CURLOPT_SSL_VERIFYHOST</constant> seçeneği de &true;
-            veya &false; olabilir (öntanımlı olarak 2 olan
-            <constant>CURLOPT_SSL_VERIFYPEER</constant> iptal edilmişse).
+            seçeneği ile bir sertifika dizini de belirtilebilir.
            </entry>
-           <entry>
-            cURL 7.10 itibariyle öntanımlı olarak &true;'dur.
+           <entry valign="top">
+            cURL 7.10 itibariyle öntanımlı olarak &true;'dur. Öntanımlı paket
+            cURL 7.10'dan itibaren yüklenmiştir.
+           </entry>
+          </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_SSL_VERIFYSTATUS</constant></entry>
+           <entry valign="top">
+            Sertifika durumunu doğrulamak için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.41.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_TRANSFERTEXT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSL_VERIFYPEER</constant></entry>
+           <entry valign="top">
+            cURL'nin eşin sertifikasını doğrulamasını durdurmak için &false;
+            Doğrulamak için alternatif sertifikalar
+            <constant>CURLOPT_CAINFO</constant> seçeneğiyle veya sertifika
+            dizini <constant>CURLOPT_CAPATH</constant> seçeneğiyle
+            belirtilebilir. &false; olarak ayarlandığında, eş sertifika
+            doğrulaması ne olursa olsun başarılı olur.
+           </entry>
+           <entry valign="top">
+            Öntanımlı olarak &true;. libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0
+            ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SUPPRESS_CONNECT_HEADERS</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_HTTPPROXYTUNNEL</constant> kullanıldığında ve
+            bir bağlantı isteği yapıldığında,
+            <constant>CURLOPT_HEADERFUNCTION</constant> ve
+            <constant>CURLOPT_WRITEFUNCTION</constant> kullanıcı geri arama
+            işlevlerinden vekil bağlantı yanıtı üstbilgilerini bastırmak için
+            &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.54.0'da eklendi. PHP 7.3.0 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TCP_FASTOPEN</constant></entry>
+           <entry valign="top">
+            TCP Hızlı Açmayı etkinleştirmek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.49.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TFTP_NO_OPTIONS</constant></entry>
+           <entry valign="top">
+            TFTP seçenekleri isteklerini göndermemek için &true;.
+           </entry>
+           <entry valign="top">
+            cURL 7.48.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TRANSFERTEXT</constant></entry>
+           <entry valign="top">
             FTP aktarımlarında ASCII kip kullanmak için &true; olmalıdır.
             LDAP için veri, HTML yerine salt metin olarak alınır. Windows
             sistemlerinde, <literal>STDOUT</literal>'a ikil kip atanmaz.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_UNRESTRICTED_AUTH</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_UNRESTRICTED_AUTH</constant></entry>
+           <entry valign="top">
             (<constant>CURLOPT_FOLLOWLOCATION</constant> kullanarak)
             <literal>Location:</literal> yönlendirmelerini izlerken konut
             ismi değişse bile, kullanıcı ve parola gönderimini sağlamak için
             &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_UPLOAD</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_UPLOAD</constant></entry>
+           <entry valign="top">
             Karşıya yüklemeye hazır olmak için &true; olmalıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_VERBOSE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_VERBOSE</constant></entry>
+           <entry valign="top">
             Ayrıntılı bilgi çıktılanması için &true; olmalıdır. Çıktıyı
             standart hataya veya <constant>CURLOPT_STDERR</constant>
             kullanarak belirtilen dosyaya yazar.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
          </tbody>
         </tgroup>
@@ -380,97 +602,165 @@
         <tgroup cols="3">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
+           <entry valign="top">Ek bilgi</entry>
           </row>
          </thead>
          <tbody>
           <row>
-           <entry><constant>CURLOPT_BUFFERSIZE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_BUFFERSIZE</constant></entry>
+           <entry valign="top">
             Okuma için kullanılacak tamponun boyutu. Ancak, bu isteğin
             yerine getirileceğinin bir garantisi yoktur.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10'da eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_CLOSEPOLICY</constant></entry>
-           <entry>
-            <parameter>CURLCLOSEPOLICY_LEAST_RECENTLY_USED</parameter> veya
-            <parameter>CURLCLOSEPOLICY_OLDEST</parameter> olabilir.
-            Bunlardan başka <literal>CURLCLOSEPOLICY_</literal> önekli üç
-            sabit daha vardır, ancak, bunlar cURL tarafından henüz
-            desteklenmemektedir.
-           </entry>
-           <entry>
-           </entry>
+           <entry valign="top"><constant>CURLOPT_CLOSEPOLICY</constant></entry>
+           <entry valign="top">
+            <constant>CURLCLOSEPOLICY_*</constant> değerlerinden biri.
+            <note>
+             <para>
+              Bu seçeneğin kullanımı önerilmemektedir; cURL'da hiç
+              gerçeklenmemeliydi ve asla bir etkisi olmadı.
+             </para>
+            </note>
+            </entry>
+           <entry valign="top">
+            PHP 5.6.0'da kaldırıldı.
+          </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_CONNECTTIMEOUT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CONNECTTIMEOUT</constant></entry>
+           <entry valign="top">
             Saniye cinsinden bağlantının deneneceği süre. Bağlantının
             sonsuza kadar beklenmesi için 0 kullanın.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_CONNECTTIMEOUT_MS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CONNECTTIMEOUT_MS</constant></entry>
+           <entry valign="top">
             Milisaniye cinsinden bağlantının deneneceği süre. Bağlantının
             sonsuza kadar beklenmesi için 0 kullanın.
+            <!-- http://curl.haxx.se/libcurl/c/curl_easy_setopt.html -->
+            Libcurl, standart sistem adı çözümleyicisini kullanmak üzere
+            derlenmişse, bağlantının bu bölümü, izin verilen bir saniyelik
+            minimum zaman aşımı ile tam saniyelik çözünürlüğü kullanmaya
+            devam edecektir.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.16.2'de eklendi. PHP 5.2.3'ten beri kullanılabilmektedir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_DNS_CACHE_TIMEOUT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_DNS_CACHE_TIMEOUT</constant></entry>
+           <entry valign="top">
             Saniye cinsinden DNS girdilerinin bellekte kalma süresi. Bu
             seçeneğin öntanımlı değeri 120 saniyedir.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_EXPECT_100_TIMEOUT_MS</constant></entry>
+           <entry valign="top">
+            Expect için zaman aşımı: Milisaniye cinsinden 100 devam yanıtı.
+            Öntanımlı 1000 milisaniyedir.
+           </entry>
+           <entry valign="top">
+            cURL 7.36.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_FTPSSLAUTH</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS</constant></entry>
+           <entry valign="top">
+            Mutlu gözler algoritması için ipv6'yı kullanmaya başlayın. Mutlu
+            gözler, milisaniyeler için önce IPv6'yı tercih ederek, çift yığıtlı
+            sunucular için hem IPv4 hem de IPv6 adreslerine bağlanmaya çalışır.
+            Şu anda 200 milisaniye olan CURL_HET_DEFAULT öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            cURL 7.59.0'da eklendi. PHP 7.3.0 ve sonrasında kullanılabilir.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_FTPSSLAUTH</constant></entry>
+           <entry valign="top">
             FTP kimlik doğrulama yöntemi (etkinse):
             <literal>CURLFTPAUTH_SSL</literal> (önce SSL denenir),
             <literal>CURLFTPAUTH_TLS</literal> (önce TLS denenir) veya
             <literal>CURLFTPAUTH_DEFAULT</literal> (cURL karar verir).
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.12.2'de eklendi.
            </entry>
           </row>
-          <row>
-           <entry><constant>CURLOPT_HTTP_VERSION</constant></entry>
-           <entry>
-            <parameter>CURL_HTTP_VERSION_NONE</parameter> (öntanımlı olup
-            hangi sürümün kullanılacağına CURL karar verir),
-            <parameter>CURL_HTTP_VERSION_1_0</parameter> (HTTP/1.0 zorlanır),
-            veya <parameter>CURL_HTTP_VERSION_1_1</parameter> (HTTP/1.1
-            zorlanır).
+           <row>
+           <entry valign="top"><constant>CURLOPT_HEADEROPT</constant></entry>
+           <entry valign="top">
+            Başlıklar ile başa çıkmak için aşağıdaki sabitlerden biri:
+            <simpara>
+             <constant>CURLHEADER_UNIFIED</constant>:
+             <constant>CURLOPT_HTTPHEADER</constant> içinde belirtilen
+             başlıklar hem sunuculara hem de vekillere yapılan isteklerde
+             kullanılacaktır. Bu seçenek etkinleştirildiğinde,
+             <constant>CURLOPT_PROXYHEADER</constant> herhangi bir etkiye
+             sahip olmayacaktır.
+            </simpara>
+            <simpara>
+             <constant>CURLHEADER_SEPARATE</constant>:
+             <constant>CURLOPT_HTTPHEADER</constant> başlıklarının bir vekile
+             değil, yalnızca bir sunucuya gönderilmesini sağlar. Vekil
+             başlıklarının kullanılabilmesi için
+             <constant>CURLOPT_PROXYHEADER</constant> ile ayarlanması gerekir.
+             Bir vekile CONNECT olmayan bir istek gönderilirse, libcurl'un hem
+             sunucu başlıklarını hem de vekil başlıklarını göndereceğini
+             unutmayın. CONNECT yapılırken, libcurl
+             <constant>CURLOPT_PROXYHEADER</constant> başlıklarını yalnızca
+             vekile ve ardından <constant>CURLOPT_HTTPHEADER</constant>
+             başlıklarını yalnızca sunucuya gönderir.
+            </simpara>
+            <simpara>
+             cURL 7.42.1 itibariyle <constant>CURLHEADER_SEPARATE</constant>
+             ve öncesinde <constant>CURLHEADER_UNIFIED</constant> öntanımlıdır.
+            </simpara>
            </entry>
-           <entry>
+           <entry valign="top">
+            cURL 7.37.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_HTTPAUTH</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HTTP_VERSION</constant></entry>
+           <entry valign="top">
+            <constant>CURL_HTTP_VERSION_NONE</constant> (öntanımlı olup
+            hangi sürümün kullanılacağına CURL karar verir).
+            <constant>CURL_HTTP_VERSION_1_0</constant> (HTTP/1.0 zorlanır),
+            <constant>CURL_HTTP_VERSION_1_1</constant> (HTTP/1.1 zorlanır),
+            <constant>CURL_HTTP_VERSION_2_0</constant> (HTTP 2 için çabalar),
+            <constant>CURL_HTTP_VERSION_2 </constant>
+            (<constant>CURL_HTTP_VERSION_2_0</constant> için takma ad),
+            <constant>CURL_HTTP_VERSION_2TLS</constant> (sadece TLS (HTTPS)
+            üzerinden HTTP 2 için çabalar) veya
+            <constant>CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE</constant> (HTTP/1.1
+            yükseltmesi olmadan HTTP/2 kullanarak TLS dışı HTTP istekleri
+            yapar).
+           </entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HTTPAUTH</constant></entry>
+           <entry valign="top">
             <para>
              HTTP kimlik doğrulama yöntem(ler)i:
-             <parameter>CURLAUTH_BASIC</parameter>,
-             <parameter>CURLAUTH_DIGEST</parameter>,
-             <parameter>CURLAUTH_GSSNEGOTIATE</parameter>,
-             <parameter>CURLAUTH_NTLM</parameter>,
-             <parameter>CURLAUTH_ANY</parameter> ve
-             <parameter>CURLAUTH_ANYSAFE</parameter>.
+             <constant>CURLAUTH_BASIC</constant>,
+             <constant>CURLAUTH_DIGEST</constant>,
+             <constant>CURLAUTH_GSSNEGOTIATE</constant>,
+             <constant>CURLAUTH_NTLM</constant>,
+             <constant>CURLAUTH_ANY</constant> ve
+             <constant>CURLAUTH_ANYSAFE</constant>.
             </para>
             <para>
              Birden fazla yöntem belirtilecekse sabitler arasında
@@ -480,80 +770,88 @@
              kullanır.
             </para>
             <para>
-             <parameter>CURLAUTH_ANY</parameter> sabiti
+             <constant>CURLAUTH_ANY</constant> sabiti
              <literal>CURLAUTH_BASIC | CURLAUTH_DIGEST |
              CURLAUTH_GSSNEGOTIATE | CURLAUTH_NTLM</literal> ifadesi için
              bir kısaltmadır.
             </para>
             <para>
-             <parameter>CURLAUTH_ANYSAFE</parameter> sabiti
+             <constant>CURLAUTH_ANYSAFE</constant> sabiti
              <literal>CURLAUTH_DIGEST | CURLAUTH_GSSNEGOTIATE |
              CURLAUTH_NTLM</literal> ifadesi için bir kısaltmadır.
             </para>
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_INFILESIZE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_INFILESIZE</constant></entry>
+           <entry valign="top">
             Dosya karşıya yüklenirken dosyanın bayt cinsinden tahmini boyutu.
+            Tam olarak neyin gönderileceği
+            <constant>CURLOPT_READFUNCTION</constant>'a bağlı olduğundan,
+            bu seçeneğin kullanılmasının libcurl'nin daha fazla veri
+            göndermesini durdurmayacağını unutmayın.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_LOW_SPEED_LIMIT</constant></entry>
-           <entry>
-            PHP'nin aktarımın çok yavaş olduğunu varsayarak çıkması için,
-            <constant>CURLOPT_LOW_SPEED_TIME</constant> saniye süresince
-            aktarımın altında kalacağı, saniyedeki bayt sayısı olarak
-            aktarım hızı.
+           <entry valign="top"><constant>CURLOPT_LOW_SPEED_LIMIT</constant></entry>
+           <entry valign="top">
+            PHP'nin aktarımın çok yavaş olduğunu varsayarak çıkmasından önce,
+            <constant>CURLOPT_LOW_SPEED_TIME</constant> süresince
+            aktarımda kalacağı, saniyedeki bayt sayısı olarak aktarım hızı.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_LOW_SPEED_TIME</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_LOW_SPEED_TIME</constant></entry>
+           <entry valign="top">
             PHP'nin aktarımın çok yavaş olduğunu varsayarak çıkması için,
             aktarım hızının <constant>CURLOPT_LOW_SPEED_LIMIT</constant>'in
             altında kalacağı, saniye cinsinden aktarım süresi.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_MAXCONNECTS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_MAXCONNECTS</constant></entry>
+           <entry valign="top">
             İzin verilen kalıcı bağlantıların azami sayısı. Bu sınıra
             ulaşıldığında hangi bağlantının kapatılacağını saptamak için
             <constant>CURLOPT_CLOSEPOLICY</constant> kullanılır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_MAXREDIRS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_MAXREDIRS</constant></entry>
+           <entry valign="top">
             İzlenecek HTTP yönlendirmelerinin azami sayısı.
             <constant>CURLOPT_FOLLOWLOCATION</constant> ile birlikte
             kullanılır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_PORT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PORT</constant></entry>
+           <entry valign="top">
             Bağlantı için kullanılacak ikincil port numarası.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_POSTREDIR</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_FOLLOWLOCATION</constant> ayarlandığında ve
+            belirli bir yönlendirme türü gerçekleştiğinde HTTP POST yönteminin
+            korunması gerekiyorsa 1 (301 Kalıcı Olarak Taşındı), 2 (302
+            Bulundu) ve 4 (Diğerine Bakın) için bit maskesi.
+           </entry>
+           <entry valign="top">
+            cURL 7.19.1'de eklendi. PHP 5.3.2 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROTOCOLS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROTOCOLS</constant></entry>
+           <entry valign="top">
             <para>
              <constant>CURLPROTO_*</constant> değerlerinden oluşan bir bit
              maskesi. libcurl'un aktarımda kullanabileceği protokolleri
@@ -566,60 +864,62 @@
             </para>
             <para>
              Olası protokol seçenekleri:
-             <parameter>CURLPROTO_HTTP</parameter>,
-             <parameter>CURLPROTO_HTTPS</parameter>,
-             <parameter>CURLPROTO_FTP</parameter>,
-             <parameter>CURLPROTO_FTPS</parameter>,
-             <parameter>CURLPROTO_SCP</parameter>,
-             <parameter>CURLPROTO_SFTP</parameter>,
-             <parameter>CURLPROTO_TELNET</parameter>,
-             <parameter>CURLPROTO_LDAP</parameter>,
-             <parameter>CURLPROTO_LDAPS</parameter>,
-             <parameter>CURLPROTO_DICT</parameter>,
-             <parameter>CURLPROTO_FILE</parameter>,
-             <parameter>CURLPROTO_TFTP</parameter>,
-             <parameter>CURLPROTO_ALL</parameter>
+             <constant>CURLPROTO_HTTP</constant>,
+             <constant>CURLPROTO_HTTPS</constant>,
+             <constant>CURLPROTO_FTP</constant>,
+             <constant>CURLPROTO_FTPS</constant>,
+             <constant>CURLPROTO_SCP</constant>,
+             <constant>CURLPROTO_SFTP</constant>,
+             <constant>CURLPROTO_TELNET</constant>,
+             <constant>CURLPROTO_LDAP</constant>,
+             <constant>CURLPROTO_LDAPS</constant>,
+             <constant>CURLPROTO_DICT</constant>,
+             <constant>CURLPROTO_FILE</constant>,
+             <constant>CURLPROTO_TFTP</constant>,
+             <constant>CURLPROTO_ALL</constant>
             </para>
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.19.4'te eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROXYAUTH</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROXYAUTH</constant></entry>
+           <entry valign="top">
             Vekil bağlantı için kullanılacak HTTP kimlik doğrulama
             yöntem(ler)i. <constant>CURLOPT_HTTPAUTH</constant>
             seçeneğindeki bit maskesi kullanılır. Vekil kimlik doğrulaması
-            için şimdilik sadece <parameter>CURLAUTH_BASIC</parameter> ve
-            <parameter>CURLAUTH_NTLM</parameter> desteklenmektedir.
+            için şimdilik sadece <constant>CURLAUTH_BASIC</constant> ve
+            <constant>CURLAUTH_NTLM</constant> desteklenmektedir.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10.7'de eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROXYPORT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROXYPORT</constant></entry>
+           <entry valign="top">
             Bağlanılacak vekil port numarası. Port numarası
             <constant>CURLOPT_PROXY</constant> ile de atanabilir.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_PROXYTYPE</constant></entry>
-           <entry>
-            <parameter>CURLPROXY_HTTP</parameter> (öntanımlı) veya
-            <parameter>CURLPROXY_SOCKS5</parameter> olabilir.
+           <entry valign="top"><constant>CURLOPT_PROXYTYPE</constant></entry>
+           <entry valign="top">
+            <constant>CURLPROXY_HTTP</constant> (öntanımlı),
+            <constant>CURLPROXY_SOCKS4</constant>,
+            <constant>CURLPROXY_SOCKS5</constant>,
+            <constant>CURLPROXY_SOCKS4A</constant> veya
+            <constant>CURLPROXY_SOCKS5_HOSTNAME</constant> olabilir.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10'da eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_REDIR_PROTOCOLS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_REDIR_PROTOCOLS</constant></entry>
+           <entry valign="top">
             <constant>CURLPROTO_*</constant> değerlerinden oluşan bir bit
             maskesi. <constant>CURLOPT_FOLLOWLOCATION</constant> etkin
             olduğu takdirde, bir yönlendirme izlenirken libcurl'un aktarımda
@@ -631,85 +931,371 @@
             Protokol sabitleri için <constant>CURLOPT_PROTOCOLS</constant>
             seçeneğine de bakınız.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.19.4'te eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_RESUME_FROM</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_RESUME_FROM</constant></entry>
+           <entry valign="top">
             Bayt cinsinden aktarımın devam ettirileceği konum.
            </entry>
-           <entry>
+           <entry valign="top">
+           </entry>
+          </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_SOCKS5_AUTH</constant></entry>
+           <entry valign="top">
+            <para>
+             Kullanılacak SOCKS5 kimlik kanıtlama yöntemleri. Seçenekler:
+             <constant>CURLAUTH_BASIC</constant>,
+             <constant>CURLAUTH_GSSAPI</constant>,
+             <constant>CURLAUTH_NONE</constant>.
+            </para>
+            <para>
+             Birden fazla yntem belirtmek için bitsel VEYA <literal>|</literal>
+             işleci kullanılabilir. Bu yapılırsa, cURL hangi yöntemleri
+             desteklediğini görmek için sunucuyu yoklar ve en iyisini seçer.
+            </para>
+            <para>
+             <constant>CURLAUTH_BASIC</constant> kullanıcı/parola kimlik
+             kanıtlamasına izin verir.
+            </para>
+            <para>
+             <constant>CURLAUTH_GSSAPI</constant> GSS-API kimlik
+             kanıtlamasına izin verir.
+            </para>
+            <para>
+             <constant>CURLAUTH_NONE</constant> hiçbir kimlik
+             kanıtlamasına izin vermez.
+            </para>
+            <para>
+             <literal>CURLAUTH_BASIC|CURLAUTH_GSSAPI</literal> öntanımlıdır.
+             Güncel kullanıcı ismini ve parolayı
+             <constant>CURLOPT_PROXYUSERPWD</constant>seçeneği ile atayın.
+            </para>
+           </entry>
+           <entry valign="top">
+            curl &gt;= 7.55.0 ve PHP 7.3.0 ve sonrasında kullanılabilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSL_VERIFYHOST</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSL_OPTIONS</constant></entry>
+           <entry valign="top">
+            SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi birinin
+            bit maskesidir:
+            <simpara>
+             <constant>CURLSSLOPT_ALLOW_BEAST</constant>: SSL3 ve TLS1.0
+             protokollerinde bir güvenlik açığı için herhangi bir geçici çözüm
+             kullanmaya çalışmaz.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_NO_REVOKE</constant>: Bu tür bir davranışın
+             mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini
+             devre dışı bırakır.
+            </simpara>
+           </entry>
+           <entry valign="top">
+            cURL 7.25.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSL_VERIFYHOST</constant></entry>
+           <entry valign="top">
             SSL eş sertifikasında ortak bir ismin varlığına bakılması için 1
             olmalıdır. Ortak bir ismin varlığının yanında sağlanan konak
-            ismi ile eşleşmenin de aranması için 2 olmalıdır.
+            ismi ile eşleşmenin de aranması için 2, isimlere bakmak  için
+            <literal>0</literal> olmalıdır. Üretim ortamlarında bu seçeneğin
+            değeri <literal>2</literal> (öntanımlıdır) olarak tutulmalıdır.
            </entry>
-           <entry>
-           </entry>
-          </row>
-          <row>
-           <entry><constant>CURLOPT_SSLVERSION</constant></entry>
-           <entry>
-            Kullanılacak SSL sürümü (2 veya 3). Öntanımlı olarak PHP bunu
-            kendi saptamaya çalışırsa da bazı durumlarda bunun elle
-            belirtilmesi gerekir.
-           </entry>
-           <entry>
+           <entry valign="top">
+            <literal>1</literal> değeri için destek cURL 7.28.1'de kaldırıldı.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_TIMECONDITION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLVERSION</constant></entry>
+           <entry valign="top">
+            <constant>CURL_SSLVERSION_DEFAULT</constant> (0),
+            <constant>CURL_SSLVERSION_TLSv1</constant> (1),
+            <constant>CURL_SSLVERSION_SSLv2</constant> (2),
+            <constant>CURL_SSLVERSION_SSLv3</constant> (3),
+            <constant>CURL_SSLVERSION_TLSv1_0</constant> (4),
+            <constant>CURL_SSLVERSION_TLSv1_1</constant> (5) veya
+            <constant>CURL_SSLVERSION_TLSv1_2</constant> (6) sabitlerinden
+            biri. Azami TLS sürümü <constant>CURL_SSLVERSION_MAX_*</constant>
+            sabitlerinden biri kullanarak atanabilir.
+            <constant>CURL_SSLVERSION_*</constant> sabitlerinden biri ile
+            <constant>CURL_SSLVERSION_MAX_*</constant> sabitlerinden birini
+            VEYAlamak da mümkündür.
+            <constant>CURL_SSLVERSION_MAX_DEFAULT</constant> (kütüphane
+            tarafından desteklenen en büyük sürüm),
+            <constant>CURL_SSLVERSION_MAX_TLSv1_0</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_1</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_2</constant> veya
+            <constant>CURL_SSLVERSION_MAX_TLSv1_3</constant>.
+            <note>
+             <para>
+              En iyi seçiminiz, bunu ayarlamamak ve öntanımlıyı kullanmasına
+              izin vermektir. Bunu 2 veya 3 olarak ayarlamak, SSLv2 ve
+              SSLv3'teki bilinen güvenlik açıkları göz önüne alındığında çok
+              tehlikelidir.
+             </para>
+            </note>
+           </entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSL_OPTIONS</constant></entry>
+           <entry valign="top">
+            SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi birinin
+            bit maskesidir:
+            <simpara>
+             <constant>CURLSSLOPT_ALLOW_BEAST</constant>: SSL3 ve TLS1.0
+             protokollerinde bir güvenlik açığı için herhangi bir geçici çözüm
+             kullanmaya çalışmaz.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_NO_REVOKE</constant>: Bu tür bir davranışın
+             mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini
+             devre dışı bırakır. (curl &gt;= 7.44.0)
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_NO_PARTIALCHAIN</constant>: Belirtilmediğinde
+             öntanımlı olan "kısmi" sertifika zincirlerini kabul etmez.
+             (curl &gt;= 7.68.0)
+            </simpara>
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0 ve sonrasında
+            kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSL_VERIFYHOST</constant></entry>
+           <entry valign="top">
+            HTTPS vekilinin sertifika adı alanlarını vekil adına göre
+            doğrulamak için 2'ye ayarlayın. 0 olarak ayarlandığında,
+            sertifikada kullanılan adlardan bağımsız olarak bağlantı başarılı
+            olur. Bu özelliği dikkatli kullanın! 1 curl 7.28.0 ve öncesinde bir
+            hata ayıklama seçeneği olarak ele alındı. Curl 7.28.1'den 7.65.3'e
+            <constant>CURLE_BAD_FUNCTION_ARGUMENT</constant> döndürülür.
+            7.66.0'dan itibaren 1 ve 2 aynı kabul edilir. Üretim ortamlarında
+            bu seçeneğin değeri 2'de (öntanımlı değer) tutulmalıdır.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0 ve sonrasında
+            kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSLVERSION</constant></entry>
+           <entry valign="top">
+            <constant>CURL_SSLVERSION_DEFAULT</constant>,
+            <constant>CURL_SSLVERSION_TLSv1</constant>,
+            <constant>CURL_SSLVERSION_TLSv1_0</constant>,
+            <constant>CURL_SSLVERSION_TLSv1_1</constant>,
+            <constant>CURL_SSLVERSION_TLSv1_2</constant>,
+            <constant>CURL_SSLVERSION_TLSv1_3</constant>,
+            <constant>CURL_SSLVERSION_MAX_DEFAULT</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_0</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_1</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_2</constant>,
+            <constant>CURL_SSLVERSION_MAX_TLSv1_3</constant> veya
+            <constant>CURL_SSLVERSION_SSLv3</constant> sabitlerinden biri.
+            <note>
+             <para>
+              En iyi seçim, bunu ayarlamamak ve uzak SSL protokol sürümünü
+              bulmaya çalışacak olan öntanımlı
+              <constant>CURL_SSLVERSION_DEFAULT</constant>'un kullanımına izin
+              vermektir.
+             </para>
+            </note>
+            </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0 ve sonrasında
+            kullanılabilir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_STREAM_WEIGHT</constant></entry>
+           <entry valign="top">
+            Sayısal akım ağırlığını ayaralar (1 ile 256 arasında bir sayı).
+            </entry>
+           <entry valign="top">
+            cURL 7.46.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_TCP_KEEPALIVE</constant></entry>
+           <entry valign="top">
+            <literal>1</literal> değerine ayarlanırsa, TCP canlı tutma
+            yoklamaları gönderilir. Bu yoklamaların gecikmesi ve sıklığı,
+            işletim sisteminin desteklemesi koşuluyla,
+            <constant>CURLOPT_TCP_KEEPIDLE</constant>
+            ve <constant>CURLOPT_TCP_KEEPINTVL</constant> seçenekleri ile
+            denetlenebilir. 0 (öntanımlı) olarak ayarlanırsa, canlı tutma
+            yoklamaları devre dışı bırakılır.
+           </entry>
+           <entry valign="top">
+            cURL 7.25.0'da eklendi. PHP 5.5.0 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TCP_KEEPIDLE</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_TCP_KEEPALIVE</constant> etkinleştirilmişse,
+            canlı tutma yoklamaları gönderilmeden önce bağlantı boşta iken
+            işletim sisteminin bekleyeceği süreyi saniye cinsinden ayarlar.
+            Tüm işletim sistemleri bu seçeneği desteklemez. Öntanımlı değer
+            60'tır.
+           </entry>
+           <entry valign="top">
+            cURL 7.25.0'da eklendi. PHP 5.5.0 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TCP_KEEPINTVL</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_TCP_KEEPALIVE</constant> etkinleştirilmişse,
+            işletim sisteminin canlı tutma yoklamaları arasında bekleyeceği
+            süreyi saniye cinsinden ayarlar. Tüm işletim sistemleri bu seçeneği
+            desteklemez. Öntanımlı değer 60'tır.
+           </entry>
+           <entry valign="top">
+            cURL 7.25.0'da eklendi. PHP 5.5.0 ve sonrasında kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TIMECONDITION</constant>
+           </entry>
+           <entry valign="top">
             <constant>CURLOPT_TIMEVALUE</constant> değerinin nasıl ele
             alınacağı belirtilir. Sayfayı sadece,
             <constant>CURLOPT_TIMEVALUE</constant> ile belirtilen süre
             içinde değiştirilmediği takdirde döndürmek için
-            <parameter>CURL_TIMECOND_IFMODSINCE</parameter> kullanın. Sayfa
+            <constant>CURL_TIMECOND_IFMODSINCE</constant> kullanın. Sayfa
             değişmişse, <constant>CURLOPT_HEADER</constant> seçeneğinin
             &true; olduğu varsayımıyla <literal>"304 Not Modified"</literal>
             (304 değişiklik yok) başlığı döndürülür. Bu davranışı ters
-            çevirmek için  <parameter>CURL_TIMECOND_IFUNMODSINCE</parameter>
-            kullanın. <parameter>CURL_TIMECOND_IFMODSINCE</parameter>
+            çevirmek için  <constant>CURL_TIMECOND_IFUNMODSINCE</constant>
+            kullanın. <constant>CURL_TIMECOND_IFMODSINCE</constant>
             öntanımlıdır.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_TIMEOUT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_TIMEOUT</constant></entry>
+           <entry valign="top">
             cURL işlevlerinin çalışmasına izin verilecek azami saniye sayısı.
            </entry>
-           <entry>
-           </entry>
+           <entry />
           </row>
           <row>
-           <entry><constant>CURLOPT_TIMEOUT_MS</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_TIMEOUT_MS</constant></entry>
+           <entry valign="top">
             cURL işlevlerinin çalışmasına izin verilecek azami milisaniye
             sayısı.
+            <!-- http://curl.haxx.se/libcurl/c/curl_easy_setopt.html -->
+            If libcurl is built to use the standard system name resolver, that
+            portion of the connect will still use full-second resolution for
+            timeouts with a minimum timeout allowed of one second.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.16.2'de eklendi. PHP 5.2.3'ten beri kullanılabilmektedir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_TIMEVALUE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_TIMEVALUE</constant></entry>
+           <entry valign="top">
             1 Ocak 1970'den beri geçen saniye sayısı. Bu değer
             <constant>CURLOPT_TIMECONDITION</constant> tarafından
-            kullanılır. <parameter>CURL_TIMECOND_IFMODSINCE</parameter>
+            kullanılır. <constant>CURL_TIMECOND_IFMODSINCE</constant>
             öntanımlıdır.
            </entry>
-           <entry>
+           <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_TIMEVALUE_LARGE</constant></entry>
+           <entry valign="top">
+            1 Ocak 1970'den bu yana saniye cinsinden süre.
+            <constant>CURLOPT_TIMECONDITION</constant> tarafından kullanılacak
+            zaman. Öntanımlı sıfırdır. Bu seçenek ile
+            <constant>CURLOPT_TIMEVALUE</constant> arasındaki fark,
+            değiştirgenin türüdür. "long" un yalnızca 32 bit genişliğinde
+            olduğu sistemlerde, bu seçeneğin 2038 yılından sonraki tarihleri
+            ayarlamak için kullanılması gerekir.
+           </entry>
+           <entry valign="top">
+            cURL 7.59.0'de eklendi. PHP 7.3.0'dan beri kullanılabilmektedir.
            </entry>
           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAX_RECV_SPEED_LARGE</constant></entry>
+           <entry valign="top">
+            Bir indirme, aktarım sırasında birikimli ortalama olarak bu hızı
+            (saniyede bayt olarak sayılır) aşarsa, ortalama hızı belirtilen
+            değerden düşük veya ona eşit tutmak için aktarım durur. Sınırsız
+            hız öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            cURL 7.15.5'de eklendi. PHP 5.4.0'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAX_SEND_SPEED_LARGE</constant></entry>
+           <entry valign="top">
+            Bir yükleme, aktarım sırasında birikimli ortalama olarak bu hızı
+            (saniyede bayt olarak sayılır) aşarsa, ortalama hızı belirtilen
+            değerden düşük veya ona eşit tutmak için aktarım durur. Sınırsız
+            hız öntanımlıdır.
+            </entry>
+           <entry valign="top">
+            cURL 7.15.5'de eklendi. PHP 5.4.0'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_AUTH_TYPES</constant></entry>
+           <entry valign="top">
+            <constant>CURLSSH_AUTH_PUBLICKEY</constant>,
+            <constant>CURLSSH_AUTH_PASSWORD</constant>,
+            <constant>CURLSSH_AUTH_HOST</constant>,
+            <constant>CURLSSH_AUTH_KEYBOARD</constant> sabitleri VEYAlanarak
+            oluşturulan bit maskesi. libcurl'un kendi seçmesi için
+            <constant>CURLSSH_AUTH_ANY</constant> sabitini atayın.
+           </entry>
+           <entry valign="top">
+            cURL 7.16.1'de eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_IPRESOLVE</constant></entry>
+           <entry valign="top">
+            Uygulamaya, konak adlarını çözümlerken ne tür IP adreslerinin
+            kullanılacağını seçme izni verir. Bu, yalnızca birden fazla IP
+            sürümünü kullanarak adresleri çözen konak adları kullanıldığında
+            ilginçtir. Olası değerler:
+            <constant>CURL_IPRESOLVE_WHATEVER</constant>,
+            <constant>CURL_IPRESOLVE_V4</constant>,
+            <constant>CURL_IPRESOLVE_V6</constant>
+            <constant>CURL_IPRESOLVE_WHATEVER</constant> öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            cURL 7.10.8'de eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_FTP_FILEMETHOD</constant></entry>
+           <entry valign="top">
+            Curl'e FTP(S) sunucusundaki bir dosyaya ulaşmak için hangi
+            yöntemin kullanacağını söyler. Olası değerler:
+            <constant>CURLFTPMETHOD_MULTICWD</constant>,
+            <constant>CURLFTPMETHOD_NOCWD</constant> ve
+            <constant>CURLFTPMETHOD_SINGLECWD</constant>.
+           </entry>
+           <entry valign="top">
+            cURL 7.15.1'de eklendi. PHP 5.3.0'dan beri kullanılabilmektedir.
+            </entry>
+           </row>
          </tbody>
         </tgroup>
        </informaltable>
@@ -721,66 +1307,99 @@
         <tgroup cols="3">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
+           <entry valign="top">Ek bilgi</entry>
           </row>
          </thead>
          <tbody>
+           <row>
+           <entry valign="top"><constant>CURLOPT_ABSTRACT_UNIX_SOCKET</constant></entry>
+           <entry valign="top">
+            Bir sunucunun TCP bağlantısı kurmak yerine soyut bir Unix bağlamı
+            soketinin kullanılmasını sağlar ve yolu belirtilen dizeye atar. Bu
+            seçenek, <constant>CURLOPT_UNIX_SOCKET_PATH</constant> ile aynı
+            sözdizimini paylaşır. Bu iki seçenek aynı depolamayı paylaşır ve bu
+            nedenle her tanıtıcıya bunlardan yalnızca biri atanabilir.
+           </entry>
+           <entry valign="top">
+            cURL 7.53.0 ve PHP 7.3.0'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
           <row>
-           <entry><constant>CURLOPT_CAINFO</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CAINFO</constant></entry>
+           <entry valign="top">
             Eşle doğrulanacak bir veya daha fazla sertifikanın tutulduğu
             dosyanın ismi. Bu sadece
             <constant>CURLOPT_SSL_VERIFYPEER</constant> ile birlikte
             kullanıldığında anlamlıdır.
            </entry>
-           <entry>
+           <entry valign="top">
+            Mutlak bir yol gerektirebilir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_CAPATH</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CAPATH</constant></entry>
+           <entry valign="top">
             Çok sayıda CA sertifikasının tutulduğu dizinin yolu.
             <constant>CURLOPT_SSL_VERIFYPEER</constant> seçeneğiyle birlikte
             kullanılır.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_COOKIE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_COOKIE</constant></entry>
+           <entry valign="top">
             HTTP isteğinde kullanılacak  <literal>"Cookie: "</literal>
             başlığının içeriği. Bir noktalı virgülden sonra gelen bir
             boşlukla ayrılarak çok sayıda çerez belirtilebilir
             ("<literal>meyve=elma; renk=turkuaz</literal>" gibi).
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_COOKIEFILE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_COOKIEFILE</constant></entry>
+           <entry valign="top">
             Çerez verisini içeren dosyanın adı. Çerez dosyası Netscape
             biçeminde veya bir dosyaya dökümlenmiş salt HTTP tarzı başlıklar
-            biçeminde olabilir.
+            olabilir. Ad boş bir dizeyse, hiçbir çerez yüklenmez, ancak çerez
+            işleme yine de etkindir.
            </entry>
-           <entry>
-           </entry>
-          </row>
-          <row>
-           <entry><constant>CURLOPT_COOKIEJAR</constant></entry>
-           <entry>
-            Bağlantı kapandığında tüm dahili çerezlerin kaydedileceği
-            dosyanın ismi.
-           </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_CUSTOMREQUEST</constant></entry>
-           <entry><para>
+           <entry valign="top"><constant>CURLOPT_COOKIEJAR</constant></entry>
+           <entry valign="top">
+            Tanıtıcı kapatıldığında (ör. curl_close çağrısından sonra) tüm
+            dahili çerezlerin kaydedileceği dosyanın adı.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_COOKIELIST</constant></entry>
+           <entry valign="top">
+            Bir çerez dizesi (yani Netscape/Mozilla biçiminde tek bir satır
+            veya normal bir HTTP tarzı Set-Cookie başlığı); bu tek çerez dahili
+            çerez deposuna eklenir. <literal>"ALL"</literal>, bellekte tutulan
+            tüm çerezleri siler. <literal>"SESS"</literal> bellekte tutulan tüm
+            oturum çerezlerini siler. <literal>"FLUSH"</literal> bilinen
+            çerezleri <constant>CURLOPT_COOKIEJAR</constant> ile belirtilen
+            dosyaya yazar. <literal>"RELOAD"</literal> tüm çerezleri
+            <constant>CURLOPT_COOKIEFILE</constant> ile belirtilen dosyalardan
+            yükler.
+           </entry>
+           <entry valign="top">
+            cURL 7.14.1 ve PHP 5.5.0'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_CUSTOMREQUEST</constant>
+           </entry>
+           <entry valign="top"><para>
             Bir HTTP isteği yaparken <literal>"GET"</literal> veya
             <literal>"HEAD"</literal> yerine kullanılacak özel istek
             yöntemi. <literal>"DELETE"</literal> veya biraz daha çapraşık
@@ -789,30 +1408,67 @@
             <literal>"POST"</literal>, <literal>"CONNECT"</literal>; yani,
             istek satırının tamamını buraya girmeyin. Örneğin,
             <literal>"GET /index.html HTTP/1.0\r\n\r\n"</literal> girdisi
-            yanlış olacaktır.
-            <note>
-             <para>
-              Belirteceğiniz istek yöntemini sunucunun desteklediğinden emin
-              olmadan bir şey belirtmeyin.
-             </para>
-            </note>
-            </para></entry>
-           <entry>
+            yanlış olacaktır.</para>
+           <note><para>
+             Belirteceğiniz istek yöntemini sunucunun desteklediğinden emin
+             olmadan bir şey belirtmeyin.
+            </para></note>
+           </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_EGDSOCKET</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_DEFAULT_PROTOCOL</constant></entry>
+           <entry valign="top"><para>
+            URL'de şema adı eksikse kullanılacak öntanımlı protokol.
+           </para></entry>
+           <entry valign="top">
+            cURL 7.45.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_DNS_INTERFACE</constant></entry>
+           <entry valign="top"><para>
+            DNS çözümleyicinin bağlanması gereken ağ arabiriminin adını atayın.
+            Bu bir arabirim adı olmalı, bir adres değil.
+           </para></entry>
+           <entry valign="top">
+            cURL 7.33.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_DNS_LOCAL_IP4</constant></entry>
+           <entry valign="top"><para>
+            Çözümleyicinin bağlanması gereken yerel IPv4 adresini atayın.
+            Değiştirge, dizge olarak tek bir sayısal IPv4 adresi içermelidir.
+           </para></entry>
+           <entry valign="top">
+            cURL 7.33.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_DNS_LOCAL_IP6</constant></entry>
+           <entry valign="top"><para>
+            Çözümleyicinin bağlanması gereken yerel IPv6 adresini atayın.
+            Değiştirge, dizge olarak tek bir sayısal IPv6 adresi içermelidir.
+            </para></entry>
+           <entry valign="top">
+            cURL 7.33.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_EGDSOCKET</constant></entry>
+           <entry valign="top">
             Bozunum değerlerini toplama uygulamasına bir dosya ismi
             belirtmesi dışında <constant>CURLOPT_RANDOM_FILE</constant>
             gibidir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_ENCODING</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_ENCODING</constant></entry>
+           <entry valign="top">
             <literal>"Accept-Encoding: "</literal> başlığının içeriği.
             Yanıtın kodlanmasını sağlar. Desteklenen kodlamalar:
             <literal>"identity"</literal>, <literal>"deflate"</literal> ve
@@ -820,35 +1476,46 @@
             belirtilirse desteklenen tüm kodlamaları içeren bir başlık
             gönderilir.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10'da eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_FTPPORT</constant></entry>
-           <entry>
-            FTP "POST" komutu için kullanılacak IP adresini almakta
-            kullanılacak değer. "POST" komutu, uzak sunucunun bizim
+           <entry valign="top"><constant>CURLOPT_FTPPORT</constant></entry>
+           <entry valign="top">
+            FTP "PORT" komutu için kullanılacak IP adresini almakta
+            kullanılacak değer. "PORT" komutu, uzak sunucunun bizim
             belirttiğimiz IP adresine bağlanmasını söyler. Dizge bir IP
             adresi içerebileceği gibi bir konakismi, (Unix altında) bir ağ
             arayüzü adı veya sistemin öntanımlı IP adresinin kullanılacağı
             anlamında '-' olabilir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_INTERFACE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_INTERFACE</constant></entry>
+           <entry valign="top">
             Kullanılacak giden ağ arayüzünün ismi. Bir ağ arabirimi ismi, bir
             IP adresi veya bir konak ismi olabilir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_KRB4LEVEL</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_KEYPASSWD</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_SSLKEY</constant> veya
+            <constant>CURLOPT_SSH_PRIVATE_KEYFILE</constant> özel anahtarını
+            kullanmak için parola gerekir.
+           </entry>
+           <entry valign="top">
+            cURL 7.16.1'de eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_KRB4LEVEL</constant></entry>
+           <entry valign="top">
             KRB4 (Kerberos 4) güvenlik seviyesi. Geçerli değerler (en
             güçsüzden en güçlüye doğru):
             <literal>"clear"</literal>,
@@ -860,138 +1527,461 @@
             eder. Şimdilik KRB4 güvenliği sadece FTP aktarımlarında
             çalışmaktadır.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_POSTFIELDS</constant></entry>
-           <entry>
-            Bir HTTP "POST" işleminde gönderilecek verinin tamamı. Bir dosya
-            göndermek için dosya ismini başına <literal>@</literal> koyarak
-            tam yoluyla belirtin.
+           <entry valign="top"><constant>CURLOPT_LOGIN_OPTIONS</constant></entry>
+           <entry valign="top">
+            "AUTH=NTLM" veya "AUTH=*" aracılığıyla tercih edilen kimlik
+            doğrulama mekanizması gibi protokole özgü oturum açma seçeneklerini
+            ayarlamak için kullanılabilir ve
+            <constant>CURLOPT_USERNAME</constant> seçeneğiyle birlikte
+            kullanılmalıdır.
+           </entry>
+           <entry valign="top">
+            cURL 7.34.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PINNEDPUBLICKEY</constant></entry>
+           <entry valign="top">
+            Sabitlenmiş genel anahtarı atayın. Dize, sabitlenmiş genel
+            anahtarınızın dosya adı olabilir. Beklenen dosya biçimi "PEM" veya
+            "DER" dir. Dize, başında "sha256//" bulunan ve ";" ile ayrılmış çok
+            sayıda base64 kodlu sha256 karması olabilir.
+            </entry>
+            <entry valign="top">
+             cURL 7.39.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_POSTFIELDS</constant></entry>
+           <entry valign="top">
+            <simpara>
+             Bir HTTP "POST" işleminde gönderilecek verinin tamamı.
             '<literal>para1=val1&amp;para2=val2&amp;...</literal>' benzeri
             kodlanmış bir dizge veya alan isimlerinin anahtar, değerlerinin
             değer olarak yer aldığı bir dizi belirtilebilir.
             <parameter>değer</parameter> bir dizi ise
             <literal>Content-Type</literal> başlığına
             <literal>multipart/form-data</literal> atanır.
+            </simpara>
+            <simpara>
+              Dosyalar, <classname>CURLFile</classname> kullanılarak
+              gönderilebilir, bu durumda <parameter>value</parameter> bir dizi
+              olmalıdır.
+            </simpara>
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROXY</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PRIVATE</constant></entry>
+           <entry valign="top">
+            Bu cURL tanıtıcısı ile ilişkilendirilmesi gereken herhangi bir
+            veri. Bu veriler daha sonra <function>curl_getinfo</function>
+            işlevinin <constant>CURLINFO_PRIVATE</constant> seçeneği ile
+            alınabilir. cURL bu verilerle hiçbir şey yapmaz. Bir cURL çoklu
+            tanıtıcısı kullanılırken, bu özel veriler tipik olarak standart
+            bir cURL tanıtıcısını tanımlamak için benzersiz bir anahtardır.
+           </entry>
+           <entry valign="top">
+            cURL 7.10.3'da eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PRE_PROXY</constant></entry>
+           <entry valign="top">
+            Bir sonraki istek için <constant>CURLOPT_PROXY</constant>
+            seçeneğinde belirtilen HTTP(S) vekiline bağlanmadan önce curl'nin
+            bağlanacağı ön vekil olarak kullanılacak konak adını veya noktalı
+            sayısal IP adresini tutan bir dize atayın. Ön vekil yalnızca bir
+            SOCKS vekili olabilir ve kullanılan soket türünü belirtmek için
+            <literal>[şema]://</literal> önekini almalıdır. Sayısal bir IPv6
+            adresi köşeli [parantez] içinde yazılmalıdır. Önvekilin boş bir
+            dizeye ayarlanması, önvekil kullanımını açıkça devre dışı bırakır.
+            Bu dizede port numarasını belirtmek için, konak adının ardına
+            <literal>:[port]</literal> ekleyin. Vekil port numarası isteğe
+            bağlı olarak ayrı bir seçenek olan
+            <constant>CURLOPT_PROXYPORT</constant> ile belirtilebilir. Bir port
+            belirtilmezse, vekiller için port 1080 öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY</constant></entry>
+           <entry valign="top">
             İstekleri tünelleyecek HTTP vekili.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROXYUSERPWD</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROXY_SERVICE_NAME</constant></entry>
+           <entry valign="top">
+            Vekil kimlik kanıtlama hizmetinin ismi.
+           </entry>
+           <entry valign="top">
+            cURL 7.34.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_CAINFO</constant></entry>
+           <entry valign="top">
+            Sertifika Yetkilisi (CA) paketini vekile götüren yol. Yolu, HTTPS
+            vekilini doğrulamak için bir veya daha fazla sertifika içeren bir
+            dosyayı adlandıran bir dize olarak ayarlayın. Bu seçenek bir HTTPS
+            sunucusuna değil, bir HTTPS vekiline bağlanmak içindir. libcurl'un
+            cacert paketinin saklandığı varsayılan sistem yolu öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_CAPATH</constant></entry>
+           <entry valign="top">
+            HTTPS vekilini doğrulamak için birden çok CA sertifikası bulunan
+            dizin.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_CRLFILE</constant></entry>
+           <entry valign="top">
+            Dosya adını, SSL değiş tokuşu sırasında gerçekleşen sertifika
+            doğrulamasında kullanmak için PEM biçiminde CRL (Sertifika İptal
+            Listesi) birleştirmesiyle ayarlayın.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_KEYPASSWD</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_PROXY_SSLKEY</constant> özel anahtarını kullanmak
+            için gereken şifre olarak kullanılacak dizeyi ayarlayın. Bir
+            sertifikayı yüklemek için hiçbir zaman bir parola gerekmez, ancak
+            özel anahtarınızı yüklemek için bir parolaya ihtiyacınız vardır. Bu
+            seçenek bir HTTPS sunucusuna değil, bir HTTPS vekiline bağlanmak
+            içindir.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+            </entry>
+           </row>
+           <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_PINNEDPUBLICKEY</constant></entry>
+           <entry valign="top">
+            HTTPS vekili için sabitlenmiş genel anahtarı ayarlayın. Dize,
+            sabitlenmiş genel anahtarınızın dosya adı olabilir. Beklenen dosya
+            biçimi "PEM" veya "DER" dir. Dize, başında "sha256 //" bulunan ve
+            ";" ile ayrılmış herhangi bir sayıda base64 kodlu sha256 karması
+            olabilir
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSLCERT</constant></entry>
+           <entry valign="top">
+            HTTPS vekiline bağlanmak için kullanılan istemci sertifikanızın
+            dosya adı. Öntanımlı biçem, Güvenli Aktarımda "P12" ve diğer
+            motorlarda "PEM" dir ve
+            <constant>CURLOPT_PROXY_SSLCERTTYPE</constant> ile bu
+            değiştirilebilir. NSS veya Güvenli Aktarım ile bu, güvenlik
+            veritabanında adı verildiği şekilde kimlik doğrulaması yapmak
+            istediğiniz sertifikanın takma adı da olabilir. Mevcut dizinden bir
+            dosya kullanmak istiyorsanız, bir takma adla karışıklığı önlemek
+            için lütfen "./" ön ekini kullanın.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSLCERTTYPE</constant></entry>
+           <entry valign="top">
+            Bir HTTPS vekiline bağlanırken kullanılan istemci sertifikanızın
+            biçimi. Güvenli Aktarım dışında desteklenen biçimler "PEM" ve "DER"
+            dir. OpenSSL (0.9.3 ve üstü sürümler) ve Secure Transport (iOS 5
+            veya üstü veya OS X 10.7 veya üstü), PKCS#12 ile kodlanmış dosyalar
+            için "P12" yi de destekler. "PEM" öntanımlıdır.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSL_CIPHER_LIST</constant></entry>
+           <entry valign="top">
+            HTTPS vekiline bağlantı için kullanılacak şifrelerin listesi. Liste
+            sözdizimsel olarak doğru olmalıdır, iki nokta üst üste ile ayrılmış
+            bir veya daha fazla şifre dizesinden oluşur. Virgüller veya
+            boşluklar da kabul edilebilir ayırıcılardır ancak normalde iki
+            nokta üst üste kullanılır, !, - ve + işleç olarak kullanılabilir.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_TLS13_CIPHERS</constant></entry>
+           <entry valign="top">
+            Bir vekile TLS 1.3 bağlantısı için kullanılacak şifre paketlerinin
+            listesi. Liste sözdizimsel olarak doğru olmalıdır, iki nokta üst
+            üste ile ayrılmış bir veya daha fazla şifre paketi dizesinden
+            oluşur. Bu seçenek şu anda yalnızca curl OpenSSL 1.1.1 veya
+            sonrasını kullanmak üzere oluşturulduğunda kullanılmaktadır. Farklı
+            bir SSL arka ucu kullanıyorsanız,
+            <constant>CURLOPT_PROXY_SSL_CIPHER_LIST</constant> seçeneğini
+            kullanarak TLS 1.3 şifre paketlerini ayarlamayı deneyebilirsiniz.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.61.0 ve PHP 7.3.0'dan beri
+            OpenSSL &gt;= 1.1.1 ile derlendiğinde kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSLKEY</constant></entry>
+           <entry valign="top">
+            HTTPS vekiline bağlanmak için kullanılan özel anahtarınızın dosya
+            adı. Öntanımlı biçim "PEM" dir ve
+            <constant>CURLOPT_PROXY_SSLKEYTYPE</constant> ile değiştirilebilir.
+            (Yalnızca iOS ve Mac OS X) Curl, Secure Transport'a göre
+            oluşturulmuşsa bu seçenek yok sayılır.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            TLS etkin derlendiğinde kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_SSLKEYTYPE</constant></entry>
+           <entry valign="top">
+            Özel anahtarınızın biçemi. Desteklenen biçemler: "PEM", "DER" ve "ENG".
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_TLSAUTH_PASSWORD</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_PROXY_TLSAUTH_TYPE</constant> seçeneğiyle
+            belirtilen TLS kimlik doğrulama yöntemi için kullanılacak parola.
+            <constant>CURLOPT_PROXY_TLSAUTH_USERNAME</constant> seçeneğinin de
+            ayarlanmasını gerektirir.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_TLSAUTH_TYPE</constant></entry>
+           <entry valign="top">
+            HTTPS bağlantısı için kullanılan TLS kimlik doğrulama yöntemi.
+            Desteklenen yöntem "SRP" dir.
+            <note>
+             <para>
+              TLS için Güvenli Uzak Parola (SRP) kimlik doğrulaması, her iki
+              tarafın da paylaşılan bir sırrı varsa karşılıklı kimlik
+              doğrulama sağlar. TLS-SRP'yi kullanmak için ayrıca
+              <constant>CURLOPT_PROXY_TLSAUTH_USERNAME</constant> ve
+              <constant>CURLOPT_PROXY_TLSAUTH_PASSWORD</constant>
+              seçeneklerini de ayarlamanız gerekir.
+             </para>
+            </note>
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_TLSAUTH_USERNAME</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_PROXY_TLSAUTH_TYPE</constant> seçeneğiyle
+            belirtilen HTTPS vekili TLS kimlik doğrulama yöntemi için
+            kullanılacak kullanıcı adı.
+            <constant>CURLOPT_PROXY_TLSAUTH_PASSWORD</constant> seçeneğinin
+            de ayarlanmasını gerektirir.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXYUSERPWD</constant></entry>
+           <entry valign="top">
             Vekil bağlantısı için kullanılacak kullanıcı adı ve parola;
             <literal>"[kullanıcı]:[parola]"</literal> biçeminde belirtilir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_RANDOM_FILE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_RANDOM_FILE</constant></entry>
+           <entry valign="top">
             SSL için rasgele sayı üretecini tohumlamakta kullanılacak dosya
             ismi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_RANGE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_RANGE</constant></entry>
+           <entry valign="top">
             X ve Y isteğe bağlı olmak üzere <literal>"X-Y"</literal>
             biçeminde alınacak veri aralığı. HTTP aktarımları,
             <literal>"X-Y,N-M"</literal> biçeminde virgüllerle ayrılmış
             olarak çok sayıda aralığı destekler.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_REFERER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_REFERER</constant></entry>
+           <entry valign="top">
             Bir HTTP isteğinde kullanılacak <literal>"Referer: "</literal>
             başlığının içeriği.
-           </entry>
-           <entry>
+            </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSL_CIPHER_LIST</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SERVICE_NAME</constant></entry>
+           <entry valign="top">
+            Kimlik kanıtlama hizmetini adı.
+           </entry>
+           <entry valign="top">
+            cURL 7.43.0'da eklendi. PHP 7.0.7'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_HOST_PUBLIC_KEY_MD5</constant></entry>
+           <entry valign="top">
+            32 onaltılık basamak içeren bir dize. Dize, uzak ana bilgisayarın
+            genel anahtarının MD5 sağlama toplamı olmalıdır; libcurl, md5sums
+            eşleşmediği sürece konağa bağlantıyı reddedecektir. Bu seçenek
+            yalnızca SCP ve SFTP aktarımları içindir..
+           </entry>
+           <entry valign="top">
+            cURL 7.17.1'da eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_PUBLIC_KEYFILE</constant></entry>
+           <entry valign="top">
+            Genel anahtarınızın dosya adı. Kullanılmazsa, libcurl öntanımlı
+            olarak HOME ortam değişkeni ayarlanmışsa $HOME/.ssh/id_dsa.pub
+            dosyasını ve HOME ayarlanmamışsa geçerli dizinde bir "id_dsa.pub"
+            dosyası arar.
+           </entry>
+           <entry valign="top">
+            cURL 7.16.1'da eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_PRIVATE_KEYFILE</constant></entry>
+           <entry valign="top">
+            Özel anahtarınızın dosya adı. Kullanılmazsa, libcurl öntanımlı
+            olarak HOME ortam değişkeni ayarlanmışsa $HOME/.ssh/id_dsa
+            dosyasını ve HOME ayarlanmamışsa geçerli dizinde bir "id_dsa"
+            dosyası arar. Dosya parola korumalıysa, parolayı
+            <constant>CURLOPT_KEYPASSWD</constant> ile ayarlayın.
+           </entry>
+           <entry valign="top">
+            cURL 7.16.1'da eklendi.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSL_CIPHER_LIST</constant></entry>
+           <entry valign="top">
             SSL için kullanılacak şifrelerin listesi. Örneğin,
             <literal>RC4-SHA</literal> ve <literal>TLSv1</literal> geçerli
             şifre listeleridir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLCERT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLCERT</constant></entry>
+           <entry valign="top">
             PEM biçemli sertifikayı içeren dosyanın ismi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLCERTPASSWD</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLCERTPASSWD</constant></entry>
+           <entry valign="top">
             <constant>CURLOPT_SSLCERT</constant> sertifikasını kullanmak
             için gereken parola.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLCERTTYPE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLCERTTYPE</constant></entry>
+           <entry valign="top">
             Sertifika biçemi. Desteklenen biçemler: <literal>"PEM"</literal>
-            (öntanımlı), <literal>"DER"</literal> ve
-            <literal>"ENG"</literal>.
+            (öntanımlı), <literal>"DER"</literal> ve <literal>"ENG"</literal>.
+            OpenSSL 0.9.3 itibariyle ayrıca, <literal>"P12"</literal>
+            (PKCS#12 kodlu dosyalar) desteklenmiştir.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.9.3'te eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLENGINE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLENGINE</constant></entry>
+           <entry valign="top">
             <constant>CURLOPT_SSLKEY</constant> ile belirtilmiş gizli SSL
             anahtarının şifreleme motoru için betimleyici.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLENGINE_DEFAULT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLENGINE_DEFAULT</constant></entry>
+           <entry valign="top">
             Bakışımsız şifreleme işlemleri için kullanılan şifreleme motoru
             için betimleyici.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLKEY</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLKEY</constant></entry>
+           <entry valign="top">
             Gizli SSL anahtarını içeren dosyanın ismi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLKEYPASSWD</constant></entry>
-           <entry><para>
+           <entry valign="top"><constant>CURLOPT_SSLKEYPASSWD</constant></entry>
+           <entry valign="top"><para>
             <constant>CURLOPT_SSLKEY</constant> ile belirtilen gizli SSL
             anahtarını kullanmak için gereken gizli parola.
             <note>
@@ -1001,48 +1991,94 @@
              </para>
             </note>
             </para></entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_SSLKEYTYPE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_SSLKEYTYPE</constant></entry>
+           <entry valign="top">
             <constant>CURLOPT_SSLKEY</constant>ile belirtilen gizli SSL
             anahtarının anahtar türü. Desteklenen anahtar türleri:
             <literal>"PEM"</literal> (öntanımlı), <literal>"DER"</literal>,
             ve <literal>"ENG"</literal>.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_URL</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_TLS13_CIPHERS</constant></entry>
+           <entry valign="top">
+            TLS 1.3 bağlantısı için kullanılacak şifre paketlerinin listesi.
+            Liste sözdizimsel olarak doğru olmalıdır, iki nokta üst üste ile
+            ayrılmış bir veya daha fazla şifre paketi dizesinden oluşur. Bu
+            seçenek şu anda yalnızca curl, OpenSSL 1.1.1 veya sonrasını
+            kullanmak üzere derlendiğinde kullanılmaktadır. Farklı bir SSL arka
+            ucu kullanıyorsanız, <constant>CURLOPT_SSL_CIPHER_LIST</constant>
+            seçeneğini kullanarak TLS 1.3 şifre paketlerini ayarlamayı
+            deneyebilirsiniz.
+           </entry>
+           <entry valign="top">
+            libcurl &gt;= cURL 7.61.0 ve PHP 7.3.0'den beri
+            kullanılabilmektedir. OpenSSL &gt;= 1.1.1 ile derlendiğinde
+            kullanılabilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_UNIX_SOCKET_PATH</constant></entry>
+           <entry valign="top">
+            Unix etki alanı soketlerinin bağlantı uç noktası olarak
+            kullanılmasını sağlar ve verilen dizeye yolu ayarlar.
+           </entry>
+           <entry valign="top">
+            cURL 7.40.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_URL</constant></entry>
+           <entry valign="top">
             İçeriği alınacak URL. Oturumu <function>curl_init</function> ile
             ilklendirirken de belirtilebilir.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_USERAGENT</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_USERAGENT</constant></entry>
+           <entry valign="top">
             HTTP isteğinde kullanılacak  <literal>"User-Agent:
             "</literal>başlığının içeriği.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_USERPWD</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_USERNAME</constant></entry>
+           <entry valign="top">
+            Kimlik kanıtlamada kullanılacak kullanıcı adı.
+           </entry>
+           <entry valign="top">
+            cURL 7.19.1'de eklendi. PHP 5.5.0'dan beri kullanılabilmektedir.
+            </entry>
+           </row>
+         <row>
+           <entry valign="top"><constant>CURLOPT_USERPWD</constant></entry>
+           <entry valign="top">
             Bağlantı için kullanılmak üzere
             <literal>"[kullanıcı]:[parola]"</literal> biçeminde kullanıcı
             adı ve parola.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_XOAUTH2_BEARER</constant></entry>
+           <entry valign="top">
+            OAuth 2.0 erişim jetonunu belirtir.
+           </entry>
+           <entry valign="top">
+            cURL 7.33.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+            </entry>
+           </row>
          </tbody>
         </tgroup>
        </informaltable>
@@ -1054,48 +2090,81 @@
         <tgroup cols="3">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
+           <entry valign="top">Ek bilgi</entry>
           </row>
          </thead>
          <tbody>
           <row>
-           <entry><constant>CURLOPT_HTTP200ALIASES</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_CONNECT_TO</constant></entry>
+           <entry valign="top">
+            URL'nin konak ve portu yerine belirli bir konak ve porta bağlanır. <literal>KONAK:PORT:BAĞLANILACAK-KONAK:BAĞLANILACAK-PORT</literal>
+            biçimindeki dizeleri kabul eder.
+           </entry>
+           <entry valign="top">
+            cURL 7.49.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HTTP200ALIASES</constant></entry>
+           <entry valign="top">
             Hata değil geçerli yanıtlar olarak ele alınmak üzere HTTP 200
             yanıtlarını içeren bir dizi.
            </entry>
-           <entry>
+           <entry valign="top">
             cURL 7.10.3'te eklendi.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_HTTPHEADER</constant></entry>
-           <entry>
-            HTTP başlık alanlarını içeren bir dizi.
+           <entry valign="top"><constant>CURLOPT_HTTPHEADER</constant></entry>
+           <entry valign="top">
+            <code>
+             array('Content-type: text/plain', 'Content-length: 100')
+            </code> biçiminde, atanacak HTTP başlık alanları dizisi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_POSTQUOTE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_POSTQUOTE</constant></entry>
+           <entry valign="top">
             FTP isteği yapıldıktan sonra sunucu üzerinde çalıştırılacak
             komutları içeren bir dizi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_QUOTE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PROXYHEADER</constant></entry>
+           <entry valign="top">
+            Vekillere iletilecek özel HTTP başlıkları dizisi.
+           </entry>
+           <entry valign="top">
+            cURL 7.37.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+            </entry>
+           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_QUOTE</constant></entry>
+           <entry valign="top">
             FTP isteği yapılmadan önce sunucu üzerinde çalıştırılacak
             komutları içeren bir dizi.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_RESOLVE</constant></entry>
+           <entry valign="top">
+            Belirli bir konak ve port çifti için özel bir adres sağlar.
+            <code>array("example.com:80:127.0.0.1")</code> biçiminde, iki
+            nokta üst üsteler ile ayrılmış konak adı, port ve IP adresi
+            dizeleri dizisi.
+           </entry>
+           <entry valign="top">
+            cURL 7.21.3'te eklendi. PHP5.5.0'dan beri kullanılabilmektedir.
+            </entry>
+           </row>
          </tbody>
         </tgroup>
        </informaltable>
@@ -1108,44 +2177,44 @@
         <tgroup cols="3">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
+           <entry valign="top">Ek bilgi</entry>
           </row>
          </thead>
          <tbody>
           <row>
-           <entry><constant>CURLOPT_FILE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_FILE</constant></entry>
+           <entry valign="top">
             Aktarımın yazılacağı dosya. <literal>STDOUT</literal> (tarayıcı
             penceresi) öntanımlıdır.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_INFILE</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_INFILE</constant></entry>
+           <entry valign="top">
             Karşıya yükleme sırasında aktarımın okuyacağı dosya.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_STDERR</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_STDERR</constant></entry>
+           <entry valign="top">
             Çıktı hatalarının gönderileceği <literal>STDERR</literal> yerine
             kullanılacak dosya.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_WRITEHEADER</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_WRITEHEADER</constant></entry>
+           <entry valign="top">
             Aktarımın başlık bölümünün yazılacağı dosya.
            </entry>
-           <entry>
+           <entry valign="top">
            </entry>
           </row>
          </tbody>
@@ -1153,79 +2222,107 @@
        </informaltable>
       </para>
       <para>
-       <parameter>değer</parameter> değiştirgesine aşağıdaki
-       <parameter>seçenek</parameter>'ler için bir geriçağırım işlevinin adı
-       atanmalıdır:
+       <parameter>değer</parameter>,  aşağıdaki <parameter>Seçenek</parameter>
+       değerleri için bir Closure nesnesi veya geçerli bir işlev ismi
+       olmalıdır:
        <informaltable>
-        <tgroup cols="3">
+        <tgroup cols="2">
          <thead>
           <row>
-           <entry>Seçenek</entry>
-           <entry>Atanacak <parameter>değer</parameter></entry>
-           <entry>Ek bilgi</entry>
+           <entry valign="top">Seçenek</entry>
+           <entry valign="top">Atanacak <parameter>değer</parameter></entry>
           </row>
          </thead>
          <tbody>
           <row>
-           <entry><constant>CURLOPT_HEADERFUNCTION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_HEADERFUNCTION</constant></entry>
+           <entry valign="top">
             İki değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
             ilki bir cURL özkaynağı, ikincisi ise başlık verisinin
             yazılacağı bir dizge olmalıdır. Başlık verisi bu geriçağırım
             işlevi kullanılırken yazılmalıdır. İşlevin dönüş değeri yazılan
             bayt sayısı olmalıdır.
            </entry>
-           <entry>
-           </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PASSWDFUNCTION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_PASSWDFUNCTION</constant></entry>
+           <entry valign="top">
             Üç değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
             ilki bir cURL özkaynağı, ikincisi parola istemi belirten bir
             dizge, üçüncüsü ise parolanın azami uzunluğu olmalıdır. İşlevin
             dönüş değeri parolayı içeren bir dizge olmalıdır.
            </entry>
-           <entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROGRESSFUNCTION</constant></entry>
+           <entry valign="top">
+            <para>
+             Beş değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
+             ilki bir cURL özkaynağı, ikincisi bu aktarımda indirilmesi
+             beklenen toplam bayt sayısı, üçüncüsü şu ana kadar indirilen bayt
+             sayısı, dördüncüsü bu aktarımda yüklenmesi beklenen toplam bayt
+             sayısı ve beşincisi, şimdiye kadar yüklenen bayt sayısıdır.
+            </para>
+            <note>
+             <para>
+              Geriçağırım işlevi sadece <constant>CURLOPT_NOPROGRESS</constant>
+              seçeneğinin değeri &false; ise çağrılır.
+             </para>
+            </note>
+            <para>
+             Aktarımdan çıkmak için sıfırdan farklı bir değer döndürün.
+             Bu durumda aktarım bir
+             <constant>CURLE_ABORTED_BY_CALLBACK</constant> hatası verir.
+             error.
+            </para>
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_PROGRESSFUNCTION</constant></entry>
-           <entry>
-            Geriçağırım işlevinin üç değiştirge aldığı durumda geriçağırım
-            işlevinin ismi. Değiştirgelerin ilki bir cURL özkaynağı, ikincisi
-            bir dosya tanıtıcısı, üçüncüsü ise  uzunluk olmalıdır. İşlevin
-            dönüş değeri veriyi içeren bir dizge olmalıdır.
-           </entry>
-           <entry>
-           </entry>
-          </row>
-          <row>
-           <entry><constant>CURLOPT_READFUNCTION</constant></entry>
-           <entry>
-            İki değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
-            ilki bir cURL özkaynağı, ikincisi ise okunacak veriyi iceren bir
-            dizge olmalıdır. Veri bu geriçağırım işlevi kullanılarak
-            okunmalıdır. İşlevin dönüş değeri okunan
-            bayt sayısı olmalıdır. Dosya sonunun bildirmek için ise 0
-            dönmelidir.
-           </entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_READFUNCTION</constant></entry>
+           <entry valign="top">
+            Üç değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
+            ilki bir cURL özkaynağı, ikincisi
+            <constant>CURLOPT_INFILE</constant> seçeneği aracılığıyla cURL'ye
+            sağlanan bir akım özkaynağı ve üçüncüsü okunacak azami veri
+            miktarıdır. İşlev, genellikle aktarılan akım özkaynağından
+            okuyarak, istenen veri miktarına eşit veya daha kısa  uzunlukta bir
+            dize döndürmelidir. <literal>EOF</literal> sinyali vermek için boş
+            bir dizi döndürülmelidir.
            </entry>
           </row>
           <row>
-           <entry><constant>CURLOPT_WRITEFUNCTION</constant></entry>
-           <entry>
+           <entry valign="top"><constant>CURLOPT_WRITEFUNCTION</constant></entry>
+           <entry valign="top">
             İki değiştirgeli bir geriçağırım işlevinin ismi. Değiştirgelerin
             ilki bir cURL özkaynağı, ikincisi ise yazılacak veriyi içeren
             bir dizge olmalıdır. Veri bu geriçağırım işlevi kullanılarak
-            yazılmalıdır. İşlevin dönüş değeri yazılan
-            bayt sayısı olmalıdır.
-           </entry>
-           <entry>
+            kaydedilmelidir. İşlevin dönüş değeri yazılan
+            bayt sayısı olmalıdır, aksi takdirde bir hata vererek aktarımdan çıkılmalıdır.
            </entry>
           </row>
          </tbody>
+        </tgroup>
+       </informaltable>
+      </para>
+      <para>
+       Other values:
+       <informaltable>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Seçenek</entry>
+           <entry>Atanacak <parameter>değer</parameter></entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SHARE</constant></entry>
+           <entry valign="top">
+            <function>curl_share_init</function> işlevinden dönen değer. cURL
+            tanıtıcısının paylaşılan tanıtıcıdaki verileri kullanmasını sağlar.
+            </entry>
+           </row>
+          </tbody>
         </tgroup>
        </informaltable>
       </para>
@@ -1233,7 +2330,7 @@
     </varlistentry>
    </variablelist>
   </para>
- </refsect1>
+</refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
@@ -1249,41 +2346,107 @@
     <tgroup cols="2">
      <thead>
       <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
+       <entry valign="top">&Version;</entry>
+       <entry valign="top">&Description;</entry>
       </row>
      </thead>
      <tbody>
+      &curl.changelog.handle-param;
       <row>
-       <entry>5.2.10</entry>
-       <entry>
-        <constant>CURLOPT_PROTOCOLS</constant> ve
-        <constant>CURLOPT_REDIR_PROTOCOLS</constant> kullanılabilir oldu.
+       <entry valign="top">7.3.15, 7.4.3</entry>
+       <entry valign="top">
+        <constant>CURLOPT_HTTP09_ALLOWED</constant> eklendi.
        </entry>
       </row>
       <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <constant>CURLOPT_AUTOREFERER</constant>,
-        <constant>CURLOPT_BINARYTRANSFER</constant>,
-        <constant>CURLOPT_FTPSSLAUTH</constant>,
-        <constant>CURLOPT_AUTOREFERER</constant>,
-        <constant>CURLOPT_PROXYAUTH</constant> ve
-        <constant>CURLOPT_TIMECONDITION</constant> kullanılabilir oldu.
+       <entry valign="top">7.3.0</entry>
+       <entry valign="top">
+        <constant>CURLOPT_ABSTRACT_UNIX_SOCKET</constant>,
+        <constant>CURLOPT_KEEP_SENDING_ON_ERROR</constant>,
+        <constant>CURLOPT_PRE_PROXY</constant>,
+        <constant>CURLOPT_PROXY_CAINFO</constant>,
+        <constant>CURLOPT_PROXY_CAPATH</constant>,
+        <constant>CURLOPT_PROXY_CRLFILE</constant>,
+        <constant>CURLOPT_PROXY_KEYPASSWD</constant>,
+        <constant>CURLOPT_PROXY_PINNEDPUBLICKEY</constant>,
+        <constant>CURLOPT_PROXY_SSLCERT</constant>,
+        <constant>CURLOPT_PROXY_SSLCERTTYPE</constant>,
+        <constant>CURLOPT_PROXY_SSL_CIPHER_LIST</constant>,
+        <constant>CURLOPT_PROXY_SSLKEY</constant>,
+        <constant>CURLOPT_PROXY_SSLKEYTYPE</constant>,
+        <constant>CURLOPT_PROXY_SSL_OPTIONS</constant>,
+        <constant>CURLOPT_PROXY_SSL_VERIFYHOST</constant>,
+        <constant>CURLOPT_PROXY_SSL_VERIFYPEER</constant>,
+        <constant>CURLOPT_PROXY_SSLVERSION</constant>,
+        <constant>CURLOPT_PROXY_TLSAUTH_PASSWORD</constant>,
+        <constant>CURLOPT_PROXY_TLSAUTH_TYPE</constant>,
+        <constant>CURLOPT_PROXY_TLSAUTH_USERNAME</constant>,
+        <constant>CURLOPT_SOCKS5_AUTH</constant>,
+        <constant>CURLOPT_SUPPRESS_CONNECT_HEADERS</constant>,
+        <constant>CURLOPT_DISALLOW_USERNAME_IN_URL</constant>,
+        <constant>CURLOPT_DNS_SHUFFLE_ADDRESSES</constant>,
+        <constant>CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS</constant>,
+        <constant>CURLOPT_HAPROXYPROTOCOL</constant>,
+        <constant>CURLOPT_PROXY_TLS13_CIPHERS</constant>,
+        <constant>CURLOPT_SSH_COMPRESSION</constant>,
+        <constant>CURLOPT_TIMEVALUE_LARGE</constant> ve
+        <constant>CURLOPT_TLS13_CIPHERS</constant> eklendi.
        </entry>
       </row>
       <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <constant>CURLOPT_FTP_USE_EPRT</constant>,
-        <constant>CURLOPT_NOSIGNAL</constant>,
-        <constant>CURLOPT_UNRESTRICTED_AUTH</constant>,
-        <constant>CURLOPT_BUFFERSIZE</constant>,
-        <constant>CURLOPT_HTTPAUTH</constant>,
-        <constant>CURLOPT_PROXYPORT</constant>,
-        <constant>CURLOPT_PROXYTYPE</constant>,
-        <constant>CURLOPT_SSLCERTTYPE</constant> ve
-        <constant>CURLOPT_HTTP200ALIASES</constant> kullanılabilir oldu.
+       <entry valign="top">7.0.7</entry>
+       <entry valign="top">
+        <constant>CURL_HTTP_VERSION_2</constant>,
+        <constant>CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE</constant>,
+        <constant>CURL_HTTP_VERSION_2TLS</constant>,
+        <constant>CURL_REDIR_POST_301</constant>,
+        <constant>CURL_REDIR_POST_302</constant>,
+        <constant>CURL_REDIR_POST_303</constant>,
+        <constant>CURL_REDIR_POST_ALL</constant>,
+        <constant>CURL_VERSION_KERBEROS5</constant>,
+        <constant>CURL_VERSION_PSL</constant>,
+        <constant>CURL_VERSION_UNIX_SOCKETS</constant>,
+        <constant>CURLAUTH_NEGOTIATE</constant>,
+        <constant>CURLAUTH_NTLM_WB</constant>,
+        <constant>CURLFTP_CREATE_DIR</constant>,
+        <constant>CURLFTP_CREATE_DIR_NONE</constant>,
+        <constant>CURLFTP_CREATE_DIR_RETRY</constant>,
+        <constant>CURLHEADER_SEPARATE</constant>,
+        <constant>CURLHEADER_UNIFIED</constant>,
+        <constant>CURLMOPT_CHUNK_LENGTH_PENALTY_SIZE</constant>,
+        <constant>CURLMOPT_CONTENT_LENGTH_PENALTY_SIZE</constant>,
+        <constant>CURLMOPT_MAX_HOST_CONNECTIONS</constant>,
+        <constant>CURLMOPT_MAX_PIPELINE_LENGTH</constant>,
+        <constant>CURLMOPT_MAX_TOTAL_CONNECTIONS</constant>,
+        <constant>CURLOPT_CONNECT_TO</constant>,
+        <constant>CURLOPT_DEFAULT_PROTOCOL</constant>,
+        <constant>CURLOPT_DNS_INTERFACE</constant>,
+        <constant>CURLOPT_DNS_LOCAL_IP4</constant>,
+        <constant>CURLOPT_DNS_LOCAL_IP6</constant>,
+        <constant>CURLOPT_EXPECT_100_TIMEOUT_MS</constant>,
+        <constant>CURLOPT_HEADEROPT</constant>,
+        <constant>CURLOPT_LOGIN_OPTIONS</constant>,
+        <constant>CURLOPT_PATH_AS_IS</constant>,
+        <constant>CURLOPT_PINNEDPUBLICKEY</constant>,
+        <constant>CURLOPT_PIPEWAIT</constant>,
+        <constant>CURLOPT_PROXY_SERVICE_NAME</constant>,
+        <constant>CURLOPT_PROXYHEADER</constant>,
+        <constant>CURLOPT_SASL_IR</constant>,
+        <constant>CURLOPT_SERVICE_NAME</constant>,
+        <constant>CURLOPT_SSL_ENABLE_ALPN</constant>,
+        <constant>CURLOPT_SSL_ENABLE_NPN</constant>,
+        <constant>CURLOPT_SSL_FALSESTART</constant>,
+        <constant>CURLOPT_SSL_VERIFYSTATUS</constant>,
+        <constant>CURLOPT_STREAM_WEIGHT</constant>,
+        <constant>CURLOPT_TCP_FASTOPEN</constant>,
+        <constant>CURLOPT_TFTP_NO_OPTIONS</constant>,
+        <constant>CURLOPT_UNIX_SOCKET_PATH</constant>,
+        <constant>CURLOPT_XOAUTH2_BEARER</constant>,
+        <constant>CURLPROTO_SMB</constant>,
+        <constant>CURLPROTO_SMBS</constant>,
+        <constant>CURLPROXY_HTTP_1_0</constant>,
+        <constant>CURLSSH_AUTH_AGENT</constant> ve
+        <constant>CURLSSLOPT_NO_REVOKE</constant> eklendi.
        </entry>
       </row>
      </tbody>
@@ -1316,54 +2479,6 @@ curl_close($ct);
 ?>
 ]]>
     </programlisting>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- Karşıya dosya yüklemek</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-/* http://localhost/upload.php:
-print_r($_POST);
-print_r($_FILES);
-*/
-
-$ch = curl_init();
-
-$data = array('name' => 'Foo', 'file' => '@/home/user/test.png');
-
-curl_setopt($ch, CURLOPT_URL, 'http://localhost/upload.php');
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-curl_exec($ch);
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-Array
-(
-    [name] => Foo
-)
-Array
-(
-    [file] => Array
-        (
-            [name] => test.png
-            [type] => image/png
-            [tmp_name] => /tmp/phpcpjNeQ
-            [error] => 0
-            [size] => 279
-        )
-
-)
-
-]]>
-    </screen>
    </example>
   </para>
  </refsect1>
