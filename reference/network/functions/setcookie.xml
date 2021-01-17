@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: d62d6b01c4d00cfebb7737054d19ba7ce26132d0 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4a7ddddc27271967b616ad3400cfbe2a9b48212b Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.setcookie" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>setcookie</refname>
@@ -9,15 +9,24 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <methodsynopsis>
+  <methodsynopsis role="procedural">
    <type>bool</type><methodname>setcookie</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>değer</parameter><initializer>""</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>zaman_aşımı</parameter><initializer>0</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>yol</parameter><initializer>""</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>alan</parameter><initializer>""</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>güvenli</parameter><initializer>false</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>sadece_http</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>güvenli</parameter><initializer>&false;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>sadece_http</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   PHP 7.3.0 ve sonrasında böyle de kullanılabilir:
+  </para>
+  <methodsynopsis role="procedural">
+   <type>bool</type><methodname>setcookie</methodname>
+   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>değer</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>setcookie</function> işlevi, HTTP başlıklarının kalanıyla
@@ -29,7 +38,7 @@
    karakteri çıktısından bile önce yer almasını gerektirir.
   </para>
   <para>
-   Çerezler bir kere atandı mı, artık <varname>$_COOKIE</varname> dizisi ile 
+   Çerezler bir kere atandı mı, artık <varname>$_COOKIE</varname> dizisi ile
    sonraki sayfa yüklemesinde erişilebilir olacaktır. Çerez
    değerleri ayrıca, <varname>$_REQUEST</varname> içinde de mevcut olabilir.
   </para>
@@ -56,7 +65,7 @@
       <para>
        Çerezin değeri. Bu değer istemcinin bilgisayarında saklanır. Bu
        bakımdan çerezlerde güvenlik ihlaline konu bilgiler saklamayın.
-       <parameter>isim</parameter> değiştirgesinde <literal>'çerezim'</literal> 
+       <parameter>isim</parameter> değiştirgesinde <literal>'çerezim'</literal>
        ismini kullandığınız varsayımıyla, bu çerezin değerini
        <varname>$_COOKIE['çerezim']</varname> değişkeni ile alabilirsiniz.
       </para>
@@ -104,17 +113,17 @@
      <term><parameter>alan</parameter></term>
      <listitem>
       <para>
-       Çerezin kullanılabileceği (alt)alan. Çerezi 
-       (<literal>'www.example.com'</literal> gibi) bir alt alan adında  
-       kullanılabilir yapmak onu tüm diğer alt alan adlarında da 
+       Çerezin kullanılabileceği (alt)alan. Çerezi
+       (<literal>'www.example.com'</literal> gibi) bir alt alan adında
+       kullanılabilir yapmak onu tüm diğer alt alan adlarında da
        (w2.www.example.com gibi) kullanılabilir kılacaktır.için değer olarak
-       <literal>'.mesela.dom'</literal> belirtmelisiniz. Çerezi tüm alt alan 
-       adlarında kullanılabilir yapmak için buraya alan adını (örneğimiz için 
+       <literal>'.mesela.dom'</literal> belirtmelisiniz. Çerezi tüm alt alan
+       adlarında kullanılabilir yapmak için buraya alan adını (örneğimiz için
        (<literal>'example.com'</literal>) yazın.
       </para>
       <para>
-       Eski tarayıcılar hala kullanımdan kalkmış olan ve alt alan adıyla 
-       eşleşme sağlamak için . ile başlatmayı gerektiren  <link 
+       Eski tarayıcılar hala kullanımdan kalkmış olan ve alt alan adıyla
+       eşleşme sağlamak için . ile başlatmayı gerektiren  <link
          xlink:href="&url.rfc;2109">RFC 2109</link>'u gerçeklemektedir.
       </para>
      </listitem>
@@ -140,9 +149,27 @@
        erişilebilir olacaktır. Yani çerez, JavaScript gibi betik dilleri
        tarafından erişilebilir olmayacaktır. Bu ayarlama, XSS saldırılarıyla
        kimlik hırsızlığı riskini etkin şekilde azaltmaya (tüm tarayıcılar
-       tarafından desteklenmese de) yardımcı olabilir, fakat bu sava çoğunlukla 
-       itiraz edilir.  Bu değiştirge PHP 5.2.0'da eklenmiştir. Değer olarak 
-       &true; veya &false; belirtilebilir.
+       tarafından desteklenmese de) yardımcı olabilir, fakat bu sava çoğunlukla
+       itiraz edilir. Değer olarak &true; veya &false; belirtilebilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       <literal>zaman_aşımı</literal>, <literal>yol</literal>,
+       <literal>alan</literal>, <literal>güvenli</literal>,
+       <literal>sadece_http</literal> ve <literal>samesite</literal>
+       değiştirgelerinden herhangi birine sahip olabilen ilişkisel bir dizi.
+       Bunlar dışında bir anahtar varsa, <constant>E_WARNING</constant>
+       seviyesinde bir hata üretilir. Değerler, aynı ada sahip değiştirgeler
+       için açıklananla aynı anlama sahiptir. <literal>samesite</literal>
+       öğesinin değeri <literal>None</literal>, <literal>Lax</literal> veya
+       <literal>Strict</literal> olmalıdır. İzin verilen seçeneklerden herhangi
+       biri belirtilmezse, bunların öntanımlı değerleri, açık değiştirgelerin
+       öntanımlı değerleri ile aynıdır. <literal>samesite</literal> öğesi
+       atlanırsa, SameSite çerez özelliği ayarlanmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -181,10 +208,10 @@ setcookie("TestCookie", $value, time()+3600, "/~rasmus/", "example.com", 1);
    </example>
   </para>
   <para>
-   Çerez gönderilirken çerez değerinin özdevinimli olarak URL kodlamasından
-   geçirileceğine, alınırken ise bu kodlamanın yine özdevinimli olarak
+   Çerez gönderilirken çerez değerinin otomatik olarak URL kodlamasından
+   geçirileceğine, alınırken ise bu kodlamanın yine otomatik olarak
    çözüleceğine ve yine aynı çerez ismine atanacağına dikkat ediniz. Bunu
-   istemiyorsanız, PHP 5 kullanıyorsanız bu işlevin yerine
+   istemiyorsanız, Bu işlevin yerine
    <function>setrawcookie</function> işlevini kullanabilirsiniz. Deneme
    çerezimizin bir betik içindeki değerini görmek için aşağıdaki örneklerden
    birini kullanabilirsiniz:
@@ -260,6 +287,14 @@ one : cookieone
 ]]>
     </screen>
    </example>
+   <note>
+    <simpara>
+     Çerez isminin paraçası olarak <literal>[</literal> ve <literal>]</literal>
+     gibi ayırıcı karakterlerin kullanımı RFC 6265, bölüm 4 ile uyumlu değildir,
+     fakat RFC 6265, bölüm 5'e göre kullanıcı istemcileri tarafından
+     desteklendikleri varsayılmıştır.
+    </simpara>
+   </note>
   </para>
  </refsect1>
 
@@ -275,17 +310,12 @@ one : cookieone
       </row>
      </thead>
      <tbody>
-       <row>
-       <entry>5.5.0</entry>
-       <entry>
-        Max-Age niteliği istemciye gönderilen Set-Cookie başlığında artık 
-        bulunmaktadır.
-       </entry>
-      </row>
       <row>
-       <entry>5.2.0</entry>
+       <entry>7.3.0</entry>
        <entry>
-        <parameter>sadece_http</parameter> değiştirgesi eklendi.
+        <parameter>seçenekler</parameter> dizisini destekleyen ek bir yöntem
+        tanımı eklendi. Dizi içinde SameSite çerezinin değerleri de
+        destekleniyor.
        </entry>
       </row>
      </tbody>
@@ -298,22 +328,13 @@ one : cookieone
   &reftitle.notes;
   <note>
    <para>
-    PHP 4'ten itibaren, bu işlevi çağırmadan önce, tarayıcıya gönderilene
+    Bu işlevi çağırmadan önce, tarayıcıya gönderilene
     kadar sunucuda bekletilmek üzere çıktıyı bir tampona yazabilirsiniz. Bu
     işlemi betiğinizden <function>ob_start</function> ve
     <function>ob_end_flush</function> işlevlerini çağırarak veya
     <literal>output_buffering</literal> yapılandırma
     yönergesini &php.ini; veya sunucu yapılandırma dosyalarında belirterek
     yapabilirsiniz.
-   </para>
-  </note>
-  <note>
-   <para>
-    <link linkend="ini.register-globals">register_globals</link> yönergesine
-    <literal>on</literal> değeri atanmışsa çerez değerleri değişkenlere de
-    atanabilir. Bu takdirde, yukarıdaki örnekte
-    <varname>$TestCookie</varname> değişkeni mevcut olacaktır. Ancak böyle
-    yapmak yerine <varname>$_COOKIE</varname> kullanılmasını öneriyoruz.
    </para>
   </note>
   <para>

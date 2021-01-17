@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 54ffc060d1f2ed38a0b8c710e7e346f3cc990658 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.begintransaction" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::beginTransaction</refname>
@@ -10,21 +10,21 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>PDO::beginTransaction</methodname>
+   <modifier>public</modifier> <type>bool</type><methodname>PDO::beginTransaction</methodname>
    <void/>
   </methodsynopsis>
   <para>
-   Özdevinimli gönderim kipini kapatır. Özdevinimli kip kapalıyken PDO nesne
+   Ototeslim kipini kapatır. Otomatik kip kapalıyken PDO nesne
    örneği üzerinden veritabanında yapılan değişiklikler
    <function>PDO::commit</function> çağrısı ile toplu hareket tamamlanmadan
    veritabanında bir değişikliğe yol açmaz. Toplu hareketlerle yapılan
-   değişiklikleri geri almak ve tekrar özdevinimli kipe dönmek için
+   değişiklikleri geri almak ve tekrar otomatik kipe dönmek için
    <function>PDO::rollBack</function> yöntemini kullanabilirsiniz.
   </para>
   <para>
    MySQL dahil bazı veritabanları, bir toplu hareketin içinde DROP TABLE veya
    CREATE TABLE gibi bir veritabanı tanımlama dili deyimi kullanıldığında
-   özdevinimli olarak örtük bir <function>PDO::commit</function> yaparlar.
+   otomatik olarak örtük bir <function>PDO::commit</function> yaparlar.
    Örtük <function>PDO::commit</function>, toplu hareket içindeki diğer
    değişikliklerin de geri alınmasına engeller.
   </para>
@@ -38,22 +38,31 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Hareket zaten başlatılmışsa veya sürücü hareketleri desteklemiyorsa bir
+   <classname>PDOException</classname> istisnası yavrulanır.
+  </para>
+  &pdo.errors.exception-not-errmode;
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- ir toplu hareketi geri almak</title>
+    <title>- Bir toplu hareketi geri almak</title>
     <para>
      Aşağıdaki örnekte bir toplu hareket başlatılmakta, değişiklikler geri
      alınmadan önce iki deyim çalıştırılmaktadır. Ancak, MySQL'de DROP TABLE
-     deyimi özdevinimli bir <function>PDO::commit</function> çağrısına sebep
+     deyimi otomatik bir <function>PDO::commit</function> çağrısına sebep
      olduğundan bu deyimden önce toplu hareket dahilinde yapılan hiçbir
      hareket geri alınamaz.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Özdevinimli gönderim kipini kapatıp bir toplu hareket başlatalım */
+/* Ototeslim kipini kapatıp bir toplu hareket başlatalım */
 $dbh->beginTransaction();
 
 /* Veritabanı şemasını ve verisini değiştirgelim */
@@ -64,7 +73,7 @@ $sth = $dbh->exec("UPDATE dessert
 /* Yanlışı farkedip hareketleri geri alıyoruz */
 $dbh->rollBack();
 
-/* Veritabanı bağlantısı tekrar özdevinimli gönderim kipinde. */
+/* Veritabanı bağlantısı tekrar ototeslim kipinde. */
 ?>
 ]]>
     </programlisting>
@@ -78,6 +87,8 @@ $dbh->rollBack();
    <simplelist>
     <member><function>PDO::commit</function></member>
     <member><function>PDO::rollBack</function></member>
+    <member><link linkend="pdo.transactions">Hareketler ve
+    Ototeslim</link></member>
    </simplelist>
   </para>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6f2a633c724ec85d782aa19349987258b7b13557 Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.prepared-statements" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Hazır deyimler ve Saklı Yordamlar</title>
  <para>
@@ -103,7 +103,7 @@ $deyim->execute();
    <title>- Hazır deyimle veri almak</title>
    <simpara>
     Bu örnekte bir formdan sağlanan bir anahtar değere dayanarak
-    veritabanından veri alınmaktadır. Kullanıcı girdisi özdevinimli olarak
+    veritabanından veri alınmaktadır. Kullanıcı girdisi otomatik olarak
     öncelenmekte, dolayısıya bir SQL zerki riski ortaya çıkmamaktadır.
    </simpara>
    <programlisting role="php">
@@ -121,24 +121,23 @@ if ($deyim->execute(array($_GET['isim']))) {
   </example>
  </para>
  <para>
-  Eğer veritabanı sürücüsü değiştirge ilişkilendirmeyi destekiyorsa
-  değiştirgeleri sadece girdide değil çıktıda da değiştirgelerle
-  ilişkilendirebilirsiniz. Çıktı değiştirgelerinin kullanımı girdi
-  değiştirgelerine göre daha karmaşıktır. Böyle bir durumda
-  ilişkilendirdiğiniz değiştirge sayısını bilmeniz gerekir. Eğer dönen değer
-  önerdiğinizden daha büyükse bir hata oluşur.
- </para>
-
- <para>
   <example>
    <title>- Bir saklı yordamın çıktı değiştirgesi ile kullanımı</title>
+   <simpara>
+    Eğer veritabanı sürücüsü değiştirge ilişkilendirmeyi destekiyorsa
+    değiştirgeleri sadece girdide değil çıktıda da değiştirgelerle
+    ilişkilendirebilirsiniz. Çıktı değiştirgelerinin kullanımı girdi
+    değiştirgelerine göre daha karmaşıktır. Böyle bir durumda
+    ilişkilendirdiğiniz değiştirge sayısını bilmeniz gerekir. Eğer dönen değer
+    önerdiğinizden daha büyükse bir hata oluşur.
+   </simpara>
    <programlisting role="php">
 <![CDATA[
 <?php
 $deyim = $dbh->prepare("CALL sy_dizge_döndürür(?)");
 $deyim->bindParam(1, $dönen_değer, PDO::PARAM_STR, 4000);
 
-// call the stored procedure
+// saklı yordamı çağıralım
 $deyim->execute();
 
 print "dönen değer: $dönen_değer\n";
@@ -149,15 +148,14 @@ print "dönen değer: $dönen_değer\n";
  </para>
 
  <para>
-  Ayrıca, değerleri tutan değiştirgeleri hem girdi hem de çıktı için
-  kullanabilirsiniz. Sonraki örnekte, saklı yordama 'merhaba' dizgesi
-  aktarılmakta, yordam döndüğünde 'merhaba' yerine yordamın dönüş değeri
-  yerleştirilmektedir.
- </para>
-
- <para>
   <example>
    <title>- Bir saklı yordamın girdi/çıktı değiştirgesi ile kullanımı</title>
+   <simpara>
+    Ayrıca, değerleri tutan değiştirgeleri hem girdi hem de çıktı için
+    kullanabilirsiniz. Sonraki örnekte, saklı yordama 'merhaba' dizgesi
+    aktarılmakta, yordam döndüğünde 'merhaba' yerine yordamın dönüş değeri
+    yerleştirilmektedir.
+   </simpara>
    <programlisting role="php">
 <![CDATA[
 <?php

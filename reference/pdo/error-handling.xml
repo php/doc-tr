@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cfcfe6e059a1edb4d644cf5046d4fc8dfdc27450 Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.error-handling" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Hatalar ve Ele Alınışları</title>
  <para>
@@ -41,11 +41,11 @@
     </para>
     <para>
      Hata kodu ayarlarına ek olarak, PDO bir
-     <classname>PDOException</classname> istisnası oluşturup hata kodunu ve
+     <classname>PDOException</classname> istisnası yavrulayıp hata kodunu ve
      iletisini nesnenin özelliklerine yerleştirir. Bu kip de hata ayıklama
      sırasında uygulama akışının kesilmeden oluşan sorunları çabucak görüp
      müdahale etmek için kullanışlıdır. (Dikkat: Eğer istisna betiğin
-     sonlanmasına sebep olursa veri hareketleri (transactions) özdevinimli
+     sonlanmasına sebep olursa veri hareketleri (transactions) otomatik
      olarak başa sarılır.)
     </para>
     <para>
@@ -55,7 +55,7 @@
     </para>
     <para>
      PHP'deki istisna nesneleri hakkında bilgi edinmek için
-     <xref linkend='language.exceptions' /> bölümüne bakınız.
+     <xref linkend="language.exceptions" /> bölümüne bakınız.
     </para>
    </listitem>
  </itemizedlist>
@@ -66,6 +66,74 @@
   Bir hata ile ilgili daha özel bilgiye gerek duyulursa, SQLSTATE kodundan
   başka sürücüye özgü hata kodunu ve iletisini içeren bir dizi döndüren
   <function>PDO::errorInfo</function> yöntemi kullanılabilir.
+ </para>
+ <para>
+  <example>
+   <title>- PDO örneği oluşturup hata kipini atamak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
+$user = 'dbuser';
+$password = 'dbpass';
+
+try {
+    $dbh = new PDO($dsn, $user, $password);
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <note>
+  <para>
+   Eğer bağlantı başarısız olursa, hangi <constant>PDO::ATTR_ERRMODE</constant>
+   hata kipinin atanmış olduğuna bakmaksızın
+   <function>PDO::__construct</function> daima bir
+   <classname>PDOException</classname> yavrular. Yakalanmayan istisnalar
+   ölümcüldür.
+  </para>
+ </note>
+ <para>
+  <example>
+   <title>- PDO örneği oluşturup kurucudaki hata kipini atamak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'googleguy';
+$password = 'googleguy';
+
+/*
+    Kurucu etrafında try/catch kullanımı ERRMODE'u WARNING olarak ayarlasak
+    bile geçerlidir, çünkü PDO::__construct, bağlantı başarısız olursa daima
+    bir PDOException oluşturur.
+*/
+try {
+    $dbh = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
+} catch (PDOException $e) {
+    echo 'Bağlantı kurulamadı: ' . $e->getMessage();
+    exit;
+}
+
+// Bu, PDO'nun bir istisna yerine E_WARNING seviyesinde bir hata
+// yavrulamasına sebep olur (tablo mevcut olmadığında)
+$dbh->query("SELECT wrongcolumn FROM wrongtable");
+?>
+]]>
+   </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Warning: PDO::query(): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'test.wrongtable' doesn't exist in
+/tmp/pdo_test.php on line 18
+]]>
+    </screen>
+  </example>
  </para>
 </chapter>
 

@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a714378ed87cdbdbde3b10ded183e8df7b243cb4 Maintainer: nilgun Status: ready -->
 <section xml:id="pdo-mysql.constants" xmlns="http://docbook.org/ns/docbook">
  &reftitle.constants;
  &pdo.driver-constants;
  <variablelist>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-use-buffered-query">
    <term>
     <constant>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <simpara>
@@ -37,73 +37,235 @@ if ($db->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
     </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-local-infile">
    <term>
     <constant>PDO::MYSQL_ATTR_LOCAL_INFILE</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
      <literal>LOAD LOCAL INFILE</literal> etkin olur.
     </para>
+    <para>
+     Bu sabitin, yeni bir veritabanı tanıtıcısı oluştururken yalnızca
+     <parameter>driver_options</parameter> dizisinde kullanılabileceğini
+     unutmayın.
+    </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-local-infile-directory">
+   <term>
+    <constant>PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY</constant>
+     (<type>string</type>)
+   </term>
+   <listitem>
+    <para>
+     LOCAL DATA yüklemesinin bu belirlenmiş dizinde bulunan dosyalarla
+     sınırlanmasına izin verir.
+    </para>
+    <para>
+     Bu sabitin, yeni bir veritabanı tanıtıcısı oluştururken yalnızca
+     <parameter>driver_options</parameter> dizisinde kullanılabileceğini
+     unutmayın.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-init-command">
    <term>
     <constant>PDO::MYSQL_ATTR_INIT_COMMAND</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
      MySQL sunucusuna bağlanırken çalıştırılacak komut. Yeniden bağlantı
-     sırasında özdevinimli olarak bu komut çalıştırılır.
+     sırasında otomatik olarak bu komut çalıştırılır.
+    </para>
+    <para>
+     Bu sabitin, yeni bir veritabanı tanıtıcısı oluştururken yalnızca
+     <parameter>driver_options</parameter> dizisinde kullanılabileceğini
+     unutmayın.
     </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-read-default-file">
    <term>
     <constant>PDO::MYSQL_ATTR_READ_DEFAULT_FILE</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
      Seçenekler <filename>my.cnf</filename> yerine burada belirtilen dosyadan
-     okunur.
+     okunur. Bu seçenek, mysqlnd ile kullanılamaz, çünkü mysqlnd, mysql
+     yapılandırma dosyalarını okumaz.
     </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-read-default-group">
    <term>
     <constant>PDO::MYSQL_ATTR_READ_DEFAULT_GROUP</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
      Seçenekler <filename>my.cnf</filename> dosyasında belirtilen gruptan veya
      <constant>MYSQL_READ_DEFAULT_FILE</constant> ile belirtilen dosyadan
-     okunur.
+     okunur. Bu seçenek, mysqlnd ile kullanılamaz, çünkü mysqlnd, mysql
+     yapılandırma dosyalarını okumaz.
     </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-max-buffer-size">
    <term>
     <constant>PDO::MYSQL_ATTR_MAX_BUFFER_SIZE</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
-     Azami tampon büyüklüğü; 1 MiB öntanımlıdır.
+     Azami tampon büyüklüğü; 1 MiB öntanımlıdır. Derleme mysqlnd'ye rağmen
+     yapıldığında bu sabit desteklenmez.
     </para>
    </listitem>
   </varlistentry>
-  <varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-direct-query">
    <term>
     <constant>PDO::MYSQL_ATTR_DIRECT_QUERY</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
    </term>
    <listitem>
     <para>
      Hazır deyimler kullanılmaz, sorgular doğrudan çalıştırılır.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-found-rows">
+   <term>
+    <constant>PDO::MYSQL_ATTR_FOUND_ROWS</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Değişen satırların değil, bulunan (eşleşen) satırların satısı döner.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-ignore-space">
+   <term>
+    <constant>PDO::MYSQL_ATTR_IGNORE_SPACE</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     İşlev isimlerinden sonra boşluklara izin verir. Tüm işlev isimlerini
+     ayrılmış sözcük haline getirir.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="pdo.constants.mysql-attr-compress">
+   <term>
+    <constant>PDO::MYSQL_ATTR_COMPRESS</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Ağ iletişim sıkıştırmasını etkin kılar.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-ssl-ca">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_CA</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     SSL sertifika yetkilisinin dosya yolu.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-ssl-capath">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_CAPATH</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     PEM biçiminde saklanan güvenilir SSL CA sertifikalarını içeren dizinin
+     dosya yolu.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-ssl-cert">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_CERT</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     SSL sertifikasının dosya yolu.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-cipher">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_CIPHER</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     OpenSSL tarafından anlaşılan biçemde, SSL şifrelemesi için kullanılmasına
+     izin verilen bir veya daha fazla şifrenin listesi. Örnek:
+     <literal>DHE-RSA-AES256-SHA:AES128-SHA</literal>
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-key">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_KEY</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     SSL anahtarının dosya yolu.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-ssl-verify-server-cert">
+   <term>
+    <constant>PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Sunucu SSL sertifikasının doğrulanmasını devre dışı bırakmanın
+     bir yolunu sağlar.
+    </para>
+    <para>
+     &version.exists.asof; 7.0.18 ve PHP 7.1.4.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry xml:id="pdo.constants.mysql-attr-multi-statements">
+   <term>
+    <constant>PDO::MYSQL_ATTR_MULTI_STATEMENTS</constant>
+     (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     &false; olarak ayarlandığında hem <function>PDO::prepare</function>
+     hem de <function>PDO::query</function> işlevinde çoklu sorgu yürütmesini
+     devre dışı bırakır.
+    </para>
+    <para>
+     Bu sabitin, yeni bir veritabanı tanıtıcısı oluştururken yalnızca
+     <parameter>driver_options</parameter> dizisinde kullanılabileceğini
+     unutmayın.
     </para>
    </listitem>
   </varlistentry>

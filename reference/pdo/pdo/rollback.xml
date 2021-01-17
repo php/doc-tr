@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 54ffc060d1f2ed38a0b8c710e7e346f3cc990658 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.rollback" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::rollBack</refname>
@@ -10,25 +10,24 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>PDO::rollBack</methodname>
+   <modifier>public</modifier> <type>bool</type><methodname>PDO::rollBack</methodname>
    <void/>
   </methodsynopsis>
 
   <para>
    <function>PDO::beginTransaction</function> ile başlatılan toplu hareketi
-   geri alır. Bir toplu hareket etkin değilken bu yöntemin çağrılması bir
-   hataya sebep olur.
+   geri alır.
   </para>
   <para>
-   Eğer veritabanı özdevinimli gönderim kipindeyse, toplu hareket geri
-   alındıktan sonra tekrar özdevinimli gönderim kipine dönülür.
+   Eğer veritabanı ototeslim kipindeyse, toplu hareket geri
+   alındıktan sonra tekrar ototeslim kipine dönülür.
   </para>
   <para>
    MySQL dahil bazı veritabanları, bir toplu hareketin içinde DROP TABLE veya
    CREATE TABLE gibi bir veritabanı tanımlama dili deyimi kullanıldığında
-   özdevinimli olarak örtük bir <methodname>PDO::commit</methodname> yaparlar.
+   otomatikman örtük bir <methodname>PDO::commit</methodname> yaparlar.
    Örtük <methodname>PDO::commit</methodname>, toplu hareket içindeki diğer
-   değişikliklerin de geri alınmasına engeller.
+   değişikliklerin de geri alınmasını engeller.
   </para>
  </refsect1>
 
@@ -39,6 +38,15 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Etkin bir hareket yoksa bir <classname>PDOException</classname> yavrulanır.
+  </para>
+  &pdo.errors.exception-not-errmode;
+ </refsect1>
+
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -47,14 +55,14 @@
     <para>
      Aşağıdaki örnekte bir toplu hareket başlatılmakta, değişiklikleri geri
      almadan önce veritabanında değişiklik yapan iki deyim gönderilmektedir.
-     Bununla birlikte MySQL'de, DROP TABLE deyimi hareketi özdevinimli olarak
+     Bununla birlikte MySQL'de, DROP TABLE deyimi hareketi otomatik olarak
      COMMIT ettiğinden toplu harekete dahil hiçbir değişiklik artık geri
      alınamaz.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Özdevinimli gönderimi kapatıp bir hareket başlatalım */
+/* Ototeslim kipini kapatıp bir hareket başlatalım */
 $dbh->beginTransaction();
 
 /* Veritabanı şemasını ve verisini değiştirelim */
@@ -65,7 +73,7 @@ $sth = $dbh->exec("UPDATE dessert
 /* Yanlışı farkedip değişiklikleri geri alıyoruz */
 $dbh->rollBack();
 
-/* Veritabanı bağlantısı şimdi özdevinimli gönderim kipinde */
+/* Veritabanı bağlantısı tekrar ototeslim kipinde */
 ?>
 ]]>
     </programlisting>
@@ -79,6 +87,8 @@ $dbh->rollBack();
    <simplelist>
     <member><function>PDO::beginTransaction</function></member>
     <member><function>PDO::commit</function></member>
+    <member><link linkend="pdo.transactions">Hareketler ve
+    Ototeslim</link></member>
    </simplelist>
   </para>
  </refsect1>
