@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: mustafa Status: ready -->
+<!-- EN-Revision: 5dd7ff3e72db8436523e5eaeba2e44b8a7daa8bf Maintainer: mustafa Status: ready -->
 <refentry xml:id="function.mysql-close" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mysql_close</refname>
   <refpurpose>MySQL bağlantısını kapatır</refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+  <warning>
+   &mysql.alternative.note;
+   <simplelist role="alternatives">
+    <member><function>mysqli_close</function></member>
+    <member>PDO: PDO nesnesine &null; değerini atar</member>
+   </simplelist>
+  </warning>
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>mysql_close</methodname>
-   <methodparam choice="opt"><type>resource</type><parameter>bağlantı_belirteci</parameter></methodparam>
+   <methodparam choice="opt"><type>resource</type><parameter>bağlantı_belirteci</parameter><initializer>NULL</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>mysql_close</function> işlevi, MySQL sunucusuna, bağlantı
@@ -19,20 +29,14 @@
    <parameter>bağlantı_belirteci</parameter> belirtilmemişse, son açılan
    bağlantı kullanılır.
   </para>
-  <para>
-   Kalıcı olmayan bağlantılar betiğin çalışmasından sonra özdevinimli olarak
-   kapatıldığından <function>mysql_close</function>'u kullanmak genellikle
-   gerekli değildir. Ayrıca,
-   <link linkend="language.types.resource.self-destruct">Özkaynakları serbest
-   bırakmak</link> bölümüne de bakınız.
-  </para>
+   &mysql.close.connections.result.sets;
  </refsect1>
 
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
-    &mysql.linkid.description;
+    &mysql.linkid-noreopen.description;
    </variablelist>
   </para>
  </refsect1>
@@ -76,7 +80,9 @@ Başarıyla bağlandı
   <note>
    <para>
     <function>mysql_close</function> <function>mysql_pconnect</function> ile
-    oluşturulmuş kalıcı bağlantıları kapatmayacaktır.
+    oluşturulmuş kalıcı bağlantıları kapatmayacaktır. Diğer ayrıntılar için
+    <link linkend="features.persistent-connections">kalıcı bağlantılar</link>
+    sayfasına bakınız.
    </para>
   </note>
  </refsect1>

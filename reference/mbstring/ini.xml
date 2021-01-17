@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3df65c988d3f900361308a0e493af56171103e58 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <section xml:id="mbstring.configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.runtime;
  &extension.runtime;
@@ -31,7 +31,7 @@
       </link></entry>
       <entry>NULL</entry>
       <entry>PHP_INI_ALL</entry>
-      <entry>PHP 5.6.0 itibariyle kullanımı önerilmemektedir.</entry>
+      <entry></entry>
      </row>
      <row>
       <entry><link linkend="ini.mbstring.http-input">mbstring.http_input
@@ -58,14 +58,16 @@
       <entry>mbstring.script_encoding</entry>
       <entry>NULL</entry>
       <entry>PHP_INI_ALL</entry>
-      <entry>PHP 5.6.0 itibariyle kullanımı önerilmemektedir.</entry>
+      <entry>PHP 5.0.0'da kaldırıldı. Yarine <link
+      linkend="ini.zend.script-encoding">zend.script_encoding</link>
+      kullanın.</entry>
      </row>
      <row>
       <entry><link linkend="ini.mbstring.substitute-character">mbstring.substitute_character
       </link></entry>
       <entry>NULL</entry>
       <entry>PHP_INI_ALL</entry>
-      <entry>PHP 4.0.6'dan beri kullanılabilmektedir.</entry>
+      <entry></entry>
      </row>
      <row>
       <entry><link linkend="ini.mbstring.func-overload">mbstring.func_overload
@@ -73,7 +75,7 @@
       <entry>"0"</entry>
       <entry>PHP_INI_SYSTEM</entry>
       <entry>
-       PHP 5.2.6'ya kadar PHP_INI_PERDIR , sonrasında PHP_INI_SYSTEM.
+       PHP &lt;= 5.2.6'da PHP_INI_PERDIR.
        PHP 7.2.0 itibariyle kullanımı önerilmemektedir..
       </entry>
      </row>
@@ -82,7 +84,7 @@
       </link></entry>
       <entry>"0"</entry>
       <entry>PHP_INI_PERDIR</entry>
-      <entry>PHP 4.3.0'dan beri kullanılabilmektedir.</entry>
+      <entry></entry>
      </row>
      <row>
       <entry><link linkend="ini.mbstring.http-output-conv-mimetypes">mbstring.http_output_conv_mimetypes</link></entry>
@@ -117,14 +119,14 @@
       Mbstring modülünde kullanılan öntanımlı ulusal dil ayarı (NLS). Bu
       yönerge, &php.ini; dosyasında kendinden sonra tanımlanması
       gereken <literal>mbstring.internal_encoding</literal> yönergesini
-      özdevinimli ve sihirli olarak etkin kılar.
+      otomatik ve sihirli olarak etkin kılar.
      </para>
     </listitem>
    </varlistentry>
    <varlistentry xml:id="ini.mbstring.encoding-translation">
     <term>
      <parameter>mbstring.encoding_translation</parameter>
-     <type>boolean</type>
+     <type>bool</type>
     </term>
     <listitem>
      <para>
@@ -145,7 +147,7 @@
      </para>
      <para>
       PHP 5.6 ve sonrasında bu boş bıraklımalı ve yerine
-      <link linkend="ini.default-charset">        
+      <link linkend="ini.default-charset">
         <parameter>default_charset</parameter></link> kullanılmalıdır.
       </para>
     </listitem>
@@ -162,7 +164,7 @@
      </para>
      <para>
       PHP 5.6 ve sonrasında bu boş bıraklımalı ve yerine
-      <link linkend="ini.default-charset">        
+      <link linkend="ini.default-charset">
         <parameter>default_charset</parameter></link> kullanılmalıdır.
       </para>
     </listitem>
@@ -179,7 +181,7 @@
      </para>
      <para>
       PHP 5.6 ve sonrasında bu boş bıraklımalı ve yerine
-      <link linkend="ini.default-charset">        
+      <link linkend="ini.default-charset">
         <parameter>default_charset</parameter></link> kullanılmalıdır.
       </para>
     </listitem>
@@ -218,7 +220,7 @@
       &warn.deprecated.feature-7-2-0;
      <para>
       Mbstring taydaşları tarafından sağlanan tek baytlık işlevlerin yerine
-      özdevinimli olarak mbstring işlevlerinin kullanılmasını sağlar. Daha
+      otomatik olarak mbstring işlevlerinin kullanılmasını sağlar. Daha
       ayrınılı bilgi için <xref linkend="mbstring.overload"/> bölümüne bakınız.
      </para>
      <para>
@@ -239,7 +241,7 @@
    <varlistentry xml:id="ini.mbstring.strict-detection">
     <term>
      <parameter>mbstring.strict_detection</parameter>
-     <type>boolean</type>
+     <type>bool</type>
     </term>
     <listitem>
      <para>
@@ -286,7 +288,7 @@ mbstring.encoding_translation = On
 ;; Öntanımlı HTTP girdi karakter kodlamasını tanımlayın.
 ;; Önemli: Betik, http_input ayarını değiştiremez.
 mbstring.http_input           = pass    ; Dönüşüm yok.
-mbstring.http_input           = auto    ; HTTP girdisi özdevinimli
+mbstring.http_input           = auto    ; HTTP girdisi otomatik
            ; "auto"  mbstring.language atamasına göre genişletilir.
 mbstring.http_input           = SJIS    ; HTTP girdisi SJIS olur
 mbstring.http_input           = UTF-8,SJIS,EUC-JP ; Sıralama belirtir
@@ -296,7 +298,7 @@ mbstring.http_output          = pass    ; Dönüşüm yok.
 mbstring.http_output          = UTF-8   ; HTTP çıktı kodlaması UTF-8
 
 ;; Öntanımlı kodlama algılama sırasını belirtin.
-mbstring.detect_order         = auto    ; Algılama sırası özdevinimli
+mbstring.detect_order         = auto    ; Algılama sırası otomatik
 mbstring.detect_order         = ASCII,JIS,UTF-8,SJIS,EUC-JP ; Sıralama belirtir
 
 ;; Öntanımlı geçersiz karakter ikame karakteri
@@ -325,7 +327,7 @@ mbstring.language = Japanese
 ;; HTTP girdi kodlaması dönüşümü etkin
 mbstring.encoding_translation = On
 
-;; HTTP girdi kodlaması dönüşümü: özdevinimli
+;; HTTP girdi kodlaması dönüşümü: otomatik
 mbstring.http_input   = auto
 
 ;; HTTP çıktısı EUC-JP'ye dönüştürülür
@@ -358,7 +360,7 @@ default_charset      = Shift_JIS
 ;; Öntanımlı dil: Japonca
 mbstring.language = Japanese
 
-;; HTTP girdi kodlaması dönüşümü: özdevinimli
+;; HTTP girdi kodlaması dönüşümü: otomatik
 mbstring.http_input  = auto
 
 ;; HTTP çıktısı SJIS'e dönüştürülür

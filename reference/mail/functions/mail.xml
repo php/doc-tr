@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mail" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mail</refname>
@@ -14,8 +14,8 @@
    <methodparam><type>string</type><parameter>kime</parameter></methodparam>
    <methodparam><type>string</type><parameter>konu</parameter></methodparam>
    <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>ek_başlıklar</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_değiştirgeler</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type></type><parameter>ek_başlıklar</parameter><initializer>[]</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ek_değiştirgeler</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
    Sends an email.
@@ -87,30 +87,30 @@ $text = str_replace("\n.", "\n..", $text);
      <term><parameter>ek_başlıklar</parameter> (seçimlik)</term>
      <listitem>
       <para>
-       Eposta başlığının sonuna yerleştirilecek <type>string</type> veya 
+       Eposta başlığının sonuna yerleştirilecek <type>string</type> veya
        <type>array</type> türünde veri.
       </para>
       <para>
        Bu genellikle ek başlıklar eklemek için kullanılır (From, Cc, Bcc
        gibi). Çok sayıda başlık eklenecekse bunlar birer CRLF (\r\n) ile
-       birbirlerinden ayrılmalıdır. Bu başlığı oluşturmak için dış veriler 
-       kullanılıyorsa, istenmeyen başlıkların araya girmemesi için veriler 
+       birbirlerinden ayrılmalıdır. Bu başlığı oluşturmak için dış veriler
+       kullanılıyorsa, istenmeyen başlıkların araya girmemesi için veriler
        elden geçirilip temizlenmelidir.
       </para>
       <para>
-       Bir dizi aktarılmışsa, anahtarları başlık isimleri, değerleri de ilgili 
+       Bir dizi aktarılmışsa, anahtarları başlık isimleri, değerleri de ilgili
        başlık değerleri olmalıdır.
       </para>
       <note>
        <para>
-        Sırasıyla PHP 5.4.42 ve 5.5.27 öncesinde, 
-        <parameter>ek_başlıklar</parameter> eposta başlığı enjeksiyon 
-        korumasına sahip değildi. Bu bakımdan, kullanıcılar belirtilen 
-        başlıkların güvenli olduğundan ve sadece başlıkları içerdiğinden emin 
-        olmalıdır. Örn, eposta gövdesi asla çok sayıda satırsonu konularak 
+        Sırasıyla PHP 5.4.42 ve 5.5.27 öncesinde,
+        <parameter>ek_başlıklar</parameter> eposta başlığı enjeksiyon
+        korumasına sahip değildi. Bu bakımdan, kullanıcılar belirtilen
+        başlıkların güvenli olduğundan ve sadece başlıkları içerdiğinden emin
+        olmalıdır. Örn, eposta gövdesi asla çok sayıda satırsonu konularak
         başlatılmamalıdır.
        </para>
-      </note>      
+      </note>
       <note>
        <para>
         Eposta gönderilirken bir <literal>From</literal> başlığı içermesi
@@ -123,16 +123,16 @@ $text = str_replace("\n.", "\n..", $text);
         "sendmail_from" not set in php.ini or custom "From:" header
         missing</literal> (Uyarı: mail(): php.ini dosyasında "sendmail_from"
         atanmamış veya özel "From:" başlığı eksik).
-        <literal>From</literal> başlığı Windows altında
-        <literal>Return-Path</literal> başlığını da tanımlar.
+        <literal>From</literal> başlığı Windows altında doğrudan SMTP üzerinden
+        gönderirken <literal>Return-Path</literal> başlığını da tanımlar.
        </para>
       </note>
       <note>
        <para>
         Eğer ileti alınmazsa satırsonlarını CRLF (\r\n) ile değil sadece LF
         (\n) ile sonlandırmayı deneyin. Bazı düşük kaliteli Unix eposta
-        sunucuları (en bilineni <link xlink:href="&url.qmail;">qmail</link>) 
-        LF karakterlerini özdevinimli olarak CRLF karakterleri ile
+        sunucuları (en bilineni <link xlink:href="&url.qmail;">qmail</link>)
+        LF karakterlerini otomatik olarak CRLF karakterleri ile
         değiştirir (CRLF kullanıldıysa sonuç CRCRLF olur). Bu yöntem <link
         xlink:href="&url.rfc;2822">RFC 2822</link>'ye uygun olmadığından başka
         çare yoksa kullanılmalıdır.
@@ -152,19 +152,19 @@ $text = str_replace("\n.", "\n..", $text);
        belirtmek için kullanabilirsiniz.
       </para>
       <para>
-       Bu değiştirge komut çalıştırmayı engellemek için dahili olarak 
-       <function>escapeshellcmd</function> işlevi tarafından öncelenir, fakat 
-       işlev ek değiştirgeler eklemeye izin verir. Güvenlik nedeniyle, kabuk 
-       komutuna istenmeyen değiştirgeler eklenmesinden kaçınmak için bu 
-       değiştirgenin kullanıcı tarafından elden geçirilip temizlenmesi 
+       Bu değiştirge komut çalıştırmayı engellemek için dahili olarak
+       <function>escapeshellcmd</function> işlevi tarafından öncelenir, fakat
+       işlev ek değiştirgeler eklemeye izin verir. Güvenlik nedeniyle, kabuk
+       komutuna istenmeyen değiştirgeler eklenmesinden kaçınmak için bu
+       değiştirgenin kullanıcı tarafından elden geçirilip temizlenmesi
        önerilir.
       </para>
       <para>
-       <function>escapeshellcmd</function> işlevi özdevinimli uygulandığından, 
-       internet RFCleri tarafından eposta adreslerinde izin verilen bazı 
-       karakterler kullanılamaz. <function>mail</function> böyle karakterlere 
-       izin veremez, bu bakımdan bu tür karakterlerin kullanılmasının gerekli 
-       olduğu programlarda alternatif e-posta gönderme yöntemleri (bir iskelet 
+       <function>escapeshellcmd</function> işlevi otomatik uygulandığından,
+       internet RFCleri tarafından eposta adreslerinde izin verilen bazı
+       karakterler kullanılamaz. <function>mail</function> böyle karakterlere
+       izin veremez, bu bakımdan bu tür karakterlerin kullanılmasının gerekli
+       olduğu programlarda alternatif e-posta gönderme yöntemleri (bir iskelet
        veya kitaplık kullanmak gibi) önerilir.
       </para>
       <para>
@@ -263,7 +263,7 @@ mail($kime, $konu, $ileti, $başlıklar);
    <example>
     <title>- <type>array</type> türünde ek başlıklarla eposta gönderimi</title>
     <para>
-     Bu örnekte, üst örnekteki eposta gönderilmekte, ancak ek başlıklar bir 
+     Bu örnekte, üst örnekteki eposta gönderilmekte, ancak ek başlıklar bir
      dizi olarak aktarılmaktadır (PHP 7.2.0 ve sonrasında kullanılabilir).
     </para>
     <programlisting role="php">
@@ -368,10 +368,10 @@ mail($to, $subject, $message, implode("\r\n", $headers));
   &reftitle.notes;
   <note>
    <para>
-    <function>mail</function> işlevinin Windows gerçeklenimi bir çok bakımdan
-    Unix gerçekleniminden farklıdır. Birincisi, iletileri göndermek için yerel
-    bir program kullanılmaz, doğrudan soketlerle çalışılır ve MTA'nın soketi
-    dinlediği varsayılır.
+    <function>mail</function> işlevinin Windows SMTP gerçeklenimi bir çok
+    bakımdan sendmail gerçekleniminden farklıdır. Birincisi, iletileri
+    göndermek için yerel bir program kullanılmaz, doğrudan soketlerle
+    çalışılır ve MTA'nın soketi dinlediği varsayılır.
    </para>
    <para>
     İkincisi,
@@ -382,7 +382,7 @@ mail($to, $subject, $message, implode("\r\n", $headers));
     tarafından yorumlanmaz, fakat PHP tarafından çözümlenir.
    </para>
    <para>
-    Aslında, <parameter>to</parameter> değiştirgesinin &quot;Birad Soyad
+    Aslında, <parameter>to</parameter> değiştirgesinin &quot;Adı Soyad
     &lt;birisi@example.com&gt;&quot; biçeminde bir adres olmaması gerekir.
     <command>mail</command> komutu MTA ile anlaşırken bunu gerektiği gibi
     çözümleyemeyebilir.
@@ -420,7 +420,7 @@ mail($to, $subject, $message, implode("\r\n", $headers));
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
-   <simplelist>    
+   <simplelist>
     <member><function>mb_send_mail</function></member>
     <member><function>imap_mail</function></member>
     <member><link xlink:href="&url.pear.package;Mail">PEAR::Mail</link></member>

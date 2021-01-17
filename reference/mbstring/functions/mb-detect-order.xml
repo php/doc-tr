@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-detect-order" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_detect_order</refname>
@@ -11,11 +11,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>mb_detect_order</methodname>
-   <methodparam choice="opt"><type>mixed</type><parameter>kodlama_listesi</parameter></methodparam>
+   <type class="union"><type>array</type><type>bool</type></type><methodname>mb_detect_order</methodname>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>kodlama_listesi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>kodlama_listesi</parameter> ile belirtilen özdevinimli karakter
+   <parameter>kodlama_listesi</parameter> ile belirtilen otomatik karakter
    kodlaması algılama sırasını tanımlar.
   </para>
  </refsect1>
@@ -29,13 +29,13 @@
      <listitem>
       <para>
        <parameter>kodlama_listesi</parameter> bir dizi veya karakter
-       kodlamalarının virgül ayraçlı listesi ya da "auto" olarak belirtilir.
-       Değer olarak "auto" belirtilirse sıralama "ASCII, JIS, UTF-8, EUC-JP,
-       SJIS" olur.)
+       kodlamalarının virgül ayraçlı listesi olarak belirtilir.
+       Bkz, <link linkend="mbstring.supported-encodings">desteklenen
+      kodlamalar</link>
       </para>
       <para>
-       <parameter>kodlama_listesi</parameter> belirtilmezse karakter kodlaması
-       algılama sırasını içeren bir dizi döner.
+       <parameter>kodlama_listesi</parameter> &null; ise veya belirtilmezse
+       karakter kodlaması algılama sırasını içeren bir dizi döner.
       </para>
       <para>
        Bu ayar, <function>mb_detect_encoding</function> ve
@@ -63,20 +63,6 @@
        <literal>UCS2</literal> ve <literal>UCS4</literal> için algılama daima
        başarısız olacaktır.
       </para>
-      <para>
-       <example>
-        <title>- Kullanışsız algı sırası örneği</title>
-        <programlisting>
-<![CDATA[
-; Daima ISO-8859-1 olarak algılanır
-detect_order = ISO-8859-1, UTF-8
-
-; Daima UTF-8 olarak algılanır, çünkü UTF-8 diğerlerini de kapsar
-detect_order = UTF-8, ASCII, UTF-7
-]]>
-        </programlisting>
-       </example>
-      </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -86,8 +72,29 @@ detect_order = UTF-8, ASCII, UTF-7
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success;
+   Kodlama algılama sırasını ayarlarken başarı durumunda &true;,
+   başarısızlık durumunda &false; döner
   </para>
+  <para>
+   Kodlama algılama sırasını alırken, kodlamaların sıralı bir dizisi döndürülür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &mbstring.changelog.encoding-nullable;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -110,6 +117,21 @@ mb_detect_order($dizi);
 /* Geçerli algı sırasını görelim */
 echo implode(", ", mb_detect_order());
 ?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Yararsız algılama sırası</title>
+    <programlisting>
+<![CDATA[
+; Daima ISO-8859-1 algılanır
+detect_order = ISO-8859-1, UTF-8
+
+; Daima UTF-8 algılanır, çünkü ASCII/UTF-7 değerleri
+; UTF-8 için geçerlidir
+detect_order = UTF-8, ASCII, UTF-7
 ]]>
     </programlisting>
    </example>

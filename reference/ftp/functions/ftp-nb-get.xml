@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 18680fd1681731888c6fb7c530cfdb712f53e954 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ftp-nb-get" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ftp_nb_get</refname>
@@ -14,7 +14,7 @@
    <methodparam><type>resource</type><parameter>ftp_akımı</parameter></methodparam>
    <methodparam><type>string</type><parameter>yerel_dosya</parameter></methodparam>
    <methodparam><type>string</type><parameter>uzak_dosya</parameter></methodparam>
-   <methodparam><type>int</type><parameter>kip</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer><constant>FTP_BINARY</constant></initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>devam_yeri</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -68,12 +68,36 @@
     <varlistentry>
      <term><parameter>devam_yeri</parameter></term>
      <listitem>
-      <para></para>
+      <para> Uzak dosyada indirmenin başlayacağı konum.</para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.3.0</entry>
+      <entry>
+       <parameter>kip</parameter> değiştirgesi artık seçimlik,
+       evvelce zorunluydu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
@@ -143,7 +167,7 @@ if ($ret != FTP_FINISHED) {
 <![CDATA[
 <?php
 
-// Özdevinimli konumlamayı kapatalım
+// otomatik konumlamayı kapatalım
 ftp_set_option($my_connection, FTP_AUTOSEEK, false);
 
 // İndirmeyi başlatalım

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-send-mail" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_send_mail</refname>
@@ -14,8 +14,8 @@
    <methodparam><type>string</type><parameter>kime</parameter></methodparam>
    <methodparam><type>string</type><parameter>konu</parameter></methodparam>
    <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_başlıklar</parameter><initializer>NULL</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_değiştirge</parameter><initializer>NULL</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type></type><parameter>ek_başlıklar</parameter><initializer>[]</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>ek_değiştirgeler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Eposta gönderir. Başlıklar ve ileti <function>mb_language</function>
@@ -34,7 +34,7 @@
      <listitem>
       <para>
        Epostanın gönderileceği adres. Adresler arasına virgül koyarak çok
-       sayıda adres belirtilebilir. Bu değiştirge özdevinimli olarak kodlanmaz.
+       sayıda adres belirtilebilir. Bu değiştirge otomatik olarak kodlanmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -55,23 +55,74 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ek_başlıklar</parameter></term>
+     <term><parameter>ek_başlıklar</parameter> (seçimlik)</term>
      <listitem>
       <para>
-       <parameter>ek_başlıklar</parameter> başlığın sonuna yerleştirilir.
-       Genellikle ek başlıklar belirtmek için kullanılır. Aralarına bir
-       satırsonu karakteri ("\n") konularak çok sayıda ek başlık
-       belirtilebilir.
+       Eposta başlığının sonuna bir dize veya dizi yerleştirilir.
       </para>
+      <para>
+       Bu, genellikle ek başlıklar (From, Cc ve Bcc) eklemek için
+       kullanılır. Birden fazla ek başlık CRLF (\r\n) ile ayrılmalıdır.
+       Saldırganlar tarafından istenmeyen başlıkların eklenmemesi için
+       değiştirgeyi doğrulayın.
+      </para>
+      <para>
+       Bir dizi aktarılırsa, anahtarları başlık adları ve değerleri de ilgili
+       başlık değerleri olmalıdır.
+      </para>
+      <note>
+       <para>
+        Posta gönderirken, postanın bir <literal>From</literal> başlığı içermesi
+        <emphasis>gerekir</emphasis>. Bu, <parameter>ek_değiştirgeler</parameter>
+        değiştirgesi ile ayarlanabilir veya &php.ini; içinde bir öntanımlı
+        ayarlanabilir.
+       </para>
+       <para>
+        Bunun yapılmaması, <literal>Uyarı: mail (): php.ini içinde
+        "sendmail_from" tanımlanmamış veya özel "From:" başlığı eksik</literal>
+        benzeri bir hata iletisine sebep olacaktır. <literal>From</literal>
+        başlığı ayrıca Windows altında <literal>Return-Path</literal> başlığını
+        da ayarlar.
+       </para>
+      </note>
+      <note>
+       <para>
+        İletiler alınmazsa, yalnızca LF(\n) kullanmayı deneyin. Bazı Unix posta
+        aktarım aracıları (özellikle <link xlink:href="&url.qmail;">qmail</link>),
+        LF'yi otomatik olarak CRLF ile değiştirir (bu, CRLF için kullanılırsa
+        CR'nin iki katına çıkmasına neden olur). <link xlink:href="&url.rfc;
+        2822">RFC 2822</link> ile uyumlu olmadığı için bu son çare olmalıdır.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ek_değiştirge</parameter></term>
+     <term><parameter>ek_değiştirgeler</parameter></term>
      <listitem>
       <para>
-       <parameter>ek_değiştirge</parameter> bir posta sunucusu komut satırı
+       <parameter>ek_değiştirgeler</parameter> bir posta sunucusu komut satırı
        değiştirgesidir. Sendmail kullanırken doğru Return-Path başlığı
        belirtmek için kullanışlıdır.
+      </para>
+      <para>
+       Bu değiştirge, komutun yürütülmesini önlemek için dahili olarak
+       <function>escapeshellcmd</function> tarafından öncelenir.
+       <function>escapeshellcmd</function>, komutun yürütülmesini engeller ancak
+       ek parametrelerin eklenmesine izin verir. Güvenlik nedeniyle bu
+       değiştirgenin doğrulanması gerekir.
+      </para>
+      <para>
+       <function>escapeshellcmd</function> otomatik olarak uygulandığından,
+       internet RFC'leri tarafından eposta adresi olarak izin verilen bazı
+       karakterler kullanılamaz. Bu <function>mail</function> karakterlerini
+       kullanmak için gerekli programlar kullanılamaz.
+      </para>
+      <para>
+       Zarf göndericisi (-f) bu yöntem kullanılarak ayarlandığında iletiye
+       bir 'X-Warning' başlığının eklenmesini önlemek için, http sunucusunun
+       çalıştığı kullanıcı, sendmail yapılandırmasına güvenilir kullanıcı
+       olarak eklenmelidir. Sendmail kullanıcıları için bu dosya
+       <filename>/etc/mail/trusted-users</filename> dosyasıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -98,13 +149,16 @@
       </row>
      </thead>
      <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>ek_değiştirgeler</parameter> artık boş olabiliyor.
+      </entry>
+     </row>
       <row>
-       <entry>5.0.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-        <literal>Content-Type</literal> ve
-        <literal>Content-Transfer-Encoding</literal> başlıkları PHP 5.0.0'da
-        yeniden tanımlandı. Daha önce, daima <function>mb_language</function>
-        ile tanımlanmış değerler kullanılırdı.
+        <parameter>ek_değiştirgeler</parameter> artık dizi kabul ediyor.
        </entry>
       </row>
      </tbody>

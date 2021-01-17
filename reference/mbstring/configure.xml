@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4df3260b89b68c99096afa87ccc8f261df8d5c37 Maintainer: nilgun Status: ready -->
 <section xml:id="mbstring.installation" xmlns="http://docbook.org/ns/docbook">
   &reftitle.install;
   <para>
@@ -25,78 +25,12 @@
      <para>
       <literal>mbstring</literal> modülü <productname>libmbfl</productname>
       kütüphanesini gerektirir. Bu kütüphane <literal>mbstring</literal> ile
-      birlikte gelmektedir. <productname>libmbfl</productname> sisteminizde
-      zaten mevcutsa ve kurulu kütüphanenin kullanılması için <option
+      birlikte gelmektedir. PHP 7.3.0 öncesinde,
+      <productname>libmbfl</productname> sistemde zaten kuruluysa,
+      kurulu kütüphanenin kullanılması için <option
       role="configure">--with-libmbfl[=DiZiN]</option> seçeneğini
       belirtebilirsiniz.
      </para>
-     <para>
-      PHP 4.3.0'dan itibaren, <literal>mbstring</literal> modülü Japonca'nın
-      yanında Basitleştirilmiş ve Geleneksel Çince, Korece ve Rusçayı da
-      desteklemektedir.
-     </para>
-     <para>
-      PHP 4.3.3 ve öncesinde, bu özelliği etkin kılmak için aşağıdaki diller
-      için <option role="configure">--enable-mbstring=DİL</option> seçeneğini
-      şöyle belirtmek zorunda kalırdınız:
-     </para>
-    <simpara>
-      Basitleştirilmiş Çince desteği için:
-      <option role="configure">--enable-mbstring=cn</option>
-    </simpara>
-    <simpara>
-      Geleneksel Çince desteği için:
-      <option role="configure">--enable-mbstring=tw</option>
-    </simpara>
-    <simpara>
-      Korece desteği için:
-      <option role="configure">--enable-mbstring=kr</option>
-    </simpara>
-    <simpara>
-      Rusça desteği için:
-      <option role="configure">--enable-mbstring=ru</option>
-    </simpara>
-    <simpara>
-      Japonca desteği için (öntanımlıdır):
-      <option role="configure">--enable-mbstring=ja</option>
-    </simpara>
-    <simpara>
-      Desteklenen tüm dil kodlamalarını etkin kılmak için:
-      <option role="configure">--enable-mbstring=all</option>.
-    </simpara>
-     <note>
-      <para>
-       PHP 4.3.4'ten itibaren, <productname>libmbfl</productname> tarafından
-       desteklenen kodlamaların tamamı  <option
-       role="configure">--enable-mbstring</option> seçeneği ile etkin
-       kılınabilmektedir.
-      </para>
-     </note>
-    </listitem>
-    <listitem>
-     <simpara>
-      <option role="configure">--enable-mbstr-enc-trans</option>:
-     </simpara>
-     <simpara>
-      <literal>mbstring</literal> dönüşüm mekanizmasını kullanarak HTTP girdi
-      karakter kodlaması dönüşümlerini etkinleştirir. Bu seçenek etkin olduğu
-      takdirde, HTTP girdi karakter kodlaması özdevinimli olarak
-      <link linkend="ini.mbstring.internal-encoding">
-      <literal>mbstring.internal_encoding</literal></link> yapılandırma
-      yönergesi ile belirtilen karakter kodlamasına dönüştürülür.
-     </simpara>
-     <note>
-      <para>
-       PHP 4.3.0'dan itibaren,
-       <option role="configure">--enable-mbstr-enc-trans</option> seçeneği
-       kaldırılmıştır. Bunun yerine artık
-       <link linkend="ini.mbstring.encoding-translation">
-       <literal>mbstring.encoding_translation</literal></link> yapılandırma
-       yönergesi kullanılmaktadır. Bu yönergeye <literal>On</literal> değeri
-       atamakla HTTP girdi karakter kodlaması dönüşümü etkin kılınmış olur
-       (öntanımlı değer <literal>Off</literal>'tur).
-      </para>
-     </note>
     </listitem>
     <listitem>
      <simpara>
@@ -105,6 +39,19 @@
      <simpara>
       Çok baytlı karakter destekli düzenli ifade işlevlerini iptal eder.
      </simpara>
+     <para>
+      <productname>Oniguruma</productname>, çok baytlı karakter destekli düzenli
+      ifade işlevleri için gereklidir. PHP 7.4.0'dan itibaren pkg-config, libonig
+      kütüphanesini saptamak için kullanılmaktadır. PHP 7.4.0'dan önce
+      <productname>Oniguruma</productname>, <literal>mbstring</literal> ile
+      paketlenmişti, ancak <option role="configure">--with-onig[=DIR]</option>
+      seçeneği ile önceden yüklenmiş bir libonig'e rağmen derleme yapmak mümkündü.
+     </para>
+     <para>
+      Çok baytlı regex geriye dönük sınamasını <option
+      role="configure">--disable-mbregex-backtrack</option> seçeneğini belirterek
+      iptal etmek mümkündür.
+     </para>
     </listitem>
    </itemizedlist>
 </section>
