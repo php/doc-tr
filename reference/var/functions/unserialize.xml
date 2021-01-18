@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.unserialize" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>unserialize</refname>
@@ -12,27 +12,48 @@
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>unserialize</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
+
   <simpara>
    <function>unserialize</function> işlevi tek bir dizgeleştirilmiş değişken
    alır ve bunu tekrar bir PHP değeri haline getirir.
   </simpara>
+  <warning>
+   <para>
+    <literal>allowed_classes</literal> seçeneğine bakmaksızın işleve
+    güvenilmeyen kullanıcı girdisini aktarmayın. Nesneleştirme, nesne
+    örnekleme ve otomatik yükleme nedeniyle kodun yüklenmesine ve
+    yürütülmesine neden olabilir ve kötü niyetli bir kullanıcı bundan
+    yararlanabilir. Kullanıcıya dizeleştirilmiş verileri iletmeniz
+    gerekiyorsa JSON (<function>json_decode</function> ve
+    <function>json_encode</function>) aracılığıyla) gibi güvenli,
+    standart bir veri değişim biçimi kullanın.
+   </para>
+   <para>
+    Harici olarak depolanan dizeleştirilmiş verileri nesneleştirmek gerekirse,
+    veri doğrulama için <function>hash_hmac</function> kullanımı düşünülebilir.
+    Verilerin sizden başka hiç kimse tarafından değiştirilmediğinden emin olun.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
   &reftitle.parameters;
    <variablelist>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Dizgeleştirilmiş değer.
+       Dizeleştirilmiş değer.
       </para>
       <para>
-       Dizgeleştirilmiş bir değişkeni bir nesne haline getirmeye çalışırsanız
-       PHP nesneyi oluşturduktan sonra özdevinimli olarak
-       <function>__wakeup</function> üye işlevini (varsa) çağıracaktır.
+       Dizeleştirilmiş bir değişkeni bir nesne haline getirmeye çalışırsanız
+       PHP nesneyi oluşturduktan sonra otomatik olarak
+       <link linkend="object.unserialize">__unserialize()</link> veya
+       <link linkend="object.wakeup">__wakeup()</link> üye işlevini (varsa)
+       çağıracaktır.
       </para>
        <note>
         <title><link linkend="unserialize-callback-func">
@@ -41,7 +62,8 @@
          Nesneleştirme sırasında tanımsız bir sınıf örneklenecekse (eksikli
          bir "__PHP_Incomplete_Class" nesnesinin elde edilmesini engellemek
          için) çağrılmak üzere bir geriçağırım işlevi tanımlamak mümkündür.
-         Böyle bir işlevi &php.ini; veya &htaccess; dosyasında <literal>unserialize_callback_func</literal>
+         Böyle bir işlevi &php.ini; veya &htaccess; dosyasında <link
+         linkend="ini.unserialize-callback-func">unserialize_callback_func</link>
          yönergesinde veya ya da <function>ini_set</function> işlevinde
          belirtebilirsiniz. Bu işlevin her çağrılışında tanımsız bir sınıfın
          örneklenmesi gerekir. Bu özelliği iptal etmek için bu ayarı boş
@@ -50,19 +72,68 @@
        </note>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       <function>unserialize</function> işlevine aktarılacacak seçenekleri
+       içeren ilişkisel bir dizi.
+      </para>
+      <table>
+       <title>Geçerli seçenekler</title>
+       <tgroup cols="3">
+        <thead>
+         <row>
+          <entry>İsim</entry>
+          <entry>Tür</entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry><literal>allowed_classes</literal></entry>
+          <entry><type>mixed</type></entry>
+          <entry>
+           <simpara>
+            Üç değerdem biri: Kabul edilmesi gereken sınıf isimleri dizisi,
+            hiçbir sınıfı kabul etmemek için &false; ya da tüm sınıfları
+            kabul etmek için &true;. Bu seçenek tanımlanırsa ve
+            <function>unserialize</function>), kabul edilmeyen bir sınıfla
+            karşılaşırsa, bu sınıf yerine
+            <classname>__PHP_Incomplete_Class</classname> örneklenecektir.
+           </simpara>
+           <simpara>
+            Bu seçeneğin atlanması, onu &true; olarak tanımlamakla aynıdır:
+            PHP, belirtilen sınıfları örneklemeye çalışır.
+           </simpara>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
    </variablelist>
  </refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dönüştürülerek döndürülen değer <type>boolean</type>,
-   <type>integer</type>, <type>float</type>, <type>string</type>,
+   Dönüştürülerek döndürülen değer <type>bool</type>,
+   <type>int</type>, <type>float</type>, <type>string</type>,
    <type>array</type> veya <type>object</type> türünde olabilir.
   </para>
   <para>
    Nesneleştirilemeyen bir dizge belirtilmesi durumunda işlev &false; döndürür
    ve bir <constant>E_NOTICE</constant> çıktılar.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Nesneler, kendi nesneleştirme işleyicilerinde <classname>Throwable</classname>
+   yavrulayabilir.
   </para>
  </refsect1>
 
@@ -79,10 +150,26 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.2.0</entry>
+       <entry>7.1.0</entry>
        <entry>
-        <link linkend="unserialize-callback-func">
-        unserialize_callback_func</link> işlevi kullanılabilir oldu.
+        <literal>allowed_classes</literal> seçeneği artık katı türde, yani
+        <type>array</type> veya <type>bool</type> türü dışında bir değer
+        aktarılırsa <function>unserialize</function> işlevi &false; döndürür ve
+        bir <constant>E_WARNING</constant> oluşturur.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <parameter>seçenekler</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.6.0</entry>
+       <entry>
+        Kurucuyu çağırmadan nesne örneklemeye zorlamak için
+        <literal>C:</literal> ile <literal>O:</literal> yer değiştirilerek
+        dizeleştirilmiş verilerin işlenmesi artık başarısız olacaktır.
        </entry>
       </row>
      </tbody>
@@ -131,7 +218,6 @@ if (!odbc_execute($stmt, $sqldata) || !odbc_fetch_into($stmt, $tmp)) {
 <?php
 $serialized_object='O:1:"a":1:{s:5:"value";s:3:"100";}';
 
-// unserialize_callback_func yönergesi PHP 4.2.0'dan beri kullanılabilmektedir.
 // kendi geriçağırım işlevimizi belirtelim
 ini_set('unserialize_callback_func', 'mycallback');
 
@@ -154,7 +240,7 @@ function mycallback($classname)
    <para>
     Hata durumunda veya dizgeleştirilmiş bir &false; değerini nesneleştirmeye
     çalışıyorsanız işlev &false; döndürür. Bu özel durumu
-    <parameter>str</parameter> değiştirgesini
+    <parameter>veri</parameter> değiştirgesini
     <literal>serialize(false)</literal> ile karşılaştırarak veya
     <constant>E_NOTICE</constant> çıktısını inceleyerek yakalayabilirsiniz.
    </para>
@@ -165,11 +251,17 @@ function mycallback($classname)
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>json_encode</function></member>
+    <member><function>json_decode</function></member>
+    <member><function>hash_hmac</function></member>
     <member><function>serialize</function></member>
-    <member><link linkend="language.oop5.autoload">Özdevinimli Nesne
-    Yükleme</link></member>
-    <member><link linkend="unserialize-callback-func">
-    unserialize_callback_func</link></member>
+    <member><link linkend="language.oop5.autoload">Otomatik Yüklenen
+    Sınıflar</link></member>
+    <member><link linkend="ini.unserialize-callback-func"
+    >unserialize_callback_func</link></member>
+    <member><link linkend="object.wakeup">__wakeup()</link></member>
+    <member><link linkend="object.serialize">__serialize()</link></member>
+    <member><link linkend="object.unserialize">__unserialize()</link></member>
    </simplelist>
   </para>
  </refsect1>

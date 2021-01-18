@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-specialcolumns" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_specialcolumns</refname>
@@ -10,18 +10,18 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_specialcolumns</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_specialcolumns</methodname>
    <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
    <methodparam><type>int</type><parameter>türü</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>şema</parameter></methodparam>
    <methodparam><type>string</type><parameter>tablo</parameter></methodparam>
    <methodparam><type>int</type><parameter>kapsam</parameter></methodparam>
    <methodparam><type>int</type><parameter>boş</parameter></methodparam>
   </methodsynopsis>
   <para>
    Tablo içindeki bir satırı eşsiz olarak betimleyen en uygun sütunların veya
-   bir satırın bir hareket sonucunda güncellenmesi durumunda özdevinimli
+   bir satırın bir hareket sonucunda güncellenmesi durumunda otomatik
    olarak güncellenen sütünların listesini döndürür.
   </para>
  </refsect1>
@@ -45,24 +45,24 @@
       </simpara>
       <simpara>
        <constant>SQL_ROWVER</constant> belirtilirse, bir satırın bir hareket
-       sonucunda güncellenmesi durumunda özdevinimli olarak güncellenen
+       sonucunda güncellenmesi durumunda otomatik olarak güncellenen
        sütunların listesini döndürür.
       </simpara>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteliyici.
+       &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi.
+       &odbc.parameter.schema;
       </para>
      </listitem>
     </varlistentry>
@@ -78,7 +78,9 @@
      <term><parameter>kapsam</parameter></term>
      <listitem>
       <para>
-       Sonuç kümesinin kapsamı.
+       <constant>SQL_SCOPE_CURROW</constant>,
+       <constant>SQL_SCOPE_TRANSACTION</constant> veya
+       <constant>SQL_SCOPE_SESSION</constant> sabitlerinden biri.
       </para>
      </listitem>
     </varlistentry>
@@ -86,7 +88,9 @@
      <term><parameter>boş</parameter></term>
      <listitem>
       <para>
-       <literal>nullable</literal> özniteliği.
+       Döndürülecek özel sütunun NULL değer alıp alamayacağını belirler.
+       <constant>SQL_NO_NULLS</constant> veya <constant>SQL_NULLABLE </constant>
+       sabitlerinden biri.
       </para>
      </listitem>
     </varlistentry>
@@ -103,15 +107,28 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>SCOPE</simpara></listitem>
-    <listitem><simpara>COLUMN_NAME</simpara></listitem>
-    <listitem><simpara>DATA_TYPE</simpara></listitem>
-    <listitem><simpara>TYPE_NAME</simpara></listitem>
-    <listitem><simpara>PRECISION</simpara></listitem>
-    <listitem><simpara>LENGTH</simpara></listitem>
-    <listitem><simpara>SCALE</simpara></listitem>
-    <listitem><simpara>PSEUDO_COLUMN</simpara></listitem>
+    <listitem><simpara><literal>SCOPE</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>DATA_TYPE</literal></simpara></listitem>
+    <listitem><simpara><literal>TYPE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_SIZE</literal></simpara></listitem>
+    <listitem><simpara><literal>BUFFER_LENGTH</literal></simpara></listitem>
+    <listitem><simpara><literal>DECIMAL_DIGITS</literal></simpara></listitem>
+    <listitem><simpara><literal>PSEUDO_COLUMN</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
+  </para>
+  <simpara>
+   Sonuç kümesi <literal>SCOPE</literal>'a göre sıralanır.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>odbc_tables</function></member>
+   </simplelist>
   </para>
  </refsect1>
 

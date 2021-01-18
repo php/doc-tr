@@ -1,51 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4a7ddddc27271967b616ad3400cfbe2a9b48212b Maintainer: nilgun Status: ready -->
 <appendix xml:id="session.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <section xml:id="session.examples.basic">
-  <note>
-   <para>
-    PHP 4.1.0'dan itibaren, <varname>$_SESSION</varname> değişkeni,
-    <varname>$_POST</varname>, <varname>$_GET</varname>,
-    <varname>$_REQUEST</varname> ve benzerleri gibi bir küresel değişken
-    olarak kullanılabilmektedir. <varname>$HTTP_SESSION_VARS</varname>
-    değişkeninin aksine <varname>$_SESSION</varname> daima küreseldir.
-    Bu bakımdan, <varname>$_SESSION</varname> için <link
-    linkend="language.variables.scope"><command>global</command></link>
-    anahtar sözcüğünü kullanmanız gerekmez. Bu belgenin her yerde
-    <varname>$_SESSION</varname> kullanılacak biçimde değiştirilmiş oluşuna
-    dikkat ediniz. <varname>$HTTP_SESSION_VARS</varname> değişkenini tercih
-    ederseniz <varname>$_SESSION</varname> yerine ikame edebilirsiniz. Ayrıca
-    şuna dikkat edin: <varname>$_SESSION</varname> değişkenini kullanmaya
-    başlamadan önce <function>session_start</function> ile oturumunuzu
-    başlatmanız gerekir.
-   </para>
-   <para>
-    <varname>$_SESSION</varname> ilişkisel dizisindeki anahtarlar için PHP'de
-    değişken isimlerine uygulanan sınırlamalar geçerlidir. Yani, bunları bir
-    rakam ile başlatamazsınız, bir harf veya altçizgi karakteri ile
-    başlamalıdırlar. Bu konuda daha ayrıntılı bilgi edinmek için bu kılavuzun
-    <link linkend="language.variables">Değişkenler</link> bölümüne bakınız.
-   </para>
-  </note>
-
+  <title>Temel Kullanım</title>
   <para>
-   Eğer <link linkend="ini.register-globals">register_globals</link> etkin
-   değilse, sadece <varname>$_SESSION</varname> küresel ilişkisel dizisinin
-   üyeleri oturum değişkeni olarak kayıt altına alınabilir. Sağlanan oturum
-   değişkenleri sadece <varname>$_SESSION</varname> dizisinin üyeleri olarak
-   kullanılabilir.
+   Oturumlar, bireysel kullanıcılar için verileri benzersiz bir oturum
+   kimliğine göre depolamanın basit bir yoludur. Bu, sayfa istekleri arasında
+   durum bilgisini sürdürmek için kullanılabilir. Oturum kimlikleri normalde
+   tarayıcıya oturum çerezleri aracılığıyla gönderilir ve kimlik, mevcut
+   oturum verilerini almak için kullanılır. Oturum kimliği veya çerezlerinin
+   olmaması, PHP'nin yeni bir oturum oluşturmasını ve yeni bir oturum kimliği
+   üretmesini sağlar.
   </para>
   <para>
-    Güvenliği ve kodun okunabilirliğini arttırmak için
-    <varname>$_SESSION</varname> (veya PHP 4.0.6 ve öncesi ile
-    <varname>$HTTP_SESSION_VARS</varname>) kullanımı önerilir.
-    <varname>$_SESSION</varname> kullanıldığı takdirde,
-    <function>session_register</function>,
-    <function>session_unregister</function>,
-    <function>session_is_registered</function> işlevlerine ihtiyaç kalmaz.
-    Oturum değişkenlerine diğer değişkenler gibi erişilir.
+   Oturumlar basit bir iş akışını takip eder. Bir oturum başlatıldığında,
+   PHP ya aktarılan kimliği (genellikle bir oturum çerezinden) kullanarak
+   var olan bir oturumu geri alır ya da hiçbir oturum aktarılmamışsa yeni
+   bir oturum oluşturur. PHP, <varname>$_SESSION</varname> süper küreselini,
+   oturum başladıktan sonra oturum verileriyle doldurur. PHP kapandığında,
+   <varname>$_SESSION</varname> süperküresel içeriğini otomatik olarak alacak,
+   dizileştirecek ve oturum kaydetme işleyicisini kullanarak depolanmaya
+   gönderecektir.
+  </para>
+  <para>
+   Öntanımlı olarak PHP, <link
+   linkend="ini.session.save-handler">session.save_handler</link> tarafından
+   atanan dahili dosya kaydetme işleyicisini kullanır. Bu, oturum verilerini
+   <link linkend="ini.session.save-path">session.save_path</link> yapılandırma
+   yönergesi tarafından belirtilen konumda sunucuya kaydeder.
+  </para>
+  <para>
+   Oturumlar, <function>session_start</function> işlevi kullanılarak
+   elle başlatılabilir. <link
+   linkend="ini.session.auto-start">session.auto_start</link> yönergesine
+   <parameter>1</parameter> atanmışsa, istek başlatıldığında oturum
+   otomatik olarak başlayacaktır.
+  </para>
+  <para>
+   Oturumlar normalde PHP bir komut dosyasını yürütmeyi bitirdiğinde otomatik
+   olarak kapanır, ancak <function>session_write_close</function> işlevi
+   kullanılarak elle de kapatılabilir.
    <example>
     <title>-
      Bir değişkeni <varname>$_SESSION</varname> ile kayıt altına almak
@@ -54,7 +50,6 @@
 <![CDATA[
 <?php
 session_start();
-// PHP 4.0.6 ve öncesi ile $HTTP_SESSION_VARS kullanın
 if (!isset($_SESSION['count'])) {
   $_SESSION['count'] = 0;
 } else {
@@ -65,14 +60,12 @@ if (!isset($_SESSION['count'])) {
     </programlisting>
    </example>
    <example>
-    <title>- <link linkend="ini.register-globals">register_globals</link> etkin
-    değilken <varname>$_SESSION</varname> ile bir değişkeni tanımsız yapmak
+    <title>- <varname>$_SESSION</varname> ile bir değişkeni tanımsız yapmak
     </title>
     <programlisting role="php">
 <![CDATA[
 <?php
 session_start();
-// PHP 4.0.6 ve öncesi ile $HTTP_SESSION_VARS kullanın
 unset($_SESSION['count']);
 ?>
 ]]>
@@ -95,47 +88,24 @@ unset($_SESSION['count']);
     olmadığından oturum değişkenlerinde gönderimleri kullanamazsınız.
    </para>
   </warning>
-  <para>
-   Eğer <link linkend="ini.register-globals">register_globals</link> etkinse,
-   her küresel değişken bir oturum değişkeni olarak kayıt altına alınabilir.
-   Bir oturumun yeniden başlatılması ile bu değişkenler ilgili küresel
-   değişkenlere geri yerleştirilecektir. PHP'nin hangi değişkenlerin oturum
-   değişkeni olarak kaydedildiğini bilmesi gerektiğinden değişkenlerin
-   <function>session_register</function> işlevi ile kayıt altına alınması
-   gerekir. Bundan kaçınmak için girdilere <varname>$_SESSION</varname> içinde
-   değer atamanız yeterlidir.
-   <caution>
-    <para>
-     PHP 4.3.0 öncesinde, <varname>$_SESSION</varname> kullanıyorsanız ve
-     <link linkend="ini.register-globals">register_globals</link> etkin
-     değilse, <function>session_register</function>,
-     <function>session_is_registered</function> ve
-     <function>session_unregister</function> işlevlerini kullanmayın.
-     Güvenliği ve başarımı arttırmak için
-     <link linkend="ini.register-globals">register_globals</link> yönergesine
-     daima <literal>Off</literal> değerini atayın.
-    </para>
-   </caution>
-  </para>
-  <para>
-   <link linkend="ini.register-globals">register_globals</link> etkinse,
-   küresel değişkenler ve <varname>$_SESSION</varname> girdileri, özdevinimli
-   olarak önceki oturumda kayıt altına alınmış değerlere gönderimli olurlar.
-   Ancak, <link linkend="ini.register-globals">register_globals</link> iptal
-   edilip, değişken sadece <varname>$_SESSION</varname> tarafından kayıt
-   altına alınmışsa küresel değişken sadece bir sonraki isteğe kadar geçerli
-   kalacaktır.
-  </para>
-  <para>
-   PHP 4.2.3 ve öncesinde bir kusur vardır. Eğer yeni bir oturum değişkenini
-   <function>session_register</function> kullanarak kayıt altına alırsanız,
-   küresel etki alanındaki girdi ve <varname>$_SESSION</varname> girdisi
-   sonraki <function>session_start</function> çağrısına kadar aynı değere
-   gönderimli olmayacaklardır. Yani, <function>session_register</function> ile
-   kayıt altına alınmış küresel değişkende bir değişiklik yaparsanız
-   <varname>$_SESSION</varname> girdisi bu değişikliği yansıtmayacaktır. Bu
-   durum PHP 4.3.0'da da geçerlidir.
-  </para>
+  <note>
+   <para>
+    Dosya tabanlı oturumlar (PHP'de öntanımlı) bir oturum bir kez
+    <function>session_start</function> veya dolaylı olarak <link
+    linkend="ini.session.auto-start">session.auto_start</link> aracılığıyla
+    açıldığında oturum dosyasını kilitler. Bir kez kilitlendiğinde, başka
+    hiçbir betik, <function>session_write_close</function> çağrılana kadar
+    veya ilk betik sonlanana kadar aynı oturum dosyasına erişemez.
+   </para>
+   <para>
+    Bu, AJAX'ı yoğun şekilde kullanan ve aynı anda birden çok istek alan http
+    sitelerinde büyük olasılıkla bir sorundur. Bununla başa çıkmanın en kolay
+    yolu, oturumda gerekli herhangi bir değişiklik yapılır yapılmaz, tercihen
+    betiğin başlarında, <function>session_write_close</function> işlevini
+    çağırmaktır. Bunun yerine, eşzamanlılığı destekleyen farklı bir oturum
+    artucu da kullanılabilir.
+   </para>
+  </note>
  </section>
 
  <section xml:id="session.idpassing">
@@ -161,15 +131,10 @@ unset($_SESSION['count']);
    yöntem, oturum kimliğini doğrudan URL'nin içine gömer.
   </para>
   <para>
-   PHP bağlantıları şeffaf olarak dönüştürme yeteneğine sahiptir. PHP 4.2.0 ve
-   sonrasını kullanmıyorsanız, bunu PHP'yi derlerken kendinizin etkin kılması
-   gerekir. Unix altında, <filename>configure</filename> betiğine
-   <link linkend="ini.session.use-trans-sid">--enable-trans-sid</link>
-   seçeneğini vermeniz gerekir. PHP bu seçenekle derlenmiş ve çalışma anında
-   <link linkend="ini.session.use-trans-sid">
-   <literal>session.use_trans_sid</literal></link> yönergesi etkin kılınmışsa,
-   göreli URI'ler özdevinimli olarak oturum kimliğini içerecek şekilde
-   değiştirilirler.
+   PHP bağlantıları şeffaf olarak dönüştürme yeteneğine sahiptir. Çalışma
+   anında <literal>session.use_trans_sid</literal> yönergesi etkin kılınmışsa,
+   göreli URI'ler otomatik olarak oturum kimliğini içerecek şekilde
+   değiştirilir.
    <note>
     <para>
     <link linkend="ini.arg-separator.output">arg_separator.output</link>
@@ -199,9 +164,9 @@ unset($_SESSION['count']);
 session_start();
 
 if (empty($_SESSION['count'])) {
- $_SESSION['count'] = 1;
+   $_SESSION['count'] = 1;
 } else {
- $_SESSION['count']++;
+   $_SESSION['count']++;
 }
 ?>
 
@@ -241,8 +206,53 @@ Devam etmek için, <a href="nextpage.php?<?php echo htmlspecialchars(SID);
   <para>
    Veritabanlarını saklama alanı olarak kullanmak için veya başka bir saklama
    yöntemi kullanmak için <function>session_set_save_handler</function>
-   işleviyle kullanıcı seviyesinde bir saklama işlevleri kümesi tanımlamanız
-   gerekir.
+   işleviyle kullanıcı seviyesinde bir saklama işlevleri kümesi tanımlamak
+   gerekir. PHP 5.4.0'dan itibaren
+   <classname>SessionHandlerInterface</classname> arayüzü kullanılarak oturum
+   işleyicileri oluşturabilir veya <classname>SessionHandler</classname>
+   sınıfı miras alınarak dahili PHP işleyicileri genişletetilebilir.
+  </para>
+  <para>
+   <function>session_set_save_handler</function> içinde belirtilen geri
+   çağırımlar, bir oturumun yaşam döngüsü boyunca PHP tarafından çağrılan
+   yöntemlerdir: <parameter>open</parameter>, <parameter>read</parameter>,
+   <parameter>write</parameter> ve <parameter>close</parameter>. Temizlik
+   görevlerinde, bir oturumu silmek için <parameter>destroy</parameter>
+   ve düzenli olarak çöpleri toplamak için <parameter>gc</parameter>.
+  </para>
+  <para>
+   Bu nedenle, PHP'ye oturum kaydetme işleyicileri daima gereklidir.
+   Öntanımlı işleyici, genellikle dahili dosyaları kaydetme işleyicisidir.
+   Özel bir kaydetme işleyicisi, <function>session_set_save_handler</function>
+   kullanılarak atanabilir. Bunun yanında, dahili kaydetme işleyicileri
+   <parameter>sqlite</parameter>, <parameter>memcache</parameter> ve
+   <parameter>memcached</parameter> gibi PHP eklentileri tarafından da sağlanır
+   ve <link linkend="ini.session.save-handler">session.save_handler</link> ile
+   atanabilir.
+  </para>
+  <para>
+   Oturum başladığında, PHP dahili olarak oturum açma işleyicisini, ardından da
+   depolamaya olduğu gibi aktarılmak üzere kodlanmış bir dizge döndüren okuma
+   geriçağrım işlevini çağırır. Okuma geriçağırım işlevi kodlanmış dizgeyi
+   döndürdüğünde, PHP dizgeyi çözer ve ortaya çıkan diziyi
+   <varname>$_SESSION</varname> süper küreseline aktarır.
+  </para>
+  <para>
+   PHP kapandığında (veya <function>session_write_close</function>
+   çağrıldığında), PHP dahili olarak <varname>$_SESSION</varname> süper
+   küreselini kodlayacak ve bunu oturum kimliği ile birlikte yazma
+   geriçağrımına iletecektir. Yazma geriçağırımı bittikten sonra, PHP dahili
+   olarak kapatma geriçağırım işleyicisini çağırır.
+  </para>
+  <para>
+   Bir oturum özellikle yok edildiğinde, PHP oturum kimliğini aktararak
+   yoketme işleyicisini çağırır.
+  </para>
+  <para>
+   PHP, bir oturumun belirlenen azami yaşam süresine göre herhangi bir oturum
+   kaydını sona erdirmek için zaman zaman çöp toplama geriçağrımı yapar. Bu
+   işlev,  kalıcı depolamada, belirlenen yaşam süresinden daha uzun süre
+   erişilen tüm kayıtları siler.
   </para>
  </section>
 </appendix>

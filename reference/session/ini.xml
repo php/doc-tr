@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ffe8f84ec5ec175a2b8ddf23a569d4e621866d76 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f3d6ada6156b28791a28efebe2e5c070159c3a94 Maintainer: nilgun Status: ready -->
 <section xml:id="session.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -178,7 +178,7 @@
     </row>
     <row>
      <entry><link linkend="ini.session.sid-bits-per-character">session.sid_bits_per_character</link></entry>
-     <entry>"5"</entry>
+     <entry>"4"</entry>
      <entry>PHP_INI_ALL</entry>
      <entry>PHP 7.1.0'dan beri kullanılabilmektedir.</entry>
     </row>
@@ -228,7 +228,7 @@
      <entry><link linkend="ini.url-rewriter.tags">url_rewriter.tags</link></entry>
      <entry>"a=href,area=href,frame=src,form="</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry>PHP 7.1.0'dan beri bu INI artık oturumlar tarafından 
+     <entry>PHP 7.1.0'dan beri bu INI artık oturumlar tarafından
      kullanılmamaktadır.</entry>
     </row>
     <row>
@@ -256,18 +256,6 @@
      <entry>"0"</entry>
       <entry>PHP_INI_ALL</entry>
      <entry>PHP 7.1.0'da kaldırıldı.</entry>
-    </row>
-    <row>
-     <entry><link linkend="ini.session.bug-compat-42">session.bug_compat_42</link></entry>
-     <entry>"1"</entry>
-     <entry>PHP_INI_ALL</entry>
-     <entry>PHP 5.4.0'da kaldırıldı.</entry>
-    </row>
-    <row>
-     <entry><link linkend="ini.session.bug-compat-warn">session.bug_compat_warn</link></entry>
-     <entry>"1"</entry>
-     <entry>PHP_INI_ALL</entry>
-     <entry>PHP 5.4.0'da kaldırıldı.</entry>
     </row>
    </tbody>
   </tgroup>
@@ -324,7 +312,7 @@
      <filename>mod_files.sh</filename> adında bir betik vardır (Windows için
      <filename>mod_files.bat</filename>). Ayrıca, <literal>N</literal>
      değiştirgesinin sıfırdan büyük bir değerle kullanılması durumunda
-     özdevinimli bir çöp toplayıcının devreye gireceğine de dikkat ediniz; daha
+     otomatik bir çöp toplayıcının devreye gireceğine de dikkat ediniz; daha
      ayrıntılı bilgi için &php.ini; dosyanıza bakınız. Ayrıca,
      <literal>N</literal> değiştirgesini kullanmanız durumunda,
      noktalı virgül (<literal>;</literal>) ayracı &php.ini; dosyasında
@@ -332,13 +320,16 @@
      içine almalısınız.
     </para>
     <para>
-     Dosya saklama modülü dosyaları öntanımlı olarak mode 600 kullanarak oluşturur. Bu öntanımlı değer seçimlik <literal>MODE</literal> ile değiştirilebilir: <literal>N;MODE;/path</literal> burada <literal>MODE</literal> dosya kipinin sekizlik tabanda gösterimidir.
+     Dosya saklama modülü dosyaları öntanımlı olarak mode 600 kullanarak
+     oluşturur. Bu öntanımlı değer seçimlik <literal>MODE</literal> ile
+     değiştirilebilir: <literal>N;MODE;/path</literal> burada
+     <literal>MODE</literal> dosya kipinin sekizlik tabanda gösterimidir.
       Dosya kipini bu yolla belirlemek sürecin umask'ını etkilemez.
     </para>
     <warning>
      <para>
-      Bu yönergeyi öntanımlı değeriyle bırakırsanız veya herkesin
-      okuyabileceği bir dizin tanımlarsanız (öntanımlı olan
+      Bu yönerge öntanımlı değeriyle bırakılır veya herkesin
+      okuyabileceği bir dizin tanımlanırsa (öntanımlı olan
       <filename>/tmp</filename> gibi), diğer kullanıcılar bu dizindeki
       dosyaların listesini alarak oturum bilgilerini sunucu üzerinde kendi
       amaçları doğrultusunda kullanabilirler.
@@ -350,22 +341,15 @@
       değiştirgesi yukarıda belirtildiği gibi kullanılırken 1 veya 2'den daha
       yüksek bir değer kullanımı büyük sayıda dizin gerektirmesindan dolayı bir
       çok site için uygun olmayacaktır; örneğin, 3 değeri dosya sistemi üzerinde
-      <literal>(2 ** session.sid_bits_per_character) ** 3</literal> 
+      <literal>(2 ** session.sid_bits_per_character) ** 3</literal>
       dizinin varolabileceğini öngörür, bu da çok sayıda
       dosya girdisi açılması ve büyük miktarda alanın boşa harcanması demektir.
      </para>
      <para>
-      Sadece, sitenizin 2'den büyük bir <literal>N</literal> değeri gerektirecek kadar büyük olması halinde 2'den büyük bir değer kullanabilirsiniz.
+      Sadece, sitenizin 2'den büyük bir <literal>N</literal> değeri gerektirecek
+      kadar büyük olması halinde 2'den büyük bir değer kullanabilirsiniz.
      </para>
     </caution>
-    <note>
-     <simpara>
-      PHP'nin 4.3.6 sürümünden önce, Windows kullanıcılar bu değeri PHP'nin
-      oturum işlevlerini kullanacağı sırada değiştirmek zorundaydılar. Geçerli
-      bir dosya yolu olarak, örneğin <filename>c:/temp</filename>
-      belirtilebilir.
-     </simpara>
-    </note>
    </listitem>
   </varlistentry>
 
@@ -387,11 +371,11 @@
   <varlistentry xml:id="ini.session.auto-start">
    <term>
     <parameter>session.auto_start</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
-     <literal>session.auto_start</literal> yönergesi, bir oturumun özdevinimli
+     <literal>session.auto_start</literal> yönergesi, bir oturumun otomatik
      olarak isteğin başlangıcında başlatılıp başlatılmayacağını belirler.
      Öntanımlı değer <literal>0</literal> olup, başlatılmaz.
     </simpara>
@@ -430,7 +414,7 @@
   <varlistentry xml:id="ini.session.gc-probability">
    <term>
     <parameter>session.gc_probability</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -446,7 +430,7 @@
   <varlistentry xml:id="ini.session.gc-divisor">
    <term>
     <parameter>session.gc_divisor</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -465,7 +449,7 @@
   <varlistentry xml:id="ini.session.gc-maxlifetime">
    <term>
     <parameter>session.gc_maxlifetime</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -541,7 +525,7 @@
   <varlistentry xml:id="ini.session.entropy-length">
    <term>
     <parameter>session.entropy_length</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -559,7 +543,7 @@
   <varlistentry xml:id="ini.session.use-strict-mode">
    <term>
     <parameter>session.use_strict_mode</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -573,19 +557,32 @@
     </simpara>
     <note>
      <simpara>
-     <literal>session.use_strict_mode</literal> etkinleştirmek genel oturum 
+     <literal>session.use_strict_mode</literal> etkinleştirmek genel oturum
      güvenliği için zorunludur. Tüm sitelerin bunu etkinleştirmesi önerilir.
-     Ayrıntılar için <function>session_create_id</function> örneğine 
+     Ayrıntılar için <function>session_create_id</function> örneğine
      bakınız.
      </simpara>
     </note>
-   </listitem>
+    <warning>
+     <para>
+      <function>session_set_save_handler</function> aracılığıyla kaydedilen
+      özel bir oturum işleyicisi
+      <methodname>SessionUpdateTimestampHandlerInterface::validateId</methodname>'yi
+      gerçeklemezse veya <parameter>validate_sid</parameter> geriçağrımını
+      sağlamazsa, bu yönergenin değerine bakılmaksızın katı oturum kimliği
+      kipi etkin bir şekilde devre dışı bırakılır.
+      <classname>SessionHandler</classname>'ın
+      <methodname>SessionHandler::validateId</methodname>'yi gerçeklemediğine
+      özellikle dikkat edin.
+     </para>
+    </warning>
+  </listitem>
   </varlistentry>
 
   <varlistentry xml:id="ini.session.use-cookies">
    <term>
     <parameter>session.use_cookies</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -600,7 +597,7 @@
   <varlistentry xml:id="ini.session.use-only-cookies">
    <term>
     <parameter>session.use_only_cookies</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -608,7 +605,7 @@
      kimliğini istemci tarafında saklamak için <emphasis role="strong">
      sadece</emphasis> çerezlerin mi kullanılacağını belirler. Bu yönergeyi
      etkin kılarak oturum kimliklerinin URL'lerde aktarılmaması sağlamak
-     suretiyle saldırıları önlemiş olursunuz. PHP 5.3.0'dan beri öntanımlı 
+     suretiyle saldırıları önlemiş olursunuz. PHP 5.3.0'dan beri öntanımlı
      değer <literal>1</literal>'dir (etkin).
     </simpara>
    </listitem>
@@ -618,7 +615,7 @@
   <varlistentry xml:id="ini.session.cookie-lifetime">
    <term>
     <parameter>session.cookie_lifetime</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -673,14 +670,14 @@
   <varlistentry xml:id="ini.session.cookie-secure">
    <term>
     <parameter>session.cookie_secure</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
      <literal>session.cookie_secure</literal> yönergesi oturum çerezinin
      <literal>secure</literal> anahtarını tanımlar. Öntanımlı olarak
      <literal>off</literal> olup anlamı: Çerezler sadece güvenli bağlantılar
-     üzerinden gönderilmez. Ayrıca bakınız: 
+     üzerinden gönderilmez. Ayrıca bakınız:
      <function>session_get_cookie_params</function> ve
      <function>session_set_cookie_params</function>.
     </simpara>
@@ -690,7 +687,7 @@
   <varlistentry xml:id="ini.session.cookie-httponly">
    <term>
     <parameter>session.cookie_httponly</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -711,15 +708,15 @@
    </term>
    <listitem>
     <simpara>
-     Sunucuların bir çerezin siteler arası isteklerle birlikte gönderilmemesi 
-     gerektiğini öne sürmelerine izin verir. Bu sav, istemcilerin siteler 
-     arası bilgi sızıntısı riskini azaltmasına izin verir ve siteler arası 
-     istek sahteciliği saldırılarına karşı bir miktar koruma sağlar. Bunun 
+     Sunucuların bir çerezin siteler arası isteklerle birlikte gönderilmemesi
+     gerektiğini öne sürmelerine izin verir. Bu sav, istemcilerin siteler
+     arası bilgi sızıntısı riskini azaltmasına izin verir ve siteler arası
+     istek sahteciliği saldırılarına karşı bir miktar koruma sağlar. Bunun
      tüm tarayıcılar tarafından desteklenmediğini unutmayın.
      Boş bir değer, herhangi bir atama yapılmadığını belirtir.
-     <literal>Lax</literal> ve <literal>Strict</literal> değerleri POST 
+     <literal>Lax</literal> ve <literal>Strict</literal> değerleri POST
      isteklerinde siteler arasında çerez gönderilmeyeceğini belirtir.
-     Get isteklerinde <literal>Lax</literal> siteler-arası çerez gönderilmesine 
+     Get isteklerinde <literal>Lax</literal> siteler-arası çerez gönderilmesine
      sebep olurken <literal>Strict</literal> buna sebep olmaz.
     </simpara>
    </listitem>
@@ -747,7 +744,7 @@
   <varlistentry xml:id="ini.session.cache-expire">
    <term>
     <parameter>session.cache_expire</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -762,7 +759,7 @@
   <varlistentry xml:id="ini.session.use-trans-sid">
    <term>
     <parameter>session.use_trans_sid</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -779,8 +776,8 @@
       oturum kimliğiyle oturum açarlar.
      </simpara>
      <simpara>
-      PHP 7.1.0'dan beri, tam URL yolu, örn, https://php.net/,  trans sid 
-      özelliği tarafından elde edilmektedir. Öncesinde PHP sadece göreli URL yolunu 
+      PHP 7.1.0'dan beri, tam URL yolu, örn, https://php.net/,  trans sid
+      özelliği tarafından elde edilmektedir. Öncesinde PHP sadece göreli URL yolunu
       değerlendirirdi. Rewrite hedef konakları <link
       linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link>
       ile tanımlanır.
@@ -797,19 +794,19 @@
    <listitem>
     <simpara>
      Şeffaf oturum kimliği desteği etkinken oturum kimliğini içerecek HTML
-     etiketlerini belirtmek için kullanılır. 
+     etiketlerini belirtmek için kullanılır.
      <literal>a=href,area=href,frame=src,input=src,form=</literal> öntanımlıdır.
     </simpara>
     <simpara>
-     <literal>form</literal> özel bir etikettir. 
+     <literal>form</literal> özel bir etikettir.
      <literal>&lt;input hidden="oturum_kimliği" name="oturum_ismi"&gt;</literal>
      form değişkeni olarak eklenir.
     </simpara>
     <note>
      <simpara>
-      PHP 7.1.0 öncesinde, 
+      PHP 7.1.0 öncesinde,
       <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> bu amaçla
-      kullanılırdı. PHP 7.1.0'dan beri, <literal>fieldset</literal> özel bir 
+      kullanılırdı. PHP 7.1.0'dan beri, <literal>fieldset</literal> özel bir
       etiket değildir.
      </simpara>
     </note>
@@ -823,95 +820,48 @@
    </term>
    <listitem>
     <simpara>
-     Şeffaf oturum kimliği desteği etkinken oturum kimliğini içerecek 
+     Şeffaf oturum kimliği desteği etkinken oturum kimliğini içerecek
      konakları belirtmek için kullanılır.
      <literal>$_SERVER['HTTP_HOST']</literal> öntanımlıdır.
-     Aralarda "," kullanarak çok sayıda konak belirtilebilir, konaklar 
+     Aralarda "," kullanarak çok sayıda konak belirtilebilir, konaklar
      arasında boşluk bulunmasına izin verilmez.
      Örnek: <literal>php.net,wiki.php.net,bugs.php.net</literal>
     </simpara>
    </listitem>
   </varlistentry>
 
-  <varlistentry xml:id="ini.session.bug-compat-42">
-   <term>
-    <parameter>session.bug_compat_42</parameter>
-    <type>boolean</type>
-   </term>
-   <listitem>
-    <simpara>
-     PHP'nin 4.2.3 ve önceki sürümlerinde, belgelenmemiş bir hata vardı:
-     <link linkend="ini.register-globals">register_globals</link> ektin
-     olmadığı halde bir oturum değişkeninin küresel etki alanında
-     ilklendirilmesine izin verilirdi. PHP 4.3.0 ve sonrasında <link
-     linkend="ini.session.bug-compat-warn">session.bug_compat_warn</link>
-     ektin olduğunda, bu özellik kullanılırsa bir uyarı verilmektedir. Bu
-     özellik/hata bu yönergeye <literal>Off</literal> değeri atanarak iptal
-     edilebilmektedir.
-    </simpara>
-    <note>
-     <simpara>
-      PHP 5.4.0'da kaldırıldı.
-     </simpara>
-    </note>
-   </listitem>
-  </varlistentry>
-
-  <varlistentry xml:id="ini.session.bug-compat-warn">
-   <term>
-    <parameter>session.bug_compat_warn</parameter>
-    <type>boolean</type>
-   </term>
-   <listitem>
-    <simpara>
-     PHP'nin 4.2.3 ve önceki sürümlerinde, belgelenmemiş bir hata vardı:
-     <link linkend="ini.register-globals">register_globals</link> ektin
-     olmadığı halde bir oturum değişkeninin küresel etki alanında
-     ilklendirilmesine izin verilirdi. PHP 4.3.0 ve sonrasında bu yönerge
-     <link linkend="ini.session.bug-compat-42">session.bug_compat_42</link>
-     yönergesi ile birlikte etkin kılındığında, bu özellik kullanılırsa bir
-     uyarı verilmektedir.
-    </simpara>
-    <note>
-     <simpara>
-      PHP 5.4.0'da kaldırıldı.
-     </simpara>
-    </note>
-   </listitem>
-  </varlistentry>
-
   <varlistentry xml:id="ini.session.sid-length">
    <term>
     <parameter>session.sid_length</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
-     <literal>session.sid_length</literal> oturum kimliği dizesinin uzunluğunu 
+     <literal>session.sid_length</literal> oturum kimliği dizesinin uzunluğunu
      belirtmek içindir. 22 ile 256 arasında olabilir.
     </simpara>
     <simpara>
-     32 öntanımlıdır. Uymluluk ihtiyacı varsa 32,40,vs. belirtilebilir. 
+     32 öntanımlıdır. Uymluluk ihtiyacı varsa 32,40,vs. belirtilebilir.
      Uzun oturum kimliklerini tahmin etmek zordur. En azından 32 karakter
      olması önerilir.
     </simpara>
-    <para>
-      Uyumluluk bilgisi: 
-      <literal>session.hash_func</literal>=0 (MD5) ve
+    <tip>
+     <para>
+      Uyumluluk bilgisi:
+      <literal>session.hash_function</literal>=0 (MD5) ve
       <literal>session.hash_bits_per_character</literal>=4,
-      <literal>session.hash_func</literal>=1 (SHA1) ve
+      <literal>session.hash_function</literal>=1 (SHA1) ve
       <literal>session.hash_bits_per_character</literal>=6 için 32 kullanın.
-
-      <literal>session.hash_func</literal>=0 (MD5) ve
-      <literal>session.hash_bits_per_character</literal>=5 için 26 kullanın. 
-
-      <literal>session.hash_func</literal>=0 (MD5) ve
-      <literal>session.hash_bits_per_character</literal>=6 için 22 kullanın. 
-      INI değerlerini, oturum kimliklerinde en azından 128 bit olacak 
+      <literal>session.hash_function</literal>=0 (MD5) ve
+      <literal>session.hash_bits_per_character</literal>=5 için 26 kullanın.
+      <literal>session.hash_function</literal>=0 (MD5) ve
+      <literal>session.hash_bits_per_character</literal>=6 için 22 kullanın.
+      INI değerlerini, oturum kimliklerinde en azından 128 bit olacak
       şekilde yapılandırın. <literal>session.sid_bits_per_character</literal>
-      için uygun bir değer atamayı unutmayın, yoksa daha zayıf bir oturum 
+      için uygun bir değer atamayı unutmayın, yoksa daha zayıf bir oturum
       kimliğiniz olur.
-    </para>
+     </para>
+    </tip>
     <note>
      <simpara>
       PHP 7.1.0 ve sonrasında kullanılabilir.
@@ -923,15 +873,16 @@
   <varlistentry xml:id="ini.session.sid-bits-per-character">
    <term>
     <parameter>session.sid_bits_per_character</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
-     <literal>session.sid_per_character</literal> kodlu oturum kimliği karakterlerinin bir sayısını belirtmek içindir. Olası değerler: 
+     <literal>session.sid_per_character</literal> kodlu oturum kimliği
+     karakterlerinin bir sayısını belirtmek içindir. Olası değerler:
      '4' (0-9, a-f), '5' (0-9, a-v), and '6' (0-9, a-z, A-Z, "-", ",").
     </simpara>
     <simpara>
-     4 öntanımlıdır. Bit sayısı arttıkça daha güçlü oturum kiklikleri elde 
+     4 öntanımlıdır. Bit sayısı arttıkça daha güçlü oturum kiklikleri elde
      edilir. Çoğu ortam için 5 yeterlidir.
     </simpara>
     <para>
@@ -966,7 +917,7 @@
     </para>
     <note>
      <para>
-      Bu yönerge PHP 5'ten itibaren kullanılabilmektedir. 
+      Bu yönerge PHP 5'ten itibaren kullanılabilmektedir.
       PHP 7.1.0'da kaldırıldı.
      </para>
     </note>
@@ -976,7 +927,7 @@
   <varlistentry xml:id="ini.session.hash-bits-per-character">
    <term>
     <parameter>session.hash_bits_per_character</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -997,7 +948,7 @@
   <varlistentry xml:id="ini.session.upload-progress.enabled">
    <term>
     <parameter>session.upload_progress.enabled</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -1010,7 +961,7 @@
   <varlistentry xml:id="ini.session.upload-progress.cleanup">
    <term>
     <parameter>session.upload_progress.cleanup</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
@@ -1086,7 +1037,7 @@
   <varlistentry xml:id="ini.session.upload-progress.min-freq">
    <term>
     <parameter>session.upload_progress.min_freq</parameter>
-    <type>integer</type>
+    <type>int</type>
    </term>
    <listitem>
     <simpara>
@@ -1099,11 +1050,12 @@
   <varlistentry xml:id="ini.session.lazy-write">
    <term>
     <parameter>session.lazy_write</parameter>
-    <type>boolean</type>
+    <type>bool</type>
    </term>
    <listitem>
     <simpara>
-     <literal>session.lazy_write = 1</literal> atandığında oturum verisi sadece değişirse yeniden yazılır. Bu öntanımlı değerdir ve etkindir.
+     <literal>session.lazy_write = 1</literal> atandığında oturum verisi sadece
+     değişirse yeniden yazılır. Bu öntanımlı değerdir ve etkindir.
     </simpara>
    </listitem>
   </varlistentry>
