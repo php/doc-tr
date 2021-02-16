@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a9edd62d087ab1eb6292c795b7256e14ff9f1234 Maintainer: nilgun Status: ready-->
+<!-- EN-Revision: 02f3bf57175c48abff767ad2c0961c6cfe58a39e Maintainer: nilgun Status: ready-->
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
@@ -47,7 +47,7 @@ class BasitSınıf
    <para>
     Bir nesne bağlamı içinden bir yöntem çağırmak için <varname>$this</varname>
     diye bir sözde değişken kullanılır. <varname>$this</varname> çağrılan
-    nesneye bir gönderimdir.
+    nesnenin değeridir.
    </para>
    <warning>
     <para>
@@ -145,7 +145,8 @@ Stack trace:
    </para>
    <note>
     <para>
-     Sınıfın yapıcısına iletilecek hiçbir değiştirge yoksa, sınıf adından sonra parantez kullanmak gerekmez.
+     Sınıfın yapıcısına iletilecek hiçbir değiştirge yoksa, sınıf adından sonra
+     parantez kullanmak gerekmez.
     </para>
    </note>
    <example>
@@ -276,7 +277,11 @@ echo (new DateTime())->format('Y');
   <sect2 xml:id="language.oop5.basic.properties-methods">
    <title>Özellikler ve Yöntemler</title>
    <para>
-    Sınıf özellikleri ve yöntemleri ayrı isim alanlarında ("namespace") yer alır, dolayısıyla bunlar aynı isimde olabilir. Sadece bağlama bağlı kalarak, bir özelliğin mi yoksa bir yöntemin mi çağrıldığına (yani, bir değişkene erişim veya işlev çağrısı) bakmadan her ikisi de aynı gösterimle kullanılabilir.
+    Sınıf özellikleri ve yöntemleri ayrı isim alanlarında ("namespace") yer
+    alır, dolayısıyla bunlar aynı isimde olabilir. Sadece bağlama bağlı
+    kalarak, bir özelliğin mi yoksa bir yöntemin mi çağrıldığına (yani, bir
+    değişkene erişim veya işlev çağrısı) bakmadan her ikisi de aynı gösterimle
+    kullanılabilir.
    </para>
    <example>
     <title>- Özelliğe erişim ya da yöntem çağrısı</title>
@@ -357,12 +362,6 @@ echo ($obj->bar)(), PHP_EOL;
     linkend="language.oop5.paamayim-nekudotayim">parent::</link> öneki ile
     atıfta bulunarak erişilebilir.
    </para>
-   <para>
-    Yöntemler geçersiz kılınırken, değiştirgelerin yerleri korunmalıdır, aksi
-    takdirde PHP <constant>E_STRICT</constant> seviyesinde bir hata üretir.
-    Farklı değiştirgeler kullanarak geçersiz kılmayı mümkün kılan kurucuya bu
-    uygulanmaz.
-   </para>
    <example>
     <title>- Basit bir sınıfın miras alınması</title>
     <programlisting role="php">
@@ -391,6 +390,171 @@ bir öntanımlı değer
 ]]>
     </screen>
    </example>
+
+   <sect3 xml:id="language.oop.lsp">
+    <title>Değiştirge sırası uyumluluk kuralları</title>
+    <para>
+     Bir yöntem geçersiz kılınırken değiştirgelerin yerleri ebeveyn yöntem ile
+     uyumlu olmalıdır. Aksi takdirde, ölümcül bir hata üretilir. PHP 8.0.0
+     öncesinde  <constant>E_WARNING</constant> seviyesinde bir hata üretilirdi.
+     Değiştirgelerin yerleri, <link linkend="language.oop5.variance">özgüllük</link>
+     kurallarına uyuyorsa, zorunlu bir değiştirgeyi isteğe bağlı duruma
+     getiriyorsa ve herhangi bir yeni değiştirge isteğe bağlıysa uyumludur. Bu,
+     Liskov İkame İlkesi olarak bilinir. Kurucu ve özel yöntemler bu uyumluluk
+     kurallarından muaf olduğundan bir uyuşmazlık durumunda ölümcül bir hata
+     oluşmaz.
+    </para>
+    <example>
+     <title>- Uyumlu çocuk yöntemler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class Base
+{
+    public function foo(int $a) {
+        echo "Geçerli\n";
+    }
+}
+
+class Extend1 extends Base
+{
+    function foo(int $a = 5)
+    {
+        parent::foo($a);
+    }
+}
+
+class Extend2 extends Base
+{
+    function foo(int $a, $b = 5)
+    {
+        parent::foo($a);
+    }
+}
+
+$extended1 = new Extend1();
+$extended1->foo();
+$extended2 = new Extend2();
+$extended2->foo(1);
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Geçerli
+Geçerli
+]]>
+     </screen>
+    </example>
+
+    <para>
+     Aşağıdaki örnekler, bir değiştirgeyi kaldıran veya isteğe bağlı bir
+     değiştirgeyi zorunlu kılan bir çocuk yöntemin ebeveyn yöntemle uyumlu
+     olmadığını gösterir.
+    </para>
+    <example>
+     <title>- Bir çocuk yöntem bir değiştirgeyi kaldırdığında ölümcül hata
+       oluşur</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class Base
+{
+    public function foo(int $a = 5) {
+        echo "Geçerli\n";
+    }
+}
+
+class Extend extends Base
+{
+    function foo()
+    {
+        parent::foo(1);
+    }
+}
+]]>
+     </programlisting>
+     &example.outputs.8.similar;
+     <screen>
+<![CDATA[
+Fatal error: Declaration of Extend::foo() must be compatible with Base::foo(int $a = 5) in /in/evtlq on line 13
+]]>
+     </screen>
+    </example>
+    <example>
+     <title>- Bir çocuk yöntem isteğe bağlı bir değiştirgeyi zorunlu
+       kıldığında ölümcül hata oluşur</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class Base
+{
+    public function foo(int $a = 5) {
+        echo "Geçerli\n";
+    }
+}
+
+class Extend extends Base
+{
+    function foo(int $a)
+    {
+        parent::foo($a);
+    }
+}
+]]>
+     </programlisting>
+     &example.outputs.8.similar;
+     <screen>
+<![CDATA[
+Fatal error: Declaration of Extend::foo(int $a) must be compatible with Base::foo(int $a = 5) in /in/qJXVC on line 13
+]]>
+     </screen>
+    </example>
+
+    <warning>
+     <para>
+      Bir çocuk sınıfta bir yöntemin değiştirgesini yeniden adlandırmak
+      değiştirge sırası uyumsuzluğu değildir. Ancak,
+      <link linkend="functions.named-arguments">isimli değiştirgeler</link>
+      kullanılırsa çalışma zamanı hatasına (<classname>Error</classname>)
+      neden olacağından bu önerilmez.
+     </para>
+     <example>
+      <title>- Bir çocuk sınıfta isimli değiştirgeler yeniden adlandırıldığında
+        hata oluşur</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+class A {
+    public function test($foo, $bar) {}
+}
+
+class B extends A {
+    public function test($a, $b) {}
+}
+
+$obj = new B;
+
+// Pass parameters according to A::test() contract
+$obj->test(foo: "foo", bar: "bar"); // HATA!
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+Fatal error: Uncaught Error: Unknown named parameter $foo in /in/XaaeN:14
+Stack trace:
+#0 {main}
+  thrown in /in/XaaeN on line 14
+]]>
+      </screen>
+     </example>
+    </warning>
+   </sect3>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.class.class">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 1d58f726462a821d3f926fb61247357f49fa1ce5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 46efcedd4ab2dee962eb80c7fbd552252581225b Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, dirt, sezer -->
  <chapter xml:id="language.exceptions" xmlns="http://docbook.org/ns/docbook">
   <title>İstisnalar</title>
@@ -32,7 +32,7 @@ class Exception extends Throwable
 
 
     public function __construct($message = null, $code = 0,
-                                  Exception $previous = null);
+                                  Throwable $previous = null);
 
 
     final private function __clone();           // İstisna kopyalamayı engeller
@@ -80,7 +80,7 @@ class MyException extends Exception
 {
     // İstisnayı yeniden tanımlayalım, böylece ileti seçimlik olmaktan çıkar
     public function __construct($message, $code = 0,
-                                Exception $previous = null) {
+                                Throwable $previous = null) {
         // biraz kod
 
         // her şeyin düzgün atandığından emin olalım
@@ -198,11 +198,11 @@ echo "\n\n";
     &finally; bloğu olması gerekir.
   </para>
    <para>
-    Bir istisna oluşturulursa ve geçerli işlev bağlamında &catch; bloğu yoksa, 
-    istisna, eşleşen bir &catch; bloğu bulana kadar çağrı yığıtını çağıran 
-    işleve "kabarcıklandırır". Yol boyunca karşılaşılan tüm &finally; blokları 
-    çalıştırılır. Eğer çağrı yığıtı, eşleşen bir &catch; bloğu bulamadan 
-    küresel bağlama kadar boşalırsa ve bir küresel istisna işleyici de 
+    Bir istisna oluşturulursa ve geçerli işlev bağlamında &catch; bloğu yoksa,
+    istisna, eşleşen bir &catch; bloğu bulana kadar çağrı yığıtını çağıran
+    işleve "kabarcıklandırır". Yol boyunca karşılaşılan tüm &finally; blokları
+    çalıştırılır. Eğer çağrı yığıtı, eşleşen bir &catch; bloğu bulamadan
+    küresel bağlama kadar boşalırsa ve bir küresel istisna işleyici de
     atanmamışsa, ölümcül hata vererek sonlanır.
    </para>
   <para>
@@ -213,8 +213,8 @@ echo "\n\n";
     hatasına yol açmaz.
    </para>
    <para>
-    PHP 8.0.0 ve sonrasında,  &throw; sözcüğü bir ifade olup herhangi bir 
-    ifadenin içinde kullanılabilir. Önceki sürümlerde bir deyimdi ve kendi 
+    PHP 8.0.0 ve sonrasında,  &throw; sözcüğü bir ifade olup herhangi bir
+    ifadenin içinde kullanılabilir. Önceki sürümlerde bir deyimdi ve kendi
     satırına sahip olması gerekiyordu.
    </para>
   </simplesect>
@@ -222,20 +222,20 @@ echo "\n\n";
   <simplesect xml:id="language.exceptions.catch">
    <title><literal>catch</literal></title>
    <para>
-    Bir &catch; bloğu oluşturulan bir istisnaya nasıl yanıt verileceğini 
-    tanımlar. Bir &catch; bloğu işleyebileceği bir veya daha fazla istisna 
-    veya hata türünü ve isteğe bağlı olarak istisnanın atanacağı değişkeni 
+    Bir &catch; bloğu oluşturulan bir istisnaya nasıl yanıt verileceğini
+    tanımlar. Bir &catch; bloğu işleyebileceği bir veya daha fazla istisna
+    veya hata türünü ve isteğe bağlı olarak istisnanın atanacağı değişkeni
     tanımlar. (PHP 8.0.0 öncesinde değişken gerekliydi.) İlk &catch; bloğu,
-    nesneyi işleyecek &throw; nesnesinin türüyle eşleşen bir hata veya 
+    nesneyi işleyecek &throw; nesnesinin türüyle eşleşen bir hata veya
     istisnayla karşılaştığında bunları engelleyecektir.
    </para>
    <para>
     Farklı sınıflara ait istisnaları yakalamak için birden fazla &catch; bloğu
     kullanılabilir. Normal çalışma sıradaki son &catch; bloğundan sonra devam
-    eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna 
-    oluşmadığında) sıradaki tanımlanmış son &catch; bloğundan sora devam eder. 
-    İstisnalar bir &catch; bloğu içerisinde oluşmuş olabileceği gibi yeniden 
-    de oluşabilir (&throw;). Aksi takdirde, çalışma, tetiklenen &catch; 
+    eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna
+    oluşmadığında) sıradaki tanımlanmış son &catch; bloğundan sora devam eder.
+    İstisnalar bir &catch; bloğu içerisinde oluşmuş olabileceği gibi yeniden
+    de oluşabilir (&throw;). Aksi takdirde, çalışma, tetiklenen &catch;
     bloğundan sonra devam eder.
    </para>
    <para>
@@ -249,13 +249,13 @@ echo "\n\n";
    </para>
    <para>
     PHP 7.1.0 ve sonrasında, boru (<literal>|</literal>) karakteri kullanarak
-    bir &catch; bloğunda çok sayıda istisna belirtilebilir. Farklı sınıf 
-    hiyerarşilerindeki farklı istisnalar aynı şekilde elde edildiğinde 
+    bir &catch; bloğunda çok sayıda istisna belirtilebilir. Farklı sınıf
+    hiyerarşilerindeki farklı istisnalar aynı şekilde elde edildiğinde
     kullanışlıdır.
    </para>
    <para>
-    PHP 8.0.0 ve sonrasında, değişken ismi yakalama istisnası için isteğe 
-    bağlıdır. Belirtilmezse, &catch; bloğu çalışmaya yine de devam eder fakat 
+    PHP 8.0.0 ve sonrasında, değişken ismi yakalama istisnası için isteğe
+    bağlıdır. Belirtilmezse, &catch; bloğu çalışmaya yine de devam eder fakat
     istisnayı oluşturacak nesneye erişemez.
    </para>
   </simplesect>
@@ -269,11 +269,11 @@ echo "\n\n";
     &try; ve &catch; bloklarından sonra çalıştırılır.
    </para>
    <para>
-    Dikkate değer tek etkileşim, &finally; bloğu ile &return; deyimi arasında 
-    olur. &try; veya &catch; bloklarının içinde bir &return; deyimine 
-    rastlansa bile &finally; bloğu çalışmasına devam edeceği gibi, &return; 
-    deyimi de çalıştırılır fakat &finally; bloğu işini bitirdikten sonra sonuç 
-    döndürülür. Ek olarak, &finally; bloğu da bir &return; içeriyorsa 
+    Dikkate değer tek etkileşim, &finally; bloğu ile &return; deyimi arasında
+    olur. &try; veya &catch; bloklarının içinde bir &return; deyimine
+    rastlansa bile &finally; bloğu çalışmasına devam edeceği gibi, &return;
+    deyimi de çalıştırılır fakat &finally; bloğu işini bitirdikten sonra sonuç
+    döndürülür. Ek olarak, &finally; bloğu da bir &return; içeriyorsa
     &finally; bloğundaki değer döndürülür.
    </para>
  </simplesect>
@@ -281,10 +281,10 @@ echo "\n\n";
  <simplesect xml:id="language.exceptions.exception-handler">
   <title><literal>Küresel istisna işleyici</literal></title>
   <para>
-   Eğer bir istisnanın küresel bağlama kadar kabarcıklanmasına izin verilirse, 
+   Eğer bir istisnanın küresel bağlama kadar kabarcıklanmasına izin verilirse,
    atandığı takdirde bir küresel istisna işleyici tarafından yakalanabilir.
-   Başka bir blok çalıştırılmazsa bir &catch; bloğu yerine çağrılmak üzere bir 
-   işlev <function>set_exception_handler</function> işlevi ile atanabilir. 
+   Başka bir blok çalıştırılmazsa bir &catch; bloğu yerine çağrılmak üzere bir
+   işlev <function>set_exception_handler</function> işlevi ile atanabilir.
    Etkisi esasen, tüm programın,  &catch; olarak bu işleve sahip bir &try;-
    &catch; bloğu ile sarmalanmasıyla aynıdır.
   </para>
@@ -300,7 +300,7 @@ echo "\n\n";
       linkend="language.oop5">nesne yönelimli</link> güncel eklentiler
       kullanmaktadır. Bununla birlikte hatalar <link
       linkend="class.errorexception">ErrorException</link> ile kolayca
-      istisnalara dönüştürülebilir. Bununla birlikte, bu teknik sadece ölümcül 
+      istisnalara dönüştürülebilir. Bununla birlikte, bu teknik sadece ölümcül
       hatalarda çalışır.
     </para>
     <example>
