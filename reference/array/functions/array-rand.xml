@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.array-rand" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.array-rand" xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>array_rand</refname>
-  <refpurpose>Bir diziden belli sayıda rasgele eleman döndürür</refpurpose>
+  <refpurpose>Bir diziden belli sayıda rasgele anahtar döndürür</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>array_rand</methodname>
-   <methodparam><type>array</type><parameter>girdi</parameter></methodparam>
+   <type class="union"><type>int</type><type>string</type><type>array</type></type><methodname>array_rand</methodname>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>istek_sayısı</parameter><initializer>1</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>array_rand</function> işlevi bir diziden belli sayıda rasgele
-   eleman elde etmek için kullanılır.
+   eleman seçer ve bunların anahtarlarını döndürür. Kriptografik amaçlara
+   uygun olmayan sözde bir rasgele sayı üreteci kullanır.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>girdi</parameter></term>
+     <term><parameter>dizi</parameter></term>
      <listitem>
       <para>
        İşleme sokulacak dizi.
@@ -41,15 +44,20 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Sadece bir girdi almak istiyorsanız <function>array_rand</function> işlevi
-   diziden rasgele bir anahtarla döner. Aksi takdirde, rasgele elemanları
-   içeren bir dizi döndürür. Böylece, diziden rasgele anahtarlar değerleriyle
-   birlikte bir dizi olarak çekilmiş olur.
+   Sadece bir girdi alınmak istenirse <function>array_rand</function> işlevi
+   diziden rasgele bir anahtarla döner. Aksi takdirde, rasgele elemanların
+   anahtarlarını içeren bir dizi döndürür. Böylece, diziden rasgele anahtarlar
+   değerleriyle birlikte bir dizi olarak çekilmiş olur. Birden fazla anahtar
+   döndürülüyorsa, bunlar dizideki yerlerine uygun sırada çekilir. Dizideki öğe
+   sayısından daha fazla öğe çekilmek istenirse <constant>E_WARNING</constant>
+   seviyesinde bir hata oluşur.
   </para>
  </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -63,9 +71,12 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.2.10</entry>
+       <entry>7.1.10</entry>
        <entry>
-        Elde edilen anahtar dizisi artık karılmıyor.
+        Dahili rasgelelik algoritması <link
+        linkend="migration71.incompatible.rand-srand-aliases">değiştirildi</link>.
+        Libc rand işlevi yerine artık <link xlink:href="&url.mersenne;">Mersenne
+        Twister</link> Rasgele Sayı Üreteci kullanılıyor.
        </entry>
       </row>
       &changelog.randomseed;
@@ -74,6 +85,7 @@
    </informaltable>
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -92,6 +104,7 @@ echo $input[$rand_keys[1]] . "\n";
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

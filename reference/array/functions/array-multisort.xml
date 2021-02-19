@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-multisort" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_multisort</refname>
@@ -10,10 +10,10 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>array_multisort</methodname>
-   <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>arg</parameter><initializer>SORT_ASC</initializer></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>arg</parameter><initializer>SORT_REGULAR</initializer></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">dizi1</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>dizi1_sıralama_düzeni</parameter><initializer>SORT_ASC</initializer></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>dizi1_sıralama_seçenekleri</parameter><initializer>SORT_REGULAR</initializer></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>diğerleri</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>array_multisort</function> işlevi çok sayıda diziyi bir kerede
@@ -24,6 +24,7 @@
    İlişkisel (<type>string</type>) anahtarlar korunursa da sayısal indisler
    yeniden oluşturulur.
   </para>
+  &note.sort-unstable;
  </refsect1>
 
  <refsect1 role="parameters">
@@ -39,24 +40,79 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>arg</parameter></term>
+     <term><parameter>dizi1_sıralama_düzeni</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde, önceki diziye uygulanmak üzere ya başka bir dizi
-       ya da şu seçeneklerden biri belirtilir:
-       <constant>SORT_ASC</constant> (artan sırada),
-       <constant>SORT_DESC</constant> (azalan sırada),
-       <constant>SORT_REGULAR</constant> (normal),
-       <constant>SORT_NUMERIC</constant> (sayısal),
-       <constant>SORT_STRING</constant> (dizgesel).
+       Önceki <type>dizi</type> değiştirgesini sıralamada kullanılacak düzen.
+       Artan şekilde sıralamak için <constant>SORT_ASC</constant>, azalan şekilde
+       sıralalmak için <constant>SORT_DESC</constant>.
+      </para>
+      <para>
+       Bu değiştirge <parameter>dizi1_sıralama_seçenekleri</parameter>
+       değiştirgesiyle yer değiştirebilir. Bu durumda sıralama düzeni olarak
+       <constant>SORT_ASC</constant> öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>...</parameter></term>
+     <term><parameter>dizi1_sıralama_seçenekleri</parameter></term>
      <listitem>
       <para>
-       Ek <parameter>değiştirge</parameter>'ler.
+       Önceki <type>dizi</type> değiştirgesi için sıralama seçenekleri
+      </para>
+      <para>
+       Sorting type flags:
+       <itemizedlist>
+        <listitem>
+         <simpara><constant>SORT_REGULAR</constant> - öğeler normal olarak
+          karşılaştırılır (türleri değişmez)</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_NUMERIC</constant> - öğeler sayısal olarak
+          karşılaştırılır</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_STRING</constant> - öğeler dizgesel olarak
+          karşılaştırılır</simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>SORT_LOCALE_STRING</constant> - öğeler geçerli yerele göre
+          dizgesel olarak karşılaştırılır. <function>setlocale</function> ile
+          belirtilen yerel kullanılır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>SORT_NATURAL</constant> - öğeler <function>natsort</function>
+          işlevinin yaptığı gibi "doğal sıralama" kullanılarak dizgesel olarak
+          karşılaştırılır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>SORT_FLAG_CASE</constant> - dizgeleri harf büyüklüğüne
+          bakmaksızın sıralamak için <constant>SORT_STRING</constant> ile
+          <constant>SORT_NATURAL</constant> VEYAlanabilir.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+      <para>
+       Bu değiştirge <parameter>dizi1_sıralama_düzeni</parameter> ile yer
+       değiştirebilir veya hiç belirtilmeyebilir; bu durumda
+       <constant>SORT_REGULAR</constant> öntanımlıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>diğerleri</parameter></term>
+     <listitem>
+      <para>
+       Dğer diziler; ardından isteğe bağlı oarak sıralama düzeni ve seçenekleri
+       belirtilebilir. Yalnızca önceki dizilerdeki eşdeğer öğelere karşılık
+       gelen öğeler karşılaştırılır. Başka bir deyişle, sıralama
+       sözlükbilimseldir.
       </para>
      </listitem>
     </varlistentry>
@@ -178,7 +234,7 @@ array(2) {
     </screen>
     <para>
      Dizi olarak <varname>veri</varname> dizisi kullanılmıştır. Aynı sonuç
-     <function>mysql_fetch_assoc</function> işlevini bir döngü içinde
+     <function>mysqli_fetch_assoc</function> işlevini bir döngü içinde
      kullanarak da elde edilebilir.
     </para>
     <programlisting role="php">
@@ -211,6 +267,11 @@ foreach ($veri as $anahtar => $satır) {
     $bölüm[$anahtar]  = $satır['bölüm'];
     $baskı[$anahtar] = $satır['baskı'];
 }
+
+// PHP 5.5.0 ve sonrasında yukarıdaki kod yerine array_column() kullanılabilir
+$volume  = array_column($veri, 'bölüm');
+$edition = array_column($veri, 'baskı');
+
 
 // bölüm'ü azalan, baskı'yı artan düzende sıralayalım ve
 // ortak bir anahtara göre sıralamak için $veri'yi son
