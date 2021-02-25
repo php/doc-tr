@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4a7ddddc27271967b616ad3400cfbe2a9b48212b Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.extract" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>extract</refname>
@@ -220,95 +220,13 @@ mavi, büyük, küre, orta
    <para>
     <function>extract</function> işlevini kullanıcı girdisi
     (<varname>$_GET</varname>, <varname>$_FILES</varname>, vb.) gibi güvenilmez
-    veriler üzerinde kullanmayın. Aksi takdirde, örneğin, <link
-    linkend="security.globals">register_globals</link> yönergesinin 'On'
-    olmasını gerektiren eski kodları geçici olarak çalıştırmak isterseniz
-    <constant>EXTR_SKIP</constant> gibi üste yazmayan
-    <parameter>seçenekler</parameter> değerlerini kullanmaya ve <link
-    linkend="ini">&php.ini;</link> dosyasındaki <link
-    linkend="ini.variables-order">variables_order</link> yönergesinde tanımlı
-    sırada çıkartmaya çalışın.
+    veriler üzerinde kullanmayın. Aksi takdirde, <constant>EXTR_SKIP</constant>
+    gibi üste yazmayan <parameter>seçenekler</parameter> değerlerini kullanmaya
+    ve <link linkend="ini">&php.ini;</link> dosyasındaki
+    <link linkend="ini.variables-order">variables_order</link> yönergesinde
+    tanımlı sırada çıkartmaya çalışın.
    </para>
   </warning>
-  <note>
-   <para>
-    Eğer <link linkend="security.globals">register_globals</link>
-    yönergesini etkin kılar ve <varname>$_FILES</varname> üzerinde
-    <function>extract</function> kullanıp <constant>EXTR_SKIP</constant>
-    belirtirseniz hiç beklenmedik bir sonuç alabilirsiniz.
-   </para>
-   <warning>
-    <para>
-     Uygulamada bu önerilmez ve bir şeyleri eksik bırakmamak için burada
-     belgelendirmekle yetinilmiştir. Yukarıda belirtildiği gibi, <link
-     linkend="security.globals">register_globals</link> kullanımı artık
-     önerilmemekte ve <varname>$_FILES</varname> gibi güvenilir olmayan veriler
-     üzerinde <function>extract</function> kullanımı olası bir güvenlik riskini
-     beraberinde getirebilir. Böyle bir durumla karşılaşırsanız en azından bu
-     iki kötü kodlama uygulamasından birini kullanıyorsunuz demektir.
-    </para>
-   </warning>
-   <programlisting role="php">
-<![CDATA[
-<?php
-
-/* Yüklenecek dosyanın ismi $testfile ve
-   'register_globals on' olsun. */
-
-var_dump($testfile);
-extract($_FILES, EXTR_SKIP);
-var_dump($testfile);
-var_dump($testfile['tmp_name']);
-
-?>
-]]>
-   </programlisting>
-   <simpara>
-    Sonuç olarak şöyle bir şeyler umabiliriz:
-   </simpara>
-   <screen>
-<![CDATA[
-string(14) "/tmp/phpgCCPX8"
-array(5) {
-  ["name"]=>
-  string(10) "somefile.txt"
-  ["type"]=>
-  string(24) "application/octet-stream"
-  ["tmp_name"]=>
-  string(14) "/tmp/phpgCCPX8"
-  ["error"]=>
-  int(0)
-  ["size"]=>
-  int(4208)
-}
-string(14) "/tmp/phpgCCPX8"
-]]>
-   </screen>
-   <simpara>
-    Ancak, bunun yerine aşağıdaki gibi bir şeylaer görürüz:
-   </simpara>
-   <screen>
-<![CDATA[
-string(14) "/tmp/phpgCCPX8"
-string(14) "/tmp/phpgCCPX8"
-string(1) "/"
-]]>
-   </screen>
-   <para>
-    Bunun sebebi, <link linkend="security.globals">register_globals</link> 'on'
-    olduğundan dolayı <function>extract</function> çağrısı yapıldığında
-    <varname>$testfile</varname> değişkeninin küresel etki alanında mevcut
-    olması ve  <constant>EXTR_SKIP</constant> belirtilmesi nedeniyle
-    <constant>$_FILES</constant> dizisinin içeriğinin
-    <varname>$testfile</varname> üzerine yazılmaması, dolayısıyla
-    <varname>$testfile</varname>'ın bir dizge olarak kalmasıdır. <link
-    linkend="language.types.string.substr">Dizgelere dizi sözdizimi
-    kullanılarak erişilebildiğinden</link> ve sayısal olmayan
-    <literal>tmp_name</literal> dizgesi <literal>0</literal> olarak
-    yorumlandığından, PHP, <varname>$testfile['tmp_name']</varname> ifadesini
-    <varname>$testfile[0]</varname> olarak görür.
-   </para>
-  </note>
 </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f029b664b8728bd5cbb697cb9a4409aea07cb36c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e08a8aae657492bdcdc7c550099ddf072042fa9 Maintainer: nilgun Status: ready -->
 <chapter xml:id="faq.using" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP Kullanımı</title>
   <titleabbrev>PHP Kullanımı</titleabbrev>
@@ -96,74 +96,6 @@ if (empty($empty)) {
      </para>
     </answer>
    </qandaentry>
-
-   <qandaentry xml:id="faq.register-globals">
-    <question>
-     <para>
-      PHP'nin register_globals yönergesi beni nasıl etkiler?
-     </para>
-    </question>
-    <answer>
-     &warn.deprecated.feature-5-3-0.removed-5-4-0;
-     <para>
-      Önce, bu ini ayarının ne işe yaradığından bahsedelim. Şöyle bir URL'miz
-      olsun: <literal>http://gen.tr/fan.php?hayvan=kedi</literal>. Ayrıca,
-      <filename>fan.php</filename> içinde şu PHP kodu bulunsun:
-     </para>
-     <para>
-      <example><programlisting role="php">
-<![CDATA[
-<?php
-// Burada $_GET tercih ediyoruz
-echo $_GET['hayvan'];
-
-// $hayvan'ın mevcut olması için, register_globals on olmalı
-// BUNU YAPMAYIN
-echo $animal;
-
-// Bu, tüm değişkenlere uygulanır, tabii $_SERVER'a da
-echo $_SERVER['PHP_SELF'];
-
-// Tekrar, $PHP_SELF'in mevcut olması için, register_globals on olmalı
-// BUNU YAPMAYIN
-echo $PHP_SELF;
-?>
-]]>
-     </programlisting></example>
-    </para>
-    <!-- FIXME PHP_6 register_globals removal alert -->
-    <para>
-     Yukarıdaki kod register_globals'in çok sayıda değişkeni nasıl
-     oluşturduğunu göstermektedir. Yıllardır böyle bir kodlama uygun
-     görülmediği gibi yıllardır öntanımlı olarak register_globals off'tur.
-     Çoğu sitede register_globals
-     kapalı olsa da hala güncellenmemiş makaleler, öğreticiler ve kitaplar
-     değerenin 'on' olması gerektiğini belirtip durmaktalar. Bunlar bir an
-     önce düzeltilmelidir.
-    </para>
-    <para>
-     Daha fazla bilgi için aşağıdaki belgelere de bakınız:
-     <simplelist>
-      <member><link linkend="ini.register-globals">register_globals yönergesi
-      </link></member>
-      <member><link linkend="security.globals">register_globals kullanımı ile
-      ilgili güvenlik bölümü</link></member>
-      <member><link linkend="language.variables.external">Dış Kaynaklı
-      Değişkenler</link></member>
-      <member><link linkend="language.variables.superglobals">Süper
-      küresellerin kullanımı</link></member>
-     </simplelist>
-    </para>
-    <note>
-     <para>
-      Yukarıdaki örnekte bir sorgu dizgesi içeren bir <acronym>URL</acronym>
-      kullanılmıştır. Bu tür bilgiler aktarılırken bir GET HTTP isteği
-      yapılır. Dolayısıyla, <varname>$_GET</varname> süper küreselinin
-      kullanılma nedeni de budur.
-     </para>
-    </note>
-   </answer>
-  </qandaentry>
 
    <qandaentry xml:id="faq.using.wrong-order">
     <question>
@@ -403,27 +335,9 @@ foreach ($başlıklar as $isim => $içerik) {
     </question>
     <answer>
      <para>
-      PHP'nin <link linkend="ini.register-globals">register_globals</link>
-      yönergesinin sunucu ve ortam değişkenlerini nasıl etkilediğini bilmek
-      önemlidir. <code>register_globals = off</code> olduğunda (PHP 4.2.0'den
-      beri öntanımlı olarak böyledir), <varname>$DOCUMENT_ROOT</varname>
-      değişkeni mevcut olmayacaktır. Yerine <varname>$_SERVER['DOCUMENT_ROOT']
-      </varname> kullanmalısınız. <code>register_globals = on</code>
-      olduğunda ise <varname>$DOCUMENT_ROOT</varname> ve
-      <varname>$GLOBALS['DOCUMENT_ROOT']</varname> değişkenlerinin ikisi de
-      mevcut olacaktır.
+      Yerine <varname>$_SERVER['DOCUMENT_ROOT']</varname> ve
+      <varname>$_SERVER['HTTP_REFERER']</varname> kullanın.
      </para>
-     <para>
-      <code>register_globals = on</code> olduğunda
-      <varname>$DOCUMENT_ROOT</varname> değişkeninin işlevlerin içinde neden
-      geçerli olmadığını merak ediyor olabilirsiniz. Bunun sebebi, diğer
-      değişkenler gibi bunun için de <literal>global $DOCUMENT_ROOT</literal>
-      gerekmesidir. Ayrıca, <link linkend="language.variables.scope">Değişken
-      etki alanı</link> bölümüne de bakınız.  Ancak, kodlarınızı
-      <code>register_globals = off</code> olduğu duruma uygun olarak yazmayı
-      tercih etmelisiniz.
-     </para>
-
     </answer>
    </qandaentry>
 

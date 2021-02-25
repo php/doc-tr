@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 6dfe0767250cdbdf509223f6bc266557b0a3fec9 Maintainer: haluk Status: ready -->
 <section xml:id="intl.configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.runtime;
  &extension.runtime;
@@ -17,37 +17,91 @@
       <entry>&Changelog;</entry>
      </row>
     </thead>
-    <tbody>
+    <tbody xml:id="intl.configuration.list">
      <row>
-      <entry><link linkend="ini.intl.default-locale">intl.default_locale</link></entry>
+      <entry><link linkend="ini.intl.default-locale">
+       intl.default_locale</link></entry>
       <entry></entry>
       <entry>PHP_INI_ALL</entry>
       <entry></entry>
      </row>
+     <row>
+      <entry><link linkend="ini.intl.error-level">intl.error_level</link></entry>
+      <entry>0</entry>
+      <entry>PHP_INI_ALL</entry>
+      <entry></entry>
+     </row>
+     <row>
+      <entry><link linkend="ini.intl.use-exceptions">intl.use_exceptions</link></entry>
+      <entry>0</entry>
+      <entry>PHP_INI_ALL</entry>
+      <entry>PHP 5.5 ve PECL 3.0.0a1 ve sonrasında kullanılabilir.</entry>
+     </row>
     </tbody>
    </tgroup>
   </table>
-
-  &ini.php.constants;
-
  </para>
 
  &ini.descriptions.title;
 
  <para>
   <variablelist>
-
    <varlistentry xml:id="ini.intl.default-locale">
-    <term>
-     <parameter>intl.default_locale</parameter>
-     <type>string</type>
-    </term>
-    <listitem>
-     <para>
-     </para>
-    </listitem>
-   </varlistentry>
-
+     <term>
+      <parameter>intl.default_locale</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       Hiçbir şey belirtilmediğinde (karşılık gelen değiştirgeyi atlayarak
+       veya <literal>NULL</literal> belirterek) intl işlevlerinde kullanılacak
+       yerel. Bunlar ICU yerelleridir, sistem yerelleri değildir. Yerleşik ICU
+       yerelleri ve bunları verileri <link xlink:href="&url.icu.locales;"/>
+       adresinde bulunabilir.
+      </para>
+      <para>
+       ICU öntanımlı yerelinin kullanımına zorlamak için öntanımlı değer
+       boştur. Bir kez değiştirildikten sonra bu ini ayarı tekrar öntanımlı
+       değere döndürülemez. Etkin değer sunucunun ortamına bağlı olduğundan,
+       bu öntanımlı ayara güvenilmemelidir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="ini.intl.error-level">
+     <term>
+      <parameter>intl.error_level</parameter>
+      <type>int</type>
+     </term>
+     <listitem>
+      <para>
+       ICU işlevlerinde bir hata oluştuğunda üretilen hata iletilerinin
+       seviyesi. Bu, <constant>E_WARNING</constant> gibi bir PHP hata
+       seviyesidir. Hata iletilerini engellemek için <literal>0</literal>
+       atanabilir. Bu, hatayı gösteren dönüş değerlerini veya
+       <function>intl_get_error_code</function> tarafından döndürülen
+       değerleri veya hata kodlarını ve iletilerini almak için kullanılan
+       sınıfa özgü yöntemleri etkilemez. <literal>E_ERROR</literal> seçilirse,
+       intl sınıflarında bir hata oluştuğunda betiğin çalışması durdurulur.
+      </para>
+      <para>
+       Öntanımlı değer: <literal>0</literal>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="ini.intl.use-exceptions">
+     <term>
+      <parameter>intl.use_exceptions</parameter>
+      <type>int</type>
+     </term>
+     <listitem>
+      <para>
+       True atanırsa, bir intl işlevinde hata oluştuğunda <link linkend="ini.intl.error-level">intl.error_level</link> ile üretilen
+       hata iletisine ek olarak <classname>IntlException</classname> türünde
+       bir istisna yavrulanır.
+      </para>
+      <para>Öntanımlı değer: &false;</para>
+     </listitem>
+    </varlistentry>
   </variablelist>
  </para>
 </section>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e08a8aae657492bdcdc7c550099ddf072042fa9 Maintainer: nilgun Status: ready -->
  <chapter xml:id="faq.misc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Çeşitli Sorular</title>
   <titleabbrev>Çeşitli Sorular</titleabbrev>
@@ -71,129 +71,6 @@
       dosya elde edeceksiniz. Tar biçemi
       <link xlink:href="&url.winzip;">WinZip</link> gibi pek çok Windows
       arşivleme aracı tarafından bilinmektedir.
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.misc.arguments.references">
-    <question>
-     <para>
-      <function>asort</function> gibi bazı işlev bildirimlerinde
-      değiştirgenin başındaki &amp; neyin nesidir?
-     </para>
-    </question>
-    <answer>
-     <para>
-      Bu, değiştirgenin <link linkend="language.references.pass">gönderimli
-      aktarıldığı</link> anlamına gelir ve ilgili belgelerde de açıklandığı
-      gibi işlev bunu değiştirecektir. Bu yolla sadece değişkenleri
-      aktarabilirsiniz ve işlev çağrısında değiştirgenin başına &amp;
-      yerleştirmenize gerek yoktur (ve bu artık
-      <link linkend="ini.allow-call-time-pass-reference">önerilmemektedir</link>).
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.misc.registerglobals">
-    <question>
-     <para>
-      <literal>register_globals</literal> ile nasıl çalışacağım?
-     </para>
-    </question>
-    <answer>
-     <para>
-      <literal>register_globals</literal> ile ilgili güvenlik kaygıları
-      hakkında bilgi edinmek için güvenlik kısmında bulunan
-      <link linkend="security.globals">register_globals kullanımı</link>
-      bölümüne bakınız.
-     </para>
-     <para>
-      <literal>register_globals</literal> yerine
-      <link linkend="language.variables.superglobals">süper
-      küreselleri</link> kullanmanız önerilir.
-     </para>
-     <para>
-      Eğer <literal>register_globals</literal>'in kapalı olduğu bir paylaşımlı
-      konak üzerindeyseniz ve bu seçeneğin etkin olmasını gerektiren bazı
-      eski uygulamaları kullanmanız gerekiyorsa veya bu özelliğin etkin
-      olduğu bir barındırma sunucusundaysanız fakat güvenlikle ilgili riske
-      girmek istemiyorsanız PHP ile zıt ayarları taklit etmeniz gerekebilir.
-      PHP'nin yapılandırmasını değiştirmenin mümkün olup olmadığını önce bir
-      sormanızda fayda var. Eğer mümkün değilse, aşağıdaki uyumluluk
-      kodlarını kullanabilirsiniz:
-     </para>
-     <para>
-      <example>
-       <title><code>register_globals</code>'in taklit edilmesi</title>
-        <para>
-         Bu örnekte <code>register_globals=On</code> durumu taklit
-         edilmektedir. Eğer
-         <link linkend="ini.variables-order">variables_order</link>
-         yönergenizde değişiklik yaparsanız değişikliği
-         <varname>$superglobals</varname> değişkenine de yansıtmalısınız.
-       </para>
-       <programlisting role="php">
-<![CDATA[
-<?php
-// register_globals=on'u taklit edelim
-if (!ini_get('register_globals')) {
-    $superglobals = array($_SERVER, $_ENV,
-        $_FILES, $_COOKIE, $_POST, $_GET);
-    if (isset($_SESSION)) {
-        array_unshift($superglobals, $_SESSION);
-    }
-    foreach ($superglobals as $superglobal) {
-        extract($superglobal, EXTR_SKIP);
-    }
-}
-?>
-]]>
-       </programlisting>
-       <para>
-        Bu örnekte ise <code>register_globals=Off</code> durumu taklit
-        edilmektedir. Bu kodu betiğinizin oldukça baş taraflarına veya oturum
-        başlatmak için kullandığınız <function>session_start</function>
-        çağrısından sonra yerleştirmeniz gerektiğini aklınızdan çıkarmayın.
-       </para>
-       <programlisting role="php">
-<![CDATA[
-<?php
-// register_globals=off'u taklit edelim
-function unregister_GLOBALS()
-{
-    if (!ini_get('register_globals')) {
-        return;
-    }
-
-    // Daha hoş hatalar almak için bunu değiştirebilirsiniz
-    if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
-        die('GLOBALS geçersizleştirme çabası algılandı');
-    }
-
-    // unset edilmemesi gereken değişkenler
-    $noUnset = array('GLOBALS',  '_GET',
-                     '_POST',    '_COOKIE',
-                     '_REQUEST', '_SERVER',
-                     '_ENV',     '_FILES');
-
-    $input = array_merge($_GET,    $_POST,
-                         $_COOKIE, $_SERVER,
-                         $_ENV,    $_FILES,
-                         isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
-
-    foreach ($input as $k => $v) {
-        if (!in_array($k, $noUnset) && isset($GLOBALS[$k])) {
-            unset($GLOBALS[$k]);
-        }
-    }
-}
-
-unregister_GLOBALS();
-
-?>
-]]>
-       </programlisting>
-      </example>
      </para>
     </answer>
    </qandaentry>
