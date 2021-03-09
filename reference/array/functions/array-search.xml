@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-search" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_search</refname>
-  <refpurpose>Bir dizide belirtilen değeri arar ve bulursa ilgili anahtarı
+  <refpurpose>Bir dizide belirtilen değeri arar ve bulursa ilgili ilk anahtarı
   döndürür</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>array_search</methodname>
+   <type class="union"><type>int</type><type>string</type><type>false</type></type><methodname>array_search</methodname>
    <methodparam><type>mixed</type><parameter>iğne</parameter></methodparam>
    <methodparam><type>array</type><parameter>samanlık</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>türüne_bak</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>türüne_bak</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>samanlık</parameter>'ta <parameter>iğne</parameter> arar.
@@ -49,10 +49,12 @@
      <term><parameter>türüne_bak</parameter></term>
      <listitem>
       <para>
-       Bu değiştirgede &true; belirtilmişse <function>array_search</function>
-       işlevi ayrıca, <parameter>iğne</parameter>'yi
-       <parameter>samanlık</parameter>'ta ararken <link
-       linkend="language.types">türüne</link> de bakar.
+       Üçüncü <parameter>türüne_bak</parameter> değiştirgesine &true;
+       belirtilmişse <function>array_search</function> işlevi samanlıkta
+       <parameter>iğne</parameter> ile özdeş öğeleri arayacaktır. Bu,
+       samanlıktaki iğne ile <link linkend="language.types">sıkı bir tür
+       karşılaştırması</link> yapılacağı ve nesnelerin aynı örneğin üyeleri
+       olması gerektiği anlamına gelir.
       </para>
      </listitem>
     </varlistentry>
@@ -62,7 +64,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bulursa <parameter>iğne</parameter>'yi bulamazsa &false; döndürür.
+   Bulursa ilk <parameter>iğne</parameter>'nin anahtarını bulamazsa
+   &false; döndürür.
   </para>
   <para>
    Eğer <parameter>iğne</parameter>,  <parameter>samanlık</parameter> içinde
@@ -72,30 +75,6 @@
    <parameter>arama_değeri</parameter> değiştirgesi ile kullanın.
   </para>
   &return.falseproblem;
- </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        PHP 4.2.0 öncesinde, <function>array_search</function> aranan değeri
-        bulamazsa &false; yerine &null; döndürürdü.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
