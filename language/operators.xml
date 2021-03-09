@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 783fbc2001b129f5f8956937e15e253969b8765c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 80958298c021b3284349b563266eefd184025c83 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -227,7 +227,7 @@
         </entry>
        </row>
        <row>
-        <entry>soldan</entry>
+        <entry>(yok)</entry>
         <entry><literal>? :</literal></entry>
         <entry>
          <link linkend="language.operators.comparison.ternary">üç terimli
@@ -374,6 +374,36 @@ x eksi bir eşittir 3, ya da ben öyle umdum
      değişkenine atayan <literal>if (!$a = foo())</literal> ifadesi.
     </para>
    </note>
+   <sect2 role="changelog">
+    &reftitle.changelog;
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>8.0.0</entry>
+        <entry>
+         Üç terimli işleç (<literal>? :</literal>) artık ilişkisel değil;
+         evvelce soldan ilişkili idi.
+        </entry>
+       </row>
+       <row>
+        <entry>7.4.0</entry>
+        <entry>
+         Üç terimli işlecin (<literal>? :</literal>) soldan ilişkiselliğine
+         güvenmek artık önerilmiyor; yani, çok sayıda parantezsiz üç terimli
+         artık iç içe yazılmamalıdır.
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect2>
   </sect1>
 
   <sect1 xml:id="language.operators.arithmetic">
@@ -1770,21 +1800,25 @@ if (empty($_POST['action'])) {
     </note>
     <note>
      <para>
-      Üç terimli işleçleri iç içe kullanmanız önerilmez. PHP'nin böyle bir
+      Üç terimli işleçleri parantezsiz olarak iç içe kullanmanız önerilmez.
+      PHP'nin böyle bir
       işlemin tek bir deyimde yapılmak istenmesi durumundaki davranışı
       diğer dillerle karşılaştırıldığında beklendiği gibi olmayabilir.
       Aslında PHP 8.0.0'dan önce, üçlü ifadeler diğer programlama dilleri
       gibi sağdan sola yerine soldan sağa değerlendiriliyordu.
+      PHP 7.4.0 itibariyle soldan sağa ilişkilendirmeye güvenilmesi
+      önerilmemekte olup PHP 8.0.0 itibariyle üçlü işlecin değerlendirmesi
+      yönsüzdür.
       <example>
        <title>- İç içe üç terimli davranışı</title>
        <programlisting role="php">
 <![CDATA[
 <?php
 // ilk bakışta aşağıdaki deyimin sonucu 'true' olacak sanılır.
-echo (true?'true':false?'t':'f');
+echo (true ? 'true' : false ? 't' : 'f');
 
 // ancak gerçekte çıktı 't' olur, PHP 8.0.0 öncesinde.
-// Çünkü üç terimli ifade soldan sağa değerlendirilir.
+// Çünkü üç terimli ifade soldan ilişkilendirilir.
 
 // Aynı deyimi şöyle yazarsanız, durum anlaşılır hale gelir
 echo ((true ? 'true' : false) ? 't' : 'f');
@@ -1873,14 +1907,38 @@ echo $foo ?? $bar ?? $baz ?? $qux; // 1 basar
    <simpara>
     PHP tek bir hata denetim işlecini destekler: kuyruklu a imi
     (<literal>@</literal>). PHP'de bir deyimin başına getirildiğinde,
-    bu deyimin üreteceği olası hata iletileri yok sayılır.
+    bu deyimin üreteceği olası hata iletileri engellenir.
    </simpara>
-    <simpara>
-    <function>set_error_handler</function> ile özel bir hata işleyici işlev
-    tanımlarsanız, hala çağrılmasına rağmen bu özel hata işleyicinin
-    <function>error_reporting</function> işlevini (hatayı tetikleyen
-    çağrı @ ile öncelenmişse 0 döndürür) çağırması gerekir.
-   </simpara>
+   <para>
+    <function>set_error_handler</function> ile özel bir hata işleyici işlevi
+    ayarlanırsa, tanılama bastırılmış olsa bile, özel hata işleyici
+    <function>error_reporting</function> işlevini çağırmalı ve aşağıdaki
+    şekilde kullanılan <literal>@</literal> işlecini doğrulamalıdır:
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function my_error_handler($err_no, $err_msg, $filename, $linenum) {
+    if (!(error_reporting() & $err_no)) {
+        return false; // Sustu
+    }
+    // ...
+}
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <warning>
+    <para>
+     PHP 8.0.0'dan önce, özel hata işleyicisine aktarılan önem derecesi değeri,
+     tanılama bastırıldıysa her zaman <literal>0</literal> idi. Bu artık PHP
+     8.0.0'dan itibaren geçerli değildir.
+    </para>
+   </warning>
+
    <simpara>
     İfade tarafından üretilenhata iletisi, <function>get_error_last</function>
     işlevinden dönen dizinin <literal>"message"</literal> elemanında bulunur.
@@ -1909,22 +1967,23 @@ $değer = @$cache[$key];
     <simpara>
      Kuyruklu a işleci sadece <link linkend="language.expressions"
      >ifadeler</link>in başında kullanıldığında çalışır. Kısaca: Bir değer
-     elde edebildiğiniz herşeyin başına <literal>@</literal> getirebilirsiniz.
+     elde edilebilen herşeyin başına <literal>@</literal> getirilebilir.
      Örneğin, değişkenlerin işlev veya <function>include</function>
      çağrılarının, sabitlerin ve benzerlerinin başına <literal>@</literal>
-     getirebilirsiniz. Ama işlev veya sınıf tanımlarının veya
+     getirilebilir. Ama işlev veya sınıf tanımlarının veya
      <literal>if</literal> ve &foreach; gibi denetim
-     yapılarının başına <literal>@</literal> koyamazsınız.
+     yapılarının başına <literal>@</literal> konamaz.
     </simpara>
    </note>
    <warning>
     <para>
-     Şu an <literal>@</literal> hata denetim işleci, betiğin çalışmasını
-     sonlandıracak önemli hataların raporlanmasını bile iptal edebilmektedir.
-     Bu bakımdan, işleci örneğin bir işlevden kaynaklanabilecek hataları
-     bastırmak için kullanıyorsanız, işlev tanımında yaptığınız yazım hataları
-     veya işlevin yokluğu halinde ne olup bittiğini anlamadan betiğiniz
-     sonlanıverebilir.
+     PHP 8.0.0 öncesinde, <literal>@</literal> hata denetim işleci ile
+     betiğin çalışmasını sonlandıracak önemli hataların raporlanmasını
+     iptal etmek mümkündü.
+     Bu bakımdan, işleç örneğin bir işlevden kaynaklanabilecek hataları
+     bastırmak için kullanılıyorsa, işlev tanımında yapılan yazım hataları
+     nedeniyle veya işlevin yokluğu halinde, ne olup bittiği anlaşılamadan
+     betik sonlanabiliyordu.
     </para>
    </warning>
 
