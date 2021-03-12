@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-unique" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_unique</refname>
@@ -12,27 +12,21 @@
   <methodsynopsis>
    <type>array</type><methodname>array_unique</methodname>
    <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>SORT_STRING</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>SORT_STRING</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizi</parameter> dizisinden yinelenen değerleri sildikten sonra
    yeni diziyi döndürür.
   </para>
   <para>
-   Anahtarlar korunacaktır. <function>array_unique</function> önce değerleri
-   birer dizge olarak sıralar, sonra her eleman için saptadığı ilk anahtarı
-   tutar ve diğer tüm anahtarları yoksayar. Burada bahsedilen ilk anahtar
-   girdi olarak verilen (sıralanmamış) dizinin ilk elemanı ile ilişkili
-   anahtar olmayabilir.
+   Anahtarlar korunacaktır. <parameter>seçenekler</parameter> değiştirgesi ile
+   belirtilen koşula göre anahtar ve değeri aynı olan ilk öğe korunur.
   </para>
   <note>
    <simpara>
     İki elemanın eşit kabul edilebilmesi için şu şart sağlanmış olmalıdır:
-    <literal>(string) $elem1 === (string) $elem2</literal>. Başka bir deyişle:
-    İki elemanın dizgesel gösterimleri aynıysa bu iki eleman birbirine eşittir.
-   </simpara>
-   <simpara>
-    İlk eleman daima kullanılır.
+    <literal>(string) $elem1 === (string) $elem2</literal>. Yani,
+    iki elemanın dizgesel gösterimleri aynıysa ilk eleman kullanılır.
    </simpara>
   </note>
  </refsect1>
@@ -72,10 +66,7 @@
         </listitem>
         <listitem>
          <simpara><constant>SORT_LOCALE_STRING</constant> - öğeler dizgesel
-         olarak yerele göre karşılaştırılır. PHP 4.4.0 ve 5.0.2'de eklermiştir.
-         PHP 6 öncesinde, sistem yereli <function>setlocale</function>
-         kullanılarak değiştirilirdi. PHP 6'dan itibaren
-         <function>i18n_loc_set_default</function> işlevini kullanmalısınız.
+         olarak geçerli yerele göre karşılaştırılır.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -106,21 +97,14 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.2.9</entry>
+       <entry>7.2.0</entry>
        <entry>
-        Seçimlik <parameter>seçenekler</parameter> değiştirgesi, öntanımlı
-        <constant>SORT_REGULAR</constant> değeri ile eklendi. 5.2.9 öncesinde
-        işlev dahili olarak <constant>SORT_STRING</constant> ile diziyi
-        sıralardı.
+        <parameter>seçenekler</parameter>  <constant>SORT_STRING</constant> ise,
+        evvelce dizi kopyalanıp benzersiz olmayan öğeler kaldırılırdı (sonradan
+        dizi paketlenmeden), şimdi benzersiz öğeler eklenerek yeni bir dizi
+        oluşturulmaktadır. Bu dizi, farklı sayısal indislerle oluşabilir.
        </entry>
       </row>
-      <row>
-       <entry>5.2.10</entry>
-       <entry>
-        <parameter>seçenekler</parameter> değiştirgesinin öntanımlı değeri
-        tekrar <constant>SORT_STRING</constant> yapıldı.
-        </entry>
-       </row>
      </tbody>
     </tgroup>
    </informaltable>
@@ -178,6 +162,16 @@ array(2) {
    </example>
   </para>
  </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_count_values</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
   <note>
