@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-replace" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_replace</refname>
@@ -11,10 +11,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>array_replace</methodname>
-   <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
-   <methodparam><type>array</type><parameter role="reference">dizi1</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">dizi2</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">...</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>diziler</parameter></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizi</parameter> dizisinin değerlerini belirtilen diğer
@@ -22,7 +20,7 @@
    mevcutsa ilk dizideki değer ikinciden güncellenir. İkinci dizide olup ilk
    dizide olmayan anahtarlar ilk dizide oluşturulur. Sadece ilk dizide
    bulunan anahtarların değerlerine dokunulmaz. Birden fazla güncelleyici
-   dizi belirtilmişse diziler sırayla işlenir; yani daima sonraki dizideki
+   dizi belirtilmişse diziler sırayla işlenir; yani sonraki dizideki
    değerler daima üste yazar.
   </para>
   <para>
@@ -43,10 +41,11 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizi1</parameter></term>
+     <term><parameter>diziler</parameter></term>
      <listitem>
       <para>
-       İlk diziyi güncelleyecek dizi.
+       İlk diziyi güncelleyecek diziler. Sonraki dizilerin değerleri
+       öncekilerin değerlerini geçersiz kılar.
       </para>
      </listitem>
     </varlistentry>
@@ -69,7 +68,7 @@
 <?php
 $esas = array("portakal", "muz", "elma", "armut");
 $ikame = array(0 => "karpuz", 4 => "kavun");
-$ikame2 = array(0 => "dondurma");
+$ikame2 = array(0 => "kiraz");
 
 $sepet = array_replace($esas, $ikame, $ikame2);
 print_r($sepet);
@@ -81,11 +80,11 @@ print_r($sepet);
 <![CDATA[
 Array
 (
-    [0] => ahududu
+    [0] => kiraz
     [1] => muz
     [2] => elma
     [3] => armut
-    [4] => dondurma
+    [4] => kavun
 )
 ]]>
     </screen>
@@ -97,6 +96,7 @@ Array
   <para>
    <simplelist>
     <member><function>array_replace_recursive</function></member>
+    <member><function>array_merge</function></member>
    </simplelist>
   </para>
  </refsect1>

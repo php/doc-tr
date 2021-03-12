@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-slice" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_slice</refname>
@@ -12,15 +12,14 @@
    <type>array</type><methodname>array_slice</methodname>
    <methodparam><type>array</type><parameter>girdi</parameter></methodparam>
    <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>indisleri_koru</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>indisleri_koru</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>array_slice</function> işlevi <parameter>girdi</parameter>
    dizisinin <parameter>başlangıç</parameter>'tan itibaren
    <parameter>uzunluk</parameter> sayıda elemanından oluşan bir dizi ile döner.
   </para>
-  &array.resetspointer;
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -40,33 +39,53 @@
       <para>
        <parameter>başlangıç</parameter> pozitif bir değerse silinecek kısmın
        başlangıcı <parameter>girdi</parameter> dizisinin başlangıcından
-       itibaren sayılır. Negatif bir değerse <parameter>girdi</parameter>
+       itibaren sayılır.
+      </para>
+      <para>
+       Negatif bir değerse <parameter>girdi</parameter>
        dizisinin sonundan itibaren sayılır.
       </para>
+      <note>
+       <para>
+        <parameter>başlangıç</parameter> bir anahtar değil,
+        dizideki bir konumu belirtir.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
+       Belirtilmişse ve pozitifse <parameter>başlangıç</parameter>'tan dizi
+       sonuna kadar <parameter>uzunluk</parameter> sayıda eleman silinir.
+      </para>
+      <para>
+       Dizinin eleman sayısı <parameter>uzunluk</parameter>'tan azsa sadece
+       mevcut elemanlarla işlem yapılır.
+      </para>
+      <para>
+       Negatifse <parameter>başlangıç</parameter>'tan dizi sonuna kadar, dizi
+       sonundan belirtilen sayıda eleman hariç herşey silinir.
+      </para>
+      <para>
        <parameter>uzunluk</parameter> verilmezse,
        <parameter>başlangıç</parameter>'tan dizi sonuna kadar herşey silinir.
-       Belirtilmişse ve pozitifse <parameter>başlangıç</parameter>'tan dizi
-       sonuna kadar belirtilen kadar eleman silinir. Belirtilmişse ve
-       negatifse <parameter>başlangıç</parameter>'tan dizi sonuna kadar, dizi
-       sonundan belirtilen sayıda eleman hariç herşey silinir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>indisleri_koru</parameter></term>
      <listitem>
-      <para>
+      <note>
+       <para>
        <function>array_slice</function> öntanımlı olarak dizi indislerini
-       sıfırdan itbaren yeniden oluşturur. Bu davranışı
+       sıfırdan itbaren yeniden oluşturur.
        <parameter>indisleri_koru</parameter> değiştirgesinde &true; aktararak
-       değiştirebilirsiniz.
-      </para>
+       bu davranış değiştirilebilir. Bu değiştirgeye bakmaksızın, dizge
+       anahtarlar daima korunur.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -75,30 +94,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizinin istenen parçasıyla döner.
-  </para>
- </refsect1>
-  <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.2</entry>
-       <entry>
-        İsteğe bağlı <parameter>preserve_keys</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Dizinin istenen parçasıyla döner. <parameter>başlangıç</parameter> dizinin
+   eleman sayısından büyükse boş dizi döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -138,11 +135,66 @@ Array
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- 1 indisiyle başlayan dizi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = array(1 => "a", "b", "c", "d", "e");
+print_r(array_slice($input, 1, 2));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => b
+    [1] => c
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Karışık anahtarlı dizi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar = array('a'=>'apple', 'b'=>'banana', '42'=>'pear', 'd'=>'orange');
+print_r(array_slice($ar, 0, 3));
+print_r(array_slice($ar, 0, 3, true));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [a] => apple
+    [b] => banana
+    [0] => pear
+)
+Array
+(
+    [a] => apple
+    [b] => banana
+    [42] => pear
+)
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>array_chunk</function></member>
     <member><function>array_splice</function></member>
     <member><function>unset</function></member>
    </simplelist>

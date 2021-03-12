@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b8758b0605e80c4e3610137b7502a6abeea5c69b Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-reverse" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_reverse</refname>
@@ -11,7 +11,7 @@
   <methodsynopsis>
    <type>array</type><methodname>array_reverse</methodname>
    <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>anahtarları_koru</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>anahtarları_koru</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>dizi</parameter> dizisini alıp elemanlarını tersine
@@ -34,7 +34,8 @@
      <term><parameter>anahtarları_koru</parameter></term>
      <listitem>
       <para>
-       &true; belirtilirse dizideki anahtarlar korunur.
+       &true; belirtilirse dizideki sayısal anahtarlar korunur. Sayısal olmayan
+       anahtarlar bu ayardan etkilenmez ve daima korunur.
       </para>
      </listitem>
     </varlistentry>
@@ -47,29 +48,6 @@
    Tersine sıralanmış diziyi döndürür.
   </para>
  </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.3</entry>
-       <entry>
-        <parameter>anahtarları_koru</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -79,19 +57,30 @@
 <![CDATA[
 <?php
 $girdi  = array("php", 4.0, array("green", "red"));
-$sonuç = array_reverse($girdi);
-$anahtarlı_sonuç = array_reverse($girdi, true);
+$normal = array_reverse($girdi);
+$korunan = array_reverse($girdi, true);
+
+print_r($girdi);
+print_r($normal);
+print_r($korunan);
+ ?>
 ?>
 ]]>
     </programlisting>
-    <para>
-     Burada <varname>$sonuç</varname> ve <varname>$anahtarlı_sonuç</varname>
-     aynı elemanları içerir, sadece anahtarları farklıdır.
-     <varname>$sonuç</varname> ve <varname>$anahtarlı_sonuç</varname>
-     dizilerinin çıktısı şöyle olur::
-    </para>
-    <screen role="php">
-<![CDATA[
+    &example.outputs;
+     <screen role="php">
+ <![CDATA[
+Array
+(
+    [0] => php
+    [1] => 4
+    [2] => Array
+        (
+            [0] => green
+            [1] => red
+        )
+
+)
 Array
 (
     [0] => Array

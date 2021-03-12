@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7f569e1f175adf1fbd0e462eba8d6bc82214c939 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-reduce" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_reduce</refname>
@@ -13,7 +13,7 @@
    <type>mixed</type><methodname>array_reduce</methodname>
    <methodparam><type>array</type><parameter>girdi</parameter></methodparam>
    <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ilk_değer</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>ilk_değer</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>array_reduce</function> işlevi <parameter>işlev</parameter>
@@ -36,9 +36,30 @@
     <varlistentry>
      <term><parameter>işlev</parameter></term>
      <listitem>
-      <para>
-       Geriçağırım işlevi.
-      </para>
+      <methodsynopsis>
+       <type>mixed</type><methodname><replaceable>işlev</replaceable></methodname>
+       <methodparam><type>mixed</type><parameter>önceki</parameter></methodparam>
+       <methodparam><type>mixed</type><parameter>şimdiki</parameter></methodparam>
+      </methodsynopsis>
+      <variablelist>
+       <varlistentry>
+        <term><parameter>önceki</parameter></term>
+        <listitem>
+         <para>
+          Önceki yinelemenin dönüş değerini tutar. İlk yineleme için
+          <parameter>ilk_değer</parameter>'in değeridir.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><parameter>şimdiki</parameter></term>
+        <listitem>
+         <para>
+          Geçerli yinelemenin değerini tutar.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -47,8 +68,8 @@
       <para>
        Seçimlik <parameter>ilk_değer</parameter> değiştirgesi verilmişse ve
        dizi boşsa işlevin dönüş değeri <parameter>ilk_değer</parameter>  olur,
-       aksi takdirde işleme sokulan ilk değer belirtilen
-       <parameter>ilk_değer</parameter> olur.
+       aksi takdirde <parameter>ilk_değer</parameter> işleme sokulan ilk değer
+       olur.
       </para>
      </listitem>
     </varlistentry>
@@ -73,31 +94,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-function rsum($v, $w)
+function topla($önceki, $şimdiki)
 {
-    $v += $w;
-    return $v;
+    $önceki += $şimdiki;
+    return $önceki;
 }
 
-function rmul($v, $w)
+function çarp($önceki, $şimdiki)
 {
-    $v *= $w;
-    return $v;
+    $önceki *= $şimdiki;
+    return $önceki;
 }
 
 $a = array(1, 2, 3, 4, 5);
 $x = array();
-$b = array_reduce($a, "rsum");
-$c = array_reduce($a, "rmul", 10);
-$d = array_reduce($x, "rsum", 1);
+var_dump(array_reduce($a, "topla")); // int(15)
+var_dump(array_reduce($a, "çarp", 10)); // int(1200), çünkü: 10*1*2*3*4*5
+var_dump(array_reduce($x, "topla", "Yeterli veri yok ")); // string(17) "Yeterli veri yok "
 ?>
 ]]>
     </programlisting>
-    <para>
-     İşlem sonucunda <varname>$b</varname> <literal>15</literal>,
-     <varname>$c</varname> ise <literal>1200</literal> (= 10*1*2*3*4*5)
-     değerini içerirken <varname>$d</varname> <literal>1</literal> içerir.
-    </para>
    </example>
   </para>
  </refsect1>

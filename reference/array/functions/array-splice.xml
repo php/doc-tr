@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-splice" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_splice</refname>
@@ -13,8 +13,8 @@
    <type>array</type><methodname>array_splice</methodname>
    <methodparam><type>array</type><parameter role="reference">girdi</parameter></methodparam>
    <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>yenisi</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>yenisi</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>girdi</parameter> dizisinin <parameter>başlangıç</parameter>
@@ -22,17 +22,18 @@
    ve belirtildiği takdirde, bunların yerlerine
    <parameter>yenisi</parameter>'ni yerleştirir.
   </para>
-  <para>
-   <parameter>girdi</parameter> içindeki sayısal indislerin korunacağına
-   dikkat edin.
-  </para>
+  <note>
+   <para>
+    <parameter>girdi</parameter> içindeki sayısal anahtarlar korunmaz.
+   </para>
+  </note>
   <note>
    <simpara>
     Eğer <parameter>yenisi</parameter> bir dizi değilse  <code>(array)
     $yenisi</code> şeklinde bir <link linkend="language.types.array.casting">
     tür dönüşümüne</link> tabi tutulacaktır. <parameter>yenisi</parameter>
-    olarak bir nesne belirttiğiniz takdirde bu durum beklenmedik sonuçlar
-    verebilir.
+    olarak bir nesne veya &null; belirttiğiniz takdirde bu durum beklenmedik
+    sonuçlar verebilir.
    </simpara>
   </note>
  </refsect1>
@@ -54,7 +55,10 @@
       <para>
        <parameter>başlangıç</parameter> pozitif bir değerse silinecek kısmın
        başlangıcı <parameter>girdi</parameter> dizisinin başlangıcından
-       itibaren sayılır. Negatif bir değerse <parameter>girdi</parameter>
+       itibaren sayılır.
+      </para>
+      <para>
+       Negatif bir değerse <parameter>girdi</parameter>
        dizisinin sonundan itibaren sayılır.
       </para>
      </listitem>
@@ -65,15 +69,24 @@
       <para>
        <parameter>uzunluk</parameter> verilmezse,
        <parameter>başlangıç</parameter>'tan dizi sonuna kadar herşey silinir.
-       Belirtilmişse ve pozitifse <parameter>başlangıç</parameter>'tan dizi
-       sonuna kadar belirtilen kadar eleman silinir. Belirtilmişse ve
-       negatifse <parameter>başlangıç</parameter>'tan dizi sonuna kadar, dizi
-       sonundan belirtilen sayıda eleman hariç herşey silinir. İpucu:
-       <parameter>başlangıç</parameter>'tan dizi sonuna kadar herşeyin
-       silindiği durumda <parameter>yenisi</parameter> de belirtilecekse
-       <parameter>uzunluk</parameter> için <literal>count($girdi)</literal>
-       ifadesini kullanın.
       </para>
+      <para>
+       Belirtilmişse ve pozitifse <parameter>başlangıç</parameter>'tan dizi
+       sonuna kadar belirtilen kadar eleman silinir.
+      </para>
+      <para>
+       Belirtilmişse ve
+       negatifse <parameter>başlangıç</parameter>'tan dizi sonuna kadar, dizi
+       sonundan belirtilen sayıda eleman hariç herşey silinir.
+      </para>
+      <tip>
+       <para>
+        <parameter>başlangıç</parameter>'tan dizi sonuna kadar herşeyin
+        silindiği durumda <parameter>yenisi</parameter> de belirtilecekse
+        <parameter>uzunluk</parameter> için <literal>count($girdi)</literal>
+        ifadesini kullanın.
+       </para>
+      </tip>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -87,14 +100,18 @@
        Eğer <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
        ile hiçbir şey silinmiyorsa <parameter>yenisi</parameter> dizisi
        <parameter>başlangıç</parameter> konumunda dizi elemanlarının arasına
-       yerleştirilir. Yerleştirme sırasında <parameter>yenisi</parameter>
-       dizisinden değerlerin anahtarlarıyla değil tek başlarına aktarılacağını
-       unutmayın.
+       yerleştirilir.
       </para>
+      <note>
+       <para>
+        Yerleştirme sırasında <parameter>yenisi</parameter>
+        dizisindeki anahtarlar korunmaz.
+       </para>
+      </note>
       <para>
        Eğer <parameter>yenisi</parameter> tek bir elemandan ibaretse ve bir
-       dizi değilse değeri <literal>array()</literal> ile dizi olarak
-       belirtmek gerekli değildir.
+       dizi, nesne veya  &null; değilse değeri <literal>array()</literal> veya
+       köşeli parantezlerle sarmalamak gerekli değildir.
       </para>
      </listitem>
     </varlistentry>
@@ -107,6 +124,27 @@
    Diziden kaldırılan elemanlardan oluşan bir dizi ile döner.
   </para>
  </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>uzunluk</parameter> artık boş olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -117,47 +155,93 @@
 <?php
 $input = array("red", "green", "blue", "yellow");
 array_splice($input, 2);
-// $input = array("red", "green")
+var_dump($input);
 
 $input = array("red", "green", "blue", "yellow");
 array_splice($input, 1, -1);
-// $input = array("red", "yellow")
+var_dump($input);
 
 $input = array("red", "green", "blue", "yellow");
 array_splice($input, 1, count($input), "orange");
-// $input = array("red", "orange")
+var_dump($input);
 
 $input = array("red", "green", "blue", "yellow");
 array_splice($input, -1, 1, array("black", "maroon"));
-// $input = array("red", "green", "blue", "black", "maroon")
+var_dump($input);
 
 $input = array("red", "green", "blue", "yellow");
 array_splice($input, 3, 0, "purple");
-// $input = array("red", "green", "blue", "purple", "yellow");
+var_dump($input);
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(2) {
+  [0]=>
+  string(3) "red"
+  [1]=>
+  string(5) "green"
+}
+array(2) {
+  [0]=>
+  string(3) "red"
+  [1]=>
+  string(6) "yellow"
+}
+array(2) {
+  [0]=>
+  string(3) "red"
+  [1]=>
+  string(6) "orange"
+}
+array(5) {
+  [0]=>
+  string(3) "red"
+  [1]=>
+  string(5) "green"
+  [2]=>
+  string(4) "blue"
+  [3]=>
+  string(5) "black"
+  [4]=>
+  string(6) "maroon"
+}
+]]>
+    </screen>
    </example>
   </para>
   <para>
    <example>
-    <title>- <function>array_splice</function> örnekleri</title>
+    <title>- <function>array_splice</function> ve eşdeğerlerine örnekler</title>
     <para>
-     Aşağıdaki deyimler <varname>$input</varname> değerlerini aynı şekilde değiştirir:
+     Aşağıdaki deyimler eşdeğerdir:
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
+
+// $input'a iki elemen ekle
 array_push($input, $x, $y);
 array_splice($input, count($input), 0, array($x, $y));
+
+// $input'un son elemanını sil
 array_pop($input);
 array_splice($input, -1);
+
+// $input'un ilk elemanını sil
 array_shift($input);
 array_splice($input, 0, 1);
+
+// $input'un başına bir eleman ekle
 array_unshift($input, $x, $y);
 array_splice($input, 0, 0, array($x, $y));
-$input[$x] = $y; // for arrays where key equals offset
+
+// $input'un $x indisindeki değerini değiştir
+$input[$x] = $y; // anahtarlarla konumların aynı olduğu durumda
 array_splice($input, $x, 1, $y);
+
 ?>
 ]]>
     </programlisting>
@@ -168,9 +252,9 @@ array_splice($input, $x, 1, $y);
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>array_merge</function></member>
     <member><function>array_slice</function></member>
     <member><function>unset</function></member>
-    <member><function>array_merge</function></member>
    </simplelist>
   </para>
  </refsect1>

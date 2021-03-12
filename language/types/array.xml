@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 6de2e5772f11997fb9a8c0fa2406fbb2c73b3579 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 529359031bc69c5f635a459ae3891df4b8dc8df9 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.array">
  <title><code>array</code></title>
 
@@ -271,6 +271,55 @@ array(4) {
      anahtarına atanmıştı. Bunun sebebi önceki en büyük tamsayılı indisin
      <literal>6</literal> olmasıdır.
     </para>
+   </example>
+
+   <example>
+    <title>- Karmaşık Tür Çarpıtma ve Geçersizleştirme örneği</title>
+    <para>
+     Bu örnekte anahtarlar üzerinde tür çarpıtmanın ve öğelerin üzerine
+     yazılmasının tüm çeşitleri gösterilmiştir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = array(
+    1    => "a",
+    "1"  => "b", // "a" değeri "b" ile geçersiz olur
+    1.5  => "c", // "b" değeri "c" ile geçersiz olur
+    -1 => 'd',
+    "01"  => "e",
+    true => "f", // "c" değeri "f" ile geçersiz olur
+    false => 'g',
+    '' => 'h',
+    null => 'i', // "h" değeri "i" ile geçersiz olur
+    'j', // "j" değeri 2. anahtara atanmıştır.
+         // Çünkü 2'den küçük en büyük tamsayı değer 1'dir
+    2 => 'k', // "j" değeri "k" ile geçersiz olur
+);
+
+var_dump($array);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(6) {
+  [1]=>
+  string(1) "f"
+  [-1]=>
+  string(1) "d"
+  ["01"]=>
+  string(1) "e"
+  [0]=>
+  string(1) "g"
+  [""]=>
+  string(1) "i"
+  [2]=>
+  string(1) "k"
+}
+]]>
+    </screen>
    </example>
   </sect3>
 
@@ -795,9 +844,45 @@ $error_descriptions[8] = "Bu sadece bilgilendirici bir uyarı";
    elemanları nesnenin üyeleri olan bir dizi ile sonuçlanır. Anahtarlar, bir
    kaç istisnai durum dışında üyelerin isimleridir: Tamsayı özellikler
    erişilebilir değildir; <literal>private</literal> değişkenlerin önüne sınıf
-   isimleri getirilir; <literal>public</literal> değişkenlerin önünde bir '*' olur.
-   Diğer taraftan, başlarına birşeyler eklenmiş böyle değişkenlerin değerleri
-   &null; olur. Bu durum beklenmedik davranışlara yol açabilir:
+   isimleri getirilir; <literal>public</literal> değişkenlerin önünde bir
+   '*' olur. Diğer taraftan, başlarına birşeyler eklenmiş böyle değişkenlerin
+   değerleri &null; olur.
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+
+class A {
+    private $B;
+    protected $C;
+    public $D;
+    function __construct()
+    {
+        $this->{1} = null;
+    }
+}
+
+var_export((array) new A());
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+    <![CDATA[
+array (
+  '' . "\0" . 'A' . "\0" . 'B' => NULL,
+  '' . "\0" . '*' . "\0" . 'C' => NULL,
+  'D' => NULL,
+  1 => NULL,
+)
+]]>
+   </screen>
+  </informalexample>
+
+  <para>
+   Bu durum beklenmedik davranışlara yol açabilir:
   </para>
 
   <informalexample>
@@ -818,6 +903,19 @@ var_dump((array) new B());
 ?>
 ]]>
    </programlisting>
+   &example.outputs;
+   <screen>
+    <![CDATA[
+array(3) {
+  ["BA"]=>
+  NULL
+  ["AA"]=>
+  NULL
+  ["AA"]=>
+  NULL
+}
+]]>
+   </screen>
   </informalexample>
 
   <para>
