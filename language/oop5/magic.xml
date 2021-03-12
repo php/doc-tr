@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a9edd62d087ab1eb6292c795b7256e14ff9f1234 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9ee9eccf455188ab6eb352194eb6f9eb99e15606 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
   <para>
+   Sihirli yöntemler, bir nesne üzerinde belirli eylemler gerçekleştirildiğinde
+   PHP'nin öntanımlı eylemini geçersiz kılan özel yöntemlerdir.
+  </para>
+  <caution>
+   <simpara>
+    <literal>__</literal> ile başlayan tüm yöntem isimleri PHP tarafından
+    ayrılmıştır. Bu nedenle, PHP'nin davranışını geçersiz kılmadıkça bu tür
+    yöntem adlarının kullanılması önerilmez.
+   </simpara>
+  </caution>
+  <para>
+   Aşağıdakiler sihirli yöntem olarak ele alınır:
+   <!-- Should be an itemized list ? -->
    <link linkend="object.construct">__construct()</link>,
    <link linkend="object.destruct">__destruct()</link>,
    <link linkend="object.call">__call()</link>,
@@ -20,28 +33,36 @@
    <link linkend="object.tostring">__toString()</link>,
    <link linkend="object.invoke">__invoke()</link>,
    <link linkend="object.set-state">__set_state()</link>,
+   <link linkend="object.clone">__clone()</link>,
+   <link linkend="object.debuginfo">__debugInfo()</link>,
    <link linkend="object.clone">__clone()</link> ve
-   <link linkend="object.debuginfo">__debugInfo()</link>
-   işlev isimleri PHP
-   sınıflarında sihirli işlemler yaparlar. İşlevlerinize sihirli bir
-   işlevsellik kazandırmak istemedikçe bu isimleri sınıfınızın içinde işlev
-   ismi olarak kullanamazsınız.
+   <link linkend="object.debuginfo">__debugInfo()</link>.
   </para>
 
-  <note>
+  <warning>
+   <!-- See for a code example of this behaviour: https://3v4l.org/Bov34 -->
    <simpara>
-    Tüm sihirli yöntemler <emphasis>KESİNLİKLE</emphasis>
-    <literal>public</literal> olarak bildirilmelidir.
+    <link linkend="object.construct">__construct()</link>,
+    <link linkend="object.destruct">__destruct()</link> ve
+    <link linkend="object.clone">__clone()</link> hariç tüm sihirli yöntemler
+    <emphasis>mutlaka</emphasis> <literal>public</literal> olarak
+    bildirilmelidir, aksi takdirde bir <constant>E_WARNING</constant>
+    çıktılanır. PHP 8.0.0 öcesinde,
+    <link linkend="object.sleep">__sleep()</link>,
+    <link linkend="object.wakeup">__wakeup()</link>,
+    <link linkend="object.serialize">__serialize()</link>,
+    <link linkend="object.unserialize">__unserialize()</link> ve
+    <link linkend="object.set-state">__set_state()</link> sihirli yöntemleri
+    için böyle bir uyarı yapılmazdı.
    </simpara>
-  </note>
-
-  <caution>
-   <simpara>
-   PHP, <literal>__</literal> ile baslayan tüm işlev isimlerini sihirli
-   işlevlere ayırmıştır. Belgelenmiş bir kaç sihirli işlevsellik dışında
-   <literal>__</literal> ile başlayan işlev isimleri kullanmamanızı öneririz.
-   </simpara>
-  </caution>
+  </warning>
+  <warning>
+   <para>
+    Bir sihirli yöntemin tanımında yapılan tür bildirimleri bu belgede
+    açıklandığı gibi yapılmalıdır. Aksi takdirde, ölümcül bir hata çıktılanır.
+    PHP 8.0.0 öncesinde hiçbir uyarı yapılmazdı.
+   </para>
+  </warning>
 
   <sect2 xml:id="language.oop5.magic.sleep">
    <title>
@@ -66,25 +87,25 @@
     <link linkend="object.sleep">__sleep()</link>
     adında sihirli bir işleve sahip olup olmadığına bakar. Böyle bir işlev
     varsa herhangi bir dizileştirme işleminden önce bu işlev çalıştırılır.
-    Bu işlev ile nesne üzerinde temizlik yapabilir ve dizileştirilmesi
-    gereken nesnenin tüm değişken isimlerinin bir dizi halinde döndürülmesini
-    sağlayabilirsiniz. Eğer işlev hiçbir şey döndürmemişse &null;
+    Bu işlev ile nesne üzerinde temizlik yapılabilir ve dizileştirilmesi
+    gereken nesnenin tüm değişken isimlerinin bir dizi halinde döndürülmesi
+    sağlanabilir. Eğer işlev hiçbir şey döndürmemişse &null;
     dizileştirilir ve bir <constant>E_NOTICE</constant> çıktılanır.
    </para>
    <note>
     <para>
      Ebeveyn sınıflardaki private özelliklerin isimlerini döndürmek
-     <link linkend="object.sleep">__sleep()</link> için imkansızdır. Bunu
-     yapmaya kalkışırsanız <constant>E_NOTICE</constant> seviyesinde bir hata
-     iletisi alırsınız. Bunun yerine <classname>Serializable</classname>
-     arayüzünü kullanabilirsiniz.
+     <link linkend="object.sleep">__sleep()</link> için imkansızdır. Bu
+     yapılırsa <constant>E_NOTICE</constant> seviyesinde bir hata
+     iletisi çıktılanır. Bunun yerine <classname>Serializable</classname>
+     arayüzünü kullanılabilir.
     </para>
    </note>
    <para>
     <link linkend="object.sleep">__sleep()</link> işlevinin asıl kullanım
     amacı askıdaki veriyi göndermek gibi temizliğe benzer işlemler yapmaktır.
     Ayrıca, tümüyle kaydedilmesi gerekmeyen büyük veri parçaları sözkonusu
-    olduğunda da bu işlevden yararlanabilirsiniz.
+    olduğunda da bu işlevden yararlanılabilir.
    </para>
    <para>
     <function>unserialize</function> işlevi tersine bir işlem yaparak
@@ -259,15 +280,32 @@ class Connection
    <para>
     <link linkend="object.tostring">__toString()</link> yöntemi, sınıf bir
     dizgeye dönüştürüldüğünde sınıfın nasıl tepki vereceğine karar vermeyi
-    sağlar. Bu yöntem bir dizge döndürmelidir, aksi takdirde
-    <constant>E_RECOVERABLE_ERROR</constant> seviyesinde ölümcül bir hata
-    çıktılanır.
+    sağlar. Örneğin, <literal>echo $obj;</literal> ile ne basılacağı gibi.
    </para>
    <warning>
+    <para>
+     PHP 8.0.0'dan itibaren, dönüş değerine standart PHP tür anlamlandırması
+     uygulanmaktadır, yani
+     <link linkend="language.types.declarations.strict">katı kodlama</link>
+     devre dışı bırakılırsa, mümkün olduğu takdirde değer <type>string</type>
+     türe zorlanır.
+    </para>
+    <para>
+     PHP 7.4'te, döndürülen değer <emphasis>mutlaka</emphasis>
+     <type>string</type> türünde olmalıdır, aksi takdirde bir
+     <classname>Error</classname> yavrulanır.
+    </para>
+    <para>
+     PHP 7.4.0 öncesinde, döndürülen değer <emphasis>mutlaka</emphasis>
+     <type>string</type> türünde olmalıydı, aksi takdirde ölümcül bir
+     <constant>E_RECOVERABLE_ERROR</constant> çıktılanırdı.
+    </para>
+   </warning>
+   <warning>
     <simpara>
-     <link linkend="object.tostring">__toString()</link> yöntemin içinden
-     bir istisna yavrulatılamaz. Bunun yapılması ölümcül hata ile
-     sonuçlanır.
+     <link linkend="object.tostring">__toString()</link> yönteminin içinden
+     bir istisna yavrulatılamaz. PHP 7.4.0 öncesinde, bunun yapılması ölümcül
+     hata ile sonuçlanırdı.
     </simpara>
    </warning>
    <example>
@@ -360,9 +398,9 @@ bool(true)
     sınıflar için çağrılır.
    </para>
    <para>
-    Bu yöntemin tek değiştirgesi <literal>array('</literal><replaceable
+    Bu yöntemin tek değiştirgesi <literal>['</literal><replaceable
     >özellik</replaceable><literal>' => </literal><replaceable>değer</replaceable><literal>,
-    ...)</literal> biçeminde ihraç edilen özellikleri içeren bir dizidir.
+    ...]</literal> biçeminde ihraç edilen özellikleri içeren bir dizidir.
    </para>
    <example>
     <title>- <link linkend="object.set-state">__set_state()</link> kullanımı
@@ -389,18 +427,21 @@ $a = new A;
 $a->var1 = 5;
 $a->var2 = 'foo';
 
-eval('$b = ' . var_export($a, true) . ';'); // $b = A::__set_state(array(
-                                            //    'var1' => 5,
-                                            //    'var2' => 'foo',
-                                            // ));
+$b = var_export($a, true);
 var_dump($b);
 
+eval('$c = ' . $b . ';');
+var_dump($c);
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
+string(60) "A::__set_state(array(
+   'var1' => 5,
+   'var2' => 'foo',
+))"
 object(A)#2 (2) {
   ["var1"]=>
   int(5)
