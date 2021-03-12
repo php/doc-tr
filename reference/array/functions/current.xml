@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.current" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>current</refname>
@@ -10,10 +10,10 @@
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>current</methodname>
-   <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>object</type></type><parameter>dizi</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Her dizinin, ilklendirme anında ilk elemanına konumlanan bir göstericisi
+   Her dizinin, ilklendirme anında ilk elemanını konumlayan bir göstericisi
    vardır.
   </para>
  </refsect1>
@@ -40,6 +40,30 @@
    sonuncu elemanın sonrasını işaret ediyorsa veya dizi boşsa &false; döner.
   </para>
   &return.falseproblem;
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <parameter>dizi</parameter> artık daima değeri ile aktarılmaktadır.
+        Evvelce, mümkünse gönderimli değilse değeriyle aktarılırdı.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
@@ -73,9 +97,17 @@ var_dump(current($arr)); // array(0) { }
   &reftitle.notes;
   <note>
    <simpara>
-    Bir dizi sonunu <type>boolean</type> &false; değerinden ayıramazsınız.
-    element. &false; değerli elemanlar içeren bir dizide bilinçli olarak
-    ilerlemenin en doğru yolu <function>each</function> kullanmaktır.
+    <function>current</function> işlevini dahili göstericisi öğelerin sonunun
+    ötesini gösteren boş bir dizi ile  çağırmanın sonuçları <type>bool</type>
+    &false; öğesinden ayırt edilemez. &false; elemanlar içerebilecek bir dizide
+    bilinçli olarak ilerlemenin en doğru yolu
+    <link linkend="control-structures.foreach">foreach</link> kullanmaktır.
+   </simpara>
+   <simpara>
+    Yine de <function>current</function> kullanmak ve değerin gerçekten
+    <parameter>dizi</parameter>nin bir öğesi olup olmadığını doğru bir şekilde
+    kontrol etmek için, anahtarın &null; olmadığından kesinlikle emin
+    olunmalıdır.
    </simpara>
   </note>
  </refsect1>

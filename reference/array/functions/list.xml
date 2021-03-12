@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.list" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>list</refname>
@@ -11,13 +11,35 @@
   <methodsynopsis>
    <type>array</type><methodname>list</methodname>
    <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
-   <methodparam rep="repeat" choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+   <methodparam rep="repeat" choice="opt"><type>mixed</type><parameter>değişkenler</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>array</function> gibi bu da bir işlev değil bir dil oluşumudur.
    <function>list</function> işlevi tek deyimde birden fazla değişkene atama
    yapmak için kullanılır.
   </para>
+  <note>
+   <para>
+    PHP 7.1.0 öncesinde, <function>list</function> işlevi sadece sayısal
+    dizilerde çalışır ve indislerin sıfırdan başladığı varsayılırdı.
+   </para>
+  </note>
+  <warning>
+   <para>
+    PHP 5'te, <function>list</function> işlevi değerleri atamaya en sağdaki
+    değiştirgeyle başlardı.  PHP 7'de, ise en soldaki değiştirge ile başlar.
+   </para>
+   <para>
+    Sıradan değişkenlerle çalışılıyorsa bundan endişe duymak gerekmez.
+    Ancak indisli diziler kullanılıyorsa, indislerin işlenme sırasının
+    <function>list</function> işlevinde yazıldığı gibi soldan sağa olacağı
+    umulursa da PHP 5'te işlenme sırası sağdan soladır.
+   </para>
+   <para>
+    Genel olarak, işlemin sırasına güvenmek önerilmez, çünkü gelecekte yine
+    değişebilir.
+   </para>
+  </warning>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -27,7 +49,15 @@
      <term><parameter>değişken</parameter></term>
      <listitem>
       <para>
-       Bir değişken.
+       Değişken.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değişkenler</parameter></term>
+     <listitem>
+      <para>
+       Diğer değişkenler.
       </para>
      </listitem>
     </varlistentry>
@@ -38,6 +68,53 @@
   &reftitle.returnvalues;
   <para>
    Atanan dizi döner.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.3.0</entry>
+       <entry>Dizi bozmada gönderim atamaları için destek eklendi.</entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <function>list</function> işlevine anahtarlar belirtilebiliyor.
+        Bu, tamsayı olmayan veya sıralı olmayan anahtarlarla dizilerin
+        yok edilmesini sağlar.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        Atama işlemlerinin gerçekleştirilme sırası değişti.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <function>list</function> ifadeleri artık tamamen boş olamıyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        Dizeler artık patlatılmıyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -84,11 +161,11 @@ var_dump($bar); // NULL
 
 <?php
 
-$sonuç = mysql_query("SELECT id, ad, ucret FROM personel", $conn);
-while (list($id, $ad, $ücret) = mysql_fetch_row($sonuç)) {
+$sonuç = $pdo->query("SELECT id, ad, ucret FROM personel");
+while (list($id, $ad, $ücret) = $result->fetch(PDO::FETCH_NUM)) {
     echo " <tr>\n" .
           "  <td><a href=\"info.php?id=$id\">$ad</a></td>\n" .
-          "  <td>$ücret</td>\n" .
+          "  <td>$ucret</td>\n" .
           " </tr>\n";
 }
 
@@ -142,6 +219,20 @@ var_dump($a);
      Aşağıdaki çıktıyı verir (dikkatı ederseniz, eleman sırası
      <function>list</function> ile belirtilen sıra ile aynıdır):
     </para>
+    &example.outputs.7;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  string(5) "kahve"
+  [1]=>
+  string(4) "uyku"
+  [2]=>
+  string(6) "kafein"
+}
+]]>
+    </screen>
+    &example.outputs.5;
     <screen>
 <![CDATA[
 array(3) {
@@ -156,24 +247,79 @@ array(3) {
     </screen>
    </example>
   </para>
- </refsect1>
- <refsect1 role="notes">
-  &reftitle.notes;
-  <warning>
-   <para>
-    <function>list</function> değerleri en sağdaki değiştirgeden itibaren
-    atar. Düz değişken kullanıyorsanız bundan dolayı endişelenmeniz gerekmez.
-    Fakat indisli diziler kullanıyorsanız, dizi indislerinin,
-    <function>list</function>'teki yazılış sırasına göre soldan sağa
-    sıralanacağını düşünürsünüz. Fakat atama sağdan sola doğru  yapılır.
-   </para>
-  </warning>
-  <note>
-   <para>
-    <function>list</function> sadece sayısal indisli dizilerle çalışır ve
-    indislerin 0'dan başladığı varsayılır.
-   </para>
-  </note>
+  <para>
+   <example>
+    <title>- <function>list</function> ve indis tanımlarının sırası</title>
+    <simpara>
+     <function>list</function> tarafından tüketilecek dizi indislerinin
+     tanımlanma sırası konu dışıdır.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = array(2 => 'a', 'foo' => 'b', 0 => 'c');
+$foo[1] = 'd';
+list($x, $y, $z) = $foo;
+var_dump($foo, $x, $y, $z);
+]]>
+    </programlisting>
+    <para>
+     Çıktısı aşağıdadır (elemanlar <function>list</function> sözdiziminde yazıldıkları gibi sıralanmıştır):
+    </para>
+    <screen>
+<![CDATA[
+array(4) {
+  [2]=>
+  string(1) "a"
+  ["foo"]=>
+  string(1) "b"
+  [0]=>
+  string(1) "c"
+  [1]=>
+  string(1) "d"
+}
+string(1) "c"
+string(1) "d"
+string(1) "a"
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Anahtarlar ve <function>list</function></title>
+    <simpara>
+     PHP 7.1.0 itibariyle, <function>list</function> artık rasgele ifadeler
+     halinde verilebilecek belirgin anahtarlar da içerebilir. Tamsayı ve dize
+     anahtarlarının karıştırılmasına izin verilir; ancak, anahtarı olan ve
+     olmayan öğeler karıştırılamaz.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$data = [
+    ["id" => 1, "name" => 'Tom'],
+    ["id" => 2, "name" => 'Fred'],
+];
+foreach ($data as ["id" => $id, "name" => $name]) {
+    echo "id: $id, name: $name\n";
+}
+echo PHP_EOL;
+list(1 => $second, 3 => $fourth) = [1, 2, 3, 4];
+echo "$second, $fourth\n";
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+id: 1, name: Tom
+id: 2, name: Fred
+
+2, 4
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
