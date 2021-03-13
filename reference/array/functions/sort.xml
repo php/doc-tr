@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2550f62c6a8e60a690a462e9b6eb60e08abcc61f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.sort" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>sort</refname>
@@ -11,60 +11,19 @@
   <methodsynopsis>
    <type>bool</type><methodname>sort</methodname>
    <methodparam><type>array</type><parameter role="reference">dizi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>SORT_REGULAR</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>SORT_REGULAR</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev bir diziyi sıralar. Sıralama işlemi bittiğinde dizinin elemanları
    küçükten büyüğe doğru sıralanmış olur.
   </para>
+  &note.sort-unstable;
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>dizi</parameter></term>
-     <listitem>
-      <para>
-       Sıralanacak dizi.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>seçenekler</parameter></term>
-     <listitem>
-      <para>
-       İsteğe bağlı <parameter>seçenekler</parameter> değiştirgesinde
-       aşağıdaki değerler kullanılarak sıralama kuralı değiştirilebilir:
-      </para>
-      <para>
-       Sıralama türü seçenekleri:
-       <itemizedlist>
-        <listitem>
-         <simpara><constant>SORT_REGULAR</constant> - Elemanlar normal olarak
-         sıralanır (öntanımlı)</simpara>
-        </listitem>
-        <listitem>
-         <simpara><constant>SORT_NUMERIC</constant> - Elemanlar sayısal olarak
-         sıralanır</simpara>
-        </listitem>
-        <listitem>
-         <simpara><constant>SORT_STRING</constant> - Elemanlar dizgesel olarak
-         sıralanır</simpara>
-        </listitem>
-        <listitem>
-         <simpara><constant>SORT_LOCALE_STRING</constant> - Yerele göre
-         dizgesel sıralama yapılır. PHP 4.4.0 ve 5.0.2'de eklendi. PHP 6
-         öncesinde, <function>setlocale</function> işlevi ile değiştirilebilen
-         sistem yereli kullanılıyordu. PHP 6'dan itibaren sistem yerelini
-         değiştirmek için <function>i18n_loc_set_default</function> işlevini
-         kullanmalısınız.
-         </simpara>
-        </listitem>
-       </itemizedlist>
-      </para>
-     </listitem>
-    </varlistentry>
+    &sort.flags.parameter;
    </variablelist>
   </para>
  </refsect1>
@@ -106,6 +65,39 @@ fruits[3] = orange
   <para>
    Meyvalar abecesel olarak sıralanmıştır.
   </para>
+  <para>
+   <example>
+    <title>- Harf büyüklüğüne duyarsız doğal sıralama kullanılan
+     <function>sort</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$fruits = array(
+    "Orange1", "orange2", "Orange3", "orange20"
+);
+sort($fruits, SORT_NATURAL | SORT_FLAG_CASE);
+foreach ($fruits as $key => $val) {
+    echo "fruits[" . $key . "] = " . $val . "\n";
+}
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+fruits[0] = Orange1
+fruits[1] = orange2
+fruits[2] = Orange3
+fruits[3] = orange20
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   Meyvalar <function>natcasesort</function> işlevi kullanılmış gibi sıralandı.
+  </para>
  </refsect1>
  <refsect1 role="notes">
   &reftitle.notes;
@@ -114,13 +106,17 @@ fruits[3] = orange
    <simpara>
     Çoğu PHP sıralama işlevindeki gibi <function>sort</function> işlevinde de
     <link xlink:href="&url.wiki.quicksort;">Quicksort</link> gerçeklenimi
-    kullanılmıştır.
+    kullanılmıştır. Dayanak noktası olarak bölümün ortası seçilerek zaten
+    sıralanmış diziler için en uygun süre elde edilir. Ancak bu, uygulama ile
+    ilgili bir ayrıntı olup buna güvenilemez.
    </simpara>
   </note>
   <warning>
    <simpara>
     Farklı türde değerler içeren dizileri sıralarken dikkatli olun;
-    yoksa <function>sort</function> işlevi umulmadık sonuçlar üretebilir.
+    yoksa <function>sort</function> işlevi <constant>SORT_REGULAR</constant>
+    değerli <parameter>seçenekler</parameter> ile kullanılırsa umulmadık
+    sonuçlar üretebilir.
    </simpara>
   </warning>
  </refsect1>
@@ -129,6 +125,7 @@ fruits[3] = orange
   <para>
    <simplelist>
     <member><function>asort</function></member>
+    <member><function>rsort</function></member>
     <member>&seealso.array.sorting;</member>
    </simplelist>
   </para>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9af43469f46843451955b8926fe470a9f3d45034 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.natsort" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>natsort</refname>
@@ -19,6 +19,7 @@
    verilir. Bu algoritma ile <function>sort</function> işlevinin yaptığı
    standart sıralama arasındaki farkı gösteren bir örnek aşağıdadır.
   </para>
+  &note.sort-unstable;
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -45,13 +46,13 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>natsort</function> örneği</title>
+    <title>- <function>natsort</function> genel kullanım örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $array1 = $array2 = array("img12.png", "img10.png", "img2.png", "img1.png");
 
-sort($array1);
+asort($array1);
 echo "Standart sıralama\n";
 print_r($array1);
 
@@ -67,10 +68,10 @@ print_r($array2);
 Standart sıralama
 Array
 (
-    [0] => img1.png
+    [3] => img1.png
     [1] => img10.png
-    [2] => img12.png
-    [3] => img2.png
+    [0] => img12.png
+    [2] => img2.png
 )
 
 Doğal sıralama
@@ -88,6 +89,72 @@ Array
      xlink:href="&url.strnatcmp;">Natural Order String Comparison</link>
      sayfasına bakınız.
     </para>
+   </example>
+   <example>
+    <title>- Olası sorunları gösteren <function>natsort</function> örnekleri</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo "Negatif sayılar\n";
+$negative = array('-5','3','-2','0','-1000','9','1');
+print_r($negative);
+natsort($negative);
+print_r($negative);
+
+echo "Sıfır doldurma\n";
+$zeros = array('09', '8', '10', '009', '011', '0');
+print_r($zeros);
+natsort($zeros);
+print_r($zeros);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Negatif sayılar
+Array
+(
+    [0] => -5
+    [1] => 3
+    [2] => -2
+    [3] => 0
+    [4] => -1000
+    [5] => 9
+    [6] => 1
+)
+Array
+(
+    [2] => -2
+    [0] => -5
+    [4] => -1000
+    [3] => 0
+    [6] => 1
+    [1] => 3
+    [5] => 9
+)
+
+Sıfır doldurma
+Array
+(
+    [0] => 09
+    [1] => 8
+    [2] => 10
+    [3] => 009
+    [4] => 011
+    [5] => 0
+)
+Array
+(
+    [5] => 0
+    [1] => 8
+    [3] => 009
+    [0] => 09
+    [2] => 10
+    [4] => 011
+)
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

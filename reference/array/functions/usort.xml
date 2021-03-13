@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cd943f94a013b74df8765ab8e1a620a916a64a85 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.usort" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>usort</refname>
@@ -12,7 +12,7 @@
   <methodsynopsis>
    <type>bool</type><methodname>usort</methodname>
    <methodparam><type>array</type><parameter role="reference">array</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>karş_işlevi</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>karş_işlevi</parameter></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev kullanıcı tarafından sağlanmış bir karşılaştırma işlevini
@@ -20,12 +20,7 @@
    mevcut kuralların dışında bir kurala göre sıralamak isterseniz bu işlev çok
    işe yarar.
   </para>
-  <note>
-   <para>
-    Karşılaştırma sırasında birbirinin eşi iki üye bulunursa aralarındaki
-    sıralamanın nasıl olacağı belirsizdir.
-   </para>
-  </note>
+  &note.sort-unstable;
   &note.no-key-association;
  </refsect1>
  <refsect1 role="parameters">
@@ -44,14 +39,17 @@
      <term><parameter>karş_işlevi</parameter></term>
      <listitem>
       <para>
-       Karşılaştırma için geriçağırım işlevi.
+       &return.callbacksort;
       </para>
-      <para>
-       <parameter>karş_işlevi</parameter> dizi değerlerinin aktarılacağı iki
-       değiştirge kabul etmelidir. Birinci değiştirgenin ikinciden büyük,
-       küçük veya ona eşit olduğu durumlarda sırayla sıfırdan büyük, sıfırdan
-       küçük bir değer veya sıfır döndürmelidir.
-      </para>
+      &callback.cmp;
+      <caution>
+       <para>
+        Karşılaştırma işlevinden <type>float</type> gibi <emphasis>tamsayı
+        olmayan</emphasis> değerlerin döndürülmesi, dahili bir çarpıtma ile bu
+        değerin <type>int</type> türüne dönüştürülmesine sebep olur. Örneğin,
+        0.99 ve 0.1 gibi değerler tamsayı 0 değerine dönüştürülür.
+       </para>
+      </caution>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -63,35 +61,10 @@
    &return.success;
   </para>
  </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        Yeni sıralama algoritması devreye girdi.
-        <parameter>karş_işlevi</parameter> karşılaştırıldıklarında eşit olan
-        elemanların özgün sırasını korumuyor.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   <example>
+   <example xml:id="function.usort.examples.basic">
     <title>- <function>usort</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
@@ -132,7 +105,7 @@ foreach ($a as $anahtar => $değer) {
    </para>
   </note>
   <para>
-   <example>
+   <example xml:id="function.usort.examples.multi">
     <title>- <function>usort</function> ve çok boyutlu dizi</title>
     <programlisting role="php">
 <![CDATA[
@@ -169,7 +142,7 @@ $meyvalar[2]: portakal
    </example>
   </para>
   <para>
-   <example>
+   <example xml:id="function.usort.examples.object">
     <title>- Bir nesnenin üye yöntemini kullanan <function>usort</function>
     örneği</title>
     <programlisting role="php">
@@ -213,6 +186,40 @@ foreach ($a as $öğe) {
 b
 c
 d
+]]>
+    </screen>
+   </example>
+   <example xml:id="function.usort.examples.closure">
+    <title>- Çok boyutlu bir diziyi sıralamak için
+      <link linkend="functions.anonymous">anonim işlevler</link> kullanılan
+      <function>usort</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array[0] = array('key_a' => 'z', 'key_b' => 'c');
+$array[1] = array('key_a' => 'x', 'key_b' => 'b');
+$array[2] = array('key_a' => 'y', 'key_b' => 'a');
+
+function build_sorter($key) {
+    return function ($a, $b) use ($key) {
+        return strnatcmp($a[$key], $b[$key]);
+    };
+}
+
+usort($array, build_sorter('key_b'));
+
+foreach ($array as $item) {
+    echo $item['key_a'] . ', ' . $item['key_b'] . "\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+y, a
+x, b
+z, c
 ]]>
     </screen>
    </example>

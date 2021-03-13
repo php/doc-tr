@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 755faca201b5ba15e23735f21ed056b47d954398 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.range" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>range</refname>
@@ -10,9 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>range</methodname>
-   <methodparam><type>mixed</type><parameter>düşük</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>yüksek</parameter></methodparam>
-   <methodparam choice="opt"><type>number</type><parameter>adım</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type><type>float</type></type><parameter>başlangıç</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type><type>float</type></type><parameter>bitiş</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>float</type></type><parameter>adım</parameter><initializer>1</initializer></methodparam>
   </methodsynopsis>
   <para>
    Aralığı belirtilen elemanları içeren bir dizi oluşturur.
@@ -23,18 +23,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>düşük</parameter></term>
+     <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Düşük değer.
+       Aralığın ilk değeri.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yüksek</parameter></term>
+     <term><parameter>bitiş</parameter></term>
      <listitem>
       <para>
-       Yüksek değer.
+       Aralığın son değeri.
       </para>
      </listitem>
     </varlistentry>
@@ -42,8 +42,8 @@
      <term><parameter>adım</parameter></term>
      <listitem>
       <para>
-       Bu değiştirge belirtilmişse eleman sırası artış değerini belirler. Bir
-       pozitif sayı olmalıdır. Belirtilmezse 1 öntanımlıdır.
+       Bu değiştirge belirtilmişse eleman sırası artış değerini belirler.
+       Pozitif sayı olmalıdır. Belirtilmezse 1 öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -53,51 +53,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>düşük</parameter>-<parameter>yüksek</parameter> aralığındaki
-   elemanlardan oluşan bir dizi döner. Eğer düşük > yüksek ise sıralama
-   yüksekten düşüğe doğru olur.
-  </para>
- </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        İsteğe bağlı <parameter>adım</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.1.0'ten 4.3.2'ye kadar</entry>
-       <entry>
-        PHP'nin 4.1.0 ile 4.3.2 sürümleri arasında <function>range</function>
-        sayısal dizgeleri sayı değil dizge olarak görür ve bir karakter dizisi
-        olarak ele alır. Örneğin, <literal>"4242"</literal> değeri
-        <literal>"4"</literal> olarak ele alınır.
-       </entry>
-      </row>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        PHP 4.1.0 öncesinde <function>range</function> sadece tamsayı dizileri
-        artan sırada oluşturur. Dizgeler ve azalan sıralı tamsayı dizilerine
-        destek 4.1.0 sürümünde eklenmiştir. Dizge değerlerin uzunluğu bir bayt
-        ile sınırlıdır, dolayısıyla daha uzun dizgelerin sadece ilk karakteri
-        kullanılır.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   <parameter>başlangıç</parameter> ve <parameter>bitiş</parameter> dahil ikisi
+   arasındaki elemanlardan oluşan bir dizi döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -113,17 +70,24 @@ foreach (range(0, 12) as $number) {
     echo $number;
 }
 
-// adım değiştirgesi 5.0.0 sürümünde devreye girdi
+echo "\n";
+
+// adım değiştirgesi
 // array(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 foreach (range(0, 100, 10) as $number) {
     echo $number;
 }
 
-// Dizgelere destek 4.1.0 sürümünde devreye girdi
+echo "\n";
+
+// Karakter dizilerinin kullanımı
 // array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
 foreach (range('a', 'i') as $letter) {
     echo $letter;
 }
+
+echo "\n";
+
 // array('c', 'b', 'a');
 foreach (range('c', 'a') as $letter) {
     echo $letter;
@@ -133,6 +97,15 @@ foreach (range('c', 'a') as $letter) {
     </programlisting>
    </example>
   </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Karakter dizisinin değerleri bir baytla sınırlıdır. Bir bayttan uzun değer
+    belirtilirse yalnızca ilk karakter kullanılır.
+   </para>
+  </note>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
