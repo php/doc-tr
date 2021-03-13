@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 79dcbe011fb254dcd92c597064571fe313362a09 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 217fa0d006cf292e837bab6458b81341718eb35e Maintainer: nilgun Status: ready -->
 <chapter xml:id="curl.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <section xml:id="curl.examples-basic">
   <title>Temel bir curl örneği</title>
   <para>
-   PHP'yi cURL desteğiyle derlediyseniz cURL işlevlerini kullanmaya
-   başlayabilirsiniz. cURL işlevlerinin kullanım amacı ve sırası, ana
-   hatlarıyla, <function>curl_init</function> işlevini kullanarak bir cURL
+   PHP, cURL desteğiyle derlenmişse cURL işlevleri kullanılabilir.
+   cURL işlevlerinin kullanım amacı ve sırası, ana hatlarıyla,
+   <function>curl_init</function> işlevini kullanarak bir cURL
    oturumu başlatıp, aktarımın tüm seçeneklerini
    <function>curl_setopt</function> ile belirledikten sonra oturumu
-   <function>curl_exec</function>  ile çalıştırıp işiniz bitince
+   <function>curl_exec</function>  ile çalıştırıp iş bitince
    <function>curl_close</function> ile oturumu sonlandırmak şeklindedir.
    Burada, example.com ana sayfasını bir dosyaya aktarmak amacıyla  cURL
    işlevlerinin kullanımı örneklenmiştir:
@@ -29,6 +29,9 @@ curl_setopt($ch, CURLOPT_FILE, $fp);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 
 curl_exec($ch);
+if(curl_error($ch)) {
+    fwrite($fp, curl_error($ch));
+}
 curl_close($ch);
 fclose($fp);
 ?>
