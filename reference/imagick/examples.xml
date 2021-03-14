@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f6966f9078ef7fb54524c56d4bab6d722b28e504 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3739933b8c796d45aad74410caebb2734dc00aa7 Maintainer: nilgun Status: ready -->
 <chapter xml:id="imagick.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <section xml:id="imagick.examples-1">
-  &reftitle.examples;
+   <title>Temel kullanım</title>
   <para>
    Imagick PHP'de resim işlemlerini nesne yönelimli arayüzü sayesinde oldukça
    kolaylaştırır. Burada bir resmin küçük bir örneğinin nasıl elde edildiği
@@ -117,6 +117,7 @@ echo $canvas;
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+      <alt>Örneğin çıktısı: Bir resmin yansımasının oluşturulması</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/hello_world_reflection.png"/>
      </imageobject>
@@ -180,6 +181,7 @@ echo $canvas;
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örneğin çıktısı: Metni bir örüntü ile kaplamak</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/hello_world.png"/>
      </imageobject>
@@ -199,11 +201,11 @@ $im = new Imagick("example.gif");
 
 /* Tüm resim karelerini boyutlandıralım */
 foreach ($im as $frame) {
- /* 50x50 kareler */
- $frame->thumbnailImage(50, 50);
+    /* 50x50 kareler */
+    $frame->thumbnailImage(50, 50);
 
- /* Sanal tuvali doğru boyuta ayarlayalım */
- $frame->setImagePage(50, 50, 0, 0);
+    /* Sanal tuvali doğru boyuta ayarlayalım */
+    $frame->setImagePage(50, 50, 0, 0);
 }
 
 /* writeImage yerine writeImages kullanıldığını dikkat edin */
@@ -211,6 +213,64 @@ $im->writeImages("example_small.gif", true);
 ?>
 ]]>
     </programlisting>
+   </example>
+  </para>
+  <para>
+   Elips ilkeli ve özel yazı tipleriyle çalışma
+   <example>
+    <title>- PHP logosu yapımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* SGenişliği ve yüksekliği orijinal PHP logosuyla orantılı olarak ayarla */
+$width = 400;
+$height = 210;
+
+/* Imagick nesnesini şeffaf tuval ile oluştur */
+$img = new Imagick();
+$img->newImage($width, $height, new ImagickPixel('transparent'));
+
+/* Elips çizmek için yeni ImagickDraw örneği */
+$draw = new ImagickDraw();
+/* Elips dolgu rengini eflatun yap */
+$draw->setFillColor('#777bb4');
+/* Elips boyutlarını ayarla */
+$draw->ellipse($width / 2, $height / 2, $width / 2, $height / 2, 0, 360);
+/* Elipsi tuvale aktar */
+$img->drawImage($draw);
+
+/* Metin için dolgu rengini siyah yap (Dikkat: ImagickDraw yeniden kullanılıyor) */
+$draw->setFillColor('black');
+/* Kenar konturunu beyaz yap */
+$draw->setStrokeColor('white');
+/* Kenar konturunun kalınlığını ayarla */
+$draw->setStrokeWidth(2);
+/* Yazı tipi karakter aralığını ayarla (negatif değer yakınlaştırır) */
+$draw->setTextKerning(-8);
+/* PHP logosunda kullanılan yazı tipini ve boyutunu ayarla */
+$draw->setFont('Handel Gothic.ttf');
+$draw->setFontSize(150);
+/* Metni düşey ve yatayda ortala */
+$draw->setGravity(Imagick::GRAVITY_CENTER);
+
+/* Merkez "php" yi -10'luk Y uzaklığıyla tuvale ekle (elipsin içinde)  */
+$img->annotateImage($draw, 0, -10, 0, 'php');
+$img->setImageFormat('png');
+
+/* PNG için uygun başlığı ekle ve resmi çıktıla */
+header('Content-Type: image/png');
+echo $img;
+?>
+
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <alt>Örneğin çıktısı: Imagick ile PHP logosu yapımı</alt>
+     <imageobject>
+      <imagedata fileref="en/reference/imagick/figures/php_logo.png"/>
+     </imageobject>
+    </mediaobject>
    </example>
   </para>
  </section>
