@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: ecamalan Status: ready -->
+<!-- EN-Revision: 32f3a5a59f9f2ab2b97ad223b9e996cbc69e11c3 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: ecamalan -->
 <refentry xml:id="function.json-decode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>json_decode</refname>
-  <refpurpose>Bir JSON dizgesini çözümler.</refpurpose>
+  <refpurpose>Bir JSON dizgesini çözümler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -12,8 +13,9 @@
   <methodsynopsis>
    <type>mixed</type><methodname>json_decode</methodname>
    <methodparam><type>string</type><parameter>json</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>assoc</parameter><initializer>false</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>depth</parameter><initializer>512</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>bool</type><type>null</type></type><parameter>ilişkisel</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>derinlik</parameter><initializer>512</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    Kodlanmış bir JSON dizgesini çözümler ve PHP değişkenine çevirir.
@@ -30,21 +32,43 @@
       <para>
        Deşifre edilmiş <parameter>json</parameter> dizgesi.
       </para>
+      <para>
+       Bu işlev UTF-8 kodlu dizgelerle çalışır.
+      </para>
+      &json.implementation.superset;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>assoc</parameter></term>
+     <term><parameter>ilişkisel</parameter></term>
      <listitem>
       <para>
-       &true; olduğu zaman nesneler bir ilişkisel diziye dönüştürülür.
+       &true; olduğu zaman JSON nesneleri bir ilişkisel dizilere dönüştürülür.
+       &false; belirtilirse JSON nesneleri nesne olarak döndürülür.
+       &null; olduğu zaman JSON nesneleri <parameter>seçenekler</parameter>
+       değiştirgesinde <constant>JSON_OBJECT_AS_ARRAY</constant> sabiti
+       atanmışsa ilişkisel dizi atanmamışsa nesne olarak döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>depth</parameter></term>
+     <term><parameter>derinlik</parameter></term>
      <listitem>
       <para>
-       Kullanıcı tarafından belirtilen özyineleme derinliği.
+       Kodlu yapının azami iç içe derinliği.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       <constant>JSON_BIGINT_AS_STRING</constant>,
+       <constant>JSON_INVALID_UTF8_IGNORE</constant>,
+       <constant>JSON_INVALID_UTF8_SUBSTITUTE</constant>,
+       <constant>JSON_OBJECT_AS_ARRAY</constant>,
+       <constant>JSON_THROW_ON_ERROR</constant> sabitlerinin bit maskesi.
+       Bu sabitlerin davranışı <link linkend="json.constants">JSON
+       sabitleri</link> sayfasında açıklanmıştır.
       </para>
      </listitem>
     </varlistentry>
@@ -57,13 +81,57 @@
   <para>
    <parameter>json</parameter> ile şifrelenmiş değerler geriye
     PHP ye uygun veri türü olarak dönerler.
-    Veriler <literal>doğru</literal>, <literal>yanlış</literal> 
-    ve <literal>boş</literal>(büyük-küçük harf duyarsız) 
-    şekilde sırasıyla &true;, &false; ve &null; olarak dönerler. 
-    Dönen değer &null; ise <parameter>json</parameter> çözülememiş 
-    ya da şifreleme verilen özyineleme derinliğinden daha fazladır.
+    Veriler <literal>doğru</literal>, <literal>yanlış</literal>
+    ve <literal>boş</literal> şekilde sırasıyla &true;, &false; ve &null;
+    olarak dönerler. Dönen değer &null; ise <parameter>json</parameter>
+    çözülememiştir ya da şifreli verinin iç içelik derinliği belirtilenden
+    fazladır.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.3.0</entry>
+       <entry>
+        <constant>JSON_THROW_ON_ERROR</constant> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <parameter>associative</parameter> is nullable now.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <constant>JSON_INVALID_UTF8_IGNORE</constant> ve
+        <constant>JSON_INVALID_UTF8_SUBSTITUTE</constant> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <literal>_empty_</literal> değerli bir anahtar kullanmak yerine boş
+        nesne özelliğine boş bir JSON anahtarı ("") kodlanabilir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+   </para>
+  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -103,7 +171,13 @@ array(5) {
     </screen>
    </example>
    <example>
-    <title>- Diğer örnek</title>
+    <title>- Geçersiz nesne özelliklerine erişim</title>
+    <simpara>
+     PHP'nin adlandırma kuralı (örneğin, kısa çizgi) kapsamında izin
+     verilmeyen karakterleri içeren bir nesne içindeki öğelere erişim,
+     öğe adının kaşlı ayraçlar ve tek tırnak imleri arasına alınmasıyla
+     gerçekleştirilebilir.
+    </simpara>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -147,7 +221,8 @@ json_decode($bad_json); // boş
     <programlisting role="php">
 <![CDATA[
 <?php
-// Encode the data.
+// Veriyi azami derinlik olarak 4 iç içelik ile kodla
+// (array -> array -> array -> string).
 $json = json_encode(
     array(
         1 => array(
@@ -163,19 +238,12 @@ $json = json_encode(
     )
 );
 
-// Define the errors.
-$json_errors = array(
-    JSON_ERROR_NONE => 'Hata bulunamadı',
-    JSON_ERROR_DEPTH => 'Azami yığın boyutu aşıldı',
-    JSON_ERROR_CTRL_CHAR => 'Kontrol karakteri hatası, muhtemelen yanlış şifrelenmiş',
-    JSON_ERROR_SYNTAX => 'Sözdizimi hatası',
-);
+// Farklı derinlikteki hataları göster
+var_dump(json_decode($json, true, 4));
+echo 'Son hata: ', json_last_error_msg(), PHP_EOL, PHP_EOL;
 
-// Farklı derinlikteki hataları gösterir.
-foreach(range(4, 3, -1) as $depth) {
-    var_dump(json_decode($json, True, $depth));
-    echo 'Son hata : ', $json_errors[json_last_error()], PHP_EOL, PHP_EOL;
-    }
+var_dump(json_decode($json, true, 3));
+echo 'Son hata: ', json_last_error_msg(), PHP_EOL, PHP_EOL;
 ?>
 ]]>
     </programlisting>
@@ -201,10 +269,37 @@ array(1) {
     }
   }
 }
-Son hata : Hata bulunamadı
+Son hata: No error
 
 NULL
-Son hata : Azami yığın boyutu aşıldı
+Son hata: Maximum stack depth exceeded
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Büyük tamsayılarla <function>json_decode</function></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$json = '{"number": 12345678901234567890}';
+
+var_dump(json_decode($json));
+var_dump(json_decode($json, false, 512, JSON_BIGINT_AS_STRING));
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+object(stdClass)#1 (1) {
+  ["number"]=>
+  float(1.2345678901235E+19)
+}
+object(stdClass)#1 (1) {
+  ["number"]=>
+  string(20) "12345678901234567890"
+}
 ]]>
     </screen>
    </example>
@@ -221,37 +316,9 @@ Son hata : Azami yığın boyutu aşıldı
   <note>
    <para>
     Bir hatayı çözmek ve hatanın tam niteliği belirlemek
-   için <function>json_last_error</function> kullanılabilir. 
+   için <function>json_last_error</function> kullanılabilir.
    </para>
   </note>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>İsteğe bağlı <parameter>depth</parameter>(derinlik) eklendi.
-       Öntanımlı özyineleme derinliği 128 ile 512 arasına yükseltildi.</entry>
-      </row>
-      <row>
-       <entry>5.2.3</entry>
-       <entry>Gruplama/iç içe koyma limiti 20 ile 128
-       arasına yükseltildi.</entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: ecamalan Status: ready -->
+<!-- EN-Revision: d446e9e831e436a072cb967dff22287e0132661c Maintainer: nilgun Status: ready -->
+<!-- CREDITS: ecamalan -->
 <refentry xml:id="function.json-encode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>json_encode</refname>
@@ -10,13 +11,20 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>json_encode</methodname>
-   <methodparam><type>mixed</type><parameter>deger</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>secenekler</parameter><initializer>0</initializer></methodparam>
+    <type class="union"><type>string</type><type>false</type></type><methodname>json_encode</methodname>
+   <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>derinlik</parameter><initializer>512</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>value</parameter>(değer)'in JSON
-   karşılığını içeren bir dizge döndürür.
+   Belirtilen <parameter>değer</parameter>'in JSON gösterimini
+   içeren bir dizge döndürür.
+  </para>
+  <para>
+   Kodlama, sağlanan <parameter>seçenekler</parameter>den etkilenir ve
+   ek olarak kayan noktalı değerlerin kodlanması <link
+   linkend="ini.serialize-precision">serialize_precision</link> değerine
+   bağlıdır.
   </para>
  </refsect1>
 
@@ -25,26 +33,38 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>deger</parameter></term>
+     <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       <parameter>eger</parameter> kaynağa göre beklenen şekilde şifrelenir.
+       Kodlanacak değer. &resource; türü dışında herhangi bir türde olabilir.
       </para>
       <para>
-       Bu işlev sadece UTF-8 ile şifrelenmiş verilerde çalışır.
+       Tüm dizgeler UTF-8 kodlu olmalıdır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>secenekler</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Oluşturulabilen bit maske tipleri
+       <constant>JSON_FORCE_OBJECT</constant>,
        <constant>JSON_HEX_QUOT</constant>,
        <constant>JSON_HEX_TAG</constant>,
        <constant>JSON_HEX_AMP</constant>,
        <constant>JSON_HEX_APOS</constant>,
        <constant>JSON_FORCE_OBJECT</constant>.
+       <constant>JSON_INVALID_UTF8_IGNORE</constant>,
+       <constant>JSON_INVALID_UTF8_SUBSTITUTE</constant>,
+       <constant>JSON_NUMERIC_CHECK</constant>,
+       <constant>JSON_PARTIAL_OUTPUT_ON_ERROR</constant>,
+       <constant>JSON_PRESERVE_ZERO_FRACTION</constant>,
+       <constant>JSON_PRETTY_PRINT</constant>,
+       <constant>JSON_UNESCAPED_LINE_TERMINATORS</constant>,
+       <constant>JSON_UNESCAPED_SLASHES</constant>,
+       <constant>JSON_UNESCAPED_UNICODE</constant>,
+       <constant>JSON_THROW_ON_ERROR</constant> sabitlerinin bit maskesi.
+       Bu sabitlerin davranışı <link linkend="json.constants">JSON
+       sabitleri</link> sayfasında açıklanmıştır.
       </para>
      </listitem>
     </varlistentry>
@@ -55,7 +75,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarıyla kodlanmış JSON dizgesi döndürür.
+   Başarı durumunda JSON kodlu bir dizge,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -72,15 +92,31 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>7.3.0</entry>
        <entry>
-        <parameter>secenekler</parameter> değiştirgesi eklendi.
+        <constant>JSON_THROW_ON_ERROR</constant> seçeneği eklendi.
        </entry>
       </row>
       <row>
-       <entry>5.2.1</entry>
+       <entry>7.2.0</entry>
        <entry>
-        JSON şifrelemesini destekleyen temel veri türleri eklendi.
+        <constant>JSON_INVALID_UTF8_IGNORE</constant> ve
+        <constant>JSON_INVALID_UTF8_SUBSTITUTE</constant> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <constant>JSON_UNESCAPED_LINE_TERMINATORS</constant> seçeneği eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        Çift değerler deşifre edilirken
+        <link linkend="ini.precision">precision</link> &php.ini; seçeneği yerine
+        <link linkend="ini.serialize-precision">serialize_precision</link>
+        kullanılır.
        </entry>
       </row>
      </tbody>
@@ -97,7 +133,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$arr = array ('a'=>1,'b'=>2,'c'=>3,'d'=>4,'e'=>5);
+$arr = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
 
 echo json_encode($arr);
 ?>
@@ -112,46 +148,193 @@ echo json_encode($arr);
    </example>
 
    <example>
-    <title>- <function>json_encode</function> işlevinin tüm seçeneklerini gösteren bir örnek</title>
+    <title>- Bazı seçeneklerin kullanımını gösteren
+      <function>json_encode</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$a = array('<foo>',"'bar'",'"baz"','&blong&');
+$a = array('<foo>',"'bar'",'"baz"','&blong&', "\xc3\xa9");
 
-echo "Normal: ", json_encode($a), "\n";
-echo "Tags: ",   json_encode($a,JSON_HEX_TAG), "\n";
-echo "Apos: ",   json_encode($a,JSON_HEX_APOS), "\n";
-echo "Quot: ",   json_encode($a,JSON_HEX_QUOT), "\n";
-echo "Amp: ",    json_encode($a,JSON_HEX_AMP), "\n";
-echo "All: ",    json_encode($a,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), "\n\n";
+echo "Normal: ",  json_encode($a), "\n";
+echo "Tags: ",    json_encode($a, JSON_HEX_TAG), "\n";
+echo "Apos: ",    json_encode($a, JSON_HEX_APOS), "\n";
+echo "Quot: ",    json_encode($a, JSON_HEX_QUOT), "\n";
+echo "Amp: ",     json_encode($a, JSON_HEX_AMP), "\n";
+echo "Unicode: ", json_encode($a, JSON_UNESCAPED_UNICODE), "\n";
+echo "All: ",     json_encode($a, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT |
+JSON_HEX_AMP | JSON_UNESCAPED_UNICODE), "\n\n";
 
 $b = array();
 
-echo "Empty array output as array: ", json_encode($b), "\n";
-echo "Empty array output as object: ", json_encode($b, JSON_FORCE_OBJECT), "\n\n";
+echo "Boş dizi, dizi olarak çıktılanır: ", json_encode($b), "\n";
+echo "Boş dizi, nesne olarak çıktılanır: ", json_encode($b, JSON_FORCE_OBJECT), "\n\n";
 
 $c = array(array(1,2,3));
 
-echo "Non-associative array output as array: ", json_encode($c), "\n";
-echo "Non-associative array output as object: ", json_encode($c, JSON_FORCE_OBJECT), "\n\n";
+echo "İlişkisel olmayan dizi, dizi olarak çıktılanır: ", json_encode($c), "\n";
+echo "İlişkisel olmayan dizi, nesne olarak çıktılanır: ", json_encode($c, JSON_FORCE_OBJECT), "\n\n";
+
+$d = array('foo' => 'bar', 'baz' => 'long');
+
+echo "İlişkisel dizi daima nesne olarak çıktılanır: ", json_encode($d), "\n";
+echo "İlişkisel dizi daima nesne olarak çıktılanır: ", json_encode($d, JSON_FORCE_OBJECT), "\n\n";
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-Normal: ["<foo>","'bar'","\"baz\"","&blong&"]
-Tags: ["\u003Cfoo\u003E","'bar'","\"baz\"","&blong&"]
-Apos: ["<foo>","\u0027bar\u0027","\"baz\"","&blong&"]
-Quot: ["<foo>","'bar'","\u0022baz\u0022","&blong&"]
-Amp: ["<foo>","'bar'","\"baz\"","\u0026blong\u0026"]
-All: ["\u003Cfoo\u003E","\u0027bar\u0027","\u0022baz\u0022","\u0026blong\u0026"]
+Normal: ["<foo>","'bar'","\"baz\"","&blong&","\u00e9"]
+Tags: ["\u003Cfoo\u003E","'bar'","\"baz\"","&blong&","\u00e9"]
+Apos: ["<foo>","\u0027bar\u0027","\"baz\"","&blong&","\u00e9"]
+Quot: ["<foo>","'bar'","\u0022baz\u0022","&blong&","\u00e9"]
+Amp: ["<foo>","'bar'","\"baz\"","\u0026blong\u0026","\u00e9"]
+Unicode: ["<foo>","'bar'","\"baz\"","&blong&","é"]
+All: ["\u003Cfoo\u003E","\u0027bar\u0027","\u0022baz\u0022","\u0026blong\u0026","é"]
 
-Empty array output as array: []
-Empty array output as object: {}
+Boş dizi, dizi olarak çıktılanır: []
+Boş dizi, nesne olarak çıktılanır: {}
 
-Non-associative array output as array: [[1,2,3]]
-Non-associative array output as object: {"0":{"0":1,"1":2,"2":3}}
+İlişkisel olmayan dizi, dizi olarak çıktılanır: [[1,2,3]]
+İlişkisel olmayan dizi, nesne olarak çıktılanır: {"0":{"0":1,"1":2,"2":3}}
+
+İlişkisel dizi daima nesne olarak çıktılanır: {"foo":"bar","baz":"long"}
+İlişkisel dizi daima nesne olarak çıktılanır: {"foo":"bar","baz":"long"}
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- JSON_NUMERIC_CHECK seçeneği örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo "Sayıları gösteren dizgeler otomatik olarak sayılara dönüştürülür".PHP_EOL;
+$numbers = array('+123123', '-123123', '1.2e3', '0.00001');
+var_dump(
+ $numbers,
+ json_encode($numbers, JSON_NUMERIC_CHECK)
+);
+echo "Yanlış biçimlendirilmiş sayılar içeren dizgeler".PHP_EOL;
+$strings = array('+a33123456789', 'a123');
+var_dump(
+ $strings,
+ json_encode($strings, JSON_NUMERIC_CHECK)
+);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Sayıları gösteren dizgeler otomatik olarak sayılara dönüştürülür
+array(4) {
+  [0]=>
+  string(7) "+123123"
+  [1]=>
+  string(7) "-123123"
+  [2]=>
+  string(5) "1.2e3"
+  [3]=>
+  string(7) "0.00001"
+}
+string(28) "[123123,-123123,1200,1.0e-5]"
+Yanlış biçimlendirilmiş sayılar içeren dizgeler
+array(2) {
+  [0]=>
+  string(13) "+a33123456789"
+  [1]=>
+  string(4) "a123"
+}
+string(24) "["+a33123456789","a123"]"
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Sıralı ve sırasız dizi örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo "Sıralı dizi".PHP_EOL;
+$sequential = array("foo", "bar", "baz", "blong");
+var_dump(
+ $sequential,
+ json_encode($sequential)
+);
+
+echo PHP_EOL."Sırasız dizi".PHP_EOL;
+$nonsequential = array(1=>"foo", 2=>"bar", 3=>"baz", 4=>"blong");
+var_dump(
+ $nonsequential,
+ json_encode($nonsequential)
+);
+
+echo PHP_EOL."1 indisi silinmiş sıralı dizi".PHP_EOL;
+unset($sequential[1]);
+var_dump(
+ $sequential,
+ json_encode($sequential)
+);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Sıralı dizi
+array(4) {
+  [0]=>
+  string(3) "foo"
+  [1]=>
+  string(3) "bar"
+  [2]=>
+  string(3) "baz"
+  [3]=>
+  string(5) "blong"
+}
+string(27) "["foo","bar","baz","blong"]"
+
+Sırasız dizi
+array(4) {
+  [1]=>
+  string(3) "foo"
+  [2]=>
+  string(3) "bar"
+  [3]=>
+  string(3) "baz"
+  [4]=>
+  string(5) "blong"
+}
+string(43) "{"1":"foo","2":"bar","3":"baz","4":"blong"}"
+
+1 indisi silinmiş sıralı dizi
+array(3) {
+  [0]=>
+  string(3) "foo"
+  [2]=>
+  string(3) "baz"
+  [3]=>
+  string(5) "blong"
+}
+string(33) "{"0":"foo","2":"baz","3":"blong"}"
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- <constant>JSON_PRESERVE_ZERO_FRACTION</constant> seçeneği
+      örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(json_encode(12.0, JSON_PRESERVE_ZERO_FRACTION));
+var_dump(json_encode(12.0));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(4) "12.0"
+string(2) "12"
 ]]>
     </screen>
    </example>

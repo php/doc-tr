@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: ecamalan Status: ready -->
+<!-- EN-Revision: b9b36ec7576f4d44640b8c998199690b1650bd50 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: ecamalan -->
 <refentry xml:id="function.json-last-error" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>json_last_error</refname>
@@ -14,8 +15,8 @@
    <void />
   </methodsynopsis>
   <para>
-   Son JSON çözümleyicisi tarafından (varsa) oluşan son hatayı
-   döndürür.
+   <constant>JSON_THROW_ON_ERROR</constant> belirtilmeden yapılan son JSON
+   şifre/deşifre işlemi sırasında (varsa) oluşan son hatayı döndürür.
   </para>
  </refsect1>
 
@@ -27,7 +28,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Tamsayı döndürür, ve değeri aşağıdaki sabitler olabilir: 
+   Tamsayı döndürür, ve değeri aşağıdaki sabitler olabilir:
   </para>
   <table>
    <title>JSON hata kodları</title>
@@ -51,6 +52,11 @@
       <entry></entry>
      </row>
      <row>
+      <entry><constant>JSON_ERROR_STATE_MISMATCH</constant></entry>
+      <entry>Geçersiz ya da bozuk JSON</entry>
+      <entry></entry>
+     </row>
+     <row>
       <entry><constant>JSON_ERROR_CTRL_CHAR</constant></entry>
       <entry>Denetim karakteri hatası, muhtemelen yanlış kodlanmış</entry>
       <entry></entry>
@@ -62,8 +68,38 @@
      </row>
      <row>
       <entry><constant>JSON_ERROR_UTF8</constant></entry>
-      <entry>UTF-8 karakter kodlama hatası, muhtemelen yanlış kodlanmış</entry>
-      <entry>PHP 5.3.1</entry>
+      <entry>Bozuk UTF-8 karakterler, muhtemelen yanlış kodlanmış</entry>
+      <entry>PHP 5.3.3</entry>
+     </row>
+     <row>
+      <entry><constant>JSON_ERROR_RECURSION</constant></entry>
+      <entry>Kodlanacak değerde bir veya daha fazla özyinelemeli gönderim</entry>
+      <entry>PHP 5.5.0</entry>
+     </row>
+     <row>
+      <entry><constant>JSON_ERROR_INF_OR_NAN</constant></entry>
+      <entry>
+       Kodlanacak değerde bir veya daha fazla
+       <link linkend="language.types.float.nan"><constant>NAN</constant></link>
+       veya <link linkend="function.is-infinite"><constant>INF</constant></link>
+       değeri
+      </entry>
+      <entry>PHP 5.5.0</entry>
+     </row>
+     <row>
+      <entry><constant>JSON_ERROR_UNSUPPORTED_TYPE</constant></entry>
+      <entry>Kodlanamayan türde bir değer belirtilmiş</entry>
+      <entry>PHP 5.5.0</entry>
+     </row>
+     <row>
+      <entry><constant>JSON_ERROR_INVALID_PROPERTY_NAME</constant></entry>
+      <entry>Kodlanamayan bir özellik ismi belirtilmiş</entry>
+      <entry>PHP 7.0.0</entry>
+     </row>
+     <row>
+      <entry><constant>JSON_ERROR_UTF16</constant></entry>
+      <entry>Bozuk UTF-16 karakterler, muhtemelen yanlış kodlanmış</entry>
+      <entry>PHP 7.0.0</entry>
      </row>
     </tbody>
    </tgroup>
@@ -82,20 +118,24 @@
 $json[] = '{"Organization": "PHP Documentation Team"}';
 
 // Geçersiz json dizgesi sözdizimi hatasına sebep
-// olur, bu durumda biz tırnak için ' yerine " 
-// kullanırız 
+// olur, bu durumda biz tırnak için ' yerine "
+// kullanırız
 $json[] = "{'Organization': 'PHP Documentation Team'}";
 
 
-foreach($json as $string)
-{
+foreach ($json as $string) {
     echo 'Decoding: ' . $string;
     json_decode($string);
 
-    switch(json_last_error())
-    {
+    switch (json_last_error()) {
+        case JSON_ERROR_NONE:
+            echo ' - No errors';
+        break;
         case JSON_ERROR_DEPTH:
             echo ' - Azami yığın derinliği aşıldı';
+        break;
+        case JSON_ERROR_STATE_MISMATCH:
+            echo ' - Alttan taşma ya da kipler uyumsuz';
         break;
         case JSON_ERROR_CTRL_CHAR:
             echo ' - Beklenmeyen kontol karakteri bulundu';
@@ -103,8 +143,11 @@ foreach($json as $string)
         case JSON_ERROR_SYNTAX:
             echo ' - Sözdizimi hatası, kusurlu JSON';
         break;
-        case JSON_ERROR_NONE:
-            echo ' - Hatasız';
+        case JSON_ERROR_UTF8:
+            echo ' - Bozuk UTF-8 karakterler, muhtemelen yanlış kodlanmış';
+        break;
+        default:
+            echo ' - Bilinmeyen hata';
         break;
     }
 
@@ -118,6 +161,57 @@ foreach($json as $string)
 <![CDATA[
 Decoding: {"Organization": "PHP Documentation Team"} - Hatasız
 Decoding: {'Organization': 'PHP Documentation Team'} - Sözdizimi hatası, kusurlu JSON
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <function>json_last_error</function> ile
+             <function>json_encode</function></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Geçersiz UTF8 dizesi
+$text = "\xB1\x31";
+
+$json  = json_encode($text);
+$error = json_last_error();
+
+var_dump($json, $error === JSON_ERROR_UTF8);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(4) "null"
+bool(true)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <function>json_last_error</function> ve <constant>JSON_THROW_ON_ERROR</constant></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// JSON_ERROR_UTF8'e sebep olan geçersiz UTF8 dizesi
+json_encode("\xB1\x31");
+
+// Bu bir JSON hatası oluşturmaz
+json_encode('okay', JSON_THROW_ON_ERROR);
+
+// Küresel hata durumu eski json_encode() tarafından değiştirilmemiş
+var_dump(json_last_error() === JSON_ERROR_UTF8);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(true)
 ]]>
     </screen>
    </example>
