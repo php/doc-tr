@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <appendix xml:id="mcrypt.constants" xmlns="http://docbook.org/ns/docbook">
  &reftitle.constants;
  &extension.constants;
@@ -17,39 +17,40 @@
    <listitem>
     <simpara>
      <constant>MCRYPT_MODE_ECB</constant> (<literal>elektronik
-     kod defteri</literal>), başka anahtarları şifrelemek gibi rasgele veri
-     için elverişlidir. Veri küçük ve rasgele olduğundan ECB'nin
-     yetersizliklerinin olumsuz etkileri yararlı hale gelir.
+     kod defteri</literal>) çoğu amaç için genellikle uygun olmayan bir blok
+     şifreleme kipidir. Bu kipin kullanılması önerilmez.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
      <constant>MCRYPT_MODE_CBC</constant> (<literal>şifre bloğu zinciri
-     </literal>) özellikle güvenliğin <literal>ECB</literal>'ye göre belirgin
-     şekilde arttırılmasının gerektiği şifreli dosyalar için elverişlidir.
+     </literal>) <literal>ECB</literal> kipinden belirgin şekilde daha güvenli
+     olan bir blok şifreleme kipidir.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <constant>MCRYPT_MODE_CFB</constant> (<literal>şifre
-     geribesleme</literal>), baytların tek tek şifrelenmesini gerektiren bayt
-     akımlarının şifrelenmesi için en iyi kiptir.
+     <constant>MCRYPT_MODE_CFB</constant> (<literal>8 bitlik kipte şifre
+     geribeslemesi</literal>) bir akım şifreleme kipidir.
+     <literal>CFB</literal>'den ziyade <literal>NCFB</literal> kipini
+     kullanmanız önerilir.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <constant>MCRYPT_MODE_OFB</constant> (<literal>8 bitlik çıktı
-     geribeslemesi</literal>) kipi ile <literal>CFB</literal> arasında seçim
-     yapılacaksa, hata yayılımına katlanılamayacak uygulamalarda
-     <literal>OFB</literal> tercih edilebilirse de 8 bitlik kipte
-     çalıştığından güvenilir değildir, dolayısıyla kullanımı önerilmez.
+     <constant>MCRYPT_MODE_OFB</constant> (<literal>8 bitlik kipte çıktı
+     geribeslemesi</literal>) bir akım şifreleme kipi olup,
+     <literal>CFB</literal> arasında seçim yapılacaksa, hata yayılımına
+     katlanılamayacak uygulamalarda <literal>OFB</literal> tercih edilebilir.
+     8 bitlik kipte çalıştığından güvenilir değildir, dolayısıyla kullanımı
+     önerilmez.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <constant>MCRYPT_MODE_NOFB</constant> (<literal>n bitlik çıktı
-     geribeslemesi)</literal>), algoritmaya özgü küme genişliğinde
-     çalıştığından <literal>OFB</literal>'ye göre daha güvenilirdir.
+     <constant>MCRYPT_MODE_NOFB</constant> (<literal>n bitlik kipte çıktı
+     geribeslemesi)</literal>) kipi <literal>OFB</literal> kipi ile
+     karşılaştırılabilir, fakat algoritmaya özgü tam küme genişliğinde çalışır.
     </simpara>
    </listitem>
    <listitem>
@@ -63,12 +64,32 @@
  </para>
 
  <para>
+  Mcrypt, önceden tanımlanmış sabitleri olmayan başka çalışma kiplerini de
+  destekler. Bunlar eksik sabitlerin yerine bir dizge aktararak kullanılabilir.
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <constant>"ctr"</constant> (<literal>sayaç kipi</literal>) bir akım
+     şifreleme kipidir.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>"ncfb"</constant> (<literal>n bitlik kipte şifre
+     geribeslemesi</literal>) kipi <literal>CFB</literal> kipiyle
+     karşılaştırılabilir, fakat algoritmaya özgü tam küme genişliğinde çalışır.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </para>
+
+ <para>
   Diğer bazı kipler ve rasgele sayı üreteci sabitleri
   <variablelist>
-   <varlistentry>
+   <varlistentry xml:id="constant.mcrypt-encrypt">
     <term>
      <constant>MCRYPT_ENCRYPT</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
     </term>
     <listitem>
      <simpara>
@@ -76,10 +97,10 @@
      </simpara>
     </listitem>
    </varlistentry>
-   <varlistentry>
+   <varlistentry xml:id="constant.mcrypt-decrypt">
     <term>
      <constant>MCRYPT_DECRYPT</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
     </term>
     <listitem>
      <simpara>
@@ -87,10 +108,10 @@
      </simpara>
     </listitem>
    </varlistentry>
-   <varlistentry>
+   <varlistentry xml:id="constant.mcrypt-dev-random">
     <term>
      <constant>MCRYPT_DEV_RANDOM</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
     </term>
     <listitem>
      <simpara>
@@ -98,10 +119,10 @@
      </simpara>
     </listitem>
    </varlistentry>
-   <varlistentry>
+   <varlistentry xml:id="constant.mcrypt-dev-urandom">
     <term>
      <constant>MCRYPT_DEV_URANDOM</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
     </term>
     <listitem>
      <simpara>
@@ -109,10 +130,10 @@
      </simpara>
     </listitem>
    </varlistentry>
-   <varlistentry>
+   <varlistentry xml:id="constant.mcrypt-rand">
     <term>
      <constant>MCRYPT_RAND</constant>
-     (<type>integer</type>)
+     (<type>int</type>)
     </term>
     <listitem>
      <simpara>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: be2383c6f9525dfc90b95764c7320edb501b7091 Maintainer: nilgun Status: ready -->
 <appendix xml:id="mcrypt.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <para>
@@ -10,37 +10,20 @@
   <function>mcrypt_ecb</function> ve <function>mcrypt_ofb</function>),
   <constant>MCRYPT_ENCRYPT</constant> ve <constant>MCRYPT_DECRYPT</constant>
   kiplerinin her ikisinde de çalışabilir.
-  <example>
-   <title>- Bir girdi değerinin 2.2.x altında <literal>ECB</literal> kipinde
-   <literal>TripleDES</literal> ile şifrelenmesi</title>
-   <programlisting role="php">
-<![CDATA[
-<?php
-$key = "Bu gizli bir anahtar";
-$input = "Saat 9'da gizli yerimizde buluşalım.";
-
-$encrypted_data = mcrypt_ecb (MCRYPT_3DES, $key, $input, MCRYPT_ENCRYPT);
-?>
-]]>
-   </programlisting>
-  </example>
-  Bu örnekte şifreli veriyi <literal>$encrypted_data</literal> değişkeninde
-  bir dizge olarak alabilirsiniz.
  </para>
  <para>
-  Sisteminizde libmcrypt 2.4.x veya 2.5.x kuruluysa bu işlevler hala
-  kullanılabilir olacaksa da gelişmiş işlevleri kullanmanız önerilir.
+  libmcrypt 2.4.x veya 2.5.x ile ilintilenmişse, bu işlevler kullanılabilirse de
+  daha geliştirilmiş işlevlerin kullanılması önerilir.
   <example>
-   <title>- Bir girdi değerinin 2.4.x altında <literal>ECB</literal> kipinde
-   <literal>TripleDES</literal> ile şifrelenmesi</title>
+   <title>- 2.4.x ve üstü altında <literal>CBC</literal> kipinde 256 bitlik anahtarlı <literal>AES</literal> ile bir girdiyi şifrelemek</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-    $key = "Bu gizli bir anahtar";
-    $input = "Saat 9'da gizli yerimizde buluşalım.";
+    $key = hash('sha256', 'bu bir gizli anahtar', true);
+    $input = "Saat 9'da gizli bir yerde buluşalım.";
 
-    $td = mcrypt_module_open('tripledes', '', 'ecb', '');
-    $iv = mcrypt_create_iv (mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+    $td = mcrypt_module_open('rijndael-128', '', 'cbc', '');
+    $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_URANDOM);
     mcrypt_generic_init($td, $key, $iv);
     $encrypted_data = mcrypt_generic($td, $input);
     mcrypt_generic_deinit($td);
@@ -49,9 +32,9 @@ $encrypted_data = mcrypt_ecb (MCRYPT_3DES, $key, $input, MCRYPT_ENCRYPT);
 ]]>
    </programlisting>
   </example>
-  Bu örnekte şifreli veriyi <literal>$encrypted_data</literal> değişkeninde
-  bir dizge olarak alabilirsiniz. Tam bir örnek için
-  <function>mcrypt_module_open</function> işlevine bakınız.
+  Bu örnek <literal>$encrypted_data</literal> değişkeninde bir dizge olarak
+  şifrelenmiş veri sağlar. Eksiksiz bir örnek
+  <function>mcrypt_module_open</function> işlevinde bulunabilir.
  </para>
 </appendix>
 
