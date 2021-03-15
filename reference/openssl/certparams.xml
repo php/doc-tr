@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
 <appendix xml:id="openssl.certparams" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Anahtar/Sertifika Değiştirgeleri</title>
  <para>
   Sadece bir kaç openssl işlevi bir anahtar veya sertifika değiştirgesi
-  gerektirir. PHP 4.0.5 ve öncesinde <literal>openssl_get_xxx()</literal>
-  işlevlerinden döndürülen bir anahtar veya sertifika özkaynağı kullanılmak
-  zorundaydı. Sonraki sürümler için aşağıdaki yöntemlerden biri
-  kullanılabilmektedir.
+  gerektirir. Aşağıdaki yöntemlerden biri kullanılabilir.
   <itemizedlist>
    <listitem>
     <para><emphasis>Sertifikalar</emphasis>
      <orderedlist>
       <listitem>
        <simpara>
-        <function>openssl_x509_read</function> işlevinden dönen bir X.509
-        özkaynağı.
+        <function>openssl_x509_read</function> işlevinden dönen bir
+        <classname>OpenSSLCertificate</classname> örneği (veya PHP 8.0.0
+        öncesinde <literal>OpenSSL X.509</literal> türünde bir özkaynak).
        </simpara>
       </listitem>
       <listitem>
@@ -27,7 +25,36 @@
       </listitem>
       <listitem>
        <simpara>
-        PEM kodlamalı bir sertifikanın içeriğinden oluşan bir dizge.
+        -----BEGIN CERTIFICATE----- ile başlayabilen PEM kodlamalı bir
+        sertifikanın içeriğinden oluşan bir dizge.
+       </simpara>
+      </listitem>
+     </orderedlist>
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Certificate Signing Requests (CSRs)
+     <orderedlist>
+      <listitem>
+       <simpara>
+        <function>openssl_csr_new</function> işlevinden dönen bir
+        <classname>OpenSSLCertificateSigningRequest</classname> örneği
+        (veya PHP 8.0.0  öncesinde <literal>OpenSSL X.509 CSR</literal>
+        türünde bir özkaynak).
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <filename>file://bir/yol/csr.pem</filename> biçeminde bir dizge;
+        dosya PEM kodlamalı bir CSR içermelidir.
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+         -----BEGIN CERTIFICATE REQUEST----- ile başlayabilen PEM kodlamalı bir
+        CSR'nin içeriğinden oluşan bir dizge.
        </simpara>
       </listitem>
      </orderedlist>
@@ -41,11 +68,15 @@
        <simpara>
         <function>openssl_get_publickey</function> veya
         <function>openssl_get_privatekey</function> işlevinden dönmüş bir
-        anahtar özkaynağı.
+        <classname>OpenSSLAsymmetricKey</classname> örneği (veya PHP 8.0.0
+        öncesinde <literal>OpenSSL key</literal> türünde bir özkaynak).
        </simpara>
       </listitem>
       <listitem>
-       <simpara>Sadece genel anahtarlar için: bir X.509 özkaynağı</simpara>
+       <simpara>Sadece genel anahtarlar için:
+         bir <classname>OpenSSLCertificate</classname> örneği (veya PHP 8.0.0
+        öncesinde <literal>OpenSSL X.509</literal> türünde bir özkaynak).
+       </simpara>
       </listitem>
       <listitem>
        <simpara>
@@ -56,8 +87,8 @@
       </listitem>
       <listitem>
        <simpara>
-        PEM kodlamalı bir sertifika veya anahtarın içeriğinden oluşan bir
-        dizge.
+        -----BEGIN PUBLIC KEY----- ile başlayabilen, PEM kodlamalı bir
+        sertifika veya anahtarın içeriğinden oluşan bir dizge.
        </simpara>
       </listitem>
       <listitem>

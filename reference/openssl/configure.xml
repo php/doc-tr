@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 102518ddc226f465c8f8e90794b5bde7b9cf8b26 Maintainer: nilgun Status: ready -->
 <section xml:id="openssl.installation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.install;
  <para>
@@ -8,24 +8,31 @@
   role="configure">--with-openssl[=DiZiN]</option> seçeneği ile derlemelisiniz.
  </para>
  <para>
-  OpenSSL kütüphanesi çalışma anındaki normal işlemler için ek gereksinimlere 
-  sahiptir. En önemlisi, OpenSSL'in, rasgele veya yarı rasgele bir sayı 
-  üretecine erişebilmesi gerekir; çoğu Unix ve Unix benzeri (Linux dahil) 
+  OpenSSL kütüphanesi çalışma anındaki normal işlemler için ek gereksinimlere
+  sahiptir. En önemlisi, OpenSSL'in, rasgele veya yarı rasgele bir sayı
+  üretecine erişebilmesi gerekir; çoğu Unix ve Unix benzeri (Linux dahil)
   platform için bu  <literal>/dev/urandom</literal> veya
   <literal>/dev/random</literal> aygıtına erişebilmek anlamına gelir.
+ </para>
+ <para>
+  PHP 5.6.3'ten itibaren, PHP'nin sabit kodlanmış bir öntanımlı yerine sistem
+  şifre listesini kullanmasını sağlayan
+  <option role="configure">--with-system-ciphers</option> yapılandırma seçeneği
+  mevcuttur.
  </para>
  <note>
   <title>Win32 kullanıcıları için</title>
   <para>
    &ext.windows.path.dll;
-   <filename>libeay32.dll</filename>
+   <filename>libeay32.dll</filename> veya
+   OpenSSL 1.1 itibariyle <filename>libcrypto-*.dll</filename>
   </para>
   <para>
    Anahtar üretim ve sertifika imzalama işlevlerini kullanmayı düşünüyorsanız
    sisteminizde ek olarak geçerli bir <filename>openssl.cnf</filename> kurulu
-   olmalıdır. Win32 çalıştırılabilir paketlerine örnek bir yapılandırma dosyası 
-   ekliyoruz. Bu dosya <filename class="directory">openssl</filename> dizinine 
-   konmaktadır.
+   olmalıdır. Win32 çalıştırılabilir paketlerine örnek bir yapılandırma dosyası
+   eklenmekte ve bu dosya <filename class="directory">extras/openssl</filename>
+   dizinine konmaktadır.
   </para>
   <para>
    PHP <filename>openssl.cnf</filename> dosyasını şu mantıksal sırayla
@@ -45,20 +52,55 @@
      <simpara><filename>openssl.cnf</filename> dosyasının öntanımlı sertifika
      alanında bulunduğu varsayılır (openssl DLL'i derlenirken böyle
      yapılandırılır). Yani, dosyanın öntanımlı yeri:
-     <filename>c:\usr\local\ssl\openssl.cnf</filename>.
+     <filename>C:\Program Files\Common Files\SSL\openssl.cnf</filename> (x64)
+     veya <filename>C:\Program Files (x86)\Common Files\SSL\openssl.cnf</filename>
+     (x86) ya da PHP 7.4.0 öncesinde
+     <filename>C:\usr\local\ssl\openssl.cnf</filename>.
      </simpara>
     </listitem>
    </itemizedlist>
   </para>
   <simpara>
-   Kurulum sırasında yapılandırma dosyasının aranacağı yerin
-   <filename>c:\usr\local\ssl\openssl.cnf</filename> mi olacağına yoksa ortam
-   değişkenlerini kullanarak başka bir yer mi belirtileceğine karar
-   vermelisiniz. Bir yapılandırma dosyası gerektiren işlevlerdeki
-   <parameter>ayarlar</parameter> değiştirgesini kullanarak dosyanın
-   öntanımlı yerini geçersiz kılabilirsiniz.
+   Kurulum sırasında yapılandırma dosyasının öntanımlı yere mi kurulacağına
+   yoksa başka bir yere kurup yerini ortam değişkenlerini kullanarak mı
+   belirtileceğine karar verilmelidir. Bir yapılandırma dosyası gerektiren
+   işlevlerdeki <parameter>seçenekler</parameter> değiştirgesini kullanarak
+   dosyanın öntanımlı yeri geçersiz kılınabilir.
   </simpara>
+  <caution>
+   <simpara>
+    Yetkisiz kullanıcıların <filename>openssl.cnf</filename> dosyasını
+    değiştirmelerine izin verilmediğinden emin olunmalıdır.
+   </simpara>
+  </caution>
  </note>
+ <simplesect role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        OpenSSL öntanımlı yapılandırma dosyasının yeri
+        <filename>C:\usr\local\ssl</filename> iken
+        artık sırayla şuralarda aranmaktadır:
+        <filename>C:\Program Files\Common Files\SSL</filename> ve
+        <filename>C:\Program Files (x86)\Common Files\SSL</filename>.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </simplesect>
 </section>
 
 <!-- Keep this comment at the end of the file
