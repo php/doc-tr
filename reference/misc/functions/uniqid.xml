@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b8758b0605e80c4e3610137b7502a6abeea5c69b Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.uniqid" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>uniqid</refname>
@@ -12,12 +12,22 @@
   <methodsynopsis>
    <type>string</type><methodname>uniqid</methodname>
    <methodparam choice="opt"><type>string</type><parameter>önek</parameter><initializer>""</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>döküntü_üret</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>döküntü_üret</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Mikrosaniye cinsinden geçerli zamana dayalı olarak belirtilen
    <parameter>önek</parameter> ile eşsiz bir kimlik dizgesi üretir.
   </para>
+  &caution.cryptographically-insecure;
+  <warning>
+    <para>
+     Bu işlev, dönüş değerinin benzersizliğini garanti etmez. Çoğu sistemde
+     sistem saati NTP veya benzeriyle ayarlandığından, sistem zamanı sürekli
+     olarak değiştirilir. Bu nedenle, bu işlevin süreç/evre için benzersiz
+     bir kimlik döndürmemesi mümkündür. Benzersiz olma olasılığını artırmak
+     için <parameter>döküntü_üret</parameter> değiştirgesini kullanın.
+    </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -43,8 +53,8 @@
      <term><parameter>döküntü_üret</parameter></term>
      <listitem>
       <para>
-       &true; belirtildiği takdirde elde edilen dizgenin daha da eşsiz
-       olmasını sağlamak üzere dizgenin sonuna (birleşik doğrusal benzeşimsel
+       &true; belirtildiği takdirde elde edilen dizgenin daha benzersiz olma
+       olasılığını artırmak için dizgenin sonuna (birleşik doğrusal benzeşimsel
        üreteç kullanılarak) rasgele üretilmiş karakterler eklenir.
       </para>
      </listitem>
@@ -56,65 +66,43 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Eşsiz bir kimlik dizgesi döner.
+   Sistem zamanına dayalı benzersiz bir kimlik dizgesi döner.
   </para>
+  <warning>
+   <para>
+     Bu işlev benzersiz bir kimlik üretmeye çalışır fakat dönen değerin %100
+     benzersiz olacağını garanti etmez.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   Ağ üzerindeki bir kullanıcıya vermek için eşsiz bir dizgeye ihtiyacınız
-   olursa (oturum çerezleri gibi) bunu şu şekilde üretmenizi öneririz:
-  </para>
-  <para>
-   Bu örnek, tahmin edilmesi oldukça güçleştirilmiş 32 karakterlik (128 bitlik
-   bir onaltılık sayı) bir kimlik dizgesi üretir.
    <example>
     <title>- <function>uniqid</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// önek yok.
-// Sadece PHP 5 ve sonraki sürümlerde çalışır
 $token = md5(uniqid());
+/* 4b3403665fea6 benzeri bir kimlik */
+printf("uniqid(): %s\r\n", uniqid());
 
-// daha iyisi; tahmini güçleştirelim
-$better_token = md5(uniqid(mt_rand(), true));
+/* Bir önek belirtilebilir, ikisi de geçerli:
+ *
+ * $uniqid = $önek . uniqid();
+ * $uniqid = uniqid($önek);
+ */
+printf("uniqid('php_'): %s\r\n", uniqid('php_'));
+/* Cygwin gibi bazı sistemlerde gerektiği
+ * takdirde döküntü_üret'ilebilir.
+ * sonuç şöyle olabilir: 4b340550242239.64159797
+ */
+printf("uniqid('', true): %s\r\n", uniqid('', true));
 ?>
 ]]>
     </programlisting>
    </example>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>önek</parameter> seçimlik oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.1</entry>
-       <entry>
-        114 karakterlik sınırla <parameter>önek</parameter> değiştirgesi
-        devreye girdi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -126,7 +114,8 @@ $better_token = md5(uniqid(mt_rand(), true));
     <parameter>döküntü_üret</parameter> &true; olmalıdır.
    </para>
   </note>
-  </refsect1>
+</refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file

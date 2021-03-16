@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.unpack" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>unpack</refname>
@@ -10,18 +10,20 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>unpack</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>unpack</methodname>
    <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    Paketlenmiş bir ikil dizgeden veriyi belirtilen
-   <parameter>biçem</parameter> dizgesine göre bir diziye çıkarır.
+   <parameter>biçem</parameter> dizgesine göre ilişkisel bir diziye çıkarır.
   </para>
   <para>
-   <function>unpack</function> çıkardığı veriyi bir ilişkisel dizide saklaması
-   bakımından Perl'dekinden biraz faklı çalışır. Bunu sağlamak için biçem
-   kodları farklı isimlendirilir ve bir bölü çizgisi / ile ayrılırlar.
+   <function>unpack</function> çıkardığı veriyi bir ilişkisel dizide saklar.
+   Bunu sağlamak için biçem kodları farklı isimlendirilir ve bir bölü çizgisi /
+   ile ayrılırlar. Yineleyici bir değer belirtilirse dizi anahtarları, belirtilen
+   ismin ardına eklenmiş sıra numaraları içerecektir.
   </para>
  </refsect1>
 
@@ -46,6 +48,14 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>başlangıç</parameter></term>
+     <listitem>
+      <para>
+       Verininin çıkarılmaya başlanacağı başlangıç yeri.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -53,9 +63,60 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İkil dizgeden ayrıştırılan verileri içeren bir ilişkisel dizi döner.
+   İkil dizgeden ayrıştırılan verileri içeren bir ilişkisel
+   dizi,&return.falseforfailure;
   </para>
  </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <type>float</type> ve <type>double</type> türlerin ikisininde değerli
+        baytları başta ve sonda olabiliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        Seçimlik <parameter>başlangıç</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.0</entry>
+       <entry>
+        <para>
+         Perl uyumu için aşağıdaki değişiklikler uygulandı:
+        </para>
+        <para>
+         "a" kodu artık sondaki NULL baytları tutuyor.
+        </para>
+        <para>
+         "A" kodu artık tüm ASCII boşluklarını (boşluklar, sekmeler,
+         satırsonları, satır başları ve NULL baytlar) ayırıyor.
+        </para>
+        <para>
+         NULL ile doldurulmuş dizeler için "Z" kodu eklendi; sondaki NULL
+         baytları kaldırıyor.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1><!-- }}} -->
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -65,15 +126,49 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$array = unpack("c2chars/nint", $binarydata);
+$binarydata = "\x04\x00\xa0\x00";
+$array = unpack("cchars/nint", $binarydata);
+print_r($array);
 ?>
 ]]>
     </programlisting>
-    <para>
-     Elde edilen dizi "chars1", "chars2" and "int" elemanlarını içerir.
-    </para>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [chars] => 4
+    [int] => 160
+)
+]]>
+    </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- <function>unpack</function> ve bir yineleyici</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$binarydata = "\x04\x00\xa0\x00";
+$array = unpack("c2chars/nint", $binarydata);
+print_r($array);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Array
+(
+    [chars1] => 4
+    [chars2] => 0
+    [int] => 40960
+)
+]]>
+     </screen>
+    </example>
+   </para>
  </refsect1>
 
  <refsect1 role="notes">
@@ -84,6 +179,44 @@ $array = unpack("c2chars/nint", $binarydata);
     bir işaretsiz uzun tamsayıyı ayrıştırmak isterseniz, PHP negatif sayıları
     da aynı boyutta sakladığından elde edilen değer, biçem dizgesinde
     işaretsiz olduğunu belirtseniz bile, negatif bir sayı olacaktır.
+   </para>
+  </caution>
+  <caution>
+   <para>
+    Bir öğenin ismi yoksa <literal>1</literal>'den başlayan sayısal indisler
+    kullanılır. Birden fazla isimsiz öğenin bulunmamasına dikkat etmek
+    gerekir, yoksa <literal>1</literal>'den "yeniden" başlayan sayısal
+    indisler eskilerini geçersiz kılar.
+   </para>
+   <para>
+    <example>
+     <title>- <function>unpack</function> ve isimsiz anahtarlar</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$binarydata = "\x32\x42\x00\xa0";
+$array = unpack("c2/n", $binarydata);
+var_dump($array);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+array(2) {
+  [1]=>
+  int(160)
+  [2]=>
+  int(66)
+}
+]]>
+     </screen>
+     <para>
+      <literal>c</literal> belirtecindeki ilk değer
+      <literal>n</literal> belirtecindeki ilk değer tarafınan geçersiz
+      kılınmaktadır.
+     </para>
+    </example>
    </para>
   </caution>
  </refsect1>

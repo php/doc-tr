@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a0a0165e07a83d74a66c316d52b04c1f4bf52aeb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.eval" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>eval</refname>
@@ -15,24 +15,17 @@
   </methodsynopsis>
   <para>
    <parameter>kod_dizgesi</parameter> ile belirtilen dizgeyi bir PHP kodu
-   olarak yorumlar. Kodları diğer her şeyin yanında, veritabanının bir metin
-   alanında tutmak ve bu kodları gerektiğinde çalıştırmak için çok
-   kullanışlıdır.
+   olarak yorumlar.
   </para>
-  <para>
-   <function>eval</function> işlevini kullanırken hatırda tutulması gereken
-   bazı durumlar vardır: Aktarılan dizgenin PHP kodu olarak geçerli olması
-   gerekir; deyimleri sonlandıran noktalı virgüller bu dahildir, yoksa
-   <function>eval</function> işlevinden sonraki satırda yorumlayıcı devreden
-   çıkmaz. Ayrıca, <parameter>kod_dizgesi</parameter> içindeki öncelemlerin
-   düzgün bir biçimde yapılmış olması gerekir. HTML ve PHP kodlarını karışık
-   kullanmak isterseniz PHP kipinden çıkmak için PHP'nin kapama etiketini
-   kullanabilirsiniz.
-  </para>
-  <para>
-   Ayrıca, <function>eval</function> altında kullanılan değişkenlerin
-   değerleriyle birlikte ana betikte geçerli kalacağını aklınızdan çıkarmayın.
-  </para>
+  <caution>
+   <para>
+    <function>eval</function> dil yapısı çok tehlikelidir çünkü keyfi PHP kodunun
+    çalıştırılmasına izin verir. Bu nedenle kullanımı önerilmez. Bu yapıyı
+    kullanmaktan başka bir seçeneğin olmadığına dikkatlice karar verilirse,
+    önceden düzgün bir şekilde doğrulamadan kullanıcı tarafından sağlanan
+    herhangi bir veriyi bu işleve aktarmamaya özellikle dikkat edilmelidir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -44,13 +37,37 @@
      <listitem>
       <para>
        Yorumlanacak PHP kodlarını içeren dizge.
-       <parameter>kod_dizgesi</parameter> <link
-       linkend="language.basic-syntax.phpmode">PHP açılış etiketlerini</link>
-       içermemelidir.
       </para>
       <para>
        Dizge içindeki bir <literal>return</literal> deyimi dizgenin
        yorumlanmasını, anında durdurur.
+      </para>
+      <para>
+       Kod, PHP açılış ve kapanış
+       <link linkend="language.basic-syntax.phpmode">PHP etiketleri</link> ile
+       sarmalanmaMAlıdır, yani
+       <literal>'&lt;?php echo "Merhaba!"; ?&gt;'</literal> dizgesi yerine
+       <literal>'echo "Merhaba!";'</literal> dizgesi aktarılmalıdır. Uygun PHP
+       etiketlerini kullanarak PHP kipinden çıkmak ve yeniden girmek hala
+       mümkündür, örn. <literal>'echo "PHP kipindeyiz!"; ?&gt;HTML kipindeyiz!
+       &lt;?php echo "Tekrar PHP kipindeyiz!";'</literal>.
+      </para>
+      <para>
+       Bunun dışında aktarılan kod geçerli PHP kodu olmalıdır. Bu, tüm
+       ifadelerin noktalı virgül kullanılarak uygun şekilde sonlandırılması
+       gerektiği anlamına gelir. Örneğin <literal>'echo "Merhaba!"'</literal>
+       bir ayrıştırma hatasına sebep olurken,
+       <literal>'echo "Merhaba!";'</literal> çalışacaktır.
+      </para>
+      <para>
+       Bir <literal>return</literal> deyimi kodun yorumlanmasını derhal
+       sonlandıracaktır.
+      </para>
+      <para>
+       Kod, <function>eval</function> işlevini çağıran kodun etki alanında
+       çalıştırılacaktır. Bu nedenle <function>eval</function> çağrısında
+       tanımlanan veya değiştirilen tüm değişkenler, işlev sonlandırıldıktan
+       sonra görünür kalacaktır.
       </para>
      </listitem>
     </varlistentry>
@@ -64,10 +81,12 @@
    Kod dizgesi içinde bir <literal>return</literal>  bulunmadıkça
    <function>eval</function> daima &null; döndürür. <literal>return</literal>
    ile bir değer döndürülmesi durumunda bu değeri döndürür. Belirtilen dizgede
-   bir çözümleme hatası saptanırsa <function>eval</function> &false; döndürür
-   ve çalışma dosyadaki sonraki deyimden normal olarak devam eder.
-   <function>eval</function> işlevinin yorumladığı kodlardaki bir hatayı
-   <function>set_error_handler</function> kullanarak döndürmek mümkün değildir.
+   bir çözümleme hatası saptanırsa <function>eval</function> PHP 7 öncesinde
+   &false; döndürüp çalışma dosyadaki sonraki deyimden normal olarak devam
+   eder; PHP 7 ve sonrasında ise <classname>ParseError</classname> istisnası
+   yavrulanır. <function>eval</function> işlevinin yorumladığı kodlardaki bir
+   hatayı <function>set_error_handler</function> kullanarak döndürmek mümkün
+   değildir.
   </para>
  </refsect1>
 

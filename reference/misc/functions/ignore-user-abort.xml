@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ignore-user-abort" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ignore_user_abort</refname>
@@ -12,7 +12,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>ignore_user_abort</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>değer</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>bool</type><type>null</type></type><parameter>değer</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir istemci bağlantıyı terkettiğinde betiğin sonlandırılıp
@@ -28,7 +28,7 @@
      <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       Bu değiştirge belirtilmişse değiştirge değeri
+       Bu değiştirge belirtilmişse ve &null; değilse, değiştirge değeri
        <link linkend="ini.ignore-user-abort">ignore_user_abort</link>
        yönergesinin değeri olarak kullanılır. Değiştirge belirtilmemişse,
        işlev sadece önceki değeri (değiştirmeden) döndürür.
@@ -44,6 +44,28 @@
   <para>
    Önceki değeri bir tamsayı olarak döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>değer</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -65,14 +87,14 @@ echo 'PHP'de bağlantı varlığı sınanıyor';
 // veya tarayıcının "dur" düğmesine tıklanmasını bekleyelim
 while(1)
 {
-  // Bağlantı kesilmişse döngüden çık
-  if(connection_status() != CONNECTION_NORMAL)
-  {
-    break;
-  }
+    // Bağlantı kesilmişse döngüden çık
+    if(connection_status() != CONNECTION_NORMAL)
+    {
+        break;
+    }
 
-  // 10 saniye bekle
-  sleep(10);
+    // 10 saniye bekle
+    sleep(10);
 }
 
 // Buraya gelinmişse döngü içindeyken bir düğmeye tıklanmış demektir.

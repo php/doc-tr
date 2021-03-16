@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.exit" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>exit</refname>
@@ -19,7 +19,14 @@
    <methodparam><type>int</type><parameter>durum</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Betiğin çalışmasını bitirir.
+   Betiğin çalışmasını sonlandırır. <literal>exit</literal> çağrılsa bile
+   <link linkend="function.register-shutdown-function">kapanma işlevleri</link>
+   ve <link linkend="language.oop5.decon.destructor">nesne yıkıcılar</link>
+   daima çalıştırılır.
+  </para>
+  <para>
+   <literal>exit</literal> bir dil oluşumu olup değiştirgesiz kullanımda
+   (<parameter>durum</parameter> belirtilmezse) parantezsiz çağrılabilir.
   </para>
  </refsect1>
 
@@ -35,17 +42,12 @@
        önce bu dizgeyi basar.
       </para>
       <para>
-       <parameter>status</parameter> bir tamsayı ise bu değer çıkış durumu
-       olarak kullanılır. Çıkış durumları 0..254 arasında olmalıdır. Çıkış
-       durumu 255 PHP'nin kendi kullanımına ayrılmış olup kullanılmamalıdır.
+       <parameter>durum</parameter> bir <type>int</type> türünde bir değer
+       ise bu değer çıkış durumu olarak kullanılır ve basılmaz.
+       Çıkış durumları 0..254 arasında olmalıdır. Çıkış durumu 255 PHP'nin
+       kendi kullanımına ayrılmış olup kullanılmamalıdır.
        Durum 0, betiğin işini başarıyla yerine getirdiği anlamına gelir.
       </para>
-      <note>
-       <simpara>
-        PHP &gt;= 4.2.0 sürümlerinde <parameter>durum</parameter> tamsayı ise
-        bu sayı basılmaz.
-       </simpara>
-      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -63,7 +65,7 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>exit</function> örneği</title>
+    <title>- <literal>exit</literal> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -79,7 +81,7 @@ $file = fopen($filename, 'r')
   </para>
   <para>
    <example>
-    <title>- Çıkış durumu örneği</title>
+    <title>- <literal>exit</literal> durum örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -96,6 +98,42 @@ exit(0376); // sekizlik
 ?>
 ]]>
     </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Kapanma işlevleri ve yıkıcıların koşulsuz çalışması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    public function __destruct()
+    {
+        echo 'Destruct: ' . __METHOD__ . '()' . PHP_EOL;
+    }
+}
+
+function shutdown()
+{
+    echo 'Shutdown: ' . __FUNCTION__ . '()' . PHP_EOL;
+}
+
+$foo = new Foo();
+register_shutdown_function('shutdown');
+
+exit();
+echo 'This will not be output.';
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+ <![CDATA[
+ Shutdown: shutdown()
+ Destruct: Foo::__destruct()
+ ]]>
+    </screen>
    </example>
   </para>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.define" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>define</refname>
@@ -13,7 +13,7 @@
    <type>bool</type><methodname>define</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>harf_büyüklüğüne_duyarsız</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>harf_büyüklüğüne_duyarsız</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Çalışma sırasında bir isimli sabit tanımlamaya yarar.
@@ -30,18 +30,30 @@
       <para>
        Sabitin ismi.
       </para>
+      <note>
+       <para>
+        Ayrılmış ve hatta geçersiz adlarla sabit tanımlamak mümkündür.
+        Bunların değeri (yalnızca) <function>constant</function> ile alınabilir.
+        Ancak bunu yapmanız önerilmez.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       Sabitin değeri. Sadece sayıl ve <type>null</type> değerlere izin
-       verilir. Sayıl değerler, <type>integer</type>, <type>float</type>,
-       <type>string</type> veya <type>boolean</type> türünde değerlerdir.
-       <type>resource</type> türünde sabitler tanımlamak mümkün ise de
-       beklenmedik davranışlara yol açacağından bu önerilmez.
+       Sabitin değeri. PHP 5'te <type>integer</type>, <type>float</type>,
+       <type>string</type>,  <type>boolean</type> veya &null; türünde değerler
+       kabul edilirken PHP 7'de bunlara <type>array</type> türünde değerler de
+       eklenmiştir.
       </para>
+      <warning>
+       <para>
+        <type>resource</type> türünde sabitler tanımlamak mümkün ise de
+        beklenmedik davranışlara yol açacağından bu önerilmez.
+       </para>
+      </warning>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -53,6 +65,17 @@
        <literal>SABiT</literal> ve <literal>Sabit</literal> farklı sabitler
        olarak ele alınır.
       </para>
+      <warning>
+       <simpara>
+        PHP 7.3.0 ve sonrasında harf büyüklüğüne duyarsız sabitlerin kullanımı
+        önerilmemektedir.
+       </simpara>
+      </warning>
+      <note>
+       <para>
+        Harf büyüklüğüne duyarsız sabitler küçük harfli saklanır.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -63,6 +86,37 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.3.0</entry>
+       <entry>
+        <parameter>harf_büyüklüğüne_duyarsız</parameter> değiştirgesinin
+        kullanımı önerilmemektedir. PHP 8.0.0 sürümünde kaldırılmıştır.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <type>array</type> türünde değerlere izin verilmektedir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -82,9 +136,48 @@ define("GREETING", "Hello you.", true);
 echo GREETING; // çıktısı: "Hello you."
 echo Greeting; // çıktısı: "Hello you."
 
+// PHP 7 ve sonrasında çalışır
+define('ANIMALS', array(
+    'dog',
+    'cat',
+    'bird'
+));
+echo ANIMALS[1]; // çıktısı: "cat"
+
 ?>
 ]]>
     </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Ayrılmış isimli sabitler</title>
+    <para>
+     Bu örnek, bir
+     <link linkend="language.constants.predefined">sihirli sabit</link> ile
+     aynı ada sahip bir sabiti tanımlama durumundaki davranışı göstermektedir.
+     Ortaya çıkan davranış açıkça kafa karıştırıcı olduğundan, pratikte bunu
+     yapmanız önerilmez.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(defined('__LINE__'));
+var_dump(define('__LINE__', 'test'));
+var_dump(constant('__LINE__'));
+var_dump(__LINE__);
+?>
+]]>
+    </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+bool(false)
+bool(true)
+string(4) "test"
+int(5)
+]]>
+   </screen>
    </example>
   </para>
  </refsect1>
