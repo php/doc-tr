@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.chr">
  <refnamediv>
   <refname>chr</refname>
-  <refpurpose>Kodu belirtilen karakteri döndürür</refpurpose>
+  <refpurpose>Bir sayıdan tek baytlık dizge üretir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>chr</methodname>
-   <methodparam><type>int</type><parameter>ascii</parameter></methodparam>
+   <methodparam><type>int</type><parameter>sayı</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Kodu <parameter>ascii</parameter> ile belirtilen karakteri döndürür.
+   <parameter>sayı</parameter> işaretsiz bir tamsayı olarak yorumlanarak
+   belirtilen tek baytlık karakteri döndürür.
   </para>
   <para>
+   Bu, ASCII, ISO-8859 veya Windows 1252 gibi tek baytlık bir kodlamada,
+   kodlamanın eşleme tablosunda istenen bir karakterin konumunu ileterek tek
+   karakterlik bir dize oluşturmak için kullanılabilir. Ancak, bu işlev
+   herhangi bir karakter kodlamasının farkında değildir ve özellikle UTF-8
+   veya UTF-16 gibi çok baytlı bir kodlamada bir dize oluşturmak için bir
+   Unicode karakteri kod değeri bu işleve aktarılmamalıdır.
+   </para>
+ <para>
    <function>ord</function> işlevinin zıddıdır.
   </para>
  </refsect1>
@@ -26,11 +35,23 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ascii</parameter></term>
+     <term><parameter>sayı</parameter></term>
      <listitem>
       <para>
-       Karakterin ASCII kodu.
+       0 ile 255 arasında bir tamsayı.
       </para>
+      <para>
+       Geçerli aralık (0..255) dışında kalan değerle 255 bitsel VElenir.
+       Bu aşağıdaki algoritmaya eşdeğerdir:
+       <programlisting role="php">
+<![CDATA[
+while ($bytevalue < 0) {
+    $bytevalue += 256;
+}
+$bytevalue %= 256;
+]]>
+       </programlisting>
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -40,32 +61,32 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen karakter.
+   Belirtilen bayta karşılık gelen karakter.
   </para>
  </refsect1>
 
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>6.0.0</entry>
-       <entry>
-        Bu işlevde artık sadece 255'den küçük karakterler değil tüm
-        karakterlerin karakter kodları kabul ediliyor.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Bu işlev artık desteklenmeyen <parameter>sayı</parameter>'ları
+       sessizce kabul etmeyip bunları <literal>0</literal>'a dönüştürüyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
   </para>
  </refsect1>
 
@@ -77,6 +98,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+// Dizgenin ASCII veya ASCII uyumlu kodlama kullanacağı varsayılıyor
 $dizge = "The string ends in escape: ";
 $dizge .= chr(27); /* $dizgenin sonuna kaçış karakterini ekleyelim */
 
@@ -85,6 +107,39 @@ $dizge = sprintf("The string ends in escape: %c", 27);
 ?>
 ]]>
     </programlisting>
+   </example>
+   <example>
+    <title>- Taşma davranışı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo chr(-159), chr(833), PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+aA
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir UTF-8 dizgeyi bayt bayt oluşturmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = chr(240) . chr(159) . chr(144) . chr(152);
+echo $str;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+🐘
+    </screen>
    </example>
   </para>
  </refsect1>
@@ -96,6 +151,7 @@ $dizge = sprintf("The string ends in escape: %c", 27);
     <member><function>sprintf</function></member>
     <member><function>ord</function></member>
     <member><link xlink:href="&url.asciitable;">ASCII tablosu</link></member>
+    <member><function>mb_chr</function></member>
    </simplelist>
   </para>
  </refsect1>
