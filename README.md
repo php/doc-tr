@@ -237,6 +237,8 @@ Form            Form
 Function        İşlev
 Handle          Tanıtıcı
 Handler         İşleyici
+Hash            Aş
+Hashing         Aşlama
 Heredoc         Yorumlu metin
 Idle            Boşakoşum
 Implementation  Gerçeklenim
@@ -266,6 +268,7 @@ Parameter       Değiştirge
 Parse error     Çözümleme hatası
 Parser          Çözümleyici
 Pass into       İçe aktarmak
+Peer            Görevdeş
 Pointer         Fare oku sözkonusu ise "imleç", C tarzı ise "gösterici"
 Predefined      Önceden tanımlanmış
 Procedure       Yordam

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: a028258b51dd09eeb8fcdbd1af8f1a073fd29815 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: dabaf662b17f594cd536ff68ea807b0fbc99d0ee Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.hash" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>hash</refname>
-  <refpurpose>Bir ileti özeti üretir</refpurpose>
+  <refpurpose>Bir ileti aşı üretir</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>hash</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>hash</methodname>
    <methodparam><type>string</type><parameter>algo</parameter></methodparam>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ham_çıktı</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ham_çıktı</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir ileti özeti üretir.
@@ -27,8 +27,9 @@
      <term><parameter>algo</parameter></term>
      <listitem>
       <para>
-       Özetleme algoritmasının ismi ("md5", "sha256", "haval160,4" ve
-       benzerleri)
+       Seçilen aşlama algoritmasının ismi ("md5", "sha256", "haval160,4" ve
+       benzerleri). Desteklenen algoritmaların listesi
+       <function>hash_algos</function> işlevinde bulunabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -36,7 +37,7 @@
      <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Özeti çıkarılacak ileti.
+       Aşlanacak ileti.
       </para>
      </listitem>
     </varlistentry>
@@ -56,31 +57,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Hesaplanan ileti özetini, <parameter>ham_çıktı</parameter> için &true;
+   Hesaplanan ileti aşını, <parameter>ham_çıktı</parameter> için &true;
    belirtilmedikçe küçük harfli onaltılıklardan oluşan bir dizge olarak, aksi
    takdirde ham ikil gösterimi içeren bir dizge olarak çıktılar.
-  </para>
- </refsect1>
- 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.4.0</entry>
-       <entry>Tiger algoritması artık en-kıymetli-bayt-önde bayt sıralamasını kullanmaktadır. Aşağıdaki örneğe bakınız.</entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -106,7 +85,7 @@ echo hash('ripemd160', 'Dağ başını duman almış gümüş dere durmaz akar.'
   </para>
   <para>
    <example xml:id="function.hash.tiger-bc">
-    <title>PHP-5.4 öncesi tiger algoritmalarını PHP-5.4 ve sonrası ile hesaplamak</title>
+    <title>- PHP-5.4 öncesi tiger algoritmalarını PHP-5.4 ve sonrası ile hesaplamak</title>
     <programlisting role="php">
 <![CDATA[
 <?php

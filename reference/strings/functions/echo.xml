@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ede9d209f64d4cd71bf22fcfaed14c6fc269523c Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.echo">
  <refnamediv>
   <refname>echo</refname>
@@ -11,26 +11,25 @@
   &reftitle.description;
   <methodsynopsis>
    <type>void</type><methodname>echo</methodname>
-   <methodparam><type>string</type><parameter>değ1</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>...</parameter></methodparam>
+   <methodparam rep="repeat"><type>string</type><parameter>ifadeler</parameter></methodparam>
   </methodsynopsis>
   <simpara>
    Tüm değiştirgelerini çıktılar.
   </simpara>
   <para>
-   <function>echo</function> aslında bir işlev değil bir dil oluşumudur, yani
+   <literal>echo</literal> aslında bir işlev değil bir dil oluşumudur, yani
    değiştirgelerini yaylı ayraçlar arasına almak gerekmez.
-   <function>echo</function> (diğer dil oluşumlarından farklı olarak) bir
-   işlev gibi davranmaz, bu bakımdan bir işlevin değiştirgesinde kullanılamaz.
-   Ek olarak, <function>echo</function>'ya birden fazla değiştirge aktarmak
-   isterseniz bu değiştirgeleri asla yaylı ayraçlar arasına almamalısınız.
+   Değiştirgeleri, <literal>echo</literal> anahtar sözcüğünü izleyen,
+   virgüllerle ayrılmış ve parantez içine alınmamış ifadelerden oluşur.
+   Diğer bazı dil oluşumlarının aksine, <literal>echo</literal>'nun herhangi
+   bir dönüş değeri yoktur, bu nedenle bir ifade bağlamında kullanılamaz.
   </para>
   <para>
-   <function>echo</function> ayrıca kısaltılmış bir sözdizimine de sahiptir.
+   <literal>echo</literal> ayrıca kısaltılmış bir sözdizimine de sahiptir.
    Bir açan PHP etiketinin ardına bir eşit işareti koyup dizgeyi ardına
-   yazmanız yeterlidir. Bu kısa kullanım sadece <link
-   linkend="ini.short-open-tag">short_open_tag</link> yönergesi etkin
-   kılınmışsa kullanılabilir. Örnek:
+   yazmanız yeterlidir. Bu kısa sözdizimi <link
+   linkend="ini.short-open-tag">short_open_tag</link> yapılandırma yönergesi
+   iptal edilmiş olsa bile kullanılır. Örnek:
    <informalexample>
     <programlisting role="php">
 <![CDATA[
@@ -39,6 +38,11 @@ I have <?=$foo?> foo.
     </programlisting>
    </informalexample>
   </para>
+  <para>
+   <function>print</function> işlevine göre başlıca fark
+   <literal>echo</literal>'nun çok sayıda değiştirge kabul etmesi ve
+   bir dönüş değerinin olmamasıdır.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -46,17 +50,14 @@ I have <?=$foo?> foo.
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değ1</parameter></term>
+     <term><parameter>ifadeler</parameter></term>
      <listitem>
       <para>
-       Çıktılanacak değiştirge.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>...</parameter></term>
-     <listitem>
-      <para>
+       Virgüllerle ayrılmış bir veya daha fazla dizge ifadesi.
+       Dizge olmayan değerler,
+       <link linkend="language.types.declarations.strict">
+       <literal>strict_types</literal></link> yönergesi etkin olsa bile
+        dizgeye zorlanır.
       </para>
      </listitem>
     </varlistentry>
@@ -75,58 +76,52 @@ I have <?=$foo?> foo.
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>echo</function> örnekleri</title>
+    <title>- <literal>echo</literal> örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-echo "Hello World";
+echo "echo için parantez gerekmez";
 
-echo "Bu çok satırlı bir
-dizge olup satırsonu karakterleri
-de çıktılanır.";
+// Dizgeler ya çoklu değiştirgeler olarak tek tek aktarılır
+// ya da birbirlerine eklenip tek bir değiştirge olarak aktarılır
+echo 'Bu ', 'dizge ', 'çok sayıda', 'değiştirge ', 'ile yapıldı.', "\n";
+echo 'Bu ' . 'dizge ' . 'çok sayıda ' . 'değiştirge ' . 'birbirine eklenerek yapıldı.' . "\n";
 
-echo "Bu çok satırlı bir\ndizge olup satırsonu karakterleri\nde çıktılanır.";
+// Satırsonu karakteri veya boşluk eklemek gerekmez
+// bu iki satır tek satırlık "merhabaDünya" çıktılar
+echo "merhaba";
+echo "Dünya";
 
-echo "Karakterlerin öncelenmesi böyle yapılır: \"Tıpkı böyle\".";
+// Yukarıdaki ile aynı sonucu verir
+echo "merhaba", "Dünya";
 
-// echo deyiminde değişkenleri de kullanabilirsiniz
-$bu = "Bu da";
+echo "Bu dizge
+çok satırlıdır. Satırsonu
+karakterleri de çıktılanır.";
 
-echo "$bu Buda"; // Bu da Buda
+echo "Bu dizge\nçok satırlıdır. Satırsonu\nkarakterleri de çıktılanır.";
 
-// Ayrıca dizileri de kullanabilirsiniz
-$bar = array("değer" => "Buda");
+// Değiştirge bir dizge üreten herhangi bir ifade olabilir
+$buda = "Buda";
+echo "Bu da $buda"; // Bu da Buda
 
-echo "Bu da {$bar['değer']} !"; //  Bu da Buda !
+$meyveler = ["limon", "portakal", "muz"];
+echo implode(" ve ", $meyveler); // limon ve porakal ve muz
 
-// Tek tırnak içine alırsanız değişken basılır, değeri değil
-echo '$bu Buda'; // $bu Buda
+// declare(strict_types=1) kullanılmış olsa bile
+// dizge olmayan ifadeler dizgeye zorlanır
+echo 6 * 7; // 42
 
-// Başka karakter kullanmazsanız sadece değişkenin değeri basılır
-print $bu;          // Bu da
-echo $foo,$bar;     // Bu daBuda
+// echo bir ifade gibi davranmadığından bu ifade geçersizdir
+ ($ifade) ? echo 'true' : echo 'false';
 
-// Bazıları birleştirerek basılmak üzere çok sayıda değiştirgeyi böyle aktarır
-echo 'Bu ', 'dizge ', 'çok ', 'değiştirgelidir.', chr(10);
-echo 'Bu ' . 'dizge ' . 'çok ' . 'değiştirgelidir.' . "\n";
+ // Ama bu örnek çalışır:
+ ($ifade) ? print 'true' : print 'false'; // print de bir dil oluşumudur, ama
+                                          // geçerli bir ifadedir, 1 döndürür,
+                                          // dolayısıyla bu bağlamda geçerlidir.
 
-echo <<<END
-Burada "yorumlu metin" (heredoc) sözdizimi kullanılmış
-olup bu dizgenin içindeki her $değişken yorumlanır.
-Yorumlu metin sonlandırıcısı son satırda yer almalı ve
-ardındaki noktalı virgül dışında etrafında hiçbir karakter
-(boşluklar dahil) bulunmamalıdır!
-END;
-
-// echo bir işlev gibi davranmadığından bu kod geçersizdir.
-($some_var) ? echo 'true' : echo 'false';
-
-// Ancak, bu kod çalışır:
-($some_var) ? print 'true' : print 'false'; // print de bir dil oluşumudur
-                                            // fakat bir işlev gibi davranır.
-                                            // Dolayısıyla bu bağlamda
-                                            // kullanılabilir.
-echo $some_var ? 'true': 'false'; // echo kendi içeriğini yorumlayabilir
+// Burada ifade değerlendirildikten sonra echo'ya aktarılmaktadır
+echo $some_var ? 'true': 'false';
 ?>
 ]]>
     </programlisting>
@@ -137,6 +132,82 @@ echo $some_var ? 'true': 'false'; // echo kendi içeriğini yorumlayabilir
  <refsect1 role="notes">
   &reftitle.notes;
   &note.language-construct;
+  <note>
+   <title>- Parantezli kullanım</title>
+   <para>
+    Tek bir değiştirgeyi parantezlerle çevrelemek bir sözdizimi hatası oluşturmaz
+    ve normal bir işlev çağrısı gibi görünen sözdizimi üretir. Bununla birlikte,
+    bu yanıltıcı olabilir, çünkü parantezler aslında <literal>echo</literal>
+    sözdiziminin bir parçası değil, değiştirge olarak verilen ifadenin bir
+    parçasıdır.
+   </para>
+   <para>
+    <example>
+     <programlisting role="php">
+     <![CDATA[
+<?php
+echo "hello";
+// "hello" basar
+
+echo("hello");
+// bu da "hello" basar, çünkü ("hello") geçerli bir ifadedir
+
+echo(1 + 2) * 3;
+// "9" basar; parantezler 1+2'nin önce değerlendirilip sonra 3 ile
+// çarpılmasını sağlar. İfade değerlendirildikten sonra echo'ya
+// aktarıldığından echo ifadenin tümünü tek bir değiştirge olarak görür.
+
+echo "hello", " world";
+// "hello world" basar
+
+echo("hello"), (" world");
+// "hello world" basar; Parantezler ifadenin parçasıdır
+
+echo("hello", " world");
+// Bir çözümleme hatası oluşur, çünkü ("hello", " world") geçersiz bir ifadedir
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  </note>
+  <tip>
+   <para>
+    <literal>echo</literal>'ya birden çok değiştirge aktarmak, PHP'deki
+    bitiştirme işlecinin önceliğinden kaynaklanan karışıklıkları önleyebilir.
+    Örneğin, birleştirme işleci üçlü işleçten daha yüksek önceliğe sahiptir ve
+    PHP 8.0.0'dan önce toplama ve çıkarma ile aynı önceliğe sahipti:
+   </para>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+// Önce 'Hello ' . isset($name) ifadesi değerlendirilir,
+// sonuç daima true olur, bu bakımdan sadece $name basılır
+echo 'Hello ' . isset($name) ? $name : 'John Doe' . '!';
+
+// Amaçlanan davranış daha fazla parantez gerektirir
+echo 'Hello ' . (isset($name) ? $name : 'John Doe') . '!';
+
+// PHP 8.0.0 öncesinde, "Sum: 3" yerine "2" basılırdı
+echo 'Sum: ' . 1 + 2;
+
+// Bu kez de parentez eklenerek amaçlanan davranış elde edilebilir
+echo 'Sum: ' . (1 + 2);
+]]>
+   </programlisting>
+   <para>
+    Çok sayıda değiştirge aktarılırsa önceliği devreye sokmak için parantezler
+    gerekmez, çünkü her ifade ayrı değerlendirilir:I
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+echo "Hello ", isset($name) ? $name : "John Doe", "!";
+
+echo "Sum: ", 1 + 2;
+]]>
+   </programlisting>
+  </tip>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -146,8 +217,8 @@ echo $some_var ? 'true': 'false'; // echo kendi içeriğini yorumlayabilir
     <member><function>print</function></member>
     <member><function>printf</function></member>
     <member><function>flush</function></member>
-    <member><link linkend="language.types.string.syntax.heredoc">Yorumlu
-    metinler</link></member>
+    <member><link linkend="language.types.string">Sayısal dizgeleri belirtme
+     yolları</link></member>
 
    </simplelist>
   </para>

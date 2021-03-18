@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 316087ba956dda93cd2cd36de13782c33b73e3c2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 5453bb7d88a586ef1e5f2bb01dd9f1a7540af348 Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.crypt">
  <refnamediv>
   <refname>crypt</refname>
-  <refpurpose>Tek yönlü dizge şifrelemesi yapar</refpurpose>
+  <refpurpose>Tek yönlü dizge aşlama</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &note.not-bin-safe;
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
@@ -17,20 +21,29 @@
   <para>
    <function>crypt</function> işlevi standart Unix <abbrev>DES</abbrev>
    şifreleme algoritmasını veya sistemdeki uygun algoritmalardan birini
-   kullanarak <parameter>dizge</parameter> dizgesinin şifrelenmiş sürümünü
+   kullanarak <parameter>dizge</parameter> dizgesinin aşlanmış sürümünü
    döndürür.
   </para>
   <para>
-   Bazı işletim sistemleri birden fazla şifreleme türü destekler. Çoğunlukla
-   da standart DES şifrelemesinin yerini MD5 şifreleme algoritması alır.
-   Şifreleme türü <parameter>tuz</parameter> değiştirgesiyle tetiklenir. Tuz
-   kabul edecek şifreleme türlerini ve işlevin yeteneklerini PHP kurulum
-   sırasında saptar. <parameter>tuz</parameter> belirtilmemişse ve sistemin
-   öntanımlı şifreleme türü MD5 ise rasgele bir MD5 uyumlu bir tuz üretilir;
-   sistemin öntanımlı şifreleme türü MD5 değilse PHP öntanımlı olarak iki
-   karakterlik tuz üretir. PHP, <constant>CRYPT_SALT_LENGTH</constant>
-   sabitinde tuz uzunluğunu tanımlayarak, sistemde iki karakterlik mi yoksa
-   daha uzun bir tuz mu (en fazla 20) kullanıldığını belirtir.
+   <parameter>tuz</parameter> değiştirgesi isteğe bağlıdır. Bununla birlikte,
+   <function>crypt</function> tuzsuz zayıf bir aş oluşturur ve bu durumda
+   bir <constant>E_NOTICE</constant> seviyesinde bir hatası üretir. Daha iyi
+   güvenlik için yeterince güçlü bir tuz belirlemek gerekir.
+  </para>
+  <para>
+   <function>password_hash</function> güçlü bir aş kullanır, güçlü bir tuz
+   üretir ve uygun turları otomatik olarak uygular.
+   <function>password_hash</function> basit bir <function>crypt</function>
+   sarmalayıcısıdır ve mevcut parola aşlarıyla uyumludur.
+   <function>password_hash</function> kullanmak daha güvenlidir ve önerilir.
+  </para>
+  <para>
+   Aş türü <parameter>tuz</parameter> değiştirgesiyle tetiklenir.
+   <parameter>tuz</parameter> belirtilmemişse ya standart iki karakterlik (DES)
+   ya da MD5 şifrelemesinin varlığına bağlı olarak oniki karakterlik tuz otomatik
+   olarak üretilir. PHP, kullanılabilecek aşlar tarafından izin verilen geçerli
+   en uzun tuzu belirleyen <constant>CRYPT_SALT_LENGTH</constant> adında bir
+   sabit içerir.
   </para>
   <para>
    Standart DES şifrelemesinde <function>crypt</function> işlevi tuz olarak
@@ -40,42 +53,71 @@
    üretir.
   </para>
   <simpara>
-   İşlevin çok sayıda şifreleme algoritması ile desteklendiği sistemlerde
-   aşağıdaki sabitler desteklenen şifreleme türüne göre 0 veya 1 değerini
-   alırlar:
+   Desteklenen aş türleri:
   </simpara>
   <itemizedlist>
    <listitem>
     <simpara>
-     <constant>CRYPT_STD_DES</constant> - İki karakterlik tuz kullanan
-     standart DES şifrelemesi.
+     <constant>CRYPT_STD_DES</constant> - "./0-9A-Za-z" kalıbından
+     iki karakter içeren standart DES aşı. Tuzda geçersiz karakter kullanımı
+     işlevin başarısız olmasına sebep olur.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
      <constant>CRYPT_EXT_DES</constant> - Dokuz karakterlik tuz kullanan
-     gelişkin DES şifrelemesi.
+     gelişkin DES aşı. "Tuz", bir alt çizginin ardından 4 baytlık yineleme
+     sayısı ve 4 baytlık tuzdan oluşan 9 karakterli bir dizedir. Bunlar
+     yazdırılabilir karakterler olup karakter başına 6 bit kullanılır ve en düşük
+     değerli karakter baştadır. 0 ila 63 arasındaki değerler "./0-9A-Za-z"
+     kalıbından kodlanmıştır. Tuzda geçersiz karakter kullanımı, işlevin
+     başarısız olmasına sebep olur.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
      <constant>CRYPT_MD5</constant> - $1$ ile başlayan on iki karakterlik MD5
-     şifrelemesi.
+     aşı.
     </simpara>
    </listitem>
    <listitem>
     <simpara>
-     <constant>CRYPT_BLOWFISH</constant> - $2$ veya $2a$ ile başlayan on altı
-     karakterlik Blowfish şifrelemesi.
+     <constant>CRYPT_BLOWFISH</constant> - Tuzlu blowfish aşı şöyle oluşur:
+     "$2a$", "$2x$" veya "$2y$", iki basamaklı bir bedel değiştirgesi,
+     "$" ve "./0-9A-Za-z" kalıbından 22 karakter. Tuzda bu aralığın dışındaki
+     karakterlerin kullanılması, işlevin sıfır uzunluklu bir dize döndürmesine
+     sebep olur. İki basamaklı bedel değiştirgesi, temel Blowfish tabanlı
+     aşlama algoritması için yineleme sayımının 2'lik tabanda logaritmasıdır
+     ve 04-31 aralığında olmalıdır; bu aralığın dışındaki değerler işlevin
+     başarısız olmasına sebep olur. "$2x$" aşları görece zayıftır; "$2a$"
+     aşları uyumludur ve bu zayıflığı azaltır. Yeni aşlar için "$2y$"
+     kullanılmalıdır. İlgili güvenlik düzeltmesinin tüm ayrıntıları
+     <link xlink:href="&url.crypt.blowfish;">bu belgededir</link>.
     </simpara>
    </listitem>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_SHA256</constant> - SHA-256 aşı, $5$ ile başlayan
+     onaltı karakterlik bir tuza sahiptir. Tuz dizesi 'rounds=&lt;N&gt;$'
+     ile başlıyorsa, N'nin sayısal değeri, Blowfish'teki bedel değiştirgesine
+     benzer şekilde, aşlama döngüsündeki tur sayısını belirtmek için
+     kullanılır. Öntanımlı tur sayısı 5000'dir, en az 1000 ve en çok
+     999.999.999'dur. Bu aralığın dışında bir N seçilirse en yakın sınır
+     değer kullanılır.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>CRYPT_SHA512</constant> - SHA-512 aşı, $6$ ile başlayan
+     onaltı karakterlik bir tuza sahiptir. Tuz dizesi 'rounds=&lt;N&gt;$'
+     ile başlıyorsa, N'nin sayısal değeri, Blowfish'teki bedel değiştirgesine
+     benzer şekilde, aşlama döngüsündeki tur sayısını belirtmek için
+     kullanılır. Öntanımlı tur sayısı 5000'dir, en az 1000 ve en çok
+     999.999.999'dur. Bu aralığın dışında bir N seçilirse en yakın sınır
+     değer kullanılır.
+     </simpara>
+    </listitem>
   </itemizedlist>
-  <note>
-   <para>
-    PHP 5.3.0 ve sonrasında, PHP kendi gerçeklenimini içerir ve sistemde
-    desteği bulunmayan algoritmalar için bu gerçeklenimi kullanır.
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -86,21 +128,24 @@
      <term><parameter>dizge</parameter></term>
      <listitem>
       <para>
-       Şifrelenecek dizge.
+       Aşlanacak dizge.
       </para>
+      <caution>
+       <para>
+        <constant>CRYPT_BLOWFISH</constant> algoritmasının kullanımı,
+        <parameter>dizge</parameter> değiştirgesinin 72 karakter uzunlukta
+        kırpılmasına sebep olur.
+       </para>
+      </caution>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>tuz</parameter></term>
      <listitem>
       <para>
-       Şifrelemeye göre değişen isteğe bağlı tuz dizgesi. Belirtilmediği
-       takdirde PHP, işlevin her çağrılışında rasgele bir tane üretir.
-      </para>
-      <para>
-       Eğer kendi tuzunuzu kullanacaksanız işlevi çağırmadan önce üretmiş
-       olmalısınız. İşlevi tekrar takrar çağırdığınız durumlarda bunun hem
-       görünürde hem de güvenlikte bazı etkileri olur.
+       Aşlamaye göre değişen isteğe bağlı tuz dizgesi. Belirtilmezse,
+       davranış algoritma gerçeklenimi tarafından tanımlanır ve beklenmedik
+       sonuçlara yol açabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -111,8 +156,17 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Şifrelenmiş dizge.
+   Aşlama uygulanmış dizge veya 13 karakterden daha kısa olan ve başarısızlık
+   durumunda tuzdan farklı olacağı garanti edilen bir dizge döndürür.
   </para>
+  <warning>
+   <simpara>
+    Parolalar doğrulanırken, <function>crypt</function> çıktısını önceden
+    bilinen aş ile karşılaştırmak için zamanlama saldırılarına açık olmayan
+    bir dizge karşılaştırma işlevi kullanılmalıdır. PHP'de bu kullanım için
+    <function>hash_equals</function> işlevi bulunur.
+   </simpara>
+  </warning>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -128,11 +182,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>8.8.0</entry>
        <entry>
-        PHP artık MD5, standart DES, gelişkin DES ve Blowfish şifreleme
-        algoritmaları için kendi gerçeklenimini içeriyor ve sistemde bu
-        algoritmalardan bulunmayanların yerine bu algoritmaları kullanıyor.
+        <parameter>tuz</parameter> değiştirgesi artık isteğe bağlı değil.
        </entry>
       </row>
      </tbody>
@@ -149,14 +201,15 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$parola = crypt('parolam'); // Tuzu PHP üretsin
+$aşlıParola = crypt('parolam');
+// Tuzu PHP üretsin; önerilmez
 
 /* Parola karşılaştırmasında, farklı şifreleme algoritmaları ile ilgili
    sorunlardan kaçınmak için crypt() sonucunun tamamını tuz olarak işleve
-   aktarmalısınız. (Yukarıda belirtildiği gibi standart DES parola özetleri
+   aktarmalısınız. (Yukarıda belirtildiği gibi standart DES parola aşları
    2 karakterlik tuz kullanırken MD5 parola özetleri 12 karakterlik tuz
    kullanır.) */
-if (crypt($kullanıcı _girdisi, $parola) == $parola) {
+if (hash_equals($özetliParola, crypt($kullanıcı_girdisi, $aşlıParola))) {
    echo "Parola doğru!";
 }
 ?>
@@ -173,7 +226,7 @@ if (crypt($kullanıcı _girdisi, $parola) == $parola) {
 // Parolayı tanmılayalım
 $parola = 'parolam';
 
-// Tuzu PHP üretsin ve bize parola özetini versin
+// Tuzu PHP üretsin ve bize parola aşını versin
 $hash = crypt($parola);
 ?>
 ]]>
@@ -182,37 +235,43 @@ $hash = crypt($parola);
   </para>
   <para>
    <example>
-    <title>- <function>crypt</function> işlevinin farklı şifreleme türleri ile
+    <title>- <function>crypt</function> işlevinin farklı aş türleri ile
     kullanımı</title>
     <programlisting role="php">
 <![CDATA[
-<?php
-if (CRYPT_STD_DES == 1) {
-    echo 'Standart DES: ' . crypt('rasmuslerdorf', 'rl') . "\n";
-}
-
-if (CRYPT_EXT_DES == 1) {
-    echo 'Gelişkin DES: ' . crypt('rasmuslerdorf', '_J9..rasm') . "\n";
-}
-
-if (CRYPT_MD5 == 1) {
-    echo 'MD5:          ' . crypt('rasmuslerdorf', '$1$rasmusle$') . "\n";
-}
-
-if (CRYPT_BLOWFISH == 1) {
-    echo 'Blowfish:     ' . crypt('rasmuslerdorf',
-            '$2a$07$usesomesillystringforsalt$') . "\n";
-}
++/* Bu tuzlar sadece örnektir. Asla bire bir kullanılmamalıdır.
++   Her parola için ayrı üretilmiş, iyi biçimlenmiş bir tuz kullanılmalıdır.
++*/
++echo 'Standard DES: ',
++    crypt('rasmuslerdorf', 'rl'),
++    "\n";
++echo 'Gelişkin DES: ',
++    crypt('rasmuslerdorf', '_J9..rasm'),
++    "\n";
++echo 'MD5:          ',
++    crypt('rasmuslerdorf', '$1$rasmusle$'),
++    "\n";
++echo 'Blowfish:     ',
++    crypt('rasmuslerdorf', '$2a$07$usesomesillystringforsalt$'),
++    "\n";
++echo 'SHA-256:      ',
++    crypt('rasmuslerdorf', '$5$rounds=5000$usesomesillystringforsalt$'),
++    "\n";
++echo 'SHA-512:      ',
++    crypt('rasmuslerdorf', '$6$rounds=5000$usesomesillystringforsalt$'),
++    "\n";
 ?>
 ]]>
     </programlisting>
-     &example.outputs.similar;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 Standart DES: rl.3StKT.4T8M
 Gelişkin DES: _J9..rasmBYk8r9AiWNc
 MD5:          $1$rasmusle$rISCgZzpwk3UhDidwXvin0
-Blowfish:     $2a$07$usesomesillystringfore2uDLvp1Ii2e./U9C8sBjqp8I90dH6hi
++Blowfish:     $2y$07$usesomesillystringfore2uDLvp1Ii2e./U9C8sBjqp8I90dH6hi
+SHA-256:      $5$rounds=5000$usesomesillystri$KqJWpanXZHKq2BOB43TSaYhEWsQ1Lr5QNyPCDH/Tp.6
+SHA-512:      $6$rounds=5000$usesomesillystri$D4IrlXatmP7rx3P3InaxBeoomnAihCKRVQP22JZ6EY47Wc6BkroIuUUBOov1i.S5KPgErtP/EN5mcO.ChWQW21
 ]]>
     </screen>
    </example>
@@ -233,9 +292,10 @@ Blowfish:     $2a$07$usesomesillystringfore2uDLvp1Ii2e./U9C8sBjqp8I90dH6hi
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>hash_equals</function></member>
+    <member><function>password_hash</function></member>
     <member><function>md5</function></member>
-    <member><link linkend="ref.mcrypt">Mcrypt</link> eklentisi</member>
-    <member><link xlink:href="http://belgeler.org/man/man3/man3-crypt.html">
+    <member><link xlink:href="http://belgeler.gen.tr/man/man3/man3-crypt.html">
     crypt işlevinin Unix kılavuz sayfası</link></member>
    </simplelist>
   </para>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.crc32">
  <refnamediv>
   <refname>crc32</refname>
@@ -19,11 +19,51 @@
    bütünlük doğrulamasını yapmak için kullanılır.
   </para>
   <para>
-   PHP'nin tamsayı türü işaretli olduğundan ve çoğu crc32 sağlaması negatif
-   tamsayılar ürettiğinden işaretsiz crc32 sağlamalarının dizgesel
-   gösterimlerini elde etmek için <function>sprintf</function> ve
+   PHP'nin tamsayı türü işaretli olduğundan ve çoğu crc32 sağlaması 32 bitlik
+   platformlarda negatif tamsayılar üretir. işaretsiz crc32 sağlamalarının
+   dizgesel gösterimlerini elde etmek için <function>sprintf</function> ve
    <function>printf</function> işlevlerinde "%u" belirtimini kullanın
   </para>
+  <warning>
+   <simpara>
+    PHP'nin tamsayı türü işaretli olduğundan ve çoğu crc32 sağlaması 32 bitlik
+    kurulumlarda negatif tamsayılar üretir.  64 bitlik kurulumlarda ise tüm
+    <function>crc32</function> sonuçları positif tamsayılardır.
+   </simpara>
+   <simpara>
+    Ondalık biçemdeki işaretsiz <function>crc32</function> sağlamalarının
+    dizgesel gösterimlerini elde etmek için <function>sprintf</function> ve
+   <function>printf</function> işlevlerinde "%u" belirtimi kullanılır.
+   </simpara>
+   <simpara>
+    Sağlama toplamının onaltılık gösterimi için, <function>sprintf</function>
+    veya <function>printf</function> işlevinin "%x" biçimlendiricisini veya
+    <function>dechex</function> dönüştürme işlevlerini kullanabilirsiniz;
+    bunların her ikisi de <function>crc32</function> sonucunu işaretsiz bir
+    tam sayıya dönüştürmeye özen gösterir.
+   </simpara>
+   <simpara>
+    64 bit kurulumlara sahip olunması durumunda, daha büyük sonuç değerleri
+    için negatif tamsayılar döndürülmesi de düşünüldü, ancak bu onaltılık
+    değer dönüştürmeyi bozacaktı, çünkü bu takdirde negatif değerler fazladan
+    0xFFFFFFFF ######## başlangıcı elde edecekti. Onaltılık gösterim en yaygın
+    kullanım durumu gibi göründüğünden, 32 bitten 64 bite geçiş, doğrudan
+    ondalık karşılaştırmaların yaklaşık %50'sini bozsa bile negatif tamsayılar
+    döndürmemeye karar verdik.
+   </simpara>
+   <simpara>
+    Geçmişe bakıldığında, işlevin bir tamsayı döndürmesi belki en iyi fikir
+    değildi ve hemen onaltılık bir dize gösterimi döndürmek
+    (<function>md5</function>'in yaptığı gibi), başlangıç için daha iyi bir
+    plan olabilirdi.
+   </simpara>
+   <simpara>
+    Daha taşınabilir bir çözüm için <function>hash</function> işlevini de
+    düşünebilirsiniz. <code>hash("crc32b", $str)</code> kodu ile,
+    <code>str_pad(dechex(crc32($str)), 8, '0', STR_PAD_LEFT)</code> kodu aynı
+    dizeyi döndürür.
+   </simpara>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -75,6 +115,7 @@ printf("%u\n", $checksum);
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>hash</function></member>
     <member><function>md5</function></member>
     <member><function>sha1</function></member>
    </simplelist>

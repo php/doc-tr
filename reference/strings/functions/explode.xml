@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.explode">
+<!-- EN-Revision: 923fbe06539286e2a9261ea9982e788b4157ad48 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.explode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>explode</refname>
   <refpurpose>Bir dizgeyi bir ayraca göre bölüp bir dizi haline getirir
@@ -14,10 +14,10 @@
    <type>array</type><methodname>explode</methodname>
    <methodparam><type>string</type><parameter>ayraç</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>sınır</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sınır</parameter><initializer><constant>PHP_INT_MAX</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>dizge dizgesini</parameter> belirtilen
+   Belirtilen <parameter>dizge</parameter>  dizgesini belirtilen
    <parameter>ayraç</parameter> dizgesine göre alt dizgelere ayırıp bunları
    bir diziye yerleştirir.
   </para>
@@ -63,9 +63,9 @@
    </variablelist>
   </para>
   <para>
-   <function>implode</function> işlevinin değiştirgeleri tarihsel sebeplerle
-   yer değiştirebilse de, bu <function>explode</function> için geçerli
-   değildir. <parameter>ayraç</parameter> değiştirgesi
+   PHP 8.0.0 öncesinde, <function>implode</function> işlevinin değiştirgeleri
+   yer değiştirebilirdi. Fakat <function>explode</function> bunu asla
+   desteklemez: <parameter>ayraç</parameter> değiştirgesi
    <parameter>dizge</parameter> değiştirgesinden önce belirtilmelidir.
   </para>
  </refsect1>
@@ -73,43 +73,17 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
+   Belirtilen <parameter>dizge</parameter>  dizgesini belirtilen
+   <parameter>ayraç</parameter> dizgesine göre alt dizgelere ayırıp bunları
+   yerleştirdiği diziyi döndürür.
+  </para>
+  <para>
    <parameter>ayraç</parameter> boş ("") bir dizge ise
    <function>explode</function> &false; döndürür.  Eğer
    <parameter>ayraç</parameter> dizgesi <parameter>dizge</parameter> içinde
    bulunmayan bir karakter içeriyorsa ve negatif bir
-   <parameter>sınır</parameter> belirtilmişse boş bir dizi döner. Diğer
-   <parameter>sınır</parameter> değerleri için <parameter>dizge</parameter>
-   dizgesini içeren bir dizi döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        Negatif <parameter>sınır</parameter> desteği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.1</entry>
-       <entry>
-        <parameter>sınır</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   <parameter>sınır</parameter> belirtilmişse boş bir dizi döner. Aksi takdirde,
+   <parameter>dizge</parameter> dizgesini içeren bir dizi döner.
   </para>
  </refsect1>
 
@@ -136,6 +110,47 @@ echo $pass; // *
 ?>
 ]]>
     </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>explode</function> return examples</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/*
+   A string that doesn't contain the delimiter will simply
+   return a one-length array of the original string.
+*/
+$input1 = "hello";
+$input2 = "hello,there";
+$input3 = ',';
+var_dump( explode( ',', $input1 ) );
+var_dump( explode( ',', $input2 ) );
+var_dump( explode( ',', $input3 ) );
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(1)
+(
+    [0] => string(5) "hello"
+)
+array(2)
+(
+    [0] => string(5) "hello"
+    [1] => string(5) "there"
+)
+array(2)
+(
+    [0] => string(0) ""
+    [1] => string(0) ""
+)
+]]>
+    </screen>
    </example>
   </para>
   <para>
@@ -185,6 +200,7 @@ Array
    <simplelist>
     <member><function>preg_split</function></member>
     <member><function>str_split</function></member>
+    <member><function>mb_split</function></member>
     <member><function>str_word_count</function></member>
     <member><function>strtok</function></member>
     <member><function>implode</function></member>

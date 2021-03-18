@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.get-html-translation-table">
+<!-- EN-Revision: 8b12549bff077aadc8671408e884937aa67ee532 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.get-html-translation-table" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>get_html_translation_table</refname>
   <refpurpose><function>htmlspecialchars</function> ve
@@ -13,8 +13,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>get_html_translation_table</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>tablo</parameter><initializer>HTML_SPECIALCHARS</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>öncelem_türü</parameter><initializer>ENT_COMPAT</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tablo</parameter><initializer><constant>HTML_SPECIALCHARS</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_COMPAT</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter><initializer>"UTF-8"</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>get_html_translation_table</function> işlevi,
@@ -23,11 +24,12 @@
   </para>
   <note>
    <para>
-    Özel karakterler çeşitli yollarla kodlanabilir. Örneğin " karateri
+    Özel karakterler çeşitli yollarla kodlanabilir. Örneğin " karakteri
     <literal>&amp;quot;</literal>,  <literal>&amp;#34;</literal> veya
     <literal>&amp;#x22</literal> olarak kodlanabilir.
-    <function>get_html_translation_table</function> işlevi sadece en
-    bilinenini döndürür.
+    <function>get_html_translation_table</function> işlevi sadece
+    <function>htmlspecialchars</function> ve <function>htmlentities</function>
+    tarafından kullanılan biçimi döndürür.
    </para>
   </note>
  </refsect1>
@@ -47,17 +49,69 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>öncelem_türü</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Belirtilmesi isteğe bağlı olan bu değiştirgede tek ve çift tırnaklar
-       için işlevin nasıl işlem yapacağı belirtilir. Öntanımlı olan
-       <constant>ENT_COMPAT</constant> ile geriye uyumlu olarak sadece çift
-       tırnaklar dönüştürülür, tek tırnaklara dokunulmaz.
-       <constant>ENT_QUOTES</constant> belirtilmişse çift tırnaklara ilaveten
-       tek tırnaklar da dönüştürülür. <constant>ENT_NOQUOTES</constant>
-       belirtilirse ne tek ne de çift tırnaklar dönüştürülür.
+       Tablonun hangi tırnak işaretlerini içereceğini ve tablonun hangi belge
+       türü için olduğunu belirten aşağıdaki seçeneklerin bir veya daha
+       fazlasının bit maskesi. <literal>ENT_COMPAT | ENT_HTML401</literal>
+       öntanımlıdır.
+       <table>
+        <title>Kullanılabilen <parameter>seçenekler</parameter>in
+         sabitleri</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Sabit Adı</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><constant>ENT_COMPAT</constant></entry>
+           <entry>Tablo çift tırnaklı öğeleri içerir,
+            tek tırnaklıları değil.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_QUOTES</constant></entry>
+           <entry>Tablo hem çift tırnaklı hem de tek tırnaklı öğeleri içerir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_NOQUOTES</constant></entry>
+           <entry>Tablo ne çift tırnaklı ne de tek tırnaklı öğeleri içerir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>Tablo HTML 4.01 içindir.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>Tablo XML 1 içindir.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>Tablo XHTML içindir.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>Tablo HTML 5 içindir.</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
       </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kodlama</parameter></term>
+     <listitem>
+      <para>
+       Kullanılacak kodlama.
+       Belirtilmezse, UTF-8 öntanımlıdır.
+      </para>
+      &reference.strings.charsets;
      </listitem>
     </varlistentry>
    </variablelist>
@@ -79,18 +133,33 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$trans = get_html_translation_table(HTML_ENTITIES);
-$str = "Hallo & <Frau> & Krämer";
-$encoded = strtr($str, $trans);
-
-echo $encoded;
+var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5));
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
-Hallo &amp; &lt;Frau&gt; &amp; Kr&auml;mer
+array(1510) {
+  ["
+"]=>
+  string(9) "&NewLine;"
+  ["!"]=>
+  string(6) "&excl;"
+  ["""]=>
+  string(6) "&quot;"
+  ["#"]=>
+  string(5) "&num;"
+  ["$"]=>
+  string(8) "&dollar;"
+  ["%"]=>
+  string(8) "&percnt;"
+  ["&"]=>
+  string(5) "&amp;"
+  ["'"]=>
+  string(6) "&apos;"
+  // ...
+}
 ]]>
     </screen>
    </example>
