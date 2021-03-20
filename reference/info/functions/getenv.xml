@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f2049e4661c2459f631534e1bb1d5acce65d416f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: be008069ebffcdc7ac4c290becc4d455093fb218 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.getenv" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>getenv</refname>
@@ -10,8 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>getenv</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>getenv</methodname>
    <methodparam><type>string</type><parameter>değişken</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>yerel</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>array</type><methodname>getenv</methodname>
+   <void/>
   </methodsynopsis>
   <para>
    Belirtilen ortam değişkeninin değerini döndürür.
@@ -35,6 +40,15 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>yerel</parameter></term>
+     <listitem>
+      <para>
+       &true; belirtilirse sacece yerel ortam değişkenleri (işletim sistemi
+       veya putenv ile atanır) döner.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -42,10 +56,53 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>değişken</parameter> diye bir ortam değişkeni yoksa &false; aksi 
-   takdirde <parameter>değişken</parameter> ile belirtilen ortam değişkeninin 
-   değerini döndürür.
+   <parameter>değişken</parameter> diye bir ortam değişkeni yoksa &false; aksi
+   takdirde <parameter>değişken</parameter> ile belirtilen ortam değişkeninin
+   değerini döndürür. <parameter>değişken</parameter> atlanırsa, tüm ortam
+   değişkenlerini içeren ilişkisel bir dizi döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>değişken</parameter> artık atlanabiliyor, bu durumda tüm
+       ortam değişkenlerini içeren ilişkisel bir dizi dönüyor.
+      </entry>
+     </row>
+     <row>
+      <entry>5.5.38, 5.6.24, 7.0.9</entry>
+      <entry>
+       <parameter>yerel</parameter> değiştirgesi eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    PHP, Fast CGI gibi bir SAPI olarak çalışıyorsa, bu işlev daima SAPI
+    tarafından atanan bir ortam değişkeninin değerini döndürür
+    (<function>putenv</function> ile aynı isimde yerel bir ortam değişkeni
+    tanımlanmış olsa bile). Yerel olarak tanımlanmış ortam değişkenlerini
+    döndürmek için <parameter>yerel</parameter> değiştirgesi kullanılır.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="examples">
@@ -61,6 +118,11 @@ $ip = getenv('REMOTE_ADDR');
 
 //Veya basitçe bir süper küresel kullan ($_SERVER veya $_ENV)
 $ip = $_SERVER['REMOTE_ADDR'];
+
+// Bir ortam değişkeninin değeri, bir SAPI tarafından ayarlanıp
+// ayarlanmadığına veya putenv ile değiştirilip değiştirilmediğine
+// bakılmaksızın rahatça alınabilir
+$ip = getenv('REMOTE_ADDR', true) ?: getenv('REMOTE_ADDR')
 ?>
 ]]>
     </programlisting>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: bbd4f6a100b48cd3390590037088fe7c5c5cc0e7 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.assert-options" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>assert_options</refname>
@@ -18,6 +18,16 @@
    <function>assert</function> işlevi için çeşitli denetim seçeneklerini
    tanımlar veya mevcut değerlerini sorgular.
   </para>
+  <note>
+   <simpara>
+    PHP 7.0.0 itibariyle, <function>assert_options</function> işlevinin
+    kullanılmaması öneriliyor. &php.ini; yönergelerinde okuma yazma işlemleri
+    için <link linkend="ini.zend.assertions">zend.assertions</link> ve
+    <link linkend="ini.assert.exception">assert.exception</link> ile
+    <function>ini_set</function> ve <function>ini_get</function>
+    kullanılabilir.
+   </simpara>
+  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -87,10 +97,57 @@
       <para>
        Seçenek için isteğe bağlı yeni değer.
       </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </para>
+      <para>
+        Geriçağırım işlevi <constant>ASSERT_CALLBACK</constant> seçeneğiyle veya  <literal>assert.callback</literal> işleviyle aşağıdaki sözdizimine göre atanmalıdır:
+       <methodsynopsis role="procedural">
+        <type>void</type><methodname>assert_callback</methodname>
+        <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+        <methodparam><type>int</type><parameter>satır</parameter></methodparam>
+        <methodparam><type>string</type><parameter>sav</parameter></methodparam>
+        <methodparam choice="opt"><type>string</type><parameter>açıklama</parameter></methodparam>
+       </methodsynopsis>
+       <variablelist>
+        <varlistentry>
+         <term><parameter>dosya</parameter></term>
+         <listitem>
+          <simpara>
+           <function>assert</function> işlevinin çağrıldığı dosya.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>satır</parameter></term>
+         <listitem>
+          <simpara>
+           <function>assert</function> işlevinin çağrıldığı satır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>sav</parameter></term>
+         <listitem>
+          <simpara>
+           Dizgeye dönüştürülmüş olarak <function>assert</function> işlevine
+           aktarılan sav.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>açıklama</parameter></term>
+         <listitem>
+          <simpara>
+           <function>assert</function> işlevine aktarılan açıklama.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   <parameter>değer</parameter> değiştirgesine boş bir dizge aktarılması
+   assert geriçağırım işlevini sıfırlar.
+   </para>
  </refsect1>
 
  <refsect1 role="returnvalues">
@@ -110,15 +167,15 @@
 <![CDATA[
 <?php
 // Sav başarısızlıklarında çalışacak işlevimiz
-function assert_failure()
+function assert_failure($dosya, $satr, $sav, $ileti)
 {
-  echo 'İddia geçersiz';
+    echo "$dosya dosyasının $satr. satırındaki $sav başarısız: $message";
 }
 
 // Sınama işlevimiz
 function test_assert($parameter)
 {
-  assert(is_bool($parameter));
+    assert(is_bool($parameter));
 }
 
 // Sav seçeneklerini atayalım

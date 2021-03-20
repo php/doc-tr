@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.getrusage" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>getrusage</refname>
@@ -10,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>getrusage</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>kim</parameter><initializer>0</initializer></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>getrusage</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <command>getrusage</command>(2) için bir arayüz olup sistem çağırısından
@@ -24,10 +24,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>kim</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
-       1 belirtilirse işlev <constant>RUSAGE_CHILDREN</constant> ile çağrılır.
+       1 belirtilirse getrusage <constant>RUSAGE_CHILDREN</constant> ile
+       çağrılır.
       </para>
      </listitem>
     </varlistentry>
@@ -40,6 +41,7 @@
   <para>
    Sistem çağrısından dönen veriyi içeren bir ilişkisel dizi döner. Tüm
    girdilere belgelenmiş alan isimleri kullanılarak erişilebilir.
+   Başarısız olursa &false; döner.
   </para>
  </refsect1>
 
@@ -52,10 +54,22 @@
 <![CDATA[
 <?php
 $dat = getrusage();
+echo $dat["ru_oublock"];       // küme çıktı işlemlerinin sayısı
+echo $dat["ru_inblock"];       // küme girdi işlemlerinin sayısı
+echo $dat["ru_msgsnd"];        // gönderilmiş IPC iletilerinin sayısı
+echo $dat["ru_msgrcv"];        // alınmış IPC iletilerinin sayısı
+echo $dat["ru_maxrss"];        // azami yerleşik atama boyutu
+echo $dat["ru_ixrss"];         // bütünleşik paylaşılan bellek boyutu
+echo $dat["ru_idrss"];         // bütünleşik paylaşılmamış veri boyutu
+echo $dat["ru_minflt"];        // geri kazanılmış sayfa sayısı (bellek sayfası hataları)
+echo $dat["ru_majflt"];        // sayfa hatası sayısı (sabit disk sayfası hataları)
+echo $dat["ru_nsignals"];      // alınan sinyal sayısı
+echo $dat["ru_nvcsw"];         // istemli bağlam anahtarı sayısı
+echo $dat["ru_nivcsw"];        // istemsiz bağlam anahtarı sayısı
 echo $dat["ru_nswap"];         // takas alanlarının sayısı
-echo $dat["ru_majflt"];        // sayfa hatalarının sayısı
+echo $dat["ru_utime.tv_usec"]; // kullanılan kullanıcı süresi (mikrosaniye)
 echo $dat["ru_utime.tv_sec"];  // kullanılan kullanıcı zamanı (saniye)
-echo $dat["ru_utime.tv_usec"]; // kullanılan kullanıcı zamanı (mikrosaniye)
+echo $dat["ru_stime.tv_usec"]; // kullanılan sistem zamanı (mikrosaniye)
 ?>
 ]]>
     </programlisting>
@@ -63,9 +77,74 @@ echo $dat["ru_utime.tv_usec"]; // kullanılan kullanıcı zamanı (mikrosaniye)
   </para>
  </refsect1>
 
- <refsect1 role="notes">
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        Bu işlev artık Windows'ta destekleniyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+<refsect1 role="notes">
   &reftitle.notes;
-  &note.no-windows;
+  <note>
+   <para>
+    Windows'ta <function>getrusage</function> sadece aşağıdaki üyeleri
+    döndürür:
+   </para>
+   <para>
+    <simplelist>
+     <member><literal>"ru_stime.tv_sec"</literal></member>
+     <member><literal>"ru_stime.tv_usec"</literal></member>
+     <member><literal>"ru_utime.tv_sec"</literal></member>
+     <member><literal>"ru_utime.tv_usec"</literal></member>
+     <member>
+      <literal>"ru_majflt"</literal> (sadece <parameter>kip</parameter>
+      <constant>RUSAGE_SELF</constant> ise)
+     </member>
+     <member>
+      <literal>"ru_maxrss"</literal> (sadece <parameter>kip</parameter>
+      <constant>RUSAGE_SELF</constant> ise)
+     </member>
+    </simplelist>
+   </para>
+   <para>
+    <function>getrusage</function> işlevi <parameter>kip</parameter>e
+    <literal>1</literal> atanarak çağrılmışsa
+    (<constant>RUSAGE_CHILDREN</constant>), evreler için kaynak kullanımı
+    toplanır (yani işlev dahili olarak <constant>RUSAGE_THREAD</constant>
+    ile çağrılır).
+   </para>
+  </note>
+  <note>
+   <para>
+    BeOS 2000 üzerinde, sadece aşağıdaki üyeler döner:
+   </para>
+   <para>
+    <simplelist>
+     <member><literal>"ru_stime.tv_sec"</literal></member>
+     <member><literal>"ru_stime.tv_usec"</literal></member>
+     <member><literal>"ru_utime.tv_sec"</literal></member>
+     <member><literal>"ru_utime.tv_usec"</literal></member>
+    </simplelist>
+   </para>
+  </note>
  </refsect1>
 
 

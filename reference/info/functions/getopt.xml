@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e53495bc3ac5a5ff701fd2ea3ae9aea4e99fda68 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.getopt">
  <refnamediv>
   <refname>getopt</refname>
@@ -11,9 +11,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>getopt</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>getopt</methodname>
    <methodparam><type>string</type><parameter>kısa_seçenekler</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>uzun_seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>uzun_seçenekler</parameter><initializer>[]</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">kalan_indisi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Betiğe aktarılan seçenekleri çözümler.
@@ -37,6 +38,9 @@
        Örneğin, <literal>"x"</literal> seçenek dizgesi <literal>-x</literal>
        seçeneğinin tanınmasını sağlar.
       </simpara>
+      <simpara>
+       Sadece a-z, A-Z ve 0-9 karakterlerine izin verilir.
+      </simpara>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -52,12 +56,15 @@
        Örneğin, <literal>"opt"</literal> elemanı <literal>--opt</literal>
        seçeneğinin tanınmasını sağlar.
       </simpara>
-      <note>
-       <simpara>
-        PHP 5.3.0 öncesinde bu değiştirge sadece bir kaç sistemde
-        kullanılabiliyordu.
-       </simpara>
-      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kalan_indisi</parameter></term>
+     <listitem>
+      <simpara>
+       <parameter>kalan_indisi</parameter> değiştirgesi belirtilmişse,
+       değiştirge çözümlemesinin durduğu indis bu değişkene yazılacaktır.
+      </simpara>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -72,14 +79,24 @@
     <member>Ardına bir çift iki nokta imi konmuş karakterler (değiştirgenin
     isteğe bağlı değer kabul ettiğini belirtir)</member>
    </simplelist>
-   Seçenek değerleri dizgeden sonraki ilk değiştirgedir. Bir değerin sonunda
-   boşluk bulunup bulunmadığına bakılmaz.
+   Seçenek değerleri dizgeden sonraki ilk değiştirgedir. Bir değer gerekliyse
+   değerin sonunda boşluk bulunup bulunmadığına bakılmaz.
    <note>
     <simpara>
      İsteğe bağlı değerler bir ayraç olarak <literal>" "</literal> (boşluk)
      kabul etmezler.
     </simpara>
    </note>
+  </para>
+  <para>
+    <parameter>uzun_seçenekler</parameter> dizisinin içerebileceği değerler:
+    <simplelist>
+     <member>Sizge (değiştirge değer kabul etmez)</member>
+     <member>Ardına tek bir iki nokta imi konmuş dizge (değiştirge değer
+      gerektirir)</member>
+     <member>Ardına bir çift iki nokta imi konmuş dizge
+      (seçimlik değer)</member>
+    </simplelist>
   </para>
   <note>
    <para>
@@ -94,9 +111,14 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bu işlev başarısız olursa &false;, aksi takdirde seçenek / değiştirge
-   çiftlerini içeren bir dizi döndürür.
+   Değiştirge çiftlerini içeren bir dizi,&return.falseforfailure;.
   </para>
+  <note>
+   <para>
+    Seçeneklerin çözümlenmesi seçenek olmayan ilk değerde durur, kalan herşey
+    yok sayılır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -112,22 +134,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>7.1.0</entry>
        <entry>
-        Değiştirge/değer ayracı olarak "=" desteği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        İsteğe bağlı değerler için destek eklendi ("::" ile belirtilir).
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        İşlev sisteme bağlı olmaktan çıktı. Artık Windows üzerinde de
-        çalışmaktadır.
+        <parameter>kalan_indisi</parameter> değiştirgesi eklendi.
        </entry>
       </row>
      </tbody>
@@ -140,19 +149,22 @@
   &reftitle.examples;
   <para>
    <example xml:id="getopt.examples-1">
-    <title>- <function>getopt</function> örneği - 1</title>
+    <title>- <function>getopt</function> örneği - temeller</title>
     <programlisting role="php">
 <![CDATA[
 <?php
+// Betik: example.php
 $options = getopt("f:hp:");
 var_dump($options);
 ?>
 ]]>
     </programlisting>
-    <para>
-     Yukarıdaki betik <literal>php betik.php -fdeğer -h</literal> komut
-     satırı için aşağıdaki çıktıyı üretir:
-    </para>
+    <programlisting role="shell">
+<![CDATA[
+shell> php example.php -fdeğer -h
+]]>
+    </programlisting>
+    &example.outputs;
     <screen>
 <![CDATA[
 array(2) {
@@ -167,10 +179,11 @@ array(2) {
   </para>
   <para>
    <example xml:id="getopt.examples-2">
-    <title>- <function>getopt</function> örneği - 2</title>
+    <title>- <function>getopt</function> ve uzun seçenekler</title>
     <programlisting role="php">
 <![CDATA[
 <?php
+// Betik: betik.php
 $kısalar  = "";
 $kısalar .= "f:";  // Değer, zorunlu
 $kısalar .= "v::"; // Değer, seçimlik
@@ -187,11 +200,12 @@ var_dump($seçenekler);
 ?>
 ]]>
     </programlisting>
-    <para>
-     Yukarıdaki betik <literal>php betik.php -f "f değeri" -v -a --gerekli
-     değer --seçimlik="seçimlik değer" --seçenek</literal> komut
-     satırı için aşağıdaki çıktıyı üretir:
-    </para>
+    <programlisting role="shell">
+<![CDATA[
+shell> php betik.php -f "f değeri" -v -a --gerekli değer --seçimlik="seçimlik değer" --seçenek
+]]>
+    </programlisting>
+    &example.outputs;
     <screen>
 <![CDATA[
 array(6) {
@@ -214,20 +228,22 @@ array(6) {
   </para>
   <para>
    <example xml:id="getopt.examples-3">
-    <title>- <function>getopt</function> örneği - 3</title>
+    <title>- <function>getopt</function> ve çoklu-tek seçenek</title>
     <para>Çok sayıda seçeneğin tek bir seçenek olarak verilmesi:</para>
     <programlisting role="php">
 <![CDATA[
 <?php
+// Betik: betik.php
 $options = getopt("abc");
 var_dump($options);
 ?>
 ]]>
+    </programlisting><programlisting role="shell">
+<![CDATA[
+shell> php betik.php -aaac
+]]>
     </programlisting>
-    <para>
-     Yukarıdaki betik <literal>php betik.php -aaac</literal> komut
-     satırı için aşağıdaki çıktıyı üretir:
-    </para>
+    &example.outputs;
     <screen>
 <![CDATA[
 array(2) {
@@ -247,7 +263,46 @@ array(2) {
     </screen>
    </example>
   </para>
+  <para>
+   <example xml:id="getopt.examples-4">
+    <title><function>getopt</function> ve <parameter>kalan_indisi</parameter>
+     kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Betik: example.php
+$optind = null;
+$opts = getopt('a:b:', [], $optind);
+$pos_args = array_slice($argv, $optind);
+var_dump($pos_args);
+]]>
+    </programlisting>
+    <programlisting role="shell">
+<![CDATA[
+shell> php example.php -a 1 -b 2 -- test
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(1) {
+  [0]=>
+  string(4) "test"
+}
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="reserved.variables.argv"><varname>$argv</varname></link></member>
+   </simplelist>
+  </para>
+  </refsect1>
 
 </refentry>
 
