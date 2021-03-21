@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ini-get-all" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ini_get_all</refname>
@@ -12,7 +12,7 @@
   <methodsynopsis>
    <type>array</type><methodname>ini_get_all</methodname>
    <methodparam choice="opt"><type>string</type><parameter>eklenti</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ayrıntılı</parameter><initializer>true</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ayrıntılı</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Kayıtlı yapılandırma seçeneklerinin hepsini değerleriyle döndürür.
@@ -49,6 +49,8 @@
   &reftitle.returnvalues;
   <para>
    Yönerge isimlerinin dizinin anahtarları olduğu bir dizi döner.
+   <parameter>eklenti</parameter> değiştirgesi atlanmışsa &false; döner ve
+   <constant>E_WARNING</constant> seviyesinde bir hata oluşur.
   </para>
   <para>
    <parameter>ayrıntılı</parameter> değiştirgesi &true; (öntanımlı) olduğu
@@ -61,40 +63,16 @@
    <parameter>ayrıntılı</parameter> değiştirgesi &false; olduğu takdirde her
    elemanın değeri sadece yönergenin geçerli değerini içerecektir.
   </para>
-  <!--para>
-   See the manual section
-   for information on what access levels mean.
-  </para-->
+  <para>
+   Bkz. <link linkend="configuration.changes.modes">Yapılandırma ayarlarının
+   yeri</link>
+  </para>
   <note>
    <para>
     Bir yönergenin, <literal>access</literal> anahtarı altında bir bit maskesi
     değeri olarak çok sayıda erişim seviyesine sahip olması mümkündür.
    </para>
   </note>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        <parameter>ayrıntılı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -182,6 +160,16 @@ Array
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <function>ini_get_all</function> işlevi pdo.dsn.* gibi dizi ini
+    yönergelerini yok sayar.
+   </para>
+  </note>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
@@ -192,6 +180,7 @@ Array
     <member><function>ini_set</function></member>
     <member><function>get_loaded_extensions</function></member>
     <member><function>phpinfo</function></member>
+    <member><methodname>ReflectionExtension::getINIEntries</methodname></member>
    </simplelist>
   </para>
  </refsect1>

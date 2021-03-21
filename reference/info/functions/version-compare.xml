@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 442996b447e3d77d5cda9a50da78007e739a1d3f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.version-compare" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>version_compare</refname>
@@ -11,24 +11,26 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>version_compare</methodname>
+   <type>int</type><methodname>version_compare</methodname>
    <methodparam><type>string</type><parameter>sürüm1</parameter></methodparam>
    <methodparam><type>string</type><parameter>sürüm2</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>işleç</parameter></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>bool</type><methodname>version_compare</methodname>
+   <methodparam><type>string</type><parameter>sürüm1</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sürüm1</parameter></methodparam>
+   <methodparam><type>string</type><parameter>işleç</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>version_compare</function> işlevi PHP standardına uygun hale
-   getirilmiş iki sürüm numarası dizgesini karşılaştırır. PHP'nin sadece belli
-   bir sürümü ile çalışabilecek betikler yazıyorsanız bu işleve ihtiyacınız
-   olacaktır.
+   getirilmiş iki sürüm numarası dizgesini karşılaştırır.
   </para>
   <para>
    İşlev önce <literal>_</literal>, <literal>-</literal> ve
    <literal>+</literal> karakterlerini birer nokta <literal>.</literal> ile
    değiştirir, ardından numara olmayan dizgeciklerin önüne ve ardına birer
-   nokta konur. Örneğin, '4.3.2RC1' dizgesi '4.3.2.RC.1' haline gelir. Elde
-   edilen dizge, explode('.', $sürüm) kullanılmışçasına bileşenlerine
-   ayrıldıktan sonra her bileşen soldan sağa karşılaştırılır. Bileşenlerin
+   nokta konur. Örneğin, '4.3.2RC1' dizgesi '4.3.2.RC.1' haline gelir. Sonra
+   her bileşen soldan sağa karşılaştırılır. Bileşenlerin
    içerdiği özel sürüm dizgeleri şu sıralamaya göre ele alınırlar:
    <literal>bu listede olmayan bir dizge</literal> &lt;
    <literal>dev</literal> &lt; <literal>alpha</literal> =
@@ -65,15 +67,15 @@
      <term><parameter>işleç</parameter></term>
      <listitem>
       <para>
-       İsteğe bağlı bu değiştirge ile sürümler arasında belli ilişkileri
-       sınayabilirsiniz. Olası işleçler şunlardır: <literal>&lt;</literal>,
-       <literal>lt</literal>, <literal>&lt;=</literal>,
-       <literal>le</literal>, <literal>&gt;</literal>,
-       <literal>gt</literal>, <literal>&gt;=</literal>,
-       <literal>ge</literal>, <literal>==</literal>,
-       <literal>=</literal>, <literal>eq</literal>,
-       <literal>!=</literal>, <literal>&lt;&gt;</literal>,
-       <literal>ne</literal>.
+       İsteğe bağlı bu değiştirge belirtilmişse sürümler arasındaki belli
+       ilişkiler sınanabilir. Olası işleçler sırasıyla şunlardır:
+       <literal>&lt;</literal>, <literal>lt</literal>,
+       <literal>&lt;=</literal>, <literal>le</literal>,
+       <literal>&gt;</literal>, <literal>gt</literal>,
+       <literal>&gt;=</literal>, <literal>ge</literal>,
+       <literal>==</literal>, <literal>=</literal>,
+       <literal>eq</literal>,  <literal>!=</literal>,
+       <literal>&lt;&gt;</literal>, <literal>ne</literal>.
       </para>
       <para>
        Bu değiştirge harf büyüklüğüne duyarlıdır, yani değerlerin hepsi küçük
@@ -94,8 +96,8 @@
   </para>
   <para>
    İsteğe bağlı <parameter>işleç</parameter> değiştirgesi kullanılırsa ve
-   sürümler arasında belirtilen ilişki varsa &true; aksi takdirde &false;
-   döner.
+   sürümler arasında belirtilen ilişki varsa &true;, desteklenmeyen bir işleç
+   belirtilirse &null;, aksi takdirde &false; döner.
   </para>
  </refsect1>
 
@@ -110,20 +112,20 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-if (version_compare(PHP_VERSION, '6.0.0') === 1) {
-    echo 'PHP sürümüm en azından 6.0.0, gerçek sürüm: ' . PHP_VERSION . "\n";
+if (version_compare(PHP_VERSION, '7.0.0') >= 1) {
+    echo 'PHP sürümüm en azından 7.0.0, gerçek sürüm: ' . PHP_VERSION . "\n";
 }
 
-if (version_compare(PHP_VERSION, '5.3.0') === 1) {
+if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
     echo 'PHP sürümüm en azından 5.3.0, gerçek sürüm: ' . PHP_VERSION . "\n";
 }
 
-if (version_compare(PHP_VERSION, '5.0.0', '>')) {
-    echo 'PHP 5 kullanıyorum, gerçek sürüm: ' . PHP_VERSION . "\n";
+if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+    echo 'PHP sürümüm en azından 5.0.0, gerçek sürüm: ' . PHP_VERSION . "\n";
 }
 
 if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-    echo 'PHP 4 kullanıyorum, gerçek sürüm: ' . PHP_VERSION . "\n";
+    echo 'Hala PHP 4 kullanıyorum, gerçek sürüm: ' . PHP_VERSION . "\n";
 }
 ?>
 ]]>
@@ -142,8 +144,19 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
   </note>
   <note>
    <para>
-    5.3.0-dev gibi ön dağıtım sürümleri için, alt sürümün, ulaşacakları asıl
-    sürümün numarası (PHP 5.3.0) olduğu varsayılır.
+    5.3.0-dev gibi ön dağıtım sürümleri için, ulaşacakları asıl
+    sürümün numarasının alt sürümün numarası (PHP 5.3.0 gibi) olduğu
+    varsayılır.
+   </para>
+  </note>
+  <note>
+   <para>
+    <literal>alpha</literal> ve <literal>beta</literal> gibi özel sürüm
+    dizgeleri harf büyüklüğüne duyarlıdır. PHP standardına uymayan
+    gelişigüzel kaynaklardan gelen sürüm dizgelerinin
+    <function>version_compare</function> çağrılmadan önce
+    <function>strtolower</function> aracılığıyla küçük harfli yapılması
+    gerekebilir.
    </para>
   </note>
  </refsect1>

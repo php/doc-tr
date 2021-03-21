@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.php-ini-scanned-files" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>php_ini_scanned_files</refname>
@@ -11,20 +11,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>php_ini_scanned_files</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>php_ini_scanned_files</methodname>
    <void/>
   </methodsynopsis>
   <para>
    <function>php_ini_scanned_files</function> işlevi &php.ini; dosyasından
    sonra ayrıştırılan yapılandırma dosyalarını bir virgül ayraçlı liste olarak
-   döndürür. Bu dosyalar, derleme sırasında <option
-   role="configure">--with-config-file-scan-dir</option> seçeneği tarafından
-   tanımlanan bir dizinde bulunur.
+   döndürür. Bu dizinler, derleme sırasında bir seçenek ile ve çalışma
+   zamanında isteğe bağlı olarak bir ortam değişkeni tarafından taranır. Daha
+   fazla bilgi <link linkend="configuration.file.scan">Tarama Dizinleri</link>
+   bölümünde bulunabilir.
   </para>
   <para>
-   Döndürülen yapılandırma dosyaları <option
-   role="configure">--with-config-file-scan-dir</option> seçeneğinde
-   bildirilen yolu da içerir.
+   Döndürülen yapılandırma dosyaları tam dosya yolunu içerir.
   </para>
  </refsect1>
 
@@ -33,12 +32,13 @@
   <para>
    Başarı durumunda .ini dosyalarının virgül ayraçlı listesini bir dizge olarak
    döndürür. Derleme sırasında <option role="configure">
-   --with-config-file-scan-dir</option> seçeneği kullanılmamışsa &false; döner.
-   Seçenek kullanılmışsa fakat dizin boşsa bir boş dizge döner. INI dosyası
-   olmayan bir dosyanın varlığı halinde dosya ismi listeye konur, fakat ek
-   olarak bir PHP hatası çıktılanır. Bu PHP hatası hem derleme sırasında hem
-   de <function>php_ini_scanned_files</function> işlevi kullanıldığında
-   görüntülenir.
+   --with-config-file-scan-dir</option> seçeneği kullanılmamışsa ve
+   <varname>PHP_INI_SCAN_DIR</varname> ortam değişkenine bir dizin atanmamışsa
+   &false; döner. Bunlara dizin atanmış ama dizin tarandığında boşsa, boş
+   dizge döner. INI dosyası olmayan bir dosyanın varlığı halinde dosya ismi
+   listeye konur, fakat ek olarak bir PHP hatası çıktılanır. Bu PHP hatası
+   hem derleme sırasında hem de <function>php_ini_scanned_files</function>
+   işlevi kullanıldığında görüntülenir.
   </para>
  </refsect1>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ini-get" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ini_get</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>ini_get</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>ini_get</methodname>
    <methodparam><type>string</type><parameter>yönerge</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -37,7 +37,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda ve &null; değerler için boş bir dizge, aksi takdirde
+   Başarısızlık durumunda ve &null; değiştirge için boş bir dizge, belirtilen
+   yapılandırma seçeneği mevcut değilse &false;, aksi takdirde
    yapılandırma yönergesinin değeri ile döner.
   </para>
  </refsect1>
@@ -115,11 +116,18 @@ post_max_size (bayt olarak) = 8388608
     <link linkend="ini.upload-max-filesize">upload_max_filesize</link>
     yönergesinde olduğu gibi pek çok bellek miktarı değeri, &php.ini;
     dosyasında kısa gösterimleriyle saklanabilir. <function>ini_get</function>
-    işlevi, yönergenin değeri olarak değerin <emphasis>tamsayı karşılığını
-    değil</emphasis>, &php.ini; dosyasında saklandığı haliyle dizge değerini
-    döndürür. Bu bakımdan, bu değer üzerindeki aritmetik işlemler beklenen
-    sonuçları vermeyebilir. Yukarıdaki örnekte, kısa gösterimi bayt cinsinden
-    bir değere dönüştürmenin yolu gösterilmektedir.
+    işlevi, yönergenin değeri olarak değerin <type>int</type> türündeki
+    eşdeğerini <emphasis>değil</emphasis>, &php.ini; dosyasında saklandığı
+    haliyle <type>string</type> türündeki değerini döndürür. Bu bakımdan, bu
+    değer üzerindeki aritmetik işlemler beklenen sonuçları vermeyebilir.
+    Yukarıdaki örnekte, kısa gösterimi bayt cinsinden bir değere
+    dönüştürmenin yolu gösterilmektedir.
+   </para>
+  </note>
+  <note>
+   <para>
+    <function>ini_get_all</function> işlevi pdo.dsn.* gibi dizi ini
+    yönergelerini okuyamaz ve bu durumda &false; döndürür.
    </para>
   </note>
  </refsect1>
