@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c6a8e42bdbbb814124b84d45d95cd793129aac6b Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.output-add-rewrite-var">
  <refnamediv>
   <refname>output_add_rewrite_var</refname>
@@ -20,13 +20,17 @@
    girdi alanı olarak),
    <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link> ile
    şeffaf URL yeniden yazımı etkinleştirilmiş gibi oturum ID'sinin eklendiği
-   tarzda eklenir. Bu yolla mutlak URL'lerin  (http://example.com/.. gibi)
-   yeniden yazılmayacağına lütfen dikkat ediniz.
+   tarzda eklenir.
   </para>
   <para>
    Bu işlevin davranışı
-   <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> &php.ini;
+   <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> ve
+   <link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link> &php.ini;
    yönergesi ile denetlenir.
+  </para>
+  <para>
+   Bu işlevin istek başına en fazla bir kez başarıyla çağrılabileceği
+   unutulmamalıdır.
   </para>
   <note>
    <simpara>
@@ -64,6 +68,35 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        PHP 7.1.0 öncesinde, <function>output_add_rewrite_var</function>
+        tarafından yeniden yazılan değişkenler aynı oturum modülünün trans sid
+        çıktı tamponunu kullanırdı. PHP 7.1.0 ve sonrasında, adanmış çıktı
+        tamponu kullanılmaktadır. Çıktı işlevleri için yalnızca <link
+        linkend="ini.url-rewriter.tags">url_rewriter.tags</link> kullanılır.
+        <link linkend="ini.url-rewriter.tags">url_rewriter.hosts</link> eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -118,6 +151,10 @@ Array
     <member><function>output_reset_rewrite_vars</function></member>
     <member><function>ob_flush</function></member>
     <member><function>ob_list_handlers</function></member>
+    <member><link linkend="ini.url-rewriter.tags">url_rewriter.tags</link></member>
+    <member><link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link></member>
+    <member><link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link></member>
+    <member><link linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link></member>
    </simplelist>
   </para>
  </refsect1>

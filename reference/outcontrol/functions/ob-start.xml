@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: be1c862babddf0359d9660d11f67ae6b8b9ab247 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-start">
  <refnamediv>
   <refname>ob_start</refname>
@@ -11,7 +11,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>ob_start</methodname>
-   <methodparam choice="opt"><type>callable</type><parameter>çıktı_geriçağırıcı</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>callable</type><parameter>geriçağırım</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>parça_boyu</parameter><initializer>0</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>PHP_OUTPUT_HANDLER_STDFLAGS</constant></initializer></methodparam>
   </methodsynopsis>
@@ -50,7 +50,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>çıktı_geriçağırıcı</parameter></term>
+     <term><parameter>geriçağırım</parameter></term>
      <listitem>
       <para>
        Bu değiştirge ile isteğe bağlı bir çıktı eylemcisi işlev
@@ -67,7 +67,7 @@
       </para>
       <para>
        <methodsynopsis>
-        <type>bool</type><methodname><replaceable>işlev_ismi</replaceable></methodname>
+        <type>string</type><methodname><replaceable>işlev_ismi</replaceable></methodname>
         <methodparam><type>string</type><parameter>tampon</parameter></methodparam>
         <methodparam choice="opt"><type>int</type><parameter>kip</parameter></methodparam>
        </methodsynopsis>
@@ -84,18 +84,20 @@
          <term><parameter>kip</parameter></term>
          <listitem>
           <simpara>
-           <constant>PHP_OUTPUT_HANDLER_*</constant> sabitlerinin bit maskesi.
+           <link linkend="outcontrol.constants"
+           ><constant>PHP_OUTPUT_HANDLER_*</constant></link> sabitlerinin
+           bit maskesi.
           </simpara>
          </listitem>
         </varlistentry>
        </variablelist>
       </para>
       <para>
-       <parameter>çıktı_geriçağırıcı</parameter> &false; döndürdüğü takdirde
+       <parameter>geriçağırım</parameter> &false; döndürdüğü takdirde
        özgün çıktı tarayıcıya gönderilir.
       </para>
       <para>
-       <parameter>çıktı_geriçağırıcı</parameter>, değiştirgesine bir &null;
+       <parameter>geriçağırım</parameter>, değiştirgesine bir &null;
        değer aktarılarak atlanabilir.
       </para>
       <para>
@@ -111,7 +113,7 @@
       </para>
       <note>
        <para>
-        PHP 4.0.4'ten itibaren, sıkıştırılmış sayfaları destekleyen
+        Sıkıştırılmış sayfaları destekleyen
         tarayıcılara gziplenmiş veri göndermek için
         <function>ob_gzhandler</function> işlevi kullanılabilmektedir.
         <function>ob_gzhandler</function> işlevi tarayıcının kabul edeceği
@@ -200,59 +202,6 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.4.0</entry>
-       <entry>
-        <function>ob_start</function> işlevinin (&false; belirtildiğinde
-        betiğin çalışması bitene kadar çıktı tamponunu silinmesini engelleyen)
-        üçüncü değiştirgesi  (çıktı tamponuna uygulanabilecek işlemleri
-        denetleyen bir bitmaskesi olarak) <type>integer</type> türünde
-        <parameter>kip</parameter> değiştirgesi olarak değiştirildi. Ne yazık
-        ki bu değişiklikle, 5.4.0 öncesinde yazılmış ve üçüncü değiştirgenin
-        kullanıldığı kodların API uyumluluğunun bozulmasına sebep olunmuştur.
-        Bu kodun her iki sürümle de uyumlu olmasının nasıl sağlanabileceği ile
-        ilgili örnek için <link linkend="function.ob-start.flags-bc">kip
-        örneği</link>ne bakınız.
-       </entry>
-      </row>
-      <row>
-       <entry>5.4.0</entry>
-       <entry>
-        <literal>1</literal> değeri artık çıktı tamponuna gönderilecek
-        parçaların 1 baytlık olacağı anlamına geliyor.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.2</entry>
-       <entry>
-        <parameter>çıktı_geriçağırıcı</parameter> çalıştırılamadığı zaman
-        işlevin &false; döndürmesi sağlandı.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <parameter>sil</parameter> değiştirgesi eklendi.
-        </entry>
-       </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 

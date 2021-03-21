@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 65a007a4c04dd0793d07a1a067880dde9b39167a Maintainer: nilgun Status: ready -->
 <appendix xml:id="outcontrol.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   &reftitle.examples;
+
   <section xml:id="outcontrol.examples.basic">
-  &reftitle.examples;
-  <para>
-   <example>
-    <title>- Çıktı Denetimi örneği</title>
-    <programlisting role="php">
+  <title>Basic usage</title>
+   <para>
+    <example>
+     <title>- Çıktı Denetimi örneği</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 
@@ -30,6 +31,60 @@ ob_end_flush();
    zarfında, <function>setcookie</function> çağrısı çerezi bir hataya yol
    açmadan başarıyla saklar. (Normalde, tarayıcıya veri gönderildikten sonra
    başlıkları gönderemezsiniz.)
+  </para>
+ </section>
+
+  <section xml:id="outcontrol.examples.rewrite">
+  <title>- Çıktının yeniden yazılması</title>
+  <para>
+   PHP 7.1.0'dan beri, <function>output_add_rewrite_var</function> ve
+   <function>output_reset_rewrite_vars</function> adanmış çıktı tamponunu
+   kullanır. Yani, <link linkend="ini.session.use-trans-sid">trans sid</link>
+   çıktı tamponunu kullanmaz.
+  </para>
+  <para>
+   <example>
+    <title>- Çıktının yeniden yazılması örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Bu kod PHP 7.1.0, 7.0.10, 5.6.25 ve üstü ile çalışır.
+
+// HTTP_HOST öntanımlı hedef konaktır. Örnek kodun çalışması için elle atanır
+$_SERVER['HTTP_HOST'] = 'php.net';
+
+// Sadece form yeniden yazılır. a=href ekle.
+// Etiketler etk_adı=url_özntlk biçeminde belirtilebilir,
+// örn. img=src,iframe=src
+// Atamalar arasında boşluk bulunmamalıdır.
+// Form etiketi özel bir etiket olup gizli (hidden) girdi ekler.
+ini_set('url_rewriter.tags','a=href,form=');
+var_dump(ini_get('url_rewriter.tags'));
+
+// Bu, URL ve form'a eklenir
+output_add_rewrite_var('test', 'value');
+?>
+<a href="//php.net/index.php?bug=1234">bug1234</a>
+<form action="https://php.net/?bug=1234&edit=1" action="post">
+ <input type="text" name="title" />
+</form>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+<a href="//php.net/?bug=1234&test=value">bug1234</a>
+<form action="https://php.net/?bug=1234&edit=1" method="post"><input type="hidden" name="test" value="value" />
+ <input type="text" name="title" />
+</form>
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   PHP 7.1.0'dan beri, çıktı yeniden yazma işlevleri kendi INI yönergelerine
+   sahiptir: <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> ve
+   <link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link>.
   </para>
  </section>
 </appendix>

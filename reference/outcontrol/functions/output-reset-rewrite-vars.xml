@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9cab5388c56445c3f8f36eebead809084d70d936 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.output-reset-rewrite-vars">
  <refnamediv>
   <refname>output_reset_rewrite_vars</refname>
@@ -14,11 +14,9 @@
    <void/>
   </methodsynopsis>
   <para>
-   Bu işlev URL yeniden yazım mekanizmasını sıfırlar ve
-   <function>output_add_rewrite_var</function> işleviyle veya
-   (<function>session_start</function> işleviyle
-   <literal>session.use_trans_sid</literal> tanımlanmışsa) oturum
-   mekanizmasıyla evvelce atanmış olan tüm yeniden yazım çiftlerini siler.
+   Bu işlev URL yeniden yazım mekanizmasını sıfırlar ve oturum
+   mekanizmasıyla evvelce atanmış olan tüm yeniden yazım çiftlerini
+   <function>output_add_rewrite_var</function> işleviyle siler.
   </para>
  </refsect1>
 
@@ -26,6 +24,35 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        PHP 7.1.0 öncesinde, <function>output_add_rewrite_var</function>
+        tarafından yeniden yazılan değişkenler aynı oturum modülünün trans sid
+        çıktı tamponunu kullanırdı. PHP 7.1.0 ve sonrasında, adanmış çıktı
+        tamponu kullanılmaktadır. <function>output_reset_rewrite_vars</function>
+        sadece <function>output_add_rewrite_var</function> tarafından
+        tanımlanmış yeniden yazım çiftlerini siler.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -66,7 +93,10 @@ echo '<a href="file.php">bağlantı</a>';
     <member><function>output_add_rewrite_var</function></member>
     <member><function>ob_flush</function></member>
     <member><function>ob_list_handlers</function></member>
-    <member><function>session_start</function></member>
+    <member><link linkend="ini.url-rewriter.tags">url_rewriter.tags</link></member>
+    <member><link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link></member>
+    <member><link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link></member>
+    <member><link linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link></member>
    </simplelist>
   </para>
  </refsect1>
