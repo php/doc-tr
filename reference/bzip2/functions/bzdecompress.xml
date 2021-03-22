@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: c564dbc4f35dd39b4415ebbb671f2764a44306a6 Maintainer: aydin Status: ready -->
 <!-- CREDITS: sezer -->
 <refentry xml:id="function.bzdecompress" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
@@ -10,9 +10,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>bzdecompress</methodname>
-   <methodparam><type>string</type><parameter>kaynak</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ufak</parameter><initializer>0</initializer></methodparam>
+   <type class="union"><type>string</type><type>int</type><type>false</type></type><methodname>bzdecompress</methodname>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ufak</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>bzdecompress</function> verilen bzip2 kodlu verinin
@@ -24,7 +24,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>kaynak</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
        Sıkıştırılmış haldeki dizge.
@@ -48,11 +48,35 @@
    </variablelist>
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>ufak</parameter> değiştirgesinin <type>int</type> iken
+       <type>bool</type> oldu. Evvelce, <literal>0</literal> öntanımlıydı.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-    Hata oluşmamışsa sıkıştırması açılmış dizgeyle aksi takdirde hata
-    numarası ile döner.
+    Hata oluşmamışsa sıkıştırması açılmış dizge veya &false;, aksi takdirde
+    hata numarası döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -80,6 +104,7 @@ echo "\n<br />\n";
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
