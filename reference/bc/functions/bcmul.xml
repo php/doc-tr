@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 23f5599c8cc2713e7a4fdc29d8cceab66c341c48 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.bcmul" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bcmul</refname>
@@ -13,11 +13,12 @@
    <type>string</type><methodname>bcmul</methodname>
    <methodparam><type>string</type><parameter>sol_terim</parameter></methodparam>
    <methodparam><type>string</type><parameter>sag_terim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>olcek</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>basamak</parameter><initializer>&null;</initializer></methodparam>
+
   </methodsynopsis>
   <para>
    <parameter>sol_terim</parameter> ile
-   <parameter>sag_terim</parameter>&apos;i çarpar.
+   <parameter>sag_terim</parameter>'i çarpar.
   </para>
  </refsect1>
 
@@ -53,10 +54,40 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>basamak</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.3.0</entry>
+      <entry>
+       <function>bcmul</function> artık sayıların ondalık basamak sayısını
+       dikkate alıyor. Daha önce, döndürülen sayılarda sondaki ondalık
+       sıfırları yoksayabiliyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
+
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
-   <title><function>bcmul</function> örneği</title>
+   <title>- <function>bcmul</function> örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -66,6 +97,29 @@ echo bcmul('2', '4'); // 8
 ]]>
    </programlisting>
   </example>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    PHP 7.3.0 öncesinde <function>bcmul</function> ondalık noktadan sonraki
+    basamak sayısını <parameter>basamak</parameter> ile belirtilenden daha az
+    sayıda döndürebiliyordu. Artık sadece <parameter>basamak</parameter> ile
+    belirtilenden daha azı ile gereken hassasiyet sağlanabildiği takdirde bu
+    olmaktadır. Örnek:
+    <example>
+     <title>- <function>bcmul</function> basamak örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo bcmul('5', '2', 2);     // "10" basar, "10.00" değil
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 23f5599c8cc2713e7a4fdc29d8cceab66c341c48 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.bcpow" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bcpow</refname>
@@ -11,13 +11,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>bcpow</methodname>
-   <methodparam><type>string</type><parameter>sol_terim</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sag_terim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>olcek</parameter></methodparam>
+   <methodparam><type>string</type><parameter>taban</parameter></methodparam>
+   <methodparam><type>string</type><parameter>üs</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>basamak</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>sol_terim</parameter>&apos;in
-   <parameter>sag_terim</parameter>&apos;e göre üs alma işlemini yapar.
+   <parameter>taban</parameter>ın
+   <parameter>üs</parameter>sünü hesaplar.
   </para>
  </refsect1>
 
@@ -26,18 +26,21 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>sol_terim</parameter></term>
+     <term><parameter>taban</parameter></term>
      <listitem>
       <para>
-       Dizge olarak sol terim.
+       Dizge olarak taban.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sag_terim</parameter></term>
+     <term><parameter>üs</parameter></term>
      <listitem>
       <para>
-       Dizge olarak sağ terim.
+       Dizge olarak üs. Üs tamsayılardan oluşmuyorsa tamsayı olmayan kısım
+       kırpılır. Üssün geçerli aralığı platforma özgüdür, ancak en azından
+       <literal>-2147483648</literal> ile <literal>2147483647</literal>
+       arasındadır.
       </para>
      </listitem>
     </varlistentry>
@@ -52,6 +55,29 @@
    Sonucu dizge olarak döndürür.
   </para>
  </refsect1>
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.3.0</entry>
+      <entry>
+       <function>bcpow</function> artık sayıların ondalık basamak sayısını
+       dikkate alıyor. Daha önce, döndürülen sayılarda sondaki ondalık
+       sıfırları yoksayabiliyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -67,6 +93,29 @@ echo bcpow('4.2', '3', 2); // 74.08
 ]]>
    </programlisting>
   </example>
+ </refsect1>
+
+<refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    PHP 7.3.0 öncesinde <function>bcpow</function> ondalık noktadan sonraki
+    basamak sayısını <parameter>basamak</parameter> ile belirtilenden daha az
+    sayıda döndürebiliyordu. Artık sadece <parameter>basamak</parameter> ile
+    belirtilenden daha azı ile gereken hassasiyet sağlanabildiği takdirde bu
+    olmaktadır. Örnek:
+    <example>
+     <title><function>bcpow</function> basamak örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo bcpow('5', '2', 2);     // "25" basar, "25.00" değil
+?>
++]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 4754397753fd79f1c846868b66a2448babab1c54 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.bcmod" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>bcmod</refname>
@@ -12,12 +12,15 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>bcmod</methodname>
-   <methodparam><type>string</type><parameter>sol_terim</parameter></methodparam>
-   <methodparam><type>string</type><parameter>modul</parameter></methodparam>
+   <methodparam><type>string</type><parameter>bölünen</parameter></methodparam>
+   <methodparam><type>string</type><parameter>bölen</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>basamak</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>sol_terim</parameter>&apos;in
-   <parameter>modul</parameter>&apos;e bölünmesinden kalanı bulur
+   <parameter>bölünen</parameter>'in
+   <parameter>bölen</parameter>'e bölünmesinden kalanı döndürür.
+   <parameter>bölen</parameter> sıfır olmadıkça sonuç
+   <parameter>bölünen</parameter>'in işaretini alır.
   </para>
  </refsect1>
 
@@ -26,18 +29,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>sol_terim</parameter></term>
+     <term><parameter>bölünen</parameter></term>
      <listitem>
       <para>
-       Dizge olarak sol terim.
+       Dizge olarak bölünen sayı.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>modul</parameter></term>
+     <term><parameter>bölen</parameter></term>
      <listitem>
       <para>
-       Dizge olarak modül.
+       Dizge olarak bölen sayı.
       </para>
      </listitem>
     </varlistentry>
@@ -48,20 +51,71 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizge olarak kalanı veya <parameter>modul</parameter> 0 ise
-   &null; döndürür.
+   Dizge olarak kalanı veya <parameter>bölen</parameter> <literal>0</literal>
+   ise &null; döndürür.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>basamak</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       <parameter>bölünen</parameter> ve <parameter>bölen</parameter> artık
+       ondalık kısmı kırpılıp tamsayı yapılmıyor. Dolayısıyla, işlev artık
+       <literal>%</literal> işleci gibi değil <function>fmod</function> gibi
+       davranıyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       <parameter>basamak</parameter> değiştirgesi eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
 
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
-   <title><function>bcmod</function> örneği</title>
+   <title>- <function>bcmod</function> örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-echo bcmod('4', '2'); // 0
-echo bcmod('2', '4'); // 2
+bcscale(0);
+echo bcmod( '5',  '3'); //  2
+echo bcmod( '5', '-3'); //  2
+echo bcmod('-5',  '3'); // -2
+echo bcmod('-5', '-3'); // -2
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title>- Ondalık basamaklarla <function>bcmod</function></title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+bcscale(1);
+echo bcmod('5.7', '1.3'); // PHP 7.2.0 ve sonrası 0.5 - öncesi 0
 ?>
 ]]>
    </programlisting>
