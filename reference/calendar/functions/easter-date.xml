@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 789af834328bf5d492ed174a4fedb226ccaf4b27 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.easter-date" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>easter_date</refname>
@@ -12,7 +12,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>easter_date</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>yil</parameter></methodparam>
+    <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>yıl</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer><constant>CAL_EASTER_DEFAULT</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Verilen yıl için paskalya gece yarısının unix zaman damgasını döner.
@@ -20,7 +21,8 @@
   <warning>
    <para>
     Bu işlev, yıl unix zaman damgasının geçerli olduğu aralık dışında
-    (1970&apos;den önce 2037&apos;den sonra) verilirse bir uyarı üretir.
+    (32 bitlik sistemlerde, 1970&apos;den önce 2037&apos;den sonra) verilirse
+    bir uyarı üretir.
    </para>
   </warning>
   <para>
@@ -36,10 +38,6 @@
    Eylül 1752&apos;de Britanya ve kolonilerine yayıldı) çevrimin daha doğru
    olması için 2 düzeltme değişkeni eklendi.
   </para>
-  <para>
-   (Simon Kershaw tarafından yazılan C programı temel alınmıştır,
-   &lt;webmaster at ely.anglican dot org&gt;)
-  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -50,8 +48,19 @@
      <term><parameter>yil</parameter></term>
      <listitem>
       <para>
-       1970-2037 aralığındaki değerlerden biri.
+       1970-2037 aralığındaki değerlerden biri. Atlanırsa veya &null;
+       belirtilirse yerel zamana göre geçerli yıl öntanımlıdır.
       </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kip</parameter></term>
+     <listitem>
+      <para>
+       <constant>CAL_EASTER_ALWAYS_JULIAN</constant> atanırsa Paskalya
+       günlerinin Jülyen takvimine göre hesaplanmasını sağlar. Ayrıca, bkz.
+       <link linkend="calendar.constants">takvim sabitleri</link>.
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -78,10 +87,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0 sürümünden beri</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>yil</parameter> değiştirgesi seçime bağlıdır, ihmal
-        edilirse, öntanımlı olarak yerel zamanda, içinde bulunulan yıla eşittir.
+        <parameter>yıl</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -108,6 +116,57 @@ echo date("M-d-Y", easter_date(2001));        // Apr-15-2001
     </programlisting>
    </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <function>easter_date</function>, PHP'nin dahili tarih ve saat
+    işlevlerinden ziyade, sisteminizin C kütüphanesinin zaman işlevlerine
+    dayanır. Sonuç olarak, <function>easter_date</function>, PHP'nin <link
+    linkend="ini.date.timezone">öntanımlı saat dilimini</link> kullanmak
+    yerine, çalışması gereken saat dilimini belirlemek için
+    <literal>TZ</literal> ortam değişkenini kullandığından, bu işlevi
+    PHP'deki diğer tarih işlevleriyle birlikte kullanmak beklenmedik
+    davranışlara neden olabilir.
+   </para>
+   <para>
+    Geçici bir çözüm olarak, Paskalya'nın başlangıcını PHP saat diliminizde
+    hesaplamak için <function>easter_days</function> işlevi
+    <classname>DateTime</classname> ve <classname>DateInterval</classname>
+    ile aşağıdaki gibi kullanılabilir:
+   </para>
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function get_easter_datetime($year) {
+    $base = new DateTime("$year-03-21");
+    $days = easter_days($year);
+
+    return $base->add(new DateInterval("P{$days}D"));
+}
+
+foreach (range(2012, 2015) as $year) {
+    printf("Easter in %d is on %s\n",
+           $year,
+           get_easter_datetime($year)->format('F j'));
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Easter in 2012 is on April 8
+Easter in 2013 is on March 31
+Easter in 2014 is on April 20
+Easter in 2015 is on April 5
+]]>
+    </screen>
+   </informalexample>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

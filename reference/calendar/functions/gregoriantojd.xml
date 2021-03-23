@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: cca0f0ce480de21a3fe73bb3369de36129873496 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.gregoriantojd" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>GregorianToJD</refname>
+  <refname>gregoriantojd</refname>
   <refpurpose>Gregoryen tarihini, Jülyen Gün Sayısına çevirir</refpurpose>
  </refnamediv>
 
@@ -16,14 +16,15 @@
    <methodparam><type>int</type><parameter>yil</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Gregoryen Takvimi için geçerli olan aralık M.Ö. 4714 ile M.S. 9999 arasıdır
+   Gregoryen Takvimi için geçerli olan aralık M.Ö. 25 Kasım 4714 ile
+   M.S. 31 Aralık 9999 arasıdır.
   </para>
   <para>
-   Bu işlev M.Ö. 4714&apos;e kadar olan tarihleri işleyebilse de, bu tip bir
-   kullanım anlamlı değildir. Gregoryen takvimi 15 Ekim 1582&apos;ye (Jülyen
+   Bu işlev M.Ö. 4714'e kadar olan tarihleri işleyebilse de, bu tip bir
+   kullanım anlamlı değildir. Gregoryen takvimi 15 Ekim 1582'ye (Jülyen
    takvimine göre 5 Ekim 1582) kadar kullanılmamıştır. Hatta bazı ülkeler bu
    tarihten daha sonra kullanmaya başlamıştır, örneğin; İngiliz krallığı 1752,
-   SSCB 1918 ve Yunanistan 1923&apos;de geçmiştir. Birçok Avrupa ülkesi
+   SSCB 1918 ve Yunanistan 1923'de geçmiştir. Birçok Avrupa ülkesi
    Gregoryen takviminden önce Jülyen takvimini kullanmıştır.
   </para>
  </refsect1>
@@ -36,7 +37,7 @@
      <term><parameter>ay</parameter></term>
      <listitem>
       <para>
-       1&apos;den (Ocak), 12&apos;ye (Aralık) kadar ay değeri
+       1'den (Ocak), 12'ye (Aralık) kadar ay değeri
       </para>
      </listitem>
     </varlistentry>
@@ -44,7 +45,8 @@
      <term><parameter>gun</parameter></term>
      <listitem>
       <para>
-       1 ile 31 arasında gün değeri
+       1 ile 31 arasında gün değeri. Ay belirtilenden daha az güne sahipse
+       fazla günler sonraki aya taşar; bkz. aşağıdaki örnek.
       </para>
      </listitem>
     </varlistentry>
@@ -52,7 +54,9 @@
      <term><parameter>yil</parameter></term>
      <listitem>
       <para>
-       -4714 ile 9999 arasında yıl değeri
+       -4714 ile 9999 arasında yıl değeri. Negatif sayılar M.Ö. yıllar,
+       pozitif sayılar M.S. yıllardır. Sıfır yılı yoktur. 31 Aralık -1'den
+       sonra 1 Ocak 1 gelir.
       </para>
      </listitem>
     </varlistentry>
@@ -64,6 +68,7 @@
   &reftitle.returnvalues;
   <para>
    Gregoryen tarihine karşılık tamsayı olarak Jülyen Gün Sayısı.
+   Geçerli aralığın dışında kalan tarihler için <literal>0</literal> döner.
   </para>
  </refsect1>
 
@@ -75,13 +80,38 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$jd = GregorianToJD(10, 11, 1970);
+$jd = gregoriantojd(10, 11, 1970);
 echo "$jd\n";
-$gregorian = JDToGregorian($jd);
+$gregorian = gregoriantojd($jd);
 echo "$gregorian\n";
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+2440871
+10/11/1970
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Taşma durumu</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo gregoriantojd(2, 31, 2018), PHP_EOL,
+     gregoriantojd(3,  3, 2018), PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+2458181
+2458181
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

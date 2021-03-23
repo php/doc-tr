@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 789af834328bf5d492ed174a4fedb226ccaf4b27 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.jdtounix" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>jdtounix</refname>
@@ -11,15 +11,11 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>jdtounix</methodname>
-   <methodparam><type>int</type><parameter>julyengunu</parameter></methodparam>
+   <methodparam><type>int</type><parameter>julyen_gunu</parameter></methodparam>
   </methodsynopsis>
   <para>
-   İşlev <parameter>julyengunu</parameter>&apos;ne karşılık gelen Unix zaman
-   damgasını ya da verilen <parameter>julyengunu</parameter> Unix zaman
-   damgası aralığında (1970 ve 2037 Gregoryen yılları arası veya 2440588 &lt;=
-   <parameter>julyengunu</parameter> &lt;= 2465342 ) değilse &false; değerini
-   döner. İşlevden dönen zaman damgası, GMT&apos;ye göre değil, yerel zamana
-   göredir.
+   İşlev <parameter>julyengunu</parameter>'ne karşılık gelen Unix zaman
+   damgasını döndürür. Zaman UTC'ye göredir.
   </para>
  </refsect1>
 
@@ -28,10 +24,12 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>julyengunu</parameter></term>
+     <term><parameter>julyen_gunu</parameter></term>
      <listitem>
       <para>
-       2440588 ve 2465342 aralığında Jülyen Gün Sayısı.
+       32 bit için <literal>2440588</literal> ve <literal>2465443</literal>,
+       64 bit için <literal>2440588</literal> ve <literal>106751993607888</literal>
+       aralığında Jülyen gün sayısı.
       </para>
      </listitem>
     </varlistentry>
@@ -42,8 +40,47 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Jülyen Gün Sayısına, karşılık gelen Unix zaman damgası.
+   Jülyen Gün Sayısına karşılık gelen günün başlangıcı (geceyarısı) için
+   Unix zaman damgası.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   <parameter>julyen_gunu</parameter> izin verilen aralığın dışındaysa bir
+   <classname>ValueError</classname> yavrulanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu işlev başarısızlık durumunda artık &false; döndürmüyor, bir
+       <classname>ValueError</classname> yavruluyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.3.24, 7.4.12</entry>
+      <entry>
+       <parameter>julyen_gunu</parameter> için üst sınır genişletildi.
+       Evvelce, mimariye bakılmaksızın <literal>2465342</literal> idi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

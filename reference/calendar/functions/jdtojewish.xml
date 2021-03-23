@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 789af834328bf5d492ed174a4fedb226ccaf4b27 Maintainer: aydin Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.jdtojewish">
  <refnamediv>
   <refname>jdtojewish</refname>
@@ -10,8 +10,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>jdtojewish</methodname>
-   <methodparam><type>int</type><parameter>julyengunu</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ibrani</parameter><initializer>false</initializer></methodparam>
+   <methodparam><type>int</type><parameter>julyen_gunu</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ibrani</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>bicim</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -24,7 +24,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>julyengunu</parameter></term>
+     <term><parameter>julyen_gunu</parameter></term>
      <listitem>
       <para>
        Tamsayı olarak Jülyen Gün Sayısı
@@ -37,7 +37,7 @@
       <para>
        <parameter>ibrani</parameter> değiştirgesi &true; olarak ayarlanırsa,
        <parameter>bicim</parameter> değiştirgesi, İbranice çıktıyı
-       biçimlendirmek için kullanılır.
+       ISO-8859-8 kodlu dizge olarak biçimlendirmekte kullanılır.
       </para>
      </listitem>
     </varlistentry>
@@ -59,37 +59,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizge olarak, "ay/gün/yıl" biçiminde Yahudi takvimi tarihi
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>bicim</parameter> değiştirgesi eklenmiştir.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>ibrani</parameter> değiştirgesi eklenmiştir.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Dizge olarak, "ay/gün/yıl" biçiminde Yahudi takvimi tarihi veya
+   <parameter>ibrani</parameter> &true; ise ISO-8859-8 kodlu İbranice
+   tarih dizgesi
   </para>
  </refsect1>
 
@@ -101,12 +73,23 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-echo jdtojewish(gregoriantojd(10, 8, 2002), true,
-       CAL_JEWISH_ADD_GERESHAYIM + CAL_JEWISH_ADD_ALAFIM +
-       CAL_JEWISH_ADD_ALAFIM_GERESH);
+$jd = gregoriantojd(10, 8, 2002);
+echo jdtojewish($jd, true), PHP_EOL,
+     jdtojewish($jd, true, CAL_JEWISH_ADD_GERESHAYIM), PHP_EOL,
+     jdtojewish($jd, true, CAL_JEWISH_ADD_ALAFIM), PHP_EOL,
+     jdtojewish($jd, true,CAL_JEWISH_ADD_ALAFIM_GERESH), PHP_EOL;
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+ב חשון התשסג
+ב' חשון התשס"ג
+ב חשון ה אלפים תשסג
+ב חשון ה'תשסג
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
