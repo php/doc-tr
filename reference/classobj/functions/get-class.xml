@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.get-class" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>get_class</refname>
@@ -25,8 +25,19 @@
      <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       Sınanacak nesne.
+       Sınanacak nesne Bir sınıfın içindeyken bu değiştirge atlanabilir.
       </para>
+      <note>
+       <simpara>
+        PHP 7.2.0 ve sonrasında <parameter>nesne</parameter>'ye &null;
+        belirtmeye artık izin verilmiyor.
+       </simpara>
+       <simpara>
+        Değiştirge hala seçimlik olup işlev bir sınıfın içinden
+        çağrıldığında değiştirgeyi belirtmek gerekmez. Fakat &null;
+        belirtmek, bir <constant>E_WARNING</constant> uyarısına sebep olur.
+       </simpara>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -38,6 +49,21 @@
    Belirtilen <parameter>nesne</parameter> nesnesinin ait olduğu sınıfın
    ismini bir dizge olarak döndürür. Eğer <parameter>nesne</parameter> bir
    nesne değilse &false; döner.
+  </para>
+  <para>
+  <parameter>nesne</parameter> bir sınıfın içinde kullanılmazsa, sınıfın
+  ismi döner.
+  </para>
+  <para>
+   <parameter>nesne</parameter> bir isim alanında mevcut bir sınıfın örneği
+   ise, sınıfın nitelikli isim alanı adı döner.
+  </para>
+ </refsect1>
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   <function>get_class</function> bir nesneden farklı bir şey ile çağrılırsa
+   <constant>E_WARNING</constant> seviyesinde bir hata oluşur.
   </para>
  </refsect1>
  <refsect1 role="changelog">
@@ -53,9 +79,12 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0'dan itibaren</entry>
+       <entry>7.2.0</entry>
        <entry>
-        Sınıf ismi özgün yazılışı ile döndürülüyor.
+        Bu sürümden önce <parameter>nesne</parameter> için öntanımlı değer
+        &null; idi ve bir değer belirtmemekle aynı etkiye sahipti. Artık
+        &null; öntanımlı değer değildir ve geçerli girdi olarak bile kabul
+        edilmez.
        </entry>
       </row>
       <row>
@@ -113,11 +142,11 @@ $bar->ismin_ne();
 <?php
 
 abstract class bar {
-  public function __construct()
-  {
-    var_dump(get_class($this));
-    var_dump(get_class());
-  }
+    public function __construct()
+    {
+        var_dump(get_class($this));
+        var_dump(get_class());
+    }
 }
 
 class foo extends bar {
@@ -136,12 +165,42 @@ string(3) "bar"
 ]]>
     </screen>
    </example>
+   <example>
+    <title>- İsim alanlı sınıflarla <function>get_class</function> kullanımı
+    </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+namespace Foo\Bar;
+
+class Baz {
+    public function __construct()
+    {
+
+    }
+}
+
+$baz = new \Foo\Bar\Baz;
+
+var_dump(get_class($baz));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(11) "Foo\Bar\Baz"
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>get_called_class</function></member>
     <member><function>get_parent_class</function></member>
     <member><function>gettype</function></member>
     <member><function>is_subclass_of</function></member>

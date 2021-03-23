@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 53bdffa6b9f8ce5ffdaf476c9d450f7cd0d1afa2 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-a" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_a</refname>
@@ -10,8 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>is_a</methodname>
-   <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sınıf</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>nesne</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sınıf_ismi</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>dizge_olmaz</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>sınıf</parameter> sınıfının,
@@ -32,10 +33,20 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sınıf</parameter></term>
+     <term><parameter>sınıf_ismi</parameter></term>
      <listitem>
       <para>
        Olası ebeveyn veya çocuk sınıf ismi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizge_olmaz</parameter></term>
+     <listitem>
+      <para>
+       &false; belirtilirse <parameter>nesne</parameter> değiştirgesinde
+       <type>string</type> türünde sınıf ismi belirtilebilir. Bu durumda,
+       sınıf mevcut değilse otomatik yükleyici çağrılmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -45,41 +56,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>nesne</parameter> nesnesi <parameter>sınıf</parameter> sınıfının
-   alt veya üst sınıflarından birinin nesnesi ise &true; değilse &false; döner.
-  </para>
- </refsect1>
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Bu işlev artık önerilmeyen bir işlev değil ve artık bir
-        <constant>E_STRICT</constant> uyarısı oluşturmuyor.
-       </entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <link linkend="language.operators.type">instanceof</link> işlecinin
-        varlığı nedeniyle bu işlevin kullanımı artık önerilmiyor. Bu işleve
-        yapılan çağrılar <constant>E_STRICT</constant> seviyesinde bir uyarıya
-        sebep oluyor.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   <parameter>nesne</parameter> nesnesi <parameter>sınıf</parameter>
+   sınıfının alt veya üst sınıflarından birinin nesnesi ise &true; değilse
+   &false; döner.
   </para>
  </refsect1>
  <refsect1 role="examples">
@@ -100,7 +79,7 @@ class EdevatFabrikası
 $EF = new EdevatFabrikası();
 
 if (is_a($EF, 'EdevatFabrikası')) {
-  echo "Evet, \$EF hala bir EdevatFabrikası\n";
+  echo "Evet, \$EF bir EdevatFabrikası\n";
 }
 ?>
 ]]>
