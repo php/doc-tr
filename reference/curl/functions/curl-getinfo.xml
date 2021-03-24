@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xml:id='function.curl-getinfo' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: b7f8c11e56ff1c57a2993e2ed7e5c5ace18637fd Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.curl-getinfo" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>curl_getinfo</refname>
   <refpurpose>Belli bir oturum ile ilgili bilgi döndürür</refpurpose>
@@ -11,8 +11,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>curl_getinfo</methodname>
-   <methodparam><type>resource</type><parameter>ct</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenek</parameter><initializer>0</initializer></methodparam>
+   <methodparam><type>CurlHandle</type><parameter>tanıtıcı</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>seçenek</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen tanıtıcı ile ilgili son aktarım hakkında bilgi verir.
@@ -37,13 +37,16 @@
         </listitem>
         <listitem>
          <simpara>
-          <constant>CURLINFO_HTTP_CODE</constant> - Alınan son HTTP kodu.
+          <constant>CURLINFO_HTTP_CODE</constant> - Alınan son yanıt kodu.
+          PHP 5.5.0 ve cURL 7.10.8 itibariyle, bu sabit
+          <constant>CURLINFO_RESPONSE_CODE</constant> sabitinin takma adıdır.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>CURLINFO_FILETIME</constant> - Belgenin karşıdan alınma
-          süresi; -1 ise süre bilirmiyor demektir.
+          <constant>CURLINFO_FILETIME</constant> -
+          <constant>CURLOPT_FILETIME</constant> etkinken belgenin karşıdan
+          alınma süresi; -1 ise süre bilinmiyor demektir.
          </simpara>
         </listitem>
         <listitem>
@@ -78,10 +81,52 @@
         </listitem>
         <listitem>
          <simpara>
-          <constant>CURLINFO_REDIRECT_TIME</constant> - Saniye cinsinden son
-          aktarım başlayana kadar tüm yönlendirme adımlarının süresi.
+          <constant>CURLINFO_REDIRECT_COUNT</constant> -
+          <constant>CURLOPT_FOLLOWLOCATION</constant> etkinken, yönlendirme
+          sayısı.
          </simpara>
         </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_REDIRECT_TIME</constant> -
+          <constant>CURLOPT_FOLLOWLOCATION</constant> etkinken, saniye
+          cinsinden son aktarım başlayana kadar tüm yönlendirme adımlarının
+          süresi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_REDIRECT_URL</constant> -
+          <constant>CURLOPT_FOLLOWLOCATION</constant> etkin değilken: son
+          aktarımda bulunan yönlendirme URL'si; sonradan elle istenmesi
+          gerekir. <constant>CURLOPT_FOLLOWLOCATION</constant> etkinken: bu
+          boştur. Bu durumda yönlendirme URL'si
+          <constant>CURLINFO_EFFECTIVE_URL</constant>'de bulunur.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PRIMARY_IP</constant> - En son bağlanının IP
+          adresi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PRIMARY_PORT</constant> - En son bağlanının hedef portu.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_LOCAL_IP</constant> - En son bağlanının yerel
+          (kaynak) IP adresi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_LOCAL_PORT</constant> - En son bağlanının yerel
+          (kaynak) portu.
+          </simpara>
+         </listitem>
         <listitem>
          <simpara>
           <constant>CURLINFO_SIZE_UPLOAD</constant> - Karşıya yüklenen toplam
@@ -114,7 +159,10 @@
         </listitem>
         <listitem>
          <simpara>
-          <constant>CURLINFO_HEADER_OUT</constant> - Gönderilen istek dizgesi.
+          <constant>CURLINFO_HEADER_OUT</constant> - Gönderilen istek
+          dizgesi. Bunun çalışması için, <function>curl_setopt</function>
+          çağrılarak tanıtıcıya <constant>CURLINFO_HEADER_OUT</constant>
+          seçeneği eklenmelidir.
          </simpara>
         </listitem>
         <listitem>
@@ -145,10 +193,235 @@
         <listitem>
          <simpara>
           <constant>CURLINFO_CONTENT_TYPE</constant> -
-          İndirilen nesnenin <literal>Content-Type:</literal> başlığının
+          İstenenbelgenin <literal>Content-Type:</literal> başlığının
           değeri; &null; değeri sunucunun geçerli bir
           <literal>Content-Type:</literal> başlığı göndermediği anlamına
           gelir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PRIVATE</constant> -
+          <function>curl_setopt</function> işlevinin
+          <constant>CURLOPT_PRIVATE</constant> seçeneği ile evvelce atanmış,
+          bu cURL tanıtıcısı ile ilişkili özel veri.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_RESPONSE_CODE</constant> - Son yanıt kodu
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_HTTP_CONNECTCODE</constant> - CONNECT yanıt kodu
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_HTTPAUTH_AVAIL</constant> - önceki yanıta göre,
+          kullanılabilen kimlik kanıtlama yöntemlerini gösteren bit maskesi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PROXYAUTH_AVAIL</constant> - Önceki yanıta göre
+          kullanılabilen vekil kimlik kanıtlama yöntemlerini gösteren bit
+          maskesi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_OS_ERRNO</constant> - Bir bağlantı hatasındaki
+          hata numarası. Numara, işletim sistemine ve sisteme özeldir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_NUM_CONNECTS</constant> - Önceki aktarımı
+          gerçekleştirmek için curl tarafından oluşturulması gereken bağlantı
+          sayısı.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SSL_ENGINES</constant> - OpenSSL kripto
+          motorları desteklenir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_COOKIELIST</constant> - Bilinen tüm çerezler
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_FTP_ENTRY_PATH</constant> - FTP sunucusundaki
+          girdi yolu.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_APPCONNECT_TIME</constant> - Uzak konağa SSL/SSH
+          bağlantısı/anlaşması tamamlanana kadar başlangıçtan itibaren geçen
+          saniye cinsinden süre
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_CERTINFO</constant> - TLS sertifika zinciri
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_CONDITION_UNMET</constant> - Karşılanmayan süre
+          koşulu hakkında bilgi.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_RTSP_CLIENT_CSEQ</constant> - Sonraki RTSP istemci CSeq
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_RTSP_CSEQ_RECV</constant> - Son alınan CSeq
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_RTSP_SERVER_CSEQ</constant> - Sonraki RTSP sunucu CSeq
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_RTSP_SESSION_ID</constant> - RTSP oturum
+          kimiliği
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_CONTENT_LENGTH_DOWNLOAD_T</constant> -
+          İndirmenin içerik uzunluğu. Bu değer,
+          <literal>Content-Type:</literal> başlığından okunur.
+          Boyut bilinmiyorsa -1
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_CONTENT_LENGTH_UPLOAD_T</constant> - Yüklemenin
+          belirtilen boyutu. Boyut bilinmiyorsa -1
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_HTTP_VERSION</constant> - Son HTTP bağlantısında
+          kullanılan sürüm. Dönüş değeri, tanımlı
+          <constant>CURL_HTTP_VERSION_*</constant> sabitlerinden biri veya
+          sürüm belirlenemiyorsa 0 olacaktır
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PROTOCOL</constant> - Son HTTP bağlantısında
+          kullanılan protokol. Döndürülen değer kesin olarak
+          <constant>CURLPROTO_*</constant> değerlerinden biri olacaktır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PROXY_SSL_VERIFYRESULT</constant> - İstenen
+          sertifika doğrulamasının sonucu
+          (<constant>CURLOPT_PROXY_SSL_VERIFYPEER</constant> seçeneği
+          kullanılarak). Yalnızca HTTPS vekilleri için kullanılır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SCHEME</constant> - En son bağlantıda kullanılan
+          URL şeması
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SIZE_DOWNLOAD_T</constant> - İndirilen toplam
+          bayt sayısı. Sayı yalnızca en son aktarım içindir ve her yeni
+          aktarım için sıfırlanır.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SIZE_UPLOAD_T</constant> - Yüklenen toplam bayt
+          sayısı
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SPEED_DOWNLOAD_T</constant> - Tam indirme için
+          curl'un ölçtüğü bayt/saniye cinsinden ortalama indirme hızı.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_SPEED_UPLOAD_T</constant> - Tam yükleme için
+          curl'un ölçtüğü bayt/saniye cinsinden ortalama yükleme hızı.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_APPCONNECT_TIME_T</constant> - Başlangıçtan uzak
+          konağa SSL/SSH bağlantısı/anlaşması tamamlanana kadar geçen
+          mikrosaniye cinsinden süre.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_CONNECT_TIME_T</constant> - Uzak konağa (veya
+          vekile) bağlantı tamamlanana kadar başlangıştan itibaren geçen
+          mikrosaniye cinsinden toplam süre.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_FILETIME_T</constant> - Alınan belgenin uzaktan
+          alınma zamanı (Unix zaman damgası olarak), 32 bitlik sistemlerin 32
+          bit zaman damgası aralığı dışındaki tarihleri ayıklamasını sağlamak
+          için bir <constant>CURLINFO_FILETIME</constant> seçeneği.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_NAMELOOKUP_TIME_T</constant> - İsim çözümlemesi
+          tamamlanana kadar başlangıçtan itibaren geçen milisaniye cinsinden
+          süre.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_PRETRANSFER_TIME_T</constant> - Dosya aktarımı
+          başlayana kadar başlangıçtan itibaren geçen milisaniye cinsinden
+          süre.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_REDIRECT_TIME_T</constant> - Mikrosaniye
+          cinsinden tüm yönlendirme adımları için geçen toplam süre, son
+          işlem başlamadan önce ad arama, bağlanma, ön aktarımı ve aktarımı
+          içerir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_STARTTRANSFER_TIME_T</constant> - Başlangıçtan
+          ilk bayt alınıncaya kadar geçen milisaniye cinsinden süre.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>CURLINFO_TOTAL_TIME_T</constant> - Ad çözümleme, TCP
+          bağlantısı vb. dahil olmak üzere önceki aktarım için mikrosaniye
+          cinsinden toplam süre.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -163,7 +436,8 @@
   &reftitle.returnvalues;
   <para>
    <parameter>seçenek</parameter> belirtilirse, seçeneğin değeri bir dizge
-   olarak döndürülür. Aksi takdirde aşağıdaki elemanları içeren bir dizi döner:
+   olarak döndürülür. Aksi takdirde aşağıdaki elemanları içeren bir dizi
+   veya başarısızlık durumunda &false; döner:
    <itemizedlist>
     <listitem>
      <simpara>
@@ -265,7 +539,46 @@
       "redirect_time"
      </simpara>
     </listitem>
+    <listitem>
+     <simpara>
+      "certinfo"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "primary_ip"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "primary_port"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "local_ip"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "local_port"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "redirect_url"
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      "request_header" (This is only set if the <constant>CURLINFO_HEADER_OUT</constant>
+      is set by a previous call to <function>curl_setopt</function>)
+     </simpara>
+    </listitem>
    </itemizedlist>
+   Özel veriler ilişkisel diziye dahil olmadığı ve
+   <constant>CURLINFO_PRIVATE</constant> seçeneğiyle tek tek alınması
+   gerektiği unutulmamalıdır.
   </para>
  </refsect1>
 
@@ -281,10 +594,35 @@
       </row>
      </thead>
      <tbody>
+      &curl.changelog.handle-param;
       <row>
-       <entry>5.1.3</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <constant>CURLINFO_HEADER_OUT</constant> devreye girdi.
+        <parameter>seçenek</parameter> artık &null; olabiliyor;
+        evvelce <literal>0</literal> öntanımlı değerdi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.3.0</entry>
+       <entry>
+        <constant>CURLINFO_CONTENT_LENGTH_DOWNLOAD_T</constant>,
+        <constant>CURLINFO_CONTENT_LENGTH_UPLOAD_T</constant>,
+        <constant>CURLINFO_HTTP_VERSION</constant>,
+        <constant>CURLINFO_PROTOCOL</constant>,
+        <constant>CURLINFO_PROXY_SSL_VERIFYRESULT</constant>,
+        <constant>CURLINFO_SCHEME</constant>,
+        <constant>CURLINFO_SIZE_DOWNLOAD_T</constant>,
+        <constant>CURLINFO_SIZE_UPLOAD_T</constant>,
+        <constant>CURLINFO_SPEED_DOWNLOAD_T</constant>,
+        <constant>CURLINFO_SPEED_UPLOAD_T</constant>,
+        <constant>CURLINFO_APPCONNECT_TIME_T</constant>,
+        <constant>CURLINFO_CONNECT_TIME_T</constant>,
+        <constant>CURLINFO_FILETIME_T</constant>,
+        <constant>CURLINFO_NAMELOOKUP_TIME_T</constant>,
+        <constant>CURLINFO_PRETRANSFER_TIME_T</constant>,
+        <constant>CURLINFO_REDIRECT_TIME_T</constant>,
+        <constant>CURLINFO_STARTTRANSFER_TIME_T</constant>,
+        <constant>CURLINFO_TOTAL_TIME_T</constant> devreye girdi.
        </entry>
       </row>
      </tbody>
@@ -302,17 +640,15 @@
 <![CDATA[
 <?php
 // Yeni bir tanıtıcı oluşturalım
-$ch = curl_init('http://www.yahoo.com/');
+$ch = curl_init('http://www.example.com/');
 
 // Çalıştıralım
 curl_exec($ch);
 
 // Bir hata var mı bakalım
-if(!curl_errno($ch))
-{
- $info = curl_getinfo($ch);
-
- echo 'İsteğin' . $info['url'] . ' adresine gönderilmesi ' .
+if(!curl_errno($ch)) {
+   $info = curl_getinfo($ch);
+   echo 'İsteğin' . $info['url'] . ' adresine gönderilmesi ' .
        $info['total_time'] . ' saniye sürdü';
 }
 
@@ -323,6 +659,44 @@ curl_close($ch);
     </programlisting>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- <parameter>seçenek</parameter> değiştirgeli
+     <function>curl_getinfo</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Bir cURL tanıtıcısı oluştur
+$ch = curl_init('http://www.example.com/');
+
+// Çalıştır
+curl_exec($ch);
+
+// HTTP durum koduna bak
+if (!curl_errno($ch)) {
+  switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+    case 200:  # OK
+      break;
+    default:
+      echo 'Beklenmedik HTTP kodu: ', $http_code, "\n";
+  }
+ }
+curl_close($ch);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Tanıtıcı yeniden kullanılırsa işlev tarafından toplanan veri tutulur.
+    Yani, bir istatistik bu işlev tarafından dahili olarak geçersiz
+    kılınmadıkça önceki bilgi döner.
+   </para>
+  </note>
  </refsect1>
 </refentry>
 
