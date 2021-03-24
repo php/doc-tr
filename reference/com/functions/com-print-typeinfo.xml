@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 20216b916ed583938672cd09c2c2f430351430d1 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.com-print-typeinfo" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>com_print_typeinfo</refname>
@@ -10,15 +10,15 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>com_print_typeinfo</methodname>
-   <methodparam><type>object</type><parameter>comNesne</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>arayuz</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>baglama</parameter></methodparam>
+   <methodparam><type class="union"><type>variant</type><type>string</type></type><parameter>nesne</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>arayuz</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>baglama</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    İşlevin amacı olay bağlamada kullanmak için sınıf yapısının üretilmesidir.
-   İşlevi ayrıca, içbakış arayüzlerinin desteklediği kadar, herhangi bir COM
-   nesnesinin dökümünü üretmek için kullanabilirsiniz, görüntülemek
-   istediğiniz arayüz adını bilmeniz gerekmektedir.
+   İşlev ayrıca, içbakış arayüzlerinin desteklediği kadar, herhangi bir COM
+   nesnesinin dökümünü üretmek için kullanılabilir, görüntülenmek
+   istenen arayüz adı bilinmelidir.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -26,12 +26,12 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>comNesne</parameter></term>
+     <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       <parameter>comNesne</parameter> değiştirgesi ya COM nesnesinin bir
+       <parameter>nesne</parameter> değiştirgesi ya COM nesnesinin bir
        örneği ya da tür kütüphane adı (<function>com_load_typelib</function>
-       işlevinde gösterilen kurallara göre çözümlenecektir) olmalıdır.
+       işlevinde gösterilen kurallara göre çözümlenir) olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -39,7 +39,7 @@
      <term><parameter>arayuz</parameter></term>
      <listitem>
       <para>
-       Göstermek istediğiniz, IDispatch türevinden, arayüz adı.
+       Gösterilecek <literal>IDispatch</literal> astsalı arayüzün adı.
       </para>
      </listitem>
     </varlistentry>
@@ -47,8 +47,7 @@
      <term><parameter>baglama</parameter></term>
      <listitem>
       <para>
-       &true; olarak düzelenirse karşılık gelen bağlama arayüzü
-       gösterilecektir.
+       &true; belirtilirse karşılık gelen bağlama arayüzü gösterilir.
       </para>
      </listitem>
     </varlistentry>

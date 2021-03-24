@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: ae6be5bb4f40f334c713bdf0dc11ac6a59f6461d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b8e1b1357def73f310c9f7405035b3acc0cb1eaf Maintainer: nilgun Status: ready -->
  <chapter xml:id="faq.databases" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Veritabanı Sorunları</title>
   <titleabbrev>Veritabanı Sorunları</titleabbrev>
@@ -25,9 +25,9 @@
       kullanabilirsiniz.
      </para>
      <para>
-      Windows makinelerde, ayrıca 
+      Windows makinelerde, ayrıca
       <link linkend="ref.pdo-sqlsrv">PDO_SQLSRV</link> veya
-      <link linkend="book.sqlsrv">SQLSRV</link> de kullanabilirsiniz.      
+      <link linkend="book.sqlsrv">SQLSRV</link> de kullanabilirsiniz.
      </para>
      <para>
       Ayrıca bir sonraki sorunun cevabına da bakınız.
@@ -40,11 +40,6 @@
      <para>Microsoft Access veritabanlarına erişebilir miyim?</para>
     </question>
     <answer>
-     <para>
-      Evet. Tamamen Windows 9x/Me, veya NT/2000 üzerindeyseniz zaten gerekli
-      bütün araçlara sahipsinizdir; ODBC ve Microsoft'un ODBC sürücülerini
-      Microsoft Access veritabanları için kullanabilirsiniz.
-     </para>
      <para>
       Bir Unix üzerindeyseniz ve bir Windows makinedeki bir Microsoft Access
       veritabanına erişmek istiyorsanız Unix ODBC sürücüleri kullanmanız
@@ -155,78 +150,6 @@
         </simpara>
        </listitem>
       </itemizedlist>
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.databases.mysql.deprecated">
-    <question>
-     <para>
-      10 yıldan beridir kullandığım MySQL eklentisini (ext/mysql) kullanmaktan
-      neden vazgeçecekmişim? Kullanımı önerilmiyor mu? Yerine ne kullanacağım?
-      Göçü nasıl gerçekleştireceğim?
-     </para>
-    </question>
-    <answer>
-     <para>
-      <link linkend="mysqlinfo.api.choosing">Bir MySQL API'si seçmek</link>
-      bölümünde açıklandığı gibi üç MySQL eklentisi vardır. Eski API
-      kullanılmamalıdır, PHP 5.5.0 itibariyle kullanımı önerilmemekte olup PHP
-      7.0.0 itibariyle PECL'ye taşınmıştır. Yeni kodların mutlaka
-      <link linkend="book.mysqli">mysqli</link> veya
-      <link linkend="ref.pdo-mysql">PDO_MySQL</link> ile yazılmasını teşvik
-      ediyoruz.
-     </para>
-     <para>
-      Göç betikleri henüz hazır değilse de mysqli API hem yordamsal hem de nesne
-      yönelimli API içermekte olup yordamsal sürümü ext/mysql'e benzemektedir.
-     </para>
-     <para>
-      Eklentileri karışık kullanmak mümkün değildir. Bu bakımdan, örneğin, bir
-      mysqli bağlantısını PDO_MySQL veya ext/mysql'e aktarmak işe
-      yaramayacaktır.
-     </para>
-    </answer>
-   </qandaentry>
-
-   <qandaentry xml:id="faq.databases.mysqlresource">
-    <question>
-     <para>
-      Neden şöyle bir hata alıyorum?:
-      "Warning: 0 is not a MySQL result index in &lt;file&gt;
-      on line &lt;x&gt;" veya "Warning: Supplied argument is not
-      a valid MySQL result resource in &lt;file&gt; on line &lt;x&gt;"?
-     </para>
-    </question>
-    <answer>
-     <para>
-      0 değerli bir sonuç belirtecini kullanmaya çalışıyorsunuzdur. Buradaki
-      sıfır, sorgunuzun bir şekilde başarısız olduğu anlamına gelir. Dönen
-      sonuç belirtecini kullanmaya çalışmadan önce, sorguyu gönderdikten
-      sonra oluşan hataları incelemeniz gerekir. Bunun gerektiği gibi
-      yapıldığı bir kod şöyle olurdu:
-      <example><programlisting role="php">
-<![CDATA[
-<?php
-
-$result = mysql_query("SELECT * FROM tables_priv");
-if (!$result) {
-    echo mysql_error();
-    exit;
-}
-?>
-]]>
-      </programlisting></example>
-      veya
-      <example><programlisting role="php">
-<![CDATA[
-<?php
-
-$result = mysql_query("SELECT * FROM tables_priv")
-    or die("Kötü sorgu: " . mysql_error());
-?>
-]]>
-      </programlisting></example>
      </para>
     </answer>
    </qandaentry>

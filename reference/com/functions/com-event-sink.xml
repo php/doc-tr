@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: 20216b916ed583938672cd09c2c2f430351430d1 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.com-event-sink" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>com_event_sink</refname>
@@ -10,17 +10,17 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>com_event_sink</methodname>
-   <methodparam><type>variant</type><parameter>comNesne</parameter></methodparam>
-   <methodparam><type>object</type><parameter>aliciNesne</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>aliciArayuz</parameter></methodparam>
+   <methodparam><type>variant</type><parameter>nesne</parameter></methodparam>
+   <methodparam><type>object</type><parameter>alici_nesne</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>alici_arayuz</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>comNesne</parameter> ile üretilen olayların, PHP nesnesi
-   <parameter>aliciNesne</parameter> içine bağlanmasını sağlar.
+   <parameter>nesne</parameter> ile üretilen olayların, PHP nesnesi
+   <parameter>alici_nesne</parameter> içine bağlanmasını sağlar.
   </para>
   <para>
    Bu özelliği kullanırken dikkatli olun; eğer aşağıdaki örnek benzeri bir şey
-   yapıyorsanız bunun bir html sunucusunda çalışmasının anlamı yoktur.
+   yapıyorsanız bunun bir http sunucusunda çalışmasının anlamı yoktur.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -28,17 +28,17 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>comNesne</parameter></term>
+     <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>aliciNesne</parameter></term>
+     <term><parameter>alici_nesne</parameter></term>
      <listitem>
       <para>
-       <parameter>aliciNesne</parameter> istenen arayüzün yöntem isimlerinin
+       <parameter>alici_nesne</parameter> istenen arayüzün yöntem isimlerinin
        olduğu sınıftan türemiş nesne olmalıdır; bu amaçla şablon bir sınıf
        üretmek için <function>com_print_typeinfo</function> işlevinden yardım
        alabilirsiniz.
@@ -46,12 +46,12 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>aliciArayuz</parameter></term>
+     <term><parameter>alici_arayuz</parameter></term>
      <listitem>
       <para>
-       PHP, <parameter>comNesne</parameter> tür kitaplığındaki öntanımlı
+       PHP, <parameter>nesne</parameter> tür kitaplığındaki öntanımlı
        arayüz türünü kullanmaya çalışacaktır, bu durumu kullanmak istediğiniz
-       arayüzü <parameter>aliciArayuz</parameter> değiştirgesine yazarak
+       arayüzü <parameter>alici_arayuz</parameter> değiştirgesine yazarak
        engelleyebilirsiniz.
       </para>
      </listitem>
@@ -65,11 +65,35 @@
    &return.success;
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>alici_arayuz</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>COM olay bağlayıcı örneği</title>
+    <title>- COM olay bağlayıcı örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -105,6 +129,20 @@ $ie = null;
    </example>
   </para>
  </refsect1>
+
+  <refsect1 role="notes">
+  &reftitle.notes;
+  <caution>
+   <para>
+    PHP 8.0.0 öncesinde, bir olay işleyicisinden <function>exit</function>
+    çağrılması desteklenmezdi ve PHP'nin çökmesine sebep olurdu. Çevresinden
+    dolanarak bu çalışabilir: Olay işleyicisinden bir istisna yavrulanır ve
+    ana kodda istisna yakalanıp oradan <function>exit</function> çağrısı
+    yapılabilir.
+   </para>
+  </caution>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
