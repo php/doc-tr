@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: a41128675051f3b8ea0fc722a243455611087e55 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.date-sunrise" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>date_sunrise</refname>
@@ -11,13 +11,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>date_sunrise</methodname>
-   <methodparam><type>int</type><parameter>zamandamgası</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>biçim</parameter><initializer>SUNFUNCS_RET_STRING</initializer></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>enlem</parameter><initializer>ini_get("date.default_latitude")</initializer></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>boylam</parameter><initializer>ini_get("date.default_longitude")</initializer></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>başucu</parameter><initializer>ini_get("date.sunrise_zenith")</initializer></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>gmt_farkı</parameter><initializer>0</initializer></methodparam>
+   <type class="union"><type>string</type><type>int</type><type>float</type><type>false</type></type><methodname>date_sunrise</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>dönüş_biçimi</parameter><initializer><constant>SUNFUNCS_RET_STRING</constant></initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>float</type><type>null</type></type><parameter>enlem</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>float</type><type>null</type></type><parameter>boylam</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>float</type><type>null</type></type><parameter>başucu</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>float</type><type>null</type></type><parameter>utc_farkı</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>date_sunrise</function> işlevi, verilen gün
@@ -39,11 +38,11 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>biçim</parameter></term>
+     <term><parameter>dönüş_biçimi</parameter></term>
      <listitem>
       <para>
        <table>
-        <title><parameter>biçim</parameter> sabitleri</title>
+        <title><parameter>dönüş_biçimi</parameter> sabitleri</title>
         <tgroup cols="2">
          <thead>
           <row>
@@ -78,8 +77,8 @@
      <term><parameter>enlem</parameter></term>
      <listitem>
       <para>
-       Kuzey yarımküre öntanımlıdır. Güney yarımküre için negatif değer girin.
-       Ayrıca bakınız: <literal>date.default_latitude</literal>
+       Kuzey yarımküre öntanımlıdır. Güney yarımküre için negatif değer girilir.
+       Ayrıca bakınız: <link linkend="ini.date.default-latitude">date.default_latitude</link>
       </para>
      </listitem>
     </varlistentry>
@@ -87,8 +86,9 @@
      <term><parameter>boylam</parameter></term>
      <listitem>
       <para>
-       Doğu yarımküre öntanımlıdır. Batı yarımküre için negatif değer girin.
-       Ayrıca bakınız: <literal>date.default_longitude</literal>
+       Doğu yarımküre öntanımlıdır. Batı yarımküre için negatif değer
+       girilir. Ayrıca bakınız:
+       <link linkend="ini.date.default-longitude">date.default_longitude</link>
       </para>
      </listitem>
     </varlistentry>
@@ -96,15 +96,52 @@
      <term><parameter>başucu</parameter></term>
      <listitem>
       <para>
-       Öntanımlı: <literal>date.sunrise_zenith</literal>
+       <parameter>başucu</parameter>, güneşin merkezi ile dünya yüzeyine dik
+       bir çizgi arasındaki açıdır. Öntanımlı değer:
+       <link linkend="ini.date.sunrise-zenith">date.sunrise_zenith</link>
+       <table>
+        <title>Bazı <parameter>başucu</parameter> açıları</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Açı</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry>90°50'</entry>
+           <entry>Gündoğumu: Güneşin görünür hale geldiği nokta.</entry>
+          </row>
+          <row>
+           <entry>96°</entry>
+           <entry>Sivil alacakaranlık: Geleneksel olarak şafağın başlangıcını
+            belirtmek için kullanılır.</entry>
+          </row>
+          <row>
+           <entry>102°</entry>
+           <entry>Deniz alacakaranlığı: Ufkun denizde görünmeye başladığı
+            nokta.</entry>
+          </row>
+          <row>
+           <entry>108°</entry>
+           <entry>Astronomik alacakaranlık: Güneşin herhangi bir
+            aydınlatmanın kaynağı olmaya başladığı nokta.</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gmt_farkı</parameter></term>
+     <term><parameter>utc_farkı</parameter></term>
      <listitem>
       <para>
        Saat cinsinden belirtilir.
+       <parameter>dönüş_biçimi</parameter> değeri
+       <constant>SUNFUNCS_RET_TIMESTAMP</constant> ise
+       <parameter>utc_farkı</parameter> yoksayılır.
       </para>
      </listitem>
     </varlistentry>
@@ -115,17 +152,16 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarılı olduğunda, <parameter>biçim</parameter> değiştirgesiyle
-   belirlenen biçimde şafak zamanını, başarız olduğunda &false; değerini
-   döndürür.
+   Başarılı olduğunda, <parameter>dönüş_biçimi</parameter> değiştirgesiyle
+   belirlenen biçimde şafak zamanı,&return.falseforfailure;. Başarısızlığın
+   olası nedeni, yılın bir bölümünde kutup dairesinin içinde güneşin hiç
+   doğmamasıdır.
   </para>
  </refsect1>
 
  <refsect1 role="errors">
   &reftitle.errors;
-
-   &date.timezone.errors.description;
-
+  &date.timezone.errors.description;
  </refsect1>
 
  <refsect1 role="changelog">
@@ -140,9 +176,14 @@
       </row>
      </thead>
      <tbody>
-
-      &date.timezone.errors.changelog;
-
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>enlem</parameter>, <parameter>botlam</parameter>,
+        <parameter>başucu</parameter> ve <parameter>utc_farkı</parameter>
+        artık &null; olabiliyor.
+       </entry>
+      </row>
      </tbody>
     </tgroup>
    </informaltable>
@@ -177,6 +218,23 @@ Fri Dec 12 2008, şafak: 07:25
 ]]>
     </screen>
    </example>
+   <example>
+    <title>- Güneşin doğmaması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$solstice = strtotime('2017-12-21');
+var_dump(date_sunrise($solstice, SUNFUNCS_RET_STRING, 69.245833, -53.537222));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(false)
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -185,6 +243,7 @@ Fri Dec 12 2008, şafak: 07:25
   <para>
    <simplelist>
     <member><function>date_sunset</function></member>
+    <member><function>date_sun_info</function></member>
    </simplelist>
   </para>
  </refsect1>
