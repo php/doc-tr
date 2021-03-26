@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: b95d28e6ec86e4a71e012737d36ebdc1cf009180 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.timezone-name-from-abbr" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>timezone_name_from_abbr</refname>
@@ -9,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>timezone_name_from_abbr</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>timezone_name_from_abbr</methodname>
    <methodparam><type>string</type><parameter>kısaltma</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>gmt_farkı</parameter><initializer>-1</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ysu_var</parameter><initializer>-1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>utc_farkı</parameter><initializer>-1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>gys_var</parameter><initializer>-1</initializer></methodparam>
   </methodsynopsis>
  </refsect1>
 
@@ -29,10 +29,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gmt_farkı</parameter></term>
+     <term><parameter>utc_farkı</parameter></term>
      <listitem>
       <para>
-       Yerel saatin GMT&apos;ye göre saniye cinsinden farkı. Varsayılan değer,
+       Yerel saatin UTC'ye göre saniye cinsinden farkı. Varsayılan değer,
        <parameter>kısaltma</parameter> değiştirgesinin karşılığı olarak
        bulunan ilk zaman diliminin döndürüleceği anlamına gelen -1'dir.
        Yoksa, farka uyan zaman dilimi aranır ve bulunamadığı durumlarda fark
@@ -41,13 +41,18 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ysu_var</parameter></term>
+     <term><parameter>gys_var</parameter></term>
      <listitem>
       <para>
-       Yaz saati uygulaması belirteci. Eğer <parameter>kısaltma</parameter>
-       değiştirgesi yoksa zaman dilimi yalnızca
-       <parameter>gmt_farkı</parameter> ve <parameter>ysu_var</parameter>
-       değiştirgelerine göre aranacaktır.
+       Gün ışığından yararlanma saati göstergesi. Öntanımlı değer -1 olup
+       arama sırasında zaman diliminin gün ışığından yararlanma özelliğinin
+       olup olmadığının dikkate alınmadığı anlamına gelir. Bu 1 olarak
+       ayarlanırsa, <parameter>utc_farkı</parameter>'nın etkin gün ışığından
+       yararlanma farkını içerdiği varsayılır; 0 ise,
+       <parameter>utc_farkı</parameter> gün ışığından yararlanma farkını
+       içermiyor demektir. <parameter>kısaltma</parameter> yoksa, zaman
+       dilimi yalnızca <parameter>utc_farkı</parameter> ve
+       <parameter>gys_var</parameter> değiştirgelerine göre aranacaktır.
       </para>
      </listitem>
     </varlistentry>
@@ -58,7 +63,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  Başarılı olduğunda zaman dilimini adını, başarısız olduğunda &false; döndürür.
+  Başarılı olduğunda zaman diliminin adını, başarısız olduğunda &false; döndürür.
   </para>
  </refsect1>
 

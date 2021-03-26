@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 34188f8256bdc6f0e6e1965c2be94247997165b6 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.gmstrftime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>gmstrftime</refname>
-  <refpurpose>Yerel ayarlara göre tarih ve saati, GMT/UTC türüne çevirir
+  <refpurpose>Yerel ayarlara göre tarih ve saati, UTC türüne çevirir
   </refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>gmstrftime</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>gmstrftime</methodname>
    <methodparam><type>string</type><parameter>biçem</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>zaman_damgası</parameter><initializer>time()</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>zaman_damgası</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Zamanı, Greenwich Saatiyle (GMT) döndürmesi dışında tıpkı
-   <function>strftime</function> işlevi gibi davranır. Örneğin,
-   Doğu Standart Zamanınında (GMT -0500) çalıştırıldığında, aşağıdaki örneğin
-   ilk satırı "Ara 31 1998 20:00:00" basarken ikinci satırı "Oca 01 1999
-   01:00:00" basar.
+   UTC zamanı döndürmesi dışında <function>strftime</function> işlevi gibi
+   davranır. Örneğin, Doğu Standart Zamanınında (UTC -0500)
+   çalıştırıldığında, aşağıdaki örneğin ilk satırı "Ara 31 1998 20:00:00"
+   basarken ikinci satırı "Oca 01 1999 01:00:00" basar.
   </para>
  </refsect1>
 
@@ -46,9 +45,33 @@
   <para>
    İstenilen biçime göre verilen <parameter>zaman_damgası</parameter>
    değiştirgesini ya da zaman damgası değiştirgesi kullanılmamışsa yerel
-   zamanı; biçimlendirilmiş dizge olarak döndürür.  Ay ve hafta günlerinin
-   isimleri ve diğer dile bağımlı dizgelerle ilgili geçerli yereller
-   <function>setlocale</function> işlevi ile ayarlanabilir.
+   zamanı; biçimlendirilmiş dizge olarak döndürür,&return.falseforfailure;.
+   Ay ve hafta günlerinin isimleri ve diğer dile bağımlı dizgelerle ilgili
+   geçerli yereller <function>setlocale</function> işlevi ile ayarlanabilir.
+  </para>
+ </refsect1>
+
+  <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>zaman_damgası</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 

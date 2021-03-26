@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 34188f8256bdc6f0e6e1965c2be94247997165b6 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.localtime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>localtime</refname>
@@ -11,8 +11,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>localtime</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>zamandamgası</parameter><initializer>time()</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ilişkisel_mi</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>zaman_damgası</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ilişkisel</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>localtime</function> işlevi, standart C işlev çağrısı olan localtime tarafından döndürülen yapıya eşdeğer bir dizi döndürür.
@@ -23,11 +23,9 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-
     &date.timestamp.description;
-
     <varlistentry>
-     <term><parameter>ilişkisel_mi</parameter></term>
+     <term><parameter>ilişkisel</parameter></term>
      <listitem>
       <para>
        Eğer değiştirge &false; olarak ayarlanmış ya da kullanılmamışsa,
@@ -41,25 +39,22 @@
        <itemizedlist>
         <listitem>
          <simpara>
-          "tm_sec" - saniye
+          "tm_sec" - saniye, <literal>0</literal> - <literal>59</literal>
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_min" - dakika
+          "tm_min" - dakika, <literal>0</literal> - <literal>59</literal>
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_hour" - saat
+          "tm_hour" - saat, <literal>0</literal> - <literal>23</literal>
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_mday" - ayın günleri
-         </simpara>
-         <simpara>
-          Aylar, 0&apos;dan (Ocak)  11&apos;e (Aralık) ve haftanın günleri 0&apos;dan (Paz)  6&apos;ya (Cmt).
+          "tm_mday" - ayın günleri, <literal>1</literal> - <literal>31</literal>
          </simpara>
         </listitem>
         <listitem>
@@ -69,23 +64,27 @@
         </listitem>
         <listitem>
          <simpara>
-          "tm_year" - Yıllar, başlangıç 1900 kabul edilir
+          "tm_year" - Yıllar,, <literal>0</literal> (Ocak) - <literal>11</literal> (Aralık)
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_wday" - Haftanın günleri
+          "tm_wday" - Haftanın günleri, <literal>0</literal> (Paz) - <literal>6</literal> (Cts)
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_yday" - Yılın günleri
+          "tm_yday" - Yılın günleri, <literal>0</literal> - <literal>365</literal>
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "tm_isdst" - Yaz saati uygulaması bilgisi
+          "tm_isdst" - Yaz saati etkin mi?
          </simpara>
+         <simpara>
+          Evet ise pozitif, hayır ise <literal>0</literal>, bilinmiyorsa
+          negatiftir.
+          </simpara>
         </listitem>
        </itemizedlist>
       </para>
@@ -97,9 +96,7 @@
 
  <refsect1 role="errors">
   &reftitle.errors;
-
    &date.timezone.errors.description;
-
  </refsect1>
 
  <refsect1 role="changelog">
@@ -114,9 +111,12 @@
       </row>
      </thead>
      <tbody>
-
-      &date.timezone.errors.changelog;
-
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>zaman_damgası</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
      </tbody>
     </tgroup>
    </informaltable>
@@ -169,6 +169,14 @@ Array
 ]]>
     </screen>
    </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>getdate</function></member>
+   </simplelist>
   </para>
  </refsect1>
 </refentry>

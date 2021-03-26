@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f658721332c6080e237ed6a1c29517225237b639 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b95d28e6ec86e4a71e012737d36ebdc1cf009180 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/dir.xml, last change in rev 1.2 -->
 <refentry xml:id="function.readdir" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -11,11 +11,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>readdir</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>readdir</methodname>
    <methodparam choice="opt"><type>resource</type><parameter>dizin_tanıtıcısı</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Dizindeki sonraki dosyanın ismi ile döner. Dosya isimleri dosya sisteminde
+   Dizindeki sonraki girdinin ismi ile döner. Girdiler dosya sisteminde
    saklandıkları sıra ile döndürülür.
   </para>
  </refsect1>
@@ -41,7 +41,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarılı olduğunda dosya ismi ile aksi takdirde &false; değeriyle döner.
+   Başarılı olduğunda dosya ismi ile,&return.falseforfailure;..
   </para>
   &return.falseproblem;
  </refsect1>
@@ -62,20 +62,18 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// 4.0.0-RC2 sürümüne kadar !== işlecinin kullanılamadığına dikkat edin
-
 if ($dizin = opendir('/bir/dizin/dosyalar')) {
     echo "Dizin tanıtıcısı: $dizin\n";
     echo "Dizin içeriği:\n";
 
     /* Dizin içeriğini taramak için doğru yöntem. */
-    while (false !== ($dosya = readdir($dizin))) {
-        echo "$dosya\n";
+    while (false !== ($girdi = readdir($dizin))) {
+        echo "$girdi\n";
     }
 
     /* Dizin içeriğini taramak için YANLIŞ yöntem. */
-    while ($dosya = readdir($dizin)) {
-        echo "$dosya\n";
+    while ($girdi = readdir($dizin)) {
+        echo "$girdi\n";
     }
 
     closedir($dizin);
@@ -93,9 +91,9 @@ if ($dizin = opendir('/bir/dizin/dosyalar')) {
 <![CDATA[
 <?php
 if ($dizin = opendir('.')) {
-    while (false !== ($dosya= readdir($dizin))) {
-        if ($dosya != "." && $dosya != "..") {
-            echo "$dosya\n";
+    while (false !== ($girdi = readdir($dizin))) {
+        if ($girdi != "." && $girdi != "..") {
+            echo "$girdi\n";
         }
     }
     closedir($dizin);

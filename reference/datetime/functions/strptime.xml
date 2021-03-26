@@ -1,131 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 74da59644d9fd77a45e5ab62ed30a689c13fff27 Maintainer: behzat Status: ready -->
-  <refentry xml:id="function.strptime" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
-   <refnamediv>
-    <refname>strptime</refname>
-    <refpurpose>
-     <function>strftime</function> işleviyle üretilen zaman ve tarihleri
-     çözümler
-    </refpurpose>
-   </refnamediv>
-   <refsect1 role="description">
-    &reftitle.description;
-    <methodsynopsis>
-     <type>array</type><methodname>strptime</methodname>
-     <methodparam><type>string</type><parameter>tarih</parameter></methodparam>
-     <methodparam><type>string</type><parameter>biçim</parameter></methodparam>
-    </methodsynopsis>
-    <para>
-     <function>strptime</function> işlevi çözümlenmiş
-     <parameter>tarih</parameter> değiştirgesini bir diziyle döndürür. Hata
-     durumlarındaysa &false; değeriyle döner.
-    </para>
-    <para>
-     Ay, gün isimleri ve yerel ayarlarıyla ilgili dile bağımlı diğer dizgeler
-     (<constant>LC_TIME</constant>), <function>setlocale</function> işleviyle
-     ayarlanır.
-    </para>
-   </refsect1>
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: behzat Status: ready -->
+<refentry xml:id="function.strptime" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>strptime</refname>
+  <refpurpose>
+   <function>strftime</function> işleviyle üretilen zaman ve tarihleri
+   çözümler
+  </refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type class="union"><type>array</type><type>false</type></type><methodname>strptime</methodname>
+   <methodparam><type>string</type><parameter>zaman_damgası</parameter></methodparam>
+   <methodparam><type>string</type><parameter>biçim</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>strptime</function> işlevi çözümlenmiş
+   <parameter>zaman_damgası</parameter> değiştirgesini bir diziyle döndürür.
+   Hata durumlarındaysa &false; değeriyle döner.
+  </para>
+  <para>
+   Ay, gün isimleri ve yerel ayarlarıyla ilgili dile bağımlı diğer dizgeler
+   (<constant>LC_TIME</constant>), <function>setlocale</function> işleviyle
+   ayarlanır.
+  </para>
+ </refsect1>
 
-   <refsect1 role="parameters">
-   &reftitle.parameters;
-   <para>
-    <variablelist>
-     <varlistentry>
-      <term><parameter>tarih</parameter></term>
-      <listitem>
-       <para>
-        Çözümlenen dizge (ör. <function>strftime</function> işlevinden dönen
-        değer)
-       </para>
-      </listitem>
-     </varlistentry>
-     <varlistentry>
-      <term><parameter>biçim</parameter></term>
-      <listitem>
-       <para>
-        <parameter>tarih</parameter> değiştirgesinde kullanılan biçim
-      (ör. <function>strftime</function> işlevinde kullanılanla aynı).
-       </para>
-       <para>
-        Biçimlendirme seçenekleri hakkında daha fazla bilgi için
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>zaman_damgası</parameter> (<type>string</type>)</term>
+     <listitem>
+      <para>
+       Çözümlenecek dizge (ör. <function>strftime</function> işlevinden dönen
+       değer)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>biçim</parameter> (<type>string</type>)</term>
+     <listitem>
+      <para>
+       <parameter>zaman_damgası</parameter> değiştirgesinde kullanılan biçim
+       (ör. <function>strftime</function> işlevinde kullanılanla aynı).
+       <function>strftime</function> için mevcut olan bazı biçim seçeneklerinin <function>strptime</function> içinde herhangi bir etkisi olmayabileceğini unutmayın; Desteklenen tam alt küme, işletim sistemine ve kullanılan C kütüphanesine bağlı olarak değişecektir.
+      </para>
+      <para>
+       Biçimlendirme seçenekleri hakkında daha fazla bilgi için
        <function>strftime</function> sayfasını okuyun.
-       </para>
-      </listitem>
-     </varlistentry>
-    </variablelist>
-   </para>
-  </refsect1>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
 
-  <refsect1 role="returnvalues">
-   &reftitle.returnvalues;
-   <para>
-    Dizi döndürür. Hata durumlarında &false; değeriyle döner.
-   </para>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Dizi döndürür. Hata durumlarında &false; değeriyle döner.
+  </para>
+  <para>
+   <table>
+    <title>Diziyle dönen değerler</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Değiştirge</entry>
+       <entry>Açıklama</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>"tm_sec"</literal></entry>
+       <entry>Saniye (0-61)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_min"</literal></entry>
+       <entry>Dakika (0-59)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_hour"</literal></entry>
+       <entry>Saat (0-23)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_mday"</literal></entry>
+       <entry>Gün (1-31)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_mon"</literal></entry>
+       <entry>Ay (0-11)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_year"</literal></entry>
+       <entry>1900&apos;den itibaren yıllar</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_wday"</literal></entry>
+       <entry>Pazar'dan itibaren hafta günleri (0-6)</entry>
+      </row>
+      <row>
+       <entry><literal>"tm_yday"</literal></entry>
+       <entry>Ocak 1&apos;den itibaren günler (0-365)</entry>
+      </row>
+      <row>
+       <entry><literal>"unparsed"</literal></entry>
+        <entry><parameter>tarih</parameter> değiştirgesinin bilinmeyen
+       <parameter>biçim</parameter> değiştirgesi kullanımından dönen
+        değer</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </refsect1>
 
-    <para>
-     <table>
-      <title>Diziyle dönen değerler</title>
-      <tgroup cols="2">
-       <thead>
-        <row>
-         <entry>Değiştirge</entry>
-         <entry>Açıklama</entry>
-        </row>
-       </thead>
-       <tbody>
-        <row>
-         <entry><literal>"tm_sec"</literal></entry>
-         <entry>Saniye (0-61)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_min"</literal></entry>
-         <entry>Dakika (0-59)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_hour"</literal></entry>
-         <entry>Saat (0-23)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_mday"</literal></entry>
-         <entry>Gün (1-31)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_mon"</literal></entry>
-         <entry>Ay (0-11)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_year"</literal></entry>
-         <entry>1900&apos;den itibaren yıllar</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_wday"</literal></entry>
-         <entry>Pazar'dan itibaren hafta günleri (0-6)</entry>
-        </row>
-        <row>
-         <entry><literal>"tm_yday"</literal></entry>
-         <entry>Ocak 1&apos;den itibaren günler (0-365)</entry>
-        </row>
-        <row>
-         <entry><literal>"unparsed"</literal></entry>
-          <entry><parameter>tarih</parameter> değiştirgesinin bilinmeyen
-         <parameter>biçim</parameter> değiştirgesi kullanımından dönen
-          değer</entry>
-        </row>
-       </tbody>
-      </tgroup>
-     </table>
-    </para>
-
-  </refsect1>
-
-  <refsect1 role="examples">
-   &reftitle.examples;
-   <para>
-   <example>
-    <title>- <function>strptime</function> örneği</title>
-    <programlisting role="php">
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+  <example>
+   <title>- <function>strptime</function> örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 $biçim = '%d/%m/%Y %H:%M:%S';
@@ -136,9 +135,9 @@ echo "$strf\n";
 print_r(strptime($strf, $biçim));
 ?>
 ]]>
-      </programlisting>
-      &example.outputs.similar;
-      <screen>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
 <![CDATA[
 03/10/2004 15:54:19
 
@@ -155,33 +154,52 @@ Array
     [unparsed] =>
 )
 ]]>
-      </screen>
-      </example>
-     </para>
-    </refsect1>
+   </screen>
+   </example>
+  </para>
+ </refsect1>
 
-    <refsect1 role="notes">
-     &reftitle.notes;
-     &note.no-windows;
-     <note>
-      <para>
-       <literal>"tm_sec"</literal> "artık saniyeleri" de içerir (yılda 2
-       saniyeye kadar). Artık saniyeler hakkında bilgi edinmek için <link
-       xlink:href="http://tr.wikipedia.org/wiki/Artık_saniye">Wikipedia artık
-       saniyeler makalesine</link> bakınız.
-      </para>
-     </note>
-    </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.no-windows;
+  <note>
+   <para>
+    Dahili olarak, bu işlev sistemin C kütüphanesi tarafından sağlanan
+    <literal>strptime()</literal> işlevini çağırır. Bu işlev, farklı işletim
+    sistemlerinde fark edilir ölçüde farklı davranışlar sergileyebilir. Bu
+    sorunlardan etkilenmeyen <function>date_parse_from_format</function>
+    işlevinin PHP 5.3.0 ve sonrasında kullanılması önerilir
+   </para>
+  </note>
+  <note>
+   <para>
+    <literal>"tm_sec"</literal> "artık saniyeleri" de içerir (yılda 2
+    saniyeye kadar). Artık saniyeler hakkında bilgi edinmek için <link
+    xlink:href="http://tr.wikipedia.org/wiki/Artık_saniye">Wikipedia artık
+    saniyeler makalesine</link> bakınız.
+   </para>
+  </note>
+  <note>
+   <para>
+    PHP 5.2.0 öncesinde, bu işlev tanımsız davranışlar döndürebiliyordu.
+    Özellikle <literal>"tm_sec"</literal>, <literal>"tm_min"</literal> ve
+    <literal>"tm_hour"</literal> girdileri tanımsız değerler döndürürdü.
+   </para>
+  </note>
+ </refsect1>
 
-    <refsect1 role="seealso">
-    &reftitle.seealso;
-    <para>
-     <simplelist>
-      <member><function>strftime</function></member>
-     </simplelist>
-    </para>
-   </refsect1>
-  </refentry>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>checkdate</function></member>
+    <member><function>strftime</function></member>
+    <member><function>date_parse_from_format</function></member>
+    <member><function>DateTime::createFromFormat</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
 
 <!-- Keep this comment at the end of the file
 Local variables:

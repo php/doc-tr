@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 9d45296587225c85e4dab73cc27865ca32e17d3c Maintainer: behzat Status: ready -->
 <refentry xml:id="function.gmmktime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>gmmktime</refname>
@@ -10,14 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>gmmktime</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>saat</parameter><initializer>gmdate("H")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>dakika</parameter><initializer>gmdate("i")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>saniye</parameter><initializer>gmdate("s")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ay</parameter><initializer>gmdate("n")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>gün</parameter><initializer>gmdate("j")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>yıl</parameter><initializer>gmdate("Y")</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ysu_var</parameter><initializer>-1</initializer></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>gmmktime</methodname>
+   <methodparam><type>int</type><parameter>saat</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>dakika</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>saniye</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>ay</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>gün</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>yıl</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Aktarılan değiştirgelerin bir GMT tarihini belirtmesi dışında tıpkı
@@ -40,7 +39,10 @@
      <term><parameter>saat</parameter></term>
      <listitem>
       <para>
-       Saat
+       <parameter>ay</parameter>, <parameter>gün</parameter> ve
+       <parameter>yıl</parameter> tarafından saptanan günün başlangıcına
+       göreli saat sayısı. Negatif değerler, belirtilen günün geceyarısından
+       önceki saat sayısıdır. 23'ten büyük değerler ertesi güne sarkar.
       </para>
      </listitem>
     </varlistentry>
@@ -48,7 +50,9 @@
      <term><parameter>dakika</parameter></term>
      <listitem>
       <para>
-       Dakika
+       <parameter>saat</parameter>in başlangıcına göreli dakika sayısı.
+       Negatif dakikalar önceki saatle ilgilidir. 59'dan büyük değerler
+       sonraki saate sarkar.
       </para>
      </listitem>
     </varlistentry>
@@ -56,28 +60,34 @@
      <term><parameter>saniye</parameter></term>
      <listitem>
       <para>
-       Saniye-
+       <parameter>dakika</parameter>nın başlangıcına göreli saniye sayısı.
+       Negatif saniyeler önceki dakika ilgilidir. 59'dan büyük değerler
+       sonraki dakikaya sarkar.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>Ay</parameter></term>
+     <term><parameter>ay</parameter></term>
      <listitem>
       <para>
-       Ay
+       Bir önceki yılın sonuna göre ay sayısı. 1 ila 12 arasındaki değerler,
+       söz konusu yılın normal takvim aylarına atıfta bulunur. 1'den küçük
+       değerler (negatif değerler dahil), önceki yıldaki ayları ters sırayla
+       gösterir, yani 0 Aralık, -1 Kasım, vb. 12'den büyük değerler, sonraki
+       yıl(lar)daki uygun ayı belirtir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>Gün</parameter></term>
+     <term><parameter>gün</parameter></term>
      <listitem>
       <para>
-       Gün
+       Önceki ayın sonuna göre gün sayısı. 1 ile 28, 29, 30 veya 31 arasındaki değerler (aya bağlı olarak) ilgili ayın normal günlerini ifade eder. 1'den küçük değerler (negatif değerler dahil) önceki ayın günlerine atıfta bulunur, bu nedenle 0, önceki ayın son günüdür, -1 ondan önceki gündür vb. İlgili ay referansındaki gün sayısından daha büyük değerler sonraki ay(lar)daki uygun günlere karşılıktır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>Yıl</parameter></term>
+     <term><parameter>yıl</parameter></term>
      <listitem>
       <para>
        Yıl
@@ -91,6 +101,11 @@
        Değiştirgeler daima GMT zamanını temsil eder.
        <parameter>ysu_var</parameter> değiştirgesinin sonuca etkisi yoktur.
       </para>
+      <note>
+       <para>
+        Bu değiştirge PHP 7.0.0 sürümünde kaldırıldı.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -100,7 +115,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  <type>integer</type> türünden Unix zaman damgası döner.
+  Başarı durumunda <type>int</type> türünden Unix zaman
+  damgası,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -117,11 +133,17 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.1.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        PHP 5.1.0 sürümünden beri, <parameter>ysu_var</parameter>
-        değiştirgesinin kullanılması önerilmemektedir. Sonuç olarak, yerine
-        yeni zaman dilimi özellikleri kullanılmalıdır.
+       <parameter>saat</parameter> artık seçimlik değil.
+       </entry>
+      </row>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>dakika</parameter>, <parameter>saniye</parameter>,
+        <parameter>ay</parameter>, <parameter>gün</parameter> ve
+        <parameter>yıl</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -134,11 +156,12 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- Windows üzerinde <function>gmmktime</function> işlevi</title>
+    <title>- <function>gmmktime</function> temel örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-gmmktime(0, 0, 0, 1, 1, 1970); // GMT ve batıda geçerli, doğuda geçersiz
+// Çıktısı: July 1, 2000 is on a Saturday
+echo "July 1, 2000 is on a " . date("l", gmmktime(0, 0, 0, 7, 1, 2000));
 ?>
 ]]>
     </programlisting>

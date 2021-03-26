@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: behzat Status: ready -->
 <refentry xml:id="function.microtime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>microtime</refname>
@@ -11,13 +11,16 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>microtime</methodname>
-   <methodparam choice="opt"><type>bool</type><parameter>gerçek_sayı</parameter></methodparam>
+   <type class="union"><type>string</type><type>float</type></type><methodname>microtime</methodname>
+   <methodparam choice="opt"><type>bool</type><parameter>sayı_olsun</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>microtime</function> işlevi geçerli Unix zaman damgasını
    mikrosaniye cinsinden döndürür. Bu işlev sadece gettimeofday() sistem
    çağrısını destekleyen işletim sistemlerinde geçerlidir.
+  </para>
+  <para>
+   Başarımı ölçmek için <function>hrtime</function> önerilir.
   </para>
  </refsect1>
 
@@ -26,14 +29,8 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>gerçek_sayı</parameter></term>
+     <term><parameter>sayı_olsun</parameter></term>
      <listitem>
-      <para>
-       İşlev, isteğe bağlı olarak değiştirgesiz çağırıldığında; "msan. san."
-       dizgesini döndürür. 'san.' geçerli zamanın Unix Zamam Başlangıcından (1
-       Ocak 1970 0:00:00 GMT) itibaren hesaplanan saniyeyi ve  'msan.' ise
-       mikrosaniye kısmını belirtir. Dizgenin iki kısmı da saniye cinsindendir.
-      </para>
       <para>
        İsteğe bağlı kullanılan bu değiştirgeyle &true; aktarıldığında,
        saniyeler <type>float</type> türünde döndürülür.
@@ -44,28 +41,20 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
   <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-         <parameter>gerçek_sayı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   İşlev, isteğe bağlı olarak değiştirgesiz çağırıldığında; "msan. san."
+   dizgesini döndürür. 'san.' geçerli zamanın Unix Zamam Başlangıcından (1
+   Ocak 1970 0:00:00 GMT) itibaren hesaplanan saniyeyi ve  'msan.' ise
+   mikrosaniye kısmını belirtir. Dizgenin iki kısmı da saniye cinsindendir.
   </para>
+  <para>
+   <parameter>sayı_olsun</parameter> &true; ise,
+   <function>microtime</function> Unix Zamam Başlangıcından itibaren
+   en yakın mikrosaniyeye kadar doğrulukta saniye cinsinden geçerli
+   zamanı gösteren <type>float</type> türünde bir sayı döndürür.
+   </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -116,6 +105,23 @@ echo "Bekleme süresi: $sure saniye.\n";
 ]]>
     </programlisting>
    </example>
+   <example>
+    <title><function>microtime</function> and <literal>REQUEST_TIME_FLOAT</literal> (as of PHP 5.4.0)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Uyuma süresi için rasgele sayı üret
+usleep(mt_rand(100, 10000));
+
+// PHP 5.4.0 ve sonrasında, REQUEST_TIME_FLOAT $_SERVER süper küresel dizisinde bulunur.
+// Mikrosaniyelik doğrulukta isteğin zaman damgasını içerir
+$time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+
+echo "$time saniyede hiçbir şey olmadı.\n";
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 
@@ -124,6 +130,7 @@ echo "Bekleme süresi: $sure saniye.\n";
   <para>
    <simplelist>
     <member><function>time</function></member>
+    <member><function>hrtime</function></member>
    </simplelist>
   </para>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6f540a4bf2b3c2e2271022d0a31efa1a3036677c Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/dir.xml, last change in rev 1.7 -->
 <refentry xml:id="function.getcwd" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -11,7 +11,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>getcwd</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>getcwd</methodname>
    <void/>
   </methodsynopsis>
   <para>
@@ -27,9 +27,22 @@
   <para>
    Bazı Unix türevlerinde, üst dizinlere erişim izni yoksa
    <function>getcwd</function> işlevi &false; döndürür. Erişim izinleri ve
-   kipler hakkında daha ayrıntılı bilgi için <function>chmod</function> işlevine
-   bakınız.
+   kipler hakkında daha ayrıntılı bilgi için <function>chmod</function>
+   işlevine bakınız.
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  <caution>
+   <para>
+    PHP yorumlayıcısı ZTS (Zend Güvenilir Evreleri) etkinken derlenmişse,
+    <function>getcwd</function> tarafından döndürülen geçerli çalışma dizini,
+    işletim sistemi arayüzleri tarafından döndürülen dizinden farklı
+    olabilir. Geçerli çalışma dizinine bağımlı olan harici kütüphaneler
+    (<link linkend="book.ffi">FFI</link> aracılığıyla çağrılan) bundan
+    etkilenecektir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="examples">

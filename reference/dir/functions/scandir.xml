@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4754397753fd79f1c846868b66a2448babab1c54 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.scandir" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>scandir</refname>
@@ -13,7 +13,7 @@
   <methodsynopsis>
    <type>array</type><methodname>scandir</methodname>
    <methodparam><type>string</type><parameter>dizin</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>sıralama_türü</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sıralama_türü</parameter><initializer>SCANDIR_SORT_ASCENDING</initializer></methodparam>
    <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -40,8 +40,9 @@
      <listitem>
       <para>
        Abecesel olarak küçükten büyüğe sıralama öntanımlıdır. Bu değiştirgeye
-       sıfırdan farklı bir değer atarsanız sıralama büyükten küçüğe doğru
-       yapılır.
+       <constant>SCANDIR_SORT_DESCENDING</constant> atarsanız sıralama
+       büyükten küçüğe doğru yapılır. <constant>SCANDIR_SORT_NONE</constant>
+       atanırsa sonuç sıralanmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -82,52 +83,6 @@ $files2 = scandir($dir, 1);
 
 print_r($files1);
 print_r($files2);
-?>
-]]>
-    </programlisting>
-    &example.outputs.similar;
-    <screen>
-<![CDATA[
-Array
-(
-    [0] => .
-    [1] => ..
-    [2] => bar.php
-    [3] => foo.txt
-    [4] => somedir
-)
-Array
-(
-    [0] => somedir
-    [1] => foo.txt
-    [2] => bar.php
-    [3] => ..
-    [4] => .
-)
-]]>
-    </screen>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- PHP 4 için <function>scandir</function> örneği</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$dir = "/tmp";
-$dh  = opendir($dir);
-while (false !== ($filename = readdir($dh))) {
-    $files[] = $filename;
-}
-
-sort($files);
-
-print_r($files);
-
-rsort($files);
-
-print_r($files);
-
 ?>
 ]]>
     </programlisting>
