@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 80872147aa52367137bd3d168412f70cbe2ddf9c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 12b1d4704ea448b55ec155619be1e50c0e67e9f9 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.set-error-handler" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>set_error_handler</refname>
@@ -28,17 +28,22 @@
    <function>set_error_handler</function> ile PHP'ye bildirebilirsiniz.
   </para>
   <para>
-   Bu işlevin çağrılmasıyla PHP'nin standart hata işleyicisi 
-   <parameter>hata_türleri</parameter> ile beliirtilen hata türleri için, geri 
-   çağırım işlevi &false; döndürmedikçe tamamen devre dışı kalacaktır. Bunu asla 
-   aklınızdan çıkarmayın. <function>error_reporting</function> ayarları etkisiz 
+   Bu işlevin çağrılmasıyla PHP'nin standart hata işleyicisi
+   <parameter>hata_türleri</parameter> ile beliirtilen hata türleri için, geri
+   çağırım işlevi &false; döndürmedikçe tamamen devre dışı kalacaktır. Bunu asla
+   aklınızdan çıkarmayın. <function>error_reporting</function> ayarları etkisiz
    olacak ve her durumda sizin hata işleyiciniz çağrılacaktır. Ancak,
    <link linkend="ini.error-reporting">error_reporting</link> yönergesindeki
-   değeri hala okuyabilecek ve buna göre davranabileceksiniz. Özellikle şuna
-   dikkat edin: Eğer hataya sebep olan deyimin önüne bir
-   <link linkend="language.operators.errorcontrol">@ hata denetim
-   işleci</link> konmuşsa bu değer 0 olacaktır.
+   değeri hala okuyabilecek ve buna göre davranabileceksiniz.
   </para>
+  <warning>
+   <para>
+    PHP 8.0.0 öncesinde, eğer hataya sebep olan deyimin önüne bir <link
+    linkend="language.operators.errorcontrol">@ hata denetim işleci</link>
+    konmuşsa <parameter>errno</parameter> değeri daima
+    <literal>0</literal> olurdu.
+   </para>
+  </warning>
   <para>
    Ayrıca şunu da aklınızdan çıkarmayın: Gerektiği takdirde
    <function>die</function> işlevi de sizin
@@ -70,71 +75,77 @@
      <term><parameter>hata_işleyici</parameter></term>
      <listitem>
       <para>
-       Aşağıdaki imzayla bir geri çağırım işlevi. 
-       İşleyiciyi öntanımlı durumuna sıfırlamak için işleve &null; 
-       aktarılabilir. Bir işlev adı yerine, bir nesne başvurusu ve bir yöntem 
+       Aşağıdaki imzayla bir geri çağırım işlevi.
+       İşleyiciyi öntanımlı durumuna sıfırlamak için işleve &null;
+       aktarılabilir. Bir işlev adı yerine, bir nesne başvurusu ve bir yöntem
        adı içeren bir dizi de sağlanabilir.
       </para>
       <para>
        <methodsynopsis>
         <type>bool</type><methodname><replaceable>hata_işleyici</replaceable></methodname>
-        <methodparam><type>int</type><parameter>hatano</parameter></methodparam>
-        <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
-        <methodparam choice="opt"><type>string</type><parameter>betik_adı</parameter></methodparam>
-        <methodparam choice="opt"><type>int</type><parameter>hata_satırı</parameter></methodparam>
-        <methodparam choice="opt"><type>array</type><parameter>hata_bağlamı</parameter></methodparam>
+        <methodparam><type>int</type><parameter>errno</parameter></methodparam>
+        <methodparam><type>string</type><parameter>errstr</parameter></methodparam>
+        <methodparam choice="opt"><type>string</type><parameter>errfile</parameter></methodparam>
+        <methodparam choice="opt"><type>int</type><parameter>errline</parameter></methodparam>
+        <methodparam choice="opt"><type>array</type><parameter>errcontext</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
         <varlistentry>
-         <term><parameter>hatano</parameter></term>
+         <term><parameter>errno</parameter></term>
          <listitem>
           <simpara>
-           Oluşan hatanın seviyesini içeren bir tamsayı. İlk değiştirge
-           olmalıdır.
+           Oluşan hatanın seviyesinin bir tamsayı olarak aktarılacağı
+           değiştirge. İlk değiştirge olmalıdır.
           </simpara>
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term><parameter>ileti</parameter></term>
+         <term><parameter>errstr</parameter></term>
          <listitem>
           <simpara>
-           Hata iletisini içeren bir dizge. İkinci değiştirge olmalıdır.
+           Hata iletisinin bir dizge olarak aktarılacağı değiştrge. İkinci
+           değiştirge olmalıdır.
           </simpara>
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term><parameter>betik_adı</parameter></term>
+         <term><parameter>errfile</parameter></term>
          <listitem>
           <simpara>
-           Hatanın oluştuğu betik dosyasının ismini bir dizge olarak içeren,
-           belirtilmesi isteğe bağlı üçüncü değiştirge.
+           hata_işleyici 3 değiştirge kabul ediyorsa, hatanın oluştuğu betik
+           dosyasının ismini bir dizge olarak içerecek, belirtilmesi isteğe
+           bağlı üçüncü değiştirge.
           </simpara>
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term><parameter>hata_satırı</parameter></term>
+         <term><parameter>errline</parameter></term>
          <listitem>
           <simpara>
-           Hatanın oluştuğu deyimin satır numarasını bir tamsayı olarak içeren,
+           hata_işleyici 4 değiştirge kabul ediyorsa, hatanın oluştuğu
+           deyimin satır numarasını bir tamsayı olarak içerecek,
            belirtilmesi isteğe bağlı dördüncü değiştirge.
           </simpara>
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term><parameter>hata_bağlamı</parameter></term>
+         <term><parameter>errcontext</parameter></term>
          <listitem>
           <simpara>
-           Hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir
-           diziyi kabul eden, belirtilmesi isteğe bağlı beşinci değiştirge.
+           hata_işleyici 5 değiştirge kabul ediyorsa, hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir
+           diziyi kabul edecek, belirtilmesi isteğe bağlı beşinci değiştirge.
            Bu değiştirge, başka bir deyişle, hatanın tetiklendiği etki
-           alanında etkin değişkenleri içeren bir dizidir. İşlev bu
+           alanında etkin değişkenleri içeren bir dizidir. hata_işleyici bu
            değişkenlerde bir değişiklik yapmamalıdır.
           </simpara>
           <warning xmlns="http://docbook.org/ns/docbook">
            <simpara>
-            Bu değiştirge PHP 7.2.0 ve sonrasında <emphasis>kullanımdan 
-            kaldırılmıştır</emphasis>. Buna güvenmek son derece cesaret 
-            kırıcıdır.
+            Bu değiştirge PHP 7.2.0 ve sonrasında
+            <emphasis>kullanımdan</emphasis>
+            kaldırılmıştır. PHP 8.0.0'da <emphasis>tamanen</emphasis>
+            kaldırılmıştır. Eğer işleviniz bu değiştirgeyi bir öntanımlı
+            değer olmaksızın tanımlıyorsa, işlev çağrıldığı takdirde, "too
+            few arguments" (çok az değiştirge) hatası oluşur.
            </simpara>
           </warning>
          </listitem>
@@ -188,11 +199,27 @@
       </row>
      </thead>
      <tbody>
+       <row>
+       <entry>8.0.0</entry>
+       <entry>
+        Eğer hataya sebep olan deyimin önüne bir
+        <link linkend="language.operators.errorcontrol">@ hata denetim
+        işleci</link> konmuşsa bile <parameter>errno</parameter> değeri
+        artık <literal>0</literal> olmuyor.
+       </entry>
+      </row>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>errcontext</parameter> kaldırıldı ve artık kullanıcının
+        geri çağırım işlevine aktarılmayacak.
+       </entry>
+      </row>
       <row>
        <entry>7.2.0</entry>
        <entry>
-        <parameter>hata_bağlamı</parameter> kullanımdan kaldırıldı. Bu 
-        değiştirgenin kullanımı bir <constant>E_DEPRECATED</constant> 
+        <parameter>errcontext</parameter> kullanımdan kaldırıldı. Bu
+        değiştirgenin kullanımı bir <constant>E_DEPRECATED</constant>
         üretilmesine sebep olur.
        </entry>
       </row>
@@ -219,7 +246,7 @@
 function hataİşleyicim($hatanum, $ileti, $betik, $satırnum)
 {
     if (!(error_reporting() & $hatanum)) {
-        // Bu hata kodu error_reporting'e dahil olmaz, bu yüzden 
+        // Bu hata kodu error_reporting'e dahil olmaz, bu yüzden
         // standart PHP hata işleyicisine düşmesine izin verin
         return false;
     }

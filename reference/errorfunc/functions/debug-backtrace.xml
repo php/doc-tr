@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 201dc3748c7a94e788d470c697f017d2149c6736 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.debug-backtrace" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>debug_backtrace</refname>
@@ -11,7 +11,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>debug_backtrace</methodname>
-   <methodparam choice="opt"><type>bool</type><parameter>nesne_sağla</parameter><initializer>true</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>DEBUG_BACKTRACE_PROVIDE_OBJECT</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>sınır</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    Hata izleme raporunu (backtrace) bir dizi olarak üretir.
@@ -23,11 +24,43 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>nesne_sağla</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Dönen dizide "<literal>object</literal>" anahtarının bulunup
-       bulunmayacağı belirtilir.
+       5.3.6'dan beri, aşağıdaki seçeneklerin bit maskesidir:
+       <table>
+        <title><function>debug_backtrace</function> seçenekleri</title>
+        <tgroup cols="2">
+         <tbody>
+          <row>
+           <entry>DEBUG_BACKTRACE_PROVIDE_OBJECT</entry>
+           <entry>
+            "object" indisinin dolurulup doldurulmayacağı.
+           </entry>
+          </row>
+          <row>
+           <entry>DEBUG_BACKTRACE_IGNORE_ARGS</entry>
+           <entry>
+            Bellek kazanmak için "args" indisinin ve dolayısıyla tüm
+            işlev/yöntem değiştirgelerinin atlanıp atlanmayacağı.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+       5.3.6 öncesinde, <constant>DEBUG_BACKTRACE_PROVIDE_OBJECT</constant>
+       seçeneği atanacaksa &true; atanmayacaksa &false; değeri kabul
+       ediliyordu.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sınır</parameter></term>
+     <listitem>
+      <para>
+       5.4.0 ve sonrasında, bu değiştirge döndürülecek yığıt çerçevelerinin
+       sayısını sınırlamak için kullanılmaktadır. Öntanımlı değer, tüm yığıt
+       çerçevelerinin dönmesini sağlayan <literal>0</literal> değeridir.
       </para>
      </listitem>
     </varlistentry>
@@ -38,7 +71,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir ilişkisel dizi döner. Dönmesi olası değerler:
+   Bir ilişkisel diziler dizisi döner. Dönmesi olası değerler:
   </para>
   <para>
    <table>
@@ -57,15 +90,15 @@
        <entry><literal>function</literal></entry>
        <entry><type>string</type></entry>
        <entry>
-        O anki işlev ismi.  Ayrıca bakınız:
+        O anki işlev ismi. Ayrıca bakınız:
         <link linkend="language.constants.predefined">__FUNCTION__</link>.
        </entry>
       </row>
       <row>
        <entry><literal>line</literal></entry>
-       <entry><type>integer</type></entry>
+       <entry><type>int</type></entry>
        <entry>
-        O anki satır numarası.  Ayrıca bakınız:
+        O anki satır numarası. Ayrıca bakınız:
         <link linkend="language.constants.predefined">__LINE__</link>.
        </entry>
       </row>
@@ -73,7 +106,7 @@
        <entry><literal>file</literal></entry>
        <entry><type>string</type></entry>
        <entry>
-        O anki dosya ismi.  Ayrıca bakınız:
+        O anki dosya ismi. Ayrıca bakınız:
         <link linkend="language.constants.predefined">__FILE__</link>.
        </entry>
       </row>
@@ -96,7 +129,7 @@
        <entry><literal>type</literal></entry>
        <entry><type>string</type></entry>
        <entry>
-        O anki çağrı türü. Bir yöntem çağrısı ise "->", bir duruk yöntem
+        O anki çağrı türü. Bir yöntem çağrısı ise "->", bir statik yöntem
         çağrısı ise "::" içerir. Bir işlev çağrısı ise hiçbir şey içermez.
        </entry>
       </row>
@@ -111,36 +144,6 @@
      </tbody>
     </tgroup>
    </table>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.5</entry>
-       <entry>
-        Seçimlik <parameter>nesne_sağla</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.1</entry>
-       <entry>
-        Dönmesi olası elemanlara <type>object</type> eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -170,8 +173,7 @@ include_once '/tmp/a.php';
 ]]>
     </programlisting>
     <para>
-     Results similar to the following when executing
-    <filename>/tmp/b.php</filename>:
+     <filename>/tmp/b.php</filename> çalıştırılırken sonuçlar şuna benzer:
     </para>
     <screen>
 <![CDATA[

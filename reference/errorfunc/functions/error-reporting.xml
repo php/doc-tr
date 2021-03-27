@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b92a33c51c87151412a2d75ef485f9d529fd9c33 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.error-reporting">
  <refnamediv>
   <refname>error_reporting</refname>
@@ -18,7 +18,9 @@
    <link linkend="ini.error-reporting">error_reporting</link>
    yönergesinin değerini çalışma anında tanımlar. PHP bir çok hata seviyesine
    sahiptir. Bu işlevi kullanarak betiğinizin çalışması esnasında hangi
-   seviyelerin raporlanacağını belirleyebilirsiniz.
+   seviyelerin raporlanacağını belirleyebilirsiniz. Seçimlik
+   <parameter>seviye</parameter> değiştirgesi atlanmışsa işlev daima geçerli
+   hata raporlama seviyesini döndürür.
   </para>
  </refsect1>
 
@@ -52,44 +54,8 @@
   &reftitle.returnvalues;
   <para>
    Eski <link linkend="ini.error-reporting">error_reporting</link> değeri
-   döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>6.0.0</entry>
-       <entry><constant>E_STRICT</constant> sabiti <constant>E_ALL</constant>
-       sabitine dahil edildi.</entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry><constant>E_DEPRECATED</constant> ve
-       <constant>E_USER_DEPRECATED</constant> devreye girdi.</entry>
-      </row>
-      <row>
-       <entry>5.2.0</entry>
-       <entry><constant>E_RECOVERABLE_ERROR</constant> devreye girdi.</entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry><constant>E_STRICT</constant> devreye girdi
-       (<constant>E_ALL</constant> sabitine dahil değildir).</entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   veya <parameter>seviye</parameter> değiştirgesi atlanmışsa, daima geçerli
+   hata raporlama seviyesi döner.
   </para>
  </refsect1>
 
@@ -114,9 +80,9 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 // E_NOTICE hariç bütün hatalar raporlansın
 // Bu php.ini içindeki öntanımlı değerdir
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE);
 
-// Tüm PHP hatalarını raporlayalım (changelog dosyasına bakınız)
+// Tüm PHP hatalarını raporlayalım
 error_reporting(E_ALL);
 
 // Tüm PHP hatalarını raporlayalım
@@ -146,7 +112,7 @@ ini_set('error_reporting', E_ALL);
    <simpara>
     <literal>-1</literal> değeri belirtildiği takdirde olası tüm hatalar hatta
     PHP'nin gelecek sürümlerinde eklenen seviyeler bile raporlanır. Ayrıca PHP
-    6'daki <constant>E_ALL</constant> sabiti de bu şekilde davranır.
+    5.4'teki <constant>E_ALL</constant> sabiti de bu şekilde davranır.
    </simpara>
   </tip>
  </refsect1>
