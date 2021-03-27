@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: haluk Status: ready -->
 <refentry xml:id='domnode.appendchild' xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMNode::appendChild</refname>
@@ -9,7 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>DOMNode</type><methodname>DOMNode::appendChild</methodname>
+   <modifier>public</modifier> <type class="union"><type>DOMNode</type><type>false</type></type><methodname>DOMNode::appendChild</methodname>
    <methodparam><type>DOMNode</type><parameter>yeni</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -17,6 +17,9 @@
    <methodname>DOMDocument::createElement</methodname>,
    <methodname>DOMDocument::createTextNode</methodname> gibi yöntemlerle
    oluşturulabileceği gibi oluşturulmuş diğer düğümlerden biri de olabilir.
+  </para>
+  <para>
+   Mevcut bir düğüm, kullanıldığında taşınır.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -97,11 +100,33 @@ echo $doc->saveXML();
     </programlisting>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- Çocuk ve torun düğümler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$doc = new DOMDocument;
+
+$headNode = $doc->createElement("head");
+$doc->appendChild($headNode);
+
+$titleNode = $doc->createElement("title");
+$headNode->appendChild($titleNode);
+
+echo $doc->saveXML();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><methodname>DOMNode::insertBefore</methodname></member>
     <member><methodname>DOMNode::removeChild</methodname></member>
     <member><methodname>DOMNode::replaceChild</methodname></member>
    </simplelist>
