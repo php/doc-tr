@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: haluk Status: ready -->
 <refentry xml:id="domxpath.evaluate" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMXPath::evaluate</refname>
@@ -10,9 +10,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>mixed</type><methodname>DOMXPath::evaluate</methodname>
    <methodparam><type>string</type><parameter>ifade</parameter></methodparam>
-   <methodparam choice="opt"><type>DOMNode</type><parameter>bağlamsal_düğüm</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>DOMNode</type><type>null</type></type><parameter>bağlamsal_düğüm</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>kaydet</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>ifade</parameter> ile belirtilen XPath ifadesini çözümler ve
@@ -40,6 +42,15 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>kaydet</parameter></term>
+     <listitem>
+      <para>
+       Seçimlik <parameter>kaydet</parameter> bağlamsal düğümün otomatik
+       kütük kaydını önlemek için kullanılabilir.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -49,6 +60,11 @@
    Mümkünse sonucu bir dizge orarak döndürür, değilse belirtilen XPath
    ifadesi ile eşleşen tüm düğümleri içeren bir
    <classname>DOMNodeList</classname> nesnesi döner.
+  </para>
+  <para>
+   <parameter>ifade</parameter> bozuksa ya da
+   <parameter>bağlamsal_düğüm</parameter> geçersizse,
+   <methodname>DOMXPath::evaluate</methodname> &false; döndürür.
   </para>
  </refsect1>
  <refsect1 role="examples">
