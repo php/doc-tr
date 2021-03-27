@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.importnode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::importNode</refname>
@@ -9,9 +9,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>DOMNode</type><methodname>DOMDocument::importNode</methodname>
-   <methodparam><type>DOMNode</type><parameter>düğüm</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>içiçe</parameter></methodparam>
+   <modifier>public</modifier> <type class="union"><type>DOMNode</type><type>false</type></type><methodname>DOMDocument::importNode</methodname>
+   <methodparam><type>DOMNode</type><parameter>node</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>deep</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Dahil edilen düğümü belge ile ilişkilendirip düğümün bir kopyasını döndürür.
@@ -22,7 +22,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>düğüm</parameter></term>
+     <term><parameter>node</parameter></term>
      <listitem>
       <para>
        Belgeye dahil edilecek düğüm.
@@ -30,10 +30,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>içiçe</parameter></term>
+     <term><parameter>deep</parameter></term>
      <listitem>
       <para>
-       &true; belirtiliği takdirde <parameter>düğüm</parameter> alt
+       &true; belirtiliği takdirde <parameter>node</parameter> alt
        düğümleriyle birlikte belgeye dahil edilir.
       </para>
       <note>
@@ -83,14 +83,14 @@ $newdoc = new DOMDocument;
 $newdoc->formatOutput = true;
 
 // Biraz imlenim ekleyelim
-$newdoc->loadXML("<root><bireleman>elemanın içeriği</bireleman></root>");
+$newdoc->loadXML("<belge><bireleman>elemanın içeriği</bireleman></belge>");
 
 echo "Düğümler kopyalanmadan 'yeni belge':\n";
 echo $newdoc->saveXML();
 
 // Düğümü alt düğümleriyle birlikte belgeye dahil edelim
 $node = $newdoc->importNode($node, true);
-// ve "<root>" düğümüne ekleyelim
+// ve "<belge>" düğümüne ekleyelim
 $newdoc->documentElement->appendChild($node);
 
 echo "\nDüğümler kopyalandıktan sonra 'yeni belge':\n";
@@ -103,25 +103,23 @@ echo $newdoc->saveXML();
 <![CDATA[
 Düğümler kopyalanmadan 'yeni belge':
 <?xml version="1.0" encoding="utf-8"?>
-<root>
+<belge>
   <bireleman>elemanın içeriği</bireleman>
-</root>
+</belge>
 
 Düğümler kopyalandıktan sonra 'yeni belge':
 <?xml version="1.0" encoding="utf-8"?>
-<root>
+<belge>
   <bireleman>elemanın içeriği</bireleman>
   <eleman>
     <çocuk>çocuk metin</çocuk>
   </eleman>
-</root>
+</belge>
 ]]>
     </screen>
    </example>
   </para>
  </refsect1>
-
-
 </refentry>
 
 <!-- Keep this comment at the end of the file

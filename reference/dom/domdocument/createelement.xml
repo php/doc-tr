@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e78b76ce4215a4927bf0926de9fbe4594e2e2b8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.createelement" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::createElement</refname>
@@ -9,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-    <modifier>public</modifier> <type>DOMElement</type><methodname>DOMDocument::createElement</methodname>
-   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>değer</parameter></methodparam>
-  </methodsynopsis> 
+   <modifier>public</modifier> <type class="union"><type>DOMElement</type><type>false</type></type><methodname>DOMDocument::createElement</methodname>
+   <methodparam><type>string</type><parameter>localName</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>value</parameter><initializer>""</initializer></methodparam>
+  </methodsynopsis>
   <para>
    Yeni bir <classname>DOMElement</classname> nesnesi oluşturur.
    &dom.node.inserted;
@@ -23,7 +23,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>localName</parameter></term>
      <listitem>
       <para>
        Elemanın etiket ismi.
@@ -31,14 +31,16 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>değer</parameter></term>
+     <term><parameter>value</parameter></term>
      <listitem>
       <para>
        Elemanın değeri. Öntanımlı olarak boş eleman oluşturulur.
+       Değer daha sonra <methodname>DOMElement::$nodeValue</methodname> ile
+       atanabilir.
       </para>
       <para>
        &lt; ve &gt; öğe başvuruları öncelenmedikçe değer birebir kulllanılır.
-       Dikkat: &amp; öncelenmek sorundadır, aksi takdirde öğe başvurusunun 
+       Dikkat: &amp; öncelenmek zorundadır, aksi takdirde öğe başvurusunun
        başlangıç karakteri olarak ele alınmaz. Ayrıca, " karakteri öncelenmez.
       </para>
      </listitem>
@@ -61,7 +63,7 @@
      <term><constant>DOM_INVALID_CHARACTER_ERR</constant></term>
      <listitem>
       <para>
-       <parameter>isim</parameter> geçersiz karakter içeriyorsa oluşur.
+       <parameter>localName</parameter> geçersiz karakter içeriyorsa oluşur.
       </para>
      </listitem>
     </varlistentry>
@@ -98,7 +100,7 @@ echo $dom->saveXML();
   </para>
   <para>
    <example>
-    <title>- <parameter>değer</parameter> olarak öncelenmemiş &amp; içeren metin kullanmak</title>
+    <title>- <parameter>value</parameter> olarak öncelenmemiş &amp; içeren metin kullanmak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -124,8 +126,8 @@ Warning: DOMDocument::createElement(): unterminated entity reference            
   &reftitle.notes;
   <note>
    <para>
-    <parameter>değer</parameter> öncelen<emphasis>ME</emphasis>yecektir.
-    <emphasis>Önceleme destekli</emphasis> bir metin düğümü oluşturmak 
+    <parameter>value</parameter> öncelen<emphasis>ME</emphasis>yecektir.
+    <emphasis>Önceleme destekli</emphasis> bir metin düğümü oluşturmak
     istiyorsanız <methodname>DOMDocument::createTextNode</methodname> kullanın.
    </para>
   </note>

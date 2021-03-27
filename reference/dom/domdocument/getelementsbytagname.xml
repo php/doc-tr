@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.getelementsbytagname" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::getElementsByTagName</refname>
-  <refpurpose>İsmi belirtilen tüm elemanları döndürür</refpurpose>
+  <refpurpose>Yerel etiket ismi belirtilen tüm elemanları döndürür
+  </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>DOMNodeList</type><methodname>DOMDocument::getElementsByTagName</methodname>
-   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
+   <modifier>public</modifier> <type>DOMNodeList</type><methodname>DOMDocument::getElementsByTagName</methodname>
+   <methodparam><type>string</type><parameter>qualifiedName</parameter></methodparam>
   </methodsynopsis>
   <para>
-   İsmi belirtilen tüm elemanları bir <classname>DOMNodeList</classname>
-   nesnesi olarak döndürür.
+   Yerel etiket ismi belirtilen tüm elemanları bir
+   <classname>DOMNodeList</classname> nesnesi olarak döndürür.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -22,11 +23,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>qualifiedName</parameter></term>
      <listitem>
       <para>
-       Aranacak etiket ismi. Tüm elemanları döndürmek için <literal>*</literal>
-       belirtilebilir.
+       Aranacak (isim alansız) yerel etiket ismi. Tüm elemanları döndürmek
+       için <literal>*</literal> belirtilebilir.
       </para>
      </listitem>
     </varlistentry>
@@ -40,6 +41,43 @@
    nesnesi döner.
   </para>
  </refsect1>
+ <refsect1 role="examples"><!-- {{{ -->
+  &reftitle.examples;
+  <para>
+   <example xml:id="domdocument.getelementsbytagname.example.basic"><!-- {{{ -->
+    <title>- Temel kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$xml = <<< XML
+<?xml version="1.0" encoding="utf-8"?>
+<books>
+ <book>Patterns of Enterprise Application Architecture</book>
+ <book>Design Patterns: Elements of Reusable Software Design</book>
+ <book>Clean Code</book>
+</books>
+XML;
+
+$dom = new DOMDocument;
+$dom->loadXML($xml);
+$books = $dom->getElementsByTagName('book');
+foreach ($books as $book) {
+    echo $book->nodeValue, PHP_EOL;
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Patterns of Enterprise Application Architecture
+Design Patterns: Elements of Reusable Software Design
+Clean Code
+]]>
+    </screen>
+   </example><!-- }}} -->
+  </para>
+ </refsect1><!-- }}} -->
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

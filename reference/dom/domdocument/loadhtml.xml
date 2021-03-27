@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.loadhtml" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::loadHTML</refname>
@@ -10,14 +10,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>DOMDocument::loadHTML</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <modifier>public</modifier> <type class="union"><type>DOMDocument</type><type>bool</type></type><methodname>DOMDocument::loadHTML</methodname>
+   <methodparam><type>string</type><parameter>source</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>options</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    HTML belgeyi belirtilen dizgeden yükler. XML belge yüklemedeki gibi
    belgenin iyi biçemli olma gereği yoktur. Bu yöntem, bir
    <classname>DOMDocument</classname> nesnesini yüklemek ve
-   oluşturmak için duruk olarak da çağrılabilir. Bu duruk yöntem çağrısı,
+   oluşturmak için statik olarak da çağrılabilir. Bu statik yöntem çağrısı,
    yükleme öncesinde hiçbir <classname>DOMDocument</classname> özelliğinin
    atanmasına ihtiyaç duyulmadığı durumlarda kullanılabilir.
   </para>
@@ -27,31 +28,42 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>source</parameter></term>
      <listitem>
       <para>
        HTML belgeyi içeren dizge.
       </para>
      </listitem>
     </varlistentry>
-   </variablelist>
+    <varlistentry>
+     <term><parameter>options</parameter></term>
+     <listitem>
+      <para>
+       PHP 5.4.0 ve Libxml 2.6.0'dan beri,
+       <parameter>options</parameter> değiştirgesi <link linkend="libxml.constants">ek Libxml değiştirgelerini</link>
+       belirtmek için kullanılabilmektedir.
+      </para>
+     </listitem>
+    </varlistentry>
+  </variablelist>
   </para>
  </refsect1>
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success; Duruk olarak çağrıldığı takdirde bir
-   <classname>DOMDocument</classname> döndürür ve bir
-   <constant>E_STRICT</constant> iletisi çıktılar.
+   &return.success; Statik olarak çağrıldığı takdirde bir
+   <classname>DOMDocument</classname>,&return.falseforfailure;.
   </para>
  </refsect1>
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
-   <parameter>dizge</parameter> olarak boş bir dizge aktarılırsa bir uyarı
+   <parameter>source</parameter> olarak boş bir dizge aktarılırsa bir uyarı
    üretilir. Bu uyarıyı libxml üretmez ve libxml'in hata işlevleri ile elde
    edilemez.
   </para>
+  &dom.allowstatic;
+  &dom.malformederror;
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;

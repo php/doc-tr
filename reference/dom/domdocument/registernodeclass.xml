@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.registernodeclass" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::registerNodeClass</refname>
@@ -9,9 +9,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>DOMDocument::registerNodeClass</methodname>
+   <modifier>public</modifier> <type>bool</type><methodname>DOMDocument::registerNodeClass</methodname>
    <methodparam><type>string</type><parameter>temelSınıf</parameter></methodparam>
-   <methodparam><type>string</type><parameter>türetilenSınıf</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>türetilenSınıf</parameter></methodparam>
   </methodsynopsis>
 
   <para>
@@ -53,40 +53,6 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>PHP 5.2.2</entry>
-       <entry>
-        5.2.2 öncesinde, <parameter>temelSınıf</parameter>'tan evvelce
-        türetilmiş bir sınıf varsa yenisinin kaydı yapılmadan önce eskisinin
-        kaydı silinmek zorundaydı.
-       </entry>
-      </row>
-<!--
-      <row>
-       <entry>...</entry>
-       <entry>
-        ...
-       </entry>
-      </row>
--->
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -209,6 +175,46 @@ var_dump(get_class($child->ownerDocument));
 <![CDATA[
 string(13) "myDOMDocument"
 string(18) "myOtherDOMDocument"
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example xml:id="domdocument.registernodeclass.example.transient">
+    <title>- Ismarlama nesneler geçicidir</title>
+    <caution>
+     <simpara>
+      Kayıtlı düğüm sınıflarının nesneleri geçicidir, yani artık PHP kodundan
+      gönderim alınmadığında yok edilirler ve tekrar alındığında yeniden
+      oluşturulurlar. Bu, ısmarlama özellik değerlerinin yeniden
+      oluşturulduktan sonra kaybedileceği anlamına gelir.
+     </simpara>
+    </caution>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class MyDOMElement extends DOMElement
+{
+    public $myProp = 'öntanımlı değer';
+}
+
+$doc = new DOMDocument();
+$doc->registerNodeClass('DOMElement', 'MyDOMElement');
+
+$node = $doc->createElement('a');
+$node->myProp = 'değişen değer';
+$doc->appendChild($node);
+
+echo $doc->childNodes[0]->myProp, PHP_EOL;
+unset($node);
+echo $doc->childNodes[0]->myProp, PHP_EOL;
+?>]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="xml">
+<![CDATA[
+değişen değer
+öntanımlı değer
 ]]>
     </screen>
    </example>

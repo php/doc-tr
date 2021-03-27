@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.loadhtmlfile" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::loadHTMLFile</refname>
@@ -10,21 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>DOMDocument::loadHTMLFile</methodname>
+   <modifier>public</modifier> <type class="union"><type>DOMDocument</type><type>bool</type></type><methodname>DOMDocument::loadHTMLFile</methodname>
    <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    HTML belgeyi belirtilen dosyadan yükler. XML belge yüklemedeki gibi
    belgenin iyi biçemli olma gereği yoktur.
-  </para>
-  <para>
-   Tavsiye edilmemekle beraber, bu yöntem, bir
-   <classname>DOMDocument</classname> nesnesini yüklemek ve
-   oluşturmak için duruk olarak da çağrılabilir. Bu duruk yöntem çağrısı,
-   yükleme öncesinde hiçbir <classname>DOMDocument</classname> özelliğinin
-   atanmasına ihtiyaç duyulmadığı durumlarda kullanılabilir. Ancak böyle bir
-   durumda bir <link linkend="errorfunc.constants.errorlevels.e-strict">
-   E_STRICT</link> iletisi çıktılanır.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -39,6 +31,16 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       PHP 5.4.0 ve Libxml 2.6.0'dan beri,
+       <parameter>seçenekler</parameter> değiştirgesi <link linkend="libxml.constants">ek Libxml değiştirgelerini</link>
+       belirtmek için kullanılabilmektedir.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -46,8 +48,7 @@
   &reftitle.returnvalues;
   <para>
    &return.success; Duruk olarak çağrıldığı takdirde bir
-   <classname>DOMDocument</classname> döndürür ve bir
-   <constant>E_STRICT</constant> iletisi çıktılar.
+   <classname>DOMDocument</classname> döndürür,&return.falseforfailure;.
   </para>
  </refsect1>
  <refsect1 role="errors">
@@ -58,6 +59,8 @@
    linkend="function.libxml-use-internal-errors">libxml'in hata
    işlevleri</link> ile elde edilemez.
   </para>
+  &dom.allowstatic;
+  &dom.malformederror;
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
