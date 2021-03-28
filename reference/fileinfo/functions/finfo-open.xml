@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 968bb98efdcc2a333899be3d1bdefec317d09170 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.finfo-open" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>finfo_open</refname>
@@ -10,21 +10,18 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <para>Yordamsal kullanım</para>
-  <methodsynopsis>
-   <type>resource</type><methodname>finfo_open</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>FILEINFO_NONE</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sihir_dosyası</parameter><initializer>NULL</initializer></methodparam>
+  <para>&style.procedural;</para>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>resource</type><type>false</type></type><methodname>finfo_open</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>flags</parameter><initializer><constant>FILEINFO_NONE</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>magic_database</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
-  <para>Nesne yönelimli kullanım (kurucu):</para>
-  <classsynopsis>
-   <ooclass><classname>finfo</classname></ooclass>
-   <constructorsynopsis>
-    <methodname>__construct</methodname>
-    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>FILEINFO_NONE</initializer></methodparam>
-    <methodparam choice="opt"><type>string</type><parameter>sihirli_dosya</parameter><initializer>NULL</initializer></methodparam>
-   </constructorsynopsis>
-  </classsynopsis>
+  <para>&style.oop; (kurucu):</para>
+  <constructorsynopsis role="oop">
+   <modifier>public</modifier> <methodname>finfo::__construct</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>flags</parameter><initializer><constant>FILEINFO_NONE</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>magic_database</parameter><initializer>""</initializer></methodparam>
+  </constructorsynopsis>
   <para>
    Bu işlev bir sihir veritabanı açar ve özkaynağını döndürür.
   </para>
@@ -35,7 +32,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>seçenekler</parameter></term>
+     <term><parameter>flags</parameter></term>
      <listitem>
       <para>
        <link linkend="fileinfo.constants">Fileinfo sabitleri</link>nden biri
@@ -44,11 +41,19 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sihir_dosyası</parameter></term>
+     <term><parameter>magic_database</parameter></term>
      <listitem>
       <para>
-       Sihir veritabanının dosya ismi genellikle <filename>/bir/yol/magic.mime</filename> şeklindedir. Belirtilmezse <literal>MAGIC</literal> ortam değişkeninin değeri kullanılır. Bu değişken de atanmamışsa <filename>/usr/share/misc/magic</filename> dosyası öntanımlıdır. Gerek görülürse dosya uzantısı olarak <literal>.mime</literal> ve/veya <literal>.mgc</literal> kullanılabilir.
+       Sihir veritabanının dosya ismi genellikle
+       <filename>/bir/yol/magic.mime</filename> şeklindedir. Belirtilmezse
+       <literal>MAGIC</literal> ortam değişkeninin değeri kullanılır. Bu
+       değişken de atanmamışsa PHP paketinde gelen sihir veritabanı
+       kullanılır.
       </para>
+      <para>
+       &null; veya boş bir dizge atanması öntanımlı değerin kullanımına
+       eşdeğer olacaktır.
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -58,9 +63,31 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda &false;, aksi takdirde sihir veritabanı özkaynağı
-   ile döner.
+   (Sadece yordamsal kullanımda)
+   Başarı durumunda  sihir veritabanı özkaynağı,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    Beklenen sihir veritabanı biçimi PHP 5.3.11 ve 5.4.1'de değişti. Bu
+    nedenle, dahili sihir veritabanı yükseltildi. Bu, çoğunlukla harici bir
+    sihir veritabanının kullanıldığı yerlerde kodu etkiler: daha eski bir
+    sihir dosyasının okunması artık başarısız olacaktır. Ayrıca, mime
+    türlerinin bazı metinsel gösterimleri de değişti, örneğin PHP için "PHP
+    script text" yerine "PHP script, ASCII text" metni dönüyor.
+   </para>
+  </warning>
+  <note>
+   <para>
+    Genellikle, (<parameter>magic_database</parameter> belirtmeyerek ve
+    <literal>MAGIC</literal> ortam değişkenini atanmayarak) PHP paketinde
+    gelen sihir veritabanını kullanmak, özellikle özel bir sihir veritabanına
+    ihtiyaç olmadıkça en iyi seçim olacaktır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="examples">
@@ -72,11 +99,6 @@
 <?php
 // Bir açıklama değil MIME türü dönsün
 $finfo = new finfo(FILEINFO_MIME, "/usr/share/misc/magic");
-
-if (!$finfo) {
-    echo "Fileinfo veritabanı açılamadı";
-    exit();
-}
 
 /* Bir dosyanın MIME türünü öğrenelim */
 $dosya = "/usr/local/birdosya.txt";

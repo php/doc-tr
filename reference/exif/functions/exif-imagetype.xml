@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 02284193f1bbde106da56b7463c32d0511c46f8c Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/image.xml, last change in rev 1.81 -->
  <refentry xml:id="function.exif-imagetype" xmlns="http://docbook.org/ns/docbook">
   <refnamediv>
@@ -10,7 +10,7 @@
   <refsect1 role="description">
    &reftitle.description;
    <methodsynopsis>
-    <type>int</type><methodname>exif_imagetype</methodname>
+    <type class="union"><type>int</type><type>false</type></type><methodname>exif_imagetype</methodname>
     <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
    </methodsynopsis>
    <para>
@@ -47,6 +47,15 @@
     takdirde &false; döner. Dönüş değeri <function>getimagesize</function> ile
     aynıdır fakat <function>exif_imagetype</function> daha hızlıdır.
    </para>
+   <note>
+    <para>
+     Resim türünü belirlemek için dosyadan yeterince bayt okuyamazsa
+     <function>exif_imagetype</function> bir <constant>E_NOTICE</constant>
+     çıktılar ve &false; değeriyle döner.
+     <!-- If the function finds an incomplete PNG header then it may emit an
+     <constant>E_WARNING</constant> instead. - Is this worth including? -->
+    </para>
+   </note>
   </refsect1>
   <refsect1 role="changelog">
    &reftitle.changelog;
@@ -61,16 +70,10 @@
       </thead>
       <tbody>
        <row>
-        <entry>4.3.2</entry>
+        <entry>7.1.0</entry>
         <entry>
-         <acronym>JPC</acronym>, <acronym>JP2</acronym>,
-         <acronym>JPX</acronym>, <acronym>JB2</acronym>,
-         <acronym>XBM</acronym> ve <acronym>WBMP</acronym> desteği eklendi.
+         WebP desteği eklendi.
         </entry>
-       </row>
-       <row>
-        <entry>4.3.0</entry>
-        <entry><acronym>SWC</acronym> desteği eklendi.</entry>
        </row>
       </tbody>
      </tgroup>
@@ -159,6 +162,14 @@
         <entry>16</entry>
         <entry><constant>IMAGETYPE_XBM</constant></entry>
        </row>
+       <row>
+        <entry>17</entry>
+        <entry><constant>IMAGETYPE_ICO</constant></entry>
+       </row>
+       <row>
+        <entry>18</entry>
+        <entry><constant>IMAGETYPE_WEBP</constant></entry>
+       </row>
       </tbody>
      </tgroup>
     </table>
@@ -185,6 +196,7 @@ if (exif_imagetype('image.gif') != IMAGETYPE_GIF) {
    &reftitle.seealso;
    <para>
     <simplelist>
+     <member><function>image_type_to_mime_type</function></member>
      <member><function>getimagesize</function></member>
     </simplelist>
    </para>

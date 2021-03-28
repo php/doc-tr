@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 88c1f8d6c9fecf352c5ce152a6f758ed013fc2c0 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.basename">
  <refnamediv>
   <refname>basename</refname>
-  <refpurpose>Dosya yolunun dosya ismi bileşenini döndürür</refpurpose>
+  <refpurpose>Dosya yolunun ucundaki dosya ismi bileşenini döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -12,11 +12,29 @@
   <methodsynopsis>
    <type>string</type><methodname>basename</methodname>
    <methodparam><type>string</type><parameter>yol</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>uzantı</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>uzantı</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen dosya yolunun dosya ismi bileşenini döndürür.
+   Belirtilen dosya yolunun ucundaki dosya ismi bileşenini döndürür.
   </para>
+  <note>
+   <para>
+    <function>basename</function> safça girdi dizgesi üzerinde çalışır,
+    dosya sisteminden ve "<literal>..</literal>" gibi yol bileşenlerinden
+    haberi yoktur.
+   </para>
+  </note>
+  <caution>
+   <para>
+    <function>basename</function> yereli de bilmez, bundan dolayı çok baytlı
+    karakterler içeren dosya yollarından doğru bileşeni ayırabilmesi için
+    eşleşen yerelin <function>setlocale</function> işlevi kullanılarak
+    atanması gerekir.
+    Eğer <parameter>yol</parameter> geçerli yerel için geçersiz olan
+    karakterler içeriyorsa <function>basename</function> işlevinin davranışı
+    belirsizdir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -40,7 +58,8 @@
      <term><parameter>uzantı</parameter></term>
      <listitem>
       <para>
-       Dönen bileşenden kaldırılacak dosya uzantısı.
+       Dosya ismi <parameter>uzantı</parameter> içinde devam ediyorsa uzantı
+       ile birlikte bu da kesilir.
       </para>
      </listitem>
     </varlistentry>
@@ -55,30 +74,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        <parameter>uzantı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -87,12 +82,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$yol = "/home/httpd/html/index.php";
-$dosya = basename($yol);         // $dosya => "index.php"
-$dosya = basename($yol, ".php"); // $dosya => "index"
+echo "1) ".basename("/etc/sudoers.d", ".d").PHP_EOL;
+echo "2) ".basename("/etc/sudoers.d").PHP_EOL;
+echo "3) ".basename("/etc/passwd").PHP_EOL;
+echo "4) ".basename("/etc/").PHP_EOL;
+echo "5) ".basename(".").PHP_EOL;
+echo "6) ".basename("/");
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+1) sudoers
+2) sudoers.d
+3) passwd
+4) etc
+5) .
+6)
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

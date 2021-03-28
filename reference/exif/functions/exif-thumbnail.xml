@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 417d45ec40e3c9dc4e6ca9cc3a0537925e58d77d Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/image.xml, last change in rev 1.78 -->
 <refentry xml:id="function.exif-thumbnail" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -10,15 +10,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>exif_thumbnail</methodname>
-   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">genişlik</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">yükseklik</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">resim_türü</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>exif_thumbnail</methodname>
+   <methodparam><type class="union"><type>resource</type><type>string</type></type><parameter>dosya</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">genişlik</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">yükseklik</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">resim_türü</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>exif_thumbnail</function> işlevi bir <acronym>TIFF</acronym> veya
-   <acronym>JPEG</acronym> resminin içinde gömülü küçük örneği döndürür.
+   <function>exif_thumbnail</function> işlevi bir resmin içinde gömülü küçük
+   örneği döndürür.
   </para>
   <para>
    Resimlerin küçük örneklerini bu işlev ile göndermek isterseniz MIME türü
@@ -40,8 +40,8 @@
      <term><parameter>dosya</parameter></term>
      <listitem>
       <para>
-       Okunacak resim dosyasının ismi Bu resmin içinde küçük bir örneği gömülü
-       olmalıdır.
+       Okunacak resim dosyasının yeri. Bu bir dosya yolu veya
+       <type>resource</type> türünde bir akım olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -80,6 +80,30 @@
    döndürür.
   </para>
  </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>exif_thumbnail</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$resim = exif_thumbnail('/bir/yol/resim.jpg', $gen, $yks, $tür);
+
+if ($resim!==false) {
+    header('Content-type: ' .image_type_to_mime_type($tür));
+    echo $resim;
+    exit;
+} else {
+    // Resmin örneği yoksa, hataları burada ele alacağız
+    echo 'Resmin içinde küçük bir örneği yok';
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -93,17 +117,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>7.2.0</entry>
        <entry>
-        Belirtilmesi isteğe bağlı <parameter>genişlik</parameter>,
-        <parameter>yükseklik</parameter>ve  <parameter>resim_türü</parameter>
-        değiştirgeleri eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <acronym>TIFF</acronym> biçemli resim örnekleri döndürülebilir oldu.
+        <parameter>dosya</parameter> değiştirgesi artık yerel dosyalardan
+        başka akım özkaynaklarını da destekliyor.
        </entry>
       </row>
      </tbody>
@@ -111,32 +128,15 @@
    </informaltable>
   </para>
  </refsect1>
- <refsect1 role="examples">
-  &reftitle.examples;
-  <para>
-   <example>
-    <title>- <function>exif_thumbnail</function> örneği</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-if (array_key_exists('file', $_REQUEST)) {
-    $image = exif_thumbnail($_REQUEST['file'], $width, $height, $type);
-} else {
-    $image = false;
-}
-if ($image!==false) {
-    header('Content-type: ' .image_type_to_mime_type($type));
-    echo $image;
-    exit;
-} else {
-    // Resmin örneği yoksa, hataları burada ele alacağız
-    echo 'Resmin içinde küçük bir örneği yok';
-}
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <parameter>dosya</parameter> bu işeve bir akım aktarmak için kullanılırsa
+    akım aranabilir olmalıdır. İşlev döndükten sonra dosya tanıtıcısının
+    konumu değişmeyecektir.
+   </para>
+  </note>
  </refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;

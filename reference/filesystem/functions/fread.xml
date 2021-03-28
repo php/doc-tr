@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fread">
  <refnamediv>
   <refname>fread</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>fread</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>fread</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam><type>int</type><parameter>uzunluk</parameter></methodparam>
   </methodsynopsis>
@@ -32,12 +32,17 @@
     </listitem>
     <listitem>
      <simpara>
-      Bir paket kullanılabilir hale gelince (ağ akımları için).
+      Bir paket kullanılabilir hale gelince veya
+      <link linkend="function.socket-set-timeout">soket zaman aşımı</link>na
+      uğrayınca (ağ akımları için).
      </simpara>
     </listitem>
     <listitem>
      <simpara>
-      8192 bayt okununca (akım kullanıcı alanında açıldıktan sonra).
+      Eğer akım arabelleğe alınmışsa ve düz bir dosyaya ait değilse, en fazla
+      yığıt boyutuna (genellikle 8192) eşit sayıda bayta kadar bir okuma
+      yapılır; önceden arabelleğe alınan verilere bağlı olarak, döndürülen
+      verilerin boyutu yığıt boyutundan daha büyük olabilir.
      </simpara>
     </listitem>
    </itemizedlist>
@@ -129,7 +134,6 @@ fclose($dt);
     <programlisting role="php">
 <![CDATA[
 <?php
-// PHP 5 ve sonrası için
 $dt = fopen("http://www.example.com/", "rb");
 $içerik = stream_get_contents($dt);
 fclose($dt);
@@ -140,9 +144,14 @@ fclose($dt);
 <![CDATA[
 <?php
 $dt = fopen("http://www.example.com/", "rb");
+if (FALSE === $dt) {
+    exit("URL'ye akım açılamadı");
+}
+
 $içerik = '';
+
 while (!feof($dt)) {
-  $içerik .= fread($dt, 8192);
+    $içerik .= fread($dt, 8192);
 }
 fclose($dt);
 ?>
@@ -186,6 +195,7 @@ fclose($dt);
     <member><function>fpassthru</function></member>
     <member><function>ftell</function></member>
     <member><function>rewind</function></member>
+    <member><function>unpack</function></member>
    </simplelist>
   </para>
  </refsect1>

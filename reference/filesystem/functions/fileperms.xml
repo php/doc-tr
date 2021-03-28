@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fileperms">
  <refnamediv>
   <refname>fileperms</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>fileperms</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>fileperms</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -37,7 +37,23 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata durumunda &false;, aksi takdirde dosyanın izinlerini döndürür.
+   Dosyanın izinlerini sayısal kip olarak döndürür. Bu kipin daha düşük
+   bitleri, <function>chmod</function> tarafından beklenen izinlerle aynıdır,
+   ancak çoğu platformda, dönüş değeri <parameter>dosyaismi</parameter>
+   olarak verilen dosya türü hakkında bilgi de içerir. Aşağıdaki örnekler,
+   Linux ve macOS dahil olmak üzere POSIX sistemlerinde belirli izinler ve
+   dosya türleri için dönüş değerinin nasıl sınanacağını göstermektedir.
+  </para>
+  <para>
+   Yerel dosyalara özgü dönüş değeri, C kütüphanesinin
+   <function>stat</function> işlevi tarafından döndürülen yapının
+   <literal>st_mode</literal> üyesinin değeridir. Tam olarak hangi bitlerin
+   atanacağı platformdan platforma değişebilir ve dönüş değerinin izin
+   verilmeyen bitlerinin ayrıştırılması gerekiyorsa özel platformunuzun
+   belgelerine bakmanız önerilir.
+  </para>
+  <para>
+   Başarısızlık durumunda &false; döner.
   </para>
  </refsect1>
 
@@ -69,31 +85,31 @@ echo substr(sprintf('%o', fileperms('/etc/passwd')), -4);
 <?php
 $perms = fileperms('/etc/passwd');
 
-if (($perms & 0xC000) == 0xC000) {
-    // Soket
-    $info = 's';
-} elseif (($perms & 0xA000) == 0xA000) {
-    // Sembolik bağ
-    $info = 'l';
-} elseif (($perms & 0x8000) == 0x8000) {
-    // Sıradan dosya
-    $info = '-';
-} elseif (($perms & 0x6000) == 0x6000) {
-    // Blok aygıtı
-    $info = 'b';
-} elseif (($perms & 0x4000) == 0x4000) {
-    // Dizin
-    $info = 'd';
-} elseif (($perms & 0x2000) == 0x2000) {
-    // Karakter aygıtı
-    $info = 'c';
-} elseif (($perms & 0x1000) == 0x1000) {
-    // FIFO boru
-    $info = 'p';
-} else {
-    // Bilinmiyor
-    $info = 'u';
-}
+switch ($perms & 0xF000) {
+    case 0xC000: // soket
+        $info = 's';
+        break;
+    case 0xA000: // Sembolik bağ
+        $info = 'l';
+        break;
+    case 0x8000: // Sıradan dosya
+        $info = 'r';
+        break;
+    case 0x6000: // Blok aygıtı
+        $info = 'b';
+        break;
+    case 0x4000: // Dizin
+        $info = 'd';
+        break;
+    case 0x2000: // Karakter aygıtı
+        $info = 'c';
+        break;
+    case 0x1000: // FIFO boru
+        $info = 'p';
+        break;
+    default: // Bilinmiyor
+        $info = 'u';
+ }
 
 // Kullanıcı
 $info .= (($perms & 0x0100) ? 'r' : '-');
@@ -134,6 +150,11 @@ echo $info;
   &reftitle.notes;
   &note.clearstatcache;
   &tip.fopen-wrapper.stat;
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &fs.emits.warning.on.failure;
  </refsect1>
 
  <refsect1 role="seealso">

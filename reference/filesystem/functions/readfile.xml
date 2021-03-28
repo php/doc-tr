@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b95d28e6ec86e4a71e012737d36ebdc1cf009180 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.readfile">
  <refnamediv>
   <refname>readfile</refname>
@@ -10,9 +10,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>readfile</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>readfile</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>include_path_kullan</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>include_path_kullan</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>resource</type><parameter>bağlan</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -57,17 +57,21 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata oluşmuşsa &false; döner ve işlev @<function>readfile</function>
-   şeklinde çağrılmamışsa bir hata iletisi basılır. Herşey yolunda gitmişse
-   dosyadan okunan baytların sayısını döndürür.
+   Herşey yolunda gitmişse dosyadan okunan baytların
+   sayısı,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &fs.emits.warning.on.failure;
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title><function>readfile</function> kullanarak dosya indirmeyi zorlamak
+    <title>- <function>readfile</function> kullanarak dosya indirmeyi zorlamak
     </title>
     <programlisting role="php">
 <![CDATA[
@@ -77,14 +81,11 @@ $file = 'monkey.gif';
 if (file_exists($file)) {
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename='.basename($file));
-    header('Content-Transfer-Encoding: binary');
+    header('Content-Disposition: attachment; filename="'.basename($file).'"');
     header('Expires: 0');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Cache-Control: must-revalidate');
     header('Pragma: public');
     header('Content-Length: ' . filesize($file));
-    ob_clean();
-    flush();
     readfile($file);
     exit;
 }
@@ -93,6 +94,7 @@ if (file_exists($file)) {
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Aç / Kaydet penceresi</alt>
      <imageobject>
       <imagedata fileref="en/reference/filesystem/figures/readfile.png"/>
      </imageobject>
@@ -103,7 +105,14 @@ if (file_exists($file)) {
 
  <refsect1 role="notes">
   &reftitle.notes;
-
+  <note>
+   <para>
+    <function>readfile</function> kendi başına büyük dosyalar gönderirken
+    bile herhangi bir bellek sorunu ortaya çıkmaz. Yetersiz bellek hatasıyla
+    karşılaşırsanız, <function>ob_get_level</function> kullanarak çıktı
+    tamponlamasının kapalı olduğundan emin olun.
+   </para>
+  </note>
   &tip.fopen-wrapper;
   &note.context-support;
  </refsect1>
