@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e15d2894fb35432d2a111db36fe8ba8ebc62024 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/exec.xml, last change in rev 1.2 -->
 <refentry xml:id="function.escapeshellcmd" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>escapeshellcmd</refname>
-  <refpurpose>Kabuk meta karakterlerini önceler</refpurpose>
+  <refpurpose>Kabuk özel karakterlerini önceler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -17,19 +17,19 @@
   <para>
    <function>escapeshellcmd</function> işlevi, içinde keyfi komutlar
    çalıştırarak bir kabuk komutunu kandırmak için kullanılabilecek bir
-   dizgenin içerdiği karakterleri önceler. Bu işlev, <function>exec</function>
-   veya <function>system</function> işlevlerine ya da <link
-   linkend="language.operators.execution">çalıştırma işlecine</link>
-   aktarılmadan önce kullanıcı girdisi olarak alınan veriyi öncelemek için
-   kullanılmalıdır.
+   dizgenin içerdiği karakterleri önceler. Bu işlev,
+   <function>exec</function> veya <function>system</function> işlevlerine
+   ya da <link linkend="language.operators.execution">çalıştırma
+   işlecine</link> aktarılmadan önce kullanıcı girdisi olarak alınan veriyi
+   öncelemek için kullanılmalıdır.
   </para>
   <para>
    Bir tersbölü çizgisi ile öncelenen karakterler şunlardır:
-   <literal>#&amp;;`|*?~&lt;&gt;^()[]{}$\</literal>, <literal>\x0A</literal>
+   <literal>&amp;#;`|*?~&lt;&gt;^()[]{}$\</literal>, <literal>\x0A</literal>
    ve <literal>\xFF</literal>. <literal>'</literal> ve <literal>"</literal>
-   karakterleri sadece çiftler halinde kullanılmışsa öncelenir.  Windows'a tüm
-   bu karakterlere ek olarak <literal>%</literal> karakteri yerine bir boşluk
-   yerleştirilir.
+   karakterleri sadece çiftler halinde değilse öncelenir.  Windows'a tüm
+   bu karakterlere ek olarak <literal>%</literal> ve <literal>!</literal>
+   imleri bir şapka imi (<literal>^</literal>) ile öncelenir.
   </para>
  </refsect1>
 
@@ -64,19 +64,28 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$e = escapeshellcmd($userinput);
+// Burada bilerek keyfi sayıda değiştirgeye izin veriyoruz.
+$komut = './configure '.$_POST['configure_options'];
 
-// $e boşluk içeriyorsa burada dikkate almayacağız
-system("echo $e");
-$f = escapeshellcmd($filename);
+$öncelenen_komut = escapeshellcmd($komut);
 
-// ve burada tırnakları kullanıyoruz
-system("touch \"/tmp/$f\"; ls -l \"/tmp/$f\"");
+system($öncelenen_komut);
 ?>
 ]]>
     </programlisting>
    </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+   <warning xmlns="http://docbook.org/ns/docbook">
+    <para>
+     <function>escapeshellcmd</function> komut dizgesinin tamamı üzerinde
+     kullanılmalıdır. Buna rağmen saldırganın keyfi sayıda değiştirge
+     aktarmasına izin verir. Tek bir değiştirgeyi öncelemek için bu işlev
+     yerine <function>escapeshellarg</function> kullanılmalıdır.
+    </para>
+   </warning>
  </refsect1>
 
  <refsect1 role="seealso">

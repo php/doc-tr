@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/exec.xml, last change in rev 1.28 -->
   <refentry xml:id='function.proc-open' xmlns="http://docbook.org/ns/docbook">
    <refnamediv>
@@ -12,12 +12,12 @@
     &reftitle.description;
      <methodsynopsis>
       <type>resource</type><methodname>proc_open</methodname>
-      <methodparam><type>string</type><parameter>komut</parameter></methodparam>
+      <methodparam><type>mixed</type><parameter>komut</parameter></methodparam>
       <methodparam><type>array</type><parameter>tanıtıcılar</parameter></methodparam>
       <methodparam><type>array</type><parameter role="reference">borular</parameter></methodparam>
-      <methodparam choice="opt"><type>string</type><parameter>dizin</parameter></methodparam>
-      <methodparam choice="opt"><type>array</type><parameter>ortam</parameter></methodparam>
-      <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter></methodparam>
+      <methodparam choice="opt"><type>string</type><parameter>dizin</parameter><initializer>&null;</initializer></methodparam>
+      <methodparam choice="opt"><type>array</type><parameter>ortam</parameter><initializer>&null;</initializer></methodparam>
+      <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
      </methodsynopsis>
     <para>
      <function>proc_open</function> işlevi, program çalıştırma konusunda daha
@@ -30,11 +30,44 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>cmd</parameter></term>
+     <term><parameter>komut</parameter></term>
      <listitem>
       <para>
-       Çalıştırılacak komut.
+       Bir dizge olarak çalıştırılacak komut. Özel karakterler uygun şekilde
+       öncelenmeli ve uygun tırnaklama uygulanmalıdır.
       </para>
+      <note>
+       <simpara>
+        <emphasis>Windows</emphasis> üzerinde,
+        <parameter>seçenekler</parameter> içinde
+        <literal>bypass_shell</literal>  &true; olmadıkça
+        <parameter>komut</parameter> <emphasis>tırnaklı</emphasis> dizge
+        olarak (yani, tam olarak <function>proc_open</function> işlevine
+        belirtildiği gibi) <literal>/c</literal> seçeneğiyle
+        <command>cmd.exe</command>'ye aktarılır (aslında,
+        <literal>%ComSpec%</literal>). Bu <command>cmd.exe</command>'nin
+        <parameter>komut</parameter>'taki sarmalayıcı tırnakları kaldırmasına
+        sebep olur (ayrıntılar için <command>cmd.exe</command> belgelerine
+        bakın), bu da istenmeyen ve daha tehlikeli olabilecek bir davranışla
+        sonuçlanır, çünkü <command>cmd.exe</command> hata iletiler aktarılan
+        <parameter>komut</parameter>'u (parçalarını) içerebilir (aşağıya
+        bakınız).
+       </simpara>
+      </note>
+      <para>
+       PHP 7.4.0'dan beri, <parameter>komut</parameter> bir komut
+       değiştirgeleri dizisi olarak aktarılabilmektedir. Bu durumda süreç
+       doğrudan (kabuk üzerinden gitmeden) açılabilmekte ve gerekli
+       değiştirge öncelemesini PHP yapabilmektedir.
+      </para>
+      <note>
+       <para>
+        Windows üzerinde, dizi elemanlarının değiştirge öncelemesi,
+        çalıştırılan komutun komut satırı çözümlemesinin, VC çalışma
+        zamanında yapılan komut satırı değiştirgeleri ayrıştırılması
+        işlemiyle uyumlu olduğu varsayılır.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -119,13 +152,17 @@
          &true; belirtilirse <literal>cmd.exe</literal> kabuğu es geçilir.
         </member>
         <member>
-         <literal>context</literal>: Dosyaları açarken kullanılan
-         (<function>stream_context_create</function> ile oluşturulmuş) akım
-         bağlamı
+         <literal>blocking_pipes</literal> (sadece windows): &true;
+         atandığında boruların engellenmesi zorlanır.
         </member>
         <member>
-         <literal>binary_pipes</literal>: Borular, normal olarak
-         <function>stream_encoding</function> ile değil ikil kipte açılır.
+         <literal>create_process_group</literal> (sadece windows): &true;
+         atandığında <literal>CTRL</literal> olaylarının çocuk süreç
+         tarafından işlenmesini sağlar.
+        </member>
+        <member>
+         <literal>create_new_console</literal> (sadece windows): Ebeveynin
+         konsolunu miras almak yerine yeni sürece yeni bir konsol açılır.
         </member>
        </simplelist>
       </para>
@@ -157,25 +194,24 @@
      </thead>
      <tbody>
       <row>
-       <entry>6.0.0</entry>
+       <entry>7.4.4</entry>
        <entry>
-        <parameter>seçenekler</parameter> değiştirgesinin olası seçeneklerine
-        <literal>context</literal> ve <literal>binary_pipes</literal>
-        seçenekleri eklendi.
+        <parameter>seçenekler</parameter> değiştirgesine
+        <literal>create_new_console</literal> seçeneği eklendi.
        </entry>
       </row>
       <row>
-       <entry>5.2.1</entry>
+       <entry>7.4.0</entry>
        <entry>
-        <parameter>seçenekler</parameter> değiştirgesinin olası seçeneklerine
-        <literal>bypass_shell</literal> seçeneği eklendi.
+        <function>proc_open</function> artık <parameter>komut</parameter>
+        değiştirgesinde bir dizi de kabul edebiliyor.
        </entry>
       </row>
       <row>
-       <entry>5.0.0</entry>
+       <entry>7.4.0</entry>
        <entry>
-        <parameter>dizin</parameter>, <parameter>ortam</parameter> ve
-        <parameter>seçenekler</parameter> değiştirgeleri eklendi.
+        <parameter>seçenekler</parameter> değiştirgesine
+        <literal>create_process_group</literal> seçeneği eklendi.
        </entry>
       </row>
      </tbody>
@@ -237,6 +273,41 @@ Array
 komut 0 değerini döndürdü
 ]]>
     </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Windows üzerinde <function>proc_open</function> tuhaflığı
+    </title>
+    <simpara>
+     Aşağıdaki betiğin <filename>filename.txt</filename> üzerinde <literal>search</literal> dizgesini arayacağı ve sonucu basacağı umulurken biraz farklı davranır:
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$tanıtıcılar = [STDIN, STDOUT, STDOUT];
+$komut = '"findstr" "search" "filename.txt"';
+$süreç = proc_open($komut, $tanıtıcılar, $borular);
+proc_close($süreç);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+'findstr" "search" "filename.txt' is not recognized as an internal or external command,
+operable program or batch file.
+]]>
+    </screen>
+    <simpara>
+     Bu davranışın etrafından dolaşmak için komutu ek tırnaklarla sarmalamak
+     yeterlidir:
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+$cmd = '""findstr" "search" "filename.txt""';
+]]>
+    </programlisting>
    </example>
   </para>
  </refsect1>
