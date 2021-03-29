@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f658721332c6080e237ed6a1c29517225237b639 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.file-get-contents">
+<!-- EN-Revision: ef88bff8ae0e1c35d577aaca6f812ca06b6f26d3 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.file-get-contents" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>file_get_contents</refname>
   <refpurpose>Dosya içeriğinin tamamını bir dizge olarak döndürür</refpurpose>
@@ -10,9 +10,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>file_get_contents</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>file_get_contents</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>use_include_path</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter><initializer>-1</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>-1</initializer></methodparam>
@@ -35,15 +35,6 @@
     URI'yi <function>urlencode</function> ile kodlamalısınız.
    </para>
   </note>
-  <note>
-   <para>
-    The default value of <parameter>uzunluk</parameter> değiştirgesinin
-    öntanımlı değeri aslında <literal>-1</literal> değildir; daha ziyade dahili
-    bir PHP değeri olup, akımın tamamının dosya sonuna kadar kopyalanacağı
-    anlamına gelir. Bu öntanımlı değeri belirtmenin tek yolu değiştirge olarak
-    belirtmemektir (belirtilmesinin isteğe bağlı oluşuna dikkat edin).
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -58,68 +49,19 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>seçenekler</parameter></term>
+     <term><parameter>use_include_path</parameter></term>
      <listitem>
       <note>
        <para>
-        PHP 6'dan önceki sürümlerde bu değiştirge
-        <parameter>include_path_kullan</parameter> olarak adlandırılır ve
-        <type>bool</type> türünde bir değer alırdı. PHP 5'ten beri, aramanın
-        <link linkend="ini.include-path">include path</link>
+        Aramanın <link linkend="ini.include-path">include path</link>
         yönergesinde belirtilen yollarda da yapılacağını belirtmek için
-        <constant>FILE_USE_INCLUDE_PATH</constant> sabitini kullanmanız
-        gerekmektedir.
+        <constant>FILE_USE_INCLUDE_PATH</constant> sabiti kullanılabilir.
+        Ancak, <link linkend="language.types.declarations.strict">katı
+        kodlama</link> etkinse <constant>FILE_USE_INCLUDE_PATH</constant>
+        sabiti <type>int</type> türünde olduğundan bu mümkün değildir.
+        Yerine &true; kullanın.
        </para>
       </note>
-      <para>
-       <parameter>seçenekler</parameter> değiştirgesine, bazı sınırlamalarla
-       ve <link linkend="language.operators.bitwise">ikil VEYA (|)
-       işleci</link> ile birleştirilmiş olarak aşağıdaki seçenekler
-       belirtilebilir:
-      </para>
-       <table>
-        <title>Olası seçenekler</title>
-        <tgroup cols="2">
-         <thead>
-          <row>
-           <entry>Seçenek</entry>
-           <entry>Açıklama</entry>
-          </row>
-         </thead>
-         <tbody>
-          <row>
-           <entry>
-            <constant>FILE_USE_INCLUDE_PATH</constant>
-           </entry>
-           <entry>
-           Dosya <link linkend="ini.include-path">include_path</link>
-           yönergesinde belirtilen yollarda aranır.
-           </entry>
-          </row>
-          <row>
-           <entry>
-            <constant>FILE_TEXT</constant>
-           </entry>
-           <entry>
-            PHP 6'dan beri okunan verinin kodlaması
-            UTF-8'dir. Özel bir bağlam oluşturarak veya öntanımlı kodlamayı
-            <function>stream_default_encoding</function> ile değiştirerek
-            farklı bir kodlama belirtebilirsiniz. Su seçenek
-            <constant>FILE_BINARY</constant> ile birlikte kullanılamaz.
-           </entry>
-          </row>
-          <row>
-           <entry>
-            <constant>FILE_BINARY</constant>
-           </entry>
-           <entry>
-           İçerik ikil veri olarak okunur. Bu öntanımlıdır ve
-           <constant>FILE_TEXT</constant> ile birlikte kullanılamaz.
-           </entry>
-          </row>
-         </tbody>
-        </tgroup>
-       </table>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -136,7 +78,14 @@
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Okumaya başlanacak konum.
+       Akım üzerinde okumaya başlanacak konum. Negatif değerler dosyanın
+       sonundan itibaren sayılır.
+      </para>
+      <para>
+       Uzak dosyalarda arama (<parameter>başlangıç</parameter>)
+       desteklenmemektedir. Yerel olmayan dosyalarda küçük başlangıçlarla
+       çalışmak mümkünse de bu işlem tamponlanmış akım üzerine yapılacağından
+       sonuçları öngörülemez.
       </para>
      </listitem>
     </varlistentry>
@@ -145,7 +94,7 @@
      <listitem>
       <para>
        Okunacak verinin azami uzunluğu. Öntanımlı olarak dosya sonuna kadar
-       okunur.
+       okunur. Bu değiştirge süzgeçler tarafından işlenen akıma ugulanır.
       </para>
      </listitem>
     </varlistentry>
@@ -157,7 +106,23 @@
   <para>
    Hata durumunda &false; aksi takdirde dosyadan okunan veriyi döndürür.
   </para>
+  &return.falseproblem;
  </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   <parameter>dosyaismi</parameter> bulunamazsa,
+   <parameter>uzunluk</parameter> sıfırdan küçükse,
+   <parameter>başlangıç</parameter> akım üzerinde aranabilir değilse,
+   <constant>E_WARNING</constant> seviyesinde bir hata üretilir.
+  </para>
+  <para>
+   <function>file_get_contents</function> bir dizin için çağrılırsa,
+   Windows'ta ve PHP 7.4'ten beri diğer işletim sistemlerinde
+   <constant>E_WARNING</constant> seviyesinde bir hata üretilir.
+   </para>
+  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -178,9 +143,9 @@ echo $homepage;
     <programlisting role="php">
 <![CDATA[
 <?php
-// <= PHP 5
+// Katı kodlama etkinse, yani declare(strict_types=1); ise
 $file = file_get_contents('./people.txt', true);
-// > PHP 5
+// değilse
 $file = file_get_contents('./people.txt', FILE_USE_INCLUDE_PATH);
 ?>
 ]]>
@@ -192,7 +157,7 @@ $file = file_get_contents('./people.txt', FILE_USE_INCLUDE_PATH);
 <![CDATA[
 <?php
 // 21. karakterden itibaren 14 karakter okuyalım
-$section = file_get_contents('./people.txt', NULL, NULL, 20, 14);
+$section = file_get_contents('./people.txt', FALSE, NULL, 20, 14);
 var_dump($section);
 ?>
 ]]>
@@ -241,23 +206,9 @@ $file = file_get_contents('http://www.example.com/', false, $context);
      </thead>
      <tbody>
       <row>
-       <entry>6.0.0</entry>
+       <entry>7.1.0</entry>
        <entry>
-        <parameter>include_path_kullan</parameter> değiştirgesi
-        <parameter>seçenekler</parameter> değiştirgesi ile değiştirildi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <parameter>başlangıç</parameter> ve
-        <parameter>uzunluk</parameter> değiştirgeleri eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        Bağlam desteği eklendi.
+        <parameter>başlangıç</parameter> artık negatif değer kabul ediyor.
        </entry>
       </row>
      </tbody>
@@ -282,6 +233,7 @@ $file = file_get_contents('http://www.example.com/', false, $context);
     <member><function>file_put_contents</function></member>
     <member><function>stream_get_contents</function></member>
     <member><function>stream_context_create</function></member>
+    <member><link linkend="reserved.variables.httpresponseheader">$http_response_header</link></member>
    </simplelist>
  </refsect1>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 359f21684be3993e948f8f7c994c125971665535 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fgets">
  <refnamediv>
   <refname>fgets</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>fgets</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>fgets</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
   </methodsynopsis>
@@ -38,14 +38,6 @@
        işlemi durur. Bir uzunluk belirtilmezse akımdan okuma işlemi satırın
        sonuna erişilinceye kadar sürdürülür.
       </para>
-      <note>
-       <para>
-        PHP 4.3.0'a kadar, uzunluk belirtilmediğinde satır uzunluğu 1024 bayt
-        kabul edilirdi. Bir dosyadaki satırların büyük çoğunluğu 8KB'tan
-        büyükse, azami bir uzunluk belirtmek betiğiniz için daha verimli
-        olabilir.
-       </para>
-      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -56,40 +48,11 @@
   &reftitle.returnvalues;
   <para>
    Dosya tanıtıcısı <parameter>dt</parameter> ile belirtilen bir dosyadan
-   <parameter>uzunluk</parameter> - 1 baytlık veriyi bir dizge içinde döndürür.
+   <parameter>uzunluk</parameter> - 1 baytlık veriyi bir dizge içinde
+   döndürür. Dosya konumlayıcıdan başka veri okunamıyorsa &false; döner.
   </para>
   <para>
    Bir hata oluşursa &false; döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <function>fgets</function> dosyaları ikil kipte okumaya başladı.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <parameter>uzunluk</parameter> değiştirgesi isteğe bağlı oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -103,9 +66,11 @@
 <?php
 $dt = @fopen("/tmp/inputfile.txt", "r");
 if ($dt) {
-    while (!feof($dt)) {
-        $tampon = fgets($dt, 4096);
-        echo $tampon;
+    while (($buffer = fgets($dt, 4096)) !== false) {
+        echo $buffer;
+    }
+    if (!feof($dt)) {
+        echo "Hata: beklenmeyen fgets() başarısızlığı\n";
     }
     fclose($dt);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 52d41fb3abc35a1d426b9f747906ed88160b1dbd Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8b7fb1d4ace11d6884bec2e160ab24e93716b9bf Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.stat">
  <refnamediv>
   <refname>stat</refname>
@@ -11,13 +11,16 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>stat</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>stat</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dosyaismi</parameter> ile belirtilen dosyanın istatistiklerini
    toplar.  Eğer <parameter>dosyaismi</parameter> bir sembolik bağ ise
    istatistikler bağ dosyasından değil hedefinden toplanır.
+   PHP 7.4.0 öncesinde, Windows üzerinde, bu durumda, <abbrev>NTS</abbrev>
+   <literal>size</literal>, <literal>atime</literal>, <literal>mtime</literal>
+   ve <literal>ctime</literal> istatistiklerini sembolik bağdan oluştururdu.
   </para>
   <para>
    <function>lstat</function>, sembolik bağların durumunu döndürmesi dışında
@@ -51,7 +54,7 @@
      <thead>
       <row>
        <entry>İndis</entry>
-       <entry>Anahtar (PHP 4.0.6'dan beri)</entry>
+       <entry>Anahtar</entry>
        <entry>Açıklama</entry>
       </row>
      </thead>
@@ -59,12 +62,12 @@
       <row>
        <entry>0</entry>
        <entry>dev</entry>
-       <entry>aygıt numarası</entry>
+       <entry>aygıt numarası ***</entry>
       </row>
       <row>
        <entry>1</entry>
        <entry>ino</entry>
-       <entry>dosya düğümü numarası *</entry>
+       <entry>dosya düğümü numarası ****</entry>
       </row>
       <row>
        <entry>2</entry>
@@ -124,15 +127,80 @@
      </tbody>
     </tgroup>
    </table>
-   * Windows üzerinde daima 0'dır.
+  </para>
+  <para>
+   * Windows üzerinde daima <literal>0</literal>'dır.
   </para>
   <para>
    ** Sadece st_blksize türünü destekleyen sistemlerde geçerlidir;
-   diğer sistemlerde (Windows gibi) -1 döner.
+   diğer sistemlerde (Windows gibi) <literal>-1</literal> döner.
   </para>
   <para>
-   Hata durumunda <function>stat</function> &false; döndürür.
+   *** PHP 7.4.0 öncesinde, Windows üzerinde, bu  dosyayı içeren birimin 64
+   bitlik <emphasis>işaretsiz</emphasis> bir tam sayı olarak seri numarasıdır,
+   bu nedenle taşabilir. Önceden, sürücü harfinin sayısal karşılığıydı
+   (örneğin, C: sürücüsü <function>stat</function> için <literal>2</literal>
+   ve <function>lstat</function> için <literal>0</literal> idi).
   </para>
+  <para>
+   **** PHP 7.4.0 öncesinde, Windows üzerinde, bu, 64 bitlik
+   <emphasis>işaretsiz</emphasis> bir tam sayı olarak dosyayla ilişkili
+   tanımlayıcıdır, bu nedenle taşabilir. Önceden her zaman
+   <literal>0</literal> idi.
+  </para>
+  <para>
+   Çeşitli işlevler tarafından okunan bilgileri içeren <literal>kip</literal>
+   değeri. Sekizlik olarak yazıldığında, sağdan başlayarak, ilk üç hane
+   <function>chmod</function> tarafından döndürülür. Sonraki basamak PHP
+   tarafından yok sayılır. Sonraki iki hane dosya türünü gösterir:
+   <table>
+    <title><literal>kip</literal> dosya türleri</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Sekizlik <literal>kip</literal></entry>
+       <entry>Anlamı</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><constant>0140000</constant></entry>
+       <entry>soket</entry>
+      </row>
+      <row>
+       <entry><constant>0120000</constant></entry>
+       <entry>bağ</entry>
+      </row>
+      <row>
+       <entry><constant>0100000</constant></entry>
+       <entry>normal dosya</entry>
+      </row>
+      <row>
+       <entry><constant>0060000</constant></entry>
+       <entry>blok aygıtı</entry>
+      </row>
+      <row>
+       <entry><constant>0040000</constant></entry>
+       <entry>dizin</entry>
+      </row>
+      <row>
+       <entry><constant>0020000</constant></entry>
+       <entry>karakter aygıtı</entry>
+      </row>
+      <row>
+       <entry><constant>0010000</constant></entry>
+       <entry>fifo</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   Dolayısıyla, örneğin, normal bir dosyanın kipi <constant>0100644</constant>
+   iken dizin için <constant>0040755</constant> olur.
+  </para>
+  <para>
+   Hata durumunda, <function>stat</function> &false; döndürür.
+  </para>
+  &fs.file.32bit;
  </refsect1>
 
  <refsect1 role="errors">
@@ -144,27 +212,35 @@
 
  <refsect1 role="changelog">
   &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.6</entry>
-       <entry>
-        Bu özniteliklerin sayısal indisli bir dizi içinde döndürülmesi yanında
-        bunlara anahtarlar isimleri olarak da erişilebilir oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Windows üzerinde, aygıt numarası artık dosyayı içeren birimin seri
+       numarası oldu. Evvelce dosya ile ilgili tanımlayıcının düğüm numarası
+       idi.
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Sembolik bağların <literal>size</literal>, <literal>atime</literal>,
+       <literal>mtime</literal> ve  <literal>ctime</literal> istatistikleri
+       olarak artık hedefin istatistikleri kullanılıyor. Evvelce, bunları
+       <abbrev>NTS</abbrev> sembolik bağdan oluştururdu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -204,27 +280,21 @@ echo 'Aygıt numarası: ' . $stat['dev'];
 <![CDATA[
 <?php
 /* Dosya durumunu alalım */
-$stat = @stat('C:\php\php.exe');
+$stat = stat('C:\php\php.exe');
 
 /* Bilgiyi alırken başarısız olduk mu? */
-if(!$stat)
-{
+if(!$stat) {
     echo 'Stat çağrısı başarısız oldu...';
-}
-else
-{
+} else {
     /*
-     * Mevcut erişim zamanını 1 hafta öncesi olarak isteyelim
+     * Mevcut erişim zamanı 1 hafta öncesi olsun
      */
     $atime = $stat['atime'] + 604800;
 
-    /* Dosyaya erişelim */
-    if(!@touch('some_file.txt', time(), $atime))
-    {
+    /* Dosyaya dokunalım */
+    if (!touch('some_file.txt', time(), $atime)) {
         echo 'Dosyaya erişilemedi...';
-    }
-    else
-    {
+    } else {
         echo 'Dosyaya başarıyla erişildi...';
     }
 }
@@ -250,6 +320,7 @@ else
     <member><function>fstat</function></member>
     <member><function>filemtime</function></member>
     <member><function>filegroup</function></member>
+    <member><classname>SplFileInfo</classname></member>
    </simplelist>
   </para>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.pathinfo">
  <refnamediv>
   <refname>pathinfo</refname>
@@ -10,14 +10,31 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>pathinfo</methodname>
+   <type class="union"><type>array</type><type>string</type></type><methodname>pathinfo</methodname>
    <methodparam><type>string</type><parameter>yol</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>PATHINFO_ALL</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>pathinfo</function> işlevi belirtilen <parameter>yol</parameter>
-   hakkında bilgi içeren bir ilişkisel dizi döndürür.
+   <function>pathinfo</function> işlevi belirtilen
+   <parameter>seçenekler</parameter>e bağlı olarak, belirtilen
+   <parameter>yol</parameter> hakkında bilgi içeren bir ilişkisel dizi
+   ya da bir dizge döndürür.
   </para>
+  <note>
+   <para>
+    Geçerli dosya yolu bilgisinin alınması hakkında daha ayrıntılı bilgi
+    edinmek için <link linkend="language.variables.predefined">
+    Öntanımlı Değişkenler</link> bölümü okunabilir.
+   </para>
+  </note>
+  <caution>
+   <para>
+    <function>pathinfo</function> yereli de bilmez, bundan dolayı çok baytlı
+    karakterler içeren dosya yollarından doğru bileşeni ayırabilmesi için
+    eşleşen yerelin <function>setlocale</function> işlevi kullanılarak
+    atanması gerekir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -42,7 +59,7 @@
        <constant>PATHINFO_BASENAME</constant>,
        <constant>PATHINFO_EXTENSION</constant> ve
        <constant>PATHINFO_FILENAME</constant> seçeneklerinin birleşimi olarak
-       belirtebilirsiniz. Tüm bileşenlerin döndürülmesi öntanımlıdır.
+       belirtebilirsiniz. Bir değer belirtilmezse tüm bileşenler döndürülür.
       </para>
      </listitem>
     </varlistentry>
@@ -53,37 +70,37 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İlişkisel dizide dönen bileşenler: <literal>dirname</literal> (dizin ismi),
+   <parameter>seçenekler</parameter>değiştirgesi atlanırsa dönen ilişkisel
+   dizi şu bileşenleri içerir: <literal>dirname</literal> (dizin ismi),
    <literal>basename</literal> (uzantısız isim), <literal>extension</literal>
    (uzantı) ve <literal>filename</literal> (dosya ismi).
   </para>
+  <note>
+   <para>
+    <parameter>yol</parameter> birden fazla uzantı içeriyorsa
+    <constant>PATHINFO_EXTENSION</constant> seçeneği ile yalnızca sonuncusu
+    dönerken <constant>PATHINFO_FILENAME</constant> seçeneğinde ise sadece
+    sonuncu uzantı kırpılır. Aşağıdaki örneğe bakınız.
+   </para>
+  </note>
+  <note>
+   <para>
+    <parameter>yol</parameter> bir uzantı içermiyorsa dönen dizi
+    <literal>extension</literal> elemanını içermez.
+    Aşağıdaki örneğe bakınız.
+   </para>
+  </note>
+  <note>
+   <para>
+    <parameter>yol</parameter>'un <literal>basename</literal> elemanı bir
+    nokta ile başlıyorsa, noktadan sonrası <literal>extension</literal>
+    elemanına aktarılır, <literal>filename</literal> elemanı ise boş kalır.
+    Aşağıdaki örneğe bakınız.
+   </para>
+  </note>
   <para>
    Eğer <parameter>seçenekler</parameter> belirtilirse ve tüm bileşenler
    istenmemişse işlev bir ilişkisel dizi değil, bir dizge döndürür.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.0</entry>
-       <entry>
-        <constant>PATHINFO_FILENAME</constant> sabiti eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -95,7 +112,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$path_parts = pathinfo('/siteler/htdocs/index.html');
+$path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
 
 echo $path_parts['dirname'], "\n";
 echo $path_parts['basename'], "\n";
@@ -107,25 +124,63 @@ echo $path_parts['filename'], "\n"; // PHP 5.2.0'dan beri.
     &example.outputs;
     <screen>
 <![CDATA[
-/siteler/htdocs
-index.html
-html
-index
+/www/htdocs/inc
+lib.inc.php
+php
+lib.inc
 ]]>
     </screen>
    </example>
   </para>
- </refsect1>
+  <para>
+   <example>
+    <title>- Uzantısız ve boş uzantılı farkını gösteren
+     <function>pathinfo</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$path_parts = pathinfo('/yol/bosuzanti.');
+var_dump($path_parts['extension']);
+$path_parts = pathinfo('/yol/yokuzanti');
+var_dump($path_parts['extension']);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+string(0) ""
 
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    Geçerli dosya yolu bilgisinin alınması hakkında daha ayrıntılı bilgi
-    edinmek için <link linkend="language.variables.predefined">
-    Öntanımlı Değişkenler</link> bölümüne bakınız.
-   </para>
-  </note>
+Notice: Undefined index: extension in test.php on line 6
+NULL
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <function>pathinfo</function> ve  uzantı-dosya</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+print_r(pathinfo('/some/path/.test'));
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Array
+(
+    [dirname] => /some/path
+    [basename] => .test
+    [extension] => test
+    [filename] =>
+)
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="seealso">

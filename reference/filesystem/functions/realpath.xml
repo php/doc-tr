@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.realpath">
  <refnamediv>
   <refname>realpath</refname>
@@ -10,14 +10,14 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>realpath</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>realpath</methodname>
    <methodparam><type>string</type><parameter>yol</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>realpath</function> işlevi tüm sembolik bağları genişletir ve
-   '/./', '/../' gösterimlerini çözümleyip belirtilen
-   <parameter>yol</parameter>'a bir '/' ekler ve normalleştirilmiş mutlak dosya
-   yolu olarak döndürür.
+   <literal>/./</literal>, <literal>/../</literal> gösterimlerini çözümleyip
+   belirtilen <parameter>yol</parameter>'a bir <literal>/</literal> ekler ve
+   normalleştirilmiş mutlak dosya yolu olarak döndürür.
   </para>
  </refsect1>
 
@@ -31,6 +31,12 @@
       <para>
        Sınanacak dosya yolu.
       </para>
+       <note>
+        <para>
+         Bir yolun belirtilmesi gerekirse de, değer boş bir dizge de olabilir.
+         Bu durumda değer, geçerli dizin olarak yorumlanır.
+        </para>
+       </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -41,40 +47,42 @@
   &reftitle.returnvalues;
   <para>
    Başarı durumunda normalleştirilmiş mutlak dosya yolunu döndürür. Sonuç
-   hiçbir sembolik bağ, '/./' veya '/../' bileşenlerini içermez.
+   hiçbir sembolik bağ, <literal>/./</literal> veya <literal>/../</literal>
+   bileşenlerini içermez. Ayrıca, sondaki <literal>\</literal> veya
+   <literal>/</literal> kaldırılır.
   </para>
   <para>
    Başarısızlık durumunda, örneğin dosya mevcut olmadığında
    <function>realpath</function> &false; ile döner.
   </para>
+  <note>
+   <para>
+    Çalışan betik dosya hiyerarşisi içindeki tüm dizinlerde çalıştırılabilir
+    izinlerine sahip olmalıdır, aksi takdirde <function>realpath</function>
+    &false; döndürür.
+   </para>
+  </note>
+  <note>
+   <para>
+    Harf büyüklüğüne duyarsız dosya sistemlerinde
+    <function>realpath</function> karakter büyüklüklerini aynı yapabileceği
+    gibi olduğu gibi de bırakabilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    <function>realpath</function> işlevi yolun gerçek değil de sanal olduğu
+    bir Phar içindeki bir dosya için işlem yapmaz.
+   </para>
+  </note>
+  <note>
+   <para>
+    Windows'ta, dizin kavşakları ve sembolik bağları yalnızca bir seviye
+    genişletilir.
+   </para>
+  </note>
+  &fs.file.32bit;
  </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        5.3.0 öncesinde, *BSD sistemlerde sadece sonuncu
-        <parameter>yol</parameter> bileşeninin mevcut olmaması durumunda
-        <function>realpath</function> başarısız olmaz.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
 
  <refsect1 role="examples">
   &reftitle.examples;
@@ -86,6 +94,8 @@
 <?php
 chdir('/var/log/');
 echo realpath('./../../etc/passwd');
+
+echo realpath('/tmp/') . PHP_EOL;
 ?>
 ]]>
     </programlisting>
@@ -93,6 +103,7 @@ echo realpath('./../../etc/passwd');
     <screen>
 <![CDATA[
 /etc/passwd
+/tmp
 ]]>
     </screen>
    </example>
@@ -105,7 +116,9 @@ echo realpath('./../../etc/passwd');
     <programlisting role="php">
 <![CDATA[
 <?php
-echo realpath('/windows/system32');
+echo realpath('/windows/system32'), PHP_EOL;
+
+echo realpath('C:\Program Files\\'), PHP_EOL;
 ?>
 ]]>
     </programlisting>
@@ -113,6 +126,7 @@ echo realpath('/windows/system32');
     <screen>
 <![CDATA[
 C:\WINDOWS\System32
+C:\Program Files
 ]]>
     </screen>
    </example>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1ad5dfe5e0fc836e239d03de25a91336c409cd30 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.pclose">
  <refnamediv>
   <refname>pclose</refname>
@@ -14,7 +14,7 @@
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>popen</function> tarafından açılmış bir boruhattının dosya
+   <function>popen</function> tarafından açılmış bir borunun dosya
    tanıtıcısını kapatır.
   </para>
  </refsect1>
@@ -39,8 +39,10 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Çalışan sürecin sonlandırma çıkış kodu ile döner.
+   Çalışan sürecin sonlandırma durum kodu ile döner.
+   Hata oluşması durumunda <literal>-1</literal> döner.
   </para>
+  &note.sigchild;
  </refsect1>
 
  <refsect1 role="examples">
@@ -58,6 +60,19 @@ pclose($handle);
     </programlisting>
    </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <title>Unix Only:</title>
+   <para>
+    <function>pclose</function> dahili olarak <literal>waitpid(3)</literal>
+    sistem çağrısı kullanılarak gerçeklenmiştir. Gerçek çıkış durumunu
+    öğrenmek için <function>pcntl_wexitstatus</function> işlevi
+    kullanılmalıdır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

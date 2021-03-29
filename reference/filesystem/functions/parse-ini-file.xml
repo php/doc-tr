@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-ini-file">
  <refnamediv>
   <refname>parse_ini_file</refname>
@@ -10,10 +10,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>parse_ini_file</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>parse_ini_file</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>bölümleri_işle</parameter><initializer>&false;</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tarama_kipi</parameter><initializer>INI_SCANNER_NORMAL</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tarama_kipi</parameter><initializer><constant>INI_SCANNER_NORMAL</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>parse_ini_file</function> işlevi <parameter>dosyaismi</parameter>
@@ -33,7 +33,8 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       Çözümlenecek yapılandırma dosyasının ismi. Göreli bir yol kullanılıyorsa, mevcut çalışma dizinine göre, ardından 
+       Çözümlenecek yapılandırma dosyasının ismi. Göreli bir yol
+       kullanılıyorsa, mevcut çalışma dizinine göre, ardından
        <link linkend="ini.include-path">include_path</link> değerlendirilir.
       </para>
      </listitem>
@@ -233,9 +234,9 @@ echo '(yüklenen) magic_quotes_gpc = ' .
    <example>
     <title>ara değerler</title>
     <para>
-     Sabitleri değerlendirmeye ek olarak, belirli karakterlerin bir ini 
-     değerinde özel anlamları vardır. Buna ek olarak, ortam değişkenleri ve 
-     önceden tanımlanmış değerler <code>${}</code>sözdizimi kullanılaraqk 
+     Sabitleri değerlendirmeye ek olarak, belirli karakterlerin bir ini
+     değerinde özel anlamları vardır. Buna ek olarak, ortam değişkenleri ve
+     önceden tanımlanmış değerler <code>${}</code>sözdizimi kullanılaraqk
      okunabilir.
     </para>
     <programlisting>
@@ -256,9 +257,9 @@ negative_two = ~1
 seven = (8|7)&(6|5)
 
 ; bir değeri öncelemek için \ kullanılır.
-satırsonu_mu = "\\n" ; dize içinde "\n" olarak sonuçlanır, 
+satırsonu_mu = "\\n" ; dize içinde "\n" olarak sonuçlanır,
 ; satırsonu karakteri olarak değil.
-tırnaklı = "She said \"Exactly my point\"." ; İçinde tırnak imleri bulunan 
+tırnaklı = "She said \"Exactly my point\"." ; İçinde tırnak imleri bulunan
 ; bir dize elde edilir.
 
 path = ${PATH}
@@ -295,13 +296,13 @@ also_five = ${five}
   <note>
    <simpara>
     INI dosyalarında anahtar olarak kullanılmaması gereken bazı özel sözcükler
-    vardır. Bunlar: <literal>null</literal>, <literal>yes</literal>, 
+    vardır. Bunlar: <literal>null</literal>, <literal>yes</literal>,
     <literal>no</literal>, <literal>true</literal>, <literal>false</literal>,
     <literal>on</literal>, <literal>off</literal>, <literal>none</literal>.
     <constant>INI_SCANNER_TYPED</constant> kipi kullanılmadıkça (PHP 5.6.1 ve sonrası)
-    <literal>null</literal>, <literal>off</literal>, <literal>no</literal> ve 
-    <literal>false</literal> sözcükleri <literal>""</literal> ile 
-    sonuçlanırken, <literal>on</literal>, <literal>yes</literal> ve 
+    <literal>null</literal>, <literal>off</literal>, <literal>no</literal> ve
+    <literal>false</literal> sözcükleri <literal>""</literal> ile
+    sonuçlanırken, <literal>on</literal>, <literal>yes</literal> ve
     <literal>true</literal> sözcükleri <literal>"1"</literal> ile sonuçlanır.
     <literal>?{}|&amp;~![()^"</literal> karakterleri hiçbir yerde anahtar veya
     değer içinde kullanılmamalıdır.
@@ -309,19 +310,19 @@ also_five = ${five}
   </note>
   <note>
    <para>
-    Eşit işareti içermeyen girdiler yoksayılır. Örneğin, "foo" yoksayılırken 
-    "bar =" çözümlenir ve boş değer eklenir. Örneğin, MySQL 
-    <filename>my.cnf</filename> içinde bir "no-auto-rehash" girdisine sahiptir 
+    Eşit işareti içermeyen girdiler yoksayılır. Örneğin, "foo" yoksayılırken
+    "bar =" çözümlenir ve boş değer eklenir. Örneğin, MySQL
+    <filename>my.cnf</filename> içinde bir "no-auto-rehash" girdisine sahiptir
     ve herhangi bir değer almadığı için yoksayılır.
    </para>
   </note>
   <note>
    <para>
-    ini dosyaları genellikle HTTP sunucuları tarafından düz metin olarak kabul 
-    edilir ve bu nedenle istenirse tarayıcılara sunulur. Bu, güvenlik için ini 
-    dosyalarınızı belge kök dizininiz dışında tutmanız veya HTTP sunucunuzu 
-    onlara hizmet vermeyecek şekilde yeniden yapılandırmanız gerektiği 
-    anlamına gelir. Bunlardan herhangi birinin yapılmaması bir güvenlik riski 
+    ini dosyaları genellikle HTTP sunucuları tarafından düz metin olarak kabul
+    edilir ve bu nedenle istenirse tarayıcılara sunulur. Bu, güvenlik için ini
+    dosyalarınızı belge kök dizininiz dışında tutmanız veya HTTP sunucunuzu
+    onlara hizmet vermeyecek şekilde yeniden yapılandırmanız gerektiği
+    anlamına gelir. Bunlardan herhangi birinin yapılmaması bir güvenlik riski
     oluşturabilir.
    </para>
   </note>

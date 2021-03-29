@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b95d28e6ec86e4a71e012737d36ebdc1cf009180 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fputcsv">
  <refnamediv>
   <refname>fputcsv</refname>
@@ -11,11 +11,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>fputcsv</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>fputcsv</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam><type>array</type><parameter>alanlar</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>','</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>","</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter><initializer>'"'</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter><initializer>"\\"</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>fputcsv</function> işlevi <parameter>alanlar</parameter> dizisi
@@ -39,7 +40,7 @@
      <term><parameter>alanlar</parameter></term>
      <listitem>
       <para>
-       Değer dizisi.
+       Dizge dizisi.
       </para>
      </listitem>
     </varlistentry>
@@ -60,8 +61,25 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>öncelem</parameter></term>
+     <listitem>
+      <para>
+       Seçimlik <parameter>öncelem</parameter> değiştirgesi ile öncelem
+       karakteri belirtilir (en çok bir karakter). Boş dizge
+       (<literal>""</literal>) özel önceleme mekanizmasını iptal eder.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
+  <note>
+   <para>
+    <parameter>sınırlayıcı</parameter> karakteri içeren bir alan varsa ve
+    <parameter>öncelem</parameter> karakteri ile öncelenmemişse,
+    <parameter>sınırlayıcı</parameter> karakter kendisiyle öncelenir.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="returnvalues">
@@ -72,6 +90,37 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        <parameter>öncelem</parameter> değiştirgesi, özel önceleme
+        mekanizmasını iptal edebilmek için artık boş dizge kabul ediyor.
+       </entry>
+      </row>
+      <row>
+       <entry>5.5.4</entry>
+       <entry>
+        <parameter>öncelem</parameter> değiştirgesi eklendi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+   </para>
+  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -80,23 +129,33 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-
 $liste = array (
-    'aaa,bbb,ccc,dddd',
-    '123,456,789',
-    '"aaa","bbb"'
+    array('aaa', 'bbb', 'ccc', 'dddd'),
+    array('123', '456', '789'),
+    array('"aaa"', '"bbb"')
 );
 
 $dt = fopen('file.csv', 'w');
 
-foreach ($liste as $satır) {
-    fputcsv($dt, split(',', $satır));
+foreach ($liste as $alan) {
+    fputcsv($dt, $alan);
 }
 
 fclose($dt);
 ?>
 ]]>
     </programlisting>
+    <para>
+     Yukarıdaki örnek <literal>file.csv</literal> dosyasına şunları yazar:
+    </para>
+    <screen>
+<![CDATA[
+aaa,bbb,ccc,dddd
+123,456,789
+"""aaa""","""bbb"""
+
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

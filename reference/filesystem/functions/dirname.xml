@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 88c1f8d6c9fecf352c5ce152a6f758ed013fc2c0 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.dirname">
  <refnamediv>
   <refname>dirname</refname>
-  <refpurpose>Belirtilen dosya yolunun dizin bileşenini döndürür</refpurpose>
+  <refpurpose>Üst dizinin yolunu döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -12,10 +12,34 @@
   <methodsynopsis>
    <type>string</type><methodname>dirname</methodname>
    <methodparam><type>string</type><parameter>yol</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seviye</parameter><initializer>1</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen dosya yolunun dizin bileşenini döndürür.
+   Bir dosyanın veya dizinin yolunu içeren bir dizge verildiğinde, bu işlev
+   en alt seviyedeki dizinden <parameter>seviye</parameter> sayıda üstte
+   bulunan dizinin yolunu döndürür.
   </para>
+  <note>
+   <para>
+    <function>dirname</function> safça girdi dizgesi üzerinde çalışır, ne
+    dosya sistemini ne de "<literal>..</literal>" gibi yol bileşenlerini
+    bilir.
+   </para>
+  </note>
+  <caution>
+   <para>
+    Windows üzerinde, <function>dirname</function> geçerli olarak ayarlanmış
+    kod sayfasına göre davranır, bu nedenle çok baytlı karakter yollarında
+    doğru dizin adını görmesi için eşleşen kod sayfasının ayarlanması gerekir.
+    <parameter>yol</parameter>, mevcut kod sayfası için geçersiz karakterler
+    içeriyorsa,<function>basename</function> işlevinin davranışı tanımsızdır.
+   </para>
+   <para>
+    Diğer sistemlerde <function>dirname</function>,
+    <parameter>yol</parameter>un ASCII uyumlu kodlamayla kodlanacağını
+    varsayar. Aksi takdirde, işlevin davranışı tanımsızdır.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,9 +53,21 @@
        Dosya yolu.
       </para>
       <para>
-       Dizin ayırma karakteri olarak Windows üzerinde hem bölü ( / ) hem de
-       ters bölü ( \ ) çizgisi kullanılabilirken diğer ortamlarda sadece bölü
-       ( / ) çizgisi kullanılabilir.
+       Dizin ayırma karakteri olarak Windows üzerinde hem bölü
+       (<literal>/</literal>) hem de ters bölü (<literal>\</literal>) çizgisi
+       kullanılabilirken diğer ortamlarda sadece bölü (<literal>/</literal>)
+       çizgisi kullanılabilir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seviye</parameter></term>
+     <listitem>
+      <para>
+       Üstteki dizinlerin seviyesi.
+      </para>
+      <para>
+       Sıfırdan büyük bir tamsayı olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -42,10 +78,10 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizin ismini döndürür. <parameter>yol</parameter> değiştirgesi hiç bölü
-   çizgisi içermiyorsa, içinde bulunulan dizin anlamında tek bir nokta ('.')
-   döner. Aksi takdirde <parameter>yol</parameter> dizgesi son
-   <literal>/bileşeni</literal> kaldırılarak döndürülülür.
+   Üst dizinin yolunu döndürür. <parameter>yol</parameter> değiştirgesi
+   hiç bölü çizgisi içermiyorsa, içinde bulunulan dizin anlamında tek bir
+   nokta ('.') döner. Aksi takdirde <parameter>yol</parameter> dizgesi son
+   <literal>/bileşen</literal> kaldırılarak döndürülülür.
   </para>
  </refsect1>
 
@@ -62,15 +98,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>7.0.0</entry>
        <entry>
-        <function>dirname</function> ikil olarak güvenilirdir.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.3</entry>
-       <entry>
-        <function>dirname</function> POSIX uyumlu oldu.
+        <parameter>seviye</parameter> değiştirgesi eklendi.
        </entry>
       </row>
      </tbody>
@@ -87,44 +117,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$yol = "/etc/passwd";
-$dizin = dirname($yol); // $dizin = "/etc"
+echo dirname("/etc/passwd") . PHP_EOL;
+echo dirname("/etc/") . PHP_EOL;
+echo dirname(".") . PHP_EOL;
+echo dirname("C:\\") . PHP_EOL;
+echo dirname("/usr/local/lib", 2);
 ?>
 ]]>
     </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+/etc
+/ (veya Windows üzerinde \)
+.
+C:\
+/usr
+]]>
+    </screen>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    PHP 4.3.0'dan beri, eski işlevselliğin boş bir dizge döndürdüğü durumda
-    <function>dirname</function> çoğunlukla bir bölü çizgisi veya bir nokta
-    döndürmektedir.
-   </para>
-  </note>
-  <para>
-   Şu örneği ele alalım:
-  </para>
-   <informalexample>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-// PHP 4.3.0 öncesi
-dirname('c:/');       // '.' döner
-
-// PHP 4.3.0 sonrası
-dirname('c:/x');      // 'c:\' döner
-dirname('c:/Temp/x'); // 'c:/Temp' döner
-dirname('/x');        // '\' döner
-
-?>
-]]>
-    </programlisting>
-   </informalexample>
  </refsect1>
 
  <refsect1 role="seealso">

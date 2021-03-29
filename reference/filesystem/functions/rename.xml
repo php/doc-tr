@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ccb1313e0cca25fe41f8fd8d46f43f2bfb4d3ff4 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.rename">
  <refnamediv>
   <refname>rename</refname>
@@ -17,8 +17,13 @@
   </methodsynopsis>
   <para>
    İsmi <parameter>eski_isim</parameter> ile belirtilen bir dosya veya dizinin
-   ismini <parameter>yeni_isim</parameter> olarak değiştirir.
-  </para>
+   ismini gerekirse dizinler arasında taşımak suretiyle
+   <parameter>yeni_isim</parameter> olarak değiştirir. Eğer
+   <parameter>yeni_isim</parameter> bir dosya ismini değiştiriyorsa ve böyle
+   bir dosya zaten varsa üzerine yazılır. Eğer
+   <parameter>yeni_isim</parameter> bir dizin ismini değiştiriyorsa ve böyle
+   bir dizin zaten varsa işlev bir uyarı üretir.
+ </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,10 +34,11 @@
      <term><parameter>eski_isim</parameter></term>
      <listitem>
       <para>
+       Eski isim.
       </para>
       <note>
        <para>
-        Eski isim. <parameter>eski_isim</parameter>'de kullanılan
+        <parameter>eski_isim</parameter>'de kullanılan
         sarmalayıcının <parameter>yeni_isim</parameter>'deki sarmalayıcı ile
         aynı olması gerekir.
        </para>
@@ -45,6 +51,13 @@
       <para>
        Yeni isim.
       </para>
+       <note>
+        <simpara>
+         Windows üzerinde, <parameter>yeni_isim</parameter> zaten varsa
+         yazılabilir olmalıdır. Aksi takdirde, <function>rename</function>
+         başarısız olur ve bir <constant>E_WARNING</constant> üretir.
+        </simpara>
+       </note>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -61,41 +74,6 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        PHP 5.0.0'dan beri <function>rename</function>
-        <emphasis>bazı</emphasis> URL sarmalayıcıları ile de
-        kullanılabilmektedir. <function>rename</function> tarafından
-        desteklenen sarmalayıcıların listesi için <xref linkend="wrappers"/>
-        bölümüne bakınız.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        <function>rename</function> işlevi Unix türevlerinde disk bölümleri
-        arasında dosya ismi değişikliği yapabilir olmuştur.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 

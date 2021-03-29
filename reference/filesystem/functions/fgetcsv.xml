@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 397f37e9308c5946fe98229711d19c43421aeee6 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fgetcsv">
  <refnamediv>
   <refname>fgetcsv</refname>
@@ -13,15 +13,22 @@
   <methodsynopsis>
    <type>array</type><methodname>fgetcsv</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>','</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>","</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter><initializer>'"'</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter><initializer>'\\'</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter><initializer>"\\"</initializer></methodparam>
   </methodsynopsis>
   <para>
    Satırı okuyup <acronym>CSV</acronym> biçemindeki alanları bir dizi içinde
    döndürmesi dışında <function>fgets</function> işlevi gibidir.
   </para>
+  <note>
+   <para>
+    Bu işlevde yerel ayarları hesaba katılır. Eğer <varname>LANG</varname>,
+    örneğin, <literal>tr_TR.UTF-8</literal> ise ISO-8859-9 ile kodlanmış
+    dosyaları bu işlev hatalı okuyacaktır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -43,8 +50,12 @@
      <listitem>
       <para>
        CSV dosyasındaki en uzun satırdan (satırsonu karakterleri dahil) daha
-       büyük bir değer içermelidir. PHP5'te isteğe bağlı hale gelmiştir. Bu
-       değiştirgenin belirtilmemesi (veya PHP 5.0.4 ve sonrası için 0
+       büyük bir değer içermelidir. Parçalara ayırma sınırlı bir alanda
+       gerçekleşmeyecekse, satır <parameter>uzunluk</parameter> karakterden
+       oluşan parçalara bölünür.
+      </para>
+      <para>
+       Bu değiştirgenin belirtilmemesi (veya PHP 5.0.4 ve sonrası için 0
        belirtilmesi) durumunda azami satır uzunluğu sınırlanmaz fakat işlem
        yavaşlar.
       </para>
@@ -67,11 +78,24 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>escape</parameter></term>
+     <term><parameter>öncelem</parameter></term>
      <listitem>
       <para>
-       Önceleme karakteri belirtilir (tek bir karakter).
+       Belirtilmesi seçimlik olup önceleme karakteri belirtmekte kullanılır.
+       Boş dizge (<literal>""</literal>) özel önceleme mekanizmasını iptal eder.
       </para>
+      <note>
+       <simpara>
+        Genellikle bir <parameter>sınırlayıcı</parameter> karakter bir
+        alanın içinde çiftlenerek öncelenir; ancak, öndeki karakterin
+        yerini <parameter>öncelem</parameter> karakteri alabilir.
+        Bu nedenle, öntanımlı <literal>""</literal> karakteri ile
+        <literal>\"</literal> aynı anlama gelir.
+        <parameter>öncelem</parameter> karakterinin
+        <parameter>sınırlayıcı</parameter> karakteri öncelemek dışında
+        özel bir anlamı yoktur; kendisini de öncelemesi amaçlanmamıştır.
+       </simpara>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -110,21 +134,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>7.4.0</entry>
        <entry>
-        <parameter>öncelem</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.5</entry>
-       <entry>
-        <function>fgetcsv</function> işlevi dosyaları ikil kipte okur oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>sınırlayıcı</parameter> değiştirgesi eklendi.
+        <parameter>öncelem</parameter> değiştirgesi özel önceleme
+        mekanizmasını iptal etmek için boş dizge kabul ediyor.
        </entry>
       </row>
      </tbody>
@@ -158,17 +171,6 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
     </programlisting>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    Bu işlevde yerel ayarlar hesaba katılır. Eğer <varname>LANG</varname>,
-    örneğin, <literal>tr_TR.UTF-8</literal> ise ISO-8859-9 ile kodlanmış
-    dosyaları bu işlev hatalı okuyacaktır.
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="seealso">

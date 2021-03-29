@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.file-put-contents">
  <refnamediv>
   <refname>file_put_contents</refname>
-  <refpurpose>Bir dizgeyi bir dosyaya yazar
+  <refpurpose>Veriyi bir dosyaya yazar
   </refpurpose>
  </refnamediv>
 
@@ -93,9 +93,7 @@
            </entry>
            <entry>
             Eğer <parameter>dosyaismi</parameter> dosyası mevcutsa veri
-            dosyanın üzerine yazılmaz, sonuna eklenir. Eklemeler atomik olup
-            kilitlemeye gerek olmadığından <constant>LOCK_EX</constant> ile
-            birlikte kullanılamaz.
+            dosyanın üzerine yazılmaz, sonuna eklenir.
            </entry>
           </row>
           <row>
@@ -104,31 +102,10 @@
            </entry>
            <entry>
             Yazma işlemi için dosya üzerinde ayrıcalıklı bir kilit edinilir.
-            <constant>FILE_APPEND</constant> ile birlikte kullanılamaz.
-           </entry>
-          </row>
-          <row>
-           <entry>
-            <constant>FILE_TEXT</constant>
-           </entry>
-           <entry>
-            <parameter>veri</parameter> metin kipinde yazılır. Eğer Evrenkod
-            anlambilimsel olarak etkinse öntanımlı kodlama UTF-8'dir. Özel bir
-            bağlam oluşturarak veya
-            <function>stream_default_encoding</function> işleviyle öntanımlı
-            değeri değiştirerek farklı bir kodlama belirtebilirsiniz. Bu
-            seçenek <constant>FILE_BINARY</constant> ile birlikte
-            kullanılamaz. Bu seçenek PHP 6'dan beri kullanılabilmektedir.
-           </entry>
-          </row>
-          <row>
-           <entry>
-            <constant>FILE_BINARY</constant>
-           </entry>
-           <entry>
-            <parameter>veri</parameter> ikil kipte yazılır. Bu öntanımlıdır ve
-            <constant>FILE_TEXT</constant> ile birlikte kullanılamaz.Bu
-            seçenek PHP 6'dan beri kullanılabilmektedir.
+            Başka bir deyişle, <function>fopen</function> ve
+            <function>fwrite</function> çağrıları arasında bir
+            <function>flock</function> çağrısı yapılır. Bu, "x" kipiyle
+            <function>fopen</function> çağrısına denk değildir.
            </entry>
           </row>
          </tbody>
@@ -156,6 +133,7 @@
    İşlev, başarısızlık durumunda &false;, aksi takdirde dosyaya yazılan
    baytların sayısı ile döner.
   </para>
+  &return.falseproblem;
  </refsect1>
 
  <refsect1 role="examples">
@@ -185,51 +163,14 @@ file_put_contents($file, $içerik);
 $file = 'people.txt';
 // Dosyaya eklenecek yeni kişi
 $person = "John Smith\n";
-// $person değişkeninin değerini $file dosyasının sonuna ekleyelim.
-file_put_contents($file, $person, FILE_APPEND);
+// $person değişkeninin değerini $file dosyasına ekleyelim.
+// FILE_APPEND veriyi dosyanın sonuna ekler.
+// LOCK_EX aynı anda başka birinin başka bir şey yazmasını engeller.
+file_put_contents($file, $person, FILE_APPEND | LOCK_EX);
 ?>
 ]]>
     </programlisting>
    </example>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        Bağlam desteği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        Added support for <constant>LOCK_EX</constant> için destek ve
-        <parameter>data</parameter> değiştirgesinde bir akım kaynağının
-        aktarılabilmesi yeteneği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>6.0.0</entry>
-       <entry>
-        <constant>FILE_TEXT</constant> ve <constant>FILE_BINARY</constant>
-        seçenekleri için destek eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 

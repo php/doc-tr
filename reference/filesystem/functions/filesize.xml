@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.filesize">
  <refnamediv>
   <refname>filesize</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>filesize</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>filesize</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -41,15 +41,7 @@
    &false; döndürür ve ayrıca <constant>E_WARNING</constant> seviyesinde bir
    hata iletisi üretilir.
   </para>
-  <note>
-   <simpara>
-    PHP'nin tamsayı türü işaretli olduğundan ve çoğu platform 32
-    bitlik tamsayılar kullandığından <function>filesize</function> işlevi
-    2GB'tan büyük dosyalarda beklenmedik sonuçlar döndürebilir. 2GB ile 4GB
-    arasındaki dosyalarda boyut normal olarak <literal>sprintf("%u",
-    filesize($dosya))</literal> üzerinden gelir.
-   </simpara>
-  </note>
+  &fs.file.32bit;
  </refsect1>
 
  <refsect1 role="examples">
@@ -72,6 +64,11 @@ echo $filename . ': ' . filesize($filename) . ' bytes';
     </programlisting>
    </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &fs.emits.warning.on.failure;
  </refsect1>
 
  <refsect1 role="notes">
