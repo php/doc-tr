@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.glob">
  <refnamediv>
   <refname>glob</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>glob</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>glob</methodname>
    <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
@@ -32,6 +32,35 @@
        Dosya eşleştirme kalıbı. Yaklaşık (~) veya değiştirge yorumlaması
        yapılmaz.
       </para>
+      <para>
+       Özel karakterler:
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          <literal>*</literal> - Sıfır veya daha fazla karakterle eşleşir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>?</literal> - Tek bir karakterle eşleşir (herhangi bir
+          karakter).
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>[...]</literal> - Bir karakter grubundaki tek bir karakter
+          ile eşleşir. İlk karakter <literal>!</literal> ise eşleşme grupta
+          olmayan bir karakterle gerçekleşir.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>\</literal> - <constant>GLOB_NOESCAPE</constant> seçeneği
+          etkin değilse önündeki karakteri önceler.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -43,13 +72,14 @@
         <listitem>
          <simpara>
           <constant>GLOB_MARK</constant> - Dönen her dizine bir bölü çizgisi
-          ekler.
+          ekler (Windows üzerinde ters bölü çizgisi ekler).
          </simpara>
         </listitem>
         <listitem>
          <simpara>
           <constant>GLOB_NOSORT</constant> - Dosyaları dizinde göründükleri
-          sırayla döndürür (sıralamaz).
+          sırayla döndürür (sıralamaz). Bu seçenek kullanılmadığında dosya
+          yolları abecesel sıralanır.
          </simpara>
         </listitem>
         <listitem>
@@ -83,6 +113,12 @@
          </simpara>
         </listitem>
        </itemizedlist>
+       <note>
+        <simpara>
+         <constant>GLOB_BRACE</constant> seçeneği Solaris gibi GNU olmayan
+         sistemlerde kullanılamıyor.
+        </simpara>
+       </note>
       </para>
      </listitem>
     </varlistentry>
@@ -101,37 +137,6 @@
     Bazı sistemlerde boş eşleşme ile hata durumunu ayrımsamak mümkün değildir.
    </para>
   </note>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <constant>GLOB_ERR</constant> eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        <constant>GLOB_ONLYDIR</constant>, Windows ve  GNU C kullanılmayan
-        diğer sistemlerde kullanılabilir oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -167,12 +172,6 @@ quickref.txt boyu 137820
   <note>
    <simpara>
     Bu işlevi bazı sistemlerde kullanamazsınız (örneğin, eski Sun OS'lar).
-   </simpara>
-  </note>
-  <note>
-   <simpara>
-    <constant>GLOB_BRACE</constant> seçeneği, Solaris gibi bazı GNU olmayan
-    sistemlerde kullanılamaz.
    </simpara>
   </note>
  </refsect1>

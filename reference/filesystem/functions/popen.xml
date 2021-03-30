@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: dec1f8445ab2af7fbafef012fb7907ab2cd349b5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.popen">
  <refnamediv>
   <refname>popen</refname>
@@ -10,12 +10,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>popen</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>popen</methodname>
    <methodparam><type>string</type><parameter>komut</parameter></methodparam>
    <methodparam><type>string</type><parameter>kip</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>komut</parameter> tarafından çatallanarak 
+   Belirtilen <parameter>komut</parameter> tarafından çatallanarak
    çalıştırılan bir sürece bir boruhattı açar.
   </para>
  </refsect1>
@@ -36,7 +36,16 @@
      <term><parameter>kip</parameter></term>
      <listitem>
       <para>
-       Kip.
+       Kip. Okumak için <literal>'r'</literal> veya yazmak için
+       <literal>'w'</literal> aktarılır.
+      </para>
+      <para>
+       Windows üzerinde, <function>popen</function> öntanımlı olarak metin
+       kipindedir, örneğin, borudan okunan veya boruya yazılan her
+       <literal>\n</literal> karakteri <literal>\r\n</literal> haline
+       getirilir. Bu istenmiyorsa, <parameter>kip</parameter> değiştirgesine
+       okuma için <literal>'rb'</literal> veya yazma için
+       <literal>'wb'</literal> atanarak ikil kip zorlanabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -51,8 +60,8 @@
    hem okuma hem de yazma için kullanılabilen ve <function>pclose</function>
    ile kapatılması gereken bir dosya tanıtıcısı ile döner. Bu tanıtıcı,
    <function>fgets</function>, <function>fgetss</function> ve
-   <function>fwrite</function> işlevleri tarafından kullanılabilir. 
-   Kip 'r' ise dönen dosya konumlayıcı komutun standart çıktısına eşitlenir. 
+   <function>fwrite</function> işlevleri tarafından kullanılabilir.
+   Kip 'r' ise dönen dosya konumlayıcı komutun standart çıktısına eşitlenir.
    Kip 'w' ise dönen dosya konumlayıcı komutun standart girdisine eşitlenir.
   </para>
   <para>

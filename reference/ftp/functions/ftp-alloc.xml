@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 18680fd1681731888c6fb7c530cfdb712f53e954 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ftp-alloc" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ftp_alloc</refname>
@@ -10,9 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>ftp_alloc</methodname>
-   <methodparam><type>resource</type><parameter>ftp_akımı</parameter></methodparam>
-   <methodparam><type>int</type><parameter>dosyaboyu</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter role="reference">sonuç</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>ftp</parameter></methodparam>
+   <methodparam><type>int</type><parameter>boyut</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">yanıt</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Yüklenecek dosyaya yer ayırmasi için FTP sunucusuna bir <literal>ALLO</literal> komutu gönderir.
@@ -34,7 +34,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ftp_akımı</parameter></term>
+     <term><parameter>ftp</parameter></term>
      <listitem>
       <para>
        FTP bağlantısının bağlantı tanıtıcısı.
@@ -42,7 +42,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dosyaboyu</parameter></term>
+     <term><parameter>boyut</parameter></term>
      <listitem>
       <para>
        Ayrılacak bayt sayısı.
@@ -50,7 +50,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sonuç</parameter></term>
+     <term><parameter>yanıt</parameter></term>
      <listitem>
       <para>
        Değiştirge belirtildiği takdirde sunucunun yanıtıyla ilgili ileti bu
@@ -84,7 +84,7 @@ $login_result = ftp_login($conn_id, 'anonymous', 'user@example.com');
 
 if (ftp_alloc($conn_id, filesize($file), $result)) {
   echo "Sunucuda yer ayrıldı. $file gönderiliyor.\n";
-  ftp_put($conn_id, '/incomming/myfile', $file, FTP_BINARY);
+  ftp_put($conn_id, '/incoming/myfile', $file, FTP_BINARY);
 } else {
   echo "Sunucuda yer ayrılamadı. Sunucunun yanıtı: $result\n";
 }

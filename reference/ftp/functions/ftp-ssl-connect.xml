@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 18680fd1681731888c6fb7c530cfdb712f53e954 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ftp-ssl-connect" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ftp_ssl_connect</refname>
@@ -9,23 +9,28 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>ftp_ssl_connect</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>ftp_ssl_connect</methodname>
    <methodparam><type>string</type><parameter>adres</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>port</parameter><initializer>21</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>zamanaşımı</parameter><initializer>90</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>adres</parameter> adresindeki sunucuya bir SSL-FTP bağlantısı
-   açar.
+   <parameter>adres</parameter> adresindeki sunucuya
+   <emphasis>doğrudan</emphasis> bir SSL-FTP bağlantısı açar.
+   Sunucu SSL-FTP için yapılandırılmamış veya sertifikası geçersiz olsa bile
+   bu uygulanır. Yalnızca, <function>ftp_login</function> çağrısında istemci
+   uygun AUTH FTP komutunu gönderir, bu durumda <function>ftp_login</function>
+   başarısız olacaktır.
   </para>
   <note>
    <title>Bu işlev neden Windows'ta yok?</title>
    <para>
-    <function>ftp_ssl_connect</function> işlevinin kullanılabilmesi için FTP
-    ve <link linkend="ref.openssl">OpenSSL</link> eklentilerinin ikisinin de
-    PHP içinde derlenmiş olması gerekir. Yani Windows için resmi derlenmiş
-    PHP dağıtımlarında bu işlev tanımlı değildir. Bu işlevi Windows'ta
-    kullanabilmek için PHP çalıştırılabilirlerini kendiniz derlemelisiniz.
+    PHP 7.0.0'dan önce, <function>ftp_ssl_connect</function> yalnızca hem ftp
+    modülü hem de <link linkend="ref.openssl">OpenSSL</link> eklentisini PHP
+    içinde statik olarak derlenmişse kullanılabilirdi; bu, Windows'ta bu
+    işlevin resmi PHP derlemelerinde tanımsız olduğu anlamına gelir. Bu işlevi
+    Windows'ta kullanabilmek için, PHP'yi kaynak paketinden kendiniz
+    derlemeniz gerekirdi.
    </para>
   </note>
   <note>
@@ -81,31 +86,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.2</entry>
-       <entry>
-        Bu işlev artık SSL bağlantısı kullanamadığı zaman SSL'siz bir
-        bağlantı kurmak yerine &false; ile dönüyor.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -120,6 +100,12 @@ $conn_id = ftp_ssl_connect($ftp_server);
 
 // kullanıcı adı ve parola ile oturum açalım
 $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+
+if (!$login_result) {
+    // PHP bu durumda daima bir E_WARNING üretir
+    die("Oturum açılamıyor");
+}
+
 
 echo ftp_pwd($conn_id); // /
 

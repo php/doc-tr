@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 19822bcfa1292e05f215372012d5611651905070 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.unlink">
  <refnamediv>
   <refname>unlink</refname>
@@ -15,8 +15,9 @@
    <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dosyaismi</parameter> ile belirtilen dosyayı siler. Unix C
-   unlink() işlevine benzer.
+   <parameter>dosyaismi</parameter> ile belirtilen dosyayı siler.
+   Unix C unlink() işlevine benzer. Başarısızlık durumunda
+   <constant>E_WARNING</constant> seviyesinde bir hata üretilir.
   </para>
  </refsect1>
 
@@ -62,13 +63,12 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>7.3.0</entry>
        <entry>
-        PHP 5.0.0'dan beri <function>unlink</function> ayrıca
-        <emphasis>bazı</emphasis> URL sarmalayıcılarıyla da
-        kullanılabilmektedir. <function>unlink</function> tarafından
-        desteklenen sarmalayıcıların listesi için <xref linkend="wrappers"/>
-        bölümüne bakınız.
+        Windows üzerinde, tanıtıcısı kullanımda olan dosyalar artık
+        <function>unlink</function> ile silinebiliyor, evvelce bu başarısız
+        olurdu. Ancak, tüm tanıtıcıları kapatılana kadar bu işlev ile
+        silinmiş bir dosyayı yeniden oluşturmak mümkündür.
        </entry>
       </row>
      </tbody>
@@ -89,10 +89,7 @@ $fh = fopen('deneme.html', 'a');
 fwrite($fh, '<h1>Menhaba Dünya!</h1>');
 fclose($fh);
 
-mkdir('dnmdizini', 0777);
-
 unlink('deneme.html');
-unlink('dnmdizini');
 ?>
 ]]>
     </programlisting>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fseek">
  <refnamediv>
   <refname>fseek</refname>
@@ -13,7 +13,7 @@
    <type>int</type><methodname>fseek</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam><type>int</type><parameter>nereye</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>nereden</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>nereden</parameter><initializer><constant>SEEK_SET</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Dosya tanıtıcısı <parameter>dt</parameter> ile belirtilen bir dosyada konum
@@ -21,6 +21,13 @@
    itibaren bayt sayısı olarak ölçülen yeni konum,
    <parameter>nereden</parameter> değerine <parameter>nereye</parameter>
    değeri eklenerek belirtilir.
+  </para>
+  <para>
+   Genel olarak, dosyanın sonununu aşan konumlamaya izin verilir; veri daha
+   sonra yazılırsa, dosyanın sonu ile istenen konum arasındaki herhangi bir
+   yazılı olmayan bölgedeki okumalar 0 değerine sahip baytlar verir. Ancak,
+   özellikle temelde sabit boyutlu bir depolama alanı olan bazı akımlar bu
+   davranışı desteklemeyebilir.
   </para>
  </refsect1>
 
@@ -42,29 +49,28 @@
       </para>
       <para>
        Konumu dosya sonunun öncesine taşımak için bu değiştirgeyle negatif bir
-       değer, <parameter>nereye</parameter> değiştirgesiyle de
+       değer, <parameter>nereden</parameter> değiştirgesiyle de
        <constant>SEEK_END</constant> aktarın.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>nereye</parameter></term>
+     <term><parameter>nereden</parameter></term>
      <listitem>
       <para>
        Mevcut konumun nasıl yorumlanacağı belirtilir:
        <simplelist>
         <member><constant>SEEK_SET</constant> - <parameter>nereye</parameter>
-        konumunun dosya başlangıcına göre belirtildiği varsayılır.</member>
+         konumunun dosya başlangıcından itibaren belirtildiği varsayılır.
+        </member>
         <member><constant>SEEK_CUR</constant> - <parameter>nereye</parameter>
-        konumunun mevcut dosya konumuna göre bayt sayısı olarak belirtildiği
-        varsayılır. Bu miktar pozitif veya negatif olabilir. </member>
+         konumunun mevcut dosya konumundan itibaren bayt sayısı olarak
+         belirtildiği varsayılır. Bu miktar pozitif veya negatif olabilir.
+        </member>
         <member><constant>SEEK_END</constant> - <parameter>nereye</parameter>
-        konumunun dosya sonuna göre belirtildiği varsayılır.</member>
+         konumunun dosya sonundan itibaren belirtildiği varsayılır.
+        </member>
        </simplelist>
-      </para>
-      <para>
-       Eğer <parameter>nereden</parameter> belirtilmezse,
-       <constant>SEEK_SET</constant> öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -75,8 +81,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarı durumunda 0 aksi takdirde -1 döner. Dosya sonundan sonrasına
-   konumlama bir hata olarak ele alınmaz.
+   Başarı durumunda 0 aksi takdirde -1 döner.
   </para>
  </refsect1>
 
@@ -109,17 +114,15 @@ fseek($fp, 0);
   &reftitle.notes;
   <note>
    <para>
-    Eğer dosya ekleme ("a" veya "a+") kipinde açılmışsa, dosyaya yazılan her
-    veri konuma bakılmaksızın daima dosyanın sonuna eklenir.
+    Eğer dosya, ekleme (<literal>a</literal> veya <literal>a+</literal>)
+    kipinde açılmışsa, dosyaya yazılan her veri konuma bakılmaksızın daima
+    dosyanın sonuna eklenir. <function>fseek</function> çağrısının bu
+    durumdaki sonucu tanımsızdır.
    </para>
   </note>
   <note>
    <para>
-    Eğer "http://" veya "ftp://" biçemi kullanılırsa
-    <function>fopen</function> tarafından döndürülen dosya tanıtıcısı
-    kullanılmayabilir. Ayrıca, <function>fseek</function> işlevi, sadece sona
-    ekleme kipinde ('a' seçeneğiyle) açılmış akımlar için yanlış sonuçlar
-    verebilir.
+    Tüm akımlar dosya içi konumlamayı desteklemez. Konumlamayı desteklemeyenler için, mevcut konumdan ileriye doğru bir konumlama, verileri okuyup terkederek gerçekleştirilir; diğer konumlama biçimleri başarısız olacaktır.
    </para>
   </note>
  </refsect1>
