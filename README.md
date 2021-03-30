@@ -12,10 +12,10 @@ GitHub kullanabildiğini, HTML ve XML belgeler üretmekte ve düzenlemekte zorlu
 bildiğini (herşeyi bilemeyiz ama öğrenebiliriz) varsayıyoruz. Aşağıdaki
 bilgiler Linux kullananlara göre düzenlenmiştir.
 
-PR'lar (Pull Request) GitHub üzerinden kabul edilmektedir.
-PR yapmak istiyorsanız bir GitHub hesabınız olmalıdır.
+Bir GitHub hesabınız olması önerilir.
 Örnek: https://github.com/nilgun
-GitHub hesabınızda oturum açtıktan sonra
+
+PR yapacaksanız GitHub hesabınızda oturum açtıktan sonra
 https://github.com/php/doc-tr adresine gidip bu depoya bir "fork" açın.
 Hesap sayfanızda yeni bir deponuz oldu. PR yapmayanlardan farklı olarak
 `tr` deposu olarak bu depoyu kullanacaksınız.
@@ -28,14 +28,14 @@ Dizine geçin ve şu komutları girin:
 GitHub PR'ları yapacaklar için komutlar:
 ```bash
 git clone git@github.com:<github-user>/doc-tr.git tr
-git clone git://git.php.net:/doc/en.git
-git clone git://git.php.net:/doc/base.git doc-base
+git clone https://github.com/php/doc-en.git en
+git clone https://github.com/php/doc-base.git doc-base
 ```
 Liderle çalışacaklar için komutlar:
 ```bash
-git clone git://git.php.net:/doc/base.git doc-base
-git clone git://git.php.net:/doc/en.git
-git clone git://git.php.net:/doc/tr.git
+git clone https://github.com/php/doc-tr.git tr
+git clone https://github.com/php/doc-en.git en
+git clone https://github.com/php/doc-base.git doc-base
 ```
 
 PHP karması olanların https://github.com/php/doc-base/README.md dosyasını
