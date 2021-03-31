@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: cdaea0421544885f02ff3d36bd203dc01b78299e Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.14 -->
 <refentry xml:id="function.func-get-args" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -33,40 +33,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Bu işlev artık değiştirge listelerinde kullanılabilmektedir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Bu işlev, çağrının yapıldığı dosyadaki bir işlev tanımında bulunan bir
-        <function>include</function> veya <function>require</function>
-        üzerinden dosyaya dahil edilen bir dosyadan yani, asıl dosyanın etki
-        alanının dışından) çağrılırsa artık bir uyarı üretip &false;
-        döndürmektedir.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
@@ -85,13 +51,13 @@
 function işlev()
 {
     $dğşsayısı = func_num_args();
-    echo "Değiştirge sayısı: $dğşsayısı<br />\n";
+    echo "Değiştirge sayısı: $dğşsayısı\n";
     if ($dğşsayısı >= 2) {
-        echo "İkinci değiştirge: " . func_get_arg(1) . "<br />\n";
+        echo "İkinci değiştirge: " . func_get_arg(1) . "\n";
     }
     $dğş_listesi = func_get_args();
     for ($i = 0; $i < $dğşsayısı; $i++) {
-        echo "$i. değiştirge: " . $dğş_listesi[$i] . "<br />\n";
+        echo "$i. değiştirge: " . $dğş_listesi[$i] . "\n";
     }
 }
 
@@ -102,11 +68,11 @@ işlev(1, 2, 3);
     &example.outputs;
     <screen>
 <![CDATA[
-Değiştirge sayısı: 3<br />
-İkinci değiştirge: 2<br />
-0. değiştirge: 1<br />
-1. değiştirge: 2<br />
-2. değiştirge: 3<br />
+Değiştirge sayısı: 3
+İkinci değiştirge: 2
+0. değiştirge: 1
+1. değiştirge: 2
+2. değiştirge: 3
 ]]>
     </screen>
    </example>
@@ -154,11 +120,68 @@ false
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- - byref ve byval değiştirgeli <function>func_get_args</function></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function byVal($arg) {
+    echo 'Aktarılan  : ', var_export(func_get_args()), PHP_EOL;
+    $arg = 'baz';
+    echo 'Değişen    : ', var_export(func_get_args()), PHP_EOL;
+}
+
+function byRef(&$arg) {
+    echo 'Aktarılan  : ', var_export(func_get_args()), PHP_EOL;
+    $arg = 'baz';
+    echo 'Değişen    : ', var_export(func_get_args()), PHP_EOL;
+}
+
+$arg = 'bar';
+byVal($arg);
+byRef($arg);
+?>
+]]>
+    </programlisting>
+    &example.outputs.7;
+    <screen>
+Aktarılan  : array (
+  0 => 'bar',
+)
+Değişen    : array (
+  0 => 'baz',
+)
+Aktarılan  : array (
+  0 => 'bar',
+)
+Değişen    : array (
+  0 => 'baz',
+)
+    </screen>
+    &example.outputs.5;
+    <screen>
+Aktarılan  : array (
+  0 => 'bar',
+)
+Değişen    : array (
+  0 => 'bar',
+)
+Aktarılan  : array (
+  0 => 'bar',
+)
+Değişen    : array (
+  0 => 'baz',
+)
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
   &reftitle.notes;
   &note.funcnoparam;
+  &note.funcbyref;
   <note>
    <simpara>
     Bu işlev sadece işleve aktarılan değiştirgeleri döndürür ve öntanımlı
@@ -171,8 +194,11 @@ false
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="functions.variable-arg-list">5.6 sonrasında
+     <literal>...</literal> sözdizimi</link></member>
     <member><function>func_get_arg</function></member>
     <member><function>func_num_args</function></member>
+    <member><methodname>ReflectionFunctionAbstract::getParameters</methodname></member>
    </simplelist>
   </para>
  </refsect1>

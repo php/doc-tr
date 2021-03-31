@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.register-shutdown-function" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>register_shutdown_function</refname>
@@ -12,23 +12,22 @@
   &reftitle.description;
   <methodsynopsis>
    <type>void</type><methodname>register_shutdown_function</methodname>
-   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Betiğin işi bittiğinde çalıştırılacak kapatma işlevini
+   Betiğin işi bittiğinde çalıştırılacak kapanma işlevini
    <parameter>işlev</parameter> olarak tanımlar.
   </para>
   <para>
    <function>register_shutdown_function</function> her gerekişinde bir kere
-   olmak üzere defalarca çağrılabilir. Tanımlanan bir kapatma işlevinin içinde
+   olmak üzere defalarca çağrılabilir. Tanımlanan bir kapanma işlevinin içinde
    <function>exit</function> çağrısı yapılırsa betik orada sonlanır ve başka
-   kapatma işlevi çağrılmaz.
+   kapanma işlevi çağrılmaz.
   </para>
   <para>
    PHP 4'ten beri <function>register_shutdown_function</function> işlevi
-   üzerinden kapatma işlevine ek değiştirgeler aktarılabilmektedir.
+   üzerinden kapanma işlevine ek değiştirgeler aktarılabilmektedir.
   </para>
  </refsect1>
 
@@ -43,30 +42,18 @@
        Tanımlanacak kapatma işlevinin ismi.
       </para>
       <para>
-       Kapatma işlevleri isteğin parçası olarak çağrılmakta dolayısıyla
-       bunlardan çıktı göndermek mümkün olmaktadır. Kapatma işlevlerinin
-       içinde çıktı tamponlama ile veri işlemenin şimdilik bir yolu yoktur.
-      </para>
-      <para>
-       Kapatma işlevleri tüm açık çıktı tamponları kapandıktan sonra
-       çağrıldığından örneğin, <link linkend="ini.zlib.output-compression">
-       zlib.output_compression</link> etkin olsa bile çıktı sıkıştırılmaz.
+       Kapanma işlevleri isteğin parçası olarak çağrılmakta dolayısıyla
+       bunlardan çıktı göndermek ve çıktı tamponlarına erişmek mümkün
+       olmaktadır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>değiştirge</parameter></term>
+     <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
        <function>register_shutdown_function</function> işlevi üzerinden
-       kapatma işlevine ek değiştirgeler aktarılabilmektedir.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>...</parameter></term>
-     <listitem>
-      <para>
+       kapanma işlevine ek değiştirgeler aktarılabilmektedir.
       </para>
      </listitem>
     </varlistentry>
@@ -81,38 +68,11 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
+ <refsect1 role="errors">
+  &reftitle.errors;
   <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        Apache altında, tanımlı kapatma işlevleri istek tamamlandıktan sonra
-        (çıktı tamponlarının gönderilmesi dahil) çağrılır. Dolayısıyla bir
-        daha <function>echo</function> veya <function>print</function>
-        kullanarak tarayıcıya bir şey gönderilemez veya
-        <function>ob_get_contents</function> kullanarak herhangi bir çıktı
-        tamponunun içeriği alınamaz. Ancak, başlıklar daima gönderilir.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.0</entry>
-       <entry>
-        Kapatma işlevine değiştirgelerini aktarmak mümkün oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Aktarılan geriçağırım geri çağrılabilir değilse
+   <constant>E_WARNING</constant> seviyesinde bir hata üretilir.
   </para>
  </refsect1>
 
@@ -126,11 +86,11 @@
 <?php
 function kapat()
 {
-  // bu bizim kapatma işlevimiz.
-  // Burada betik sonlanmadan önce yapılacak
-  // son işlemleri gerçekleştiriyoruz.
+    // bu bizim kapanma işlevimiz.
+    // Burada betik sonlanmadan önce yapılacak
+    // son işlemleri gerçekleştiriyoruz.
 
-  echo 'Betik işini gerektiği gibi yaptı', PHP_EOL;
+    echo 'Betik işini gerektiği gibi yaptı', PHP_EOL;
 }
 
 register_shutdown_function('kapat');
@@ -145,17 +105,17 @@ register_shutdown_function('kapat');
   &reftitle.notes;
   <note>
    <para>
-    Normal olarak tanımsız işlevler PHP'de ölümcül hatalara sebep olurlar,
-    fakat <function>register_shutdown_function</function> ile tanımlanmamış
-    bir işlev çağrıldığında sadece <constant>E_WARNING</constant> seviyesinde
-    bir hata çıktılanır. Ayrıca, PHP'ye özgü sebeplerle bu hata 0. satırda
-    <literal>Unknown</literal> olarak gösterilir.
+    Apache gibi bazı HTTP sunucularında çalışma dizini kapanma işlevi içinde
+    değiştirilebilmektedir.
    </para>
   </note>
   <note>
    <para>
-    Apache gibi bazı HTTP sunucularında çalışma dizini kapatma işlevi içinde
-    değiştirilebilmektedir.
+    Süreç bir SIGTERM veya SIGKILL ile öldürülmüşse kapanma işlevleri
+    çalıştırılmaz. Bir SIGKILL'i yakalayamazsınız ama temiz bir sonlandırma
+    için <function>exit</function> işlevini kullanan SIGTERM sinyalini
+    yakalayan bir işleyici kurmak için <function>pcntl_signal</function>
+    kullanabilirsiniz.
    </para>
   </note>
  </refsect1>
@@ -164,8 +124,7 @@ register_shutdown_function('kapat');
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><link linkend="ini.auto-append-file">
-    auto_append_file</link></member>
+    <member><link linkend="ini.auto-append-file">auto_append_file</link></member>
     <member><function>exit</function></member>
     <member><link linkend="features.connection-handling">Bağlantı
     yönetimi</link> bölümü</member>

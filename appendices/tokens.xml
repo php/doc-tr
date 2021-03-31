@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 025f2d34ccb45dc2d8b865a758fd96601903f0d9 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 34f991853507ec328336f0fb79b839faa043e92a Maintainer: nilgun Status: ready -->
 <appendix xml:id="tokens" xmlns="http://docbook.org/ns/docbook">
  <title>Çözümleyici Dizgeciklerinin Listesi</title>
  <para>
-  PHP dilinin çeşitli parçaları dahili olarak T_SR benzeri türlerle ifade
-  edilir. PHP, çözümleme hatalarında bu gibi betimleyicileri şöyle çıktılar:
-  <literal>"Parse error: unexpected T_SR, expecting ',' or ';' in script.php
-  on line 10."</literal> (Çözümleme hatası: beklenmedik T_SR, script.php'nin
-  10. satırında ',' veya ';' umuluyor)
+  PHP dilinin çeşitli parçaları dahili olarak dizgeciklerle ifade edilir.
+  Geçersiz bir dizgecikler içeren bir kod parçacığı, şuna benzer hatalara
+  neden olabilir: <literal>"Parse error: syntax error, unexpected token "==",
+  expecting "(" in script.php on line 10."</literal>. Buradaki <code>==</code>
+  dizgeciği dahili olarak <constant>T_IS_EQUAL</constant> sabiti ile ifade
+  edilir.
  </para>
  <para>
-  T_SR'nin anlamını bildiğiniz varsayılır. Bilmeyenler için bu betimleyiciler
-  PHP söz dizimi ve kılavuzdaki açıklamalarına bağlarla burada
-  listelenmişlerdir.
+  Aşağıdaki tabloda tüm dizgecikler listelenmiştir. Bunlar aynı zamanda PHP
+  sabiti olarak da kullanılabilir.
  </para>
  <note>
   <title>T_* sabitlerinin kullanımı</title>
   <para>
-   Aşağıda listelenmiş sabitlerin tümü aynı zamanda PHP sabiti olarak da
-   tanımlıdır. Bunların değerleri PHP'nin temel çözümleyici alt yapısına dayalı
+   T_* sabitlerinin değerleri, PHP'nin temel çözümleyici alt yapısına dayalı
    olarak otomatik üretilir. Yani bir dizgeciğin somut değeri iki PHP sürümü
    arasında değişebilir. Örneğin <constant>T_FILE</constant> sabitinin değeri
    PHP 5.3'te <literal>365</literal> iken aynı değer PHP 5.4'te
    <constant>T_TRAIT</constant> sabitine atanmışken <constant>T_FILE</constant>
    sabitinin değeri <literal>369</literal>'dur. Yani kodunuz PHP sürümleri
    arasında uyumluluk sağlamak için PHP'nin X.Y.Z sürümünden alınmış özgün T_*
-   değerlerine güvenmemelidir. Kodunuz bunun yerine her iki PHP sürümü ile
-   çalışacak uygun bir stratejiden, T_* değerlerinden ve özel değerlerden
-   (<literal>10000</literal> gibi büyük bir değer kullanmak)
-   yararlanmalıdır.
+   değerlerine güvenmemelidir.
+  </para>
+  <para>
+   T_* sabitlerini çok sayıda PHP sürümü arasında kullanılabilir yapmak için,
+   tanımsız sabitler kullanıcı tarafından uygun bir strateji seçilerek
+   tanımlanabilir: T_* değerlerinden ve özel değerlerden
+   (<literal>10000</literal> gibi büyük bir değer kullanmak) yararlanılabilir.
+   <programlisting role="php">
+<![CDATA[
+<?php
+// PHP 7.4.0 öncesinde, T_FN tanımlı değildi.
+defined('T_FN') || define('T_FN', 10001);
+]]>
+   </programlisting>
   </para>
  </note>
  <table>

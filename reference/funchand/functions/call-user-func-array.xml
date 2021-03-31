@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.20 -->
 <refentry xml:id="function.call-user-func-array" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>call_user_func_array</refname>
-  <refpurpose>Değiştirgelerin bir dizi olarak verildiği kullanıcı işlevini
+  <refpurpose>Değiştirgelerin bir dizi olarak verildiği geriçağırım işlevini
   çağırır</refpurpose>
  </refnamediv>
 
@@ -13,7 +13,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>call_user_func_array</methodname>
-   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
    <methodparam><type>array</type><parameter>değiştirge_dizisi</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -50,7 +50,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata oluşmamışsa işlevin sonucunu, aksi takdirde &false; döndürür.
+   Bir hata oluşmamışsa işlevin dönüş değerini, aksi takdirde &false;
+   döndürür.
   </para>
  </refsect1>
 
@@ -142,6 +143,31 @@ int(8)
 ]]>
     </screen>
    </example>
+   <example>
+    <title>- Değerlerin gönderimli aktarılması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function mega(&$a){
+    $a = 55;
+    echo "function mega \$a=$a\n";
+}
+$bar = 77;
+call_user_func_array('mega',array(&$bar));
+echo "global \$bar=$bar\n";
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+function mega $a=55
+global $bar=55
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -149,12 +175,24 @@ int(8)
   &reftitle.notes;
   <note>
    <para>
-    <parameter>değiştirge_dizisi</parameter> içindeki gönderimli
-    değiştirgeler işleve gönderimli aktarılır, diğerleri ise değerleriyle
-    aktarılır. Başka bir deyişle değiştirgenin değeriyle mi yoksa gönderimli
-    olarak mı aktarılacağı işlevin nasıl tanımlandığı ile ilgili değildir.
+    PHP 5.4 öncesinde, <parameter>değiştirge_dizisi</parameter> içindeki
+    gönderimli değişkenler, işlevin ilgili değiştirgenin gönderimli
+    aktarılmasını bekleyip beklemediğine bakılmaksızın, işleve gönderimli
+    aktarılırdı. Bu çağrı zamanı gönderimli aktarma biçimi bir kullanımdan
+    kaldırma bildirimi çıktılamasa da, yine de kullanımdan kaldırılmış ve PHP
+    5.4'te tamamen kaldırılmıştır. Ayrıca, bu, dahili işlevler için geçerli
+    değildir. İşlev bir değiştirgede gönderimli bir aktarım beklerken
+    değeriyle yapılan bir aktarım bir uyarı ile sonuçlanır ve
+    <function>call_user_func</function> işlevinin &false; döndürmesine sebep
+    olur (bununla birlikte, sayısı birden fazla olmamak şartıyla değişmezler
+    gibi değerlerin aktarımı için bir istisna vardır, çünkü bunlar zararlı bir
+    etkiye sebep olmadan gönderimliye dönüştürülebilir - elbette bu arada
+    herhangi bir etkiye sahip bir değer buna yazılmazsa -; sonuçta, bu
+    davranışa güvenilmemelidir, ayrıca gönderim sayısı bir gerçeklenim
+    ayrıntısıdır ve bu davranışın mükemmelliği sorgulanabilir).
    </para>
   </note>
+  &note.func-callback-exceptions;
  </refsect1>
 
  <refsect1 role="seealso">
@@ -162,6 +200,8 @@ int(8)
   <para>
    <simplelist>
     <member><function>call_user_func</function></member>
+    <member><methodname>ReflectionFunction::invokeArgs</methodname></member>
+    <member><methodname>ReflectionMethod::invokeArgs</methodname></member>
    </simplelist>
   </para>
  </refsect1>

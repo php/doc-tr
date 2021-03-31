@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: cdaea0421544885f02ff3d36bd203dc01b78299e Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.12 -->
 <refentry xml:id="function.func-get-arg" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -50,40 +50,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Bu işlev artık değiştirge listelerinde kullanılabilmektedir.
-       </entry>
-      </row>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        Bu işlev, çağrının yapıldığı dosyadaki bir işlev tanımında bulunan bir
-        <function>include</function> veya <function>require</function>
-        üzerinden dosyaya dahil edilen bir dosyadan yani, asıl dosyanın etki
-        alanının dışından) çağrılırsa artık bir uyarı üretip &false;
-        döndürmektedir.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
@@ -104,9 +70,9 @@
 function işlev()
 {
     $dğşsayısı = func_num_args();
-    echo "Değiştirge sayısı: $dğşsayısı<br />\n";
+    echo "Değiştirge sayısı: $dğşsayısı\n";
     if ($dğşsayısı >= 2) {
-        echo "İkinci değiştirge: " . func_get_arg(1) . "<br />\n";
+        echo "İkinci değiştirge: " . func_get_arg(1) . "\n";
     }
 }
 
@@ -114,6 +80,13 @@ işlev(1, 2, 3);
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Değiştirge sayısı: 3
+İkinci değiştirge: 2
+]]>
+    </screen>
    </example>
   </para>
   <para>
@@ -130,10 +103,10 @@ function foo() {
 foo('First arg', 'Second arg');
 ?>
 
-fga.php
+fga.inc
 <?php
 
-$arg = func_get_arg1(1);
+$arg = func_get_arg(1);
 var_export($arg);
 
 ?>
@@ -159,11 +132,52 @@ false
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- byref ve byval değiştirgeli <function>func_get_arg</function></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function byVal($arg) {
+    echo 'Aktarılan  : ', var_export(func_get_arg(0)), PHP_EOL;
+    $arg = 'baz';
+    echo 'Değişen    : ', var_export(func_get_arg(0)), PHP_EOL;
+}
+
+function byRef(&$arg) {
+    echo 'Aktarılan  : ', var_export(func_get_arg(0)), PHP_EOL;
+    $arg = 'baz';
+    echo 'Değişen    : ', var_export(func_get_arg(0)), PHP_EOL;
+}
+
+$arg = 'bar';
+byVal($arg);
+byRef($arg);
+?>
+]]>
+    </programlisting>
+    &example.outputs.7;
+    <screen>
+Aktarılan  : 'bar'
+Değişen    : 'baz'
+Aktarılan  : 'bar'
+Değişen    : 'baz'
+    </screen>
+    &example.outputs.5;
+    <screen>
+Aktarılan  : 'bar'
+Değişen    : 'bar'
+Aktarılan  : 'bar'
+Değişen    : 'baz'
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
   &reftitle.notes;
   &note.funcnoparam;
+  &note.funcbyref;
   <note>
    <simpara>
     Bu işlev sadece işleve aktarılan değiştirgelerden birini döndürür ve
@@ -176,6 +190,8 @@ false
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="functions.variable-arg-list">5.6 sonrasında
+     <literal>...</literal> sözdizimi</link></member>
     <member><function>func_get_args</function></member>
     <member><function>func_num_args</function></member>
    </simplelist>

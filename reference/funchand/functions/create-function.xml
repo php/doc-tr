@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 4d4301be41a846c879066ba2c136a33bc0bbc869 Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.10 -->
 <refentry xml:id="function.create-function" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>create_function</refname>
   <refpurpose>Bir anonim (lamda tarzı) işlev oluşturur</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &warn.deprecated.function-7-2-0.removed-8-0-0;
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
@@ -19,7 +23,18 @@
    Verilen değiştirgelerden isimsiz bir işlev oluşturur ve onun için eşsiz
    bir isim döndürür.
   </para>
- </refsect1>
+  <caution>
+   <para>
+    Bu işlev dahili olarak bir <function>eval</function> çağrısı yapar, bu
+    nedenle <function>eval</function> ile aynı güvenlik sorunlarına sahiptir.
+    Ek olarak, kötü başarım ve bellek kullanımı özellikleri de vardır.
+   </para>
+   <para>
+    PHP 5.3.0 ve sonrasında bu işlev yerine yerleşik bir <link
+    linkend="functions.anonymous">anonim işlev</link> kullanılmalıdır.
+   </para>
+  </caution>
+</refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -120,7 +135,7 @@ process(2.3445, M_PI, $farr);
 $garr = array(
     create_function('$b,$a', 'if (strncmp($a, $b, 3) == 0) return "** \"$a\" '.
     've \"$b\"\n** (ilk üç karaktere bakarak) Bak bu ikisi aynı!";'),
-    create_function('$a,$b', '; return "CRC\'ler: " . crc32($a) . ", ".crc32(b);'),
+    create_function('$a,$b', '; return "CRCs: " . crc32($a) . ", ".crc32($b);'),
     create_function('$a,$b', '; return "benzerlik(a,b) = " . similar_text($a, $b, &$p) . "(%$p)";')
     );
 echo "\nİkinci isimsiz işlev grubumuz\n";
@@ -142,7 +157,7 @@ ln(a)/b = 0.27122299212594
 İkinci isimsiz işlev grubumuz
 ** "Gün aydınlanıyordu" ve "Gün yavaş yavaş ışıyordu"
 ** (ilk üç karaktere bakarak) Bak bu ikisi aynı!
-CRC'ler: 2226456759, 1908338681
+CRCs: -725381282, 342550513
 benzerlik(a,b) = 15(%58.823529411765)
 ]]>
     </screen>

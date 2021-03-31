@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: onurozgurozkan Status: ready -->
 <!-- splitted from ./en/functions/array.xml, last change in rev 1.20 -->
 <refentry xml:id="function.call-user-func" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -13,13 +13,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>mixed</type><methodname>call_user_func</methodname>
-   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>değiştirge</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>işlev</parameter> değiştirgesi ile belirtilen kullanıcı tanımlı
-   işlevi çağırır.
+   <parameter>işlev</parameter> değiştirgesi ile belirtilen geriçağırım
+   işlevini belirtilen <parameter>değiştirgeler</parameter>i aktararak
+   çağırır.
   </para>
  </refsect1>
 
@@ -31,14 +31,12 @@
      <term><parameter>işlev</parameter></term>
      <listitem>
       <para>
-       Çağırılacak işlev. Ayrıca, bu değiştirgede bir nesne örneğinin sınıf
-       yöntemlerinin, <literal>array($sınıfadı, $yöntemadı)</literal>
-       biçiminde belirtilmek suretiyle çağrılması da mümkündür.
+       Çağırılacak geriçağırım işlevi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>değiştirge</parameter></term>
+     <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
        İşleve sıfır veya daha fazla sayıda değiştirge aktarılabilir.
@@ -64,7 +62,8 @@ $a = 0;
 call_user_func('say', $a);
 echo $a."\n";
 
-call_user_func_array('say', array(&$a)); // PHP 5.3 öncesinde bunu kullanın
+// yerine bu da kullanılabilir
+call_user_func_array('say', array(&$a));
 echo $a."\n";
 ?>
 ]]>
@@ -72,6 +71,7 @@ echo $a."\n";
          &example.outputs;
          <screen>
 <![CDATA[
+Warning: Parameter 1 to increment() expected to be a reference, value given in …
 0
 1
 ]]>
@@ -88,7 +88,7 @@ echo $a."\n";
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Hata oluşmamışsa işlevin sonucunu aksi takdirde &false; döndürür.
+   Geriçağırım işlevinin dönüş değerini döndürür.
   </para>
  </refsect1>
 
@@ -206,12 +206,19 @@ call_user_func(function($arg) { print "[$arg]\n"; }, 'test');
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.func-callback-exceptions;
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><function>call_user_func_array</function></member>
     <member><function>is_callable</function></member>
+    <member><methodname>ReflectionFunction::invoke</methodname></member>
+    <member><methodname>ReflectionMethod::invoke</methodname></member>
    </simplelist>
   </para>
  </refsect1>
