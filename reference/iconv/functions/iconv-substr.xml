@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ab9a7d2e3dfa9224186abcbd7a43b3af08d1bfdb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.iconv-substr" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>iconv_substr</refname>
@@ -10,11 +10,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>iconv_substr</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>iconv_substr</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>strlen($str)</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>ini_set("iconv.internal_encoding")</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>karküm</parameter><initializer>&null;</initializer></methodparam>
+
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinden başlangıç konumu
@@ -72,14 +73,15 @@
      <term><parameter>karküm</parameter></term>
      <listitem>
       <para>
-       <parameter>karküm</parameter> belirtilmezse, dizge karakter kodlamasının
+       <parameter>karküm</parameter> belirtilmezse veya &null; ise,
+       dizge karakter kodlamasının
        <link linkend="iconv.configuration">iconv.internal_encoding</link>
        yönergesinde belirtilen kodlama olduğu varsayılır.
       </para>
       <para>
        <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
        değiştirgelerinde sayılanlar bayt değil dizgenin karakter kümesine göre
-       birer karakterdir. İşlevin taydaşı olan <function>substr</function>
+       birer karakterdir. İşlevin benzeri olan <function>subrstr</function>
        işlevinde baytlar sayılır.
       </para>
      </listitem>
@@ -97,8 +99,38 @@
   </para>
   <para>
    Eğer <parameter>dizge</parameter> uzunluğu,
-   <parameter>başlangıç</parameter> değerinden küçükse &false; döner.
+   <parameter>başlangıç</parameter> değerinden küçükse &false;, eşitse boş
+   dizge döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>karküm</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+      <row>
+       <entry>7.0.11</entry>
+       <entry>
+        <parameter>dizge</parameter> eğer  <parameter>başlangıç</parameter>
+        karakter uzunluktaysa boş dizge döner, evvelce &false; dönerdi.
+       </entry>
+      </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

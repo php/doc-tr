@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ab9a7d2e3dfa9224186abcbd7a43b3af08d1bfdb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.iconv-strlen" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>iconv_strlen</refname>
@@ -10,9 +10,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>iconv_strlen</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>iconv_strlen</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>ini_set("iconv.internal_encoding")</initializer></methodparam>
+    <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>karküm</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Taydaşı olan <function>strlen</function> işlevinden farklı olarak bayt değil
@@ -37,8 +37,8 @@
      <term><parameter>karküm</parameter></term>
      <listitem>
       <para>
-       Eğer <parameter>karküm</parameter> belirtilmezse, dizgenin karakter
-       kodlamasının
+       Eğer <parameter>karküm</parameter> belirtilmezse veya &null; ise,
+       dizgenin karakter kodlamasının
        <link linkend="iconv.configuration">iconv.internal_encoding</link>
        yönergesinde belirtilen kodlama olduğu varsayılır.
       </para>
@@ -52,16 +52,39 @@
   &reftitle.returnvalues;
   <para>
    <parameter>dizge</parameter> dizgesinin karakter sayısını bir tamsayı olarak
-   döndürür.
+   döndürür. Hata oluşmuşsa &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>karküm</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><function>strlen</function></member>
+    <member><function>grapheme_strlen</function></member>
     <member><function>mb_strlen</function></member>
+    <member><function>strlen</function></member>
    </simplelist>
   </para>
  </refsect1>

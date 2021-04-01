@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ab9a7d2e3dfa9224186abcbd7a43b3af08d1bfdb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.iconv-mime-encode" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>iconv_mime_encode</refname>
-  <refpurpose>Bir <literal>MIME</literal> başlık alanı tertipler</refpurpose>
+  <refpurpose>Bir <literal>MIME</literal> başlık alanını tertipler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>iconv_mime_encode</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>iconv_mime_encode</methodname>
    <methodparam><type>string</type><parameter>alan_adı</parameter></methodparam>
    <methodparam><type>string</type><parameter>alan_değeri</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>tercihler</parameter><initializer>NULL</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
    Örnekteki gibi, geçerli bir <literal>MIME</literal> başlık alanını bir
@@ -48,10 +48,10 @@ Subject: Re: PHP =?utf-8?q?=C3=87eviri?= Grubu
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tercihler</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       İsteğe bağlı <parameter>tercihler</parameter> değiştirgesinde
+       İsteğe bağlı <parameter>seçenekler</parameter> değiştirgesinde
        yapılandırma öğelerini içeren bir dizi belirterek
        <function>iconv_mime_encode</function> işlevinin davranışını
        belirleyebilirsiniz. Desteklenen öğeler aşağıda listelenmiştir. Öğe
@@ -102,8 +102,7 @@ Subject: Re: PHP =?utf-8?q?=C3=87eviri?= Grubu
            <entry><type>string</type></entry>
            <entry>
             <literal>MIME</literal> başlığını tertiplemekte kullanılacak
-            karakter kümesini belirler. Belirtilmezse,
-            <literal>input-charset</literal> kullanılır.
+            karakter kümesini belirler.
            </entry>
            <entry>
             <link linkend="iconv.configuration">iconv.internal_encoding</link>
@@ -169,7 +168,7 @@ $preferences = array(
     "line-break-chars" => "\n"
 );
 $preferences["scheme"] = "Q";
-// Sonucu: "Subject: =?UTF-8?Q?Pr=C3=BCfung_Pr=C3=BCfung?="
+// Sonucu: "Subject: =?UTF-8?Q?Pr=C3=BCfung=20Pr=C3=BCfung?="
 echo iconv_mime_encode("Subject", "Prüfung Prüfung", $preferences);
 
 $preferences["scheme"] = "B";
