@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: haluk Status: ready -->
 <refentry xml:id="function.ip2long" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ip2long</refname>
-  <refpurpose>Noktalı IP adresi gösterimini içeren bir dizgeyi sayısal adrese dönüştürür</refpurpose>
+  <refpurpose>Noktalı IP adresi gösterimini içeren bir dizgeyi uzun tamsayıya dönüştürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>ip2long</methodname>
-   <methodparam><type>string</type><parameter>ip_adresi</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>ip2long</methodname>
+   <methodparam><type>string</type><parameter>ip</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>ip2long</function> işlevi noktalı gösterimini kullanarak bir
-   IPv4 sayısal ağ adresi oluşturur.
+   <function>ip2long</function> işlevi bir IPv4 adresin noktalı gösterimini
+   kullanarak uzun tamsayı gösterimini üretir.
   </para>
   <para>
    <function>ip2long</function> işlevi ayrıca, tamamı belirtilmemiş IP
@@ -30,7 +30,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ip_adresi</parameter></term>
+     <term><parameter>ip</parameter></term>
      <listitem>
       <para>
        Noktalı gösterimle bir IPv4 adresi.
@@ -44,33 +44,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen <parameter>ip_adresi</parameter> geçirsizse  &false;, aksi
-   takdirde IPv4 adresi ile döner
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        Bu sürümden önce, <function>ip2long</function> işlev başarısız
-        olduğunda -1 döndürüyordu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Belirtilen <parameter>ip</parameter> geçirsizse  &false;, aksi
+   takdirde uzun tamsayı ile döner
   </para>
  </refsect1>
 
@@ -96,7 +71,7 @@ echo $out;
    <example>
     <title>- Bir IP adresinin gösterilmesi</title>
     <para>
-     Bu örnekte, PHP4 ve PHP 5'te <function>printf</function> işleviyle
+     Bu örnekte, <function>printf</function> işleviyle
      dönüştürülmüş bir adresin nasıl basılacağı gösterilmiştir:
     </para>
     <programlisting role="php">
@@ -108,29 +83,10 @@ $long = ip2long($ip);
 if ($long == -1 || $long === FALSE) {
     echo 'IP geçersiz, tekrar deneyin';
 } else {
-    echo $ip   . "\n";           // 192.0.34.166
-    echo $long . "\n";           // -1073732954
+    echo $ip   . "\n";            // 192.0.34.166
+    echo $long . "\n";            // 3221234342 (32-bit sistemlerde tamsayı taşması sebebiyle -1073732954)
     printf("%u\n", ip2long($ip)); // 3221234342
 }
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- IP doğrulama</title>
-    <para>
-     <function>ip2long</function> işlevi IP doğrulaması amacıyla tek başına değil, <function>long2ip</function> ile birlikte kullanılmalıdır:
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-// IP'ler geçerli mi, bakalım. Bunu yapmak için eksik belirtilmiş
-// IP adreslerini düzgün IP adreslerine dönüştürelim.
-$ip = long2ip(ip2long("127.0.0.1")); // "127.0.0.1"
-$ip = long2ip(ip2long("10.0.0"));    // "10.0.0.0"
-$ip = long2ip(ip2long("10.0.256"));  // "10.0.1.0"
 ?>
 ]]>
     </programlisting>
@@ -142,19 +98,21 @@ $ip = long2ip(ip2long("10.0.256"));  // "10.0.1.0"
   &reftitle.notes;
   <note>
    <para>
-    PHP'nin tamsayı türü işaretli tamsayı olduğundan ve çoğu IP adresi
-    negatif tamsayılarla sonuçlanacağından işaretsiz IP adresinin dizge
-    gösterimini elde etmek için <function>sprintf</function> ve
-    <function>printf</function> işlevlerinde %u değiştiricisini
-    kullanmalısınız.
+    PHP'nin <type>int</type> türü işaretli tamsayı olduğundan ve çoğu IP adresi
+    32 bitlik sistemlerde negatif tamsayılarla sonuçlanacağından işaretsiz
+    tamsayı IP adresinin dizge gösterimini elde etmek için
+    <function>sprintf</function> ve <function>printf</function> işlevlerinde
+    %u değiştiricisini kullanmalısınız.
    </para>
   </note>
   <note>
    <para>
     <function>ip2long</function> işlevi PHP 5 &lt;= 5.0.2 sürümlerinde
-    <literal>255.255.255.255</literal> adresi için  &false; döndürmektedir.
-    Bu, PHP 5.0.3 sürümünde (PHP 4'teki gibi) <literal>-1</literal> döndürecek
-    şekilde düzeltilmiştir.
+    <literal>255.255.255.255</literal> adresi için  &false;, 64 bitlik
+    sistemlerde PHP 5 &lt;=5.2.4 için <literal>-1</literal> döndürmekteydi.
+    Bu, PHP 5.2.5 sürümünde düzeltildi ve 64 bitlik sistemlerde
+    <literal>4294967295</literal>, 32 bitlik sistemlerde ise tamsayı taşması
+    sebebiyle <literal>-1</literal> döndürüyor.
    </para>
   </note>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.getprotobyname" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>getprotobyname</refname>
@@ -10,12 +10,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>getprotobyname</methodname>
-   <methodparam><type>string</type><parameter>ad</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>getprotobyname</methodname>
+   <methodparam><type>int</type><parameter>protokol</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>getprotobyname</function> işlevi belirtilen protokol
-   <parameter>ad</parameter>'ı için <filename>/etc/protocols</filename>
+   <parameter>protokol</parameter> için <filename>/etc/protocols</filename>
    dosyasındaki protokol numarasını döndürür.
   </para>
  </refsect1>
@@ -25,7 +25,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ad</parameter></term>
+     <term><parameter>protokol</parameter></term>
      <listitem>
       <para>
        Protokolün adı.
@@ -39,7 +39,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Protokol ismini bulamazsa -1, aksi takdirde protokol numarası ile döner.
+   Başarı durumunda protokol numarası,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -53,7 +53,7 @@
 <?php
 $protokol = 'tcp';
 $protnum = getprotobyname($protokol);
-if ($protnum == -1) {
+if ($get_prot === FALSE) {
     echo 'Geçersiz protokol';
 } else {
     echo 'Protokol #' . $protnum;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1d11e386eb01ba28dbbc5d5ea40e7b4e0b011ddb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.dns-get-record" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>dns_get_record</refname>
@@ -11,15 +11,16 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>dns_get_record</methodname>
+   <type class="union"><type>array</type><type>false</type></type><methodname>dns_get_record</methodname>
    <methodparam><type>string</type><parameter>konakadı</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer>DNS_ANY</initializer></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">yetkili_enesler</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">ek_kayıtlar</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer><constant>DNS_ANY</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">yetkili_isim_sunucuları</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">ek_kayıtlar</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ham</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>konakadı</parameter> ile ilgili DNS Özkaynak
-   Kayıtlarını (DNS-RR) getirir.
+   Belirtilen <parameter>konakadı</parameter> ile ilgili DNS Kayıtlarını
+   (DNS-RR) getirir.
   </para>
  </refsect1>
 
@@ -59,13 +60,13 @@
        <parameter>tür</parameter> değiştirgesini kullanabilirsiniz.
        <parameter>tür</parameter> olarak şunlardan biri belirtilebilir:
        <constant>DNS_A</constant>, <constant>DNS_CNAME</constant>,
-       <constant>DNS_HINFO</constant>, <constant>DNS_MX</constant>,
-       <constant>DNS_NS</constant>, <constant>DNS_PTR</constant>,
-       <constant>DNS_SOA</constant>, <constant>DNS_TXT</constant>,
-       <constant>DNS_AAAA</constant>, <constant>DNS_SRV</constant>,
-       <constant>DNS_NAPTR</constant>, <constant>DNS_A6</constant>,
-       <constant>DNS_ALL</constant> veya <constant>DNS_ANY</constant>.
-       <emphasis>DNS_ANY</emphasis> öntanımlıdır.
+       <constant>DNS_HINFO</constant>, <constant>DNS_CAA</constant>,
+       <constant>DNS_MX</constant>, <constant>DNS_NS</constant>,
+       <constant>DNS_PTR</constant>, <constant>DNS_SOA</constant>,
+       <constant>DNS_TXT</constant>, <constant>DNS_AAAA</constant>,
+       <constant>DNS_SRV</constant>, <constant>DNS_NAPTR</constant>,
+       <constant>DNS_A6</constant>, <constant>DNS_ALL</constant>
+       veya <constant>DNS_ANY</constant>.
       </para>
       <note>
        <para>
@@ -75,10 +76,15 @@
         <constant>DNS_ALL</constant> tüm kayıtları toplayacaktır.
        </para>
       </note>
+      <note>
+       <para>
+        <constant>DNS_CAA</constant> Windows üzerinde desteklenmez.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yetkili_enesler</parameter></term>
+     <term><parameter>yetkili_isim_sunucuları</parameter></term>
      <listitem>
       <para>
        Gönderimli aktarılır. Belirtilirse <emphasis>Yetkili Ad
@@ -96,6 +102,17 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>ham</parameter></term>
+     <listitem>
+      <para>
+       &true; belirtilirse, <parameter>tür</parameter>ham DNS tür kimliği
+       olarak yorumlanır (<literal>DNS_*</literal> sabitleri kullanılamaz).
+       Dönen dizi, kendinizin çözümleyeceği bir  <literal>data</literal>
+       anahtarı içerir.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -103,8 +120,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bu işlev ilişkisel diziler içeren bir dizi ile döner. He ilişkisel dizi  en
-   azından aşağıdaki anahtarları <emphasis>mutlaka</emphasis> içerir:
+   Bu işlev ilişkisel diziler içeren bir dizi ile,&return.falseforfailure;.
+   Her ilişkisel dizi en azından aşağıdaki anahtarları
+   <emphasis>mutlaka</emphasis> içerir:
    <table>
     <title>Temel DNS öznitelikleri</title>
     <tgroup cols="2">
@@ -223,7 +241,18 @@
        </entry>
       </row>
       <row>
-       <entry morerows="6"><literal>SOA</literal></entry>
+       <entry><literal>CAA</literal></entry>
+       <entry>
+        <literal>flags</literal>: Tek baytlık bit alanı; şu an sadece
+        'critical' anlamına gelen bit 0 tanımlıdır; diğer bitler ileride
+        kullanım için ayrılmış olup yok sayılmalıdır.
+        <literal>tag</literal>: CAA etiket adı (abecesayısal ASCII dizge).
+        <literal>value</literal>: CAA etiket değeri (ikil dizge, alt biçemleri
+        olabilir). Ek olarak bkz: <link xlink:href="&url.rfc;6844">RFC 6844</link>
+       </entry>
+      </row>
+      <row>
+       <entry><literal>SOA</literal></entry>
        <entry>
         <literal>mname</literal>: Özkaynak kaydının kaynaklandığı makinenin
         tamamen nitelenmiş alan adı.
@@ -231,7 +260,7 @@
       </row>
       <row>
        <entry>
-        <literal>rname</literal>: Bu alanın içerik yetkilisinin eposta adresi.
+        <literal>rname</literal>: Bu alanın idari yetkilisinin eposta adresi.
        </entry>
       </row>
       <row>
@@ -345,9 +374,9 @@
       </thead>
       <tbody>
         <row>
-         <entry>5.3.0</entry>
+         <entry>7.0.16, 7.1.2</entry>
          <entry>
-          İşlev Windows platformlarında da kullanılabilir oldu.
+          CAA kaydı için destek eklendi.
          </entry>
         </row>
       </tbody>
@@ -402,8 +431,8 @@ Array
      MX kaydı çözümlendikten sonra normal olarak posta sunucusunun adresi
      istenir. <function>dns_get_record</function> işlevi ayrıca, ilişkili
      kayıtları <parameter>ek_kayıtlar</parameter> dizisinde döndürür. Bunun
-     yanında, <parameter>yetkili_enesler</parameter> dizisinde de yetkili isim
-     sunucularının listesini döndürür.
+     yanında, <parameter>yetkili_isim_sunucuları</parameter> dizisinde de
+     yetkili isim sunucularının listesini döndürür.
     </para>
     <programlisting role="php">
 <![CDATA[
@@ -544,8 +573,7 @@ Ek Kayıtlar = Array
   &reftitle.notes;
   <note>
    <para>
-    Bu işlevin henüz gerçeklenmediği PHP sürümlerinin kullanıldığı Windows ve
-    *BSD sistemlerinde de (Mac dahil)
+    Bazı sistemlerde PHP 5.3.0 öncesi sürümlerle uyumluluk için
     <link xlink:href="&url.php.pear;">PEAR</link>
     <link xlink:href="&url.pear.package;Net_DNS">Net_DNS</link> sınıfını
     deneyin.

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fsockopen">
  <refnamediv>
   <refname>fsockopen</refname>
@@ -10,12 +10,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>fsockopen</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>fsockopen</methodname>
    <methodparam><type>string</type><parameter>konakadı</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>port</parameter><initializer>-1</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">hatanum</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter role="reference">hata_iletisi</parameter></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter>zaman_aşımı</parameter><initializer>ini_get("default_socket_timeout")</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">hata_kodu</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">hata_iletisi</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>float</type><type>null</type></type><parameter>zaman_aşımı</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>konakadı</parameter> ile belirtilen kaynağa bir soket
@@ -31,6 +31,11 @@
    Soket öntanımlı olarak engellenen kipte açılır. Engellenmeyen kipe geçmek
    için <function>stream_set_blocking</function> işlevini kullanabilirsiniz.
   </para>
+  <para>
+   Bu işlevin benzeri olan <function>stream_socket_client</function> işlevi
+   engellenmeyen bağlantı ve bir akım bağlamı sağlama yeteneği dahil, daha
+   zengin bir seçenek kümesi sağlar.
+  </para>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -40,10 +45,11 @@
      <term><parameter>konakadı</parameter></term>
      <listitem>
       <para>
-       Derleme sırasında OpenSSL desteği vermişseniz, uzak konağa TCP/IP
-       üzerinden bir SSL veya TLS istemci bağlantısı açmak için
-       <parameter>konakadı</parameter> belirtirken <literal>ssl://</literal>
-       veya <literal>tls://</literal> önekini kullanabilirsiniz.
+       Derleme sırasında <link linkend="openssl.installation">OpenSSL desteği
+       verilmişse</link>, uzak konağa TCP/IP üzerinden bir SSL veya TLS
+       istemci bağlantısı açmak için  <parameter>konakadı</parameter>
+       belirtirken <literal>ssl://</literal> veya <literal>tls://</literal>
+       önekini kullanabilirsiniz.
       </para>
      </listitem>
     </varlistentry>
@@ -51,12 +57,14 @@
      <term><parameter>port</parameter></term>
      <listitem>
       <para>
-       Port numarası.
+       Port numarası. <literal>unix://</literal> gibi portları kullanmayan
+       aktarımlar için, bu değiştirgeye <literal>-1</literal> atanabilir veya
+       bu değiştirge atlanabilir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>hatanum</parameter></term>
+     <term><parameter>hata_kodu</parameter></term>
      <listitem>
       <para>
        Bir değiştirge sağlanmışsa, sistem seviyesi
@@ -64,7 +72,7 @@
        numarası bu değiştirgeye yerleştirilir.
       </para>
       <para>
-       Eğer işlev &false; değeriyle dönmüş ve <parameter>hatanum</parameter>
+       Eğer işlev &false; değeriyle dönmüş ve <parameter>hata_kodu</parameter>
        değiştirgesinde <literal>0</literal> değeri varsa,
        <literal>connect()</literal> çağrısı öncesinde bir hata oluşmuş
        demektir. Bu sorun genellikle soketin ilklendirilmesi ile ilgilidir.
@@ -108,6 +116,7 @@
    döner. Eğer çağrı başarısız olursa &false; döner.
   </para>
  </refsect1>
+
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
@@ -115,6 +124,7 @@
    <constant>E_WARNING</constant> çıktılanır.
   </para>
  </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -128,21 +138,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Win32 için <parameter>zaman_aşımı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        TCP/IP üzerinden SSL ve TLS desteği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.0</entry>
-       <entry>
-        UDP desteği eklendi.
+        <parameter>zaman_aşımı</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -224,6 +222,7 @@ if (!$fp) {
   <para>
    <simplelist>
     <member><function>pfsockopen</function></member>
+    <member><function>stream_socket_client</function></member>
     <member><function>stream_set_blocking</function></member>
     <member><function>stream_set_timeout</function></member>
     <member><function>fgets</function></member>
@@ -231,7 +230,8 @@ if (!$fp) {
     <member><function>fwrite</function></member>
     <member><function>fclose</function></member>
     <member><function>feof</function></member>
-    <member><link linkend="ref.curl">Curl eklentisi</link></member>
+    <member><function>socket_connect</function></member>
+    <member><link linkend="ref.curl">cURL eklentisi</link></member>
    </simplelist>
   </para>
  </refsect1>
