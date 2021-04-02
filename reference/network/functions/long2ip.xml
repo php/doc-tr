@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: haluk Status: ready -->
 <refentry xml:id="function.long2ip" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>long2ip</refname>
-  <refpurpose>Bir (IPv4) sayısal ağ adresini noktalı gösterimi içeren bir
-  dizgeye dönüştürür</refpurpose>
+  <refpurpose>Bir (IPv4) uzun tamsayılı ağ adresini noktalı gösterimi içeren
+   bir dizgeye dönüştürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>long2ip</methodname>
-   <methodparam><type>int</type><parameter>özel_adres</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>long2ip</methodname>
+   <methodparam><type>int</type><parameter>ip</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>long2ip</function> işlevi özel adres gösteriminden standart
-   noktalı gösterimle (aaa.bbb.ccc.ddd) bir ağ adresi oluşturur.
+   <function>long2ip</function> işlevi uzun tamsayı gösteriminden standart
+   noktalı gösterimle (aaa.bbb.ccc.ddd) bir IP adresi oluşturur.
   </para>
  </refsect1>
 
@@ -25,10 +25,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>özel_adres</parameter></term>
+     <term><parameter>ip</parameter></term>
      <listitem>
       <para>
-       Özel ağ adresi gösterimi.
+       Uzun tamsayı gösterimli IP adresi.
       </para>
      </listitem>
     </varlistentry>
@@ -39,9 +39,43 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   IP adresini bir dizge olarak döndürür.
+   IP adresini bir dizge olarak,&return.falseforfailure;.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>ip</parameter> değiştirgesinini türü
+       <type>string</type> iken <type>int</type> yapıldı.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="notes"><!-- {{{ -->
+  &reftitle.notes;
+  <note>
+   <para>
+    32 bitlik sistemlerde, IP adresine uygulanan
+    <type>string</type> türünden <type>int</type> türüne dönüşüm
+    <constant>PHP_INT_MAX</constant>'ı aşan sayılarda doğru sonuç vermez.
+   </para>
+  </note>
+ </refsect1><!-- }}} -->
 
  <refsect1 role="seealso">
   &reftitle.seealso;
