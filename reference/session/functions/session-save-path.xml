@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-save-path">
  <refnamediv>
   <refname>session_save_path</refname>
@@ -11,8 +11,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_save_path</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>yol</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_save_path</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>yol</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_save_path</function> işlevi oturum verisini kaydetmek için
@@ -29,8 +29,9 @@
      <listitem>
       <para>
        Oturum verisinin kaydedileceği dizinin yolu. Belirtildiği takdirde
-       oturum verisinin kaydedildiği dizin <parameter>yol</parameter> olarak
-       değiştirilir.  <function>session_save_path</function> işlevi bu amaçla
+       ve &null; değilse, oturum verisinin kaydedildiği dizin
+       <parameter>yol</parameter> olarak değiştirilir.
+       <function>session_save_path</function> işlevi bu amaçla
        kullanılacaksa <function>session_start</function> işlevinden önce
        çağrılmalıdır.
       </para>
@@ -53,8 +54,31 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Oturum verisini saklamak için kullanılan dizinin yolunu döndürür.
+   Oturum verisini saklamak için kullanılan dizinin yolunu
+   döndürür,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>yol</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

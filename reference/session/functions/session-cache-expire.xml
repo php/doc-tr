@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 	151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id='function.session-cache-expire'>
  <refnamediv>
   <refname>session_cache_expire</refname>
-  <refpurpose>Önbelleğe alınan oturumun ömrünü döndürür</refpurpose>
+  <refpurpose>Önbelleğe alınan oturumun ömrünü tanımlar veya döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>session_cache_expire</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>yeni_önbellek_ömrü</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>session_cache_expire</methodname>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>süre</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_cache_expire</function> işlevi,
@@ -33,15 +33,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>yeni_önbellek_ömrü</parameter></term>
+     <term><parameter>süre</parameter></term>
      <listitem>
       <para>
-       Belirtilmişse önbellekli oturumun ömrü bu değere ayarlanır.
+       Belirtilmişse ve &null; değilse, geçerli önbellek ömrü bu değerle değiştirilir.
       </para>
       <para>
        <note>
         <simpara>
-         <parameter>yeni_önbellek_ömrü</parameter> değeri, sadece
+         <parameter>süre</parameter> değeri, sadece
          <link linkend="ini.session.cache-limiter">
          <literal>session.cache_limiter</literal></link> yönergesine
          <literal>nocache</literal>'den farklı bir değer atanmışsa eski
@@ -60,8 +60,31 @@
   <para>
    <link linkend="ini.session.cache-expire">
    <literal>session.cache_expire</literal></link> yönergesinin değerini
-   dakika cinsinden döndürür. Öntanımlı değer 180 dakikadır.
+   dakika cinsinden döndürür. Öntanımlı değer 180 dakikadır. Süreyi
+   değiştiremezse &false; döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>süre</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

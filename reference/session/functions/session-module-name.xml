@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-module-name">
  <refnamediv>
   <refname>session_module_name</refname>
@@ -10,12 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_module_name</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>modül</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_module_name</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>modül</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>session_module_name</function> işlevi geçerli oturum modülünün
-   ismini döndürür.
+   <function>session_module_name</function> işlevi
+   <link linkend="ini.session.save-handler">session.save_handler</link> olarak
+   da bilinen geçerli oturum modülü ismini döndürür.
   </para>
  </refsect1>
 
@@ -27,7 +28,11 @@
      <term><parameter>modül</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde oturum modülü olarak belirtilen modül kullanılır.
+       Belirtildiği ve &null; olmadığı takdirde oturum modülü olarak
+       belirtilen modül kullanılır. Bu değiştirgeye <literal>"user"</literal>
+       atamak yasaklanmıştır. Kullanıcı tanımlı bir oturum işleyici tanımlamak
+       için <function>session_set_save_handler</function> işlevi
+       kullanılmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -38,8 +43,37 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Oturum modülünün o anki ismini döndürür.
+   Oturum modülünün o anki ismini döndürür,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>modül</parameter> artık &null; ollabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       Modül ismi olarak <literal>"user"</literal> atamak işlevin başarısız
+       olmasına sebep oluyor. Evvelce sessizce yok sayılırdı.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

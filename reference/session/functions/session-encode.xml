@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-encode">
  <refnamediv>
   <refname>session_encode</refname>
-  <refpurpose>Geçerli oturum verisini bir dizge olarak kodlar</refpurpose>
+  <refpurpose>Geçerli oturum verisini dizgeleştirerek döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_encode</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_encode</methodname>
    <void/>
   </methodsynopsis>
   <para>
-   <function>session_encode</function> işlevi, geçerli oturumun içeriğini
-   kodlanmış bir dizge olarak döndürür.
+   <function>session_encode</function> işlevi, $_SESSION dizisinde saklanmış
+   geçerli oturumun verisini dizgeleştirerek olarak döndürür.
+  </para>
+  <para>
+   Öntanımlı olarak, <function>serialize</function> ile aynı olmayan PHP'nin
+   dahili dizgeleştirme yöntemi kullanılır. Dizgeleştirme yöntemi <link
+   linkend="ini.session.serialize-handler">session.serialize_handler</link>
+   kullanılarak atanabilir.
   </para>
  </refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geçerli oturumun içeriğini kodlanmış bir dizge olarak döndürür.
+   Geçerli oturumun içeriğini kodlanmış bir dizge
+   olarak döndürür,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    <function>session_encode</function> işlevini kullanmadan önce
+    <function>session_start</function> çağrısı yapılmalıdır.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -31,6 +48,7 @@
   <para>
    <simplelist>
     <member><function>session_decode</function></member>
+    <member><link linkend="ini.session.serialize-handler">session.serialize_handler</link></member>
    </simplelist>
   </para>
  </refsect1>

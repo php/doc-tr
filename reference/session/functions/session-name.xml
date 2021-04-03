@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c35c07ab6a9cf533455947147634399fc928f6ca Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-name">
  <refnamediv>
   <refname>session_name</refname>
@@ -10,15 +10,25 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_name</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>isim</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_name</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>isim</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_name</function> işlevi geçerli oturumun ismini döndürür.
+   <parameter>isim</parameter> belirtilmişse ve &null; değilse,
+   <function>session_name</function> işlevi oturumun ismini günceller ve
+   <emphasis>eski</emphasis> oturum ismini döndürür.
+  </para>
+  <para>
+   <function>session_name</function>  oturum ismini güncellerken, HTTP
+   çerezinide günceller (ve <literal>session.transid</literal> etkinse içeriği
+   çıktılar). HTTP çerezi gönderilirse  <function>session_name</function> hata
+   üretir. Oturumun düzgün çalışması için <function>session_name</function>
+   işlevi <function>session_start</function> işlevinden önce çağrılmalıdır.
   </para>
   <para>
    Oturum ismi istek başlangıcında
-   <link linkend="ini.session.name"><literal>session.name</literal></link> PHP
+   <link linkend="ini.session.name"><literal>session.name</literal></link>
    yönergesinde tanımlı isimle sıfırlanır. Oturumun ismini öntanımlı isimden
    farklı bir isimle değiştirmek için her istekte
    <function>session_name</function> çağrısı yapmalısınız
@@ -35,11 +45,12 @@
      <term><parameter>isim</parameter></term>
      <listitem>
       <para>
-       Oturum ismi, çerezler ve URL'lerde oturum kimliğine gönderimlidir.
+       Oturum ismi (<literal>PHPSESSID</literal> gibi), çerezler ve
+       URL'lerde kullanılan oturum ismidir.
        Oturum ismi sadece abecesayısal karakterler içermeli, (çerez
        uyarılarını etkin kılan kullanıcılar için) kısa ve açıklayıcı
-       olmalıdır. Bir <parameter>isim</parameter> belirtilirse, geçerli
-       oturumun ismi bu isimle değiştirilir.
+       olmalıdır. Bir <parameter>isim</parameter> belirtilirse ve &null;
+       değilse, geçerli oturumun ismi bu isimle değiştirilir.
       </para>
       <para>
        <warning>
@@ -59,7 +70,44 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geçerli oturumun ismini döndürür.
+   Geçerli oturumun ismini döndürür. <parameter>isim</parameter> belirtilmişse
+   ve &null; değilse işlev oturum ismini günceller ve <emphasis>eski</emphasis>
+   oturum kimliğini döndürür,&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>isim</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <function>session_name</function> artık oturum durumuna bakıyor,
+        evvelce sadece çerez durumuna bakardı. Bu, eski
+        <function>session_name</function> işlevinin
+        <function>session_start</function> çağrısından sonra çağrılmasına
+        sebep oluyor ve PHP'nin çökmesine veya hatalı davranmasına yol
+        açabiliyordu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 

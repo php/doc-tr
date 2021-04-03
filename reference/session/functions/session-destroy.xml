@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 894b3c74d9a9e4c6100139cabaa7c97eb2e294c0 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-destroy">
  <refnamediv>
   <refname>session_destroy</refname>
@@ -20,6 +20,12 @@
    tekrar kullanmak için <function>session_start</function> çağrısı
    yapılmalıdır.
   </simpara>
+  <note>
+   <simpara>
+    Normal koddan <function>session_destroy</function> çağrısı gerekmez.
+    Oturum verilerini yok etmek yerine $ _SESSION dizisini temizleyin.
+   </simpara>
+  </note>
   <para>
    Kullanıcı çıktısını günlüğe kaydetmek gibi bir amaçla oturumu topyekün
    öldürmek için oturum kimliğinin de tanımsız yapılması gerekir. Eğer oturum
@@ -27,6 +33,33 @@
    oturum çerezinin de silinmesi gerekir. Bunun için
    <function>setcookie</function> kullanılabilir.
   </para>
+  <para>
+   <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
+   etkinleştirildiğinde, eski oturum kimliği çerezini kaldırmanız gerekmez
+   çünkü oturum modülü, oturum kimliği ile ilişkilendirilmiş veri olmadığında
+   oturum kimliği çerezini kabul etmez ve yeni oturum kimliği çerezi tanımlar.
+   Tüm siteler için <literal>session.use_strict_mode</literal> yönergesinin
+   etkinleştirilmesi önerilir.
+  </para>
+  <warning>
+   <para>
+    Anında oturum silme istenmeyen sonuçlara sebep olabilir. Eşzamanlı istekler
+    olduğunda, diğer bağlantılarda ani oturum verisi kaybı görülebilir.
+    Örneğin, JavaScript'ten ve/veya URL bağlantılarından gelen istekler.
+   </para>
+   <para>
+    Geçerli oturum modülü boş oturum kimliği çerezini kabul etmese de, oturumun
+    anında silinmesi, istemcinin (tarayıcı) yarış durumu yan etkisi nedeniyle,
+    gereksiz yere çok sayıda boş oturum kimliği çerezi oluşturmasına sebep
+    olabilir.
+   </para>
+   <para>
+    Bunlardan kaçınmak için, silme zaman damgasını $ _SESSION dizisine atamalı
+    ve bu zaman damgasından sonraki erişimi reddetmeli veya uygulamanızın
+    eşzamanlı istekleri olmadığından emin olmalısınız. Bu aynı zamanda
+    <function>session_regenerate_id</function> için de geçerlidir.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="returnvalues">
@@ -53,8 +86,12 @@ $_SESSION = array();
 
 // Oturum öldürülmek istenirse oturum çerezinin de silinmesi gerekir.
 // Dikkat: Bu sadece oturum verisini değil, oturumu da yok edecektir!
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-42000, '/');
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
 }
 
 // Son olarak oturumu yok ediyoruz.
@@ -80,6 +117,9 @@ session_destroy();
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="ini.session.use-strict-mode">session.use_strict_mode</link></member>
+    <member><function>session_reset</function></member>
+    <member><function>session_regenerate_id</function></member>
     <member><function>unset</function></member>
     <member><function>setcookie</function></member>
    </simplelist>

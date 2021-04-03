@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-cache-limiter">
  <refnamediv>
   <refname>session_cache_limiter</refname>
@@ -11,8 +11,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_cache_limiter</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_cache_limiter</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>sınırlayıcı</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_cache_limiter</function> işlevi, geçerli önbellek
@@ -27,6 +27,10 @@
    istemciler tarafından önbelleklemeye izin verir. <literal>private</literal>
    değeri ise, vekil önbelleklemesine izin vermezken istemcilerin içeriği
    önbelleklemesine izin verir.
+  </para>
+  <para>
+   Önbellek sınırlayıcıya <literal>''</literal> atanması önbellek
+   başlıklarının toptan otomatik gönderimini kapatır.
   </para>
   <para>
    <literal>private</literal> kipinde, istemciye gönderilmiş bir
@@ -53,8 +57,8 @@
      <term><parameter>sınırlayıcı</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde, geçerli önbellek sınırlayıcı ismi yeni değerle
-       değiştirilir.
+       Belirtilmişse ve &null; değilse, geçerli önbellek sınırlayıcı ismi
+       yeni değerle değiştirilir.
       </para>
       <table>
        <title>Olası değerler</title>
@@ -71,9 +75,9 @@
           <entry>
            <programlisting role="header">
 <![CDATA[
-Expires: (sometime in the future, according session.cache_expires)
-Cache-Control: public, max-age=(sometime in the future, according to session.cache_expire
-Last-Modified: (the timestamp of when the session was last saved)
+Expires: (session.cache_expires ile ilgili bir zaman)
+Cache-Control: public, max-age=(session.cache_expires ile ilgili bir zaman)
+Last-Modified: (son oturum kaydının zaman damgası)
 ]]>
            </programlisting>
           </entry>
@@ -83,8 +87,8 @@ Last-Modified: (the timestamp of when the session was last saved)
           <entry>
            <programlisting role="header">
 <![CDATA[
-Cache-Control: private, max-age=(session.cache_expire in the future), pre-check=(session.cache_expire in the future)
-Last-Modified: (the timestamp of when the session was last saved)
+Cache-Control: private, max-age=(session.cache_expires ile ilgili bir zaman), pre-check=(session.cache_expires ile ilgili bir zaman)
+Last-Modified: (son oturum kaydının zaman damgası)
 ]]>
            </programlisting>
           </entry>
@@ -95,8 +99,8 @@ Last-Modified: (the timestamp of when the session was last saved)
            <programlisting role="header">
 <![CDATA[
 Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: private, max-age=(session.cache_expire in the future), pre-check=(session.cache_expire in the future)
-Last-Modified: (the timestamp of when the session was last saved)
+Cache-Control: private, max-age=(session.cache_expires ile ilgili bir zaman), pre-check=(session.cache_expires ile ilgili bir zaman)
+Last-Modified: (son oturum kaydının zaman damgası)
 ]]>
            </programlisting>
           </entry>
@@ -125,7 +129,8 @@ Pragma: no-cache
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geçerli önbellek sınırlayıcısının ismini döndürür.
+   Geçerli önbellek sınırlayıcısının ismini döndürür. İsmi değiştiremezse
+   &false; döndürür.
   </para>
  </refsect1>
 
@@ -142,9 +147,9 @@ Pragma: no-cache
      </thead>
      <tbody>
       <row>
-       <entry>4.2.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <literal>private_no_expire</literal> kipi eklendi.
+        <literal>sınırlayıcı</literal> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>

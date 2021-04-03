@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 53bdffa6b9f8ce5ffdaf476c9d450f7cd0d1afa2 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-regenerate-id">
  <refnamediv>
   <refname>session_regenerate_id</refname>
@@ -12,12 +12,34 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>session_regenerate_id</methodname>
-   <methodparam choice="opt"><type>bool</type><parameter>eski_oturumu_sil</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>eski_oturumu_sil</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_regenerate_id</function> işlevi geçerli oturum kimliğini
    yenisiyle değiştirirken oturum bigisini korur.
   </para>
+  <para>
+   <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
+   etkin olduğunda, çıktı <function>session_regenerate_id</function>
+   çağrısından sonra başlatılmalıdır. Aksi takdirde, eski oturum kimliği
+   kullanılır.
+  </para>
+  <warning>
+   <para>
+    Şu an için, işlev Mobil veya WiFi ağları gibi dengesiz ağlarda düzgün
+    çalışmamaktadır. Bu bakımdan, işlev böyle ağlarda çağrıldığında bir oturum
+    kaybı yaşanabilir.
+   </para>
+   <para>
+    Eski oturum verisini değil, eski oturumun zaman damgasını hemen yok etmeli
+    ve eski oturum kimliğine erişimi denetlemelisiniz. Aksi takdirde, sayfaya
+    eşzamanlı erişimler tutarsız bir duruma veya oturum kaybına yol açabilir.
+    Ya da, istemcinin (tarayıcı) yarış durumu yan etkisi nedeniyle, gereksiz
+    yere çok sayıda boş oturum kimliği çerezi oluşturmasına sebep olabilir.
+    Eski oturum verisinin hemen silinmesi ayrıca oturum ele geçirme saldırısını
+    algılamayı ve önlemeyi devre dışı bırakır.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -28,8 +50,9 @@
      <term><parameter>eski_oturumu_sil</parameter></term>
       <listitem>
        <para>
-        &true; ise oturumla ilişkili eski dosya silinir.
-        &false; öntanımlı değerdir.
+        &true; ise eski oturum verisi silinir. Yarış durumlarından kaçınmak
+        ve oturum ele geçirme saldırılarını algılamak/önlemek için
+        <emphasis>eski oturum hemen silinmemelidir</emphasis>.
        </para>
       </listitem>
      </varlistentry>
@@ -44,38 +67,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        Oturum çerezleri etkinse, yeni oturum kimliğiyle ilişkili yeni oturum
-        çerezi artık <function>session_regenerate_id</function> işlevi
-        tarafından gönderiliyor.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <parameter>eski_oturumu_sil</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -84,11 +75,31 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+// Dikkat: Bu kod tamamen çalışır durumda değildir, sadece bir örnektir!
+
 session_start();
+
+// Zaman damgası yok edilmiş mi?
+if (isset($_SESSION['destroyed'])
+    && $_SESSION['destroyed'] < time() - 300) {
+    // Normalde olmamalı. Saldırı veya kararsız ağ nedeniyle olabilir.
+    // Bu kullanıcı oturumunun tüm kimlik kanıtlama bilgilerini sil.
+    remove_all_authentication_flag_from_active_sessions($_SESSION['userid']);
+    throw(new DestroyedSessionAccessException);
+}
 
 $old_sessionid = session_id();
 
+// Silinme zamanı damgasını tanımla
+$_SESSION['destroyed'] = time(); // PHP 7.0.0 ve üstü
+
+// session_regenerate_id() eski oturum verisini kaydeder
+// session_regenerate_id() basitçe çağrılırsa oturum kaybı oluşabilir, vs.
+// Sonraki örneğe bakın
 session_regenerate_id();
+
+// Yeni oturumun silinme zamanı damgasına ihtiyacı yok
+unset($_SESSION['destroyed']);
 
 $new_sessionid = session_id();
 
@@ -101,6 +112,72 @@ print_r($_SESSION);
     </programlisting>
    </example>
   </para>
+  <para>
+   Geçerli oturum modülü tutarsız ağda iyi çalışmaz. İşlevin oturumu
+   kaybetmesinden kaçınmak için oturum kimliği yönetilmelidir.
+  </para>
+  <para>
+   <example>
+    <title>- <function>session_regenerate_id</function> ile oturum kaybını önlemek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Dikkat: Bu kod tamamen çalışır durumda değildir, sadece bir örnektir!
+
+// my_session_start() ve my_session_regenerate_id() tutarsız ağda
+// oturum kaybını önler. Ek olarak bu kod, çalınan oturumun saldırganlar
+// tarafından suistimal edilmesini engelleyebilir.
+
+function my_session_start() {
+    session_start();
+    if (isset($_SESSION['destroyed'])) {
+       if ($_SESSION['destroyed'] < time()-300) {
+           // Normalde olmamalı. Saldırı veya kararsız ağ nedeniyle olabilir.
+           // Bu kullanıcı oturumunun tüm kimlik kanıtlama bilgilerini sil.
+           remove_all_authentication_flag_from_active_sessions($_SESSION['userid']);
+           throw(new DestroyedSessionAccessException);
+       }
+       if (isset($_SESSION['new_session_id'])) {
+           // Süre henüz dolmadı. Kararsız ağda çerez kaybı olabilirdi.
+           // Uygun oturum kimliği çerezini yeniden tanımlamayı dene.
+           // Dikkat: Kimlik kanıtlama bilgilerini silmek için
+           // oturum kimliğini yeniden atamaya çalışma!
+           session_commit();
+           session_id($_SESSION['new_session_id']);
+           // Yeni oturum kimliği etkinleşmeli
+           session_start();
+           return;
+       }
+   }
+}
+
+function my_session_regenerate_id() {
+    // Tutarsız ağdan dolayı oturum kimliği atanamadığında
+    // doğru oturum kimliğini tanımlamak için yeni oturum kimliği gerekir.
+    $new_session_id = session_create_id();
+    $_SESSION['new_session_id'] = $new_session_id;
+
+    // Silinme zamanı damgasını tanımla
+    $_SESSION['destroyed'] = time();
+
+    // geçerli oturuma yaz ve kapat;
+    session_commit();
+
+    // Oturumu yeni oturum kimliği ile başlat
+    session_id($new_session_id);
+    ini_set('session.use_strict_mode', 0);
+    session_start();
+    ini_set('session.use_strict_mode', 1);
+
+    // Yeni oturumun bunlara ihtiyacı yok
+    unset($_SESSION['destroyed']);
+    unset($_SESSION['new_session_id']);
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -108,7 +185,10 @@ print_r($_SESSION);
   <para>
    <simplelist>
     <member><function>session_id</function></member>
+    <member><function>session_create_id</function></member>
     <member><function>session_start</function></member>
+    <member><function>session_destroy</function></member>
+    <member><function>session_reset</function></member>
     <member><function>session_name</function></member>
    </simplelist>
   </para>

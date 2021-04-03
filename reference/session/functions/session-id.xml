@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-id">
  <refnamediv>
   <refname>session_id</refname>
@@ -10,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>session_id</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>id</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>session_id</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kimlik</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_id</function> işlevi, geçerli oturumun oturum kimliğini
@@ -30,10 +30,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>id</parameter></term>
+     <term><parameter>kimlik</parameter></term>
       <listitem>
        <para>
-        <parameter>id</parameter> belirtilmişse, geçerli oturum kimliğinin
+        <parameter>kimlik</parameter> belirtilmişse ve &null; değilse,
+        geçerli oturum kimliğinin
         yerini alır. <function>session_id</function> bu amaçla kullanılacaksa
         <function>session_start</function> işlevinden önce çağrılmalıdır.
         Oturum kayıt ortamına bağlı olarak oturum kimliği içinde tüm
@@ -61,11 +62,11 @@
   <para>
    <function>session_id</function> işlevi geçerli oturumun oturum kimliğini
    veya geçerli bir oturum yoksa boş bir dizge (<literal>""</literal>)
-   döndürür.
+   döndürür,&return.falseforfailure;.
   </para>
  </refsect1>
 
- <refsect1 role="changelog"><!-- {{{ -->
+ <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
    <informaltable>
@@ -78,20 +79,18 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Oturum kayıt ortamı dosyalar olduğu takdirde, artık
-        <literal>,</literal> (virgül) ve <literal>-</literal> (tire)
-        karakterlerine de izin veriliyor.
+        <parameter>kimlik</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
     </tgroup>
    </informaltable>
   </para>
- </refsect1><!-- }}} -->
+ </refsect1>
 
-<refsect1 role="seealso">
+ <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
