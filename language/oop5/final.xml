@@ -5,9 +5,9 @@
  <sect1 xml:id="language.oop5.final" xmlns="http://docbook.org/ns/docbook">
   <title><code>final</code> Anahtar Sözcüğü</title>
   <para>
-    Tanımı <literal>final</literal> anahtar sözcüğü ile başlayan bir yöntemi
-    çocuk sınıflar geçersiz kılamaz. Tanımı <literal>final</literal>
-    sözcüğüyle ile başlayan bir sınıf ise genişletilemez.
+   <literal>final</literal> anahtar sözcüğü ile başlayan bir yöntemi alt sınıfların
+   geçersiz kılması mümkün değildir. <literal>final</literal> anahtar sözcüğü ile
+   tanımlanmış bir sınıfı alt sınıfların genişletmesi mümkün değildir.
   </para>
 
   <example>
@@ -15,24 +15,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class AnaSınıf {
+class Anasınıf {
    public function deneme() {
-       echo "AnaSınıf::deneme() çağrıldı\n";
+       echo "AnaSınıf::deneme() yöntemi çağrıldı.\n";
    }
 
    final public function başkaDeneme() {
-       echo "AnaSınıf::başkaDeneme() çağrıldı\n";
+       echo "AnaSınıf::başkaDeneme() yöntemi çağrıldı.\n";
    }
 }
 
-class ÇocukSınıf extends AnaSınıf {
+class AltSınıf extends AnaSınıf {
    public function başkaDeneme() {
-       echo "ÇocukSınıf::başkaDeneme() çağrıldı\n";
+       echo "AltSınıf::başkaDeneme() yöntemi çağrıldı.\n";
    }
 }
-// Ölümcül hata ile sonuçlanır: AnaSınıf:başkaDeneme() final yöntemi
-// ÇocukSınıf::başkaDeneme() yöntemiyle geçersiz kılınamaz
-?>
+
+// Yukarıda gösterilen yöntemlerin uygulanması ile ölümcül hatalar oluşmaktadır.
+// "AnaSınıf::başkaDeneme()" yöntemi bir "final" yöntemi olduğu için geçersiz kılınamaz.
+// "AnaSınıf" sınıfı bir "final" sınıf olduğu için "AltSınıf" genişletemez.
+
 ]]>
    </programlisting>
   </example>
@@ -44,19 +46,19 @@ class ÇocukSınıf extends AnaSınıf {
 <?php
 final class AnaSınıf {
    public function deneme() {
-       echo "AnaSınıf::deneme() çağrıldı\n";
+       echo "AnaSınıf::deneme() yöntemi çağrıldı.\n";
    }
 
-   // Sınıf zaten final olduğundan buradaki final gereksizdir
+   // Sınıf zaten bir "final" sınıfı olduğundan buradaki "final" kullanımı gereksizdir.
    final public function başkaDeneme() {
-       echo "AnaSınıf::başkaDeneme() çağrıldı\n";
+       echo "AnaSınıf::başkaDeneme() yöntemi çağrıldı.\n";
    }
 }
 
-class ÇocukSınıf extends AnaSınıf {
+class AltSınıf extends AnaSınıf {
 }
-// Ölümcül hata ile sonuçlanır: ÇocukSınıf final bir sınıf
-// olan AnaSınıf'ın çocuğu olarak oluşturulamaz
+// Eğer AltSınıf bir "final" sınıfına genişletilirse ölümcül bir hata ile sonuçlanır.
+// Final sınıflar alt sınıflara genişletilemez veya oluşturulamazlar.
 ?>
 ]]>
    </programlisting>
