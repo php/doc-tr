@@ -1,38 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 151e61773c016edcae8fd4989ad9a86ffd03c283 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-start">
  <refnamediv>
   <refname>session_start</refname>
-  <refpurpose>Oturum verisini ilklendirir</refpurpose>
+  <refpurpose>Yeni bir oturum başlatır veya eskisini yeniden devreye sokar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>session_start</methodname>
-   <void/>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_start</function> bir oturumu ya oluşturur ya da GET, POST
    veya bir çerez gibi bir istek üzerinden aktarılan oturum kimliğine
-   istinaden eski bir oturumu geçerli oturum haline getirir.
+   dayalı olarak eski bir oturumu geçerli oturum haline getirir.
   </para>
   <para>
-   İsimli oturumlar kullanmak istiyorsanız bu işlevden önce bir
-   <function>session_name</function> çağrısı yapmalısınız.
+   <function>session_start</function> çağrıldığında veya bir oturum otomatik
+   başladığında, PHP kayıtlı oturum aç ve oku işleyicilerini çağırır. Bunlar,
+   öntanımlı veya PHP eklentileri (SQLite veya Memcached gibi) tarafından
+   sağlanan yerleşik kayıt altına alma işleyicileri veya
+   <function>session_set_save_handler</function> ile tanımlanan özel
+   işleyiciler olacaktır. Oku geriçağırımı, özel bir dizgeleştirilme biçiminde
+   saklanan mevcut oturumun verisini alıp döndüğünde PHP dahili olarak bu
+   veriyi nesneleştirerek $_SESSION dizisini doldurmakta kullanır.
+  </para>
+  <para>
+   İsimli oturumlar kullanmak için bu işlevden önce bir
+   <function>session_name</function> çağrısı yapılmalıdır.
   </para>
   <para>
    <function>session_start</function> işlevi,
-   <link linkend="ini.session.use-trans-sid"><literal>trans-sid</literal></link>
-   etkinken URL yeniden yazımı için dahili çıktı eylemcisini devreye sokar.
+   <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
+   etkinken URL yeniden yazımı için dahili çıktı eylemcisini kayıt altına alır.
+  </para>
+  <para>
    Eğer kullanıcı <function>ob_gzhandler</function> işlevini veya
    <function>ob_start</function> ile benzerini kullanıyorsa çıktı eylemcilerin
    sırası çıktının düzgün olmasında önem kazanır. Örneğin, kullanıcının
-   oturumu başlatmadan önce <function>ob_gzhandler</function> işlevini devreye
-   sokması gerekir.
+   oturumu başlatmadan önce <function>ob_gzhandler</function> işlevini kayıt
+   altına alması gerekir.
   </para>
  </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>seçenekler</parameter></term>
+    <listitem>
+     <para>
+      Belirtilmişse, geçerli <link
+      linkend="session.configuration">oturum yapılandırma yönergeleri</link>ni
+      geçersiz kılacak seçenekleri içeren ilişkisel bir dizi olmalıdır.
+      Anahtarların <literal>session.</literal> önekini içermemesi gerekir.
+     </para>
+     <para>
+      Normal yapılandırma yönergelerine ek olarak bir
+      <literal>read_and_close</literal> seçeneği de belirtilebilir.
+      Bu anahtara değer olarak &true; atanırsa, okuma işleminin ardından
+      oturum hemen kapanır, böylelikle, oturum verileri değiştirilmeyecekse
+      gereksiz kilitlemeden kaçınılmış olur.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  </refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
@@ -54,19 +90,11 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>7.1.0</entry>
        <entry>
-        Eğer oturum bir sebeple başlatılamazsa &false; döndürülür. Evvelce
-        daima &true; döndürülüyordu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        Oturum zaten başlatılmışken yapılan bir
-        <function>session_start</function> çağrısı artık
-        <constant>E_NOTICE</constant> seviyesinden bir hata ile sonuçlanıyor.
-        Ayrıca, ikinci oturum başlatma isteği de basitçe yok sayılıyor.
+        <function>session_start</function> oturumu başlatmada başarısız
+        olursa  artık &false; döndürüyor ve <varname>$_SESSION</varname>
+        dizisini artık ilkendirmiyor.
        </entry>
       </row>
      </tbody>
@@ -77,10 +105,12 @@
 
  <refsect1 role="examples">
   &reftitle.examples;
-  <para>
-   <example>
-    <title>- Bir oturum örneği: <filename>sayfa1.php</filename></title>
-    <programlisting role="php">
+  <refsect2>
+   <title>- Temel oturum örneği</title>
+   <para>
+    <example>
+     <title>- <filename>sayfa1.php</filename></title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 // sayfa1.php
@@ -100,21 +130,21 @@ echo '<br /><a href="sayfa2.php">2. Sayfa</a>';
 echo '<br /><a href="sayfa2.php?' . SID . '">2. Sayfa</a>';
 ?>
 ]]>
-    </programlisting>
-   </example>
-  </para>
-  <para>
-   <filename>sayfa1.php</filename> gösterildikten sonra, ikinci sayfa
-   <filename>sayfa2.php</filename> oturum verisini sihirli bir şekilde
-   içerecektir. <constant>SID</constant> sabiti dahil, <link
-   linkend="session.idpassing">oturum kimliklerinin yayını</link> hakkında
-   bilgi edinmek için <link linkend="book.session">oturum eklentisini</link>
-   okuyun.
-  </para>
-  <para>
-   <example>
-    <title>- Bir oturum örneği: <filename>sayfa2.php</filename></title>
-    <programlisting role="php">
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    <filename>sayfa1.php</filename> gösterildikten sonra, ikinci sayfa
+    <filename>sayfa2.php</filename> oturum verisini sihirli bir şekilde
+    içerecektir. <constant>SID</constant> sabiti dahil, <link
+    linkend="session.idpassing">oturum kimliklerinin aktarımı</link> hakkında
+    bilgi edinmek için <link linkend="book.session">oturum eklentisi</link>
+    okunabilir.
+   </para>
+   <para>
+    <example>
+     <title>- <filename>sayfa2.php</filename></title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 // sayfa2.php
@@ -127,36 +157,68 @@ echo $_SESSION['renk'];     // yeşil
 echo $_SESSION['hayvan'];   // kedi
 echo date('Y m d H:i:s', $_SESSION['zaman']);
 
-// sayfa1.php'de yaptığımız gibi burada da SID kullanabilirsiniz
+// sayfa1.php'de yaptığımız gibi burada da SID kullanılabilir
 echo '<br /><a href="sayfa1.php">1. Sayfa</a>';
 ?>
 ]]>
+     </programlisting>
+    </example>
+   </para>
+  </refsect2>
+  <refsect2>
+   <title><function>session_start</function> ve seçenekler</title>
+   <example>
+    <title>- Çerez ömrünü değiştirmek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Ömrü 1 gün olan kalıcı bir çerez gönder
+session_start([
+    'cookie_lifetime' => 86400,
+]);
+?>
+]]>
+     </programlisting>
+    </example>
+   <example>
+    <title>- Oturumu okuyup kapatmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Oturumda hiçbir şeyi değiştirmenin gerekmeyeceği biliniyorsa
+// oturum dosyasını kilitlemekten ve diğer sayfaları engellemekten
+// kaçınmak için doğru yol oturumu okuyup hemen kapatmaktır.
+session_start([
+    'cookie_lifetime' => 86400,
+    'read_and_close'  => true,
+]);
+]]>
     </programlisting>
    </example>
-  </para>
+  </refsect2>
  </refsect1>
 
  <refsect1 role="notes">
   &reftitle.notes;
   <note>
    <para>
-    Çereze dayalı oturumlar kullanıyorsanız tarayıcıya herhangi bir çıktılama
+    Çereze dayalı oturumlar kullanmak için tarayıcıya herhangi bir çıktılama
     yapmadan önce mutlaka bir <function>session_start</function> çağrısı
-    yapmalısınız.
+    yapılmalıdır.
    </para>
   </note>
   <note>
    <para>
-    <function>ob_gzhandler</function> işlevinden ziyade <link
+    <function>ob_gzhandler</function> işlevinin yerine <link
     linkend="ini.zlib.output-compression">zlib.output_compression</link>
-    yönergesini kullanmanızı öneririz.
+    yönergesinin kullanımı önerilir.
    </para>
   </note>
   <note>
    <para>
     Bu işlev yapılandırmaya bağlı olarak dışarıya çeşitli HTTP başlıkları
     gönderir. Bu başlıkları özelleştirmek için
-    <function>session_cache_limiter</function>işlevine bakınız.
+    <function>session_cache_limiter</function> işlevine bakınız.
     </para>
    </note>
  </refsect1>

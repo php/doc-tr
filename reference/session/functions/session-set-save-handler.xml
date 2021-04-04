@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.session-set-save-handler">
+<!-- EN-Revision: 88848833f762149b227f84d68e17a130fa043a41 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.session-set-save-handler" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>session_set_save_handler</refname>
   <refpurpose>Kullanıcı seviyesi oturum saklama işlevlerini bildirir
@@ -12,12 +12,23 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>session_set_save_handler</methodname>
-   <methodparam><type>callback</type><parameter>aç</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>kapa</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>oku</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>yaz</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>yoket</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>çöpçü</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>open</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>close</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>read</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>write</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>destroy</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>gc</parameter></methodparam>
+   <methodparam choice="opt"><type>callable</type><parameter>create_sid</parameter></methodparam>
+   <methodparam choice="opt"><type>callable</type><parameter>validate_sid</parameter></methodparam>
+   <methodparam choice="opt"><type>callable</type><parameter>update_timestamp</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   PHP 5.4 ve sonrasında aşağıdaki sözdizimi kullanılabilir:
+  </para>
+  <methodsynopsis>
+   <type>bool</type><methodname>session_set_save_handler</methodname>
+   <methodparam><type>object</type><parameter>oturum_işleyici</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>kapanışı_kaydet</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>session_set_save_handler</function> işlevi, bir oturumla ilişkili
@@ -31,43 +42,136 @@
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
+   Bu işlevin iki sözdizimi vardır. İkincisinin değiştirgeleri:
    <variablelist>
     <varlistentry>
-     <term><parameter>aç</parameter></term>
+     <term><parameter>oturum_işleyici</parameter></term>
      <listitem>
+      <para>
+       Oturum işleyici olarak kaydedilmek üzere,
+       <interfacename>SessionHandlerInterface</interfacename> ve seçimlik
+       olarak <interfacename>SessionIdInterface</interfacename> ve/veya
+       <interfacename>SessionUpdateTimestampHandlerInterface</interfacename>
+       gerçekleyen <classname>SessionHandler</classname> gibi bir sınıfın
+       örneği. Sadece PHP 5.4 ve sonrası.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>kapanışı_kaydet</parameter></term>
+     <listitem>
+      <para>
+       <function>session_write_close</function> işlevi
+       <function>register_shutdown_function</function> işlevi
+       olarak kaydedilir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   Birincisinin değiştirgeleri:
+   <variablelist>
+    <varlistentry>
+     <term><parameter>open</parameter></term>
+     <listitem>
+      <para>
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>open</replaceable></methodname>
+        <methodparam><type>string</type><parameter>kayıtYolu</parameter></methodparam>
+        <methodparam><type>string</type><parameter>oturumAdı</parameter></methodparam>
+       </methodsynopsis>
+      </para>
       <para>
        Bu işlev, sınıflardaki kurucular gibi çalışır ve oturum açıldığında
        çalıştırılır. Açma işlevinin iki değiştirge kabul edeceği varsayılır.
        İlkinde dosyaların kaydedileceği yerin yolu, ikincisinde oturum ismi
-       verilir.
+       verilir. Oturum başlatıldığında otomatik olarak veya elle
+       <function>session_start</function> çağırarak çalıştırılan ilk
+       geriçağırım işlevidir. Başarı durumunda &true; yoksa &false; döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kapa</parameter></term>
+     <term><parameter>close</parameter></term>
      <listitem>
       <para>
-       Bu işlev, sınıflardaki yıkıcılar gibi çalışır ve oturum işlemleri
-       bittiğinde çalıştırılır.
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>close</replaceable></methodname>
+        <void/>
+       </methodsynopsis>
+      </para>
+      <para>
+       Bu işlev, sınıflardaki yıkıcılar gibidir ve write geriçağırım işlevinden
+       sonra çalıştırılır. Ayrıca, <function>session_write_close</function>
+       çağrıldığında da çalıştırılır.
+       Başarı durumunda &true; yoksa &false; döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>oku</parameter></term>
+     <term><parameter>read</parameter></term>
      <listitem>
       <para>
-       Oturum bilgilerinin kayıt eylemcisinin beklendiği gibi çalışması için
-       bu işlevin daima dizge değer döndürmesi gerekir. Okunacak veri yoksa
-       işlev boş dizge döndürmelidir. Diğer eylemcilerden dönen değerler
-       başarı durumunda &true; başarısızlık durumunda &false; döndüren
-       mantıksal ifadelere dönüştürülür.
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>string</type><methodname><replaceable>read</replaceable></methodname>
+        <methodparam><type>string</type><parameter>oturum_kimliği</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       <parameter>read</parameter> geriçağırımı daima dizgeleştirilmiş bir
+       oturum dizgesi veya hiç veri okunmamışsa boş dizge döndürmelidir.
+      </para>
+      <para>
+       Bu geriçağırım, PHP tarafından dahili olarak oturum başlarken veya
+       <function>session_start</function> çağrısıyla çalıştırılır. Bu
+       geriçağırımı çağırmadan önce PHP  <parameter>open</parameter>
+       geriçağırımını çalıştırır.
+      </para>
+      <para>
+       Bu geriçağırımdam dönen dizgeleştirilmiş biçim, değiştirilmeden
+       <parameter>write</parameter> geriçağırımına aktarılabilecek biçimde
+       olmalıdır. Dönen değer PHP tarafından otomatik olarak nesneleştirilerek
+       <varname>$_SESSION</varname> dizisini doldurmakta kullanılır. Veri,
+       <function>serialize</function> işlevindekine benzese de <link
+       linkend="ini.session.serialize-handler">session.serialize_handler</link>
+       ini değişkeninde belirtilen biçimde olacağı unutulmamalıdır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yaz</parameter></term>
+     <term><parameter>write</parameter></term>
      <listitem>
       <para>
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>write</replaceable></methodname>
+        <methodparam><type>string</type><parameter>oturum_kimliği</parameter></methodparam>
+        <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       <parameter>write</parameter> geriçağırımı oturumun kaydedilip
+       kapatılması gerekince çağrılır. Geriçağırım geçerli oturum kimliğini
+       ve <varname>$_SESSION</varname> dizisinin dizgeleştirilmiş sürümünü
+       değiştirge olarak alır. PHP tarafından dahili olarak kullanılan
+       dizgeleştirme yöntemi, <link
+       linkend="ini.session.serialize-handler">session.serialize_handler</link>
+       ini değişkeninde belirtilmiştir.
+      </para>
+      <para>
+       Bu geriçağırıma aktarılan dizgeleştirilmiş oturum saklama verisi,
+       kimliği aktarılan oturumla ilgili olmalıdır. Bu veri alındığında
+       <parameter>read</parameter> geriçağırımının döndürdüğü değer,
+       <parameter>write</parameter> geriçağırımına değiştirilmeden aktarılacak
+       biçimde olmalıdır.
+      </para>
+      <para>
+       Bu geriçağırım PHP kapanırken veya doğrudan
+       <function>session_write_close</function> çağrıldığında çalıştırılır.
+       Bu işlev çalıştırıldıktan sonra PHP dahili olarak
+       <parameter>close</parameter> geriçağırımını çalıştırır.
        <note>
         <para>
          Bu işlev çıktı akımı kapanana kadar çalıştırılmaz. Bu bakımdan bu
@@ -80,21 +184,100 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yoket</parameter></term>
+     <term><parameter>destroy</parameter></term>
      <listitem>
       <para>
-       Bu işlev, oturum kimliğini tek değiştirge olarak alır ve
-       <function>session_destroy</function> işlevi ile bir oturum
-       yok edildiğinde çalıştırılır.
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>destroy</replaceable></methodname>
+        <methodparam><type>string</type><parameter>oturum_kimliği</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       Bu işlev, oturum kimliğini tek değiştirge olarak alır.
+       <function>session_regenerate_id</function> işlevi eski_oturumu_sil
+       değiştirgesine &true; atanarak çağrıldığında veya
+       <function>session_destroy</function> ile oturum yok edildiğinde bu
+       geriçağırım çalıştırılır. Başarı durumunda &true; yoksa &false; döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>çöpçü</parameter></term>
+     <term><parameter>gc</parameter></term>
      <listitem>
       <para>
-       Çöp toplayıcı işlev. Oturumun azami ömrünü tek değiştirge olarak alır
-       ve oturumun çöp toplayıcısı çalıştırıldığı zaman çalıştırılır.
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>gc</replaceable></methodname>
+        <methodparam><type>int</type><parameter>ömür</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       Çöp toplayıcı geriçağırım işlevi olup, eski oturum verilerini
+       temizlemek için dahili olarak PHP tarafından düzenli aralıklarla
+       çağrılır. Sıklık
+       <link linkend="ini.session.gc-probability">session.gc_probability</link>
+       ve <link linkend="ini.session.gc-divisor">session.gc_divisor</link>
+       yönergeleri ile ayarlanır. İşleve aktarılan ömür değeri <link
+       linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>
+       yönergesinin çalışma zamanı değerini değiştirir.
+       Başarı durumunda &true; yoksa &false; döner.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>create_sid</parameter></term>
+     <listitem>
+      <para>
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>string</type><methodname><replaceable>create_sid</replaceable></methodname>
+        <void/>
+       </methodsynopsis>
+      </para>
+      <para>
+       Bu geriçağırım yeni bir oturum kimliği gerektiğinde çalıştırılır.
+       Değiştirgesizdir ve dönüş değeri dizge olarak geçerli bir oturum kimliği
+       olmalıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>validate_sid</parameter></term>
+     <listitem>
+      <para>
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>validate_sid</replaceable></methodname>
+        <methodparam><type>string</type><parameter>anahtar</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       Bir oturum başlatılıp bir oturum kimliği edinildiğinde <link
+       linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
+       yönergesi de etkinse bu geriçağırım çalıştırılır.
+       <parameter>anahtar</parameter> doğrulanacak oturum kimliğidir. Bu
+       kimliğe sahip bir oturum varsa bu oturum kimliği geçerlidir.
+       Başarı durumunda &true; yoksa &false; döner.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>update_timestamp</parameter></term>
+     <listitem>
+      <para>
+       Bir geriçağırım işlevi olup sözdizimi şöyle olabilir:
+       <methodsynopsis>
+        <type>bool</type><methodname><replaceable>update_timestamp</replaceable></methodname>
+        <methodparam><type>string</type><parameter>anahtar</parameter></methodparam>
+        <methodparam><type>string</type><parameter>değer</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       Bir oturum güncellendiğinde bu geriçağırım çalıştırılır.
+       <parameter>anahtar</parameter> oturumun kimliği,
+       <parameter>değer</parameter> ise oturum verisidir.
+       Başarı durumunda &true; yoksa &false; döner.
       </para>
      </listitem>
     </varlistentry>
@@ -113,79 +296,123 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>session_set_save_handler</function> örneği</title>
+    <title>- Özel oturum işleyici</title>
     <para>
-     Aşağıdaki örnekte, PHP'nin öntanımlı kayıt ortamı olan dosyalara
-     (<parameter>files</parameter>) benzer dosya temelli bir oturum kayıt
-     ortamı oluşturulmaktadır. Bu örnek, PHP destekli veritabanı mekanizmanızı
-     kapsayacak şekilde kolayca genişletilebilir.
+     Aşağıdaki kod PHP 5.4.0 ve üstü içindir. <classname>SessionHandlerInterface</classname> sayfasında kodun tamamı vardır. Burada sadece çağrılan kısım gösterilmiştir.
+    </para>
+    <para>
+     Burada <function>session_set_save_handler</function> işlevinin NYP
+     sözdizimi kullanılmakta ve kapanışı_kaydet değiştirgesi ile kapanış
+     işlevi kayıt altına alınmaktadır. Nesneleri oturum kayıt işleyicisi
+     olarak kayıt altına alma işlemi genel olarak böyledir ve böyle
+     yapılması önerilir.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-function aç($saklama_yeri, $oturum_ismi)
+class MySessionHandler implements SessionHandlerInterface
 {
-  global $oturum_kayıt_yeri;
-
-  $oturum_kayıt_yeri = $saklama_yeri;
-  return(true);
+    // arayüzlerin gerçeklenimi burada
 }
 
-function kapat()
+$handler = new MySessionHandler();
+session_set_save_handler($handler, true);
+session_start();
+
+// $_SESSION dizisinden değerleri anahtarlarına göre
+// elde etmek ve atamak için kodlar burada.
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- Nesne kullanan özel oturum kaydı işleyici</title>
+    <para>
+     Aşağıdaki örnek PHP 5.4.0 öncesi içindir.
+    </para>
+    <para>
+     Aşağıdaki örnekte, PHP'nin öntanımlı kayıt ortamı olan dosyalara
+     benzer dosya temelli bir oturum kayıt ortamı oluşturulmaktadır.
+     Bu örnek, PHP destekli veritabanı mekanizmanızı kapsayacak şekilde
+     kolayca genişletilebilir.
+    </para>
+    <para>
+     PHP 5.4.0 öncesinde ek olarak <function>session_write_close</function>
+     işlevi <function>register_shutdown_function</function> kullanarak kayıt
+     altına alınabilir. Oturum kayıt işleyicisi olarak nesenelerin kaydedilmesi
+     işleminin PHP 5.4.0 öncesinde böyle yapılması önerilir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class FileSessionHandler
 {
-  return(true);
-}
+    private $savePath;
 
-function oku($id)
-{
-  global $oturum_kayıt_yeri;
+    function open($savePath, $sessionName)
+    {
+        $this->savePath = $savePath;
+        if (!is_dir($this->savePath)) {
+            mkdir($this->savePath, 0777);
+        }
 
-  $saklama_dosyası = "$oturum_kayıt_yeri/oturum_$id";
-  return (string) @file_get_contents($saklama_dosyası);
-}
-
-function yaz($id, $saklama_verisi)
-{
-  global $oturum_kayıt_yeri;
-
-  $saklama_dosyası = "$oturum_kayıt_yeri/oturum_$id";
-  if ($fp = @fopen($saklama_dosyası, "w")) {
-    $return = fwrite($fp, $saklama_verisi);
-    fclose($fp);
-    return $return;
-  } else {
-    return(false);
-  }
-
-}
-
-function yoket($id)
-{
-  global $oturum_kayıt_yeri;
-
-  $saklama_dosyası = "$oturum_kayıt_yeri/oturum_$id";
-  return(@unlink($saklama_dosyası));
-}
-
-function çöpçü($azami_ömür)
-{
-  global $oturum_kayıt_yeri;
-
-  foreach (glob("$oturum_kayıt_yeri/oturum_*") as $dosya) {
-    if (filemtime($dosya) + $azami_ömür < time()) {
-      @unlink($dosya);
+        return true;
     }
-  }
-  return true;
+
+    function close()
+    {
+        return true;
+    }
+
+    function read($id)
+    {
+        return (string)@file_get_contents("$this->savePath/sess_$id");
+    }
+
+    function write($id, $data)
+    {
+        return file_put_contents("$this->savePath/sess_$id", $data) === false ? false : true;
+    }
+
+    function destroy($id)
+    {
+        $file = "$this->savePath/sess_$id";
+        if (file_exists($file)) {
+            unlink($file);
+        }
+
+        return true;
+    }
+
+    function gc($maxlifetime)
+     {
+        foreach (glob("$this->savePath/sess_*") as $file) {
+            if (filemtime($file) + $maxlifetime < time() && file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+        return true;
+    }
 }
 
-session_set_save_handler("aç", "kapat", "oku", "yaz", "yoket", "çöpçü");
+$handler = new FileSessionHandler();
+session_set_save_handler(
+    array($handler, 'open'),
+    array($handler, 'close'),
+    array($handler, 'read'),
+    array($handler, 'write'),
+    array($handler, 'destroy'),
+    array($handler, 'gc')
+    );
+
+// nesneler kayıt işleyici olarak kullanıldığında
+// beklenmeyen etkileri engellemek için
+register_shutdown_function('session_write_close');
 
 session_start();
 
-// Oturum ile ilgili diğer işlemler
-
-?>
+// $_SESSION dizisinden değerleri anahtarlarına göre
+// elde etmek ve atamak için kodlar burada.
 ]]>
     </programlisting>
    </example>
@@ -196,19 +423,42 @@ session_start();
   &reftitle.notes;
   <warning>
    <para>
-    PHP 5.0.5'ten itibaren <parameter>yaz</parameter> ve
-    <parameter>kapat</parameter> eylemcileri nesne yokedildikten sonra
-    çağrılmaktadır. Bu bakımdan nesneler ve oluşturulan istisnalar
-    kullanılamaz. Ancak nesne yıkıcılar oturumları kullanabilir.
+    Nesneleri oturum kaydetme işleyicileri olarak kullanırken, PHP'nin
+    kapanış sırasında nesneleri dahili olarak yok etmesinden kaynaklanan
+    beklenmedik yan etkileri (<parameter>write</parameter> ve
+    <parameter>close</parameter> çağrılmayabilir) önlemek için kapanış
+    işlevini PHP'ye kaydettirmek önemlidir. Özellikle,
+    <function>register_shutdown_function</function> işlevi kullanılarak
+    kullanıcının <parameter>'session_write_close'</parameter> işlevi kayıt
+    altına alınmalıdır.
    </para>
    <para>
-    Bu yumurta/tavuk sorununu çözümlemek için bir yıkıcıdan
-    <function>session_write_close</function> çağrısı yapmak mümkündür.
+    PHP 5.4.0 ve sonrasında, basitçe
+    <function>session_register_shutdown</function> çağrılabilir veya NYP
+    yöntemi kullanılarak <parameter>kapanışı_kaydet</parameter> seçeneğine
+    &true; atanarak <function>session_set_save_handler</function> çağrısına
+    <classname>SessionHandlerInterface</classname> arayüzünü gerçekleyen bir
+    nesne örneği aktarılabilir.
    </para>
   </warning>
   <warning>
    <para>
-    Eğer oturum, betiğin sonlanmasıyla kapanmışsa bazı SAPI'lerde geçirli
+    PHP 5.0.5'ten itibaren <parameter>write</parameter> ve
+    <parameter>close</parameter> eylemcileri nesne yokedildikten sonra
+    çağrılmaktadır. Bu bakımdan nesneler ve istisna yavrulama
+    kullanılamaz. İstisnalar da yakalanamaz, ne yakalanır ne de herhangi bir istisna izi görüntülenir ve çalışma beklenmedik bir şekilde durur.
+    Ancak nesne yıkıcılar oturumlarda kullanılabilir.
+   </para>
+   <para>
+    Bu yumurta/tavuk sorununu çözümlemek için bir yıkıcıdan
+    <function>session_write_close</function> çağrısı yapmak mümkündür fakat
+    en güvenilir yol, kapanış işlevini yukarıda açıklandığı gibi kayıt altına
+    almaktır.
+   </para>
+  </warning>
+  <warning>
+   <para>
+    Eğer oturum, betiğin sonlanmasıyla kapanmışsa bazı SAPI'lerde, geçerli
     çalışma dizini değiştirilir. Böyle durumlarda oturumu önceden
     <function>session_write_close</function> ile kapatmak mümkündür.
    </para>
@@ -222,6 +472,16 @@ session_start();
     <member>
      <link linkend="ini.session.save-handler">session.save_handler</link>
      yapılandırma yönergesi
+    </member>
+    <member>
+     <link linkend="ini.session.serialize-handler">session.serialize_handler</link>
+     yapılandırma yönergesi.
+    </member>
+    <member>The <function>register_shutdown_function</function></member>
+    <member>The <function>session_register_shutdown</function> for PHP 5.4.0+</member>
+    <member>
+     Eksiksiz bir yordamsal gönderim gerçeklenimi için bkz: <link
+     xlink:href="&url.session-save-handler;">save_handler.inc</link>
     </member>
    </simplelist>
   </para>
