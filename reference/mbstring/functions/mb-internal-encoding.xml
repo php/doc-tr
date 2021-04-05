@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-internal-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_internal_encoding</refname>
@@ -10,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>mb_internal_encoding</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter><initializer>mb_internal_encoding()</initializer></methodparam>
+   <type class="union"><type>string</type><type>bool</type></type><methodname>mb_internal_encoding</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Dahili karakter kodlamasını tanımlar/döndürür.
@@ -28,7 +28,9 @@
       <para>
        HTTP girdi karakter kodlaması dönüşümü için kullanılan karakter
        kodlaması ve dizge işlevleri için mbstring modülü tarafından
-       tanımlanmış öntanımlı karakter kodlaması adı.
+       tanımlanmış öntanımlı karakter kodlaması adı. Farkedileceği gibi,
+       dahili kodlama çok baytlı düzenli ifadelerin kodlamasından tamamen
+       farklıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -39,10 +41,28 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>kodlama</parameter> belirtilmişse başarı durumunda &true;
-   aksi takdirde &false; döner. <parameter>kodlama</parameter> belirtilmemişse
-   geçerli kodlamanın ismi döner.
+   <parameter>kodlama</parameter> belirtilmişse başarı durumunda &true; döner
+   ve bu durumda çok baytlı düzenli ifade kodlaması değişmez.
+   <parameter>kodlama</parameter> belirtilmemişse veya &null; ise geçerli
+   kodlamanın ismi döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &mbstring.changelog.encoding-nullable;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -65,11 +85,13 @@ echo mb_internal_encoding();
   </para>
  </refsect1>
 
+<!--
  <refsect1 role="notes">
   &reftitle.notes;
 
-  &note.mbstring.encoding.internal;
  </refsect1>
+-->
+
 
  <refsect1 role="seealso">
   &reftitle.seealso;
@@ -78,6 +100,7 @@ echo mb_internal_encoding();
     <member><function>mb_http_input</function></member>
     <member><function>mb_http_output</function></member>
     <member><function>mb_detect_order</function></member>
+    <member><function>mb_regex_encoding</function></member>
    </simplelist>
   </para>
  </refsect1>

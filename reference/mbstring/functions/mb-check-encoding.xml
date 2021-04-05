@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-check-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_check_encoding</refname>
-  <refpurpose>Dizgenin belirtilen kodlama için geçerli olup olmadığını sınar
+  <refpurpose>Dizgelerin belirtilen kodlama için geçerli olup olmadığını sınar
   </refpurpose>
  </refnamediv>
 
@@ -12,12 +12,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>mb_check_encoding</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>dizge</parameter><initializer>NULL</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter><initializer>mb_internal_encoding()</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>değer</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen bayt diziliminin belirtilen kodlamaya uygun olup olmadığını sınar.
-   "Geçersiz Kodlama Saldırısı"'nı önlemek için yararlıdır.
+   Belirtilen bayt diziliminin belirtilen kodlamaya uygun olup olmadığını
+   sınar. <parameter>değer</parameter> bir dizi ise tüm anahtarlar ve değerler
+   sırayla doğrulanır. "Geçersiz Kodlama Saldırısı"'nı önlemek için yararlıdır.
   </para>
   <para>
   </para>
@@ -28,20 +29,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       Sınanacak bayt dizilimi. Belirtilmezse, isteğin başlangıcından itibaren
-       tüm girdi sınanır.
+       Sınanacak bayt akımı veya bir dizi. Belirtilmezse, isteğin
+       başlangıcından itibaren tüm girdi sınanır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>kodlama</parameter></term>
      <listitem>
-      <para>
-       Umulan kodlama.
-      </para>
+       &mbstring.encoding.parameter;
      </listitem>
     </varlistentry>
    </variablelist>
@@ -53,6 +52,35 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>değer</parameter> ve <parameter>kodlama</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       İşlev <parameter>değer</parameter> olarak artık bir dizi olabiliyor.
+       Evvelce sadece dizgeler destekleniyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

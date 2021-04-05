@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-output-handler" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_output_handler</refname>
@@ -12,7 +12,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>mb_output_handler</methodname>
-   <methodparam><type>string</type><parameter>içerik</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>int</type><parameter>durum</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -28,7 +28,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>içerik</parameter></term>
+     <term><parameter>dizge</parameter></term>
      <listitem>
       <para>
        Çıktı tamponunun içeriği.
@@ -54,54 +54,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        <para>
-         Bu işlev artık aşağıdaki koşullar sağlandığı takdirde charset HTTP
-         başlığını eklemektedir:
-        </para>
-        <para>
-         <itemizedlist>
-          <listitem>
-           <simpara>
-            <function>header</function> işlevi kullanılarak
-            <literal>Content-Type</literal> başlığı tanımlanmazsa.
-           </simpara>
-          </listitem>
-          <listitem>
-           <simpara>
-            Öntanımlı MIME türü <literal>text/</literal> ile başlarsa.
-           </simpara>
-          </listitem>
-          <listitem>
-           <simpara>
-            <link linkend="ini.mbstring.http-input">mbstring.http_input</link>
-            değeri <literal>pass</literal> değilse.
-           </simpara>
-          </listitem>
-         </itemizedlist>
-        </para>
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -123,23 +75,17 @@ ob_start("mb_output_handler");
   &reftitle.notes;
   <note>
    <para>
-    PHP 4.3.0 ve sonrası ile, bir resim verisi gibi bir ikil veriyi PHP
+    Bir resim verisi gibi bir ikil veriyi PHP
     betiğinizden göndermek isterseniz bu veriyi istemciye göndermeden önce
     <function>header</function> işlevini kullanarak Content-Type: başlığını
     (örneğin, header("Content-Type: image/png") olarak) göndermelisiniz.
-    Content-Type: başlığı gönderilmişse karakter kodlaması dönüşümü uygulanmaz.
+    Content-Type: başlığı gönderilmişse karakter kodlaması dönüşümü
+    uygulanmaz.
    </para>
    <para>
     <function>header</function> işlevini kullanılarak 'Content-Type: text/*'
-    gönderilmişse gönderilen verinin metin olarak ele alınacağını ve karakter
-    kodlaması ayarlarına uygun olarak karakter kodlaması dönüşümü yapılacağını
-    unutmayın.
-   </para>
-   <para>
-    PHP 4.2.x ve öncesi ile, bir resim verisi gibi bir ikil veriyi PHP
-    betiğinizden göndermek isterseniz çıktı kodlamasına
-    <function>mb_http_output</function> işlevini kullanarak &quot;pass&quot;
-    değerini atamalısınız.
+    gönderilmişse gövdenin metin içerip içermediğine bakılmaksızın karakter
+    kodlaması dönüşümü yapılacağı unutulmamalıdır.
    </para>
   </note>
  </refsect1>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-encode-mimeheader" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_encode_mimeheader</refname>
@@ -12,10 +12,10 @@
   <methodsynopsis>
    <type>string</type><methodname>mb_encode_mimeheader</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>aktarım_kodlaması</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>satırsonu</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>girinti</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>karküm</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>aktarım_kodlaması</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>satırsonu</parameter><initializer>"\r\n"</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>girinti</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>dizge</parameter> dizgesini MIME başlığı kodlama
@@ -32,6 +32,7 @@
      <listitem>
       <para>
        Kodlanacak dizge.
+       Kodlaması <function>mb_internal_encoding</function> ile aynı olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -41,9 +42,8 @@
       <para>
        Dizgenin kodlanacağı karakter kümesinin ismi. Öntanımlı değer geçerli
        yerel dil ayarından
-       (<link linkend="ini.mbstring.language">mbstring.language</link>) alınır.
-       <function>mb_internal_encoding</function> ile aynı kodlama
-       belirtilmelidir.
+       (<link linkend="ini.mbstring.language">mbstring.language</link>)
+       alınır.
       </para>
      </listitem>
     </varlistentry>
@@ -104,9 +104,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>girinti</parameter> değiştirgesi eklendi.
+        <parameter>karküm</parameter> ve
+        <parameter>aktarım_kodlaması</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>

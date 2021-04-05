@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 02177b182ecd8ee5eb32dc4373c81b278de719d5 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-detect-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_detect_encoding</refname>
@@ -10,10 +10,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>mb_detect_encoding</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>mb_detect_encoding</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>kodlama_listesi</parameter><initializer>mb_detect_order()</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>kesin</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>kodlamalar</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>katı</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinin karakter kodlamasını algılar.
@@ -33,25 +33,25 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kodlama_listesi</parameter></term>
+     <term><parameter>kodlamalar</parameter></term>
      <listitem>
       <para>
-       <parameter>kodlama_listesi</parameter> ile karakter kodlama listesi
+       <parameter>kodlamalar</parameter> ile karakter kodlama listesi
        belirtilir. Algı sırası bir dizi veya virgül ayraçlı bir liste olarak
        belirtilebilir.
       </para>
       <para>
-       <parameter>kodlama_listesi</parameter> belirtilmezse algılama için
+       <parameter>kodlamalar</parameter> belirtilmezse veya &null; ise,
        <link linkend="ini.mbstring.detect-order">dahili algılama sırası</link>
        kullanılır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kesin</parameter></term>
+     <term><parameter>katı</parameter></term>
      <listitem>
       <para>
-       <parameter>kesin</parameter> ile kesin kodlama algılamasının kullanılıp
+       <parameter>katı</parameter> ile katı kodlama algılamasının kullanılıp
        kullanılmayacağı belirtilir. &false; öntanımlıdır.
       </para>
      </listitem>
@@ -79,13 +79,13 @@
 /* Karakter kodlamasını dahili algı sırasını kullanarak algılatalım */
 echo mb_detect_encoding($str);
 
-/* "auto" değeri "ASCII,JIS,UTF-8,EUC-JP,SJIS" olarak genişletilir */
+/* "auto" değeri mbstring.language ini değerine göre genişletilir */
 echo mb_detect_encoding($str, "auto");
 
-/* Kodlama listesini virgül ayraçlı liste olarak belirtelim  */
+/* Kodlamaları virgül ayraçlı liste olarak belirtelim  */
 echo mb_detect_encoding($str, "JIS, eucjp-win, sjis-win");
 
-/* Kodlama listesini dizi olarak belirtelim  */
+/* Kodlamaları dizi olarak belirtelim  */
 $ary[] = "ASCII";
 $ary[] = "JIS";
 $ary[] = "EUC-JP";

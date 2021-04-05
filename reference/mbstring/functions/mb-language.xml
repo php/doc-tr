@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-language" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_language</refname>
@@ -10,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>mb_language</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>dil</parameter></methodparam>
+   <type class="union"><type>string</type><type>bool</type></type><methodname>mb_language</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>dil</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Geçerli dili tanımlar/döndürür.
@@ -26,16 +26,96 @@
      <term><parameter>dil</parameter></term>
      <listitem>
       <para>
-       Eposta iletilerini kodlamak için kullanılır. Geçerli değerler:
-       "Japanese", "ja","English","en" ve "uni" (UTF-8).
-       <function>mb_send_mail</function> bu değeri epostayı kodlamak için
-       kullanır.
+       Eposta iletilerini kodlamak için kullanılır. Geçerli değerler aşağıdaki
+       tabloda listelenmiştir. <function>mb_send_mail</function> bu değeri
+       epostayı kodlamak için kullanır.
       </para>
-      <para>
-       Dil ve kodlama: Japonca için ISO-2022-JP/Base64,
-       uni için UTF-8/Base64,
-       İngilizce için ISO-8859-1/quoted printable.
-      </para>
+      <informaltable>
+       <tgroup cols="4">
+        <thead>
+         <row>
+          <entry>Dil</entry>
+          <entry>Karakter Kümesi</entry>
+          <entry>Kodlama</entry>
+          <entry>Takma Ad</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>German/de</entry>
+          <entry>ISO-8859-15</entry>
+          <entry>Quoted-Printable</entry>
+          <entry>Deutsch</entry>
+         </row>
+         <row>
+          <entry>English/en</entry>
+          <entry>ISO-8859-1</entry>
+          <entry>Quoted-Printable</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Armenian/hy</entry>
+          <entry>ArmSCII-8</entry>
+          <entry>Quoted-Printable</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Japanese/ja</entry>
+          <entry>ISO-2022-JP</entry>
+          <entry>BASE64</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Korean/ko</entry>
+          <entry>ISO-2022-KR</entry>
+          <entry>BASE64</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>neutral</entry>
+          <entry>UTF-8</entry>
+          <entry>BASE64</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Russian/ru</entry>
+          <entry>KOI8-R</entry>
+          <entry>Quoted-Printable</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Turkish/tr</entry>
+          <entry>ISO-8859-9</entry>
+          <entry>Quoted-Printable</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Ukrainian/ua</entry>
+          <entry>KOI8-U</entry>
+          <entry>Quoted-Printable</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>uni</entry>
+          <entry>UTF-8</entry>
+          <entry>BASE64</entry>
+          <entry>evrensel</entry>
+         </row>
+         <row>
+          <entry>Simplified Chinese/zh-cn</entry>
+          <entry>HZ</entry>
+          <entry>BASE64</entry>
+          <entry></entry>
+         </row>
+         <row>
+          <entry>Traditional Chinese/zh-tw</entry>
+          <entry>BIG-5</entry>
+          <entry>BASE64</entry>
+          <entry></entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </informaltable>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -45,10 +125,32 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>dil</parameter> belirtilmiş ve geçerli ise &true; yoksa &false;
-   döner. <parameter>dil</parameter> belirtilmezse, dilin adı bir dizge olarak
-   döndürülür. Evvelce tanımlanmış bir dil yoksa &false; döner.
+   <parameter>dil</parameter> atlanmışsa veya &null; ise dil ismini bir dizge
+   olarak döndürür. <parameter>dil</parameter> belirtilmişse ve geçerliyse
+   &true;, aksi takdirde &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>dil</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

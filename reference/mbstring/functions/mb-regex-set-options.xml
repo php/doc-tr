@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-regex-set-options" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_regex_set_options</refname>
@@ -12,7 +12,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>mb_regex_set_options</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>seçenekler</parameter><initializer>"msr"</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
    Çok baytlı düzenli ifade işlevleri için <parameter>seçenekler</parameter>
@@ -28,8 +28,100 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Tanımlanacak seçenekler.
+       Tanımlanacak seçenekler. Her karakterin bir seçeneğe karşılık geldiği
+       bir dizge olmalıdır. Kip belirtmek için, kip karakteri sonuncu karakter
+       olmalıdır. Çok sayıda seçenek olabilir ama tek bir kip belirtilebilir.
       </para>
+      <table>
+       <title>Düzenli ifade seçenekleri</title>
+       <tgroup cols="4">
+        <thead>
+         <row>
+          <entry>Seçenek</entry>
+          <entry>Anlamı</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>i</entry>
+          <entry>Belirsiz eşleşme etkin olur</entry>
+         </row>
+         <row>
+          <entry>x</entry>
+          <entry>Genişletilmiş kalıp biçimi etkin olur</entry>
+         </row>
+         <row>
+          <entry>m</entry>
+          <entry><literal>'.'</literal> satırsonları ile eşleşir</entry>
+         </row>
+         <row>
+          <entry>s</entry>
+          <entry><literal>'^'</literal> -> <literal>'\A'</literal>, <literal>'$'</literal> -> <literal>'\Z'</literal></entry>
+         </row>
+         <row>
+          <entry>p</entry>
+          <entry><literal>m</literal> ve <literal>s</literal> seçenekleri ile aynı</entry>
+         </row>
+         <row>
+          <entry>l</entry>
+          <entry>En uzun eşleşmeyi bulur</entry>
+         </row>
+         <row>
+          <entry>n</entry>
+          <entry>Boş eşleşmeler yok sayılır</entry>
+         </row>
+         <row>
+          <entry>e</entry>
+          <entry><function>eval</function> sonucu kod</entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+      <table>
+       <title>Düzenli ifade sözdizimi kipleri</title>
+       <tgroup cols="4">
+        <thead>
+         <row>
+          <entry>Kip</entry>
+          <entry>Anlamı</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>j</entry>
+          <entry>Java (Sun java.util.regex)</entry>
+         </row>
+         <row>
+          <entry>u</entry>
+          <entry>GNU regex</entry>
+         </row>
+         <row>
+          <entry>g</entry>
+          <entry>grep</entry>
+         </row>
+         <row>
+          <entry>c</entry>
+          <entry>Emacs</entry>
+         </row>
+         <row>
+          <entry>r</entry>
+          <entry>Ruby</entry>
+         </row>
+         <row>
+          <entry>z</entry>
+          <entry>Perl</entry>
+         </row>
+         <row>
+          <entry>b</entry>
+          <entry>POSIX Temel regex</entry>
+         </row>
+         <row>
+          <entry>d</entry>
+          <entry>POSIX Genişletilmiş regex</entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -39,9 +131,39 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Önceki seçenekler. <parameter>seçenekler</parameter> belirtilmemişse geçerli
-   seçenekleri içeren bir dizge ile döner.
+   Önceki seçenekler. <parameter>seçenekler</parameter> belirtilmemişse
+   veya &null; ise, geçerli seçenekleri içeren bir dizge ile döner.
   </para>
+ </refsect1>
+
+  <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+      <parameter>seçenekler</parameter> belirtilmemişse veya &null; ise, artık
+      <emphasis>önceki</emphasis> seçenekleri içeren bir dizge dönüyor.
+      Evvelce, <emphasis>geçerli</emphasis> seçenekler dönerdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>seçenekler</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

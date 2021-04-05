@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9240fafbb22e3331c643c31b55ea599fa5ca1053 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-eregi" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_eregi</refname>
@@ -11,10 +11,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>mb_eregi</methodname>
-   <methodparam><type>string</type><parameter>şablon</parameter></methodparam>
+   <type>bool</type><methodname>mb_eregi</methodname>
+   <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>sonuç</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">sonuç</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
    Bir düzenli ifadeyi harf büyüklüğüne duyarsız olarak çok baytlı bir dizge
@@ -27,10 +27,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>şablon</parameter></term>
+     <term><parameter>kalıp</parameter></term>
      <listitem>
       <para>
-       Düzenli ifade şablonu.
+       Düzenli ifade kalıbı.
       </para>
      </listitem>
     </varlistentry>
@@ -38,7 +38,7 @@
      <term><parameter>dizge</parameter></term>
      <listitem>
       <para>
-       Şablonun aranacağı dizge.
+       Kalıbın aranacağı dizge.
       </para>
      </listitem>
     </varlistentry>
@@ -46,7 +46,17 @@
      <term><parameter>sonuç</parameter></term>
      <listitem>
       <para>
-       Eşleşen alt dizgeyi içerecek dizge.
+       Kalıbın parantezli alt dizeleri için eşleşmeler bulunursa ve işlev
+       üçüncü değiştirge belirtilerek çağrılırsa, eşleşmeler
+       <parameter>sonuç</parameter> dizisinin elemanlarında saklanır.
+       Eşleşme bulunmazsa, <parameter>sonuç</parameter> boş bir dizi içerir.
+      </para>
+      <para>
+       <varname>$sonuç[1]</varname>, ilk sol parantezden başlayan alt dizeyi
+       içerecektir; <varname>$sonuç[2]</varname>, alt dizeyi ikinciden
+       başlayarak içerecektir ve bu böyle devam eder.
+       <varname>$sonuç[0]</varname>, eşleşen dizenin tamamının bir kopyasını
+       içerecektir.
       </para>
      </listitem>
     </varlistentry>
@@ -56,15 +66,48 @@
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <simpara>
-   Düzenli ifadeyi çok baytlı karakter desteğiyle çalıştırır ve eşleşme
-   sağlanırsa <literal>1</literal> döndürür. İsteğe bağlı olan
-   <parameter>sonuç</parameter> değiştirgesi belirtilmişse eşleşen alt dizge
-   <parameter>sonuç</parameter> değiştirgesine yerleştirilip uzunluğu dönüş
-   değeri olarak döndürülür. Boş dizgeyle eşleşme halinde işlev
-   <literal>1</literal> değeriyle döner. Eğer bir eşleşme bulunamazsa veya bir
-   hata oluşursa &false;döner.
-  </simpara>
+  <para>
+   <parameter>kalıp</parameter> ile <parameter>dizge</parameter> eşleşiyorsa
+   &true; yoksa &false; döner..
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu işlev başarılı olursa artık &true; döndürüyor. Evvelce
+       <parameter>sonuç</parameter> atlanmışsa, <parameter>kalıp</parameter>
+       ve <parameter>dizge</parameter> eşleşirse veya
+       <parameter>dizge</parameter> uzunluğu <literal>0</literal> ise işlev
+       <literal>1</literal> döndürürdü.  <parameter>sonuç</parameter>
+       değiştirgesi belirtilmişse, eşleşen alt dizge
+       <parameter>sonuç</parameter> değiştirgesine yerleştirilip uzunluğu
+       dönüş değeri olarak döndürülürdü.
+      </entry>
+     </row>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <function>mb_ereg</function> hiçbir eşleşme olmazsa
+       <parameter>sonuç</parameter> değiştirgesine atık boş bir dizi
+       yerleştiriyor. Evvelce, böyle bir durumda <parameter>sonuç</parameter>
+       değiştirgesinde değişiklik yapılmazdı.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="notes">

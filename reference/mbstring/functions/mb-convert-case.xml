@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-convert-case" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_convert_case</refname>
@@ -12,8 +12,8 @@
   <methodsynopsis>
    <type>string</type><methodname>mb_convert_case</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam><type>int</type><parameter>kip</parameter><initializer>MB_CASE_UPPER</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter><initializer>mb_internal_encoding()</initializer></methodparam>
+   <methodparam><type>int</type><parameter>kip</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen dizgeye belirtilen kipe göre büyük-küçük harf dönüşümü uygular.
@@ -38,8 +38,13 @@
       <para>
        Dönüşüm kipi.
        <constant>MB_CASE_UPPER</constant>,
-       <constant>MB_CASE_LOWER</constant> veya
-       <constant>MB_CASE_TITLE</constant> olabilir.
+       <constant>MB_CASE_LOWER</constant>,
+       <constant>MB_CASE_TITLE</constant>,
+       <constant>MB_CASE_FOLD</constant>,
+       <constant>MB_CASE_UPPER_SIMPLE</constant>,
+       <constant>MB_CASE_LOWER_SIMPLE</constant>,
+       <constant>MB_CASE_TITLE_SIMPLE</constant>,
+       <constant>MB_CASE_FOLD_SIMPLE</constant> sabitlerinden biri olabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -66,14 +71,43 @@
   <para>
    <function>strtolower</function> ve <function>strtoupper</function> gibi
    standart büyük-küçük harf dönüşüm işlevlerinden farklı olarak, dönüşümü
-   Evrenkodlu karakter özelliklerine göre yapar. Bu bakımdan bu işlevin davranışı
+   Unicode karakter özelliklerine göre yapar. Bu bakımdan bu işlevin davranışı
    yerel ayarlardan etkilenmez ve büyük-küçük harf ayrımı yapılabilen her
    karakteri dönüştürebilir.
   </para>
   <para>
-   Evrenkod özellikleri hakkında daha fazla bilgi için
+   Unicode özellikleri hakkında daha fazla bilgi için
    <link xlink:href="&url.unicode.reports;">&url.unicode.reports;</link>
    adresine bakınız.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.3.0</entry>
+       <entry><parameter>kip</parameter> artık
+        <constant>MB_CASE_FOLD</constant>,
+        <constant>MB_CASE_UPPER_SIMPLE</constant>,
+        <constant>MB_CASE_LOWER_SIMPLE</constant>,
+        <constant>MB_CASE_TITLE_SIMPLE</constant> ve
+        <constant>MB_CASE_FOLD_SIMPLE</constant>
+        sabitlerini de destekliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -81,15 +115,31 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>mb_convert_case</function> örneği</title>
+    <title>- <function>mb_convert_case</function> yerel ayarlara bakmaz</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$str = "Pınar'ın çok sevdiği küçük bir kuzusu var.";
+$str = "Pınar'ın çok sevdiği küçük bir kuzusu var.\n";
 $str = mb_convert_case($str, MB_CASE_UPPER, "UTF-8");
-echo $str; // Prints PINAR'IN ÇOK SEVDIĞI KÜÇÜK BIR KUZUSU VAR.
+echo $str; // PINAR'IN ÇOK SEVDIĞI KÜÇÜK BIR KUZUSU VAR.
 $str = mb_convert_case($str, MB_CASE_TITLE, "UTF-8");
-echo $str; // Pinar'In Çok Sevdiği Küçük Bir Kuzusu Var.
+echo $str; // Pinar'in Çok Sevdiği Küçük Bir Kuzusu Var.
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Latin harfleri kullanılmayan <function>mb_convert_case</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = "Τάχιστη αλώπηξ βαφής ψημένη γη, δρασκελίζει υπέρ νωθρού κυνός\n";
+$str = mb_convert_case($str, MB_CASE_UPPER, "UTF-8");
+echo $str; // ΤΆΧΙΣΤΗ ΑΛΏΠΗΞ ΒΑΦΉΣ ΨΗΜΈΝΗ ΓΗ, ΔΡΑΣΚΕΛΊΖΕΙ ΥΠΈΡ ΝΩΘΡΟΎ ΚΥΝΌΣ
+$str = mb_convert_case($str, MB_CASE_TITLE, "UTF-8");
+echo $str; // Τάχιστη Αλώπηξ Βαφήσ Ψημένη Γη, Δρασκελίζει Υπέρ Νωθρού Κυνόσ
 ?>
 ]]>
     </programlisting>

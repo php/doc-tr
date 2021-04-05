@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a3db55f0df6a17d473f65ce207ef3f778011cdfe Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-convert-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_convert_encoding</refname>
@@ -10,15 +10,16 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>mb_convert_encoding</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <type class="union"><type>array</type><type>string</type><type>false</type></type><methodname>mb_convert_encoding</methodname>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>dizge</parameter></methodparam>
    <methodparam><type>string</type><parameter>kodlamaya</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>kodlamadan</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>kodlamadan</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen dizgenin karakter kodlamasını
+   Belirtilen <parameter>dizge</parameter>nin karakter kodlamasını
    <parameter>kodlamadan</parameter> <parameter>kodlamaya</parameter>
-   dönüştürür.
+   dönüştürür. <parameter>dizge</parameter> olarak bir dizi verilmişse tüm
+   dizge değerler sırayla dönüştürülür.
   </para>
  </refsect1>
 
@@ -30,7 +31,7 @@
      <term><parameter>dizge</parameter></term>
      <listitem>
       <para>
-       Kodlaması dönüştürülecek dizge.
+       Kodlaması dönüştürülecek dizge veya dizi.
       </para>
      </listitem>
     </varlistentry>
@@ -56,7 +57,8 @@
        <!-- can the meaning of auto be altered? -->
        "<literal>auto</literal>" değeri de belirtilebir. Bu takdirde,
        <emphasis>"ASCII,JIS,UTF-8,EUC-JP,SJIS"</emphasis> algı sırası
-       kullanılır.
+       kullanılır. Bkz. <link
+       linkend="mbstring.supported-encodings">desteklenen kodlamalar</link>
       </para>
      </listitem>
     </varlistentry>
@@ -69,6 +71,35 @@
   <para>
    Kodlaması dönüştürülen dizge.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>kodlamadan</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       İşlev <parameter>dizge</parameter> olarak artık dizi de kabul ediyor.
+       Evvelce sadece dizge destekleniyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-http-input" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_http_input</refname>
@@ -10,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>mb_http_input</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>tür</parameter><initializer>""</initializer></methodparam>
+   <type class="union"><type>array</type><type>string</type><type>false</type></type><methodname>mb_http_input</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>tür</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
    HTTP girdi karakter kodlamasını algılar.
@@ -26,8 +26,12 @@
      <term><parameter>tür</parameter></term>
      <listitem>
       <para>
-       Girdi türü: GET için "G", POST için "P", COOKIE için "C", dizge için
-       "S", liste için "L" ve tam liste için "I" (bir dizi döner).
+       Girdi türü: GET için <literal>"G"</literal>,
+       POST için <literal>"P"</literal>,
+       COOKIE için <literal>"C"</literal>,
+       dizge için <literal>"S"</literal>,
+       liste için <literal>"L"</literal>
+       ve tam liste için <literal>"I"</literal> (bir dizi döner).
        <parameter>tür</parameter> belirtilmezse son işlenen girdinin türü ile
        döner.
       </para>
@@ -40,10 +44,34 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen türe ilişkin karakter kodlaması adı.
+   Belirtilentüre ilişkin karakter kodlaması adı veya
+   <parameter>tür</parameter> olarak <literal>"I"</literal> belirtilmişse
+   karakter kodlaması adarını içeren bir dizi ya da
    <function>mb_http_input</function> belirtilen HTTP girdisini işlemezse
    &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>tür</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">
