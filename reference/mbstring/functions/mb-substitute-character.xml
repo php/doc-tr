@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-substitute-character" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_substitute_character</refname>
@@ -10,16 +10,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>mb_substitute_character</methodname>
-   <methodparam choice="opt"><type>mixed</type><parameter>ikamekrk</parameter></methodparam>
+   <type class="union"><type>string</type><type>int</type><type>bool</type></type><methodname>mb_substitute_character</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>int</type><type>null</type></type><parameter>ikamekrk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Girdi karakter kodlaması geçersiz olduğunda veya bir karakter kodunun çıktı
    karakter kodlamasında mevcut olmadığı durumda geçersiz karakterin yerine
-   kullanılacak karakteri belirtmek için kullanılır. Geçersiz karaktermerin
-   yerine Bir &null; değer (çıktı yok), <type>string</type> veya
-   <type>integer</type> (Evrenkodlu karakter) türünde bir değer
-   belirtilebilir.
+   kullanılacak karakteri belirtmek için kullanılır. Geçersiz karakterlerin
+   yerine Bir <literal>"none"</literal> (çıktı yok), <type>string</type> veya
+   <type>int</type> türünde bir değer (Unidode karakter kodu) belirtilebilir.
   </para>
   <para>
    Bu ayarlamadan etkilenen işlevler: <function>mb_convert_encoding</function>,
@@ -41,13 +40,19 @@
        <itemizedlist>
         <listitem>
          <simpara>
-          "none": hiçbir şey çıktılanmaz
+          <literal>"none"</literal>: hiçbir şey çıktılanmaz
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          "long": Geçersiz karakterin kod değeri çıktılanır (Örnek: U+3000,
-          JIS+7E7E)
+          <literal>"long"</literal>: Karakterin kod değeri çıktılanır
+          (Örnek: U+3000, JIS+7E7E)
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <literal>"entity"</literal>: Karakter öğesi
+          (Örnek: <literal>&amp;#x200;</literal>)
          </simpara>
         </listitem>
        </itemizedlist>
@@ -61,11 +66,32 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Eğer <parameter>ikamekrk</parameter> atanabilmişse &true;, aksi takdirde
-   &false; döner. Eğer <parameter>ikamekrk</parameter> belirtilmemişse,
-   geçerli ikame karakterinin Evrenkod değeriyle ya da
-   "<literal>none</literal>" veya "<literal>long</literal>" değeriyle döner.
+   Eğer <parameter>ikamekrk</parameter> atanabilmişse başarı durumunda &true;, aksi takdirde &false; döner. Eğer <parameter>ikamekrk</parameter> belirtilmemişse veya &null; ise, geçerli ayarlarla döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>ikamekrk</parameter> artık boş dizgeyi desteklemiyor,
+       yerine <literal>"none"</literal> belirtilmeli.
+      </entry>
+     </row>
+     &mbstring.changelog.encoding-nullable;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

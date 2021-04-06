@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-strtoupper" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_strtoupper</refname>
@@ -12,7 +12,7 @@
   <methodsynopsis>
    <type>string</type><methodname>mb_strtoupper</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter><initializer>mb_internal_encoding()</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> içindeki 'abecesel' karakterlerin tamamını
@@ -53,13 +53,13 @@
  <refsect1 role="unicode">
   &reftitle.unicode;
   <para>
-   Evrenkodun özellikleri hakkında daha fazla bilgi edinmek için
+   Unicode'un özellikleri hakkında daha fazla bilgi edinmek için
    <link xlink:href="&url.unicode.reports;">&url.unicode.reports;</link>
    adresine bakınız.
   </para>
   <para>
    <function>strtoupper</function> işlevinin tersine, 'abecesel' durum
-   Evrenkodlu karakter özelliklerinden saptanır. Bu bakımdan bu işlevin davranışı
+   Unicode karakter özelliklerinden saptanır. Bu bakımdan bu işlevin davranışı
    yerel ayarlarından etkilenmez ve 'abecesel' özelliğe sahip her karakter (ü
    gibi) dönüştürülür.
   </para>
@@ -69,15 +69,27 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>mb_strtoupper</function> örneği</title>
+    <title>- <function>mb_strtoupper</function> yerele duyarsızlık örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 $str = "Şahizar'ın çok sevdiği küçük bir KUZUSU var.";
 $str = mb_strtoupper($str);
-echo $str; // ŞAHIZAR'IN ÇOK SEVDIĞI KÜÇÜK BIR KUZUSU VAR.  basar
-           // PHP 5.3.0alpha3-dev (cli) (built: Nov 13 2008 18:20:00)
-           // (ŞAHİZAR'IN ÇOK SEVDİĞİ KÜÇÜK BİR KUZUSU VAR. basması gerekirdi.)
+echo $str; // ŞAHIZAR'IN ÇOK SEVDIĞI KÜÇÜK BIR KUZUSU VAR.
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Latin olmayan karakterlerle <function>mb_strtoupper</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = "Τάχιστη αλώπηξ βαφής ψημένη γη, δρασκελίζει υπέρ νωθρού κυνός";
+$str = mb_strtoupper($str, 'UTF-8');
+echo $str; // ΤΆΧΙΣΤΗ ΑΛΏΠΗΞ ΒΑΦΉΣ ΨΗΜΈΝΗ ΓΗ, ΔΡΑΣΚΕΛΊΖΕΙ ΥΠΈΡ ΝΩΘΡΟΎ ΚΥΝΌΣ
 ?>
 ]]>
     </programlisting>

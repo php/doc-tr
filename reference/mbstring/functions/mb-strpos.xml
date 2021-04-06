@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-strpos" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_strpos</refname>
@@ -11,11 +11,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>mb_strpos</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>mb_strpos</methodname>
    <methodparam><type>string</type><parameter>samanlık</parameter></methodparam>
    <methodparam><type>string</type><parameter>iğne</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>konum</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kodlama</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>konum</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir dizgenin içinde başka bir dizgeye ilk rastlanılan noktanın
@@ -47,6 +47,8 @@
      <listitem>
       <para>
        <parameter>samanlık</parameter> içinde ilki aranacak dizge.
+       <function>strpos</function> işlevinden farklı olarak sayısal değerler
+       karakterin sıra değeri değildir.
       </para>
      </listitem>
     </varlistentry>
@@ -55,7 +57,8 @@
      <listitem>
       <para>
        <parameter>samanlık</parameter> içinde aramanın başlatılacağı konum.
-       Belirtilmezse 0 kullanılır.
+       Belirtilmezse 0 kullanılır. Negatif değer dizgenin sonundan itibaren
+       sayılır.
       </para>
      </listitem>
     </varlistentry>
@@ -77,6 +80,29 @@
    <parameter>samanlık</parameter> içinde <parameter>iğne</parameter> yoksa
    &false; döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &mbstring.changelog.encoding-nullable;
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>başlangıç</parameter> artık negatif olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">
