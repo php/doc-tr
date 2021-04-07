@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mcrypt-create-iv" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mcrypt_create_iv</refname>
@@ -8,12 +8,21 @@
   </refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+  <warning>
+   &warn.deprecated.function.7-1-0.removed.7-2-0.alternatives;
+   <simplelist role="alternatives">
+    <member><function>random_bytes</function></member>
+   </simplelist>
+  </warning>
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>mcrypt_create_iv</methodname>
    <methodparam><type>int</type><parameter>boy</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>kaynak</parameter><initializer>MCRYPT_DEV_RANDOM</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kaynak</parameter><initializer>MCRYPT_DEV_URANDOM</initializer></methodparam>
   </methodsynopsis>
   <para>
    Rasgele bir kaynaktan bir ilklendirme vektörü (IV) oluşturur.
@@ -49,14 +58,18 @@
        <filename>/dev/random</filename> veya
        <filename>/dev/urandom</filename> aygıtlarına sahip olmadığından
        Windows için sadece <constant>MCRYPT_RAND</constant> desteklenmektedir.
+       PHP 5.3.0 öncesinde, <constant>MCRYPT_RAND</constant> Windows üzerinde
+       desteklenen tek sabitti.
+      </para>
+      <para>
+       PHP 5.6.0 öncesinde, bu değiştirgenin öntanımlı değeri
+       <constant>MCRYPT_DEV_RANDOM</constant> idi.
       </para>
       <note>
-       <para>
-        <constant>MCRYPT_RAND</constant> kullanıldığı takdirde, rasgele sayı
-        üretecini ilklendirmek için önce bir <function>srand</function>
-        çağrısı yapmayı unutmayın; çünkü <function>rand</function> gibi
-        kendiliğinden tohumlanmaz.
-       </para>
+       <simpara>
+        <constant>MCRYPT_DEV_RANDOM</constant> daha fazla döküntü sağlanana
+        kadar engellenebilir.
+       </simpara>
       </note>
      </listitem>
     </varlistentry>
@@ -96,8 +109,8 @@
     <member><link xlink:href="&url.mcrypt.iv;">&url.mcrypt.iv;</link></member>
     <member><link xlink:href="&url.mcrypt.bcm;">
     &url.mcrypt.bcm;</link></member>
-    <member>Schneier tarafından yazılan Applied Cryptography (ISBN
-    0-471-11709-9) kitabının 9.3. faslı</member>
+    <member>&book.applied.cryptography; kitabının 9.3. faslı</member>
+    <member><function>random_bytes</function></member>
    </simplelist>
   </para>
  </refsect1>

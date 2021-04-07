@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b95d28e6ec86e4a71e012737d36ebdc1cf009180 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mcrypt-decrypt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mcrypt_decrypt</refname>
   <refpurpose>Belirtilen değiştirgelerle şifreli bir metnin şifresini çözer
   </refpurpose>
  </refnamediv>
+ <refsynopsisdiv>
+  &warn.deprecated.function-7-1-0.removed-7-2-0;
+ </refsynopsisdiv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>mcrypt_decrypt</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>mcrypt_decrypt</methodname>
    <methodparam><type>string</type><parameter>şifre</parameter></methodparam>
    <methodparam><type>string</type><parameter>anahtar</parameter></methodparam>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
@@ -29,49 +32,39 @@
     <varlistentry>
      <term><parameter>şifre</parameter></term>
      <listitem>
+       &mcrypt.parameter.cipher;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>anahtar</parameter></term>
+     <listitem>
       <para>
-       <literal>MCRYPT_şifre_adı</literal> sabitlerinden biri veya bir dizge
-       olarak bir algoritma ismi.
+       Veriyi şifrelemekte kullanılan anahtar. Belirtilen anahtar
+       <parameter>şifre</parameter> tarafından desteklenmiyorsa işlev bir
+       uyarı çıktılar ve &false; döner.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>key</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Veriyi şifrelemekte kullanılan anahtar. Gereken anahtar uzunluğundan
-       kısaysa dolgu olarak "\0" karakteri kullanılır.
+       Belirtilen <parameter>şifre</parameter> ve <parameter>kip</parameter>
+       ile şifresi çözülecek veri. Verinin küme boyunun katları uzunlukta
+       olmasını sağlamak için dolgu olarak "\0" karakteri kullanılır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>data</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
-      <para>
-       Belirtilen şifre ve kip ile şifresi çözülecek veri. Verinin küme
-       boyunun katları uzunlukta olmasını sağlamak için dolgu olarak "\0"
-       karakteri kullanılır.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>mode</parameter></term>
-     <listitem>
-      <para>
-       <literal>MCRYPT_kip_adı</literal> sabitlerinden biri veya bir dizge
-       olarak şunlardan biri: "ecb", "cbc", "cfb", "ofb", "nofb", "stream".
-      </para>
+      &mcrypt.parameter.mode;
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>iv</parameter></term>
      <listitem>
-      <para>
-       CBC, CFB, OFB kiplerini ve STREAM kipindeki bazı algoritmaları
-       ilklendirmek için kullanılan ilklendirme vektörü (IV). Bir IV
-       belirtmezseniz tüm baytları "\0" karakterlerinden oluşan bir dizge
-       kullanılır.
-      </para>
+      &mcrypt.parameter.iv.strict;
      </listitem>
     </varlistentry>
    </variablelist>
@@ -80,7 +73,44 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Şifresi çözülmüş veriyi bir dizge olarak döndürür.
+   Şifresi çözülmüş veriyi bir dizge olarak döndürür,&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.6.0</entry>
+       <entry>
+        Geçersiz <parameter>anahtar</parameter> ve <parameter>iv</parameter>
+        boyutları artık desteklenmiyor. Bunlar geçersizse
+        <function>mcrypt_decrypt</function> bir uyarı çıktılayıp &false;
+        döndürüyor. Evvelce bunlar geçerli boyut elde edilene kadar
+        '<literal>\0</literal>'larla doldurulurdu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mcrypt_encrypt</function></member>
+   </simplelist>
   </para>
  </refsect1>
 </refentry>
