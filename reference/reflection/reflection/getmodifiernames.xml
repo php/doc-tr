@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: cf616ef1f0bd14778a591210de8a231fa564e863 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflection.getmodifiernames" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>Reflection::getModifierNames</refname>
@@ -11,14 +11,11 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <modifier>static</modifier> <type>array</type><methodname>Reflection::getModifierNames</methodname>
-   <methodparam><type>int</type><parameter>değiştiriciler</parameter></methodparam>
+   <methodparam><type>int</type><parameter>modifiers</parameter></methodparam>
   </methodsynopsis>
   <para>
    Değiştirici isimlerini döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -26,10 +23,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değiştiriciler</parameter></term>
+     <term><parameter>modifiers</parameter></term>
      <listitem>
       <para>
-       Bir sayısal değerdeki değiştiriciler.
+       Döndürülecek değiştiricilerin bitsel VEYAlanmış değeri.
       </para>
      </listitem>
     </varlistentry>
@@ -44,11 +41,63 @@
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>Reflection::getModifierNames</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Testing
+{
+    final public static function foo()
+    {
+        return;
+    }
+
+    public function bar()
+    {
+        return;
+    }
+}
+
+$foo = new ReflectionMethod('Testing', 'foo');
+
+echo "foo() yöntemi için değiştiriciler:\n";
+echo $foo->getModifiers() . "\n";
+echo implode(' ', Reflection::getModifierNames($foo->getModifiers())) . "\n";
+
+$bar = new ReflectionMethod('Testing', 'bar');
+
+echo "bar() yöntemi için değiştiriciler:\n";
+echo $bar->getModifiers() . "\n";
+echo implode(' ', Reflection::getModifierNames($bar->getModifiers()));
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+foo() yöntemi için değiştiriciler:
+49
+final public static
+bar() yöntemi için değiştiriciler:
+1
+public
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><methodname>Reflection::export</methodname></member>
+    <member><methodname>ReflectionClass::getModifiers</methodname></member>
+    <member><methodname>ReflectionClassConstant::getModifiers</methodname></member>
+    <member><methodname>ReflectionMethod::getModifiers</methodname></member>
+    <member><methodname>ReflectionProperty::getModifiers</methodname></member>
    </simplelist>
   </para>
  </refsect1>

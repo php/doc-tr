@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8217228b33b68819e6670c27e223edac282bfd2b Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionmethod.construct" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionMethod::__construct</refname>
@@ -9,17 +9,19 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <methodsynopsis>
-   <methodname>ReflectionMethod::__construct</methodname>
-   <methodparam><type>string</type><parameter>sınıf_veya_yöntem</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>isim</parameter></methodparam>
-  </methodsynopsis>
+  <constructorsynopsis>
+   <modifier>public</modifier> <methodname>ReflectionMethod::__construct</methodname>
+   <methodparam><type class="union"><type>object</type><type>string</type></type><parameter>objectOrMethod</parameter></methodparam>
+   <methodparam><type>string</type><parameter>method</parameter></methodparam>
+  </constructorsynopsis>
+  <simpara>Diğer sözdizimi (isimli değiştirgeler desteklenmiyor):</simpara>
+  <constructorsynopsis>
+   <modifier>public</modifier> <methodname>ReflectionMethod::__construct</methodname>
+   <methodparam><type>string</type><parameter>classMethod</parameter></methodparam>
+  </constructorsynopsis>
   <para>
    Yeni bir <classname>ReflectionMethod</classname> nesnesi oluşturur.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -27,18 +29,26 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>sınıf_veya_yöntem</parameter></term>
+     <term><parameter>objectOrMethod</parameter></term>
      <listitem>
       <para>
-
+       Yöntemi içeren nesne (sınıf örneği) veya sınıf ismi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>method</parameter></term>
      <listitem>
       <para>
-
+       Yöntemin adı.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>classMethod</parameter></term>
+     <listitem>
+      <para>Sözdizimi:
+       <emphasis>SınıfAdı</emphasis><literal>::</literal><emphasis>yöntemAdı</emphasis>
       </para>
      </listitem>
     </varlistentry>
@@ -49,7 +59,15 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
+   &return.void;
+  </para>
+ </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Belirtilen yöntem mevcut değilse
+   bir <classname>ReflectionException</classname> yavrulanır.
   </para>
  </refsect1>
 
@@ -105,11 +123,11 @@ printf(
 );
 
 // Belgelendirici açıklamaları basalım
-printf("---> Belgeleme:\n %s\n", var_export($method->getDocComment(), 1));
+printf("---> Belgeleme:\n %s\n", var_export($method->getDocComment(), true));
 
 // Varsa duruk değişkenleri basalım
 if ($statics= $method->getStaticVariables()) {
-    printf("---> Duruk değişkenler: %s\n", var_export($statics, 1));
+    printf("---> Duruk değişkenler: %s\n", var_export($statics, true));
 }
 
 // Yöntemi çağıralım
@@ -123,7 +141,7 @@ var_dump($method->invoke(NULL));
 ===> Kullanıcı tanımlı final public static 'arttır' yöntemi (sıradan bir yöntem)
      /home/nilgun/dnm.php dosyasının
      14. satırından 17. satırına kadar
-     261[final public static] değiştiriciyle tanımlanmış.
+     49[final public static] değiştiriciyle tanımlanmış.
 ---> Belgeleme:
  '/**
      * Artan sayaç
@@ -145,7 +163,7 @@ var_dump($method->invoke(NULL));
   <para>
    <simplelist>
     <member><methodname>ReflectionMethod::export</methodname></member>
-    <member><xref linkend="language.oop5.decon" /></member>
+    <member><link linkend="language.oop5.decon.constructor">Kurucular</link></member>
    </simplelist>
   </para>
  </refsect1>

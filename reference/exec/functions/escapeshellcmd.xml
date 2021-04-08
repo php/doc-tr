@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 3e15d2894fb35432d2a111db36fe8ba8ebc62024 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1ea4e4f5769f1a173303f95074a91e8537f65133 Maintainer: nilgun Status: ready -->
 <!-- splitted from ./en/functions/exec.xml, last change in rev 1.2 -->
 <refentry xml:id="function.escapeshellcmd" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -84,6 +84,21 @@ system($öncelenen_komut);
      kullanılmalıdır. Buna rağmen saldırganın keyfi sayıda değiştirge
      aktarmasına izin verir. Tek bir değiştirgeyi öncelemek için bu işlev
      yerine <function>escapeshellarg</function> kullanılmalıdır.
+    </para>
+   </warning>
+   <warning xmlns="http://docbook.org/ns/docbook">
+    <para>
+     Windows üzerinde
+     <literal>C:\Program Files\ProgramName\program.exe</literal>
+     gibi yollarda sorunlu olan <function>escapeshellcmd</function>
+     boşlukları öncelemez. Aşağıdaki kod parçası kullanılarak bu sorun
+     ortadan kaldırılabilir:
+    <programlisting role="php">
+<![CDATA[
+<?php
+$cmd = preg_replace('`(?<!^) `', '^ ', escapeshellcmd($cmd));
+]]>
+    </programlisting>
     </para>
    </warning>
  </refsect1>
