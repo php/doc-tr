@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a80683c2f54935b4f97acc484239dcf6f8300226 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.getdefaultproperties" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::getDefaultProperties</refname>
-  <refpurpose>Öntanımlı özellikleri döndürür</refpurpose>
+  <refpurpose>Sınıftaki öntanımlı özellikleri (miras alınanlar dahil) döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -16,9 +16,13 @@
   <para>
    Sınıfın öntanımlı özelliklerini döndürür.
   </para>
-
-  &warn.undocumented.func;
-
+  <note>
+   <para>
+    Bu yöntem dahili sınıflar üzerinde kullanılırsa sadece statik özellikleri
+    döndürür. Bu yöntem kullanıcı tanımlı sınıflar üzerinde çalışırken statik
+    bir yöntem özelliğinin öntanımlı değeri izlenemez.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,7 +33,55 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Öntanımlı özellikleri içeren bir dizi.
+   Öntanımlı özellikleri içeren bir dizi; anahtar özelliğin ismini, değer
+   özelliğin öntanımlı değerini, öntanımlı bir değer yoksa &null; içerir.
+   İşlev statik ve statik olmayan özellik ayrımı yapmadığı gibi görünürlük
+   değiştiricisini de hesaba katmaz.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::getDefaultProperties</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Bar {
+    protected $inheritedProperty = 'inheritedDefault';
+}
+
+class Foo extends Bar {
+    public $property = 'propertyDefault';
+    private $privateProperty = 'privatePropertyDefault';
+    public static $staticProperty = 'staticProperty';
+    public $defaultlessProperty;
+}
+
+$reflectionClass = new ReflectionClass('Foo');
+var_dump($reflectionClass->getDefaultProperties());
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(5) {
+   ["staticProperty"]=>
+   string(14) "staticProperty"
+   ["property"]=>
+   string(15) "propertyDefault"
+   ["privateProperty"]=>
+   string(22) "privatePropertyDefault"
+   ["defaultlessProperty"]=>
+   NULL
+   ["inheritedProperty"]=>
+   string(16) "inheritedDefault"
+}
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -38,6 +90,8 @@
   <para>
    <simplelist>
     <member><methodname>ReflectionClass::getProperties</methodname></member>
+    <member><methodname>ReflectionClass::getStaticProperties</methodname></member>
+    <member><methodname>ReflectionClass::getProperty</methodname></member>
    </simplelist>
   </para>
  </refsect1>

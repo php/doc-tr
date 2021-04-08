@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a465b89916b11fae83c879f75a85d0aae91fec5c Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.export" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::export</refname>
   <refpurpose>Bir sınıf ihraç eder</refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+   &warn.deprecated.function-7-4-0;
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <modifier>static</modifier> <type>string</type><methodname>ReflectionClass::export</methodname>
    <methodparam><type>mixed</type><parameter>değiştirge</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ihracet</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>return</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir yansıtıcı sınıfı ihraç eder.
@@ -35,7 +39,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ihracet</parameter></term>
+     <term><parameter>return</parameter></term>
      <listitem>
       <para>
        &reflection.export.param.return;
@@ -53,11 +57,64 @@
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::export</methodname> temel kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Apple {
+    public $var1;
+    public $var2 = 'Orange';
+
+    public function type() {
+        return 'Apple';
+    }
+}
+ReflectionClass::export('Apple');
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Class [ <user> class Apple ] {
+  @@ php shell code 1-8
+
+  - Constants [0] {
+  }
+
+  - Static properties [0] {
+  }
+
+  - Static methods [0] {
+  }
+
+  - Properties [2] {
+    Property [ <default> public $var1 ]
+    Property [ <default> public $var2 ]
+  }
+
+  - Methods [1] {
+    Method [ <user> public method type ] {
+      @@ php shell code 5 - 7
+    }
+  }
+}
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><methodname>ReflectionClass::getName</methodname></member>
+    <member><methodname>ReflectionClass::__toString</methodname></member>
    </simplelist>
   </para>
  </refsect1>
