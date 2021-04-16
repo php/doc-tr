@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 98df2cf9a939729d73adee1484ec05929c74c98b Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.getmethods" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::getMethods</refname>
-  <refpurpose>Yöntem listesini döndürür</refpurpose>
+  <refpurpose>Yöntemleri dizi olarak döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>array</type><methodname>ReflectionClass::getMethods</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>süzgeç</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>süzgeç</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Yöntem listesini döndürür.
+   Sınıfın yöntemlerini bir dizi olarak döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,8 +26,25 @@
      <term><parameter>süzgeç</parameter></term>
      <listitem>
       <para>
-       Süzgeç.
+       Dizinin belirli öznitelikleri içeren yöntemleri içermesini sağlayacak süzgeç.
       </para>
+      <para>
+        <constant>ReflectionMethod::IS_STATIC</constant>,
+        <constant>ReflectionMethod::IS_PUBLIC</constant>,
+        <constant>ReflectionMethod::IS_PROTECTED</constant>,
+        <constant>ReflectionMethod::IS_PRIVATE</constant>,
+        <constant>ReflectionMethod::IS_ABSTRACT</constant>,
+       <constant>ReflectionMethod::IS_FINAL</constant>
+        sabitlerinin bitsel VEYAsı; belirtilen özniteliklerden
+        <emphasis>herhangi</emphasis> birini içeren her yöntem döndürülür.
+      </para>
+      <note>
+       <simpara>
+        <literal>~</literal> gibi diğer bitsel işlemler beklendiği gibi
+        çalışmayabilir. Örneğin, statik olmayan yöntemlerin tamamını döndürmek
+        mümkün olmaz.
+       </simpara>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -40,7 +54,125 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Yöntemleri içeren bir dizi.
+   Her yöntemi yansıtan <classname>ReflectionMethod</classname> nesnelerininin
+   bir dizisi.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       <parameter>süzgeç</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::getMethods</methodname>
+     temel kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Apple {
+    public function firstMethod() { }
+    final protected function secondMethod() { }
+    private static function thirdMethod() { }
+}
+
+$class = new ReflectionClass('Apple');
+$methods = $class->getMethods();
+var_dump($methods);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  object(ReflectionMethod)#2 (2) {
+    ["name"]=>
+    string(11) "firstMethod"
+    ["class"]=>
+    string(5) "Apple"
+  }
+  [1]=>
+  object(ReflectionMethod)#3 (2) {
+    ["name"]=>
+    string(12) "secondMethod"
+    ["class"]=>
+    string(5) "Apple"
+  }
+  [2]=>
+  object(ReflectionMethod)#4 (2) {
+    ["name"]=>
+    string(11) "thirdMethod"
+    ["class"]=>
+    string(5) "Apple"
+  }
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::getMethods</methodname>
+     ve sonuçların süzülmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Apple {
+    public function firstMethod() { }
+    final protected function secondMethod() { }
+    private static function thirdMethod() { }
+}
+
+$class = new ReflectionClass('Apple');
+$methods = $class->getMethods(ReflectionMethod::IS_STATIC | ReflectionMethod::IS_FINAL);
+var_dump($methods);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(2) {
+  [0]=>
+  object(ReflectionMethod)#2 (2) {
+    ["name"]=>
+    string(12) "secondMethod"
+    ["class"]=>
+    string(5) "Apple"
+  }
+  [1]=>
+  object(ReflectionMethod)#3 (2) {
+    ["name"]=>
+    string(11) "thirdMethod"
+    ["class"]=>
+    string(5) "Apple"
+  }
+}
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -49,6 +181,7 @@
   <para>
    <simplelist>
     <member><methodname>ReflectionClass::getMethod</methodname></member>
+    <member><function>get_class_methods</function></member>
    </simplelist>
   </para>
  </refsect1>

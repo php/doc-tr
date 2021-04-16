@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 98df2cf9a939729d73adee1484ec05929c74c98b Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.newinstanceargs" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::newInstanceArgs</refname>
-  <refpurpose>Yeni örnek değiştirgeleri</refpurpose>
+  <refpurpose>Belirtilen değiştirgelerden yeni bir sınıf örneği oluşturur</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>object</type><methodname>ReflectionClass::newInstanceArgs</methodname>
-   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Yeni örnek değiştirgeleri.
+   Belirtilen değiştirgelerden yeni bir sınıf örneği oluşturur.
+   Belirtilen değiştirgeler sınıf kurucusuna aktarılır.
   </para>
 
   &warn.undocumented.func;
@@ -29,7 +30,7 @@
      <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
-
+       Bir dizi olarak sınıf kurucusuna aktarılacak değiştirgeler.
       </para>
      </listitem>
     </varlistentry>
@@ -40,7 +41,48 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
+   Sınıfın yeni bir örneğini döndürür.
+  </para>
+ </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::newInstanceArgs</methodname>
+     temel kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$class = new ReflectionClass('ReflectionFunction');
+$örnek = $class->newInstanceArgs(array('dize'));
+var_dump($örnek);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+object(ReflectionFunction)#2 (1) {
+  ["name"]=>
+  string(4) "dize"
+}
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Sınıfın kurucusu public değilse bir
+   <classname>ReflectionException</classname> yavrulanır.
+  </para>
+  <para>
+   Sınıfın bir kurucusu yoksa ve <parameter>değiştirgeler</parameter>
+   dizisi bir veya daha fazla değiştirge içeriyorsa bir
+   <classname>ReflectionException</classname> yavrulanır.
   </para>
  </refsect1>
 
@@ -49,6 +91,7 @@
   <para>
    <simplelist>
     <member><methodname>ReflectionClass::newInstance</methodname></member>
+    <member><methodname>ReflectionClass::newInstanceWithoutConstructor</methodname></member>
    </simplelist>
   </para>
  </refsect1>

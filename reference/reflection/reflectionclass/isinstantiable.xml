@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fce2efe7bbeeea4bb9c8a2c9a25baa53377d2476 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.isinstantiable" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::isInstantiable</refname>
@@ -16,9 +16,6 @@
   <para>
    Sınıf örneklenebiliyorsa &true; döner.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -61,12 +58,28 @@ class D extends abstractClass {
     function f2() { }
 }
 
-$classes = array("C", "iface", "ifaceImpl", "abstractClass", "D");
+trait T {
+    function f1() {}
+}
+
+class privateConstructor {
+    private function __construct() { }
+}
+
+$classes = array(
+    "C",
+    "iface",
+    "ifaceImpl",
+    "abstractClass",
+    "D",
+    "T",
+    "privateConstructor",
+);
 
 foreach($classes  as $class ) {
     $reflectionClass = new ReflectionClass($class);
     echo "$class örneklenebilir mi?  ";
-    var_dump($reflectionClass->IsInstantiable());
+    var_dump($reflectionClass->isInstantiable());
 }
 
 ?>
@@ -80,6 +93,8 @@ iface örneklenebilir mi?  bool(false)
 ifaceImpl örneklenebilir mi?  bool(true)
 abstractClass örneklenebilir mi?  bool(false)
 D örneklenebilir mi?  bool(true)
+T örneklenebilir mi?  bool(false)
+privateConstructor örneklenebilir mi?  bool(false)
 ]]>
     </screen>
    </example>

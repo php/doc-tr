@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2d5437d72efd0e5ad9ca8f8d2487cfb1aa6950d6 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionclass.getstaticpropertyvalue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionClass::getStaticPropertyValue</refname>
@@ -12,14 +12,11 @@
   <methodsynopsis>
    <modifier>public</modifier> <type>mixed</type><methodname>ReflectionClass::getStaticPropertyValue</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>öntanımlı</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter role="reference">öntanımlı</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Duruk özelliğin değerini döndürür.
+   Sınıfın statik özelliğinin değerini döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -30,7 +27,7 @@
      <term><parameter>isim</parameter></term>
      <listitem>
       <para>
-       Duruk özelliğin ismi.
+       Değeri döndürülecek statik özelliğin ismi.
       </para>
      </listitem>
     </varlistentry>
@@ -38,7 +35,10 @@
      <term><parameter>öntanımlı</parameter></term>
      <listitem>
       <para>
-
+       Sınıf içinde <parameter>isim</parameter> adında statik bir özellik
+       bildirilmediği durumda dönecek öntanımlı değer. Eğer özellik mevcut
+       değilse ve bu değiştirge de atlanmışsa bir
+       <classname>ReflectionException</classname> yavrulanır.
       </para>
      </listitem>
     </varlistentry>
@@ -49,7 +49,35 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
+   Statik özelliğin değeri.
+  </para>
+ </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::getStaticPropertyValue</methodname>
+     temel kullanım örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Apple {
+    public static $color = 'Red';
+}
+
+$class = new ReflectionClass('Apple');
+var_dump($class->getStaticPropertyValue('color'));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(3) "Red"
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
