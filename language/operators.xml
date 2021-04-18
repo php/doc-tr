@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 80958298c021b3284349b563266eefd184025c83 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 011596bcff82477d121de738e6cf83bd2b13bb40 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -56,6 +56,12 @@
     öncelikli olmasıdır.
    </para>
    <para>
+    İlişkisellik sadece iki terimli (ve üç terimli) işleçler için anlamlıdır.
+    Tek terimli işleçlerin önüne veya ardına ekleme yapıldığından bu fikir tek
+    terimlilere uygulanabilir değildir. Örneğin, <literal>!!$a</literal>
+    ifadesi sadece <literal>!(!$a)</literal> olarak gruplanabilir.
+   </para>
+   <para>
     Parantez kullanımı gerekli olmasa bile çoğunlukla kodun okunabilirliğini
     arttırır. Örtük işleç önceliğine ve ilişkiselliğine güvenmektense kodu
     açıkça gruplamak daha iyidir.
@@ -95,6 +101,8 @@
        <row>
         <entry>sağdan</entry>
         <entry>
+         <literal>+</literal>
+         <literal>-</literal>
          <literal>++</literal>
          <literal>--</literal>
          <literal>~</literal>
@@ -107,15 +115,20 @@
          <literal>@</literal>
         </entry>
         <entry>
-         <link linkend="language.types">türler</link> ve
-         <link linkend="language.operators.increment">arttırım/eksiltim</link>
+         <link linkend="language.operators.arithmetic">aritmetik</link>
+         (tek terimli <literal>+</literal> ve <literal>-</literal>),
+         <link linkend="language.operators.increment">arttırım/eksiltim</link>,
+         <link linkend="language.operators.bitwise">bitsel</link>,
+         <link linkend="language.types.typecasting">tür
+          çarpıtma</link>&listendand;
+         <link linkend="language.operators.errorcontrol">hata denetimi</link>
         </entry>
        </row>
        <row>
         <entry>soldan</entry>
         <entry><literal>instanceof</literal></entry>
         <entry>
-         <link linkend="language.types">Türler</link>
+         <link linkend="language.operators.type">Tür</link>
         </entry>
        </row>
        <row>
@@ -145,7 +158,10 @@
         </entry>
         <entry>
          <link linkend="language.operators.arithmetic">aritmetik</link>
-         ve <link linkend="language.operators.string">dize</link>
+         (iki terimli <literal>+</literal> ve <literal>-</literal>),
+         <link linkend="language.operators.array">dizi</link>&listendand;
+         <link linkend="language.operators.string">dize</link> (PHP 8.0.0
+         öncesinde <literal>.</literal>)
         </entry>
        </row>
        <row>
@@ -156,6 +172,14 @@
         </entry>
         <entry>
          <link linkend="language.operators.bitwise">bitsel</link>
+        </entry>
+       </row>
+       <row>
+        <entry>soldan</entry>
+        <entry><literal>.</literal></entry>
+        <entry>
+         <link linkend="language.operators.string">dize</link> (PHP 8.0.0
+         öncesinde <literal>.</literal>)
         </entry>
        </row>
        <row>
@@ -227,11 +251,11 @@
         </entry>
        </row>
        <row>
-        <entry>(yok)</entry>
+        <entry>yönsüz</entry>
         <entry><literal>? :</literal></entry>
         <entry>
          <link linkend="language.operators.comparison.ternary">üç terimli
-         </link>
+         </link> (PHP 8.0.0 öncesinde soldan)
         </entry>
        </row>
        <row>
@@ -308,7 +332,7 @@
 <?php
 $a = 3 * 3 % 5; // (3 * 3) % 5 = 4
 // üç terimli işlecin değerlendirilmesi C/C++ dillerinden farklıdır
-$a = true ? 0 : true ? 1 : 2; // (true ? 0 : true) ? 1 : 2 = 2
+$a = true ? 0 : true ? 1 : 2; // (true ? 0 : true) ? 1 : 2 = 2 (PHP 8.0.0 öncesi)
 
 $a = 1;
 $b = 2;
@@ -340,7 +364,7 @@ $array[$i] = $i++; // indis 1 veya 2 olabilir
     </example>
     <example>
      <title><literal>+</literal>, <literal>-</literal> ve <literal>.</literal>
-      aynı önceliğe sahiptir</title>
+      aynı önceliğe sahiptir (PHP 8.0.0 öncesi)</title>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -388,8 +412,30 @@ x eksi bir eşittir 3, ya da ben öyle umdum
        <row>
         <entry>8.0.0</entry>
         <entry>
+         Dizelerin ard arda eklenmesi (<literal>.</literal>) artık aritmetik
+         toplama ve çıkarma (<literal>+</literal> ve <literal>-</literal>) ve
+         bitsel sola/sağa kaydırma (<literal>&lt;&lt;</literal> ve
+         <literal>&gt;&gt;</literal>) işleçlerinden daha düşük öncelikli oldu;
+         evvelce <literal>+</literal> ve <literal>-</literal> ile aynı
+         önceliğe, <literal>&lt;&lt;</literal> ve <literal>&gt;&gt;</literal>
+         işleçlerinden daha yüksek önceliğe sahipti.
+        </entry>
+       </row>
+       <row>
+        <entry>8.0.0</entry>
+        <entry>
          Üç terimli işleç (<literal>? :</literal>) artık ilişkisel değil;
          evvelce soldan ilişkili idi.
+        </entry>
+       </row>
+       <row>
+        <entry>7.4.0</entry>
+        <entry>
+         Dizelerin ard arda eklenmesinin (<literal>.</literal>)
+         toplama ve çıkarma (<literal>+</literal> ve <literal>-</literal>) ve
+         bitsel sola/sağa kaydırma (<literal>&lt;&lt;</literal> ve
+         <literal>&gt;&gt;</literal>) işleçlerine göre önceliğine (yani
+         parantezsiz birlikte kullanımlarına) güvenilmesi artık önerilmiyor.
         </entry>
        </row>
        <row>
