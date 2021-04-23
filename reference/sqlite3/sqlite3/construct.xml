@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3.construct" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3::__construct</refname>
@@ -10,12 +9,12 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <methodsynopsis>
-   <methodname>SQLite3::__construct</methodname>
+  <constructorsynopsis>
+   <modifier>public</modifier> <methodname>SQLite3::__construct</methodname>
    <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>anahtar</parameter></methodparam>
-  </methodsynopsis>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>anahtar</parameter><initializer>""</initializer></methodparam>
+  </constructorsynopsis>
   <para>
    Yeni bir SQLite3 nesnesini ilklendirdikten sonra
    <parameter>dosya</parameter> ile belirtilen SQLite veritabanına bir
@@ -32,7 +31,12 @@
      <term><parameter>dosya</parameter></term>
      <listitem>
       <para>
-       SQLite veritabanını içeren dosyanın yolu.
+       SQLite veritabanını içeren dosyanın yolu veya veritabanını bellek
+       içinde kullanmak için <literal>:memory:</literal>.
+       <parameter>dosya</parameter> olarak boş bir dize verilmişse, disk
+       üzerinde geçici olarak özel bir veritabanı oluşturulur. Bu özel
+       veritabanı, veritabanı bağlantısı kapanır kapanmaz otomatik olarak
+       silinir.
       </para>
      </listitem>
     </varlistentry>
@@ -67,11 +71,12 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>encryption_key</parameter></term>
+     <term><parameter>anahtar</parameter></term>
      <listitem>
       <para>
        SQLite veritabanını şifrelemek/şifresini çözmek için kullanılan
-       şifreleme anahtarı.
+       şifreleme anahtarı. SQLite şifreleme modülü kurulu değilse,
+       bu değiştirgenin etkisi yoktur.
       </para>
      </listitem>
     </varlistentry>
@@ -87,6 +92,36 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Başarısızlık durumunda bir <classname>Exception</classname> yavrulanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.0.10</entry>
+      <entry>
+       Disk üzerinde geçici olarak oluşturulacak özel bir veritabanı
+       kullanmak için <parameter>dosya</parameter> artık boş dize olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -97,7 +132,7 @@
 <?php
 $db = new SQLite3('mysqlitedb.db');
 
-$db->exec('CREATE TABLE foo (bar STRING)');
+$db->exec('CREATE TABLE foo (bar TEXT)');
 $db->exec("INSERT INTO foo (bar) VALUES ('Bu bir denemedir.')");
 
 $result = $db->query('SELECT bar FROM foo');
