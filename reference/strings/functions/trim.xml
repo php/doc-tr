@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: bvicil Status: ready -->
-<!-- splitted from ./en/functions/strings.xml, last change in rev 1.2 -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.trim">
+<!-- EN-Revision: 043aa7b52421a8d774049e4d22036cee56e6baac Maintainer: nilgun Status: ready -->
+<!-- CREDITS: bvicil -->
+<refentry xml:id="function.trim" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>trim</refname>
   <refpurpose>Dizgenin başındaki ve sonundaki boşlukları (veya diğer
@@ -14,7 +13,7 @@
   <methodsynopsis>
    <type>string</type><methodname>trim</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karakterler</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>karakterler</parameter><initializer>" \n\r\t\v\0"</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev <parameter>dizge</parameter>'nin başındaki ve sonundaki
@@ -54,7 +53,7 @@
     </listitem>
     <listitem>
      <simpara> <!-- not \v, since not supported by PHP -->
-      "\x0B" (<acronym>ASCII</acronym> <literal>11</literal>
+      "\v" (<acronym>ASCII</acronym> <literal>11</literal>
       (<literal>0x0B</literal>)), dikey sekme.
      </simpara>
     </listitem>
@@ -93,30 +92,6 @@
   &reftitle.returnvalues;
   <para>
    Budanmış dizge.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        İsteğe bağlı <parameter>karakterler</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -215,12 +190,28 @@ array(3) {
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <title>Olası sorun: Aradaki karakterlerin kaldırılması</title>
+   <para>
+    <function>trim</function> karakterleri bir dizenin başından ve sonundan
+    kırptığı için, aradaki karakterlerin kırpılması (veya kırpılmaması) kafa
+    karıştırıcı olabilir. <literal>trim('abc', 'bad')</literal> hem 'a' hem de
+    'b'yi kırpar, çünkü 'a'yı kırpar, böylece 'b' de kırpılmak üzere başa
+    taşınmış olur. Yani, bu "çalışıyor" da <literal>trim('abc', 'b')</literal>
+    "neden çalışmıyor"un açıklaması budur.
+   </para>
+  </note>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
     <member><function>ltrim</function></member>
     <member><function>rtrim</function></member>
+    <member><function>str_replace</function></member>
    </simplelist>
   </para>
  </refsect1>

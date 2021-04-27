@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 3386603119be035c3708032b874a655e7279cb23 Maintainer: bvicil Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.substr">
+<!-- EN-Revision: 3988654d1342cbd4a0195f0a6aefcb0fef5593b9 Maintainer: nilgun Status: ready -->
+<!-- CREDITS: bvicil -->
+<refentry xml:id="function.substr" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>substr</refname>
   <refpurpose>Dizgenin bir kısmını döndürür</refpurpose>
@@ -13,7 +13,7 @@
    <type>string</type><methodname>substr</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>integer</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter>'nin <parameter>başlangıç</parameter>'tan
@@ -51,8 +51,8 @@
       </para>
       <para>
        Eğer <parameter>dizge</parameter> dizgesinin uzunluğu
-       <parameter>başlangıç</parameter> dizgesinin uzunluğundan küçükse ya da
-       eşitse işlev &false; döndürür.
+       <parameter>başlangıç</parameter> dizgesinin uzunluğundan küçükse
+       işlev &false; döndürür.
       </para>
       <para>
        <example>
@@ -86,11 +86,16 @@ $rest = substr("abcdef", -3, 1); // "d" döndürür
        karakter çıkartılır (<parameter>başlangıç</parameter> negatif ise önce
        başlagıç konumu hesaplanır). Eğer <parameter>başlangıç</parameter>
        değiştirgesi negatif uzunlukla çıkarılan parçanın içindeki bir yeri
-       işaret ediyorsa boş dizge döner.
+       işaret ediyorsa &false; döner.
       </para>
       <para>
        <parameter>uzunluk</parameter> verilmiş ve <literal>0</literal> ise
        &false;,  &null; ise boş bir dizge döner.
+      </para>
+      <para>
+       <parameter>uzunluk</parameter> atlanırsa,
+       <parameter>başlangıç</parameter>'tan başlayarak dizenin sonuna kadar
+       olan alt dizge döndürülür.
       </para>
       <example>
        <title>- Negatif <parameter>uzunluk</parameter> kullanımı</title>
@@ -99,7 +104,7 @@ $rest = substr("abcdef", -3, 1); // "d" döndürür
 <?php
 $rest = substr("abcdef", 0, -1);  // "abcde" döndürür
 $rest = substr("abcdef", 2, -1);  // "cde" döndürür
-$rest = substr("abcdef", 4, -4);  // "" döndürür
+$rest = substr("abcdef", 4, -4);  // false döndürür
 $rest = substr("abcdef", -3, -1); // "de" döndürür
 ?>
 ]]>
@@ -114,8 +119,37 @@ $rest = substr("abcdef", -3, -1); // "de" döndürür
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarı durumunda dizgenin çıkarılan kısmı,&return.falseforfailure;.
+   Başarı durumunda dizgenin çıkarılan kısmı,&return.falseforfailure;
+   ya da boş dizge döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>uzunluk</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       İşlev evvelce &false; döndürdüğü durumda şimdi boş bir dizge döndürüyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -143,6 +177,52 @@ echo $dizge[strlen($dizge)-1];  // f
 ]]>
     </programlisting>
    </example>
+   <example>
+    <title>- <function>substr</function> tür dönüşüm davranışı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class apple {
+    public function __toString() {
+        return "green";
+    }
+}
+
+echo "1) ".var_export(substr("pear", 0, 2), true).PHP_EOL;
+echo "2) ".var_export(substr(54321, 0, 2), true).PHP_EOL;
+echo "3) ".var_export(substr(new apple(), 0, 2), true).PHP_EOL;
+echo "4) ".var_export(substr(true, 0, 1), true).PHP_EOL;
+echo "5) ".var_export(substr(false, 0, 1), true).PHP_EOL;
+echo "6) ".var_export(substr("", 0, 1), true).PHP_EOL;
+echo "7) ".var_export(substr(1.2e3, 0, 4), true).PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs.7;
+    <screen>
+<![CDATA[
+1) 'pe'
+2) '54'
+3) 'gr'
+4) '1'
+5) ''
+6) ''
+7) '1200'
+]]>
+    </screen>
+    &example.outputs.5;
+    <screen>
+<![CDATA[
+1) 'pe'
+2) '54'
+3) 'gr'
+4) '1'
+5) false
+6) false
+7) '1200'
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -154,7 +234,7 @@ echo $dizge[strlen($dizge)-1];  // f
     <programlisting role="php">
 <![CDATA[
 <?php
-var_dump(substr('a', 1)); // bool(false)
+var_dump(substr('a', 2)); // bool(false)
 ?>
 ]]>
     </programlisting>
@@ -172,6 +252,8 @@ var_dump(substr('a', 1)); // bool(false)
     <member><function>trim</function></member>
     <member><function>mb_substr</function></member>
     <member><function>wordwrap</function></member>
+    <member><link linkend="language.types.string.substr">Dizge erişimi ve
+     karaktere göre değişiklik</link></member>
    </simplelist>
   </para>
  </refsect1>
