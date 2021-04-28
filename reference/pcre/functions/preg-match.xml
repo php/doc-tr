@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 7dbdeb80f52354fef58e707f4fb47800e8de56f1 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8a058e9acded067eaa1bd445ed6943158e7311df Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.preg-match" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>preg_match</refname>
@@ -10,12 +9,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>preg_match</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>preg_match</methodname>
    <methodparam><type>string</type><parameter>şablon</parameter></methodparam>
    <methodparam><type>string</type><parameter>konu</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">eşleşenler</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">eşleşenler</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>şablon</parameter> ile belirtilen düzenli ifadeyi eşleştirmek
@@ -57,19 +56,107 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Bu değiştirgede şu seçenekler belirtilebilir:
+       Bu değiştirgede şu seçenekler bir arada belirtilebilir:
       </para>
        <variablelist>
         <varlistentry>
          <term><constant>PREG_OFFSET_CAPTURE</constant></term>
          <listitem>
-          <simpara>
+          <para>
            Bu seçenek etkin olduğunda, her eşleşme bulunduğunda sonraki arama
-           başlangıcı da döner. Bu durumda, dönen dizinin her elemanı ayrıca
-           birer dizi olup, her elemanın <literal>0</literal> indisinde
-           eşleşen dizge, <literal>1</literal>  indisinde ise
-           <parameter>konu</parameter> içindeki başlangıç konumunu bulunur.
-          </simpara>
+           başlangıcı da (bayt cinsinden) döner. Bu durumda, dönen dizinin her
+           elemanı ayrıca birer dizi olup, her elemanın <literal>0</literal>
+           indisinde eşleşen dizge, <literal>1</literal>  indisinde ise
+           <parameter>konu</parameter> içindeki başlangıç konumu bulunur.
+           <informalexample>
+            <programlisting role="php">
+<![CDATA[
+<?php
+preg_match('/(foo)(bar)(baz)/', 'foobarbaz', $eşleşmeler, PREG_OFFSET_CAPTURE);
+print_r($eşleşmeler);
+?>
+]]>
+            </programlisting>
+            &example.outputs;
+            <screen>
+<![CDATA[
+Array
+(
+    [0] => Array
+        (
+            [0] => foobarbaz
+            [1] => 0
+        )
+
+    [1] => Array
+        (
+            [0] => foo
+            [1] => 0
+        )
+
+    [2] => Array
+        (
+            [0] => bar
+            [1] => 3
+        )
+
+    [3] => Array
+        (
+            [0] => baz
+            [1] => 6
+        )
+
+)
+]]>
+            </screen>
+           </informalexample>
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>PREG_UNMATCHED_AS_NULL</constant></term>
+         <listitem>
+          <para>
+           Bu seçenek kullanılmışsa, eşleşmeyen alt şablonlar &null;
+           döndürür, kullanılmadığında ise boş dizge döndürür.
+           <informalexample>
+            <programlisting role="php">
+<![CDATA[
+<?php
+preg_match('/(a)(b)*(c)/', 'ac', $eşleşmeler);
+var_dump($eşleşmeler);
+preg_match('/(a)(b)*(c)/', 'ac', $eşleşmeler, PREG_UNMATCHED_AS_NULL);
+var_dump($eşleşmeler);
+?>
+]]>
+            </programlisting>
+            &example.outputs;
+            <screen>
+<![CDATA[
+array(4) {
+  [0]=>
+  string(2) "ac"
+  [1]=>
+  string(1) "a"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(1) "c"
+}
+array(4) {
+  [0]=>
+  string(2) "ac"
+  [1]=>
+  string(1) "a"
+  [2]=>
+  NULL
+  [3]=>
+  string(1) "c"
+}
+]]>
+            </screen>
+           </informalexample>
+          </para>
          </listitem>
         </varlistentry>
        </variablelist>
@@ -85,8 +172,8 @@
       <note>
        <para>
         <parameter>başlangıç</parameter> değiştirgesinin kullanımı,
-        <literal>substr($konu, $başlangıç)</literal> ile konu dizgede
-        belirtilen başlangıca göre işleve bir alt dizge aktarmaya eşdeğer
+        <code>substr($konu, $başlangıç)</code> ile konu dizgede
+        belirtilen başlangıca göre bir alt dizge aktarmaya eşdeğer
         değildir. Çünkü, şablon, <emphasis>^</emphasis>,
         <emphasis>$</emphasis>, <emphasis>(?&lt;=x)</emphasis> gibi savlar
         içerebilir. Şu iki örneği karşılaştıralım:
@@ -96,10 +183,10 @@
          <programlisting role="php">
 <![CDATA[
 <?php
-$subject = "abcdef";
-$pattern = '/^def/';
-preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, 3);
-print_r($matches);
+$konu = "abcdef";
+$şablon = '/^def/';
+preg_match($şablon, $konu, $eşleşmeler, PREG_OFFSET_CAPTURE, 3);
+print_r($eşleşmeler);
 ?>
 ]]>
          </programlisting>
@@ -115,10 +202,10 @@ Array
          <programlisting role="php">
 <![CDATA[
 <?php
-$subject = "abcdef";
-$pattern = '/^def/';
-preg_match($pattern, substr($subject,3), $matches, PREG_OFFSET_CAPTURE);
-print_r($matches);
+$konu = "abcdef";
+$şablon = '/^def/';
+preg_match($şablon, substr($konu,3), $eşleşmeler, PREG_OFFSET_CAPTURE);
+print_r($eşleşmeler);
 ?>
 ]]>
          </programlisting>
@@ -136,6 +223,13 @@ Array
 )
 ]]>
          </screen>
+         <para>
+          <function>substr</function> kullanımından kaçınmak için,
+          <parameter>başlangıç</parameter> değiştirgesinde her ikisi de
+          çalışan <literal>^</literal> demiri veya <literal>A</literal>
+          değiştiricisi yerine bir seçenek olarak <literal>\G</literal>
+          savı da kullanılabilir.
+         </para>
         </informalexample>
       </note>
      </listitem>
@@ -146,14 +240,11 @@ Array
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <function>preg_match</function> işlevi <parameter>şablon</parameter> ile
-   eşleşme sayısını döndürür. Değer olarak, hiç eşleşme olmadığını belirtmek
-   üzere 0 veya eşleşme olduğunu belirtmeki üzere 1 döner; çünkü
-   <function>preg_match</function> ilk eşleşmeyi bulur bulmaz döner.
-   <function>preg_match_all</function> ise tersine,
-   <parameter>konu</parameter> dizgesinin sonuna kadar eşleşenleri arar. Bir
-   hata oluşması durumunda işlev &false; döndürür.
+   <function>preg_match</function> işlevi eğer <parameter>şablon</parameter>
+   ile <parameter>konu</parameter> eşleşirse 1, eşleşmezse 0 ve hata oluşmuşsa
+   &false; döndürür.
   </para>
+  &return.falseproblem;
  </refsect1>
 
  <refsect1 role="changelog">
@@ -169,30 +260,10 @@ Array
      </thead>
      <tbody>
        <row>
-       <entry>5.2.2</entry>
+       <entry>7.2.0</entry>
        <entry>
-        İsimli alt şablonlar artık <literal>(?&lt;isim&gt;)</literal>,
-        <literal>(?'isim')</literal> ve <literal>(?P&lt;isim&gt;)</literal>
-        sözdizimleri ile kabul ediliyor. Önceki sürümlerde sadece
-        <literal>(?P&lt;isim&gt;)</literal> kabul edilmekteydi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        <parameter>başlangıç</parameter> değiştirgesi eklendi
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <constant>PREG_OFFSET_CAPTURE</constant> seçeneği eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>seçenekler</parameter> değiştirgesi eklendi.
+        <parameter>seçenekler</parameter> değiştirgesinde artık
+        <constant>PREG_UNMATCHED_AS_NULL</constant> destekleniyor.
        </entry>
       </row>
      </tbody>
@@ -279,11 +350,10 @@ alan adı: php.net
 
 $dizge = 'mesela: 2008';
 
-// PHP 5.2.2 ve sonrasında çalışır
-preg_match('/(?<isim>\w+): (?<sene>\d+)/', $dizge, $eşleşmeler);
+preg_match('/(?P<isim>\w+): (?P<sene>\d+)/', $dizge, $eşleşmeler);
 
-// PHP 5.2.2 öncesinde bu gerekiyordu:
-// preg_match('/(?P<isim>\w+): (?P<sene>\d+)/', $dizge, $eşleşmeler);
+// Bu da olur:
+// preg_match('/(?<isim>\w+): (?<sene>\d+)/', $dizge, $eşleşmeler);
 
 print_r($eşleşmeler);
 
@@ -311,8 +381,7 @@ print_r($eşleşmeler);
   <tip>
    <para>
     Bir dizgeyi başka bir dizge ile eşleştirmek için bu işlevi değil, bu işi
-    daha hızlı yapan <function>strpos</function> veya
-    <function>strstr</function>işlevini kullanın.
+    daha hızlı yapan <function>strpos</function> işlevini kullanın.
    </para>
   </tip>
  </refsect1>
@@ -321,9 +390,13 @@ print_r($eşleşmeler);
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="pcre.pattern">PCRE Şablonları</link></member>
+    <member><function>preg_quote</function></member>
     <member><function>preg_match_all</function></member>
     <member><function>preg_replace</function></member>
     <member><function>preg_split</function></member>
+    <member><function>preg_last_error</function></member>
+    <member><function>preg_last_error_msg</function></member>
    </simplelist>
   </para>
  </refsect1>

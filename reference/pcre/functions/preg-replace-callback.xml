@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 22e850b66cd9a4b8f0e002bd5850f9839caaf152 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.preg-replace-callback" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>preg_replace_callback</refname>
@@ -11,12 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>preg_replace_callback</methodname>
-   <methodparam><type>mixed</type><parameter>şablon</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>geriçağırım</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>konu</parameter></methodparam>
+   <type class="union"><type>string</type><type>array</type><type>null</type></type><methodname>preg_replace_callback</methodname>
+   <methodparam><type class="union"><type>string</type><type>array</type></type><parameter>şablon</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>geriçağırım</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>array</type></type><parameter>konu</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>sınır</parameter><initializer>-1</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">sayı</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">sayı</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>yenisi</parameter> değiştirgesinin yerini bir
@@ -45,23 +45,28 @@
       <para>
        <parameter>konu</parameter> dizgesiyle eşleşen elemanlardan oluşan bir
        dizi ile çağrılıp yer değiştirilecek dizgeleri içeren bir dizi döndüren
-       bir geriçağırım işlevinin ismi.
+       bir geriçağırım işlevinin ismi. İşlevin sözdizimi:
       </para>
       <para>
-       Genellikle <parameter>geriçağırım</parameter> işlevi
-       <function>preg_replace_callback</function> işlevinin çağrısı sırasında
-       bir satıriçi işlev olarak kullanılır. Böyle bir durumda, geriçağırım
-       işlevi olarak bir anonim işlev bildirimi için bir <link
-       linkend="functions.anonymous">anonim işlev</link> (PHP 5.3.0'dan beri)
-       veya <function>create_function</function> kullanılır. Böylece çağrı için
-       gereken tüm bilgi tek bir yerde toplanmış olur ve bir daha başka bir
-       yerde kullanılmayacak olan geriçağırım işlevi, işlev isim alanında
-       kalabalık etmez.
+       <methodsynopsis>
+        <type>string</type><methodname><replaceable>işleyici</replaceable></methodname>
+        <methodparam><type>array</type><parameter>eşleşmeler</parameter></methodparam>
+       </methodsynopsis>
+      </para>
+      <para>
+       <function>preg_replace_callback</function> için geriçağırım işlevine
+       genellikle tek bir yerde ihtiyaç vardır. Bu durumda,
+       <function>preg_replace_callback</function> çağrısı içinde geriçağırım
+       işlevini bildirmek için <link
+       linkend="functions.anonymous">anonim bir işlev</link> kullanılabilir.
+       Böylece çağrı için gereken tüm bilgi tek bir yerde toplanmış olur ve bir
+       daha başka bir yerde kullanılmayacak olan geriçağırım işlevi, işlev isim
+       alanında kalabalık etmez.
       </para>
       <para>
        <example>
-        <title><function>preg_replace_callback</function> ve
-        <function>create_function</function></title>
+        <title>- <function>preg_replace_callback</function> ve anonim işlev
+        </title>
         <programlisting role="php">
 <![CDATA[
 <?php
@@ -69,18 +74,14 @@
    için bir Unix tarzı komut satırı uygulaması */
 $fp = fopen("php://stdin", "r") or die("std girdi okunamadı");
 while (!feof($fp)) {
-    $line = fgets($fp);
-    $line = preg_replace_callback(
+    $konu = fgets($fp);
+    $konu = preg_replace_callback(
         '|<p>\s*\w|',
-        create_function(
-            // Buradaki tek tırnaklar önemli yoksa
-            // $ imlerini \$ olarak öncelemek gerekir.
-            '$matches',
-            'return strtolower($matches[0]);'
-        ),
-        $line
+        function ($eşleşmeler) {
+            return strtolower($eşleşmeler[0]);
+        },
     );
-    echo $line;
+    echo $konu;
 }
 fclose($fp);
 ?>
@@ -116,6 +117,18 @@ fclose($fp);
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       <parameter>seçenekler</parameter> değiştirgesi, eşleşen dizinin biçimini
+       açıklamak için  <constant>PREG_OFFSET_CAPTURE</constant> ve
+       <constant>PREG_UNMATCHED_AS_NULL</constant> seçeneklerini bir arada
+       içerebilir. Ayrıntılar <function>preg_match</function> işlevinde
+       bulunabilir.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -147,9 +160,9 @@ fclose($fp);
      </thead>
      <tbody>
       <row>
-       <entry>5.1.0</entry>
+       <entry>7.4.0</entry>
        <entry>
-        <parameter>sayı</parameter> değiştirgesi eklendi.
+        <parameter>seçenekler</parameter> değiştirgesi eklendi.
        </entry>
       </row>
      </tbody>
@@ -228,8 +241,12 @@ echo $output;
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="pcre.pattern">PCRE Şablonları</link></member>
+    <member><function>preg_replace_callback_array</function></member>
+    <member><function>preg_quote</function></member>
     <member><function>preg_replace</function></member>
-    <member><function>create_function</function></member>
+    <member><function>preg_last_error</function></member>
+    <member><link linkend="functions.anonymous">İsimsiz işlevler</link></member>
    </simplelist>
   </para>
  </refsect1>

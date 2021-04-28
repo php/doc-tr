@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
+<!-- EN-Revision: a0ae28d3bc85f927c22649ebd9a590b921534b7d Maintainer: nilgun Status: ready -->
+<!-- CREDITS: haluk -->
 <article xml:id="reference.pcre.pattern.modifiers" xmlns="http://docbook.org/ns/docbook">
  <title>Düzenli ifadeler için kullanılabilecek değiştiriciler</title>
  <titleabbrev>Şablon Değiştiricileri</titleabbrev>
@@ -15,7 +14,7 @@
    <blockquote>
     <variablelist>
      <varlistentry>
-      <term><emphasis>i</emphasis> (<constant>PCRE_CASELESS</constant>)</term>
+      <term><emphasis>i</emphasis> (<literal>PCRE_CASELESS</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici etkin olursa şablondaki harfler hem küçük hem de büyük
@@ -24,7 +23,7 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>m</emphasis> (<constant>PCRE_MULTILINE</constant>)</term>
+      <term><emphasis>m</emphasis> (<literal>PCRE_MULTILINE</literal>)</term>
       <listitem>
        <simpara>
         PCRE öntanımlı olarak, eşleşmeye konu dizgeyi karakterlerden oluşan
@@ -46,7 +45,7 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>s</emphasis> (<constant>PCRE_DOTALL</constant>)</term>
+      <term><emphasis>s</emphasis> (<literal>PCRE_DOTALL</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici etkin olduğunda şablondaki nokta işleci, satırsonu
@@ -58,7 +57,7 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>x</emphasis> (<constant>PCRE_EXTENDED</constant>)</term>
+      <term><emphasis>x</emphasis> (<literal>PCRE_EXTENDED</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici etkin olduğunda şablondaki boşluk karakterleri,
@@ -74,24 +73,79 @@
        </simpara>
       </listitem>
      </varlistentry>
-     <varlistentry>
-      <term><emphasis>e</emphasis> (<constant>PREG_REPLACE_EVAL</constant>)</term>
+     <varlistentry xml:id="reference.pcre.pattern.modifiers.eval">
+      <term><emphasis>e</emphasis> (<literal>PREG_REPLACE_EVAL</literal>)</term>
       <listitem>
+       &warn.deprecated.feature-5-5-0.removed-7-0-0;
        <simpara>
-        Bu değiştirici etkin olduğunda, <function>preg_replace</function>
+        Kullanımı önerilmeyen bu değiştirici etkin olduğunda,
+        <function>preg_replace</function>
         işlevi sonuç dizgesini PHP kodu olarak değerlendirerek normal geriye
         gönderim ikameleri yapar ve sonucu arama dizgesiyle değiştirmek için
         kullanır. İkameli geriye gönderimlerdeki tek ve çift tırnaklarla
         tersbölü ve NULL karakterleri tersbölülerle öncelenir.
        </simpara>
-       <para>
-        Bu değiştiriciyi sadece <function>preg_replace</function> kullanır;
-        diğer PCRE işlevleri bu değiştiriciyi yok sayar.
-       </para>
+       <caution>
+        <para>
+         <function>addslashes</function> işlevi, ikame gerçekleşmeden önce
+         eşleşen her gerigönderimde çalıştırılır. Bu nedenle gerigönderim,
+         tırnaklı bir dize olarak kullanıldığında, önceleme karakterleri
+         değişmezlere dönüştürülür. Ancak, normalde dönüştürülmeyen öncelenmiş
+         karakterlerin bölü çizgileri korunur. Bu nedenle, bu değiştiricinin
+         kullanımı çok karmaşık hale gelir.
+        </para>
+       </caution>
+       <caution>
+        <para>
+         <parameter>yenisi</parameter> değiştirgesinin geçerli bir PHP kod
+         dizesi içerdiğinden emin olun, aksi takdirde PHP,
+         <function>preg_replace</function> içeren her satırda bir ayrıştırma
+         hatası oluşturur.
+        </para>
+       </caution>
+       <caution>
+        <para>
+         Bu değiştiricinin kullanılması, kolayca uzaktan kod çalıştırma
+         güvenlik açıklarına neden olabileceği için önerilmez. Bunları
+         önlemek için bunun yerine <function>preg_replace_callback</function>
+         işlevi kullanılmalıdır:
+        </para>
+        <informalexample>
+         <programlisting role="php">
+<![CDATA[
+<?php
+$html = $_POST['html'];
+
+// Büyük harfli başlıklar
+$html = preg_replace_callback(
+    '(<h([1-6])>(.*?)</h\1>)',
+    function ($m) {
+        return "<h$m[1]>" . strtoupper($m[2]) . "</h$m[1]>";
+    },
+    $html
+);
+]]>
+         </programlisting>
+        </informalexample>
+        <para>
+         Yukarıdaki örnek <function>preg_replace</function> ve
+         <literal>e</literal> değiştiricisi ile yazılsaydı,
+         <literal>&lt;h1&gt;{${eval($_GET[php_code])}}&lt;/h1&gt;</literal>
+         gibi bir dizge aktarılarak kod kolayca istismar edilebilirdi. Bu,
+         saldırgana rastgele PHP kodunu çalıştırma ve böylece sunucuya
+         neredeyse tam erişim sağlama imkanı verebilirdi.
+        </para>
+       </caution>
+       <note>
+        <para>
+         Bu değiştiriciyi sadece <function>preg_replace</function> kullanır;
+         diğer PCRE işlevleri bu değiştirciyi yoksayar.
+        </para>
+       </note>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>A</emphasis> (<constant>PCRE_ANCHORED</constant>)</term>
+      <term><emphasis>A</emphasis> (<literal>PCRE_ANCHORED</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici etkin olduğunda, şablon demirlemeye zolanır yani,
@@ -102,7 +156,7 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>D</emphasis> (<constant>PCRE_DOLLAR_ENDONLY</constant>)</term>
+      <term><emphasis>D</emphasis> (<literal>PCRE_DOLLAR_ENDONLY</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici etkin olduğunda, şablondaki dolar işleci eşleşmeye konu
@@ -128,21 +182,28 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>U</emphasis> (<constant>PCRE_UNGREEDY</constant>)</term>
+      <term><emphasis>U</emphasis> (<literal>PCRE_UNGREEDY</literal>)</term>
       <listitem>
        <simpara>
-        Bu değiştirici etkin olduğunda, niceleyicilerin tamahkarlığını tersine
+        Bu değiştirici etkin olduğunda, niceleyicilerin açgözlülüğü tersine
         çevirir. Böylece, ardlarına bir "?" konmadıkça niceleyiciler öntanımlı
-        olarak tamahkar olmazlar. Bu değiştirici Perl ile uyumlu değildir.
+        olarak açgözlü olmaz. Bu değiştirici Perl ile uyumlu değildir.
         Ayrıca, <link linkend="regexp.reference.internal-options">değiştirici
         şablon içinde</link> de (?U ile) etkin kılılınabileceği gibi
         niceleyicinin ardına bir soru işareti konarak da
         (<literal>.*?</literal> gibi) bu sağlanabilir.
        </simpara>
+       <note>
+        <para>
+         Normalde, isteksiz kipte <link
+         linkend="ini.pcre.backtrack-limit">pcre.backtrack_limit</link>
+         karakterden fazlasıyla eşleşme mümkün değildir.
+        </para>
+       </note>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>X</emphasis> (<constant>PCRE_EXTRA</constant>)</term>
+      <term><emphasis>X</emphasis> (<literal>PCRE_EXTRA</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici PCRE'nin Perl ile uyumlu olmayan bir işlevselliğini açıp
@@ -156,25 +217,29 @@
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>J</emphasis> (<constant>PCRE_INFO_JCHANGED</constant>)</term>
+      <term><emphasis>J</emphasis> (<literal>PCRE_INFO_JCHANGED</literal>)</term>
       <listitem>
        <simpara>
-        (?J) dahili seçenek ayarı yerel <constant>PCRE_DUPNAMES</constant>
+        (?J) dahili seçenek ayarı yerel <literal>PCRE_DUPNAMES</literal>
         seçeneğini değiştirerek isimlerin alt şablonlarda tekrarlanmasını
         mümkün kılar.
+        PHP 7.2.0 ve sonrasında, <literal>J</literal> aynı zamanda değiştirici
+        olarak da desteklenmekedir.
        </simpara>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><emphasis>u</emphasis> (<constant>PCRE_UTF8</constant>)</term>
+      <term><emphasis>u</emphasis> (<literal>PCRE_UTF8</literal>)</term>
       <listitem>
        <simpara>
         Bu değiştirici PCRE'nin Perl ile uyumlu olmayan bir işlevselliğini
-        etkin kılarak şablon dizgelerinin karakter kodlamasının UTF-8
-        olduğunun varsayılmasını sağlar. Bu değiştirici Unix türevlerinde PHP
-        4.1.0'dan beri, win32'de  PHP 4.2.3'ten beri kullanılabilmektedir.
-        Şablonun UTF-8 olarak geçerliliği ise  PHP 4.3.5 sürümünden beri
-        denetlenmektedir.
+        etkin kılarak şablon ve konu dizgelerinin karakter kodlamasının UTF-8
+        olduğunun varsayılmasını sağlar.  Geçersiz bir konu, preg_*
+        işlevlerinin hiçbir şeyle eşleşmemesine neden olur; geçersiz bir
+        kalıp E_WARNING seviyesinde bir hatayı tetikleyecektir. Beş ve altı
+        sekizlikli UTF-8 karakterler geçersiz yanıt olarak kabul edilir.
+        PCRE 7.3 2007-08-28; evvelce bunlar geçerli UTF-8 karakterler olarak
+        kabul ediliyordu.
        </simpara>
       </listitem>
      </varlistentry>

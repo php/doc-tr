@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: d65981e8ecf8def27d75b1899dfd1dfff7d29277 Maintainer: nilgun Status: ready -->
-<!-- splitted from ./en/functions/pcre.xml, last change in rev 1.2 -->
+<!-- EN-Revision: 8a058e9acded067eaa1bd445ed6943158e7311df Maintainer: nilgun Status: ready -->
+<!-- CREDITS: haluk -->
 <chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
 
  <title>PCRE düzenli ifade sözdizimi</title>
@@ -30,7 +29,8 @@
      <para>
       PCRE işlevlerini kullanırken şablonların <emphasis>ayırıcılar</emphasis>
       arasına alınması gerekir. Ayırıcılar tersbölü imi ve boşluk karakterleri
-      hariç herhangi bir abecesayısal karakter olabilir.
+      hariç herhangi bir abecesayısal karakter olabilir. Geçerli bir ayırıcıdan
+      önceki baştaki boşluklar sessizce yok sayılır.
      </para>
      <para>
       Sıkça kullanılan ayırıcılar şunlardır: Bölü çizgisi
@@ -159,7 +159,7 @@
       <row>
        <entry>?</entry>
        <entry>"(" işlecinin anlamını genişletir; 0 veya 1 kere
-        eşleşir, ayrıca tamahkarlığa son verilir. (bkz. <link
+        eşleşir, ayrıca açgözlülüğe son verilir. (bkz. <link
          linkend="regexp.reference.repetition">Yineleme</link>)</entry>
       </row>
       <row>
@@ -458,13 +458,13 @@
       </varlistentry>
       <varlistentry>
        <term><emphasis>\h</emphasis></term>
-       <listitem><simpara>Herhangi bir yatay boşluk karakteri (PHP 5.2.4'ten
-       beri)</simpara></listitem>
+       <listitem><simpara>Herhangi bir yatay boşluk karakteri</simpara>
+       </listitem>
       </varlistentry>
       <varlistentry>
        <term><emphasis>\H</emphasis></term>
        <listitem><simpara>Bir yatay boşluk karakteri olmayan herhangi bir
-       karakter (PHP 5.2.4'ten beri)</simpara></listitem>
+       karakter</simpara></listitem>
       </varlistentry>
       <varlistentry>
        <term><emphasis>\s</emphasis></term>
@@ -477,13 +477,13 @@
       </varlistentry>
       <varlistentry>
        <term><emphasis>\v</emphasis></term>
-       <listitem><simpara>Herhangi bir düşey boşluk karakteri (PHP 5.2.4'ten
-       beri)</simpara></listitem>
+       <listitem><simpara>Herhangi bir düşey boşluk karakteri</simpara>
+       </listitem>
       </varlistentry>
       <varlistentry>
        <term><emphasis>\V</emphasis></term>
        <listitem><simpara>Bir düşey boşluk karakteri olmayan herhangi bir
-       karakter (PHP 5.2.4'ten beri)</simpara></listitem>
+       karakter</simpara></listitem>
       </varlistentry>
       <varlistentry>
        <term><emphasis>\w</emphasis></term>
@@ -601,11 +601,10 @@
      <parameter>başlangıç</parameter> değiştirgesi ile belirtilen noktada)
      olduğu takdirde doğru olacaktır. <parameter>başlangıç</parameter>
      sıfırdan farklı olduğu durumda <literal>\G</literal> işleci
-     <literal>\A</literal> işlecinden farklıdır. PHP'nin 4.3.3 sürümünden
-     beri kullanılabilmektedir.
+     <literal>\A</literal> işlecinden farklıdır.
     </para>
     <para>
-     PHP 4.3.3'ten beri, <literal>\Q</literal> ve <literal>\E</literal>
+     <literal>\Q</literal> ve <literal>\E</literal>
      işleçleri şablon içindeki düzenli ifade işleçlerini geçersiz kılmak
      için kullanılabilmektedir. Örneğin, <literal>\w+\Q.$.\E$</literal>
      düzenli ifadesi dizge sonuna demirlenmiş <literal>.$.</literal>
@@ -613,7 +612,7 @@
      sözcük karakteriyle eşleşecektir.
     </para>
     <para>
-     <literal>\K</literal> işleci PHP'nin 5.2.4 sürümünden beri eşleşme
+     <literal>\K</literal> işleci eşleşme
      başlangıcını sıfırlamak için kullanılabilmektedir. Örneğin,
      <literal>foo\Kbar</literal> şablonu, "foobar" ile eşleşir, fakat "bar"
      ile eşleştiğini raporlar. <literal>\K</literal> işlecinin kullanımı
@@ -624,11 +623,10 @@
     </section>
 
     <section xml:id="regexp.reference.unicode">
-     <title>Evrenkodlu Karakterlerin Özellikleri</title>
+     <title>Unicode Karakterlerinini Özellikleri</title>
      <para>
-      PHP 4.4.0 ve 5.1.0 sürümlerinde, <emphasis>UTF-8 kipi</emphasis>
-      seçildiğinde soysal karakter türleriyle eşleşen üç düzenli ifade işleci
-      daha devreye girmiştir. Bunlar:
+      <emphasis>UTF-8 kipi</emphasis> seçildiğinde soysal karakter
+      türleriyle eşleşen üç düzenli ifade işleci daha devreye girmiştir. Bunlar:
      </para>
      <variablelist>
       <varlistentry>
@@ -643,12 +641,12 @@
       </varlistentry>
       <varlistentry>
        <term><emphasis>\X</emphasis></term>
-       <listitem><simpara>bir genişletilmiş Evrenkod dizilimi
+       <listitem><simpara>bir genişletilmiş Unicode dizilimi
        </simpara></listitem>
       </varlistentry>
      </variablelist>
      <para>
-      Yukarıda <literal>xx</literal> ile belirtilen özellik isimleri Evrenkod
+      Yukarıda <literal>xx</literal> ile belirtilen özellik isimleri Unicode
       genel sınıf özellikleriyle sınırlıdır.  Belirtilen her karakter, belli
       bir özelliğin iki harflik kısaltmasındaki harflerle aynı olmak
       zorundadır. Perl ile uyumluluk için, olumsuzlama işleci kaşlı ayraç ile
@@ -754,7 +752,7 @@
       daima sadece büyük harflerle eşleşecektir.
      </para>
      <para>
-      Evrenkod karakter kümeleri, belirli dillere ait olarak tanımlanır.
+      Unicode karakter kümeleri, belirli dillere ait olarak tanımlanır.
       Bu kümelerden birindeki bir karakter, bir dil adı kullanılarak
       eşleştirilebilir. Örneğin:
      </para>
@@ -927,9 +925,9 @@
    </tgroup>
   </table>
   <para>
-   <literal>\X</literal> öncelemi, bir Evrenkod genişletilmiş grafem kümesiyle
+   <literal>\X</literal> öncelemi, bir Unicode genişletilmiş grafem kümesiyle
    eşleşir. Genişletilmiş bir grafem kümesi, tek bir glif oluşturmak için
-   birleşen bir veya daha fazla Evrenkod karakteridir. Gerçekte, bu, Evrenkod
+   birleşen bir veya daha fazla Unicode karakteridir. Gerçekte, bu, Unicode
    eşdeğeri olarak düşünülebilir. Çünkü onu oluşturmak için gerçekte kaç
    karakter kullanıldığına bakılmaksızın, oluşturulmuş bir karakterle
    eşleşecektir.
@@ -944,10 +942,10 @@
    önceki karakteri etkileyen aksanlardır.
   </para>
   <para>
-      Evrenkodlu karakterlerle eşleşme hızlı değildir, çünkü
+      Unicode karakterleriyle eşleşme hızlı değildir, çünkü
       PCRE on beş binden fazla karakter içeren bir kümeyi araştırmak
       zorundadır. <literal>\d</literal> ve <literal>\w</literal> gibi
-      geleneksel işleçlerin PCRE'de Evrenkod özelliklerini kullanmamasının
+      geleneksel işleçlerin PCRE'de Unicode özelliklerini kullanmamasının
       sebebi budur.
      </para>
     </section>
@@ -1163,8 +1161,8 @@
      </para>
      <para>
       UTF-8 kipinde, 128'den büyük değerli karakterler POSIX karakter
-      sınıflarının hiçbiriyle eşleşmeyecektir. PHP 5.3.0 ve libpcre 8.10'dan
-      itibaren bazı karakter sınıfları Evrenkod karakter özelliklerini
+      sınıflarının hiçbiriyle eşleşmeyecektir. libpcre 8.10'dan
+      itibaren bazı karakter sınıfları Unicode karakter özelliklerini
       kullanacak şekilde değiştirilmiştir, bu durumda söz konusu kısıtlama
       geçerli değildir. Ayrıntılar için <link
        xlink:href="&url.pcre.man;">PCRE(3) kılavuzuna</link> bakın.
@@ -1259,10 +1257,7 @@
       Üst seviyeden bir seçenek değişikliği varsa (yani değişiklik bir alt
       şablon içinde değilse), değişiklik şablonun kalanına uygulanacaktır. Bu
       bakımdan, <literal>/ab(?i)c/</literal> şablonu sadece "abc" ve "abC"
-      dizgeleri ile eşleşecektir. Bu işlem PHP 4.3.3 ile dağıtılan PCRE
-      4.0'dan itibaren bu şekilde uygulanmaktadır. Daha önceki sürümlerde
-      <literal>/ab(?i)c/</literal> şablonu <literal>/abc/i</literal> olarak
-      uygulanırdı (yani, "ABC" ve "aBc" ile eşleşirdi).
+      dizgeleri ile eşleşecektir.
      </para>
      <para>
       Değişiklik bir alt şablonun içinde yapılırsa etkisi farklı olur. Bu
@@ -1349,10 +1344,12 @@
      </para>
 
      <para>
-      PHP 4.3.3'ten beri bir alt şablonu
-      <literal>(?P&lt;ad&gt;şablon)</literal> ile isimlendirmek mümkündür.
+      Bir alt şablonu
+      <literal>(?P&lt;ad&gt;kalıp)</literal> ile isimlendirmek mümkündür.
       Eşleşmeleri içeren dizi, numaralarına göre indislenmiş eşleşmelerin
-      yanısıra dizgelerine göre indislenmiş eşleşmeleri de içerecektir.
+      yanısıra dizgelerine göre indislenmiş eşleşmeleri de içerecektir. Buna
+      eşdeğer iki sözdizimi daha vardır: <literal>(?&lt;ad&gt;kalıp)</literal>
+      ve <literal>(?'ad'kalıp)</literal>
      </para>
     </section>
 
@@ -1428,7 +1425,7 @@
       bilinçli olarak kırılmaktadır.
      </para>
      <para>
-      Yineleyiciler öntanımlı olarak "tamahkar" olurlar. Yani, şablonun geri
+      Yineleyiciler öntanımlı olarak "açgözlü" olurlar. Yani, şablonun geri
       kalanının başarısız olmasına sebep olmaksızın olabildiğince çok (azami
       niceleyicisinin izin verdiği ölçüde) eşleşme yapmaya çalışır. Klasik bir
       örnek olarak, C kodları arasındaki açıklamalarla eşleşme sorunları
@@ -1437,12 +1434,12 @@
       bulunabilir. Örneğin, <literal>/\*.*\*/</literal> şablonu
       <literal>/* birinci açıklama */  bu açıklama değil  /* ikinci açıklama
       */</literal> dizgesiyle eşleştirilmeye çalışıldığında başarısız
-      olunacaktır. Çünkü .* öğesinin tamahkarlığı yüzünden dizgenin tamamı ile
+      olunacaktır. Çünkü .* öğesinin açgözlülüğü yüzünden dizgenin tamamı ile
       eşleşecektir.
      </para>
      <para>
       Bununla birlikte, bir yineleyicinin ardına bir soru imi konursa,
-      tamahkarlığa son verilmiş olur ve olası en az sayıda eşleşme yapılmaya
+      açgözlülüğe son verilmiş olur ve olası en az sayıda eşleşme yapılmaya
       çalışılır. Dolayısıyla, <literal>/\*.*?\*/</literal> şablonu C
       açıklamaları ile beklendiği gibi eşleşir. Yineleyiciler, anlamları
       değiştirilmediği sürece sadece tercih edilen sayıda eşleşme yapacaktır.
@@ -1455,8 +1452,8 @@
      <para>
       <link linkend="reference.pcre.pattern.modifiers">PCRE_UNGREEDY</link>
       seçeneği (Perl'de bulunmayan bir seçenektir) etkinse yineleyiciler
-      öntanımlı olarak tamahkar olmazlar, fakat bir yineleyiciyi takibeden bir
-      soru imi varsa o yineleyici tamahkarlık gösterebilir. Başka bir deyişle,
+      öntanımlı olarak açgözlü olmazlar, fakat bir yineleyiciyi takibeden bir
+      soru imi varsa o yineleyici açgözlülük gösterebilir. Başka bir deyişle,
       bu seçenek öntanımlı davranışı tersine çevirir.
      </para>
      <para>
@@ -1465,9 +1462,7 @@
       olabildiğince çok eşleşme yapmaya çalışır. Bu bakımdan, örneğin,
       <literal>.*abc</literal> şablonu "aabc" ile eşleştiği halde
       <literal>.*+abc</literal> şablonu eşleşmeyecektir. Çünkü
-      <literal>.*+</literal> dizgenin tamamını yiyecektir. Bencil
-      yineleyiciler işlemi hızlandırmak için PHP 4.3.3'ten beri
-      kullanılabilmektedir.
+      <literal>.*+</literal> dizgenin tamamını yiyecektir.
      </para>
      <para>
       Bir yaylı ayraçlı alt şablon, 1'den büyük bir asgari ve sınırlı bir
@@ -1562,13 +1557,11 @@
      </para>
 
      <para>
-      İsimli alt şablonlarla ilgili geriye gönderimler
-      <literal>(?P=ad)</literal> ile veya PHP 5.2.2'den beri
-      <literal>\k&lt;ad&gt;</literal> veya <literal>\k'ad'</literal> ile
-      sağlanabilir. Ayrıca, <literal>\k{ad}</literal> ve
-      <literal>\g{ad}</literal> için PHP 5.2.4 ve
-      <literal>\g&lt;ad&gt;</literal> ve <literal>\g'ad'</literal> için
-      PHP 5.2.7 destek ekledi.
+      İsimli alt şablonlara gerigönderimler
+      <literal>(?P=ad)</literal>,  <literal>\k&lt;ad&gt;</literal>,
+      <literal>\k'ad'</literal>, <literal>\k{ad}</literal>,
+      <literal>\g{ad}</literal>, <literal>\g&lt;ad&gt;</literal> veya
+      <literal>\g'ad'</literal> ile sağlanabilir.
      </para>
     </section>
 
@@ -1577,7 +1570,8 @@
      <para>
       Bir tez, herhangi bir karakterin tüketilmediği bir eşleşme noktasının
       öncesinde veya sonrasındaki karakterler üzerinde yapılacak bir sınama
-      belirtir. Basit savlar <link linkend="regexp.reference.escape">önceleme karakteri</link> altında açıklandığı gibi \b,
+      belirtir. Basit savlar <link linkend="regexp.reference.escape">önceleme
+      karakteri</link> altında açıklandığı gibi \b,
       \B,  \A,  \Z,  \z, ^ ve $ olarak kodlanabilir. Birden fazla alt
       şablondan oluşan daha karmaşık savlar da düzenlenebilir. Bunların iki
       çeşidi vardır: Eşleşmeye konu dizge içinde geçerli konumun
@@ -1901,7 +1895,7 @@
       veriyi, sadece ilk 15 yakalayan yaylı ayraç için saklar.
      </para>
      <para>
-      PHP 4.3.3'ten beri, <literal>(?1)</literal>, <literal>(?2)</literal> ve
+      <literal>(?1)</literal>, <literal>(?2)</literal> ve
       benzerleri ardışık alt şablonlarda da kullanılabilmektedir. Ayrıca,
       <literal>(?P&gt;isim)</literal> veya <literal>(?P&amp;isim)</literal>
       isimli alt şablonlarını da kullanmak mümkündür.
