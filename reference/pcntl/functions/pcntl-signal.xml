@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 412052d434bb09a5237c125063a269a3c8b5fe2f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.pcntl-signal" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>pcntl_signal</refname>
@@ -12,8 +11,8 @@
   <methodsynopsis>
    <type>bool</type><methodname>pcntl_signal</methodname>
    <methodparam><type>int</type><parameter>sinyal</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>eylemci</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>yeniden_syscalls</parameter><initializer>true</initializer></methodparam>
+   <methodparam><type class="union"><type>callable</type><type>int</type></type><parameter>işleyici</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>restart_syscalls</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>sinyal</parameter> ile belirtilen sinyal için yeni bir eylemci
@@ -34,16 +33,46 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>eylemci</parameter></term>
+     <term><parameter>işleyici</parameter></term>
      <listitem>
       <para>
-       Kullanıcı tarafından oluşturulmuş bir işlevin veya yöntemin ismi ya da
-       şu iki küresel sabitten biri: <constant>SIG_IGN</constant>,
-       <constant>SIG_DFL</constant>.
+       Sinyali işlemek için kullanıcı tarafından oluşturulmuş bir işlevin
+       veya yöntemin ismi ya da şu iki küresel sabitten biri:
+       <constant>SIG_IGN</constant> (sinyalin yoksayılması için),
+       <constant>SIG_DFL</constant> (öntanımlı sinyal işleyiciyi devreye sokmak için).
+      </para>
+      <para>
+       Bir geriçağırım işlevi belirtilmişse, sözdizimini şöyle olmalıdır:
+      </para>
+      <para>
+       <methodsynopsis>
+        <type>void</type><methodname><replaceable>işleyici</replaceable></methodname>
+        <methodparam><type>int</type><parameter>sinyalnum</parameter></methodparam>
+        <methodparam><type>mixed</type><parameter>siginfo</parameter></methodparam>
+       </methodsynopsis>
+       <variablelist>
+        <varlistentry>
+         <term><parameter>sinyalnum</parameter></term>
+         <listitem>
+          <simpara>
+           İşlenecek sinyal.
+          </simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>siginfo</parameter></term>
+         <listitem>
+          <simpara>
+           İşletim sistemi siginfo_t yapılarını destekliyorsa,
+           sinyale bağlı sinyal bilgisini içeren bir dizi olmalıdır.
+          </simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
       </para>
       <note>
        <para>
-        Eylemciyi bir nesnenin yöntemi olarak belirtirseniz, eylemci
+        İşleyici bir nesnenin yöntemi olarak belirtirseniz, işleyici
         değiştirilene veya betik sonlanana kadar geçerli olmak üzere nesnenin
         başvuru sayısı arttırılır.
        </para>
@@ -51,11 +80,11 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yeniden_syscalls</parameter></term>
+     <term><parameter>restart_syscalls</parameter></term>
      <listitem>
       <para>
        Bu sinyal geldiğinde yeniden sistem çağrısı yapılıp yapılmayacağını
-       belirler. Öntanımlı değer: &true;.
+       belirler.
       </para>
      </listitem>
     </varlistentry>
@@ -83,27 +112,12 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>7.1.0</entry>
        <entry>
-        <parameter>yeniden_syscalls</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        Bir geriçağırım işlevi olarak bir nesne yöntemi kullanılabilir oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        PHP 4.3.0'dan itibaren, PCNTL, sinyal işleme geriçağırım mekanizması
-        olarak kullanıcı tiklerini kullanmaya başladı. Bu değişiklik "<link
-        linkend="control-structures.declare.ticks">kullanıcı
-        tiklerinin</link>" kullanıldığı anlamındadır. Geriçağırım
-        işlevlerinizin gerektiği gibi çalışması için yerlerini <link
-        linkend="control-structures.declare">declare()</link>  deyimini
-        kullanarak belirtmelisiniz (örnekteki gibi).
+        Geriçağırım işlevinin ikinci değiştirgesinde sinyal bilgisi veriliyor.
+        Bu veri sadece siginfo_t yapısını sağlayan işletim sistemlerinde
+        bulunur. İşletim sistemi bu bilgiyi sağlamıyorsa geriçağırım işlevinin
+        ikinci değiştirgesine &null; aktarılmalıdır
        </entry>
       </row>
      </tbody>
@@ -120,7 +134,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// PHP 4.3.0'dan beri tikler kullanılıyor
+// tikleri kullanalım
 declare(ticks = 1);
 
 // sinyal eylemcimiz
@@ -151,15 +165,16 @@ pcntl_signal(SIGTERM, "sig_handler");
 pcntl_signal(SIGHUP,  "sig_handler");
 pcntl_signal(SIGUSR1, "sig_handler");
 
-// Veya bir nesne kullanalım (PHP 4.3.0 ve sonrası)
-// pcntl_signal(SIGUSR1, array($obj, "do_something");
+// Veya bir nesne kullanalım
+// pcntl_signal(SIGUSR1, array($obj, "do_something"));
 
 echo"Kendimize SIGTERM gönderelim...\n";
 
 // geçerli süreç kimliğine SIGUSR1 gönder
+//posix_* işlevleri posix eklentisi gerektirir
 posix_kill(posix_getpid(), SIGUSR1);
 
-echo "Done\n"
+echo "Done\n";
 
 ?>
 ]]>
@@ -167,6 +182,14 @@ echo "Done\n"
    </example>
   </para>
  </refsect1>
+
+ <refsect1 role="notes"><!-- {{{ -->
+  &reftitle.notes;
+  <para>
+   <function>pcntl_signal</function> sinyal işleyicileri yığıtıyla etkileşmez,
+   sadece işleyiciyi değiştirir.
+  </para>
+ </refsect1><!-- }}} -->
 
  <refsect1 role="seealso">
   &reftitle.seealso;
