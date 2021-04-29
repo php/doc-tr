@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.http-build-query" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: ea70bbb2cb1c1233b1349ad405b93e7a593fdb4f Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.http-build-query" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>http_build_query</refname>
   <refpurpose>URL kodlamalı sorgu dizgesi üretir</refpurpose>
@@ -11,9 +10,10 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>http_build_query</methodname>
-   <methodparam><type>array</type><parameter>form_verisi</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>veri</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>sayısal_önek</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kodlama_türü</parameter><initializer><constant>PHP_QUERY_RFC1738</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen ilişkisel (veya indisli) diziden bir URL kodlamalı dizge üretir.
@@ -25,14 +25,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>form_verisi</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Özellikleri içeren bir dizi veya nesne belirtilebilir.
+       <parameter>veri</parameter> bir dizi ise tek boyutlu basit bir yapı
+       veya bir diziler dizisi olabilir (dönüşte diğer dizileri içerebilir).
       </para>
       <para>
-       Belirtilen dizi tek boyutlu bir dizi olabileceği gibi çok boyutlu iç
-       içe diziler içeren bir dizi de olabilir.
+       <parameter>data</parameter> bir nesne ise sonuca sadece public
+       özellikler dahil edilir.
       </para>
      </listitem>
     </varlistentry>
@@ -57,10 +58,33 @@
       <para>
        Bu değiştirgede bir ayraç belirtilmezse değiştirge ayracı olarak
        <link linkend="ini.arg-separator.output">arg_separator.output</link>
-       yönergesinde belirtilen ayraç kullanılır.
+       yönergesinde belirtilen ayraç kullanılır, fakat bu değiştirge
+       kullanılarak bu geçersiz kılınabilir.
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>kodlama_türü</parameter></term>
+     <listitem>
+      <para>
+       <constant>PHP_QUERY_RFC1738</constant> öntanımlıdır.
+      </para>
+      <para>
+       <parameter>kodlama_türü</parameter> olarak
+       <constant>PHP_QUERY_RFC1738</constant> atanmışsa, kodlama boşlukların
+       artı (<literal>+</literal>) işaretleri olarak kodlandığı
+       <link xlink:href="&url.rfc;1738">RFC 1738</link> ve
+       <literal>application/x-www-form-urlencoded</literal> ortam türüne
+       göre uygulanır.
+      </para>
+      <para>
+       <parameter>kodlama_türü</parameter> olarak
+       <constant>PHP_QUERY_RFC3986</constant> atanmışsa, kodlama,
+       boşlukların yüzdeli (<literal>%20</literal>) kodlandığı
+       <link xlink:href="&url.rfc;3986">RFC 3986</link>'ya göre uygulanır.
+       </para>
+      </listitem>
+     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -72,36 +96,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.1.2</entry>
-       <entry>
-        <parameter>ayraç</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.3</entry>
-       <entry>
-        Köşeli ayraçlar öncelendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
@@ -109,19 +103,26 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-$data = array('foo'=>'bar',
-              'baz'=>'boom',
-              'cow'=>'milk',
-              'php'=>'hypertext processor');
+$data = array(
+    'foo' => 'bar',
+    'baz' => 'boom',
+    'cow' => 'milk',
+    'php' => 'hypertext processor'
+);
 
-echo http_build_query($data); 
-    // foo=bar&baz=boom&cow=milk&php=hypertext+processor
-echo http_build_query($data, '', '&amp;'); 
-    // foo=bar&amp;baz=boom&amp;cow=milk&amp;php=hypertext+processor
+echo http_build_query($data) . "\n";
+echo http_build_query($data, '', '&amp;');
 
 ?>
 ]]>
    </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+foo=bar&baz=boom&cow=milk&php=hypertext+processor
+foo=bar&amp;baz=boom&amp;cow=milk&amp;php=hypertext+processor
+]]>
+   </screen>
   </example>
 
   <example>
@@ -130,9 +131,7 @@ echo http_build_query($data, '', '&amp;');
    <programlisting role="php">
 <![CDATA[
 <?php
-$data = array('foo', 'bar', 'baz', 'boom',
-              'cow' => 'milk',
-              'php' =>'hypertext processor');
+$data = array('foo', 'bar', 'baz', 'boom', 'cow' => 'milk', 'php' => 'hypertext processor');
 
 echo http_build_query($data) . "\n";
 echo http_build_query($data, 'myvar_');
@@ -153,16 +152,20 @@ myvar_0=foo&myvar_1=bar&myvar_2=baz&myvar_3=boom&cow=milk&php=hypertext+processo
    <programlisting role="php">
 <![CDATA[
 <?php
-$data = array('user'=>array('name'=>'Bob Smith',
-                            'age'=>47,
-                            'sex'=>'M',
-                            'dob'=>'5/12/1956'),
-              'pastimes'=>array('golf', 'opera', 'poker', 'rap'),
-              'children'=>array('bobby'=>array('age'=>12,
-                                               'sex'=>'M'),
-                                'sally'=>array('age'=>8,
-                                               'sex'=>'F')),
-              'CEO');
+$data = array(
+    'user' => array(
+        'name' => 'Bob Smith',
+        'age'  => 47,
+        'sex'  => 'M',
+        'dob'  => '5/12/1956'
+    ),
+    'pastimes' => array('golf', 'opera', 'poker', 'rap'),
+    'children' => array(
+        'bobby' => array('age'=>12, 'sex'=>'M'),
+        'sally' => array('age'=>8, 'sex'=>'F')
+    ),
+    'CEO'
+);
 
 echo http_build_query($data, 'flags_');
 ?>
@@ -196,23 +199,40 @@ children%5Bsally%5D%5Bsex%5D=F&flags_0=CEO
    <programlisting role="php">
 <![CDATA[
 <?php
-class myClass {
-    var $foo;
-    var $baz;
+class parentClass {
+    public    $pub      = 'publicParent';
+    protected $prot     = 'protectedParent';
+    private   $priv     = 'privateParent';
+    public    $pub_bar  = Null;
+    protected $prot_bar = Null;
+    private   $priv_bar = Null;
 
-    function myClass() {
-        $this->foo = 'bar';
-        $this->baz = 'boom';
-    }
+    public function __construct(){
+        $this->pub_bar  = new childClass();
+        $this->prot_bar = new childClass();
+        $this->priv_bar = new childClass();
+   }
+
+
+class childClass {
+    public    $pub  = 'publicChild';
+    protected $prot = 'protectedChild';
+    private   $priv = 'privateChild';
 }
 
-$data = new myClass();
+$parent = new parentClass();
 
-echo http_build_query($data); // foo=bar&baz=boom
+echo http_build_query($parent);
 
 ?>
 ]]>
    </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+pub=publicParent&pub_bar%5Bpub%5D=publicChild
+]]>
+   </screen>
   </example>
  </refsect1>
 
