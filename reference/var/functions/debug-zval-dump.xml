@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d08d2e887fdc229f16748df96450c9b68c9a3076 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.debug-zval-dump" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>debug_zval_dump</refname>
-  <refpurpose>Dahili bir zend değerinin dizgesel gösterimini çıktıya
-  dökümler</refpurpose>
+  <refpurpose>Dahili zval yapısının dizgesel gösterimini çıktıya dökümler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>void</type><methodname>debug_zval_dump</methodname>
-   <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değerler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Dahili bir zend değerinin dizgesel gösterimini çıktıya dökümler.
+   Dahili bir zval yapısının (zend değerinin) dizgesel gösterimini çıktıya
+   dökümler. Zend motorunun veya bir PHP eklentisinin gerçeklenim
+   ayrıntılarının hatalarını ayıklamak veya anlamak için bu yöntem oldukça
+   kullanışlıdır.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -22,10 +24,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değişken</parameter></term>
+     <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       İşleme alınacak değişken.
+       Dökümlenecek değişken veya değer.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>values</parameter></term>
+     <listitem>
+      <para>
+       Dökümlenecek değişkenler veya değerler.
       </para>
      </listitem>
     </varlistentry>
@@ -46,19 +56,18 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$var1 = 'Hello World';
-$var2 = '';
+$var1 = 'Hello';
+$var1 .= ' World';
+$var2 = $var1;
 
-$var2 =& $var1;
-
-debug_zval_dump(&$var1);
+debug_zval_dump($var1);
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-&string(11) "Hello World" refcount(3)
+string(11) "Hello World" refcount(3)
 ]]>
     </screen>
    </example>
@@ -66,55 +75,54 @@ debug_zval_dump(&$var1);
   <note>
    <title><literal>refcount</literal> hakkında</title>
    <para>
-    Bu işlevden döndürülen <literal>refcount</literal> değerinin ne olduğu
-    bazı durumlarda pek açık değildir. Örneğin bir geliştirici yukarıdaki
-    örneğin <literal>refcount</literal> değerinin <literal>2</literal>
-    olacağını bekleyebilirdi. Üçüncü gönderim aslında
-    <function>debug_zval_dump</function> çağrılırken oluşur.
+    Bu işlevden döndürülen <literal>refcount</literal> değeri, motorun
+    gerçeklenimi ayrıntılı bir şekilde anlaşılmadan şaşırtıcı olabilir.
    </para>
    <para>
-    Bu davranış, bir değişken <function>debug_zval_dump</function> işlevine
-    gönderimli aktarılmadığı takdirde daha da karmaşıklaşır. Bunu göstermek
-    için yukardaki örneğin hafifçe değiştirilmiş bir sürümünü ele alalım:
+    Zend motoru gönderim sayısını (refcount) iki farklı amaç için kullanır:
+   </para>
+   <para>
+    <simplelist>
+     <member>
+      Aynı değeri tutan birden çok değişkenin bellekteki aynı kopyayı işaret
+      ettiği "yazarken kopyala" adı verilen bir teknik kullanarak bellek
+      kullanımını en iyileme. Değişkenlerden herhangi biri değiştirildiğinde,
+      bellekte yeni bir kopyaya işaret edilir ve özgün kopya üzerindeki
+      gönderim sayısı 1 azaltılır.
+     </member>
+     <member>
+      Gönderimle atanmış veya aktarılmış izleme değişkenleri (bkz. <link
+      linkend="language.references">Gönderimlerle İlgili Herşey </link>).
+      Bu gönderim sayısı, geçerli değer için zval'i işaret eden ayrı bir
+      gönderim zval'ı üzerinde saklanır. Bu ek zval şu anda
+      <function>debug_zval_dump</function> tarafından gösterilmemektedir.
+     </member>
+    </simplelist>
+   </para>
+   <para>
+    <function>debug_zval_dump</function> girdisini değeriyle aktarılan normal
+    değiştirgeler olarak aldığından, bunları aktarmak için "yazarken kopyala"
+    tekniğini kullanacaktır: verileri kopyalamak yerine, işlev çağrısının ömrü
+    boyunca gönderim sayısını bir artıracaktır. İşlev, değiştirgeyi aldıktan
+    sonra değiştirseydi, bir kopyası yapılırdı; öyle olmadığından, gösterilen
+    gönderim sayısı çağrı etki alanındakinden bir fazla olur.
+   </para>
+   <para>
+    Değiştirge aktarımı ayrıca, gönderimle atanan değişkenleri
+    <function>debug_zval_dump</function> işlevinin göstermesini de önler.
+    Örneklerle açıklamak gerekirse, yukarıdaki örneğin biraz değiştirilmiş
+    bir halini ele alalım:
    </para>
    <para>
     <example>
-     <title/>
      <programlisting role="php">
 <![CDATA[
 <?php
-$var1 = 'Hello World';
-$var2 = '';
-
+$var1 = 'Hello';
+$var1 .= ' World';
+// Aynı değere gönderim olarak üç değişkene vurgu yapalım
 $var2 =& $var1;
-
-debug_zval_dump($var1); // bu sefer gönderimli aktarmadık
-?>
-]]>
-     </programlisting>
-     &example.outputs;
-     <screen>
-<![CDATA[
-string(11) "Hello World" refcount(1)
-]]>
-     </screen>
-    </example>
-   </para>
-   <para>
-    Neden <literal>refcount(1)</literal>? Çünkü <literal>$var1</literal>
-    değişkeni işlev çağrılırken kopyalandı.
-   </para>
-   <para>
-    Bu işlev, 1 <literal>refcount</literal>'lu bir değişken değeriyle
-    aktarıldığında işleri daha da karmaşıklaştırır:
-   </para>
-   <para>
-    <example>
-     <title/>
-     <programlisting role="php">
-<![CDATA[
-<?php
-$var1 = 'Hello World';
+$var3 =& $var1;
 
 debug_zval_dump($var1);
 ?>
@@ -129,24 +137,20 @@ string(11) "Hello World" refcount(2)
     </example>
    </para>
    <para>
-    Buradaki <literal>2</literal>'lik <literal>refcount</literal> neredeyse
-    kesinlikle apaçık değildir. Özellikle yukarıdaki örnekler göz önüne
-    alınarak. Peki ne oluyor?
+    <varname>$var1</varname>, <varname>$var2</varname> ve
+    <varname>$var3</varname> gönderim olarak ilintili olsa da,
+    <function>debug_zval_dump</function> işlevine yalnızca bir
+    <emphasis>değer</emphasis> aktarılır. Bu değer, bir kez gönderim kümesi
+    tarafından ve bir kez de <function>debug_zval_dump</function> içinde
+    kullanılır, bu nedenle gönderim sayısı (refcount) 2 olur.
    </para>
    <para>
-    Bir değişken tek bir gönderime sahipse
-    (<function>debug_zval_dump</function> işlevinde bir değiştirge olarak
-    kullanılmadan önce,  <literal>$var1</literal>'de olduğu gibi),  PHP
-    motoru, aktarılan gönderim yazılacaksa sadece yazma anında bir kopyasının
-    yapılacağı ikazıyla bunu bir işleve aktarılmış gibi eniyileştirir. Buna
-    "yazma sırasında kopyalama" denir.
-   </para>
-   <para>
-    Eğer <function>debug_zval_dump</function> işlevi kendi tek değiştirgesine
-    yazarsa (ki normalde yazmaz) bu durumda (bellekte bu parametre için) bir
-    kopya oluşturulur. O zamana kadar bu değiştirge bir gönderim olarak kalır
-    ve işlev çağrısının etki alanı içinde <literal>refcount</literal> değeri
-    <literal>2</literal>'ye yükseltilir.
+    Motorda farklı veri türleri için yapılan en iyilemeler nedeniyle daha
+    fazla karışıklık ortaya çıkar. Tamsayılar gibi bazı türler "yazarken
+    kopyala" kullanmazlar, bu nedenle bir refcount gösterilmez. Diğer
+    durumlarda, refcount dahili olarak kullanılan fazladan kopyaları da
+    gösterir, örneğin bir sayıl dize veya dizinin bir göstericiyle saklanması
+    gibi.
    </para>
   </note>
  </refsect1>
@@ -156,8 +160,8 @@ string(11) "Hello World" refcount(2)
    <simplelist>
     <member><function>var_dump</function></member>
     <member><function>debug_backtrace</function></member>
-    <member><link linkend="language.references">Gönderimlerle İlgili Herşey
-    </link></member>
+    <member><link linkend="language.references">Gönderimlerle İlgili
+     Herşey</link></member>
     <member><link xlink:href="&url.derick.references;">References Explained (Derick Rethans)</link></member>
    </simplelist>
   </para>

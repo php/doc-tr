@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<!-- splitted from ./en/functions/var.xml, last change in rev 1.6 -->
+<!-- EN-Revision: a0ae28d3bc85f927c22649ebd9a590b921534b7d Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.var-export" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>var_export</refname>
@@ -12,9 +10,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>var_export</methodname>
+   <type class="union"><type>string</type><type>null</type></type><methodname>var_export</methodname>
    <methodparam><type>mixed</type><parameter>ifade</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>döndür</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>döndür</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
    <function>var_export</function> işlevi belirtilen değişken hakkında yapı
@@ -70,11 +68,15 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.1.0</entry>
+       <entry>7.3.0</entry>
        <entry>
-        <link linkend="language.oop5.magic.set-state">__set_state</link>
-        sihirli yöntemi kullanılarak sınıfları ve sınıfları içeren dizileri
-        çıktılamak mümkün oldu.
+        Artık <classname>stdClass</classname> nesneleri, mevcut olmayan
+        <methodname>stdClass::__setState</methodname> yöntemini kullanmak
+        yerine nesneye dönüştürülmüş bir dizi olarak
+        (<code>(object) array( ... )</code>) dışa aktarılıyor. Bunun
+        uygulamadaki etkisi, <classname>stdClass</classname>'ın dışa
+        aktarılabilmesi ve ortaya çıkan kodun PHP'nin önceki sürümlerinde bile
+        çalışabilmesidir.
        </entry>
       </row>
      </tbody>
@@ -132,7 +134,32 @@ echo $v;
   </para>
   <para>
    <example>
-    <title>- PHP 5.1.0'den beri sınıfların çıktılanması</title>
+    <title>- stdClass'ın dışa aktarılması (PHP 7.3.0'den beri)</title>
+    <title>Exporting stdClass (since PHP 7.3.0)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$person = new stdClass;
+$person->name = 'ElePHPant ElePHPantsdotter';
+$person->website = 'https://php.net/elephpant.php';
+
+var_export($person);
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+(object) array(
+   'name' => 'ElePHPant ElePHPantsdotter',
+   'website' => 'https://php.net/elephpant.php',
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Sınıfların dışa aktarılması</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -155,8 +182,7 @@ A::__set_state(array(
   </para>
   <para>
    <example>
-    <title>- <link linkend="language.oop5.magic.set-state">__set_state</link>
-    kullanımı (PHP 5.1.0'dan beri)</title>
+    <title>- <link linkend="object.set-state">__set_state()</link> kullanımı </title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -215,6 +241,22 @@ object(A)#2 (2) {
     işleme sokulmaz. Bir dizi veya nesnenin dizgesel gösterimi üzerinde
     işlemler yapmak istiyorsanız <function>serialize</function> işlevini
     kullanın.
+   </para>
+  </note>
+  <warning>
+   <para>
+    <function>var_export</function> nesneleri dışa aktarırken, azami
+    uyumluluk için, isim alanlı sınıfların sınıf ismine sondaki ters
+    bölü çizgilerini dahil etmez.
+   </para>
+  </warning>
+  <note>
+   <para>
+    <function>var_export</function> tarafından üretilen kodu
+    değerlendirebilmek için, işlenen tüm nesnelerin sihirli <link
+    linkend="object.set-state">__set_state</link> yöntemini gerçeklemesi
+    gerekir. Tek istisnası, nesneye dönüştürülmüş bir dizi kullanılarak
+    dışa aktarılan <classname>stdClass</classname>'tır.
    </para>
   </note>
  </refsect1>

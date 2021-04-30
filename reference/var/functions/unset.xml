@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.unset" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>unset</refname>
-  <refpurpose>Belirtilen değişkeni tanımsız yapar</refpurpose>
+  <refpurpose>Belirtilen değişkeni bildirimsiz yapar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -12,8 +11,7 @@
   <methodsynopsis>
    <type>void</type><methodname>unset</methodname>
    <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>değişken</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>...</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değişkenler</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>unset</function> işlevi belirtilen değişkenleri hiç tanımlanmamış
@@ -158,18 +156,10 @@ unset öncesi: 3, unset sonrası: 23
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>değişken</parameter></term>
+     <term><parameter>değişkenler</parameter></term>
      <listitem>
       <para>
-       Başka bir değişken.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>...</parameter></term>
-     <listitem>
-      <para>
-       Başka değişkenler.
+       Yokedilecek değişkenler.
       </para>
      </listitem>
     </varlistentry>
@@ -181,30 +171,6 @@ unset öncesi: 3, unset sonrası: 23
   &reftitle.returnvalues;
   <para>
    &return.void;
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.1</entry>
-       <entry>
-        Çok sayıda değiştirge belirtebilme desteği eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -229,16 +195,33 @@ unset($foo1, $foo2, $foo3);
     </programlisting>
    </example>
    <example>
-    <title>- (unset) - &null;'a dönüşüm örneği (PHP 5 ve sonrası)</title>
+    <title>- (unset) - &null;'a dönüşüm örneği</title>
+    <para>
+     <link linkend="language.types.null.casting"><literal>(unset)</literal></link>
+     dönüşümü çoğunlukla <function>unset</function> işlevi ile karıştırılır.
+     <literal>(unset)</literal> dönüşümü bütünlük adına, sadece
+     <literal>NULL</literal> döndürür, dönüşüm yaptığı değişkene &null;
+     atamaz, yani işlev gibi değişkeni bildirimsiz yapmaz.
+     <literal>(unset)</literal> dönüşümünün kullanımı PHP 7.2.0
+     ve sonrasında önerilmemektedir.
+    </para>
     <programlisting role="php">
 <![CDATA[
 <?php
 $name = 'Felipe';
 
 var_dump((unset) $name);
+var_dump($name);
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+NULL
+string(6) "Felipe"
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
@@ -254,16 +237,14 @@ var_dump((unset) $name);
   </note>
   <note>
    <para>
-    PHP 5'ten beri bir nesne yöntemi içinde <literal>$this</literal>
-    yokedilememektedir.
+    Bir nesne yöntemi içinde <literal>$this</literal> yokedilemez.
    </para>
   </note>
   <note>
    <para>
-    <function>empty</function> erişilir olmayan nesne özellikleri
-    kullanıyorsa, bildirimli olduğu taktirde <link
-    linkend="language.oop5.overloading.members">__isset</link> yöntemi
-    çağrılabilir.
+    <function>unset</function> erişilir olmayan nesne özellikleri
+    kullanıyorsa, bildirimli olduğu taktirde
+    <link linkend="object.unset">__unset()</link> yöntemi çağrılabilir.
    </para>
   </note>
  </refsect1>
@@ -274,9 +255,11 @@ var_dump((unset) $name);
    <simplelist>
     <member><function>isset</function></member>
     <member><function>empty</function></member>
-    <member><link linkend="language.oop5.overloading.members">
-    __isset</link></member>
+    <member><link linkend="object.unset">__unset()</link></member>
     <member><function>array_splice</function></member>
+    <member>
+     <link linkend="language.types.null.casting">(unset) dönüşümü</link>
+    </member>
    </simplelist>
   </para>
  </refsect1>
