@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: a0ae28d3bc85f927c22649ebd9a590b921534b7d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: bcb7074498301e4712576a18849821f99f0fbaea Maintainer: nilgun Status: ready -->
 <!-- CREDITS: haluk -->
 <article xml:id="reference.pcre.pattern.modifiers" xmlns="http://docbook.org/ns/docbook">
  <title>Düzenli ifadeler için kullanılabilecek değiştiriciler</title>
@@ -71,77 +71,6 @@
         özel karakter dizilimlerinin içinde bulunamazlar; örneğin, bir koşullu
         alt şablon başlatan (?( dizilimi içinde bulunamazlar.
        </simpara>
-      </listitem>
-     </varlistentry>
-     <varlistentry xml:id="reference.pcre.pattern.modifiers.eval">
-      <term><emphasis>e</emphasis> (<literal>PREG_REPLACE_EVAL</literal>)</term>
-      <listitem>
-       &warn.deprecated.feature-5-5-0.removed-7-0-0;
-       <simpara>
-        Kullanımı önerilmeyen bu değiştirici etkin olduğunda,
-        <function>preg_replace</function>
-        işlevi sonuç dizgesini PHP kodu olarak değerlendirerek normal geriye
-        gönderim ikameleri yapar ve sonucu arama dizgesiyle değiştirmek için
-        kullanır. İkameli geriye gönderimlerdeki tek ve çift tırnaklarla
-        tersbölü ve NULL karakterleri tersbölülerle öncelenir.
-       </simpara>
-       <caution>
-        <para>
-         <function>addslashes</function> işlevi, ikame gerçekleşmeden önce
-         eşleşen her gerigönderimde çalıştırılır. Bu nedenle gerigönderim,
-         tırnaklı bir dize olarak kullanıldığında, önceleme karakterleri
-         değişmezlere dönüştürülür. Ancak, normalde dönüştürülmeyen öncelenmiş
-         karakterlerin bölü çizgileri korunur. Bu nedenle, bu değiştiricinin
-         kullanımı çok karmaşık hale gelir.
-        </para>
-       </caution>
-       <caution>
-        <para>
-         <parameter>yenisi</parameter> değiştirgesinin geçerli bir PHP kod
-         dizesi içerdiğinden emin olun, aksi takdirde PHP,
-         <function>preg_replace</function> içeren her satırda bir ayrıştırma
-         hatası oluşturur.
-        </para>
-       </caution>
-       <caution>
-        <para>
-         Bu değiştiricinin kullanılması, kolayca uzaktan kod çalıştırma
-         güvenlik açıklarına neden olabileceği için önerilmez. Bunları
-         önlemek için bunun yerine <function>preg_replace_callback</function>
-         işlevi kullanılmalıdır:
-        </para>
-        <informalexample>
-         <programlisting role="php">
-<![CDATA[
-<?php
-$html = $_POST['html'];
-
-// Büyük harfli başlıklar
-$html = preg_replace_callback(
-    '(<h([1-6])>(.*?)</h\1>)',
-    function ($m) {
-        return "<h$m[1]>" . strtoupper($m[2]) . "</h$m[1]>";
-    },
-    $html
-);
-]]>
-         </programlisting>
-        </informalexample>
-        <para>
-         Yukarıdaki örnek <function>preg_replace</function> ve
-         <literal>e</literal> değiştiricisi ile yazılsaydı,
-         <literal>&lt;h1&gt;{${eval($_GET[php_code])}}&lt;/h1&gt;</literal>
-         gibi bir dizge aktarılarak kod kolayca istismar edilebilirdi. Bu,
-         saldırgana rastgele PHP kodunu çalıştırma ve böylece sunucuya
-         neredeyse tam erişim sağlama imkanı verebilirdi.
-        </para>
-       </caution>
-       <note>
-        <para>
-         Bu değiştiriciyi sadece <function>preg_replace</function> kullanır;
-         diğer PCRE işlevleri bu değiştirciyi yoksayar.
-        </para>
-       </note>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -238,8 +167,6 @@ $html = preg_replace_callback(
         işlevlerinin hiçbir şeyle eşleşmemesine neden olur; geçersiz bir
         kalıp E_WARNING seviyesinde bir hatayı tetikleyecektir. Beş ve altı
         sekizlikli UTF-8 karakterler geçersiz yanıt olarak kabul edilir.
-        PCRE 7.3 2007-08-28; evvelce bunlar geçerli UTF-8 karakterler olarak
-        kabul ediliyordu.
        </simpara>
       </listitem>
      </varlistentry>
