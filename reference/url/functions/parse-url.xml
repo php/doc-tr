@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.parse-url" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.parse-url" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>parse_url</refname>
   <refpurpose>Bir URL'yi bileşenlerine ayırır</refpurpose>
@@ -16,7 +15,8 @@
   </methodsynopsis>
   <para>
    Bu işlev belirtilen URL'yi bileşenlerine ayırıp, bunları bir ilişkisel dizi
-   içinde döndürür.
+   içinde döndürür. Dizi elemanlarının değerleri URL'nin kodu çözülmüş
+   bileşenleri <emphasis>değildir</emphasis>.
   </para>
   <para>
    Bu işlev, bir URL doğrulayıcı olarak kullanılmamalıdır. Yaptığı sadece
@@ -44,10 +44,11 @@
      <term><parameter>bileşen</parameter></term>
      <listitem>
       <para>
-       Belli bir URL bileşenini dizge olarak döndürmek isterseniz bu
-       değiştirgede şu sabitlerden birini belirtin:
+       Belli bir URL bileşenini dizge olarak (dönüş değeri <type>int</type>
+       türünde olan <constant>PHP_URL_PORT</constant> dışında) döndürmek
+       isterseniz bu değiştirgede şu sabitlerden birini belirtin:
        <constant>PHP_URL_SCHEME</constant>,
-       <constant>PHP_URL_HOST</constant>, <constant>PHP_URL_PORT</constant>,
+       <constant>PHP_URL_HOST</constant>,
        <constant>PHP_URL_USER</constant>, <constant>PHP_URL_PASS</constant>,
        <constant>PHP_URL_PATH</constant>, <constant>PHP_URL_QUERY</constant>,
        <constant>PHP_URL_FRAGMENT</constant>.
@@ -62,8 +63,11 @@
   &reftitle.returnvalues;
   <para>
    Tehlikeli şekilde bozulmuş URL'lerde <function>parse_url</function> &false;
-   döndürebilir ve bir <constant>E_WARNING</constant> çıktılayabilir. Aksi
-   takdirde, şu bileşenleri bir ilişkisel dizi olarak döndürür (en az biri):
+   döndürebilir.
+  </para>
+  <para>
+   <parameter>bileşen</parameter> atlanırsa, en az bir elememanlı ilişkisel
+   bir dizi döner. Dizide bulunması olası anahtarlar şunlardır:
    <itemizedlist>
     <listitem>
      <simpara>
@@ -108,33 +112,13 @@
      </simpara>
     </listitem>
    </itemizedlist>
-  </para>
-  <para>
-   <parameter>bileşen</parameter> değiştirgesinde bir sabit belirtilmişse bir
-   dizi yerine bir dizge döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.1.2</entry>
-       <entry><parameter>bileşen</parameter> değiştirgesi eklendi.</entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+   </para>
+   <para>
+   <parameter>bileşen</parameter> değiştirgesi belirtilmişse işlev bir dizi
+   yerine bir dizge döndürür (dönüş değeri <type>int</type> türünde olan
+   <constant>PHP_URL_PORT</constant> belirtilmesi dışında). İstenen bileşen
+   belirtilen URL'de yoksa &null; döner.
+   </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -145,28 +129,77 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$url = 'http://username:password@hostname/path?arg=value#anchor';
+$url = 'http://username:password@hostname:9090/path?arg=value#anchor';
 
-print_r(parse_url($url));
-
-echo parse_url($url, PHP_URL_PATH);
+var_dump(parse_url($url));
+var_dump(parse_url($url, PHP_URL_SCHEME));
+var_dump(parse_url($url, PHP_URL_USER));
+var_dump(parse_url($url, PHP_URL_PASS));
+var_dump(parse_url($url, PHP_URL_HOST));
+var_dump(parse_url($url, PHP_URL_PORT));
+var_dump(parse_url($url, PHP_URL_PATH));
+var_dump(parse_url($url, PHP_URL_QUERY));
+var_dump(parse_url($url, PHP_URL_FRAGMENT));
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-Array
-(
-    [scheme] => http
-    [host] => hostname
-    [user] => username
-    [pass] => password
-    [path] => /path
-    [query] => arg=value
-    [fragment] => anchor
-)
-/path
+array(8) {
+  ["scheme"]=>
+  string(4) "http"
+  ["host"]=>
+  string(8) "hostname"
+  ["port"]=>
+  int(9090)
+  ["user"]=>
+  string(8) "username"
+  ["pass"]=>
+  string(8) "password"
+  ["path"]=>
+  string(5) "/path"
+  ["query"]=>
+  string(9) "arg=value"
+  ["fragment"]=>
+  string(6) "anchor"
+}
+string(4) "http"
+string(8) "username"
+string(8) "password"
+string(8) "hostname"
+int(9090)
+string(5) "/path"
+string(9) "arg=value"
+string(6) "anchor"
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Eksik şemalı <function>parse_url</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$url = '//www.example.com/path?googleguy=googley';
+
+// 5.4.7 öncesinde dosya yolu olarak "//www.example.com/path" gösterilirdi.
+var_dump(parse_url($url));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  ["host"]=>
+  string(15) "www.example.com"
+  ["path"]=>
+  string(5) "/path"
+  ["query"]=>
+  string(17) "googleguy=googley"
+}
 ]]>
     </screen>
    </example>
@@ -177,7 +210,7 @@ Array
   &reftitle.notes;
   <note>
    <para>
-    Bu işlev göreli URL'lerle çalışmaz.
+    Bu işlev göreli URL'lerle doğru sonuçlar vermeyebilir.
    </para>
   </note>
   <note>
@@ -198,9 +231,9 @@ Array
     <member><function>pathinfo</function></member>
     <member><function>parse_str</function></member>
     <member><function>http_build_query</function></member>
-    <member><function>http_build_url</function></member>
     <member><function>dirname</function></member>
     <member><function>basename</function></member>
+    <member><link xlink:href="&url.rfc;3986">RFC 3986</link></member>
    </simplelist>
   </para>
  </refsect1>
