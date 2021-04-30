@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.isset" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>isset</refname>
-  <refpurpose>Değişken tanımlı mı diye bakar</refpurpose>
+  <refpurpose>Değişken bildirilmiş ve &null; değil mi diye bakar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
  &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>isset</methodname>
-   <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>değişken</parameter></methodparam>
-   <methodparam choice="opt"><parameter>...</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değişkenler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen değişken tanımlıysa ve &null; değilse &true; döner.
+   Belirtilen değişken atanmışsa, yani bildirilmişse ve &null; değilse
+   &true; döner.
   </para>
   <para>
    Bir değişken <function>unset</function> ile yok edilmişse artık tanımlı
-   değildir. <function>isset</function> değişkene &null; atanmış olduğunu
-   saptarsa &false; döndürür. Bir &null; baytın (<literal>"\0"</literal>)
-   PHP'nin &null; sabitine eşdeğer olmadığına dikkat ediniz.
+   değildir.
   </para>
   <para>
-   İşleve çok sayıda değiştirge aktarılmışsa sadece tüm değiştirgeler
-   &null;'dan farklı bir değer içerdiği takdirde işlev &true; döndürecektir.
-   Değerlendirme soldan sağa ilerler ve &null; atanmış ilk değişkende işlem
-   durdurulur.
+   Değişkene &null; atanmışsa <function>isset</function> &false; döndürür.
+   Dikkat: (<literal>"\0"</literal>) ile  PHP &null; aynı değildir.
+  </para>
+  <para>
+   İşleve çok sayıda değiştirge aktarılmışsa sadece değiştirgelerin hepsi
+   atanmışsa işlev &true; döndürecektir. Değerlendirme soldan sağa ilerler ve
+   atanmamış ilk değişkende işlem durdurulur.
   </para>
  </refsect1>
 
@@ -37,26 +36,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değişken</parameter></term>
+     <term><parameter>değişkenler</parameter></term>
      <listitem>
       <para>
-       Sınanacak değişken.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>değişken</parameter></term>
-     <listitem>
-      <para>
-       Başka bir değişken..
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>...</parameter></term>
-     <listitem>
-      <para>
-       Daha başka değişkenler.
+       Sınanacak değişkenler.
       </para>
      </listitem>
     </varlistentry>
@@ -116,20 +99,68 @@ var_dump(isset($foo));   // FALSE
 <![CDATA[
 <?php
 
-$a = array ('test' => 1, 'hello' => NULL);
+$a = array ('test' => 1, 'hello' => NULL, 'pie' => array('a' => 'apple'));
 
 var_dump(isset($a['test']));            // TRUE
 var_dump(isset($a['foo']));             // FALSE
 var_dump(isset($a['hello']));           // FALSE
 
 // 'hello' anahtarının NULL'a eşitlenmesi elemanın tanımsız olması demektir
-// NULL anahtarın durumunu öğrenmek için şunu deneyebilirsiniz:
+// NULL anahtarın durumunu öğrenmek için şunu deneyin:
 var_dump(array_key_exists('hello', $a)); // TRUE
+
+//Derin dizi değerlerini sına
+var_dump(isset($a['pie']['a']));        // TRUE
+var_dump(isset($a['pie']['b']));        // FALSE
+var_dump(isset($a['cake']['a']['b']));  // FALSE
+
 
 ?>
 ]]>
     </programlisting>
    </informalexample>
+  <example>
+   <title>- Dizge başlangıcında <function>isset</function></title>
+   <para>
+    Dizge başlangıçları aktarıldığında PHP 5.4'te
+    <function>isset</function> davranışı değişir.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$expected_array_got_string = 'somestring';
+var_dump(isset($expected_array_got_string['some_key']));
+var_dump(isset($expected_array_got_string[0]));
+var_dump(isset($expected_array_got_string['0']));
+var_dump(isset($expected_array_got_string[0.5]));
+var_dump(isset($expected_array_got_string['0.5']));
+var_dump(isset($expected_array_got_string['0 Mostel']));
+?>
+]]>
+   </programlisting>
+   &example.outputs.53;
+   <screen>
+<![CDATA[
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+]]>
+   </screen>
+   &example.outputs.54;
+   <screen>
+<![CDATA[
+bool(false)
+bool(true)
+bool(true)
+bool(true)
+bool(false)
+bool(false)
+]]>
+   </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="notes">
@@ -147,8 +178,7 @@ var_dump(array_key_exists('hello', $a)); // TRUE
    <para>
     <function>empty</function> erişilir olmayan nesne özellikleri
     kullanıyorsa, bildirimli olduğu taktirde <link
-    linkend="language.oop5.overloading.members">__isset</link> yöntemi
-    çağrılabilir.
+    linkend="object.isset">__isset()</link> yöntemi çağrılabilir.
    </para>
   </note>
  </refsect1>
@@ -158,16 +188,15 @@ var_dump(array_key_exists('hello', $a)); // TRUE
   <para>
    <simplelist>
     <member><function>empty</function></member>
-    <member><link linkend="language.oop5.overloading.members">
-    __isset</link></member>
+    <member><link linkend="object.isset">__isset()</link></member>
     <member><function>unset</function></member>
     <member><function>defined</function></member>
     <member><link linkend="types.comparisons">
     Tür Karşılaştırma Tabloları</link></member>
     <member><function>array_key_exists</function></member>
     <member><function>is_null</function></member>
-    <member><link linkend="language.operators.errorcontrol">@</link> hata
-    denetim işleci</member>
+    <member><link linkend="language.operators.errorcontrol">Hata
+    Denetim İşleçleri</link></member>
    </simplelist>
   </para>
  </refsect1>

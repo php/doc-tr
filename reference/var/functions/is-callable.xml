@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-callable" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_callable</refname>
@@ -12,16 +11,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>is_callable</methodname>
-   <methodparam><type>callback</type><parameter>işlev</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>işlev</parameter></methodparam>
 
-   <methodparam choice="opt"><type>bool</type><parameter>sözdizimsel</parameter><initializer>false</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter role="reference">isim</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>sözdizimsel</parameter><initializer>&false;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">isim</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen değişkenin içeriğinin bir işlev olarak çağrılabilirliğini
-   doğrular. <parameter>işlev</parameter> değiştirgesinde geçerli bir işlev
-   ismi veya düzgün olarak kodlanmış bir nesne ve işlev ismi içeren bir dizi
-   belirtilebilir.
+  <parameter>işlev</parameter> <type>callable</type> türündeyse &true; döner.
   </para>
  </refsect1>
 
@@ -33,9 +29,7 @@
      <term><parameter>işlev</parameter></term>
      <listitem>
       <para>
-       Bir işlev ismi veya aşağıdaki gibi bir nesne ve nesne içinde bir yöntem
-       ismi olabilir:
-       <screen>array($BirNesne, 'Yöntemİsmi')</screen>
+       Bir işlev ismi.
       </para>
      </listitem>
     </varlistentry>
@@ -121,6 +115,39 @@ echo $isim, "\n";  //  birSınıf::birYöntem
 ?>
 ]]>
     </programlisting>
+   </example>
+   <example>
+    <title>- <function>is_callable</function> ve kurucular</title>
+    <simpara>
+     PHP 5.3.0 ve sonrasında <function>is_callable</function> kurucuları
+     çağrılabilir sayılmaktadır. Bu PHP 5 tarzı kurucuların
+     (<literal>__construct</literal>) yanında PHP 4 tarzı kurucuları da (yani,
+     sınıfla aynı isme sahip yöntemler) kapsar. Evvelce her iki durumda da
+     kurucular çağrılabilir sayılırdı.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class Foo
+{
+    public function __construct() {}
+    public function foo() {}
+}
+
+var_dump(
+    is_callable(array('Foo', '__construct')),
+    is_callable(array('Foo', 'foo'))
+);
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(false)
+bool(false)
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

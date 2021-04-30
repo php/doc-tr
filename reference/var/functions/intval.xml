@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.intval" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>intval</refname>
@@ -40,6 +39,31 @@
       <para>
        Dönüşülecek sayı tabanı.
       </para>
+      <note>
+       <para>
+        <parameter>taban</parameter> 0 ise, taban değerin biçemine göre
+        saptanır:
+        <itemizedlist>
+         <listitem>
+          <simpara>
+           Dizge bir "0x" (or "0X") öneki içeriyorsa, taban 16'dır;
+           aksi takdirde,
+          </simpara>
+         </listitem>
+         <listitem>
+          <simpara>
+           dizge "0" ile başlıyorsa, taban 8'dir;
+           aksi takdirde,
+          </simpara>
+         </listitem>
+         <listitem>
+          <simpara>
+           taban 10 'dur.
+          </simpara>
+         </listitem>
+        </itemizedlist>
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -49,9 +73,9 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda 0, aksi takdirde belirtilen değerin tamsayı
-   değeriyle döner. Boş diziler ve nesneler 0 döndürür. Boş olmayan diziler ve
-   nesneler ise 1 döndürür.
+   Başarı durumunda belirtilen değerin tamsayı değeriyle, başarısızlık
+   durumunda 0 döner. Boş diziler ve nesneler 0 döndürür. Boş olmayan
+   diziler ise 1 döndürür.
   </para>
   <para>
    Azami değer sisteme bağlıdır. 32 bitlik sistemlerde işaretli tamsayılar
@@ -96,6 +120,8 @@ echo intval(42, 8);                   // 42
 echo intval('42', 8);                 // 34
 echo intval(array());                 // 0
 echo intval(array('foo', 'bar'));     // 1
+echo intval(false);                   // 0
+echo intval(true);                    // 1
 ?>
 ]]>
     </programlisting>
@@ -117,6 +143,7 @@ echo intval(array('foo', 'bar'));     // 1
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>boolval</function></member>
     <member><function>floatval</function></member>
     <member><function>strval</function></member>
     <member><function>settype</function></member>

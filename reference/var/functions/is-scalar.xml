@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<!-- splitted from ./en/functions/var.xml, last change in rev 1.35 -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-scalar" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_scalar</refname>
@@ -19,8 +17,8 @@
    Belirtilen değişkenin değeri sayıl türlerden biri ise &true; döner.
   </para>
   <para>
-   Sayıl türler: <type>integer</type>, <type>float</type>, <type>string</type>
-   ve <type>boolean</type>. Sayıl olmayan türler: <type>array</type>,
+   Sayıl türler: <type>int</type>, <type>float</type>, <type>string</type>
+   ve <type>bool</type>. Sayıl olmayan türler: <type>array</type>,
    <type>object</type> ve <type>resource</type>.
   </para>
   <note>
@@ -29,6 +27,11 @@
     değerleri, tamsayılara dayalı soyut veri türleri olduklarından sayıl
     değerler olarak ele almaz. Bu gerçeklenim ayrıntısı bir kural olarak ele
     alınmamalıdır, ileride değişebilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    <function>is_scalar</function> NULL'u sayıl değer saymaz.
    </para>
   </note>
  </refsect1>
@@ -63,16 +66,14 @@
    <example>
     <title>- <function>is_scalar</function> örneği</title>
     <programlisting role="php">
-<!-- TODO: better example, this one can be quite misleading for unexperienced
-           programmers.  -->
 <![CDATA[
 <?php
 function show_var($var)
 {
     if (is_scalar($var)) {
-        echo $var;
+        echo $var, " sayıldır\n";
     } else {
-        var_dump($var);
+        var_dump($var); echo "sayıl değildir\n";
     }
 }
 $pi = 3.1416;
@@ -87,7 +88,7 @@ show_var($proteins)
     &example.outputs;
     <screen>
 <![CDATA[
-3.1416
+3.1416 sayıldır
 array(3) {
   [0]=>
   string(10) "hemoglobin"
@@ -96,6 +97,7 @@ array(3) {
   [2]=>
   string(10) "ferredoxin"
 }
+sayıl değildir
 ]]>
     </screen>
    </example>

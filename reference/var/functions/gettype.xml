@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.gettype" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>gettype</refname>
@@ -11,21 +10,12 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>gettype</methodname>
-   <methodparam><type>mixed</type><parameter>var</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen değişkenin türünü döndürür.
+   Belirtilen değişkenin türünü döndürür. Türü sınamak için
+   <literal>is_*</literal> işlevleri kullanılmalıdır.
   </para>
-  <warning>
-   <simpara>
-    İşlevin döndürdüğü dizge ileride değişebileceğinden işlevden dönen türü
-    asla belli bir türü sınamak için kullanmayın. Dizge karşılaştırması olarak
-    bu işlem ayrıca yavaştır.
-   </simpara>
-   <simpara>
-    Bu amaçla <literal>is_*</literal> işlevlerini kullanın.
-   </simpara>
-  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -36,7 +26,7 @@
      <term><parameter>değişken</parameter></term>
      <listitem>
       <para>
-       Sınanacak değişken.
+       Türüne bakılacak değişken.
       </para>
      </listitem>
     </varlistentry>
@@ -48,54 +38,39 @@
   &reftitle.returnvalues;
   <para>
    Olası dönüş değerleri:
-   <itemizedlist>
-    <listitem>
-     <simpara>
-      "<type>boolean</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>integer</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>double</type>" (tarihsel sebeplerle <type>float</type>
-      durumunda "double" döndürülür)
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>string</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>array</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>object</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>resource</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "<type>NULL</type>"
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      "unknown type"
-     </simpara>
-    </listitem>
-   </itemizedlist>
+   <simplelist>
+    <member>
+      <literal>"boolean"</literal>
+    </member>
+    <member>
+     <literal>"integer"</literal>
+    </member>
+    <member>
+     <literal>"double"</literal> (tarihsel sebeplerle <type>float</type>
+     durumunda "double" döndürülür)
+    </member>
+    <member>
+     <literal>"string"</literal>
+    </member>
+    <member>
+     <literal>"array"</literal>
+    </member>
+    <member>
+     <literal>"object"</literal>
+    </member>
+    <member>
+     <literal>"resource"</literal>
+    </member>
+    <member>
+     <literal>"resource (closed)"</literal> PHP 7.2.0 ve sonrası
+    </member>
+    <member>
+     <literal>"NULL"</literal>
+    </member>
+    <member>
+     <literal>"unknown type"</literal>
+    </member>
+   </simplelist>
   </para>
  </refsect1>
 
@@ -131,6 +106,32 @@ string
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        Kapalı özkaynaklar için artık <literal>'resource (closed)'</literal>
+        dönüyor. Evvelce bu durumda  <literal>'unknown type'</literal>
+        dönerdi.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
@@ -139,6 +140,7 @@ string
     <member><function>get_class</function></member>
     <member><function>is_array</function></member>
     <member><function>is_bool</function></member>
+    <member><function>is_callable</function></member>
     <member><function>is_float</function></member>
     <member><function>is_int</function></member>
     <member><function>is_null</function></member>

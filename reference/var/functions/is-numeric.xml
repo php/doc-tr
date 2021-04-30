@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 3c5e32fa72b84e56f3eb8abc8b091d869e9cf9ff Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d6cd01d707f065e852e9495061da6b923d7f3422 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-numeric" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_numeric</refname>
@@ -15,11 +14,8 @@
    <methodparam><type>mixed</type><parameter>değişken</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen değişkenin değeri bir sayı ise bu işlev &true; döndürür. Sayısal
-   dizgeler isteğe bağlı bir işaret, bir miktar rakam, isteğe bağlı bir
-   ondalık ve üstel kısımdan oluşur. Bu bakımdan <literal>+0123.45e6</literal>
-   geçerli bir sayısal değerdir. İşaretsiz, ondalık ve üstel kısımları olmadan
-   onaltılık (<literal>0xFF</literal>) gösterim de kabul edilir.
+   Belirtilen değişkenin değeri bir sayı mı yoksa bir <link
+   linkend="language.types.numeric-strings">sayısal dizge</link> mi diye bakar.
   </para>
  </refsect1>
 
@@ -42,7 +38,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen değişkenin değeri bir sayı veya sayısal bir dizge ise &true;
+   Belirtilen değişkenin değeri bir sayı veya <link
+   linkend="language.types.numeric-strings">sayısal dizge</link> ise &true;
    aksi takdirde &false; döndürür.
   </para>
  </refsect1>
@@ -58,18 +55,27 @@
 $tests = Array(
     "42",
     1337,
-    "1e4",
+    0x539,
+    02471,
+    0b10100111001,
+    1337e0,
+    "0x539",
+    "02471",
+    "0b10100111001",
+    "1337e0",
     "sayısal değil",
-    Array(),
-    9.1
-    );
+    array(),
+    9.1,
+    null,
+    '',
+);
 
 foreach($tests as $element)
 {
   if(is_numeric($element))  {
-      echo "'{$element}' sayısaldır", PHP_EOL;
+      echo var_export($element, true), " sayısaldır", PHP_EOL;
   } else {
-      echo "'{$element}' sayısal DEĞİLdir", PHP_EOL;
+      echo var_export($element, true), " sayısal DEĞİLdir", PHP_EOL;
   }
 }
 ?>
@@ -79,11 +85,21 @@ foreach($tests as $element)
     <screen>
 <![CDATA[
 '42' sayısaldır
-'1337' sayısaldır
-'1e4' sayısaldır
-'not numeric' sayısal DEĞİLdir
-'Array' sayısal DEĞİLdir
-'9.1' sayısaldır
+1337 sayısaldır
+1337 sayısaldır
+1337 sayısaldır
+1337 sayısaldır
+1337.0 sayısaldır
+'0x539' sayısal DEĞİLdir
+'02471' sayısaldır
+'0b10100111001' sayısal DEĞİLdir
+'1337e0' sayısaldır
+'sayısal değil' sayısal DEĞİLdir
+array (
+) sayısal DEĞİLdir
+9.1 sayısaldır
+NULL sayısal DEĞİLdir
+'' sayısal DEĞİLdir
 ]]>
     </screen>
    </example>
@@ -94,6 +110,8 @@ foreach($tests as $element)
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><link linkend="language.types.numeric-strings">Sayısal
+     dizgeler</link></member>
     <member><function>ctype_digit</function></member>
     <member><function>is_bool</function></member>
     <member><function>is_null</function></member>
