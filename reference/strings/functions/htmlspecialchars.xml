@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: e75b1e38828b88ae7fdcf6bb68c75f2dd8de7174 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.htmlspecialchars" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>htmlspecialchars</refname>
@@ -12,52 +11,63 @@
   <methodsynopsis>
    <type>string</type><methodname>htmlspecialchars</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>öncelem_türü</parameter><initializer>ENT_COMPAT</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>çifte_kodlama</parameter><initializer>true</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_COMPAT</constant></initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>çifte_kodlama</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bazı karakterler HTML'de özel anlama sahiptir ve anlamlarını korumaları
    için HTML öğesi olarak gösterilmesi gerekir. Bu işlev bu dönüşümleri
-   yapılmış olarak bir dizge döndürür. Her gün HTML programlayanlar için bu
-   dönüşümler çok yararlıdır. Eğer tüm HTML karakter öğelerinin dönüştürülmesi
-   gerekiyorsa <function>htmlentities</function> işlevini kullanın.
+   yapılmış olarak bir dizge döndürür. Eğer ilişkili isimli öğelere sahip tüm
+   girdi alt dizgelerinin dönüştürülmesi gerekiyorsa bu işlev yerine
+   <function>htmlentities</function> işlevi kullanılmalıdır.
   </para>
-  <simpara>
-   Bu işlev kullanıcı tarafından sağlanan metni HTML imleniminden arındırmak
-   için yararlıdır.
-  </simpara>
   <para>
-   Dönüşüm sırasında şunlar yapılır:
-   <itemizedlist>
-    <listitem>
-     <simpara>
-      '&amp;' (ve imi) '&amp;amp;' haline gelir.
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      '&quot;' (çift tırnak) <constant>ENT_NOQUOTES</constant> belirtilmişse
-      '&amp;quot;' haline gelir.
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      '&#039;' (tek tırnak) <constant>ENT_QUOTES</constant> belirtilmişse
-      '&amp;#039;' haline gelir.
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      '&lt;' (küçüktür) '&amp;lt;' haline gelir
-     </simpara>
-    </listitem>
-    <listitem>
-     <simpara>
-      '&gt;' (büyüktür) '&amp;gt;' haline gelir
-     </simpara>
-    </listitem>
-   </itemizedlist>
+   If the input string passed to this function and the final document share the
+   same character set, this function is sufficient to prepare input for
+   inclusion in most contexts of an HTML document. If, however, the input can
+   represent characters that are not coded in the final document character set
+   and you wish to retain those characters (as numeric or named entities),
+   both this function and <function>htmlentities</function> (which only encodes
+   substrings that have named entity equivalents) may be insufficient.
+   You may have to use <function>mb_encode_numericentity</function> instead.
+  </para>
+  <para>
+   <table>
+    <title>Uygulanan dönüşümler</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Karakter</entry>
+       <entry>Karakterin karşılığı</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>&amp;</literal> (ampersand)</entry>
+       <entry><literal>&amp;amp;</literal></entry>
+      </row>
+      <row>
+       <entry><literal>&quot;</literal> (çift tırnak)</entry>
+       <entry><constant>ENT_NOQUOTES</constant> belirtilmezse <literal>&amp;quot;</literal> atanır</entry>
+      </row>
+      <row>
+       <entry><literal>'</literal> (tek tırnak)</entry>
+       <entry>
+        <literal>&amp;#039;</literal> (<constant>ENT_HTML401</constant> için) veya sadece <constant>ENT_QUOTES</constant> belirtildiği durumda <literal>&amp;apos;</literal> (<constant>ENT_XML1</constant>, <constant>ENT_XHTML</constant> veya <constant>ENT_HTML5</constant> için)
+       </entry>
+      </row>
+      <row>
+       <entry><literal>&lt;</literal> (küçüktür)</entry>
+       <entry><literal>&amp;lt;</literal></entry>
+      </row>
+      <row>
+       <entry><literal>&gt;</literal> (büyüktür)</entry>
+       <entry><literal>&amp;gt;</literal></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
   </para>
  </refsect1>
 
@@ -74,32 +84,105 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>öncelem_türü</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Belirtilmesi isteğe bağlı olan bu değiştirgede tek ve çift tırnaklar
-       için işlevin nasıl işlem yapacağı belirtilir. Öntanımlı olan
-       <constant>ENT_COMPAT</constant> ile geriye uyumlu olarak sadece çift
-       tırnaklar dönüştürülür, tek tırnaklara dokunulmaz.
-       <constant>ENT_QUOTES</constant> belirtilmişse çift tırnaklara ilaveten
-       tek tırnaklar da dönüştürülür. <constant>ENT_NOQUOTES</constant>
-       belirtilirse ne tek ne de çift tırnaklar dönüştürülür.
+       Geçersiz kod dizilimlerinin, kullanılan belge türünün ve tırnakların nasıl ele alınacağını belirten aşağıdaki seçenekler bitsel VEYAlanarak
+       <parameter>seçenekler</parameter> değiştirgesinde belirtilebilir.
+       <literal>ENT_COMPAT | ENT_HTML401</literal> öntanımlıdır.
+       <table>
+        <title>Olası sabit <parameter>seçenekler</parameter>i</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Sabit İsmi</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><constant>ENT_COMPAT</constant></entry>
+           <entry>Sadece çift tırnaklar dönüştürülür, tek tırnaklara
+           dokunulmaz.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_QUOTES</constant></entry>
+           <entry>Çift tırnaklara ilaveten tek tırnaklar da dönüştürülür.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_NOQUOTES</constant></entry>
+           <entry>Ne tek ne de çift tırnaklar dönüştürülür.</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_IGNORE</constant></entry>
+           <entry>
+            Geçersiz kod dizilimlerinde boş dizge döndürülmeyip seesizce
+            yoksayma yoluna gidilir.
+            <link xlink:href="&url.delete.nonchars;">Güvenlikle ilgili
+            etkiler</link> olabileceğinden bu seçeneğin kullanımı
+            önerilmemektedir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_SUBSTITUTE</constant></entry>
+           <entry>
+            Geçersiz kod dizilimi için boş bir dizge döndürülmeyip dizilimin
+            yerine Unicode Değiştirme Karakteri (U+FFFD veya &amp;#FFFD;)
+            yerleştirilir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_DISALLOWED</constant></entry>
+           <entry>
+            Geçersiz kod dizilimini olduğu gibi bırakmak yerine Unicode
+            Değiştirme Karakteri (U+FFFD veya &amp;#FFFD;) ile değiştirilir.
+            Örneğin, XML belgelerin gömülü harici içerikle iyi biçimliliğini
+            sağlamak için bu seçenek kullanışlı olabilir.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>
+            Kod HTML 4.01 olarak ele alınır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>
+            Kod XML 1 olarak ele alınır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>
+            Kod XHTML olarak ele alınır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>
+            Kod HTML 5 olarak ele alınır.
+           </entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>karküm</parameter></term>
      <listitem>
-      <para>
-       Dönüşümde kullanılacak karakter kümesi. ISO-8859-1 öntanımlıdır.
-      </para>
+      &strings.parameter.encoding;
       <para>
        Bu işlevin amacı gereği, <literal>ISO-8859-1</literal>,
        <literal>ISO-8859-15</literal>, <literal>UTF-8</literal>,
        <literal>cp866</literal>, <literal>cp1251</literal>,
        <literal>cp1252</literal> ve <literal>KOI8-R</literal> karakter
-       kümeleri, aynı konumları işgal eden karakterler bakımından
-       eşdeğerdir.
+       kümeleri, aynı konumları işgal eden
+       (<function>htmlspecialchars</function> işlevinden etkilenen)
+       karakterler bakımından eşdeğerdir.
       </para>
       &reference.strings.charsets;
      </listitem>
@@ -122,36 +205,12 @@
   <para>
    Dönüştürülen dizge.
   </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
   <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.3</entry>
-       <entry>
-        <parameter>çifte_kodlama</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        <parameter>karküm</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+   Belirtilen <parameter>kodlama</parameter> altında belirtilen
+   <parameter>dizge</parameter> geçersiz bir kod dizilimi içeriyorsa,
+   <constant>ENT_IGNORE</constant> veya <constant>ENT_SUBSTITUTE</constant>
+   seçenekleri atanmadığı takdirde boş dizge döndürülür.
+   </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -177,6 +236,57 @@ echo $yenisi; // &lt;a href=&#039;dnm&#039;&gt;Deneme&lt;/a&gt;
    <para>
     Bu işlev yukarıda listelenenler dışında hiçbir şeyi dönüştürmez. Tam bir
     dönüşüm istiyorsanız <function>htmlentities</function> işlevine bakınız.
+   </para>
+  </note>
+  <note>
+   <para>
+    Tutarsız <parameter>seçenekler</parameter> durumunda,
+    şu kurallar uygulanır:
+   </para>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       <constant>ENT_COMPAT</constant>, <constant>ENT_QUOTES</constant>,
+       <constant>ENT_NOQUOTES</constant> seçeneklerinden hiçbiri mevcut
+       değilse, <constant>ENT_NOQUOTES</constant> öntanımlıdır.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>ENT_COMPAT</constant>, <constant>ENT_QUOTES</constant>,
+       <constant>ENT_NOQUOTES</constant> seçeneklerinden birden fazlası
+       mevcutsa, en yüksek önceliği <constant>ENT_QUOTES</constant> alır ve
+       bunu <constant>ENT_COMPAT</constant> takip eder.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>ENT_HTML401</constant>, <constant>ENT_HTML5</constant>,
+       <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant>
+       seçeneklerinden hiçbiri mevcut değilse <constant>ENT_HTML401</constant>
+       öntanımlıdır.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>ENT_HTML401</constant>, <constant>ENT_HTML5</constant>,
+       <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant>
+       seçeneklerinden birden fazlası mevcutsa, en yüksek önceliği
+       <constant>ENT_HTML5</constant> alır ve bunu
+       <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant> ve
+       <constant>ENT_HTML401</constant> takip eder.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>ENT_DISALLOWED</constant>, <constant>ENT_IGNORE</constant>,
+       <constant>ENT_SUBSTITUTE</constant>seçeneklerinden birden fazlası
+       mevcutsa, en yüksek önceliği <constant>ENT_IGNORE</constant> alır ve
+       bunu <constant>ENT_SUBSTITUTE</constant> takip eder.
+      </simpara>
+     </listitem>
+    </itemizedlist>
    </para>
   </note>
  </refsect1>

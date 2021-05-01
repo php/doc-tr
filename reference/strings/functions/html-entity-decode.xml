@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.html-entity-decode">
  <refnamediv>
   <refname>html_entity_decode</refname>
-  <refpurpose>Dönüştürülebilecek tüm HTML öğelerini karakter haline getirir
+  <refpurpose>HTML öğelerini karşılığı olan karakterlere dönüştürür
   </refpurpose>
  </refnamediv>
 
@@ -13,13 +12,22 @@
   <methodsynopsis>
    <type>string</type><methodname>html_entity_decode</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>öncelem_türü</parameter><initializer>ENT_COMPAT</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_COMPAT</constant></initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>html_entity_decode</function> işlevi
-   <function>htmlentities</function> işlevinin tersine bir karaktere
-   dönüşebilecek tüm HTML öğelerini dönüştürür.
+   <function>htmlentities</function> işlevinin tersine
+   <parameter>dizge</parameter> içinde karaktere dönüşebilecek tüm HTML
+   öğelerini dönüştürür.
+  </para>
+  <para>
+   Daha kesin olarak, bu işlev, a) seçilen belge türü için zorunlu olarak
+   geçerli olan tüm öğelerin (tüm sayısal öğeler dahil) kodunu çözer -
+   yani, XML için, bu işlev bir DTD'de tanımlanabilecek isimli öğelerin kodunu
+   çözmez ve b) seçilen kodlama ile ilişkili kodlanmış karakter kümesindeki ve
+   seçilen belge türünde izin verilen karakter öğelerinin kodunu çözer. Diğer
+   tüm öğeler olduğu gibi bırakılır.
   </para>
  </refsect1>
 
@@ -36,15 +44,15 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>öncelem_türü</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Seçimlik <parameter>öncelem_türü</parameter> değiştirgesi ile çift ve
+       Seçimlik <parameter>seçenekler</parameter> değiştirgesi ile çift ve
        tek tırnaklar için işlevin nasıl davranacağını belirleyebilirsiniz.
        <constant>ENT_COMPAT</constant> öntanımlı olmak üzere şu üç sabitten
        biri belirtilebilir:
        <table>
-        <title>Olası <parameter>öncelem_türü</parameter> sabitleri</title>
+        <title>Olası sabit <parameter>seçenekler</parameter>i</title>
         <tgroup cols="2">
          <thead>
           <row>
@@ -67,6 +75,30 @@
            <entry><constant>ENT_NOQUOTES</constant></entry>
            <entry>Ne tek ne de çift tırnaklar dönüştürülür.</entry>
           </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>
+            Kodu HTML 4.01 olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>
+           Kodu XML 1 olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>
+            Kodu XHTML olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>
+            Kodu HTML 5 olarak ele alır.
+           </entry>
+          </row>
          </tbody>
         </tgroup>
        </table>
@@ -74,12 +106,9 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>karküm</parameter></term>
+     <term><parameter>kodlama</parameter></term>
      <listitem>
-      <para>
-       Dönüşümde kullanılacak karakter kümesi. ISO-8859-1 öntanımlıdır.
-      </para>
-      &reference.strings.charsets;
+      &strings.parameter.encoding;
      </listitem>
     </varlistentry>
    </variablelist>
@@ -106,9 +135,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Çok baytlı karakter desteği eklendi.
+        <parameter>kodlama</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -134,24 +163,6 @@ $b = html_entity_decode($a);
 echo $a; // I'll &quot;walk&quot; the &lt;b&gt;dog&lt;/b&gt; now
 
 echo $b; // I'll "walk" the <b>dog</b> now
-
-
-// PHP 4.3.0 ve öncesi için bu şöyle yapılır:
-function unhtmlentities($string)
-{
-    // sayısal öğeleri yerleştirelim
-    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-    $string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
-    // sayıl öğeleri değiştirelim
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-    $trans_tbl = array_flip($trans_tbl);
-    return strtr($string, $trans_tbl);
-}
-
-$c = unhtmlentities($a);
-
-echo $c; // I'll "walk" the <b>dog</b> now
-
 ?>
 ]]>
     </programlisting>
@@ -165,7 +176,7 @@ echo $c; // I'll "walk" the <b>dog</b> now
    <para>
     trim(html_entity_decode('&amp;nbsp;')); ile dizgenin neden boş bir dizgeye
     dönüşmediğini merak ediyor olabilirsiniz. Bunun sebebi '&amp;nbsp;'
-    öğesinin ASCII kodunun 32 değil 160 olmasıdır.
+    öğesinin karakter kodunun 32 değil 160 olmasıdır.
    </para>
   </note>
  </refsect1>

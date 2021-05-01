@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.htmlspecialchars-decode">
  <refnamediv>
   <refname>htmlspecialchars_decode</refname>
@@ -12,7 +11,7 @@
   <methodsynopsis>
    <type>string</type><methodname>htmlspecialchars_decode</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>öncelem_türü</parameter><initializer>ENT_COMPAT</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_COMPAT</constant></initializer></methodparam>
   </methodsynopsis>
 
   <para>
@@ -41,12 +40,15 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>öncelem_türü</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Şu sabitlerden biri olabilir:
+       Kullanılan belge türünün ve tırnakların nasıl ele alınacağını
+       belirten aşağıdaki seçenekler bitsel VEYAlanarak
+       <parameter>seçenekler</parameter> değiştirgesinde belirtilebilir.
+       <literal>ENT_COMPAT | ENT_HTML401</literal> öntanımlıdır.
        <table>
-        <title><parameter>öncelem_türü</parameter> sabitleri</title>
+        <title>Sabit <parameter>seçenekler</parameter>i</title>
         <tgroup cols="2">
          <thead>
           <row>
@@ -67,6 +69,30 @@
           <row>
            <entry><constant>ENT_NOQUOTES</constant></entry>
            <entry>Ne tek ne de çift tırnaklar dönüştürülür</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>
+            Kodu HTML 4.01 olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>
+           Kodu XML 1 olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>
+            Kodu XHTML olarak ele alır.
+           </entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>
+            Kodu HTML 5 olarak ele alır.
+           </entry>
           </row>
          </tbody>
         </tgroup>
@@ -93,7 +119,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$str = '<p>Bu -&gt; &quot;</p>';
+$str = "<p>this -&gt; &quot;</p>\n";
 
 echo htmlspecialchars_decode($str);
 
