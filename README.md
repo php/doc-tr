@@ -214,6 +214,7 @@ Boolean         Mantıksal
 Built-in        Yerleşik
 Callback        Geriçağırım
 Class           Sınıf
+Unicode Code Point    Unicode Karakter Kodu
 Compile         Derleme
 Configuration   Yapılandırma
 Constants       Sabitler (Değişmezler değil!)

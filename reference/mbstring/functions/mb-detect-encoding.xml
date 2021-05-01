@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 02177b182ecd8ee5eb32dc4373c81b278de719d5 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 16a1bdfd1c36108534b5af08dc4b751c7ac0fdaf Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-detect-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_detect_encoding</refname>
@@ -16,7 +15,20 @@
    <methodparam choice="opt"><type>bool</type><parameter>katı</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizge</parameter> dizgesinin karakter kodlamasını algılar.
+   Sıralı adaylar listesinden <type>string</type> türündeki
+   <parameter>dizge</parameter> için en uygun karakter kodlamasını saptar.
+  </para>
+  <para>
+   Amaçlanan karakter kodlamasının otomatik tespiti hiçbir zaman tamamen
+   güvenilir olamaz; bazı ek bilgiler olmadan, şifrelenmiş bir dizenin
+   şifresini anahtarsız çözmeye benzer. Verilerle birlikte depolanan veya
+   iletilen karakter kodlamasının bir "Content-Type" HTTP başlığı gibi bir
+   göstergesinin kullanılması her zaman tercih edilir.
+  </para>
+  <para>
+   Bu işlev, tüm bayt dizilerinin geçerli bir dizge oluşturmadığı çok baytlı
+   kodlamalarda çok yararlıdır. Belirtilen dizge böyle bir dizi içeriyorsa, bu
+   kodlama reddedilecek ve sonraki kodlamaya bakılacaktır.
   </para>
  </refsect1>
 
@@ -36,14 +48,14 @@
      <term><parameter>kodlamalar</parameter></term>
      <listitem>
       <para>
-       <parameter>kodlamalar</parameter> ile karakter kodlama listesi
-       belirtilir. Algı sırası bir dizi veya virgül ayraçlı bir liste olarak
-       belirtilebilir.
+       <parameter>kodlamalar</parameter> ile denenecek karakter
+       kodlamalarının listesi belirtilir. Algı sırası bir dizeler dizisi veya
+       virgül ayraçlı bir liste olarak belirtilebilir.
       </para>
       <para>
        <parameter>kodlamalar</parameter> belirtilmezse veya &null; ise,
        <link linkend="ini.mbstring.detect-order">dahili algılama sırası</link>
-       kullanılır.
+       veya <function>mb_detect_order</function> işlevi kullanılır.
       </para>
      </listitem>
     </varlistentry>
@@ -51,8 +63,15 @@
      <term><parameter>katı</parameter></term>
      <listitem>
       <para>
-       <parameter>katı</parameter> ile katı kodlama algılamasının kullanılıp
-       kullanılmayacağı belirtilir. &false; öntanımlıdır.
+       <parameter>dizge</parameter> <parameter>kodlamalar</parameter> listesi
+       için geçersiz olduğunda izlenecek yolu belirler.
+       <parameter>katı</parameter> &false; ise en yakın eşleşen kodlama döner,
+       &true; belirtilmişse &false; döner.
+      </para>
+      <para>
+       <parameter>katı</parameter> için öntanımlı değer, <link
+       linkend="ini.mbstring.strict-detection">mbstring.strict_detection</link>
+       yapılandırma seçeneği ile atanabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -63,8 +82,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Karakter kodlaması belirtilen dizgeden saptanamıyorsa &false; yoksa saptanan
-   karakter kodlaması döner.
+   <parameter>dizge</parameter> <parameter>kodlamalar</parameter> listesi
+   için geçersiz ise &false;, yoksa algılanan karakter kodlaması döner.
   </para>
  </refsect1>
 
@@ -76,23 +95,100 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Karakter kodlamasını dahili algı sırasını kullanarak algılatalım */
+// Karakter kodlamasını dahili algı sırasını kullanarak algılatalım
 echo mb_detect_encoding($str);
 
-/* "auto" değeri mbstring.language ini değerine göre genişletilir */
+// "auto" değeri mbstring.language ini değerine göre genişletilir
 echo mb_detect_encoding($str, "auto");
 
-/* Kodlamaları virgül ayraçlı liste olarak belirtelim  */
+// Kodlamaları virgül ayraçlı liste olarak belirtelim
 echo mb_detect_encoding($str, "JIS, eucjp-win, sjis-win");
 
-/* Kodlamaları dizi olarak belirtelim  */
-$ary[] = "ASCII";
-$ary[] = "JIS";
-$ary[] = "EUC-JP";
-echo mb_detect_encoding($str, $ary);
+// Kodlamaları dizi olarak belirtelim
+$encodings = [
+  "ASCII",
+  "JIS",
+  "EUC-JP"
+];
+echo mb_detect_encoding($str, $encodings);
 ?>
 ]]>
     </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <parameter>katı</parameter> değiştirgesinin etkisi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+// 'áéóú' ISO-8859-1'de kodlandı
+$str = "\xE1\xE9\xF3\xFA";
+
+// Dizge ASCII veya UTF-8 için geçersiz, fakat UTF-8 daha iyi eşleşiyor
+var_dump(mb_detect_encoding($str, ['ASCII', 'UTF-8'], false));
+var_dump(mb_detect_encoding($str, ['ASCII', 'UTF-8'], true));
+
+// Geçersiz kodlama bulunursa, katı değiştirgesi sonucu değiştirmez
+var_dump(mb_detect_encoding($str, ['ASCII', 'UTF-8', 'ISO-8859-1'], false));
+var_dump(mb_detect_encoding($str, ['ASCII', 'UTF-8', 'ISO-8859-1'], true));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "UTF-8"
+bool(false)
+string(10) "ISO-8859-1"
+string(10) "ISO-8859-1"
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   Bazı durumlarda aynı bayt sırası çok sayıda karakter kodlamasında geçerli
+   bir dizge verebilir ve hangi yorumun amaçlandığını anlamak mümkündür.
+   Örneğin, "\xC4\xA2" bayt sırasını ele alalım:
+  </para>
+  <para>
+   <simplelist>
+    <member>
+     "Ä¢" (U+00C4 LATIN CAPITAL LETTER A WITH DIAERESIS ardından U+00A2 CENT SIGN)
+     ISO-8859-1, ISO-8859-15 veya Windows-1252'den herhangi birinde geçerli.
+    </member>
+    <member>
+     "ФЂ" (U+0424 CYRILLIC CAPITAL LETTER EF ardından U+0402 CYRILLIC CAPITAL LETTER
+     DJE) ISO-8859-5 için geçerli.
+    </member>
+    <member>
+     "Ģ" (U+0122 LATIN CAPITAL LETTER G WITH CEDILLA) UTF-8 için geçerli.
+    </member>
+   </simplelist>
+  </para>
+  <para>
+   <example>
+    <title>- Çok sayıda kodlama eşleştiğinde sıralamanın etkisi</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+$str = "\xC4\xA2";
+
+// Dizge üç kodlamada da geçerli, dolayısıyla listenin başındaki döner
+var_dump(mb_detect_encoding($str, ['UTF-8', 'ISO-8859-1', 'ISO-8859-5']));
+var_dump(mb_detect_encoding($str, ['ISO-8859-1', 'ISO-8859-5', 'UTF-8']));
+var_dump(mb_detect_encoding($str, ['ISO-8859-5', 'UTF-8', 'ISO-8859-1']));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "UTF-8"
+string(10) "ISO-8859-1"
+string(10) "ISO-8859-5"
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

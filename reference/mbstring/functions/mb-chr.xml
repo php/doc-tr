@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 92f1b8b177eb5730382abf9f27bae868f1bb636f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 220cd5030c881666de5315a8108f97579f7c6adb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-chr" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_chr</refname>
-  <refpurpose>Belirli bir karakteri döndürür</refpurpose>
+  <refpurpose>Unicode karakter koduna göre karakteri döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -14,11 +14,12 @@
    <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kodlama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-
+   Belirtilen karakter kodlamasına göre belirtilen karakter kodunun
+   Unicode karakterini döndürür.
   </para>
-
-  &warn.undocumented.func;
-
+  <para>
+   <function>mb_ord</function> işlevinin tersiniridir.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -28,7 +29,8 @@
     <term><parameter>karakter_kodu</parameter></term>
     <listitem>
      <para>
-
+      Unicode karakter kodu. Örn, "🐘" karakterini döndürmek için
+      <literal>128024</literal> belirtilmelidir.
      </para>
     </listitem>
    </varlistentry>
@@ -44,7 +46,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Karakter kodu belirtilen karakter,&return.falseforfailure;.
+   Başarı durumunda Unicode karakter kodu belirtilen karakterin belirtilen
+   karakter kodlamasındaki gösterimini,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -65,11 +68,44 @@
   </informaltable>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- &intl.codepoint.example;</title>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+$values = [65, 63, 0x20AC, 128024];
+foreach ($values as $value) {
+    var_dump(mb_chr($value, 'UTF-8'));
+    var_dump(mb_chr($value, 'ISO-8859-15'));
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+    <![CDATA[
+string(1) "A"
+string(1) "A"
+string(1) "?"
+string(1) "?"
+string(3) "€"
+string(1) "�"
+string(4) "🐘"
+bool(false)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>mb_internal_encoding</function></member>
     <member><function>mb_ord</function></member>
+    <member><function>IntlChar::ord</function></member>
     <member><function>chr</function></member>
    </simplelist>
   </para>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 02ba67b51f2bde571b6ce07026e935f4e81019af Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.gzwrite" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>gzwrite</refname>
@@ -9,10 +8,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>gzwrite</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>gzwrite</methodname>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>length</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>gzwrite</function> işleve belirtilen <parameter>dizge</parameter>
@@ -61,13 +60,45 @@
    </variablelist>
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>uzunluk</parameter>artık &null; olabiliyor;
+       evvelce <literal>0</literal> öntanımlıydı.
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Başarısızlık durumunda artık &false; dönüyor;
+       evvelce <literal>0</literal> dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Belirtilen sıkıştırılmış dosya akımına yazılan sıkıştırılmamış bayt sayısı
-   ile döner.
+   ile döner,&return.falseforfailure;.
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -86,6 +117,7 @@ gzclose($gz);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
