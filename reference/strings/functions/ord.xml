@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4d3d1ebea1eeecb7f76fb2fa8ecb55ef35d1d518 Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.ord">
  <refnamediv>
   <refname>ord</refname>
-  <refpurpose>Karakterin ASCII değerini döndürür</refpurpose>
+  <refpurpose>Dizgenin ilk baytını 0-255 arasında bir değere dönüştürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>ord</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter>karakter</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizge</parameter> dizgesinin ilk karakterinin ASCII değerini
-   döndürür.
+   <parameter>karakter</parameter> dizgesinin ilk baytının ikil değerini 0-255 arasında işaretsiz bir tamsayı olarak yorumlar.
+  </para>
+  <para>
+   Dizgenin kodlaması, ASCII, ISO-8859 veya Windows 1252 gibi tek baytlık bir
+   kodlama ise, bu, karakter kümesinin eşleme tablosundaki bir karakterin
+   konumunu döndürmeye eşdeğerdir. Ancak, bu işlevin herhangi bir dizge
+   kodlamasından haberdar olmadığını ve özellikle UTF-8 veya UTF-16 gibi çok
+   baytlı kodlamada bir Unicode karakter kodunu asla tanımlamayacağını unutmayın.
   </para>
   <para>
    Bu işlev <function>chr</function> işlevinin tersidir.
@@ -41,7 +46,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   ASCII değeri bir tamsayı olarak döndürür.
+   0-255 arasında bir tamsayı döndürür.
   </para>
  </refsect1>
 
@@ -61,6 +66,29 @@ if (ord($str) == 10) {
 ]]>
     </programlisting>
    </example>
+ </para>
+ <para>
+   <example>
+    <title>- Bir UTF-8 dizgenin baytlarının tek tek incelenmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = "🐘";
+for ( $pos=0; $pos < strlen($str); $pos ++ ) {
+ $byte = substr($str, $pos);
+ echo "$str karakterinde bayt $pos değeri: ". ord($byte) ."\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+🐘 karakterinde bayt 0 değeri: 240
+🐘 karakterinde bayt 1 değeri: 159
+🐘 karakterinde bayt 2 değeri: 144
+🐘 karakterinde bayt 3 değeri: 152
+    </screen>
+   </example>
   </para>
  </refsect1>
 
@@ -70,6 +98,8 @@ if (ord($str) == 10) {
    <simplelist>
     <member><function>chr</function></member>
     <member><link xlink:href="&url.asciitable;">ASCII tablosu</link></member>
+    <member><function>mb_ord</function></member>
+    <member><function>IntlChar::ord</function></member>
    </simplelist>
   </para>
  </refsect1>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.metaphone">
  <refnamediv>
   <refname>metaphone</refname>
@@ -12,7 +11,7 @@
   <methodsynopsis>
    <type>string</type><methodname>metaphone</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>sesler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>azami_ses_karakteri_sayısı</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinin metafon anahtarını hesaplar.
@@ -25,7 +24,7 @@
    uzunluktadır.
   </para>
   <para>
-   Metafon Lawrence Philips &lt;lphilips at verity dot com> tarafından
+   Metafon Lawrence Philips &lt;lphilips at verity dot com&gt; tarafından
    geliştirilmiş ve şu kitapta açıklanmıştır: ["Practical Algorithms for
    Programmers", Binstock &amp; Rex, Addison Wesley, 1995]
   </para>
@@ -44,9 +43,14 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sesler</parameter></term>
+     <term><parameter>azami_ses_karakteri_sayısı</parameter></term>
      <listitem>
       <para>
+       Bu değiştirge, döndürülen metafon anahtarını uzunluk olarak
+       azami_ses_karakteri_sayısı karakterle sınırlar. Bununla birlikte, ortaya
+       çıkan ses karakterleri her zaman tamamen kopyalanır, bu nedenle ortaya
+       çıkan dizi uzunluğu azami_ses_karakteri_sayısından biraz daha uzun
+       olabilir. Öntanımlı değer olan 0, kısıtlama olmadığı anlamına gelir.
       </para>
      </listitem>
     </varlistentry>
@@ -57,7 +61,97 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Metafonu bir dizge olarak döndürür.
+   Metafonu bir dizge olarak döndürür,&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Başarısızlık durumunda işlev artık &false; döndürüyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples"><!-- {{{ -->
+  &reftitle.examples;
+  <para>
+   <example xml:id="metaphone.example.basic"><!-- {{{ -->
+    <title>- <function>metaphone</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(metaphone('programming'));
+var_dump(metaphone('programmer'));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(7) "PRKRMNK"
+string(6) "PRKRMR"
+]]>
+    </screen>
+   </example><!-- }}} -->
+  </para>
+  <para>
+   <example xml:id="metaphone.example.phonemes"><!-- {{{ -->
+    <title>- <parameter>azami_ses_karakteri_sayısı</parameter> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(metaphone('programming', 5));
+var_dump(metaphone('programmer', 5));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "PRKRM"
+string(5) "PRKRM"
+]]>
+    </screen>
+   </example><!-- }}} -->
+  </para>
+  <para>
+   <example xml:id="metaphone.example.phonemes-overlong">
+    <title>- <parameter>azami_ses_karakteri_sayısı</parameter> kullanımı örneği</title>
+    <simpara>
+     Bu örnekte, <function>metaphone</function>'a beş karakterlik bir dizge
+     üretmesi öneriliyor, ancak bu, son ses karakterinin içerilmemesi demektir,
+     çünkü <literal>'x'</literal>, <literal>'KS'</literal> olarak yazılmalıdır,
+     bu nedenle işlev, altı karakterli bir dizge döndürür.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(metaphone('Asterix', 5));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(6) "ASTRKS"
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 

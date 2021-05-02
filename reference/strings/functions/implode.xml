@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3c969c420f1232ac0946c70d3d6bb90d7f4e9c31 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.implode">
  <refnamediv>
   <refname>implode</refname>
@@ -11,24 +10,24 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>implode</methodname>
-   <methodparam><type>string</type><parameter>yapıştırıcı</parameter></methodparam>
-   <methodparam><type>array</type><parameter>parçalar</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ayraç</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
   </methodsynopsis>
+  <simpara>İsimli değiştirgelerin desteklenmediği diğer sözdizimi:</simpara>
   <methodsynopsis>
    <type>string</type><methodname>implode</methodname>
-   <methodparam><type>array</type><parameter>parçalar</parameter></methodparam>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>Eski sözdizimi (PHP 7.4.0 ve sonrasında kullanımı önerilmiyor,
+   PHP 8.0.0'da kaldırıldı):</simpara>
+  <methodsynopsis>
+   <type>string</type><methodname>implode</methodname>
+   <methodparam><type>array</type><parameter>dizi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ayraç</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Dizi elemanlarını bir <parameter>yapıştırıcı</parameter> ile birleştirir.
+   Dizi elemanlarını bir <parameter>ayraç</parameter> ile birleştirir.
   </para>
-  <note>
-   <para>
-    <function>implode</function> işlevi geçmişle ilgili sorunlar yüzünden
-    değiştirgelerini herhangi bir sırada kabul edebilir.
-    <function>explode</function> ile uyumluluk adına değiştirgeler, bu belgede
-    belirtilen sırayla belirtilirse daha iyi olur.
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -36,16 +35,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>yapıştırıcı</parameter></term>
+     <term><parameter>ayraç</parameter></term>
      <listitem>
       <para>
-       Öntanımlı olarak boş bir dizgedir. Bu bakımdan işlevin bu değiştirge
-       belirtilmeden kullanılması tercih edilmez.
+       Öntanımlı olarak boş bir dizgedir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>parçalar</parameter></term>
+     <term><parameter>dizi</parameter></term>
      <listitem>
       <para>
        Dizge haline getirilecek dizi.
@@ -59,7 +57,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Her eleman arasına yapıştırıcı dizge yerleştirilmiş olarak dizi
+   Her eleman arasına <parameter>ayraç</parameter> yerleştirilmiş olarak dizi
    elemanlarını aynı sırada içeren bir dizge döner.
   </para>
  </refsect1>
@@ -77,9 +75,19 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>yapıştırıcı</parameter> değiştirgesi isteğe bağlı yapıldı.
+        <parameter>ayraç</parameter> değiştirgesinin
+        <parameter>dizi</parameter> değiştirgesinden sonra aktarılması artık
+        desteklenmiyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        <parameter>ayraç</parameter> değiştirgesinin
+        <parameter>dizi</parameter> değiştirgesinden sonra aktarılması artık
+        önerilmiyor.
        </entry>
       </row>
      </tbody>
@@ -98,9 +106,12 @@
 <?php
 
 $dizi = array('soyadı', 'eposta', 'telefon');
-$virgül_ayraçlı = implode(",", $array);
+$virgül_ayraçlı = implode(",", $dizi);
 
 echo $virgül_ayraçlı; // soyadı,eposta,telefon
+
+// Boş diziye boş dizge:
+var_dump(implode('hello', array())); // string(0) ""
 
 ?>
 ]]>
@@ -119,7 +130,8 @@ echo $virgül_ayraçlı; // soyadı,eposta,telefon
   <para>
    <simplelist>
     <member><function>explode</function></member>
-    <member><function>split</function></member>
+    <member><function>preg_split</function></member>
+    <member><function>http_build_query</function></member>
    </simplelist>
   </para>
  </refsect1>

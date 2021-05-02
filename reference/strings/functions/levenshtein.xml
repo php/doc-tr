@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2a7c919451f9a536431ba2117f8f90ae814c1c5f Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.levenshtein" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>levenshtein</refname>
@@ -11,37 +10,29 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>levenshtein</methodname>
-   <methodparam><type>string</type><parameter>d1</parameter></methodparam>
-   <methodparam><type>string</type><parameter>d2</parameter></methodparam>
-  </methodsynopsis>
-  <methodsynopsis>
-   <type>int</type><methodname>levenshtein</methodname>
-   <methodparam><type>string</type><parameter>d1</parameter></methodparam>
-   <methodparam><type>string</type><parameter>d2</parameter></methodparam>
-   <methodparam><type>int</type><parameter>yerleştirme_bedeli</parameter></methodparam>
-   <methodparam><type>int</type><parameter>değiştirme_bedeli</parameter></methodparam>
-   <methodparam><type>int</type><parameter>silme_bedeli</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge1</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge2</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>yerleştirme_bedeli</parameter><initializer>1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>değiştirme_bedeli</parameter><initializer>1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>silme_bedeli</parameter><initializer>1</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Levenştayn mesafesi, <parameter>d1</parameter> dizgesini
-   <parameter>d2</parameter>'ye dönüştürmek için silinecek, yerleştirilecek
+   Levenştayn mesafesi, <parameter>dizge1</parameter> dizgesini
+   <parameter>dizge2</parameter>'ye dönüştürmek için silinecek, yerleştirilecek
    veya değiştirilecek karakterlerin asgarisini tanımlar. Algoritmanın
    hesaplama karmaşıklığı, <literal>n</literal> ve <literal>m</literal>,
-   <parameter>d1</parameter> ve <parameter>d2</parameter>'nin uzunluğu olmak
-   üzere <literal>O(m*n)</literal>'dir (Hesaplama karmaşıklığı O(max(n,m)**3)
-   olan <function>similar_text</function> işlevine göre daha iyi olsa da hala
-   pahalıdır).
+   <parameter>dizge1</parameter> ve <parameter>dizge2</parameter>'nin uzunluğu
+   olmak üzere <literal>O(m*n)</literal>'dir (Hesaplama karmaşıklığı
+   <literal>O(max(n,m)**3)</literal> olan <function>similar_text</function>
+   işlevine göre daha iyi olsa da hala pahalıdır).
   </para>
   <para>
-   İşlevin en basit kullanımında, işlev sadece iki değiştirge alır ve
-   <parameter>d1</parameter> dizgesini <parameter>d2</parameter>'ye
-   dönüştürmek için silinecek, yerleştirilecek veya değiştirilecek
-   karakterlerin sayısını hesaplar.
-  </para>
-  <para>
-   İşlevin diğer bir kullanım türünde, işlev, yerleştirme, değiştirme ve silme
-   işlemlerinin maliyetini tanımlayan üç değiştirge daha alır. Bu daha genel
-   ve daha uyarlanabilir bir kullanım olsa da o kadar verimli değildir.
+   <parameter>yerleştirme_bedeli</parameter>,
+   <parameter>değiştirme_bedeli</parameter> ve/veya
+   <parameter>silme_bedeli</parameter> için <literal>1</literal> atanmışsa,
+   algoritma en ucuz dönüşümü seçmeye uyarlanır. Örneğin,
+   <code>$yerleştirme_bedeli + $silme_bedeli &lt; değiştirme_bedeli</code> ise,
+   hiçbir değiştirme yapılmaz, ama yerleştirme ve silme yapılır.
   </para>
  </refsect1>
 
@@ -50,7 +41,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>d1</parameter></term>
+     <term><parameter>dizge1</parameter></term>
      <listitem>
       <para>
        Levenştayn mesafesi değerlendirilecek dizgelerden biri.
@@ -58,7 +49,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d2</parameter></term>
+     <term><parameter>dizge2</parameter></term>
      <listitem>
       <para>
        Levenştayn mesafesi değerlendirilecek dizgelerden biri.
@@ -99,6 +90,29 @@
    Belirtilen diziler 255 karakterlik üst sınırdan uzunsa -1 değilse
    Levenştayn mesafesi döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu sürümden önce, <function>levenshtein</function>
+       iki ya da beş değiştirge ile çağrılabiliyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

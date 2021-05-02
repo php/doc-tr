@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.nl2br">
  <refnamediv>
   <refname>nl2br</refname>
@@ -12,13 +11,14 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>nl2br</methodname>
-   <methodparam><type>string</type><parameter>string</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>xhtml</parameter><initializer>true</initializer></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>xhtml</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> içindeki bütün satırsonu karakterlerinin
-   yerlerine '&lt;br /&gt;' veya '&lt;br&gt;' yerleştirilerek elde edilen
-   dizgeyi döndürür.
+   (<literal>\r\n</literal>, <literal>\n\r</literal>, <literal>\n</literal> ve
+   <literal>\r</literal>) yerlerine <code>&lt;br /&gt;</code> veya
+   <code>&lt;br&gt;</code> yerleştirilerek elde edilen dizgeyi döndürür.
   </para>
  </refsect1>
 
@@ -38,8 +38,7 @@
      <term><parameter>xhtml</parameter></term>
      <listitem>
       <para>
-       XHTML uyumlu etiket kullanılıp kullanılmayacağını belirler (&true;
-       öntanımlıdır).
+       XHTML uyumlu etiket kullanılıp kullanılmayacağını belirler.
       </para>
      </listitem>
     </varlistentry>
@@ -91,38 +90,27 @@ Bu bir HTML belgedir
 ]]>
     </screen>
    </example>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-         Seçimlik <parameter>xhtml</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.5</entry>
-       <entry>
-        <function>nl2br</function> XHTML uyumlu oldu. Eski sürümlerde dizge
-        '&lt;br /&gt;' yerine '&lt;br&gt;' kullanılarak döndürülürdü.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+   <example>
+    <title>- Çeşitli satırsonu ayraçları</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$string = "This\r\nis\n\ra\nstring\r";
+echo nl2br($string);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+This<br />
+is<br />
+a<br />
+string<br />
+]]>
+    </screen>
+   </example>
+</para>
  </refsect1>
 
  <refsect1 role="seealso">

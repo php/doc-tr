@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2a7c919451f9a536431ba2117f8f90ae814c1c5f Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.number-format" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>number_format</refname>
@@ -12,33 +11,15 @@
   <methodsynopsis>
    <type>string</type><methodname>number_format</methodname>
    <methodparam><type>float</type><parameter>sayı</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ondalık_hane</parameter></methodparam>
-  </methodsynopsis>
-  <methodsynopsis>
-   <type>string</type><methodname>number_format</methodname>
-   <methodparam><type>float</type><parameter>sayı</parameter></methodparam>
-   <methodparam><type>int</type><parameter>ondalık_hane</parameter></methodparam>
-   <methodparam><type>string</type><parameter>ondalık_ayracı</parameter></methodparam>
-   <methodparam><type>string</type><parameter>binlik_ayracı</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>ondalık_hane</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>ondalık_ayracı</parameter><initializer>"."</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>binlik_ayracı</parameter><initializer>","</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bu işlev bir, iki ve dört değiştirge kabul eder (üç değil):
-  </para>
-  <para>
-   Tek bir değiştirge belirtilmişse <parameter>sayı</parameter>, ondalık kısmı
-   olmaksızın, binlik bölümler arasına virgül (",") konarak çıktılanır.
-  </para>
-  <para>
-   İki değiştirge belirtilmişse <parameter>sayı</parameter>, ondalık kısmı
-   <parameter>ondalık_hane</parameter> sayıda hane içerecek şekilde ondalık
-   ayraç olarak nokta ("."), binlik ayraç olarak virgül (",") kullanılarak
-   çıktılanır.
-  </para>
-  <para>
-   Dört değiştirgenin tamamı kulanılmışsa <parameter>sayı</parameter>, ondalık
-   kısmı <parameter>ondalık_hane</parameter> sayıda hane içerecek şekilde
-   ondalık ayraç olarak <parameter>ondalık_ayracı</parameter>, binlik ayraç
-   olarak <parameter>binlik_ayracı</parameter> kullanılarak çıktılanır.
+   <parameter>sayı</parameter>, ondalık kısmı <parameter>ondalık_hane</parameter>
+   sayıda hane içerecek şekilde, ondalık ayraç olarak
+   <parameter>ondalık_ayracı</parameter>, binlik ayraç olarak
+   <parameter>binlik_ayracı</parameter> kullanılarak çıktılanır.
   </para>
  </refsect1>
 
@@ -58,7 +39,7 @@
      <term><parameter>ondalık_hane</parameter></term>
      <listitem>
       <para>
-       Ondalık hanelerin sayısı.
+       Ondalık hanelerin sayısı. <literal>0</literal> ise dönen dizgede <parameter>ondalık_ayracı</parameter> bulunmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -76,12 +57,6 @@
       <para>
        Binlik ayracı.
       </para>
-      <para>
-       <parameter>binlik_ayracı</parameter> dizgesinin sadece ilk karakteri
-       kullanılır. Örneğin, değer olarak <literal>bar</literal> belirtilmişse
-       <literal>1000</literal> sayısı <literal>1b000</literal> olarak
-       biçemlenir.
-      </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -95,6 +70,40 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        Bu sürümden önce, <function>number_format</function> bir, iki veya dört
+        (üç değil) değiştirge kabul ediyordu.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <function>number_format</function> artık <literal>-0</literal>
+        döndüremiyor, evvelce <parameter>sayı</parameter> olarak
+        <literal>-0.01</literal> benzerlerinin belirtildiği durumlarda
+        <literal>-0</literal> dönebiliyordu.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -102,7 +111,7 @@
     <title>- <function>number_format</function> örneği</title>
     <para>
      Türkçede sayıları gösterirken genellikle iki ondalık hane, ondalık ayracı
-     olarak virgül (','), binlik ayracı olarak nokta ('.')kullanırız.
+     olarak virgül (','), binlik ayracı olarak nokta ('.') kullanırız.
     </para>
     <programlisting role="php">
 <![CDATA[

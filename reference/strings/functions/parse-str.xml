@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4a7ddddc27271967b616ad3400cfbe2a9b48212b Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-str">
  <refnamediv>
   <refname>parse_str</refname>
@@ -12,28 +11,13 @@
   <methodsynopsis>
    <type>void</type><methodname>parse_str</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter role="reference">dizi</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">sonuç</parameter></methodparam>
   </methodsynopsis>
   <para>
    Bir URL üzerinden aktarılan bir sorgu <parameter>dizge</parameter>sindeki
-   değişkenleri çözümler ve bunları geçerli etki alanında tanımlı hale getirir.
+   değişkenleri çözümler ve bunları geçerli etki alanında (veya
+   <parameter>sonuç</parameter> belirtilmişse dizi içinde) tanımlı hale getirir.
   </para>
-  <note>
-   <para>
-    Geçerli <literal>QUERY_STRING</literal> dizgesini almak için
-    <varname>$_SERVER['QUERY_STRING']</varname> değişkenini kullanabilirsiniz.
-    Ayrıca, <link linkend="language.variables.external">Dış Kaynaklı
-    Değişkenler</link> bölümünü de okumanızda fayda var.
-   </para>
-  </note>
-  <note>
-   <para>
-    <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> ayarı bu
-    işlevin çıktısını etkiler: <function>parse_str</function>işlevi
-    <varname>$_GET</varname>, <varname>$_POST</varname> gibi değişkenler için
-    PHP'nin kullandığı mekanizmayı kullanır.
-   </para>
-  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -49,12 +33,19 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizi</parameter></term>
+     <term><parameter>sonuç</parameter></term>
      <listitem>
       <para>
        Seçimlik olan bu değiştirge kullanılmışsa değişkenler etki alanında
        tanımlanmak yerine bu dizinin elemanlarına yerleştirilir.
       </para>
+      <warning>
+       <para>
+        PHP 7.2 ve sonrasında bu işlevin <parameter>sonuç</parameter>
+        değiştirgesi olmaksızın kullanımı <emphasis>ÖNERİLMEMEKTE</emphasis>
+        olup bundan <emphasis>VAZGEÇİLMELİ</emphasis>dir.
+       </para>
+      </warning>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -81,9 +72,10 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.0.3</entry>
+       <entry>7.2.o</entry>
        <entry>
-        <parameter>dizi</parameter> değiştirgesi eklendi.
+        İşlevin <parameter>sonuç</parameter> değiştirgesi olmaksızın kullanımı
+        artık bir <constant>E_DEPRECATED</constant> uyarısı çıktılıyor.
        </entry>
       </row>
      </tbody>
@@ -102,15 +94,38 @@
 <?php
 $str = "first=value&arr[]=foo+bar&arr[]=baz";
 parse_str($str);
-echo $first;  // value
-echo $arr[0]; // foo bar
-echo $arr[1]; // baz
 
+// Önerilir
 parse_str($str, $output);
 echo $output['first'];  // value
 echo $output['arr'][0]; // foo bar
 echo $output['arr'][1]; // baz
 
+// KULLANILMAMALI
+parse_str($str);
+echo $first;  // value
+echo $arr[0]; // foo bar
+echo $arr[1]; // baz
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   PHP'deki değişken isimlerinde nokta ve boşluk olmadığından, bunlar alt
+   çizgilere dönüştürülür. Bu işlevin <parameter>sonuç</parameter> değiştirgesi
+   ile kullanılması durumunda ilgili anahtar isimleri için de aynı şey uygulanır.
+   <example>
+    <title>- <function>parse_str</function> ve isim uyarlama</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+parse_str("My Value=Something");
+echo $My_Value; // Something
+
+parse_str("My Value=Something", $output);
+echo $output['My_Value']; // Something
 ?>
 ]]>
     </programlisting>
@@ -118,17 +133,34 @@ echo $output['arr'][1]; // baz
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Geçerli <literal>QUERY_STRING</literal> dizgesini almak için
+    <varname>$_SERVER['QUERY_STRING']</varname> değişkeni kullanılabilir.
+    Ayrıca, <link linkend="language.variables.external">Dış Kaynaklı
+    Değişkenler</link> bölümünü de okumakta fayda var.
+   </para>
+  </note>
+  <note>
+   <para>
+    <link linkend="ini.magic-quotes-gpc">magic_quotes_gpc</link> ayarı bu
+    işlevin çıktısını etkiler: <function>parse_str</function>işlevi
+    <varname>$_GET</varname>, <varname>$_POST</varname> gibi değişkenler için
+    PHP'nin kullandığı mekanizmayı kullanır.
+   </para>
+  </note>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>parse_url</function></member>
-    <member><function>pathinfo</function></member>
-    <member><function>http_build_query</function></member>
-    <member><function>get_magic_quotes_gpc</function></member>
-    <member><function>urldecode</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>parse_url</function></member>
+   <member><function>pathinfo</function></member>
+   <member><function>http_build_query</function></member>
+   <member><function>urldecode</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>
