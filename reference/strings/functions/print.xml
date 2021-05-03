@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7a3899eea90f3df8dcfe8fd350900162f3490bed Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.print">
  <refnamediv>
   <refname>print</refname>
@@ -11,14 +10,19 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>print</methodname>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ifade</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizge</parameter> dizgesini çıktılar.
+   <parameter>ifade</parameter>yi çıktılar.
   </para>
   <para>
    <function>print</function> aslında bir işlev değildir (bir dil oluşumudur),
    dolayısıyla değiştirgesini belirtirken yaylı ayraçları kullanmanız gerekmez.
+  </para>
+  <para>
+   <function>echo</function>'dan başlıca farklar,
+   <literal>print</literal>'in tek bir değiştirge kabul etmesi ve daima
+   <literal>1</literal> döndürmesidir.
   </para>
  </refsect1>
 
@@ -27,10 +31,13 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>ifade</parameter></term>
      <listitem>
       <para>
-       Girdi dizgesi.
+       Çıktılanacak ifade. Dizge olmayan değerler <link
+       linkend="language.types.declarations.strict"
+        ><literal>strict_types</literal> yönergesi</link> etkin olsa bile
+       dizgeye zorlanır.
       </para>
      </listitem>
     </varlistentry>
@@ -49,13 +56,16 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>print</function> örnekleri</title>
+    <title>- <literal>print</literal> örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-print("Hello World");
+print "print yaylı ayraçlar olmadan da çalışır.";
 
-print "print() yaylı ayraçlar olmadan da çalışır.";
+// Satırsonu veya boşluk eklemek gerekmez;
+// aşağıdaki tek satırda "helloworld" çıktılar.
++print "hello";
++print "world";
 
 print "Bu çok satırlı bir
 dizge olup satırsonu karakterleri
@@ -65,9 +75,8 @@ print "Bu çok satırlı bir\ndizge olup satırsonu karakterleri\nde çıktılan
 
 print "Karakterlerin öncelenmesi böyle yapılır: \"Tıpkı böyle\".";
 
-// print deyiminde değişkenleri de kullanabilirsiniz
+// Değiştirge dizge üreten harhangi bir ifade olabilir
 $bu = "Bu da";
-
 print "$bu Buda"; // Bu da Buda
 
 // Ayrıca dizileri de kullanabilirsiniz
@@ -75,19 +84,23 @@ $bar = array("değer" => "Buda");
 
 print "Bu da {$bar['değer']} !"; //  Bu da Buda !
 
+// declare(strict_types=1) olsa bile dizge olmayan iadeler dizgeye zorlanır
+print 6 * 7; // 42
+
 // Tek tırnak içine alırsanız değişken basılır, değeri değil
 print '$bu Buda'; // $bu Buda
 
 // Başka karakter kullanmazsanız sadece değişkenin değeri basılır
 print $bu;          // Bu da
 
-print <<<END
-Burada "yorumlu metin" (heredoc) sözdizimi kullanılmış
-olup bu dizgenin içindeki her $değişken yorumlanır.
-Yorumlu metin sonlandırıcısı son satırda yer almalı ve
-ardındaki noktalı virgül dışında etrafında hiçbir karakter
-(boşluklar dahil) bulunmamalıdır!
-END;
+// print değer döndürdüğünden ifadelerde kullanılabilir
+// Çıktısı: "hello world"
+if ( print "hello" ) {
+    echo " world";
+}
+
+// Çıktısı: "true"
+( 1 === 1 ) ? print 'true' : print 'false';
 ?>
 ]]>
     </programlisting>
@@ -97,6 +110,82 @@ END;
 
  <refsect1 role="notes">
   &reftitle.notes;
+  <note>
+   <title>Yaylı ayraçların kullanımı</title>
+   <para>
+    <literal>print</literal> deyiminin değiştirgesini yaylı ayraçlar arasına
+    almak bir sözdizimi hatasına yol açmaz ve normal bir işlev çağrısı gibi
+    görünen bir sözdizimi de üretmez. Ancak bu yanlış anlaşılabilir, çünkü yaylı
+    ayraçlar aslında çıktılanacak ifadenin parçasıdır, <literal>print</literal>
+    deyimim parçası değildir.
+   </para>
+   <para>
+    <example>
+     <title/>
+     <programlisting role="php">
+<![CDATA[
+<?php
+print "hello";
+// "hello" basar
+
+print("hello");
+// bu da "hello" basar, çünkü ("hello") geçerli bir ifadedir
+
+print(1 + 2) * 3;
+// "9" basar; yaylı ayraçlar sayesinde 1+2 önce yorumlanır, sonra da 3*3
+// print deyimi ifadenin tümünü tek bir değiştirge olarak görür
+
+if ( print("hello") && false ) {
+    print " - inside if";
+}
+else {
+    print " - inside else";
+}
+// " - inside if" basar
+// ("hello") && false ifadesi önce yorumlanır ve false ile sonuçlanır
+// bu boş dizgeye zorlanır "" ve çıktılanır
+// print deyimi 1 döndürür, böylece if bloğundaki kod çalıştırılır
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    <literal>print</literal> büyük bir ifade ile kullanılırken, anahtar sözcüğü
+    ve değiştirgesini yaylı ayraçlar arasına almak istenen sonucu üretmek için
+    gerekli olabilir:
+   </para>
+
+   <para>
+    <example>
+     <title/>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if ( (print "hello") && false ) {
+    print " - inside if";
+}
+else {
+    print " - inside else";
+}
+// "hello - inside else" basar
+// önceki örneğin tersine (print "hello") ifadesi önce yorumlanır
+// "hello" bastıktan sonra 1 döndürür
+// 1 && false ifadesinin sonucu false olduğundan else bloğundaki kod çalıştırılır
+
+print "hello " && print "world";
+// "world1" basar; önce print "world" yorumanır,
+// sonra soldaki print'e "hello " && 1 aktarılır
+
+(print "hello ") && (print "world");
+// "hello world" basar; ayraçlar print ifadelerinin
+// &&'den önce yorumlanmasını sağlar
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
   &note.language-construct;
  </refsect1>
 
@@ -107,8 +196,8 @@ END;
     <member><function>echo</function></member>
     <member><function>printf</function></member>
     <member><function>flush</function></member>
-    <member><link linkend="language.types.string.syntax.heredoc">Yorumlu
-    metinler</link></member>
+    <member><link linkend="language.types.string">Sayıl dizgeleri belirtme
+      yolları</link></member>
    </simplelist>
   </para>
  </refsect1>
