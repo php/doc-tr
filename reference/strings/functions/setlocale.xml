@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2a7c919451f9a536431ba2117f8f90ae814c1c5f Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.setlocale">
  <refnamediv>
   <refname>setlocale</refname>
@@ -10,19 +9,32 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>setlocale</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>setlocale</methodname>
    <methodparam><type>int</type><parameter>sınıf</parameter></methodparam>
-   <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>...</parameter></methodparam>
-  </methodsynopsis>
+   <methodparam><type>string</type><parameter>yereller</parameter></methodparam>
+   <methodparam rep="repeat"><type>string</type><parameter>kalan</parameter></methodparam>
+   </methodsynopsis>
+  <simpara>İsimli değiştirgeleri desteklemeyen sözdizimi:</simpara>
   <methodsynopsis>
-   <type>string</type><methodname>setlocale</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>setlocale</methodname>
    <methodparam><type>int</type><parameter>sınıf</parameter></methodparam>
-   <methodparam><type>array</type><parameter>yerel</parameter></methodparam>
+   <methodparam><type>array</type><parameter>yerel_dizisi</parameter></methodparam>
   </methodsynopsis>
   <para>
    Yerel bilgisini ayarlar.
   </para>
+  <warning>
+   <para>
+    Evre başına değil süreç başına yerel bilgisi ayarlanır. Çok evreli bir
+    sunucu çalıştırıyorsanız, betiğinizde <function>setlocale</function>
+    işlevini hiç çağırmadığınız halde yerel ayarlarında ani değişiklikler
+    olduğunu gözlemlemişsinizdir. Bunun sebebi aynı anda aynı süreç altında
+    başka evrelerde başka betiklerin çalışması ve  bunların süreç genelinde
+    geçerli olan <function>setlocale</function> kullanımlarıdır. Windows
+    üzerinde PHP 5.6.20 ve PHP 7.0.5 itibariyle yerel bilgisi evre başına
+    sağlanmaktadır.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -83,22 +95,22 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>yerel</parameter></term>
+     <term><parameter>yereller</parameter></term>
      <listitem>
       <para>
-       Eğer &null; belirtilirse veya <literal>""</literal> şeklinde boş bir
+       Eğer<literal>""</literal> şeklinde boş bir
        dizge belirtilmişse, yerel isimleri yukarıdaki sınıflarla aynı isimdeki
        ortam değişkenlerinden veya "<constant>LANG</constant>" ortam
        değişkeninden alınır.
       </para>
       <para>
-       Eğer <parameter>yerel</parameter> <literal>"0"</literal> ise,
+       Eğer <parameter>yereller</parameter> <literal>"0"</literal> ise,
        yerel ayarı değiştirilmeden mevcut ayar döndürülür.
       </para>
       <para>
-       Eğer <parameter>yerel</parameter> bir dizi ise veya ek değiştirgeler
+       Eğer <parameter>yereller</parameter> için birden fazla değiştirge
        belirtilmişse, yeni yerel başarıyla ayarlanana kadar belirtilen her
-       dizi elemanı veya her değiştirge tek tek denenir. Yerel isimlerinin
+       değiştirge tek tek denenir. Yerel isimlerinin
        farklı sistemlerde farklı isimlerde bulunması durumunda veya
        kullanılabilir yerelin bulunamaması olasılığına karşı son çareleri
        belirtmek için kullanılır.
@@ -106,13 +118,25 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>...</parameter></term>
+     <term><parameter>kalan</parameter></term>
      <listitem>
       <para>
-       Yerel ayarları başarılı olana kadar denenecek seçimlik dizi veya dizge.
+       Yerel ayarları başarılı olana kadar denenecek seçimlik dizge
+       değiştirgeler.
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>yerel_dizisi</parameter></term>
+      <listitem>
+       <para>
+        Yeni yerel başarıyla ayarlanana kadar belirtilen her dizi elemanı
+        tek tek denenir. Yerel isimlerinin farklı sistemlerde farklı isimlerde
+        bulunması durumunda veya kullanılabilir yerelin bulunamaması olasılığına
+        karşı son çareleri belirtmek için kullanılır.
+       </para>
+      </listitem>
+     </varlistentry>
    </variablelist>
    <note><para>
     Windows'ta, setlocale(LC_ALL, '') kullanımında,  sistemin bölgesel
@@ -143,47 +167,6 @@
   </note>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.3.0</entry>
-       <entry>
-        <parameter>sınıf</parameter> değiştirgesinde <literal>LC_*</literal>
-        sabitlerinden biri yerine bir dizge aktarılırsa işlev artık bir
-        <constant>E_DEPRECATED</constant> uyarısı çıktılamaktadır.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        Çok sayıda yerel belirtilebilir oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <parameter>sınıf</parameter> olarak bir dizge aktarılması artık
-        önerilmiyor. Dizge değil yukarıdaki sabitlerin kullanılması gerekiyor.
-        Bu sabitlerin bir dizge olarak (tırnak içinde) belirtilmesi artık bir
-        uyarıya sebep olmaktadır.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -192,13 +175,13 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Yereli Türkçe yapalım */
+// Yereli Türkçe yapalım
 setlocale(LC_ALL, 'tr_TR.UTF-8');
 
-/* Çıktısı: 22 Aralık 1978 Cuma */
+// Çıktısı: 22 Aralık 1978 Cuma
 echo strftime("%e %B %Y %A\n", mktime(0, 0, 0, 12, 22, 1978));
 
-/* Türkçe için farklı yerel isimleri deneyelim (PHP 4.3.0 ve sonrası) */
+// Türkçe için farklı yerel isimleri deneyelim
 $loc_tr = setlocale(LC_ALL, 'tr_TR.UTF-8', 'tr_TR', 'tr', 'turkish');
 echo "Türkçe için tercih edilen yerel ismi: '$loc_tr\n'";
 ?>
@@ -212,13 +195,13 @@ echo "Türkçe için tercih edilen yerel ismi: '$loc_tr\n'";
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Yereli Felemenkçe yapalım */
+// Yereli Felemenkçe yapalım
 setlocale(LC_ALL, 'nld_nld');
 
-/* Çıktısı: vrijdag 22 december 1978 */
+// Çıktısı: vrijdag 22 december 1978
 echo strftime("%A %d %B %Y", mktime(0, 0, 0, 12, 22, 1978));
 
-/* Almanca için farklı yerel isimleri deneyelim (PHP 4.3.0 ve sonrası) */
+// Almanca için farklı yerel isimleri deneyelim
 $loc_de = setlocale(LC_ALL, 'de_DE@euro', 'de_DE', 'deu_deu');
 echo "Almanca için tercih edilen yerel ismi: '$loc_de'";
 ?>
@@ -230,21 +213,10 @@ echo "Almanca için tercih edilen yerel ismi: '$loc_de'";
 
  <refsect1 role="notes">
   &reftitle.notes;
-  <warning>
-   <para>
-    Evre başına değil süreç başına yerel bilgisi ayarlanır. Windows üzerinde
-    Apache veya IIS gibi çok evreli bir sunucu çalıştırıyorsanız, betiğinizde
-    <function>setlocale</function> işlevini hiç çağırmadığınız halde yerel
-    ayarlarında ani değişiklikler olduğunu gözlemlemişsinizdir. Bunun sebebi
-    aynı anda aynı süreç altında başka evrelerde başka betiklerin çalışması ve
-    bunların süreç genelinde geçerli olan <function>setlocale</function>
-    kullanımlarıdır.
-   </para>
-  </warning>
   <tip>
    <para>
     Windows kullanıcıları Microsoft'un <acronym>MSDN</acronym> sitesinde
-    <parameter>yerel</parameter> dizgeleri hakkında bilgi bulabilirler.
+    <parameter>yereller</parameter> dizgeleri hakkında bilgi bulabilirler.
     Desteklenen dil dizgeleri <link xlink:href="&url.setlocale.lang.win32;">
     &url.setlocale.lang.win32;</link> adresinde desteklenen ülke/bölge
     dizgeleri ise <link xlink:href="&url.setlocale.country.win32;">

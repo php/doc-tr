@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.similar-text">
  <refnamediv>
   <refname>similar_text</refname>
@@ -11,15 +10,15 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>similar_text</methodname>
-   <methodparam><type>string</type><parameter>d1</parameter></methodparam>
-   <methodparam><type>string</type><parameter>d2</parameter></methodparam>
-   <methodparam choice="opt"><type>float</type><parameter role="reference">oran</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge1</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge2</parameter></methodparam>
+   <methodparam choice="opt"><type>float</type><parameter role="reference">yüzde</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Oliver'in [1993] açıkladığı şekilde iki dizge arasındaki benzerliği
-   hesaplar. Ancak bu gerçeklenim Oliver'in kod örneğindeki gibi bir yığıt
-   kullanmaz. Ayrıca bu algoritmanın hesaplama karmaşıklığı, N en uzun dizgenin
-   uzunluğu olmak üzere O(N^3)'tür.
+   &book.programming.classics; kitabında açıkladığı şekilde iki dizge arasındaki
+   benzerliği hesaplar. Ancak bu gerçeklenim Oliver'in kod örneğindeki gibi bir
+   yığıt kullanmaz. Ayrıca bu algoritmanın hesaplama karmaşıklığı, N en uzun
+   dizgenin  uzunluğu olmak üzere O(N**3)'tür.
   </para>
  </refsect1>
 
@@ -28,7 +27,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>d1</parameter></term>
+     <term><parameter>dizge1</parameter></term>
      <listitem>
       <para>
        İlk dizge.
@@ -36,18 +35,28 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d2</parameter></term>
+     <term><parameter>dizge2</parameter></term>
      <listitem>
       <para>
        İkinci dizge.
       </para>
+      <note>
+       <para>
+        <parameter>dizge1</parameter> ve
+        <parameter>dizge2</parameter> yer değiştirise farklı sonuçlar ortaya
+        çıkabilir; aşağıdaki örnek fikir verebilir.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>oran</parameter></term>
+     <term><parameter>yüzde</parameter></term>
      <listitem>
       <para>
-       Benzerlik oranını belirtmek için kullanılır.
+       Benzerlik oranını belirtmek için kullanılır. Bir gönderimi üçüncü
+       değiştirgede aktararak, <function>similar_text</function> işlevinin
+       sonucu verilen dizgelerin uzunluklarının ortalamasının 100 katına
+       bölünerek benzerlik yüzde olarak hesaplanır.
       </para>
      </listitem>
     </varlistentry>
@@ -60,6 +69,38 @@
   <para>
    Her iki dizgede eşleşen karakterlerin sayısı döner.
   </para>
+  <para>
+   Eşleşen karakterlerin sayısı, en uzun ilk ortak alt dizgeyi bularak ve bunu
+   önekler ve son ekler için ard arda bularak hesaplanır. Bulunan tüm ortak alt
+   dizelerin uzunlukları toplanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="similar_text.example.swapping">
+   <title>- <function>similar_text</function> değiştirge takaslama örneği</title>
+   <para>
+    <parameter>dizge1</parameter> ve <parameter>dizge2</parameter>
+    takaslandığında farklı sonuçlar elde edileceğini gösteren örnek.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$sim = similar_text('bafoobar', 'barfoo', $perc);
+echo "similarity: $sim ($perc %)\n";
+$sim = similar_text('barfoo', 'bafoobar', $perc);
+echo "similarity: $sim ($perc %)\n";
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+similarity: 5 (71.428571428571 %)
+similarity: 3 (42.857142857143 %)
+]]>
+   </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="seealso">
