@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.str-ireplace">
  <refnamediv>
   <refname>str_ireplace</refname>
@@ -11,11 +10,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>str_ireplace</methodname>
-   <methodparam><type>mixed</type><parameter>eski</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>yeni</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>konu</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">sayı</parameter></methodparam>
+   <type class="union"><type>string</type><type>array</type></type><methodname>str_ireplace</methodname>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>eski</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>yeni</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>array</type></type><parameter>konu</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">sayı</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Harf büyüklüğüne duyarsız olarak <parameter>konu</parameter> dizgesi
@@ -31,46 +30,6 @@
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
-   <variablelist>
-    <varlistentry>
-     <term><parameter>eski</parameter></term>
-     <listitem>
-      <note>
-       <para>
-        <parameter>eski</parameter> dizisindeki her yer değiştirme önceki yer
-        değiştirme sonucunun üzerine uygulanır.
-       </para>
-      </note>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>yeni</parameter></term>
-     <listitem>
-      <para>
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>konu</parameter></term>
-     <listitem>
-      <para>
-       Eğer <parameter>konu</parameter> bir dizi ise, arama ve değiştirme her
-       eleman için ayrı ayrı yapılır ve dönen değer de bir dizi olur.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>sayı</parameter></term>
-     <listitem>
-      <para>
-        Eğer belirtilirse, yer değiştirilen dizgelerin sayısı bu değiştirgede
-        döndürülür.
-      </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </para>
-  <para>
    Eğer <parameter>eski</parameter> ve <parameter>yeni</parameter> birer dizi
    ise <function>str_replace</function> her diziden birer değer alıp bunları
    kullanarak  <parameter>konu</parameter> dizgesinde arama ve yer değiştirme
@@ -80,36 +39,59 @@
    <parameter>yeni</parameter> bir dizge ise her eski dizgesinin yerine bu yeni
    dizgesi konur. Zıddı anlamlı değildir.
   </para>
+  <para>
+  <parameter>eski</parameter> ve <parameter>yeni</parameter> birer dizi ise,
+   elemanları baştan sona doğru işlenir.
+  </para>
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>eski</parameter></term>
+     <listitem>
+       <para>
+        <emphasis>İğne</emphasis> olarak da bilinen, aranan değer. Birden çok iğneyi belirtmek için bir dizi kullanılabilir.
+       </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>yeni</parameter></term>
+     <listitem>
+      <para>
+       Bulunan <parameter>eski</parameter> değeriyle değiştirilecek değer.
+       Çok sayıda yeni belirtmek için dizi kullanılabilir
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>konu</parameter></term>
+     <listitem>
+      <para>
+       <emphasis>Samanlık</emphasis> olarak da bilinen, eskinin yenisiyle
+       değiştirileceği dizi veya dizge.
+      </para>
+      <para>
+       <parameter>konu</parameter> bir dizi ise, eskiyi yenisi ile değiştirme
+       işlemi dizinin her elemanına uygulanır ve dönen değer de bir dizi olur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>sayı</parameter></term>
+     <listitem>
+      <para>
+        Eğer belirtilirse, değiştirilen dizgelerin sayısı bu değiştirgede
+        döndürülür.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
  </refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Yer değiştirmeler yapılmış dizge veya diziyi döndürür.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>sayı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Yer değiştirmeler yapılmış dizge veya dizi döner.
   </para>
  </refsect1>
 
@@ -122,6 +104,7 @@
 <![CDATA[
 <?php
 $bodytag = str_ireplace("%body%", "black", "<body text=%BODY%>");
+ echo $bodytag; // <body text=black>
 ?>
 ]]>
     </programlisting>
@@ -132,6 +115,15 @@ $bodytag = str_ireplace("%body%", "black", "<body text=%BODY%>");
  <refsect1 role="notes">
   &reftitle.notes;
   &note.bin-safe;
+  <caution>
+   <title>Değiştirme sırası sorunsalı</title>
+   <para>
+    <function>str_ireplace</function> yer değiştirmeyi soldan sağa yaptığından,
+    birden çok değiştirme yapılırken yenisi önceden yapılmış bir değişikliği
+    değiştirebilir. <function>str_replace</function> belgesindeki 2. örnek, bunun
+    uygulamada sizi nasıl etkileyebileceğini gösterir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strip-tags">
  <refnamediv>
   <refname>strip_tags</refname>
@@ -12,13 +11,13 @@
   <methodsynopsis>
    <type>string</type><methodname>strip_tags</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ayıklanmayacaklar</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>ayıklanmayacaklar</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bu işlev belirtilen <parameter>dizge</parameter> dizgesinden tüm HTML ve
-   PHP etiketleri ayıklanmış olarak bir dizge döndürmeye çalışır.
-   <function>fgetss</function> işlevinin kullandığı etiket ayıklama motoru
-   kullanılır.
+   Bu işlev belirtilen <parameter>dizge</parameter> dizgesinden tüm NULL
+   baytları, HTML ve PHP etiketleri ayıklanmış olarak bir dizge döndürmeye
+   çalışır. <function>fgetss</function> işlevinin kullandığı etiket ayıklama
+   motoru kullanılır.
   </para>
  </refsect1>
 
@@ -39,13 +38,33 @@
      <listitem>
       <para>
        Seçimlik olan bu değiştirgede ayıklanmayacak etiketleri
-       belirtebilirsiniz.
+       belirtebilirsiniz. Ya dizge olarak ya da PHP 7.4.0'dan itibaren bir dizi
+       olarak belirtilebilir. Bu değiştirgenin biçemi ile ilgili olan aşağıdaki
+       örneğe bakılabilir.
       </para>
       <note>
        <para>
         HTML içi açıklamalar ile PHP etiketleri de ayıklanır ve bu durum
         <parameter>ayıklanmayacaklar</parameter> ile değiştirilemez.
        </para>
+      </note>
+      <note>
+       <para>
+        Kendi kapanan XHTML etiketleri yoksayılır ve
+        <parameter>ayıklanmayacaklar</parameter> içinde sadece kendi
+        kapanmayan etiketler bulunmalıdır. Örneğin,
+        <literal>&lt;br&gt;</literal> ve <literal>&lt;br/&gt;</literal>
+        etiketlerinin ikisine de izin vermek için şöyle yapılmalıdır:
+       </para>
+       <informalexample>
+        <programlisting role="php">
+<![CDATA[
+<?php
+strip_tags($input, '<br>');
+?>
+]]>
+        </programlisting>
+       </informalexample>
       </note>
      </listitem>
     </varlistentry>
@@ -73,21 +92,15 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <function>strip_tags</function> ikil olarak güvenilir kılındı.
+        <parameter>ayıklanmayacaklar</parameter> artık &null; olabiliyor.
        </entry>
       </row>
       <row>
-       <entry>4.3.0</entry>
+       <entry>7.4.0</entry>
        <entry>
-        HTML içi açıklamalar da ayıklanabilir oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.0.0</entry>
-       <entry>
-        <parameter>ayıklanmayacaklar</parameter> değiştirgesi eklendi
+        <parameter>ayıklanmayacaklar</parameter> artık dizi de kabul ediyor.
        </entry>
       </row>
      </tbody>
@@ -111,6 +124,9 @@ echo "\n";
 
 // <p> ve <a>'ya izin verelim
 echo strip_tags($metin, '<p><a>');
+
+// PHP 7.4.0 ve sonrasında yukarıdaki satır şöyle yazılabilir:
+// echo strip_tags($metin, ['p', 'a']);
 ?>
 ]]>
     </programlisting>
@@ -129,6 +145,13 @@ Deneme paragrafı. Başka bir metin
   &reftitle.notes;
   <warning>
    <para>
+    Bu işlev XSS saldırılarını engellemeye çalışmak için kullanılmamalıdır.
+    <function>htmlspecialchars</function> gibi daha uygun işlevler veya çıktı
+    bağlamına bağlı olarak diğer araçlar kullanılmalıdır.
+   </para>
+  </warning>
+  <warning>
+   <para>
     <function>strip_tags</function> işlevi HTML doğrulaması yapmadığından
     kısmen veya tamamen bozuk etiketler nedeniyle beklenenden daha az metin
     veya veri elde edilebilir.
@@ -142,6 +165,13 @@ Deneme paragrafı. Başka bir metin
     <literal>onmouseover</literal> öznitelikleri dahil, bir değişiklik yapmaz.
    </para>
   </warning>
+  <note>
+   <para>
+    HTML girdi içindeki 1023 bayttan daha uzun etiket adları,
+    <parameter>ayıklanmayacaklar</parameter> değiştirgesine bakılmaksızın
+    geçersiz olarak değerlendirilir.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

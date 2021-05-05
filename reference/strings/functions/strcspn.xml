@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strcspn">
  <refnamediv>
   <refname>strcspn</refname>
@@ -13,12 +12,18 @@
    <type>int</type><methodname>strcspn</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>string</type><parameter>maske</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinin <parameter>maske</parameter>
    maskesiyle eşleşMEyen en uzun ilk parçasının uzunluğunu döndürür.
+  </para>
+  <para>
+   <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
+   atlanmışsa, tüm <parameter>dizge</parameter> incelenir. Belirtilmişlerse,
+   etki <literal>strcspn(substr($konu, $başlangıç, $uzunluk), $maske)</literal>
+   çağrısıyla aynı olur (daha fazla bilgi için: <function>substr</function>).
   </para>
  </refsect1>
 
@@ -46,8 +51,20 @@
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Eşleştirmenin başlatılacağı konum. Negatif değerler dizgenin sonundan
-       itibaren sayılır.
+       Eşleştirmenin başlatılacağı konum.
+      </para>
+      <para>
+       <parameter>başlangıç</parameter> belirtilmişse ve negatif değilse,
+       <function>strcspn</function> işlevi <parameter>dizge</parameter>yi
+       <parameter>başlangıç</parameter>ıncı konumdan itibaren incelemeye başlar.
+       örneğin, '<literal>abcdef</literal>' dizgesinde, <literal>0</literal>ıncı
+       karakter '<literal>a</literal>', <literal>2</literal>inci karakter
+       '<literal>c</literal>' ve böyle gider.
+      </para>
+      <para>
+       <parameter>başlangıç</parameter> belirtilmişse ve negatif ise,
+       <function>strcspn</function> işlevi <parameter>dizge</parameter>yi
+       sondan <parameter>başlangıç</parameter>ıncı konumdan itibaren incelemeye başlar.
       </para>
      </listitem>
     </varlistentry>
@@ -56,8 +73,19 @@
      <listitem>
       <para>
        Eşleşmemenin aranacağı alt dizge uzunluğu. Negatif değerler uzunluğu
-       dizgenin sonundan başına doğru belirlerler.
+       dizgenin sonundan başına doğru belirler.
       </para>
+      <para>
+       <parameter>uzunluk</parameter>  belirtilmişse ve negatif değilse,
+       <parameter>dizge</parameter>nin başından itibaren
+       <parameter>uzunluk</parameter> karakteri incelenir.
+      </para>
+      <para>
+       <parameter>uzunluk</parameter> belirtilmişse ve negatif ise,
+       <parameter>dizge</parameter> baştan itibaren,
+       <parameter>dizge</parameter>nin sonundan
+       <parameter>uzunluk</parameter>uncu karaktere kadar incelenir.
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -67,8 +95,15 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Parça uzunluğunu bir tamsayı olarak döndürür.
+   <parameter>dizge</parameter> dizgesinin <parameter>maske</parameter>
+   maskesiyle eşleşMEyen en uzun ilk parçasının uzunluğunu döndürür.
   </para>
+  <note>
+   <para>
+    <parameter>başlangıç</parameter> belirtilmişse, dönen uzunluk bu konumdan
+    itibaren sayılır, <parameter>dizge</parameter>nin başından itibaren değil.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -84,16 +119,52 @@
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
-        değiştirgeleri eklendi.
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
     </tgroup>
    </informaltable>
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="strcspn.example">
+   <title>- <function>strcspn</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = strcspn('abcd',  'apple');
+$b = strcspn('abcd',  'banana');
+$c = strcspn('hello', 'l');
+$d = strcspn('hello', 'world');
+$e = strcspn('abcdhelloabcd', 'abcd', -9);
+$f = strcspn('abcdhelloabcd', 'abcd', -9, -5);
+
+var_dump($a);
+var_dump($b);
+var_dump($c);
+var_dump($d);
+var_dump($e);
+var_dump($f);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+int(0)
+int(0)
+int(2)
+int(2)
+int(5)
+int(4)
+]]>
+   </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="notes">
