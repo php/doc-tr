@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strspn">
  <refnamediv>
   <refname>strspn</refname>
-  <refpurpose>Dizgenin, maskenin tam karakterleri ile eşleşen ilk
+  <refpurpose>Dizgenin, maskenin tüm karakterleri ile eşleşen ilk
   parçasının uzunluğunu bulur</refpurpose>
  </refnamediv>
 
@@ -14,12 +13,12 @@
    <type>int</type><methodname>strspn</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>string</type><parameter>maske</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>başlangıç</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesinin <parameter>maske</parameter>
-   maskesinin tüm karakterleri ile eşleşen en uzun ilk parçasının uzunluğunu
+   maskesinin karakterleri ile eşleşen en uzun ilk parçasının uzunluğunu
    döndürür.
   </para>
   <para>
@@ -111,6 +110,12 @@ $var = strspn("42 is the answer to the 128th question.", "1234567890");
    <parameter>dizge</parameter> dizgesinin <parameter>maske</parameter>
    maskesindeki karakterlerden oluşan ilk parçasının uzunluğunu döndürür.
   </para>
+  <note>
+   <para>
+    <parameter>başlangıç</parameter> belirtilmişse, dönen uzunluk bu konumdan
+    itibaren sayılır, <parameter>dizge</parameter> dizgesinin başından değil.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -126,10 +131,9 @@ $var = strspn("42 is the answer to the 128th question.", "1234567890");
      </thead>
      <tbody>
       <row>
-       <entry>4.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>başlangıç</parameter> ve <parameter>uzunluk</parameter>
-        değiştirgeleri eklendi.
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -146,10 +150,25 @@ $var = strspn("42 is the answer to the 128th question.", "1234567890");
     <programlisting role="php">
 <![CDATA[
 <?php
-echo strspn("foo", "o", 1, 2); // çıktısı: 2
+// dizge maskedeki herhangi bir karakterle başlamıyor
+var_dump(strspn("foo", "o"));
+
+// dizge 1. konumdan itibaren 2 karakter incelenir
+var_dump(strspn("foo", "o", 1, 2));
+
+// dizge 1. konumdan itibaren 1 karakter incelenir
+var_dump(strspn("foo", "o", 1, 1));
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+int(0)
+int(2)
+int(1)
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
