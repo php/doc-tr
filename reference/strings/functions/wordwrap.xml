@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.wordwrap">
  <refnamediv>
   <refname>wordwrap</refname>
@@ -14,7 +13,7 @@
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>genişlik</parameter><initializer>75</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>satırsonu</parameter><initializer>"\n"</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>kes</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>sözcüğü_kes</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>dizge</parameter>yi belirtilen
@@ -39,7 +38,7 @@
      <term><parameter>genişlik</parameter></term>
      <listitem>
       <para>
-       Sütun genişliği; 75 öntanımlıdır.
+       Dizgenin katlanacağı karakter sayısı.
       </para>
      </listitem>
     </varlistentry>
@@ -48,17 +47,18 @@
      <listitem>
       <para>
        Satırın sonuna eklenecek isteğe bağlı satırsonu karakteri.
-       '<literal>\n</literal>' öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kes</parameter></term>
+     <term><parameter>sözcüğü_kes</parameter></term>
      <listitem>
       <para>
-       <parameter>kes</parameter> &true; ise, dizge belirtilen genişlikte
-       veya daha önce, satırdaki son sözcüğü kesme pahasına katlanır.
-       (İkinci örneğe bakınız).
+       <parameter>sözcüğü_kes</parameter> &true; ise, dizge belirtilen
+       genişlikte veya daha önce, satırdaki son sözcüğü kesme pahasına
+       katlanır. (İkinci örneğe bakınız). &false; belirtilirse,
+       <parameter>genişlik</parameter> sözcük genişliğinden küçük olduğunda
+       bile sözcük bütünlüğü korunur.
       </para>
      </listitem>
     </varlistentry>
@@ -69,31 +69,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen sütunda katlanan dizgeyi döndürür.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.3</entry>
-       <entry>
-        Seçimlik <parameter>kes</parameter>değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Belirtilen genişlikte katlanan dizgeyi döndürür.
   </para>
  </refsect1>
 
@@ -139,6 +115,29 @@ echo "$yenisi\n";
 oooook
 uzun bir
 sözcük.
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- <function>wordwrap</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$text = "A very long woooooooooooooooooord. and something";
+$newtext = wordwrap($text, 8, "\n", false);
+
+echo "$newtext\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+A very
+long
+woooooooooooooooooord.
+and
+something
 ]]>
     </screen>
    </example>

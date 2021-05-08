@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8b12549bff077aadc8671408e884937aa67ee532 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.substr-compare">
  <refnamediv>
   <refname>substr_compare</refname>
@@ -11,17 +10,17 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>substr_compare</methodname>
-   <methodparam><type>string</type><parameter>ana_dizge</parameter></methodparam>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter>samanlık</parameter></methodparam>
+   <methodparam><type>string</type><parameter>iğne</parameter></methodparam>
    <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>büyüklük_duyarsız</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>büyüklük_duyarsız</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>substr_compare</function> işlevi <parameter>ana_dizge</parameter>
+   <function>substr_compare</function> işlevi <parameter>samanlık</parameter>
    dizgesinin <parameter>başlangıç</parameter>'tan itibaren
    <parameter>uzunluk</parameter> karakterlik parçasını
-   <parameter>dizge</parameter> dizgesiyle karşılaştırır.
+   <parameter>iğne</parameter> dizgesiyle karşılaştırır.
   </para>
  </refsect1>
 
@@ -30,16 +29,18 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ana_dizge</parameter></term>
+     <term><parameter>samanlık</parameter></term>
      <listitem>
       <para>
+       Karşılaştırılacak ana dizge.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>iğne</parameter></term>
      <listitem>
       <para>
+       Karşılaştırılacak diğer dizge.
       </para>
      </listitem>
     </varlistentry>
@@ -56,7 +57,9 @@
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       Karşılaştırılacak uzunluk.
+       Karşılaştırılacak uzunluk. <parameter>iğne</parameter> uzunluğu
+       ile (<parameter>samanlık</parameter> - <parameter>başlangıç</parameter>)
+       uzunluğu karşılaştırıldığında büyük olan uzunluk öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -76,14 +79,14 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Eğer <parameter>ana_dizge</parameter> dizgesinin
+   Eğer <parameter>samanlık</parameter> dizgesinin
    <parameter>başlangıç</parameter> konumundan başlayan parçası
-   <parameter>dizge</parameter> dizgesinden küçükse sıfırdan küçük bir değer,
+   <parameter>iğne</parameter> dizgesinden küçükse sıfırdan küçük bir değer,
    büyükse sıfırdan büyük bir değer, ikisi eşitse sıfır döner.
    Eğer <parameter>uzunluk</parameter> belirtilmişse ve
-   <parameter>ana_dizge</parameter> dizgesinin uzunluğuna eşit veya ondan
-   büyükse <function>substr_compare</function> bir uyarı basar ve &false;
-   döndürür.
+   <parameter>samanlık</parameter> dizgesinin uzunluğundan
+   büyükse (PHP 7.2.18 ve 7.3.5 öncesinde eşitse)
+   <function>substr_compare</function> bir uyarı basar ve &false; döndürür.
   </para>
  </refsect1>
 
@@ -100,10 +103,16 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.1.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Negatif bir <parameter>başlangıç</parameter> kullanma olasılığı
-        dikkate alındı.
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.18, 7.3.5</entry>
+       <entry>
+        <parameter>başlangıç</parameter> ile <parameter>samanlık</parameter>
+        uzunlukları artık eşit olabiliyor.
        </entry>
       </row>
      </tbody>
@@ -131,6 +140,15 @@ echo substr_compare("abcde", "abc", 5, 1); // uyarı
 ]]>
     </programlisting>
    </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>strncmp</function></member>
+   </simplelist>
   </para>
  </refsect1>
 

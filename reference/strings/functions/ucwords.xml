@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ucwords">
  <refnamediv>
   <refname>ucwords</refname>
@@ -12,15 +11,17 @@
   <methodsynopsis>
    <type>string</type><methodname>ucwords</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ayraçlar</parameter><initializer>" \t\r\n\f\v"</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dizge</parameter> dizgesindeki her sözcüğün ilk harfini büyük
    harf yapar. Sözcüğün ilk karakteri bir harf değilse o sözcüğe dokunulmaz.
   </para>
   <para>
-   Bir sözcük, bir boşluk karakterlerinden sonra gelen ve boşluk karakterleri
-   içermeyen bir dizge olarak tanımlanır (Boşluk karakterleri: boşluk, sayfa
-   ileri, satırsonu, satırbaşı, yatay ve düşey sekme).
+   Bir sözcük, <parameter>ayraçlar</parameter> karakterlerinden sonra gelen ve
+   boşluk karakterleri içermeyen bir dizge olarak tanımlanır (Boşluk
+   karakterleri: boşluk, yatay sekme, satırbaşı, satırsonu, sayfa ileri ve düşey
+   sekme).
   </para>
  </refsect1>
 
@@ -33,6 +34,15 @@
      <listitem>
       <para>
        Girdi dizgesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ayraçlar</parameter></term>
+     <listitem>
+      <para>
+       Seçimlik <parameter>ayraçlar</parameter> sözcük ayırma karakterleri
+       içerir.
       </para>
      </listitem>
     </varlistentry>
@@ -66,10 +76,43 @@ $bar = ucwords(strtolower($bar)); // Hello World!
     </programlisting>
    </example>
   </para>
+
+  <para>
+   <example>
+    <title>- Özel ayraçlı <function>ucwords</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 'hello|world!';
+$bar = ucwords($foo);             // Hello|world!
+
+$baz = ucwords($foo, "|");        // Hello|World!
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   <example>
+    <title>- Ek ayraçlı <function>ucwords</function> örneği</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+$foo = "mike o'hara";
+$bar = ucwords($foo);                 // Mike O'hara
+
+$baz = ucwords($foo, " \t\r\n\f\v'"); // Mike O'Hara
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
   &reftitle.notes;
+  &note.locale-single-byte;
   &note.bin-safe;
  </refsect1>
 

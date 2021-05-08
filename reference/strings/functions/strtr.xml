@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2a7c919451f9a536431ba2117f8f90ae814c1c5f Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strtr" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>strtr</refname>
-  <refpurpose>Belli karakterleri dönüştürür</refpurpose>
+  <refpurpose>Belli karakterleri veya alt dizgeleri değiştirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -15,20 +14,41 @@
    <methodparam><type>string</type><parameter>eski</parameter></methodparam>
    <methodparam><type>string</type><parameter>yeni</parameter></methodparam>
   </methodsynopsis>
+  <simpara>Alt dizgelerle çalışan sözdizimi:</simpara>
   <methodsynopsis>
    <type>string</type><methodname>strtr</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>array</type><parameter>eski_yeni</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Bu işlev <parameter>dizge</parameter> dizgesindeki her
-   <parameter>eski</parameter> dizgesinin yerine <parameter>yeni</parameter>
-   dizgesini yerleştirilerek elde edilen dizgeyi döndürür.
+   Üç değiştirge verilirse, bu işlev, <parameter>dizge</parameter> içinde
+   rastladığı <parameter>eski</parameter> dizgesindeki her bir (tek baytlık)
+   karakteri, <parameter>yeni</parameter> dizgesindeki karşılık gelen karakterle
+   değiştirerek elde edilen dizgeyi döndürür. Yani, <parameter>eski</parameter>
+   ve <parameter>yeni</parameter> dizgelerinde <literal>$n</literal> belli bir
+   konumu gösterdiğinde <parameter>dizge</parameter> içinde rastlanılan her
+   <literal>$eski[$n]</literal> yerine <literal>$yeni[$n]</literal> konarak elde
+   edilen dizge döndürülür.
   </para>
-  <para><!-- Bu açıklama örnekle çelişiyor
+  <para>
    Eğer <parameter>eski</parameter> ve <parameter>yeni</parameter> dizgeleri
    farklı uzunluktaysa dizgelerden uzun olanının fazla baytları yok sayılır.
-  --></para>
+   Dönüş değerinin uzunluğu ile <parameter>dizge</parameter> uzunluğu aynı
+   olacaktır.
+  </para>
+  <para>
+   İki değiştirge verilirse, ikincisi
+   <literal>array('eski' =&gt; 'yeni', ...)</literal> biçeminde bir dizi
+   olmalıdır. Dönüş değeri, dizi anahtarlarının karşılık gelen değerlerle
+   değiştirildiği bir dizgedir. İlk olarak en uzun anahtarlar denenir.
+   Bir kere değiştirilen metin bir daha değerlendirilmez.
+  </para>
+  <para>
+   Bu durumda, boş anahtar olmaması koşuluyla anahtarlar ve değerler herhangi
+   bir uzunlukta olabilir; ek olarak, dönüş değerinin uzunluğu dizgeden farklı
+   olabilir. Bununla birlikte, işlev için en verimli durum tüm anahtarların
+   aynı boyutta olduğu durumdur.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -47,7 +67,7 @@
      <term><parameter>eski</parameter></term>
      <listitem>
       <para>
-       Yerine yenisi konacak dizge.
+       Yerine yenisi konacak baytlar.
       </para>
      </listitem>
     </varlistentry>
@@ -55,7 +75,7 @@
      <term><parameter>yeni</parameter></term>
      <listitem>
       <para>
-       Eskisinin yerine konacak dizge.
+       Eskisinin yerine konacak baytlar.
       </para>
      </listitem>
     </varlistentry>
@@ -63,8 +83,14 @@
      <term><parameter>eski_yeni</parameter></term>
      <listitem>
       <para>
-       <literal>array('eski' => 'yeni', ...)</literal> çiftlerinden oluşan bir
-       dizi.
+       <literal>array('eski' =&gt; 'yeni', ...)</literal> biçeminde alt dizge
+       çiftlerinden oluşan bir  dizi.
+      </para>
+      <para>
+       <parameter>eski_yeni</parameter> dizisi anahtarı boş dizge
+       (<literal>""</literal>) olan bir çift içeriyorsa, bu çift yoksayılır.
+       PHP 8.0.0 ve sonrasında böyle bir durumda bir
+       <constant>E_WARNING</constant> çıktılanır.
       </para>
      </listitem>
     </varlistentry>
@@ -75,34 +101,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>dizge</parameter> dizgesindeki her <parameter>eski</parameter>
-   dizgesinin yerine <parameter>yeni</parameter> dizgesi yerleştirilerek
-   elde edilen dizgeyle döner.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.0.0</entry>
-       <entry>
-        Seçimlik <parameter>eski</parameter> ve <parameter>yeni</parameter>
-        değiştirgeleri eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Dönüştürülen dizgeyle döner.
   </para>
  </refsect1>
 
@@ -114,6 +113,8 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+// Burada, strtr() bayt bayt dönüşüm yapar
+// Dolayısıyla burada tek baytlı kodlama (ISO-8859-*) kullanıldığı varsayılıyor
 $addr = strtr($addr, "äåö", "aao");
 ?>
 ]]>
@@ -121,18 +122,17 @@ $addr = strtr($addr, "äåö", "aao");
    </example>
   </para>
   <para>
-   <function>strtr</function> işlevi iki değiştirge ile de çağrılabilir. Bu
-   durumda birinci değiştirgede belirtilen dizge ikinci değiştirgedeki eski ->
-   yeni çiftleri kullanılarak dönüştürülür. <function>strtr</function> olası
-   en uzun ilk eşleşmeyi arar, ancak daha önce değişiklik yaptığı kısmı
-   yeniden değerlendirmez.
+   Aşağıdaki örnekte <function>strtr</function> işlevi iki değiştirge ile
+   çağrılmaktadır. Değiştirme tercihlerine dikkat: <literal>"h"</literal>
+   daha uzun bir eşleşmenin parçası olduğundan ve bir kere değişen metin
+   tekrar değerlendirilmediğinden işlem görmemiştir.
   </para>
   <example>
    <title>- İki değiştirgeli <function>strtr</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$trans = array("hello" => "hi", "hi" => "hello");
+$trans = array("h" => "-", "hello" => "hi", "hi" => "hello");
 echo strtr("hi all, I said hello", $trans);
 ?>
 ]]>
@@ -144,12 +144,38 @@ hello all, I said hi
 ]]>
     </screen>
   </example>
+  <para>
+   Aşağıdaki iki davranış biçimi büyük ölçüde farklıdır.
+   Üç değiştirgeli <function>strtr</function> baytları değiştirirken,
+   ikili olanı alt dizgeleri değiştiriyor.
+  </para>
+  <example>
+   <title>- <function>strtr</function> davranış karşılaştırması</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo strtr("baab", "ab", "01"),"\n";
+
+$trans = array("ab" => "01");
+echo strtr("baab", $trans);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+1001
+ba01
+]]>
+    </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>str_replace</function></member>
     <member><function>preg_replace</function></member>
    </simplelist>
   </para>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.substr-replace">
  <refnamediv>
   <refname>substr_replace</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>substr_replace</methodname>
-   <methodparam><type>mixed</type><parameter>dizge</parameter></methodparam>
-   <methodparam><type>string</type><parameter>yenisi</parameter></methodparam>
-   <methodparam><type>int</type><parameter>başlangıç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <type class="union"><type>string</type><type>array</type></type><methodname>substr_replace</methodname>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>dizge</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>yenisi</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>int</type></type><parameter>başlangıç</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>substr_replace</function> işlevi
@@ -35,6 +34,13 @@
       <para>
        Girdi dizgesi.
       </para>
+      <para>
+       Bir dizgeler dizisi belirtilmesi durumunda değiştirme işlemi her elemana
+       uygulanır. Bu durumda, her elemana karşı düşen
+       <parameter>yenisi</parameter>, <parameter>başlangıç</parameter> ve
+       <parameter>uzunluk</parameter> değerlerini içeren diziler de
+       belirtilebilir.
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -49,8 +55,8 @@
      <term><parameter>başlangıç</parameter></term>
      <listitem>
       <para>
-       Eğer <parameter>başlangıç</parameter> pozitifse, yer değiştirme işlemi
-       <parameter>dizge</parameter> dizgesinin baştan
+       Eğer <parameter>başlangıç</parameter> negatif değilse, yer değiştirme
+       işlemi <parameter>dizge</parameter> dizgesinin baştan
        <parameter>başlangıç</parameter>'ıncı karakterinden başlar.
       </para>
       <para>
@@ -88,11 +94,35 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- <function>substr_replace</function> örneği</title>
+    <title>- <function>substr_replace</function> örnekleri</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -117,6 +147,38 @@ echo substr_replace($var, '', 10, -1) . "<br />\n";
     </programlisting>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- Çok sayıda dizgeyi bir kerede değiştirmek için
+     <function>substr_replace</function> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = array('A: XXX', 'B: XXX', 'C: XXX');
+
+// Basit durum: her dizgede XXX yerine YYY yerleştir.
+echo implode('; ', substr_replace($input, 'YYY', 3, 3))."\n";
+
+// Her değiştirmenin farklı olduğu daha karmaşık durum
+$replace = array('AAA', 'BBB', 'CCC');
+echo implode('; ', substr_replace($input, $replace, 3, 3))."\n";
+
+// Her defasında farklı sayıda karakteri değiştirmek.
+$length = array(1, 2, 3);
+echo implode('; ', substr_replace($input, $replace, 3, $length))."\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+A: YYY; B: YYY; C: YYY
+A: AAA; B: BBB; C: CCC
+A: AAAXX; B: BBBX; C: CCC
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="notes">
@@ -130,6 +192,8 @@ echo substr_replace($var, '', 10, -1) . "<br />\n";
    <simplelist>
     <member><function>str_replace</function></member>
     <member><function>substr</function></member>
+    <member><link linkend="language.types.string.substr">Dizge erişimi ve
+     karaktere göre değişiklik</link></member>
    </simplelist>
   </para>
  </refsect1>

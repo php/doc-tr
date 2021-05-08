@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2f4863e1f6066a7bc7802164a8f46cd46b067132 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.strtok" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>strtok</refname>
@@ -10,10 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>strtok</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>strtok</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam><type>string</type><parameter>ayraçlar</parameter></methodparam>
   </methodsynopsis>
+   <simpara>İsimli değiştirgeleri desteklemeyen diğer sözdizimi:</simpara>
   <methodsynopsis>
    <type>string</type><methodname>strtok</methodname>
    <methodparam><type>string</type><parameter>ayraçlar</parameter></methodparam>
@@ -32,8 +32,8 @@
    Baştan başlamak veya yeni dizgelerden birini ayrıştırmak için işlevi
    <parameter>dizge</parameter> değiştirgesi ile çağırmak işlemi ilklendirmek
    için yeterlidir. <parameter>ayraçlar</parameter> değiştirgesine birden
-   fazla ayraç koyabilirsiniz. Dizge belirtilen bu ayraçlardan ilk
-   rastladığıyla dizgeyi böler.
+   fazla ayraç koyabilirsiniz. Belirtilen bu ayraçlardan birine ilk
+   rastlandığıyla işlev dizgeyi böler.
   </para>
  </refsect1>
 
@@ -64,7 +64,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir dizge parçası.
+   Bir dizge parçası veya dizgede ayraç kalmazsa &false; döner.
   </para>
  </refsect1>
 
@@ -90,32 +90,8 @@ while ($tok !== false) {
    </example>
   </para>
   <para>
-   İşlevin boş bir parça bulunduğu durumdaki davranışı PHP 4.1.0'dan itibaren
-   değişmiştir. Eski davranış boş bir dizge döndürmekti. Yenisinde dizgenin o
-   parçası basitçe atlanmaktadır. Örnek:
-  </para>
-  <para>
    <example>
-    <title>- Eski <function>strtok</function> davranışı</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$dizge1  = strtok('/something', '/');
-$dizge2 = strtok('/');
-var_dump($dizge1, $dizge2);
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-    string(0) ""
-    string(9) "something"
-]]>
-    </screen>
-   </example>
-   <example>
-    <title>Yeni <function>strtok</function> davranışı</title>
+    <title>- Ayraçlar tükendiğinde <function>strtok</function> davranışı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
