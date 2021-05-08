@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<!-- splitted from ./en/functions/zip.xml, last change in rev 1.11 -->
+<!-- EN-Revision: e7278889420140e0af5df90efe9f1cb63eb63842 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.zip-entry-read" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>zip_entry_read</refname>
   <refpurpose>Bir açık dizin girdisini okur</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &warn.deprecated.function-8-0-0;
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>zip_entry_read</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>zip_entry_read</methodname>
    <methodparam><type>resource</type><parameter>zip_girdisi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>1024</initializer></methodparam>
   </methodsynopsis>
   <para>
    Açık bir dizin girdisini okur.
@@ -34,8 +37,7 @@
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       Döndürülecek bayt sayısı. Belirtilmediği takdirde işlev 1024 bayt
-       okumaya çalışır.
+       Döndürülecek bayt sayısı.
       </para>
       <note>
        <para>
@@ -50,10 +52,36 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dosya sonuna gelinmişse &false; yoksa okunan veriyi bir dizge olarak
-   döndürür.
+   Dosya sonuna gelinmişse boş dizge, bir hata oluşmuşsa &false; yoksa okunan
+   veriyi bir dizge olarak döndürür.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        Nesne arayüzünü desteklemek için bu işlevin kullanımı artık önerilmiyor.
+        Bkz: <methodname>ZipArchive::getFromIndex</methodname>.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
