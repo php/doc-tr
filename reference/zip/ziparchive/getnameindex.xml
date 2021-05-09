@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xml:id="function.ziparchive-getnameindex" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: c0a030bf35b5eac2701ba97788f9e49cdbfdf049 Maintainer: haluk Status: ready -->
+<refentry xml:id="ziparchive.getnameindex" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ZipArchive::getNameIndex</refname>
   <refpurpose>İndisi belirtilen girdinin ismini döndürür</refpurpose>
@@ -9,13 +8,16 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>ZipArchive::getNameIndex</methodname>
+   <modifier>public</modifier>
+   <type class="union"><type>string</type><type>false</type></type><methodname>ZipArchive::getNameIndex</methodname>
    <methodparam><type>int</type><parameter>indis</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    İndisi belirtilen girdinin ismini döndürür.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -28,13 +30,44 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Değer olarak <constant>ZipArchive::FL_UNCHANGED</constant> belirtilirse
+       özgün isim değişmeden döner.
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Başarısızlık durumunda &false; aksi takdirde girdinin ismi döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>ZipArchive::getNameIndex</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+if ($zip->open('test.zip') == TRUE) {
+ for ($i = 0; $i < $zip->numFiles; $i++) {
+     $filename = $zip->getNameIndex($i);
+     // ...
+ }
+}
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 </refentry>

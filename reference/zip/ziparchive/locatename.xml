@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xml:id="function.ziparchive-locatename" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: c0a030bf35b5eac2701ba97788f9e49cdbfdf049 Maintainer: haluk Status: ready -->
+<refentry xml:id="ziparchive.locatename" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ZipArchive::locateName</refname>
   <refpurpose>İsmi belirtilen girdinin indisini döndürür</refpurpose>
@@ -9,9 +8,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>ZipArchive::locateName</methodname>
+   <modifier>public</modifier>
+   <type class="union"><type>int</type><type>false</type></type><methodname>ZipArchive::locateName</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    İsmi belirtilen girdinin indisini döndürür.
@@ -40,12 +40,12 @@
        <itemizedlist>
         <listitem>
          <para>
-          <constant>ZIPARCHIVE::FL_NOCASE</constant>
+          <constant>ZipArchive::FL_NOCASE</constant>
          </para>
         </listitem>
         <listitem>
          <para>
-          <constant>ZIPARCHIVE::FL_NODIR</constant>
+          <constant>ZipArchive::FL_NODIR</constant>
          </para>
         </listitem>
        </itemizedlist>
@@ -63,16 +63,16 @@
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
-    <example>
-     <title>- Bir arşiv oluşturup üzerinde
-     <function>ZipArchive::locateName</function> kullanmak</title>
-     <programlisting role="php">
+  <example>
+   <title>- Bir arşiv oluşturup üzerinde
+   <function>ZipArchive::locateName</function> kullanmak</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 $file = 'testlocate.zip';
 
 $zip = new ZipArchive;
-if ($zip->open($file, ZIPARCHIVE::CREATE) !== TRUE) {
+if ($zip->open($file, ZipArchive::CREATE) !== TRUE) {
     exit('failed');
 }
 
@@ -80,7 +80,7 @@ $zip->addFromString('entry1.txt', 'girdi #1');
 $zip->addFromString('entry2.txt', 'girdi #2');
 $zip->addFromString('dir/entry2d.txt', 'girdi #2');
 
-if (!$zip->status == ZIPARCHIVE::ER_OK) {
+if (!$zip->status == ZipArchive::ER_OK) {
     echo "ZIP yazılamadı\n";
 }
 $zip->close();
@@ -91,17 +91,17 @@ if ($zip->open($file) !== TRUE) {
 
 echo $zip->locateName('entry1.txt') . "\n";
 echo $zip->locateName('eNtry2.txt') . "\n";
-echo $zip->locateName('eNtry2.txt', ZIPARCHIVE::FL_NOCASE) . "\n";
+echo $zip->locateName('eNtry2.txt', ZipArchive::FL_NOCASE) . "\n";
 echo $zip->locateName('enTRy2d.txt',
-     ZIPARCHIVE::FL_NOCASE|ZIPARCHIVE::FL_NODIR) . "\n";
+     ZipArchive::FL_NOCASE|ZipArchive::FL_NODIR) . "\n";
 $zip->close();
 
 ?>
 ]]>
-     </programlisting>
-    </example>
-    &example.outputs;
-    <screen>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
 <![CDATA[
 0
 

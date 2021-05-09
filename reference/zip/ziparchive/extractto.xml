@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xml:id="function.ziparchive-extractto" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: c0a030bf35b5eac2701ba97788f9e49cdbfdf049 Maintainer: haluk Status: ready -->
+<refentry xml:id="ziparchive.extractto" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ZipArchive::extractTo</refname>
   <refpurpose>Arşiv içeriğini çıkarır</refpurpose>
@@ -9,13 +8,21 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ZipArchive::extractTo</methodname>
    <methodparam><type>string</type><parameter>hedef</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>girdiler</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>girdiler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Arşivin tamamını veya belirtilen dosyaları belirtilen hedefe çıkarır.
   </para>
+  <warning>
+   <para>
+    Çıkarılan dosya ve dizinler için öntanımlı izinler olası en geniş yetkileri
+    sağlar. Bu geçerli umask değeri ile sınırlanabilir. Geçerli umask değeri
+    <function>umask</function> işlevi ile değiştirilebilir.
+   </para>
+  </warning>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -49,14 +56,9 @@
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
-    <para>
-     Örnekte, bir ZIP dosya arşivi açılmakta, arşivdeki her dosyanın içeriği
-     okunup basılmaktadır. Örnekte kullanılan <filename>test2.zip</filename>
-     dosyası ZZIPlib kaynak paketiyle gelen deneme arşivlerinden biridir.
-    </para>
-    <example>
-     <title>- Tüm girdileri çıkarmak</title>
-     <programlisting role="php">
+  <example>
+   <title>- Tüm girdileri çıkarmak</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 $zip = new ZipArchive;
@@ -69,11 +71,11 @@ if ($zip->open('test.zip') === TRUE) {
 }
 ?>
 ]]>
-     </programlisting>
-    </example>
-    <example>
-     <title>- Sadece iki girdi çıkarmak</title>
-     <programlisting role="php">
+   </programlisting>
+  </example>
+  <example>
+   <title>- İki girdi çıkarmak</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 $zip = new ZipArchive;
