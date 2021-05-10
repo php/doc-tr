@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4e32d05f7498f3c914f3ec4ed7e041d3d3fca829 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.image2wbmp" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>image2wbmp</refname>
-  <refpurpose>Bir dosyaya veya tarayıcıya bir WBMP resmi çıktılar
-  </refpurpose>
+  <refpurpose>&gd.image.output;</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &warn.deprecated.function-7-3-0.removed-8-0-0;
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>image2wbmp</methodname>
    <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>eşik</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>önalan</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>image2wbmp</function> işlevi belirtilen resmin
@@ -21,6 +24,7 @@
    <parameter>dosyaismi</parameter> dosyasına çıktılar.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -36,10 +40,12 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>eşik</parameter></term>
+     <term><parameter>önalan</parameter></term>
      <listitem>
       <para>
-       Eşik değeri; 0-255 aralığında bir değerdir.
+       <function>imagecolorallocate</function> işlevinden elde edilen bir
+       tanıtıcıyı atayarak bu değiştirge ile önalan rengini atayabilirsiniz.
+       Öntanımlı önalan rengi siyahtır.
       </para>
      </listitem>
     </varlistentry>
@@ -51,7 +57,9 @@
   <para>
    &return.success;
   </para>
+  &gd.return.trueonerror;
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -63,7 +71,7 @@
 $file = 'php.png';
 $image = imagecreatefrompng($file);
 
-header('Content-type: ' . image_type_to_mime_type(IMAGETYPE_WBMP));
+header('Content-Type: ' . image_type_to_mime_type(IMAGETYPE_WBMP));
 image2wbmp($image); // doğrudan akımı çıktılıyoruz
 imagedestroy($image);
 ?>
@@ -72,21 +80,12 @@ imagedestroy($image);
    </example>
   </para>
  </refsect1>
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    WBMP desteği sadece PHP, GD-1.8 ve sonrası ile derlenmişse etkindir.
-   </para>
-  </note>
- </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagewbmp</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagewbmp</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 
