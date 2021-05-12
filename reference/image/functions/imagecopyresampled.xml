@@ -3,7 +3,7 @@
 <refentry xml:id="function.imagecopyresampled" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagecopyresampled</refname>
-  <refpurpose>Resmin bir parçasını örnekleyerek kopyalar ve boyutlandırır
+  <refpurpose>Görüntünün bir parçasını örnekleyerek kopyalar ve boyutlandırır
   </refpurpose>
  </refnamediv>
 
@@ -23,23 +23,22 @@
    <methodparam><type>int</type><parameter>kyn_yks</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecopyresampled</function> işlevi bir resim karesini
-   boyutlandırarak başka bir resme kopyalarken piksel renklerini ara değerlerle
-   yumuşatarak resmin görüntü kalitesini korur.
+   <function>imagecopyresampled</function> işlevi bir görüntü karesini
+   boyutlandırarak başka bir görüntüye kopyalarken piksel renklerini ara değerlerle yumuşatarak görüntünün kalitesini korur.
   </para>
   <para>
    Başka bir deyişle, <function>imagecopyresampled</function> işlevi
-   <parameter>kaynak</parameter> resmin <parameter>kyn_x</parameter>,
+   <parameter>kaynak</parameter> görüntünün <parameter>kyn_x</parameter>,
    <parameter>kyn_y</parameter> noktasından, <parameter>kyn_gnş</parameter> ve
    <parameter>kyn_yks</parameter> ile belirlenen parçasını alıp,
-   <parameter>hedef</parameter> resmin <parameter>hdf_x</parameter>,
+   <parameter>hedef</parameter> görüntünün <parameter>hdf_x</parameter>,
    <parameter>hdf_y</parameter> noktasında <parameter>hdf_gnş</parameter>,
    <parameter>hdf_yks</parameter> ile belirlenen parçasına yerleştirir.
   </para>
   <para>
    Eğer kaynak ve hedef koordinatları ile genişlik ve yükseklikler farklıysa
    parça yerleştirilirken küçültülür veya büyütülür. Koordinatlar parçanın sol
-   üst köşesini belirtir. Bu işlev aynı resmin içinde kopyalama yapmak
+   üst köşesini belirtir. Bu işlev aynı görüntünün içinde kopyalama yapmak
    amacıyla da kullanılabilir (<parameter>hedef</parameter> ve
    <parameter>kaynak</parameter> aynı ise), fakat parçaların üstüste gelmesi
    halinde sonuç belirsizdir.
@@ -66,7 +65,7 @@
      <term><parameter>hdf_x</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki X koordinatı.
+       Hedef görüntüdeki X koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -74,7 +73,7 @@
      <term><parameter>hdf_y</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki Y koordinatı.
+       Hedef görüntüdeki Y koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -82,7 +81,7 @@
      <term><parameter>kyn_x</parameter></term>
      <listitem>
       <para>
-       Kaynak resimdeki X koordinatı.
+       Kaynak görüntüdeki X koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -90,7 +89,7 @@
      <term><parameter>kyn_y</parameter></term>
      <listitem>
       <para>
-       Kaynak resimdeki Y koordinatı.
+       Kaynak görüntüdeki Y koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -98,7 +97,7 @@
      <term><parameter>hdf_gnş</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki parça genişliği.
+       Hedef görüntüdeki parça genişliği.
       </para>
      </listitem>
     </varlistentry>
@@ -106,7 +105,7 @@
      <term><parameter>hdf_yks</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki parça yüksekliği.
+       Hedef görüntüdeki parça yüksekliği.
       </para>
      </listitem>
     </varlistentry>
@@ -138,7 +137,7 @@
   <para>
    <example><title>- Basit örnek</title>
     <para>
-     Bu örnekte resim yarı boyutunda yeniden örneklenmektedir.
+     Bu örnekte görüntü yarı boyutunda yeniden örneklenmektedir.
     </para>
     <programlisting role="php">
 <![CDATA[
@@ -155,14 +154,14 @@ list($gen, $yük) = getimagesize($filename);
 $yenigen = $gen * $oran;
 $yeniyük = $yük * $oran;
 
-// Resimleri yükleyelim
+// Görüntüleri yükleyelim
 $hedef = imagecreatetruecolor($yeniger, $yeniyük);
 $kaynak = imagecreatefromjpeg($dosya);
 
-// Resmi örnekleyelim
+// Görüntüyü örnekleyelim
 imagecopyresampled($hedef, $kaynak, 0, 0, 0, 0, $yenigen, $yeniyük, $gen, $yük);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktılayalım
 imagejpeg($image_p, null, 100);
 ?>
 ]]>
@@ -178,9 +177,9 @@ imagejpeg($image_p, null, 100);
   </para>
   <para>
    <example>
-    <title>- Bir resmin orantılı olarak örneklenmesi</title>
+    <title>- Bir görüntünün orantılı olarak örneklenmesi</title>
     <para>
-     Bu örnekte resim 200 piksellik azami yükseklik ve genişlikle
+     Bu örnekte görüntü 200 piksellik azami yükseklik ve genişlikle
      örneklenmektedir.
     </para>
     <programlisting role="php">
@@ -207,19 +206,19 @@ if ($gen/$yük > $özoran) {
    $yük = $gen/$özoran;
 }
 
-// Resmi örnekleyelim
+// Görüntüyü örnekleyelim
 $hedef = imagecreatetruecolor($gen, $yük);
 $kaynak = imagecreatefromjpeg($dosya);
 imagecopyresampled($hedef, $kaynak, 0, 0, 0, 0, $gen, $yük, $özgen, $özyük);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktılayalım
 imagejpeg($image_p, null, 100);
 ?>
 ]]>
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
-     <alt>Bir resmin orantılı olarak kopyalanması örneği</alt>
+     <alt>Bir görüntünün orantılı olarak kopyalanması örneği</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagecopyresampled_2.jpg"/>
      </imageobject>
@@ -232,15 +231,15 @@ imagejpeg($image_p, null, 100);
   &reftitle.notes;
   <note>
    <para>
-    Paletli resimlerdeki sınırlama (255+1 renk) nedeniyle bir sorun vardır.
-    Resmi yeniden örneklerken veya süzerken 255'ten daha çok renk gerekir ve
+    Paletli görüntülerdeki sınırlama (255+1 renk) nedeniyle bir sorun vardır.
+    Görüntüyü yeniden örneklerken veya süzerken 255'ten daha çok renk gerekir ve
     bu nedenle yeniden örneklenen piksel renkleri için bir yaklaşım uygulanır.
-    Paletli resimde yeni renk için paletten bir yer ayrılmaya çalışılır, eğer
+    Paletli görüntüde yeni renk için paletten bir yer ayrılmaya çalışılır, eğer
     bu işlem başarısız olursa (teorik olarak) o renge en yakın renk seçilir.
     Bu her zaman görsel olarak en yakın renk olmayabilir. Bunun sonucu olarak
-    kısmen boş resimler gibi tuhaf sonuçlar alınabilir. Bu gibi sorunlarla
-    karşılaşmamak için hedef resim olarak gerçek renkli (örneğin,
-    <function>imagecreatetruecolor</function> ile oluşturulmuş) bir resim
+    kısmen boş görüntüler gibi tuhaf sonuçlar alınabilir. Bu gibi sorunlarla
+    karşılaşmamak için hedef görüntü olarak gerçek renkli (örneğin,
+    <function>imagecreatetruecolor</function> ile oluşturulmuş) bir görüntü
     kullanın.
    </para>
   </note>

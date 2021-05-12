@@ -10,13 +10,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imageantialias</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
    <methodparam><type>bool</type><parameter>etkin</parameter></methodparam>
   </methodsynopsis>
   <para>
    Hızlı çizilen kenar yumuşatma yöntemlerini çizgiler ve içi boş çokgenler
    için etkin kılar. Alfa bileşenlerini desteklemez. Doğrudan harmanlama
-   yapar. Sadece gerçek renkli resimlerle çalışır.
+   yapar. Sadece gerçek renkli görüntülerle çalışır.
   </para>
   <para>
    Çizgi kalınlığı ve tarzı desteklenmez.
@@ -37,7 +37,7 @@
      <term><parameter>etkin</parameter></term>
      <listitem>
       <para>
-       Kenar yumuşatma uygulanıp uygulanmayacağı; gerçek renkli resimler için
+       Kenar yumuşatma uygulanıp uygulanmayacağı; gerçek renkli görüntüler için
        &true;, aksi takdirde &false; öntanımlıdır.
       </para>
      </listitem>
@@ -62,26 +62,26 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// İki resim oluşturalım
+// İki görüntü oluşturalım
 $aa = imagecreatetruecolor(400, 100);
 $normal = imagecreatetruecolor(200, 100);
 
-// Resmin birinde kenar yumuşatma etkin olsun
+// Görüntünün birinde kenar yumuşatma etkin olsun
 imageantialias($aa, true);
 
 // Renkleri ayıralım
 $red = imagecolorallocate($normal, 255, 0, 0);
 $red_aa = imagecolorallocate($aa, 255, 0, 0);
 
-// Resimlere birer çizgi çizelim
+// Görüntülere birer çizgi çizelim
 imageline($normal, 0, 0, 200, 100, $red);
 imageline($aa, 0, 0, 200, 100, $red_aa);
 
-// İki resmi yanyana bir resme yerleştirelim
+// İki görüntüyü yanyana bir görüntüye yerleştirelim
 // Soldaki kenar yumuşatmalı olsun
 imagecopymerge($aa, $normal, 200, 0, 0, 0, 200, 100, 100);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktılayalım
 header('Content-Type: image/png');
 
 imagepng($aa);
