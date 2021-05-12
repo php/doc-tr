@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9ee9eccf455188ab6eb352194eb6f9eb99e15606 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6b509ccf78007c9f1769821885cc5c362aad5908 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.interfaces" xmlns="http://docbook.org/ns/docbook">
   <title>Nesne Arayüzleri</title>
   <para>
     Nesne arayüzleri, bir sınıfın gerçeklemesi gereken yöntemlerin
     belirtildiği kodu, bu yöntemlerin nasıl gerçekleneceğini tanımlamaksızın
-    oluşturmanıza imkan sağlar.
+    oluşturmanıza imkan sağlar. Arayüzler, sınıflar ve niteliklerle aynı isim
+    alanını paylaşır, bu nedenle aynı adı kullanmayabilirler.
   </para>
   <para>
     Arayüzler, sınıflardan farklı olarak <literal>class</literal> yerine
@@ -18,12 +18,40 @@
     Bir arayüzdeki tüm yöntemler, arayüzün doğası gereği <code>public</code>
     olarak bildirilmelidir.
   </para>
+  <para>
+   Uygulamada, arayüzler birbirlerini tamamlayan iki amaca hizmet eder::
+  </para>
+  <simplelist>
+   <member>
+    Geliştiricilerin, aynı arayüzü veya arayüzleri gerçekledikleri için
+    birbirlerinin yerine kullanılabilecek farklı sınıflardan nesneler
+    oluşturabilmelerini sağlamak. Böylece, kullanıldıkları kodda herhangi bir
+    değişiklik yapılmasına gerek kalmadan bu farklı gerçeklenimler arasında
+    geçiş yapılabilir. Yaygın bir örnek, çoklu veritabanı erişim hizmetleri,
+    çoklu ödeme ağ geçitleri veya farklı önbelleğe alma stratejileridir.
+   </member>
+   <member>
+    Nesnenin başka ne yapabileceğini veya nasıl uygulandığını umursamadan,
+    bir işlev veya yöntemin arayüze uyan bir değiştirgeyi kabul etmesini ve
+    üzerinde çalışmasını sağlamak. Bu arayüzler, davranışın önemini açıklamak
+    için genellikle <literal>Iterable</literal> (Yinelenebilir),
+    <literal>Cacheable</literal> (Önbelleğe Alınabilir),
+    <literal>Renderable</literal> (Yorumlanabilir) vb. şeklinde adlandırılır.
+   </member>
+  </simplelist>
+  <para>
+   Arayüzler, bu yöntemleri gerçeklemek için sınıfların gerçeklenmesini
+   gerektiren <link linkend="language.oop5.magic">sihirli yöntemler</link>
+   tanımlayabilir.
+  </para>
   <note>
    <para>
-    Bazı bağlamlarda, örneğin imalat kipinde kullanışlı olabilecek bir arayüz
-    içinde <link linkend="language.oop5.decon.constructor">kurucu</link> benzeri
-    <link linkend="language.oop5.magic">sihirli yöntemler</link> bildirmek
-    mümkündür.
+    Destekleniyor olsa bile, arayüzlere <link
+    linkend="language.oop5.decon.constructor">kurucuların</link> dahil
+    edilmesi kesinlikle önerilmez. Bunu yapmak, arayüzü gerçekleyen nesnenin
+    esnekliğini önemli ölçüde azaltır. Ek olarak, kurucular, tutarsız ve
+    beklenmeyen davranışlara neden olabilecek miras alma kuralları tarafından
+    zorlanmaz.
    </para>
   </note>
   <sect2 xml:id="language.oop5.interfaces.implements">
@@ -32,12 +60,22 @@
     Bir arayüzü gerçeklemek için, <literal>implements</literal> işleci
     kullanılır. Arayüzdeki tüm yöntemler bir sınıf içersinde
     gerçeklenmelidir; aksi takdirde bir ölümcül hata alırsınız. Bir sınıfın,
-    birden fazla arayüz tanımlaması arayüzler virgülle ayrılarak sağlanabilir.
+    aralarına virgül koyarak birden fazla arayüzü gerçeklemesi sağlanabilir.
    </para>
    <warning>
     <para>
      Bir sınıf, yöntem bildirimleri aynı olan aynı isimli iki arayüzü
      gerçekleyebilir.
+    </para>
+   </warning>
+   <warning>
+    <para>
+     Bir arayüzü gerçekleyen bir sınıf, değiştirgeleri için arayüzdekinden
+     farklı bir ad kullanabilir. Bununla birlikte, PHP 8.0'dan itibaren dil,
+     isimli değiştirgeleri desteklemektedir, bu da çağrıcıların arayüzdeki
+     değiştirge adına güvenebileceği anlamına gelir. Bu nedenle,
+     geliştiricilerin gerçeklenen arayüzle aynı değiştirge adlarını
+     kullanmaları şiddetle tavsiye edilir.
     </para>
    </warning>
    <note>
@@ -49,8 +87,8 @@
    <note>
     <para>
       Bir sınıf bir arayüzü gerçeklerken, bunu
-      <link linkend="language.oop.lsp">değiştirge sırası uyumlu</link> bir
-      yöntem kullanarak yapmalıdır.
+      <link linkend="language.oop.lsp">değiştirge adı ve sırası arayüzle
+      uyumlu</link> yöntemler kullanarak yapmalıdır.
      </para>
     </note>
   </sect2>
@@ -79,9 +117,9 @@ interface iTemplate
 
 // Arayüzü gerçekleyelim
 // Bu çalışacaktır
-class Template implements iTemplate
+class WorkingTemplate implements Template
 {
-    private $vars = array();
+    private $vars = [];
 
     public function setVariable($name, $var)
     {
@@ -100,10 +138,10 @@ class Template implements iTemplate
 
 // Bu çalışmayacaktır
 // Ölümcül hata: BadTemplate sınıfı 1 soyut yöntem içermektedir
-// dolayısıyla soyut olarak tanımlanması gerekir (iTemplate::getHtml)
-class BadTemplate implements iTemplate
+// dolayısıyla soyut olarak tanımlanması gerekir (Template::getHtml)
+class BadTemplate implements Template
 {
-    private $vars = array();
+    private $vars = [];
 
     public function setVariable($name, $var)
     {
@@ -120,18 +158,18 @@ class BadTemplate implements iTemplate
      <programlisting role="php">
 <![CDATA[
 <?php
-interface a
+interface A
 {
     public function foo();
 }
 
-interface b extends a
+interface B extends A
 {
     public function baz(Baz $baz);
 }
 
 // Bu çalışır
-class c implements b
+class C implements B
 {
     public function foo()
     {
@@ -143,7 +181,7 @@ class c implements b
 }
 
 // Bu çalışmaz, ölümcül hatayla sonuçlanır
-class d implements b
+class D implements B
 {
     public function foo()
     {
@@ -158,26 +196,26 @@ class d implements b
      </programlisting>
    </example>
    <example xml:id="language.oop5.interfaces.examples.ex3">
-    <title>- Çok sayıda anayüz oluşturma</title>
+    <title>- Çok sayıda arayüz oluşturma</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-interface a
+interface A
 {
     public function foo();
 }
 
-interface b
+interface B
 {
     public function bar();
 }
 
-interface c extends a, b
+interface C extends A, B
 {
     public function baz();
 }
 
-class d implements c
+class D implements C
 {
     public function foo()
     {
@@ -200,19 +238,82 @@ class d implements c
      <programlisting role="php">
 <![CDATA[
 <?php
-interface a
+interface A
 {
-    const b = 'Arayüz sabiti';
+    const B = 'Arayüz sabiti';
 }
 
 // Şunu basar: Arayüz sabiti
-echo a::b;
+echo A::B;
 
 
 // Sabitler geçersiz kılınamayacağından bu çalışmaz.
-class b implements a
+class B implements A
 {
-    const b = 'Sınıf sabiti';
+    const B = 'Sınıf sabiti';
+}
+?>
+]]>
+     </programlisting>
+   </example>
+   <example xml:id="language.oop5.interfaces.examples.ex5">
+    <title>- Soyut sınıflı arayüzler</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+interface A
+{
+    public function foo(string $s): string;
+
+    public function bar(int $i): int;
+}
+
+// Bir soyut sınıf bir arayüzün sadece bir bölümünü gerçekleyebilir.
+// Kalanını soyut sınıfı genişleten sınıflar gerçeklemelidir.
+abstract class B implements A
+{
+    pubic function foo(string $s): string
+    {
+        return $s . PHP_EOL;
+    }
+}
+
+class C extends B
+{
+    public function bar(int $i): int
+    {
+        return $i * 2;
+    }
+}
+?>
+]]>
+     </programlisting>
+   </example>
+   <example xml:id="language.oop5.interfaces.examples.ex6">
+    <title>- Aynı anda genişletme ve gerçekleme</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class One
+{
+    /* ... */
+}
+
+interface Usable
+{
+    /* ... */
+}
+
+interface Updatable
+{
+    /* ... */
+}
+
+// Burada sözcük sırası önemli: 'extends' önce gelmeli.
+class Two extends One implements Usable, Updatable
+{
+    /* ... */
 }
 ?>
 ]]>
