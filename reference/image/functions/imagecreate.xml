@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagecreate" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagecreate</refname>
-  <refpurpose>Yeni bir paletli resim oluşturur</refpurpose>
+  <refpurpose>Yeni bir paletli görüntü oluşturur</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
@@ -14,14 +14,16 @@
    <methodparam><type>int</type><parameter>yükseklik</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecreate</function> işlevi, boyutları belirtilen boş resmi
-   oluşturur ve onun için bir resim tanıtıcısı döndürür.
+   <function>imagecreate</function> işlevi, boyutları belirtilen boş görüntüyü
+   oluşturur ve onun için bir görüntü tanıtıcısı döndürür.
   </para>
   <para>
-   Boş resim oluşturmak için <function>imagecreatetruecolor</function>
-   işlevini kullanmanızı öneriyoruz.
+   Genel olarak, görüntü işlemenin mümkün olan en yüksek kalitede
+   gerçekleşmesi için <function>imagecreate</function> yerine <function>imagecreatetruecolor</function> kullanılmasını öneririz.
+   Bir palet görüntüsünün çıktısını almak istiyorsanız, görüntüyü <function>imagepng</function> veya <function>imagegif</function> ile kaydetmeden hemen önce <function>imagetruecolortopalette</function> çağrılmalıdır.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -45,25 +47,25 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
-   Hata oluşursa &false; aksi takdirde bir resim tanıtıcısı döndürür.
-  </para>
+  <para>&gd.return.identifier;</para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
     <title>-
-     Yeni bir GD resim akımı oluşturup bir resim çıktılamak
+     Yeni bir GD görüntü akımı oluşturup bir görüntü çıktılamak
     </title>
     <programlisting role="php">
 <![CDATA[
 <?php
 header("Content-type: image/png");
 $im = @imagecreate(110, 20)
-    or die("GD resim akımı ilklendirilemedi");
+    or die("GD görüntü akımı ilklendirilemedi");
 $artalan = imagecolorallocate($im, 0, 0, 0);
 $önalan = imagecolorallocate($im, 233, 14, 91);
 imagestring($im, 1, 5, 5,  "A Simple Text String", $önalan);
@@ -74,6 +76,8 @@ imagedestroy($im);
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Yeni bir GD görüntü akımı oluşturup bir görüntü çıktılamak
+      örneğinin çıktısı</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagecreate.png"/>
      </imageobject>
@@ -81,6 +85,7 @@ imagedestroy($im);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
