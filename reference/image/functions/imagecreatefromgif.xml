@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: fbc4ef92fa953823ed73021e462bd291499dc633 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 099a58be240463b31d61bf8c1e909ba9200b25b8 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagecreatefromgif" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagecreatefromgif</refname>
@@ -13,9 +12,16 @@
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecreatefromgif</function> işlevi dosya ismi verilen resmi
-   betimleyen bir resim tanıtıcısı döndürür.
+   <function>imagecreatefromgif</function> işlevi dosya ismi verilen görüntüyü
+   betimleyen bir görüntü tanıtıcısı döndürür.
   </para>
+  <caution>
+   <para>
+    GIF dosyaları belleğe okunurken görüntü özkaynak göstericisinde yalnız ilk
+    kare döner. Görüntü boyutunun <function>getimagesize</function> tarafından
+    bildirilen boyut olması gerekli değildir.
+   </para>
+  </caution>
   &tip.fopen-wrapper;
  </refsect1>
  <refsect1 role="parameters">
@@ -26,7 +32,7 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       GIF resmin dosya yolu.
+       GIF görüntünün dosya yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -44,10 +50,10 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-function GIFyükle($resimismi)
+function GIFyükle($ad)
 {
-    /* Resmi açmaya çalışalım */
-    $im = @imagecreatefromgif($resimismi);
+    /* Görüntüyü açmaya çalışalım */
+    $im = @imagecreatefromgif($ad);
 
     /* Başarılı oldu mu bakalım */
     if(!$im)
@@ -60,7 +66,7 @@ function GIFyükle($resimismi)
         imagefilledrectangle ($im, 0, 0, 150, 30, $bgc);
 
         /* Hata iletisini çıktılayalım */
-        imagestring ($im, 1, 5, 5, 'Error loading ' . $imgname, $tc);
+        imagestring ($im, 1, 5, 5, $ad . ' yüklenirken hata oluştu', $tc);
     }
 
     return $im;
@@ -91,12 +97,6 @@ imagedestroy($img);
     GIF desteği GD kütüphanesinin 1.6 sürümünde kaldırılmış, 2.0.28 sürümünde
     yeniden eklenmiştir. Bu işlev bu iki sürümün arasında kalan sürümlerde
     bulunmamaktadır.
-   </para>
-  </note>
-  <note>
-   <para>
-    Canlandırılmış GIF dosyaları belleğe okunurken resim özkaynak göstercisinde
-    yalnız ilk kare döner.
    </para>
   </note>
  </refsect1>

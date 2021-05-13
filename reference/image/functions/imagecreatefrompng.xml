@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
 <!-- EN-Revision: fbc4ef92fa953823ed73021e462bd291499dc633 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagecreatefrompng" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -13,8 +12,8 @@
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecreatefrompng</function> işlevi dosya ismi verilen resmi
-   betimleyen bir resim tanıtıcısı döndürür.
+   <function>imagecreatefrompng</function> işlevi dosya ismi verilen görüntüyü
+   betimleyen bir görüntü tanıtıcısı döndürür.
   </para>
   &tip.fopen-wrapper;
  </refsect1>
@@ -26,7 +25,7 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       PNG resmin dosya yolu.
+       PNG görüntünün dosya yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -44,15 +43,15 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-function PNGyükle($resimismi)
+function PNGyükle($ad)
 {
-    /* Resmi açmaya çalışalım */
-    $im = @imagecreatefrompng($resimismi);
+    /* Görüntüyü açmaya çalışalım */
+    $im = @imagecreatefrompng($ad);
 
     /* Başarılı oldu mu bakalım */
     if(!$im)
     {
-        /* Boş bir resim oluşturalım */
+        /* Boş bir görüntü oluşturalım */
         $im  = imagecreatetruecolor (20, 20);
         $bgc = imagecolorallocate($im, 255, 255, 255);
         $tc  = imagecolorallocate($im, 0, 0, 0);
@@ -60,7 +59,7 @@ function PNGyükle($resimismi)
         imagefilledrectangle($im, 0, 0, 10, 10, $bgc);
 
         /* Hata iletisini çıktılayalım */
-        imagestring($im, 1, 5, 5, 'Error loading ' . $imgname, $tc);
+        imagestring($im, 1, 5, 5, $ad . ' yüklenirken hata oluştu', $tc);
     }
 
     return $im;
@@ -68,7 +67,7 @@ function PNGyükle($resimismi)
 
 header('Content-Type: image/png');
 
-$img = PNGyükle('bozuk.resim');
+$img = PNGyükle('bozuk.görüntü');
 
 imagepng($img);
 imagedestroy($img);

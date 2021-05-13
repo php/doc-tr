@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
 <!-- EN-Revision: 235f3d10c6151423fb0e03f090d335e336aa31fc Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagecreatefromjpeg" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -13,8 +12,8 @@
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecreatefromjpeg</function> işlevi dosya ismi verilen resmi
-   betimleyen bir resim tanıtıcısı döndürür.
+   <function>imagecreatefromjpeg</function> işlevi dosya ismi verilen görüntüyü
+   betimleyen bir görüntü tanıtıcısı döndürür.
   </para>
   &tip.fopen-wrapper;
  </refsect1>
@@ -26,7 +25,7 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       JPEG resmin dosya yolu.
+       JPEG görüntünün dosya yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -44,15 +43,15 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-function JPEGyükle($resimismi)
+function JPEGyükle($ad)
 {
-    /* Resmi açmaya çalışalım */
-    $im = @imagecreatefromjpeg($resimismi);
+    /* Görüntüyü açmaya çalışalım */
+    $im = @imagecreatefromjpeg($ad);
 
     /* Başarılı oldu mu bakalım */
     if(!$im)
     {
-        /* Boş bir resim oluşturalım */
+        /* Boş bir görüntü oluşturalım */
         $im  = imagecreatetruecolor (20, 20);
         $bgc = imagecolorallocate($im, 255, 255, 255);
         $tc  = imagecolorallocate($im, 0, 0, 0);
@@ -60,7 +59,7 @@ function JPEGyükle($resimismi)
         imagefilledrectangle($im, 0, 0, 10, 10, $bgc);
 
         /* Hata iletisini çıktılayalım */
-        imagestring($im, 1, 5, 5, 'Error loading ' . $imgname, $tc);
+        imagestring($im, 1, 5, 5, $ad . ' yüklenirken hata oluştu', $tc);
     }
 
     return $im;

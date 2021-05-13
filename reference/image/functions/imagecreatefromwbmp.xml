@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 235f3d10c6151423fb0e03f090d335e336aa31fc Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 107819d757fa35eb1aec97f1d8ac98f0c58e6ba0 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagecreatefromwbmp" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagecreatefromwbmp</refname>
@@ -13,9 +12,15 @@
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <function>imagecreatefromwbmp</function> işlevi dosya ismi verilen resmi
-   betimleyen bir resim tanıtıcısı döndürür.
+   <function>imagecreatefromwbmp</function> işlevi dosya ismi verilen görüntüyü
+   betimleyen bir görüntü tanıtıcısı döndürür.
   </para>
+  <note>
+   <simpara>
+    WBMP görüntüler Wireless bit eşlemlerdir, Windows bit eşlemler değildir.
+    Windows bit eşlemler <function>imagecreatefrombmp</function> ile yüklenir.
+   </simpara>
+  </note>
   &tip.fopen-wrapper;
  </refsect1>
  <refsect1 role="parameters">
@@ -26,7 +31,7 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       WBMP resmin dosya yolu.
+       WBMP görüntünün dosya yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -44,15 +49,15 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-function WBMPyükle($resimismi)
+function WBMPyükle($ad)
 {
-    /* Resmi açmaya çalışalım */
-    $im = @imagecreatefromwbmp($resimismi);
+    /* Görüntüyü açmaya çalışalım */
+    $im = @imagecreatefromwbmp($ad);
 
     /* Başarılı oldu mu bakalım */
     if(!$im)
     {
-        /* Boş bir resim oluşturalım */
+        /* Boş bir görüntü oluşturalım */
         $im  = imagecreatetruecolor(150, 30);
         $bgc = imagecolorallocate($im, 255, 255, 255);
         $tc  = imagecolorallocate($im, 0, 0, 0);
@@ -60,7 +65,7 @@ function WBMPyükle($resimismi)
         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
 
         /* Hata iletisini çıktılayalım */
-        imagestring($im, 1, 5, 5, 'Yükleme hatası ' . $imgname, $tc);
+        imagestring($im, 1, 5, 5, $ad . ' yüklenirken hata oluştu', $tc);
     }
 
     return $im;
@@ -68,7 +73,7 @@ function WBMPyükle($resimismi)
 
 header('Content-Type: image/vnd.wap.wbmp');
 
-$img = WBMPyükle('bozuk.resim');
+$img = WBMPyükle('bozuk.görüntü');
 
 imagewbmp($img);
 imagedestroy($img);

@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: e24b13ad4f2efcea02397651e22210de8e7065b4 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imagefilter" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagefilter</refname>
-  <refpurpose>Bir resme bir süzgeç uygular</refpurpose>
+  <refpurpose>Bir görüntüye bir süzgeç uygular</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagefilter</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
    <methodparam><type>int</type><parameter>süzgeç</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>d1</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>d2</parameter></methodparam>
@@ -19,9 +19,10 @@
   </methodsynopsis>
   <para>
    <function>imagefilter</function> işlevi, türü <parameter>süzgeç</parameter>
-   ile belirtilen süzgeci <parameter>resim</parameter> resmine uygular.
+   ile belirtilen süzgeci <parameter>görüntü</parameter>ye uygular.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -35,29 +36,29 @@
        <itemizedlist>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_NEGATE</constant>: Resimdeki tüm renkleri zıt
+          <constant>IMG_FILTER_NEGATE</constant>: Görüntüdeki tüm renkleri zıt
           renge dönüştürür.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_GRAYSCALE</constant>: Resmi gri tonlamalı hale
-          getirir. REC.601 luma (Y') hesaplamasındaki katsayılar kullanılarak 
-          kırmızı, yeşil ve mavi bileşenlerin ağırlıklı ortalamalarından gri 
+          <constant>IMG_FILTER_GRAYSCALE</constant>: Görüntüyü gri tonlamalı hale
+          getirir. REC.601 luma (Y') hesaplamasındaki katsayılar kullanılarak
+          kırmızı, yeşil ve mavi bileşenlerin ağırlıklı ortalamalarından gri
           tonlama elde edilir.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_BRIGHTNESS</constant>: Resmin parlaklığın
+          <constant>IMG_FILTER_BRIGHTNESS</constant>: Görüntünün parlaklığını
           değiştirir. Parlaklık seviyesini belirtmek için
           <parameter>d1</parameter> değiştirgesini kullanın.
-          Parlaklık -255 ile 255 arasındadır. 
+          Parlaklık -255 ile 255 arasındadır.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_CONTRAST</constant>: Resmin karşıtlık
+          <constant>IMG_FILTER_CONTRAST</constant>: Görüntünün karşıtlık
           seviyesini değiştirir. Karşıtlık seviyesini belirtmek için
           <parameter>d1</parameter> değiştirgesini kullanın.
          </simpara>
@@ -75,24 +76,24 @@
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_EDGEDETECT</constant>: Resmin kenarlarını
+          <constant>IMG_FILTER_EDGEDETECT</constant>: Görüntünün kenarlarını
           vurgulamak için kenar algılaması kullanılır.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_EMBOSS</constant>: Resme kabartma uygular.
+          <constant>IMG_FILTER_EMBOSS</constant>: Görüntüye kabartma uygular.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_GAUSSIAN_BLUR</constant>: Resmi Gauss
+          <constant>IMG_FILTER_GAUSSIAN_BLUR</constant>: Görüntüyü Gauss
           yöntemiyle bulanıklaştırır.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_SELECTIVE_BLUR</constant>: Resmi
+          <constant>IMG_FILTER_SELECTIVE_BLUR</constant>: Görüntüyü
           bulanıklaştırır.
          </simpara>
         </listitem>
@@ -104,16 +105,24 @@
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_SMOOTH</constant>: Resmin sert hatlarını
+          <constant>IMG_FILTER_SMOOTH</constant>: Görüntünün sert hatlarını
           yumuşatır. Yumuşatma seviyesini belirtmek için
           <parameter>d1</parameter> değiştirgesini kullanın.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_PIXELATE</constant>: Resme mozaik etkisi verir.
+          <constant>IMG_FILTER_PIXELATE</constant>: Görüntüye mozaik etkisi verir.
           Mozaik boyutu için <parameter>d1</parameter> mozaik etki kipini
           belirtmek için <parameter>d2</parameter> değiştirgesini kullanın.
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>IMG_FILTER_SCATTER</constant>: Görüntüye saçılma etkisi
+          verir, etki gücünü tanımlamak için <parameter>d1</parameter> ve
+          <parameter>d2</parameter>'yi ve yalnızca seçili piksel renklerini
+          uygulamak için <parameter>d3</parameter>'ü kullanın.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -150,6 +159,13 @@
           <constant>IMG_FILTER_PIXELATE</constant>: Piksel cinsinden mozaik boyu.
          </simpara>
         </listitem>
+        <listitem>
+         <simpara>
+          <constant>IMG_FILTER_SCATTER</constant>: Etki eksiltme seviyesi.
+          Bu, <parameter>d2</parameter> ile ayarlanan toplama seviyesinden
+          daha yüksek veya ona eşit olmamalıdır.
+         </simpara>
+        </listitem>
        </itemizedlist>
       </para>
      </listitem>
@@ -170,6 +186,11 @@
           kullanılıp kullanılmayacağı (&false; öntanımlıdır).
          </simpara>
         </listitem>
+        <listitem>
+         <simpara>
+          <constant>IMG_FILTER_SCATTER</constant>: Etki toplama seviyesi.
+         </simpara>
+        </listitem>
        </itemizedlist>
       </para>
      </listitem>
@@ -182,6 +203,12 @@
         <listitem>
          <simpara>
           <constant>IMG_FILTER_COLORIZE</constant>: &gd.value.blue;
+         </simpara>
+        </listitem>
+        <listitem>
+         <simpara>
+          <constant>IMG_FILTER_SCATTER</constant>: Etkiyi uygulamak için isteğe
+          bağlı dizi indisli renk değerleri.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -207,12 +234,14 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
  </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -226,15 +255,9 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>7.4.0</entry>
        <entry>
-        Mozaik desteği (<constant>IMG_FILTER_PIXELATE</constant>) eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>5.2.5</entry>
-       <entry>
-        <constant>IMG_FILTER_COLORIZE</constant> için alfa kanalı desteği eklendi.
+        Saçılma desteği (<constant>IMG_FILTER_SCATTER</constant>) eklendi.
        </entry>
       </row>
      </tbody>
@@ -242,6 +265,7 @@
    </informaltable>
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -254,13 +278,13 @@ $im = imagecreatefrompng('dave.png');
 
 if($im && imagefilter($im, IMG_FILTER_GRAYSCALE))
 {
-    echo 'Resme gri tonlama uygulandı.';
+    echo 'Görüntüye gri tonlama uygulandı.';
 
     imagepng($im, 'dave.png');
 }
 else
 {
-    echo 'Resme gri tonlama uygulanamadı.';
+    echo 'Görüntüye gri tonlama uygulanamadı.';
 }
 
 imagedestroy($im);
@@ -279,14 +303,14 @@ $im = imagecreatefrompng('sean.png');
 
 if($im && imagefilter($im, IMG_FILTER_BRIGHTNESS, 20))
 {
-    echo 'Resmin parlaklığı değişti.';
+    echo 'Görüntünün parlaklığı değişti.';
 
     imagepng($im, 'sean.png');
     imagedestroy($im);
 }
 else
 {
-    echo 'Resmin parlaklığı değiştirilemedi.';
+    echo 'Görüntünün parlaklığı değiştirilemedi.';
 }
 ?>
 ]]>
@@ -304,14 +328,14 @@ $im = imagecreatefrompng('philip.png');
 /* K, Y, M olarak 0, 255, 0 yeşildir */
 if($im && imagefilter($im, IMG_FILTER_COLORIZE, 0, 255, 0))
 {
-    echo 'Resim yeşertildi.';
+    echo 'Görüntü yeşertildi.';
 
     imagepng($im, 'philip.png');
     imagedestroy($im);
 }
 else
 {
-    echo 'Resim yeşertilemedi.';
+    echo 'Görüntü yeşertilemedi.';
 }
 ?>
 ]]>
@@ -339,7 +363,7 @@ function negate($im)
         {
             $index = imagecolorat($im, $x, $y);
             $rgb = imagecolorsforindex($index);
-            $color = imagecolorallocate($im, 255 - $rgb['red'], 
+            $color = imagecolorallocate($im, 255 - $rgb['red'],
                        255 - $rgb['green'], 255 - $rgb['blue']);
 
             imagesetpixel($im, $x, $y, $color);
@@ -353,14 +377,14 @@ $im = imagecreatefromjpeg('kalle.jpg');
 
 if($im && negate($im))
 {
-    echo 'Resmin negatifi başarıyla elde edildi.';
+    echo 'Görüntünün negatifi başarıyla elde edildi.';
 
     imagejpeg($im, 'kalle.jpg', 100);
     imagedestroy($im);
 }
 else
 {
-    echo 'Resmin negatifi elde edilemedi.';
+    echo 'Görüntünün negatifi elde edilemedi.';
 }
 ?>
 ]]>
@@ -373,7 +397,7 @@ else
     <programlisting role="php">
 <![CDATA[
 <?php
-// PHP logosunu yükleyelim, farkları göstermek için bize iki resim lazım
+// PHP logosunu yükleyelim, farkları göstermek için bize iki görüntü lazım
 $logo1 = imagecreatefrompng('./php.png');
 $logo2 = imagecreatefrompng('./php.png');
 
@@ -384,7 +408,7 @@ $output = imagecreatetruecolor(imagesx($logo1) * 2, imagesy($logo1));
 imagefilter($logo1, IMG_FILTER_PIXELATE, 3);
 imagefilter($logo2, IMG_FILTER_PIXELATE, 3, true);
 
-// Farkları çıktı resminde karıştıralım
+// Farkları çıktı görüntüsünde karıştıralım
 imagecopy($output, $logo1, 0, 0, 0, 0, imagesx($logo1) - 1,
                                        imagesy($logo1) - 1);
 imagecopy($output, $logo2, imagesx($logo2), 0, 0, 0,
@@ -401,24 +425,57 @@ imagedestroy($output);
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
-     <alt>Örnel çıktısı: imagefilter() mozaikleştirme</alt>
+     <alt>Örnek çıktısı: imagefilter() mozaikleştirme</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagefilterpixelate.png"/>
      </imageobject>
     </mediaobject>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- <function>imagefilter</function> saçılma örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// PHP logosunu yükleyelim
+$logo = imagecreatefrompng('./php.png');
+
+// Görüntüye çok yumuşak saçılma etkisi uygulayalım
+imagefilter($logo, IMG_FILTER_SCATTER, 3, 5);
+
+// Saçılma etkili görüntüyü çıktılayalım
+header('Content-Type: image/png');
+imagepng($logo);
+imagedestroy($logo);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <mediaobject>
+     <alt>Örnek çıktısı: imagefilter() saçılma</alt>
+     <imageobject>
+      <imagedata fileref="en/reference/image/figures/scatter.png"/>
+     </imageobject>
+    </mediaobject>
+   </example>
+  </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
+  <note>
+   <simpara>
+    <constant>IMG_FILTER_SCATTER</constant> sonucu daima rastgeledir.
+   </simpara>
+  </note>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imageconvolution</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imageconvolution</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

@@ -3,7 +3,7 @@
 <refentry xml:id="function.imagecopyresized" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagecopyresized</refname>
-  <refpurpose>Resmin bir parçasını kopyalar ve boyutlandırır</refpurpose>
+  <refpurpose>Görüntünün bir parçasını kopyalar ve boyutlandırır</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
@@ -22,22 +22,21 @@
   </methodsynopsis>
   <para>
    <function>imagecopyresized</function> işlevi <parameter>kaynak</parameter>
-   resmin bir bölümünü <parameter>hedef</parameter> resmin bir bölümüne
+   görüntünün bir bölümünü <parameter>hedef</parameter> görüntünün bir bölümüne
    sığacak şekilde boyutlandırarak kopyalar.
   </para>
   <para>
    Başka bir deyişle, <function>imagecopyresized</function> işlevi
-   <parameter>hedef</parameter> resmin <parameter>hdf_x</parameter>,
-   <parameter>hdf_y</parameter> noktasından <parameter>hdf_gnş</parameter>,
-   <parameter>hdf_yks</parameter> ile belirlenen parçasını alıp
-   <parameter>kaynak</parameter> resmin <parameter>kyn_x</parameter>,
-   <parameter>kyn_y</parameter> noktasında, <parameter>kyn_gnş</parameter> ve
-   <parameter>kyn_yks</parameter> ile belirlenen parçasına yerleştirir.
+   <parameter>kaynak</parameter> görüntünün <parameter>kyn_x</parameter>,
+   <parameter>kyn_y</parameter> noktasından, <parameter>kyn_gnş</parameter> ve
+   <parameter>kyn_yks</parameter> ile belirlenen parçasını alıp <parameter>hedef</parameter> görüntünün <parameter>hdf_x</parameter>,
+   <parameter>hdf_y</parameter> noktasına <parameter>hdf_gnş</parameter>,
+   <parameter>hdf_yks</parameter> ile belirlenen parçasına yerleştirir.
   </para>
   <para>
    Eğer kaynak ve hedef koordinatları ile genişlik ve yükseklikler farklıysa
    parça yerleştirilirken küçültülür veya büyütülür. Koordinatlar parçanın sol
-   üst köşesini belirtir. Bu işlev aynı resmin içinde kopyalama yapmak
+   üst köşesini belirtir. Bu işlev aynı görüntünün içinde kopyalama yapmak
    amacıyla da kullanılabilir (<parameter>hedef</parameter> ve
    <parameter>kaynak</parameter> aynı ise), fakat parçaların üstüste gelmesi
    halinde sonuç belirsizdir.
@@ -63,7 +62,7 @@
      <term><parameter>hdf_x</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki X koordinatı.
+       Hedef görüntüdeki X koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -71,7 +70,7 @@
      <term><parameter>hdf_y</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki Y koordinatı.
+       Hedef görüntüdeki Y koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -79,7 +78,7 @@
      <term><parameter>kyn_x</parameter></term>
      <listitem>
       <para>
-       Kaynak resimdeki X koordinatı.
+       Kaynak görüntüdeki X koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -87,7 +86,7 @@
      <term><parameter>kyn_y</parameter></term>
      <listitem>
       <para>
-       Kaynak resimdeki Y koordinatı.
+       Kaynak görüntüdeki Y koordinatı.
       </para>
      </listitem>
     </varlistentry>
@@ -95,7 +94,7 @@
      <term><parameter>hdf_gnş</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki parça genişliği.
+       Hedef görüntüdeki parça genişliği.
       </para>
      </listitem>
     </varlistentry>
@@ -103,7 +102,7 @@
      <term><parameter>hdf_yks</parameter></term>
      <listitem>
       <para>
-       Hedef resimdeki parça yüksekliği.
+       Hedef görüntüdeki parça yüksekliği.
       </para>
      </listitem>
     </varlistentry>
@@ -132,9 +131,9 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- Bir resmin boyutlandırılması</title>
+    <title>- Bir görüntünün boyutlandırılması</title>
     <para>
-     Bu örnekte resim yarı boyutunda gösterilmektedir.
+     Bu örnekte görüntü yarı boyutunda gösterilmektedir.
     </para>
     <programlisting role="php">
 <![CDATA[
@@ -146,32 +145,32 @@ $oran = 0.5;
 // İçerik türü
 header('Content-Type: image/jpeg');
 
-// Yeni resmin boyutları
+// Yeni görüntünün boyutları
 list($gen, $yük) = getimagesize($filename);
 $yenigen = $gen * $oran;
 $yeniyük = $yük * $oran;
 
-// Resimleri yükleyelim
+// Görüntüleri yükleyelim
 $hedef = imagecreatetruecolor($yeniger, $yeniyük);
 $kaynak = imagecreatefromjpeg($dosya);
 
-// Resmi boyutlandıralım
+// Görüntüyü boyutlandıralım
 imagecopyresized($hedef, $kaynak, 0, 0, 0, 0, $yenigen, $yeniyük, $gen, $yük);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktılayalım
 imagejpeg($hedef);
 ?>
 ]]>
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
-     <alt>Bir resmin boyutlandırılması örneğinin çıktısı</alt>
+     <alt>Bir görüntünün boyutlandırılması örneğinin çıktısı</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagecopyresized.jpg"/>
      </imageobject>
     </mediaobject>
     <para>
-     Resim yarı boyutunda çıktılanır ama
+     Görüntü yarı boyutunda çıktılanır ama
      <function>imagecopyresampled</function> kullanılsaydı kalite daha iyi
      olurdu.
     </para>
@@ -182,15 +181,15 @@ imagejpeg($hedef);
   &reftitle.notes;
   <note>
    <para>
-    Paletli resimlerdeki sınırlama (255+1 renk) nedeniyle bir sorun vardır.
-    Resmi yeniden örneklerken veya süzerken 255'ten daha çok renk gerekir ve
+    Paletli görüntülerdeki sınırlama (255+1 renk) nedeniyle bir sorun vardır.
+    Görüntüyü yeniden örneklerken veya süzerken 255'ten daha çok renk gerekir ve
     bu nedenle yeniden örneklenen piksel renkleri için bir yaklaşım uygulanır.
-    Paletli resimde yeni renk için paletten bir yer ayrılmaya çalışılır, eğer
+    Paletli görüntüde yeni renk için paletten bir yer ayrılmaya çalışılır, eğer
     bu işlem başarısız olursa (teorik olarak) o renge en yakın renk seçilir.
     Bu her zaman görsel olarak en yakın renk olmayabilir. Bunun sonucu olarak
     kısmen boş resimler gibi tuhaf sonuçlar alınabilir. Bu gibi sorunlarla
-    karşılaşmamak için hedef resim olarak gerçek renkli (örneğin,
-    <function>imagecreatetruecolor</function> ile oluşturulmuş) bir resim
+    karşılaşmamak için hedef görüntü olarak gerçek renkli (örneğin,
+    <function>imagecreatetruecolor</function> ile oluşturulmuş) bir görüntü
     kullanın.
    </para>
   </note>

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: haluk Status: ready -->
 <refentry xml:id='function.imagegd' xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagegd</refname>
-  <refpurpose>Tarayıcıya veya bir dosyaya bir GD resmi çıktılar</refpurpose>
+  <refpurpose>Tarayıcıya veya bir dosyaya bir GD görüntü çıktılar</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagegd</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>dosyaismi</parameter><initializer>NULL</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bir GD resmini <parameter>dosyaismi</parameter> ile belirtilen dosyaya
+   Bir GD görüntüyü <parameter>dosyaismi</parameter> ile belirtilen dosyaya
    çıktılar.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -26,26 +27,51 @@
     <varlistentry>
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
-      <para>
-       GD resminin kaydedileceği dosyanın yolu. Belirtilmezse veya &null;
-       verilirse ham resim akımı doğrudan tarayıcıya çıktılanır.
-      </para>
+      <para>&gd.image.path;</para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
+  &gd.return.trueonerror;
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <function>imagegd</function> artık gerçek renkli görüntüleri çıktılamayı
+        sağlıyor. Evvelce bu örtük olarak palete dönüşürdü.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- Bir GD resminin çıktılanması</title>
+    <title>- Bir GD görüntünün çıktılanması</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -54,7 +80,7 @@ $im = imagecreatetruecolor(120, 20);
 $text_color = imagecolorallocate($im, 233, 14, 91);
 imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktılayalım
 imagegd($im);
 
 // Belleği serbest bırakalım
@@ -66,7 +92,7 @@ imagedestroy($im);
   </para>
   <para>
    <example>
-    <title>- Bir GD resminin kaydedilmesi</title>
+    <title>- Bir GD görüntünün kaydedilmesi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -75,8 +101,8 @@ $im = imagecreatetruecolor(120, 20);
 $text_color = imagecolorallocate($im, 233, 14, 91);
 imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
 
-// gd resmini kaydedelim
-// GD resimlerin dosya biçemi .gd'dir.
+// gd görüntüyü kaydedelim
+// GD görüntülerin dosya biçemi .gd'dir.
 // http://www.libgd.org/GdFileFormats adresine bakınız
 imagegd($im, 'simple.gd');
 
@@ -88,24 +114,26 @@ imagedestroy($im);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
   <note>
    <para>
-    GD biçemi resim parçalarının hızlı yüklenebilmesi için kullanılan bir
-    resim biçemidir. GD biçeminin sadece GD uyumlu uygulamalarda
+    GD biçemi görüntü parçalarının hızlı yüklenebilmesi için kullanılan bir
+    görüntü biçemidir. GD biçeminin sadece GD uyumlu uygulamalarda
     kullanılabileceğine dikkat ediniz.
    </para>
   </note>
+  &gd.deprecated.gd-formats;
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagegd2</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagegd2</function></member>
+  </simplelist>
  </refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file
