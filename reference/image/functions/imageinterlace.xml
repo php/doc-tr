@@ -1,48 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2f00a6fcf430822f19914ca47ea378651591b1eb Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imageinterlace" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imageinterlace</refname>
   <refpurpose>Geçişimliliği açıp kapar</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>imageinterlace</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>geçişim</parameter><initializer>0</initializer></methodparam>
+   <type>bool</type><methodname>imageinterlace</methodname>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>bool</type><type>null</type></type><parameter>etkin</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>imageinterlace</function> işlevi geçişim bitini açıp kapar.
   </para>
   <para>
-   Eğer geçişim biti etkin ve resim bir <acronym>JPEG</acronym> resmi olarak kullanılmışsa resim aşamalı <acronym>JPEG</acronym> olarak oluşturulur.
+   Eğer geçişim biti etkin ve görüntü bir <acronym>JPEG</acronym> görüntü olarak
+   kullanılmışsa görüntü aşamalı <acronym>JPEG</acronym> olarak oluşturulur.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
     &gd.image.description;
     <varlistentry>
-     <term><parameter>geçişim</parameter></term>
+     <term><parameter>etkin</parameter></term>
      <listitem>
       <para>
-       Sıfırdan farklıysa resim geçişimli olur aksi takdirde geçişim biti
-       kapatılır.
+       &true; ise görüntü geçişimli olur, &false; ise geçişim biti
+       kapatılır. &null; aktarılması geçişim bitinde değişiklik olmadığı
+       anlamına gelir.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Geçişim biti ayarlanabilmişse 1 aksi takdirde 0 döner.
+   Geçişim biti etkinse 1 aksi takdirde 0 döner.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.5</entry>
+      <entry>
+       <function>imageinterlace</function> artık <type>bool</type> değer
+       döndürüyor; evvelce <type>int</type> değer dönerdi
+       (geçişimliyse sıfırdan farklı, değilse sıfır).
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>etkin</parameter> artık <type>bool</type> kabul ediyor;
+       evvelce bu, <type>int</type> idi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -52,13 +88,13 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// Bir resim taslağı oluşturalım
-$im = imagecreatefrom('php.gif');
+// Bir görüntü taslağı oluşturalım
+$im = imagecreatefromgif('php.gif');
 
 // Geçişimi etkin kılalım
 imageinterlace($im, true);
 
-// Geçişimli resmi kaydedelim
+// Geçişimli görüntüyü kaydedelim
 imagegif($im, './php_interlaced.gif');
 imagedestroy($im);
 ?>
