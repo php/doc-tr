@@ -172,7 +172,7 @@ Windows kullananlara notepad++ öneririm.
 Son olarak dosyayı teslim etmeden önce
 `phpdoc/doc-base` dizininde şu komutunu kullanın:
 ```bash
-$ php configure.php --with-lang=tr
+$ php configure.php --with-lang=tr --enable-force-dom-save --disable-segfault-error --enable-xml-details
 ```
 Komut hata vermemişse ve bir GiT hesabınız varsa veya GitHub PR'ı
 yapacaksanız dosyayı depoya gönderebilirsiniz.
@@ -188,6 +188,13 @@ git push
 ```
 PR yapacak olanlar bu işlemden sonra artık GitHub hesaplarında
 Pull Request oluşturabilir.
+
+Çeviri projesinin son durumunu öğrenmek için `phpdoc` dizini altında
+aşağıdaki komutu verin ve `revcheck.html` dosyasını tarayıcınız ile açın.
+Çevirmenler için çok yararlı bir araçtır.
+```bash
+php doc-base/scripts/revcheck.php tr > revcheck.html
+```
 
 ### Sözlük
 
