@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 40885d3623c5dd07c89cb3d4cb717061211f98f4 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-appendimages">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.appendimages">
  <refnamediv>
   <refname>Imagick::appendImages</refname>
-  <refpurpose>Bir resim kümesini ekler</refpurpose>
+  <refpurpose>Bir görüntü kümesini ekler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>Imagick</type><methodname>Imagick::appendImages</methodname>
-   <methodparam><type>bool</type><parameter>yığıt</parameter></methodparam>
+   <methodparam><type>bool</type><parameter>yön</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Daha büyük bir resmin içine bir resim kümesi ekler.
+   Daha büyük bir görüntünün içine bir görüntü kümesi ekler.
   </para>
  </refsect1>
 
@@ -23,10 +23,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>yığıt</parameter></term>
+     <term><parameter>yön</parameter></term>
      <listitem>
       <para>
-       Yığıtın yönü (yukardan aşağıya veya aşağıdan yukarıya).
+       Kümenin yönü. Öntanımlı yön (veya &false; belirtilirse) soldan sağadır.
+       &true; belirtilirse görüntüler yukarıdan aşağı yığılır.
       </para>
      </listitem>
     </varlistentry>
@@ -38,7 +39,13 @@
   &reftitle.returnvalues;
   <para>
    Başarı durumunda yeni bir <classname>Imagick</classname> nesnesi döner.
-   &imagick.imagickexception.throw;
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   &imagick.imagick.throws;
   </para>
  </refsect1>
 
@@ -51,19 +58,19 @@
 <![CDATA[
 <?php
 
-/* Yeni bir imagick nesnesi oluşturalım */
+/* Yeni bir imagick nesnesi oluştur */
 $im = new Imagick();
 
-/* kırmızı, yeşil ve mavi tuvaller oluşturalım */
+/* kırmızı, yeşil ve mavi tuvaller oluştur */
 $im->newImage(100, 50, "red");
 $im->newImage(100, 50, "green");
 $im->newImage(100, 50, "blue");
 
-/* Bunları birbirlerine ekleyelim */
+/* Bunları birbirlerine ekle */
 $im->resetIterator();
 $combined = $im->appendImages(true);
 
-/* Elde edilen resmi çıktılayalım */
+/* Elde edilen resmi çıktıla */
 $combined->setImageFormat("png");
 header("Content-Type: image/png");
 echo $combined;
@@ -72,6 +79,7 @@ echo $combined;
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Çıktı örneği: Imagick::appendImages()</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/floodfillpaint_intermediate.png"/>
      </imageobject>

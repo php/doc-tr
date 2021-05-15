@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-affinetransformimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.affinetransformimage">
  <refnamediv>
   <refname>Imagick::affineTransformImage</refname>
-  <refpurpose>Resmi dönüştürür</refpurpose>
+  <refpurpose>Görüntüyü dönüştürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::affineTransformImage</methodname>
    <methodparam><type>ImagickDraw</type><parameter>matris</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Homojen koordinatlar matrisine göre resmi dönüştürür.
+   Homojen koordinatlar matrisine göre görüntüyü dönüştürür.
   </para>
  </refsect1>
 
@@ -33,12 +32,48 @@
     </varlistentry>
    </variablelist>
   </para>
-
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::affineTransformImage</function></title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function affineTransformImage($imagePath)
+{
+    $imagick = new \Imagick(realpath($imagePath));
+    $draw = new \ImagickDraw();
+
+    $angle = deg2rad(40);
+
+    $affineRotate = array(
+        "sx" => cos($angle), "sy" => cos($angle),
+        "rx" => sin($angle), "ry" => -sin($angle),
+        "tx" => 0, "ty" => 0,
+    );
+
+    $draw->affine($affineRotate);
+
+    $imagick->affineTransformImage($draw);
+
+    header("Content-Type: image/jpg");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
