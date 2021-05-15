@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xml:id='function.iptcembed' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.iptcembed" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>iptcembed</refname>
   <!-- IPTC: International Press Telecommunications Council -->
-  <refpurpose>İkil IPTC verisini bir JPEG resminin içine gömer</refpurpose>
+  <refpurpose>İkil IPTC verisini bir JPEG görüntünün içine gömer</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>iptcembed</methodname>
-   <methodparam><type>string</type><parameter>iptcverisi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>jpeg_dosya_ismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>kuyruk</parameter></methodparam>
+   <type class="union"><type>string</type><type>bool</type></type><methodname>iptcembed</methodname>
+   <methodparam><type>string</type><parameter>iptc_verisi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kuyruk</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
-   İkil IPTC verisini bir JPEG resminin içine gömer.
+   İkil IPTC verisini bir JPEG görüntünün içine gömer.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>iptcverisi</parameter></term>
+     <term><parameter>iptc_verisi</parameter></term>
      <listitem>
       <para>
        Yazılacak veri.
@@ -32,10 +33,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>jpeg_dosya_ismi</parameter></term>
+     <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       JPEG resminin dosya yolu.
+       JPEG görüntünün dosya yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -43,20 +44,25 @@
      <term><parameter>kuyruk</parameter></term>
      <listitem>
       <para>
-       Kuyruk seçeneği; 2'den büyükse JPEG bir dizge olarak döner.
+       Kuyruk seçeneği; 2'den küçükse JPEG bir dizge olarak döner. Değilse,
+       JPEG standart çıktıya basılır.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata oluşursa &false; döner. Başarı durumunda kuyruk seçeneği 2'den
-   küçükse JPEG bir dizge olarak dönmez.
+   Bir hata oluşursa &false; döner. Başarı durumunda
+   <parameter>kuyruk</parameter> seçeneği 2'den küçükse JPEG bir dizge olarak
+   döner,&return.falseforfailure;. Aksi takdirde başarı durumunda
+   &true;,&return.falseforfailure;.
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
@@ -91,22 +97,13 @@ function iptc_make_tag($rec, $data, $value)
 // jpeg dosyasının yolu
 $path = './phplogo.jpg';
 
-// Önce jpeg dosyasında IPTC verisi var mı diye bakacağız.
-// Varsa vazgeçeceğiz, çünkü IPTC verisi varsa herhangi bir resim gömemeyiz!
-$image = getimagesize($path, $info);
-
-if(isset($info['APP13']))
-{
-    die('Hata: Belirtilen resimde IPTC verisi bulundu, devam edilemiyor.');
-}
-
-// IPTC etiketlerini düzenleyelim
+// IPTC etiketlerini düzenle
 $iptc = array(
     '2#120' => 'Test image',
     '2#116' => 'Copyright 2008-2009, The PHP Group'
 );
 
-// IPTC etiketlerini ikil veriye dönüştürelim
+// IPTC etiketlerini ikil veriye dönüştür
 $data = '';
 
 foreach($iptc as $tag => $string)
@@ -115,10 +112,10 @@ foreach($iptc as $tag => $string)
     $data .= iptc_make_tag(2, $tag, $string);
 }
 
-// IPTC verisini resme gömelim.
+// IPTC verisini görüntüye göm
 $content = iptcembed($data, $path);
 
-// Yeni resim verisini dosyaya yazalım.
+// Yeni görüntü verisini dosyaya yaz
 $fp = fopen($path, "wb");
 fwrite($fp, $content);
 fclose($fp);

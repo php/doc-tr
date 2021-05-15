@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 3e66a5c8120aacc63b685ffa67f4534572630cbd Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagettftext" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>imagettftext</refname>
-  <refpurpose>Metni resme TrueType yazı tipi ile yazar</refpurpose>
+  <refpurpose>Metni görüntüye TrueType yazı tipi ile yazar</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>array</type><methodname>imagettftext</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
    <methodparam><type>float</type><parameter>boyut</parameter></methodparam>
    <methodparam><type>float</type><parameter>açı</parameter></methodparam>
    <methodparam><type>int</type><parameter>x</parameter></methodparam>
@@ -20,9 +19,16 @@
    <methodparam><type>string</type><parameter>metin</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen metni belirtilen TrueType yazı tipi ile belirtilen resme yazar.
+   Belirtilen metni belirtilen TrueType yazı tipi ile belirtilen görüntüye yazar.
   </para>
+  <note>
+   <para>
+    <function>imagettftext</function> işlevi, fazladan <parameter>ekbilgi</parameter>
+    desteği olan <function>imagefttext</function> işlevinin genişletilmişidir.
+   </para>
+  </note>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -31,10 +37,7 @@
     <varlistentry>
      <term><parameter>boyut</parameter></term>
      <listitem>
-      <para>
-       Yazıtipi yüksekliği. Kullandığınız GD sürümüne bağlı olarak piksel
-       (GD1) veya punto (GD2) olarak belirtilmelidir.
-      </para>
+       <para>&gd.font.size;</para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -76,44 +79,7 @@
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry>
-     <term><parameter>yazıtipi</parameter></term>
-     <listitem>
-      <para>
-       Kullanılacak TrueType yazıtipinin dosya yolu.
-      </para>
-      <para>
-       PHP'nin kullandığı GD kütüphanesi sürümüne bağlı olarak,
-       <emphasis><literal>/</literal> ile başlamayan bir dosya ismine
-       <literal>.ttf</literal> uzantısı eklenir</emphasis> ve kütüphane bu
-       dosya ismini kütüphanede tanımlı dizinlerde arar.
-      </para>
-      <para>
-       GD kütüphanesinin 2.0.18'den küçük sürümlerini kullanıyorsanız, farklı
-       yazıtipi dosyalarının aralarına noktalı virgül değil boşluk karakteri
-       koymalısınız. Bu kurala dikkat etmezseniz şöyle bir uyarı alırsınız:
-       <literal>Warning: Could not find/open font</literal> (Uyarı: Yazı tipi
-       bulunamadı veya açılamadı). Boşluk içeren dosya yollarının varlığında
-       bu sürümler için tek çözüm yazı tiplerinin boşluk içermeyen dosya
-       yollarına taşınmasıdır.
-      </para>
-      <para>
-       Yazı tiplerinin betikle aynı dizinde bulunduğu durumlarda herhangi bir
-       sorun çıkmaması için aşağıdaki çözüm kullanılabilir.
-       <programlisting role="php">
-<![CDATA[
-<?php
-// GD ortam değişkenini tanımlayalım
-putenv('GDFONTPATH=' . realpath('.'));
-
-// Kullanılacak yaza tipinin ismi (dikkat: .ttf uzantısı yok)
-$font = 'freesans';
-?>
-]]>
-       </programlisting>
-      </para>
-     </listitem>
-    </varlistentry>
+    &gd.ttf.fontfile;
     <varlistentry>
      <term><parameter>metin</parameter></term>
      <listitem>
@@ -128,7 +94,7 @@ $font = 'freesans';
       </para>
       <para>
        &amp;copy; gibi isimli öğeler desteklenmemektedir. Bu tür isimli
-       öğeleri UTF-8 dizgelerde kullanmak için PHP 5.0.0'dan itibaren
+       öğeleri UTF-8 dizgelerde kullanmak için
        <function>html_entity_decode</function> işlevi ile dönüştürebilirsiniz.
       </para>
       <para>
@@ -140,6 +106,7 @@ $font = 'freesans';
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
@@ -151,30 +118,6 @@ $font = 'freesans';
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.0</entry>
-       <entry>
-        <parameter>metin</parameter> içinde onaltılık öğeler belirtmek mümkün oldu.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-   </para>
-  </refsect1>
-
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -182,35 +125,35 @@ $font = 'freesans';
     <title>- <function>imagettftext</function> örneği</title>
     <para>
      Bu örnek betik, içinde Arial yazı tipi ile siyah renkte (gri gölgeli)
-     "Testing..." yazılmış 400x30 piksellik beyaz bir PNG resmi üretecektir.
+     "Testing..." yazılmış 400x30 piksellik beyaz bir PNG görüntü üretecektir.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-// İçerik türünü belirtelim
-header('Content-type: image/png');
+// İçerik türünü belirt
+header('Content-Type: image/png');
 
-// Resmi boş olarak oluşturalım
+// Görüntüyü boş olarak oluştur
 $resim = imagecreatetruecolor(400, 30);
 
-// Renkleri tanımlayalım
+// Renkleri tanımla
 $beyaz = imagecolorallocate($resim, 255, 255, 255);
 $gri = imagecolorallocate($resim, 128, 128, 128);
 $siyah = imagecolorallocate($resim, 0, 0, 0);
 imagefilledrectangle($resim, 0, 0, 399, 29, $beyaz);
 
-// Metni tanımlayalım
+// Metni tanımla
 $metin = 'Testing...';
-// Buraya kendi dosya yolunuzu yazın
+// Buraya kendi dosya yolunuzu yaz
 $font = 'arial.ttf';
 
-// Metne gölge verelim
+// Metne gölge ver
 imagettftext($resim, 20, 0, 11, 21, $gri, $font, $metin);
 
-// Metni ekleyelim
+// Metni ekle
 imagettftext($resim, 20, 0, 10, 20, $siyah, $font, $metin);
 
-// imagejpeg()'ye göre daha temiz sonuç veren imagepng()'yi kullanalım
+// imagejpeg()'ye göre daha temiz sonuç veren imagepng()'yi kullan
 imagepng($resim);
 imagedestroy($resim);
 ?>
@@ -218,6 +161,7 @@ imagedestroy($resim);
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: imagettftext()</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagettftext.png"/>
      </imageobject>
@@ -225,22 +169,18 @@ imagedestroy($resim);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
-  <note>
-   <para>
-    Bu işlev hem GD kütüphanesini hem de
-    <link xlink:href="&url.freetype;">FreeType</link> kütüphanesini gerektirir.
-   </para>
-  </note>
+  &note.freetype;
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagettfbbox</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagettfbbox</function></member>
+   <member><function>imagefttext</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

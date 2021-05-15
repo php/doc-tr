@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagettfbbox" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>imagettfbbox</refname>
   <refpurpose>TrueType yazıtipi kullanılan bir metnin çerçevesini döndürür
   </refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
@@ -20,7 +20,14 @@
    Bir TrueType metin için yazıyı çevreleyen kutunun sınırlarını piksel
    cinsinden hesaplar ve sonucu bir dizi içinde döndürür.
   </para>
+  <note>
+   <para>
+    <function>imagettfbbox</function> işlevi, fazladan <parameter>ekbilgi</parameter>
+    desteği olan <function>imageftbbox</function> işlevinin genişletilmişidir.
+   </para>
+  </note>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -28,10 +35,7 @@
     <varlistentry>
      <term><parameter>boyut</parameter></term>
      <listitem>
-      <para>
-       Yazıtipi yüksekliği. Kullandığınız GD sürümüne bağlı olarak piksel
-       (GD1) veya punto (GD2) olarak belirtilmelidir.
-      </para>
+      <para>&gd.font.size;</para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -42,20 +46,7 @@
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry>
-     <term><parameter>yazıtipi</parameter></term>
-     <listitem>
-      <para>
-       Kullanılacak TrueType yazıtipinin dosya yolu (URL olabilir).
-      </para>
-      <para>
-       PHP'nin kullandığı GD kütüphanesi sürümüne bağlı olarak,
-       <emphasis><literal>/</literal> ile başlamayan bir dosya ismine
-       <literal>.ttf</literal> uzantısı eklenir</emphasis> ve kütüphane bu
-       dosya ismini kütüphanede tanımlı dizinlerde arar.
-      </para>
-     </listitem>
-    </varlistentry>
+    &gd.ttf.fontfile;
     <varlistentry>
      <term><parameter>metin</parameter></term>
      <listitem>
@@ -67,6 +58,7 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
@@ -123,6 +115,7 @@
    kastedilmektedir.
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -131,7 +124,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// 300x150'lik bir resim oluşturalım
+// 300x150'lik bir görüntü oluştur
 $im = imagecreatetruecolor(300, 150);
 $black = imagecolorallocate($im, 0, 0, 0);
 $white = imagecolorallocate($im, 255, 255, 255);
@@ -139,31 +132,31 @@ $white = imagecolorallocate($im, 255, 255, 255);
 // Artalan rengi beyaz olsun
 imagefilledrectangle($im, 0, 0, 299, 299, $white);
 
-// Bu yazı tipi dosyamız olsun
+// Bu yazı tipi dosyası olsun
 $font = './arial.ttf';
 
-// İlk metnimizin çerçevesini oluşturalım
+// İlk metnin çerçevesini oluştur
 $bbox = imagettfbbox(10, 45, $font, 'Powered by PHP ' . phpversion());
 
-// Bunlar bizim X ve Y koordinatlarımız olsun
+// Bunlar X ve Y koordinatları olsun
 $x = $bbox[0] + (imagesx($im) / 2) - ($bbox[4] / 2) - 25;
 $y = $bbox[1] + (imagesy($im) / 2) - ($bbox[5] / 2) - 5;
 
-// Metni yazalım
+// Metni yaz
 imagettftext($im, 10, 45, $x, $y, $black, $font, 'Powered by PHP ' . phpversion());
 
-// Şimdi ikinci metnin çerçevesini oluşturalım
+// Şimdi ikinci metnin çerçevesini oluştur
 $bbox = imagettfbbox(10, 45, $font, 'and Zend Engine ' . zend_version());
 
 // Bu metin ilkinin altında olsun
 $x = $bbox[0] + (imagesx($im) / 2) - ($bbox[4] / 2) + 10;
 $y = $bbox[1] + (imagesy($im) / 2) - ($bbox[5] / 2) - 5;
 
-// Metni yazalım
+// Metni yaz
 imagettftext($im, 10, 45, $x, $y, $black, $font, 'and Zend Engine ' . zend_version());
 
-// Tarayıcıya çıktılayalım
-header('Content-type: image/png');
+// Tarayıcıya çıktıla
+header('Content-Type: image/png');
 
 imagepng($im);
 imagedestroy($im);
@@ -173,22 +166,18 @@ imagedestroy($im);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
-  <note>
-   <para>
-    Bu işlev hem GD kütüphanesini hem de
-    <link xlink:href="&url.freetype;">FreeType</link> kütüphanesini gerektirir.
-   </para>
-  </note>
+  &note.freetype;
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagettftext</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagettftext</function></member>
+   <member><function>imageftbbox</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

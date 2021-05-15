@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagewbmp" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagewbmp</refname>
-  <refpurpose>Resmi bir dosyaya veya tarayıcıya çıktılar</refpurpose>
+  <refpurpose>&gd.image.output;</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagewbmp</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>dosyaismi</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>artalan</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen resmi <acronym>WBMP</acronym> biçemli olarak çıktılar veya
+   Belirtilen görüntüyü <acronym>WBMP</acronym> biçemli olarak çıktılar veya
    kaydeder.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -27,10 +28,7 @@
     <varlistentry>
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
-      <para>
-       Resmin kaydedileceği dosyanın yolu. Belirtilmez veya &null; verilirse
-       doğrudan ham resim akımı çıktılanır.
-      </para>
+      <para>&gd.image.path;</para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -46,33 +44,36 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
+  &gd.return.trueonerror;
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>- Bir WBMP resmini çıktılamak</title>
+    <title>- Bir WBMP görüntüyü çıktılamak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Boş bir resim oluşturup üzerine bir metin ekleyelim
+// Boş bir görüntü oluşturup üzerine bir metin ekle
 $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// İçerik türü başlığını ayarlayalım: image/vnd.wap.wbmp
-// İpucu: içerik türleri için image_type_to_mime_type() işlevine bakınız
-header('Content-type: image/vnd.wap.wbmp');
+// İçerik türü başlığını ayarla: image/vnd.wap.wbmp
+// İpucu: içerik türleri için image_type_to_mime_type() işlevine bakılabilir
+header('Content-Type: image/vnd.wap.wbmp');
 
-// Resmi çıktılayalım
+// Görüntüyü çıktıla
 imagewbmp($resim);
 
-// Belleği serbest bırakalım
+// Belleği serbest bırak
 imagedestroy($resim);
 ?>
 ]]>
@@ -81,19 +82,19 @@ imagedestroy($resim);
   </para>
   <para>
    <example>
-    <title>- Bir WBMP resminin kaydedilmesi</title>
+    <title>- Bir WBMP görüntünün kaydedilmesi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Boş bir resim oluşturup üzerine bir metin ekleyelim
+// Boş bir görüntü oluşturup üzerine bir metin ekle
 $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// Resmi kaydedelim
+// Görüntüyü kaydet
 imagewbmp($im, 'dnm.wbmp');
 
-// Belleği serbest bırakalım
+// Belleği serbest bırak
 imagedestroy($im);
 ?>
 ]]>
@@ -102,25 +103,25 @@ imagedestroy($im);
   </para>
   <para>
    <example>
-    <title>- Resmi farklı bir artalan rengi ile çıktılamak</title>
+    <title>- Görüntüyü farklı bir artalan rengi ile çıktılamak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-// Boş bir resim oluşturup üzerine bir metin ekleyelim
+// Boş bir görüntü oluşturup üzerine bir metin ekle
 $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// İçerik türü başlığını ayarlayalım: image/vnd.wap.wbmp
-// İpucu: içerik türleri için image_type_to_mime_type() işlevine bakınız
-header('Content-type: image/vnd.wap.wbmp');
+// İçerik türü başlığını ayarla: image/vnd.wap.wbmp
+// İpucu: içerik türleri için image_type_to_mime_type() işlevine bakılabilir
+header('Content-Type: image/vnd.wap.wbmp');
 
-// Yeni artalan rengini ayarlayalım
+// Yeni artalan rengini ayarla
 $artalan_rengi = imagecolorallocate($resim, 255, 0, 0);
 
 imagewbmp($resim, NULL, $artalan_rengi);
 
-// Free up memory
+// Belleği serbest bırak
 imagedestroy($resim);
 ?>
 ]]>
@@ -128,26 +129,16 @@ imagedestroy($resim);
    </example>
   </para>
  </refsect1>
- <refsect1 role="notes">
-  &reftitle.notes;
-  <note>
-   <para>
-    WBMP desteği sadece PHP,  GD kütüphanesinin 1.8 veya sonraki sürümleri ile
-    derlenmişse mevcuttur.
-   </para>
-  </note>
- </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>image2wbmp</function></member>
-    <member><function>imagepng</function></member>
-    <member><function>imagegif</function></member>
-    <member><function>imagejpeg</function></member>
-    <member><function>imagetypes</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>image2wbmp</function></member>
+   <member><function>imagepng</function></member>
+   <member><function>imagegif</function></member>
+   <member><function>imagejpeg</function></member>
+   <member><function>imagetypes</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

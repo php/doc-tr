@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagesetstyle" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagesetstyle</refname>
   <refpurpose>Çizgi tarzını ayarlar</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagesetstyle</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
    <methodparam><type>array</type><parameter>tarz</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>imagesetstyle</function> işlevi <function>imageline</function>
    ve <function>imagepolygon</function> gibi çizgi çizme işlevleri tarafından
    özel <constant>IMG_COLOR_STYLED</constant> veya
-   <constant>IMG_COLOR_STYLEDBRUSHED</constant> renkli çizgiler çizmek için
+   <constant>IMG_COLOR_STYLEDBRUSHED</constant> renkli çizgilerini çizmek için
    kullanılan çizgi tarzlarını ayarlamakta kullanılır.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -32,18 +33,21 @@
       <para>
        Piksel renklerinden oluşan bir dizi. Şeffaf bir piksel eklemek için
        <constant>IMG_COLOR_TRANSPARENT</constant> sabitini kullanabilirsiniz.
+       <parameter>tarz</parameter> boş bir dizi olmamalıdır.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -54,18 +58,18 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-header("Content-type: image/jpeg");
+header("Content-Type: image/jpeg");
 $im  = imagecreatetruecolor(100, 100);
 $b   = imagecolorallocate($im, 255, 255, 255);
 $k = imagecolorallocate($im, 255, 0, 0);
 
-/* 5 kırmızı 5 beyaz piksellik kesikli bir çizgi çizelim */
+// 5 kırmızı 5 beyaz piksellik kesikli bir çizgi çiz/
 $style = array($k, $k, $k, $k, $k, $b, $b, $b, $b, $b);
 imagesetstyle($im, $style);
 imageline($im, 0, 0, 100, 100, IMG_COLOR_STYLED);
 
-/* imagesetbrush ile imagesetstyle kullanarak
-   mutlu yüzlerden bir çizgi çizelim */
+// imagesetbrush ile imagesetstyle kullanarak
+//   mutlu yüzlerden bir çizgi çiz
 $style = array($b, $b, $b, $b, $b, $b, $b, $b, $b, $b, $b, $b, $k);
 imagesetstyle($im, $style);
 
@@ -82,6 +86,7 @@ imagedestroy($im);
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: imagesetstyle()</alt>
      <imageobject>
       <imagedata fileref="en/reference/image/figures/imagesetstyle.jpg"/>
      </imageobject>
@@ -89,14 +94,13 @@ imagedestroy($im);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagesetbrush</function></member>
-    <member><function>imageline</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagesetbrush</function></member>
+   <member><function>imageline</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

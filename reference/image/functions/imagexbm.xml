@@ -1,26 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: f543b07b0a335d58d7ea8ade0e6b3b63b61191dd Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e12ed8b6aa81a21cdb906eff8bbf805a2476b403 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagexbm" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagexbm</refname>
-  <refpurpose>Bir XBM resmini tarayıcıya veya dosyaya çıktılar</refpurpose>
+  <refpurpose>Bir XBM görüntüyü tarayıcıya veya dosyaya çıktılar</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagexbm</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
-   <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>dosyaismi</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>önalan</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen resmin <acronym>XBM</acronym> sürümünü çıktılar veya kaydeder.
+   Belirtilen görüntünün <acronym>XBM</acronym> sürümünü çıktılar veya kaydeder.
   </para>
   <note>
    <simpara>
-    <function>imagexbm</function> herhangi bir dolgulama yapmaz, dolayısıyla resim 
-    genişliği 8 ile çarpılmalıdır. Bu sınırlama artık  PHP 5.6.24 ve 7.0.9 
+    <function>imagexbm</function> herhangi bir dolgulama yapmaz, dolayısıyla resim
+    genişliği 8 ile çarpılmalıdır. Bu sınırlama artık  PHP 7.0.9
     itibariyle uygulanmıyor.
    </simpara>
   </note>
@@ -34,15 +34,15 @@
      <term><parameter>dosyaismi</parameter></term>
      <listitem>
       <para>
-       Resmin kaydedileceği dosyanın yolu. Belirtilmez veya &null; verilirse
-       doğrudan ham resim akımı çıktılanır.
+       Dizge olarak görüntünün kaydedileceği dosyanın yolu. &null; verilirse
+       doğrudan ham görüntü akımı çıktılanır.
       </para>
        <para>
-        <parameter>dosyaismi</parameter> (.xbm uzantısız) iayrıca 
-        <acronym>XBM</acronym>'nin C tanımlayıcıları için de kullanılır, 
-        dolayısıylla geçerli yerelin alfasayısal olmayan karakterleri altçizgilerle 
-        ikame edilir.  <parameter>dosyaismi</parameter> olarak &null; verilirse 
-        <parameter>resim</parameter> C tanıtıcıları için kullanılır.
+        <parameter>dosyaismi</parameter> (.xbm uzantısız) ayrıca
+        <acronym>XBM</acronym>'nin C tanımlayıcıları için de kullanılır,
+        dolayısıyla geçerli yerelin alfasayısal olmayan karakterleri altçizgilerle
+        ikame edilir.  <parameter>dosyaismi</parameter> olarak &null; verilirse
+        <parameter>görüntü</parameter> C tanıtıcıları için kullanılır.
        </para>
      </listitem>
     </varlistentry>
@@ -59,6 +59,7 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
@@ -66,6 +67,29 @@
   </para>
   &gd.return.trueonerror;
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Kullanılmayan dördüncü değiştirge kaldırıldı.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -74,15 +98,15 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// Boş bir resim oluşturup üzerine bir metin ekleyelim
+// Boş bir görüntü oluşturup üzerine bir metin ekle
 $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// Resmi kaydedelim
+// Görüntüyü kaydet
 imagexbm($resim, 'dnm.xbm');
 
-// Belleği serbest bırakalım.
+// Belleği serbest bırak
 imagedestroy($resim);
 ?>
 ]]>
@@ -95,18 +119,18 @@ imagedestroy($resim);
     <programlisting role="php">
 <![CDATA[
 <?php
-// Boş bir resim oluşturup üzerine bir metin ekleyelim
+// Boş bir görüntü oluşturup üzerine bir metin ekle
 $resim = imagecreatetruecolor(120, 20);
 $metin_rengi = imagecolorallocate($resim, 233, 14, 91);
 imagestring($resim, 1, 5, 5,  'Bir deneme dizgesi', $metin_rengi);
 
-// Yeni önalan rengini ayarlayalım
+// Yeni önalan rengini ayarla
 $önalan_rengi = imagecolorallocate($resim, 255, 0, 0);
 
-// Resmi çıktılayalım
+// Görüntüyü çıktıla
 imagexbm($resim, NULL, $artalan_rengi);
 
-// Belleği serbest bırakalım
+// Belleği serbest bırak
 imagedestroy($resim);
 ?>
 ]]>
@@ -114,6 +138,7 @@ imagedestroy($resim);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
  </refsect1>

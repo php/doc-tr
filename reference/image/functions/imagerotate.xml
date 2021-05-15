@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: ec54028a9669461b0c72a6858fdce9d25ff55568 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 34316e9ecfcffa5ebefe7cd37f5fbd629d50e5f9 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.imagerotate" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagerotate</refname>
-  <refpurpose>Bir resmi belirtilen açıya göre döndürür</refpurpose>
+  <refpurpose>Bir görüntüyü belirtilen açıya göre döndürür</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>imagerotate</methodname>
-   <methodparam><type>resource</type><parameter>resim</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>imagerotate</methodname>
+   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
    <methodparam><type>float</type><parameter>açı</parameter></methodparam>
    <methodparam><type>int</type><parameter>artalan</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>şeffaflığı_yoksay</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>şeffaflığı_yoksay</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>resim</parameter> resmini  <parameter>açı</parameter>
+   Belirtilen <parameter>görüntü</parameter>yü  <parameter>açı</parameter>
    derece döndürür.
   </para>
   <para>
-   Dönüş merkezi resmin merkezi olup, döndürülen resim özgün resimden farklı
+   Dönüş merkezi görüntünün merkezi olup, döndürülen görüntü özgün görüntüden farklı
    boyutlara sahip olabilir.
   </para>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -49,19 +50,21 @@
      <term><parameter>şeffaflığı_yoksay</parameter></term>
      <listitem>
       <para>
-       Sıfırdan farklı bir değer belirtildiğinde şeffaf renkler yok sayılır.
+       Bu değiştirge kullanılmıyor.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Döndürülen resmin özkaynağını döndürür, &return.falseforfailure;.
    </para>
  </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -74,23 +77,11 @@
       </row>
      </thead>
      <tbody>
-       <row>
-       <entry>5.5.0</entry>
-       <entry>
-        <parameter>şeffaflığı_yoksay</parameter> artık sessizce yoksayılıyor.
-       </entry>
-      </row>
       <row>
-       <entry>5.5.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        Bu işlev artık <function>imagesetinterpolation</function> işlevince 
-        atanan aradeğerleme yönteminden etkileniyor.
-       </entry>
-      </row>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <parameter>şeffaflığı_yoksay</parameter> değiştirgesi eklendi.
+        Kullanılmayan <parameter>şeffaflığı_yoksay</parameter> artık
+        <type>bool</type> türünde değer kabul ediyor, evvelce <type>int</type> idi.
        </entry>
       </row>
      </tbody>
@@ -98,11 +89,12 @@
    </informaltable>
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
    <example>
-    <title>Bir remin 180° döndürülmesi</title>
+    <title>- Bir remin 180° döndürülmesi</title>
     <para>
      Bu örnekte bir resim 180° (başağı) döndürülmektedir.
     </para>
@@ -114,18 +106,18 @@ $filename = 'test.jpg';
 $degrees = 180;
 
 // İçerik türü
-header('Content-type: image/jpeg');
+header('Content-Type: image/jpeg');
 
-// resmi yükleyelim
+// görüntüyü yükle
 $source = imagecreatefromjpeg($filename);
 
-// Döndürelim
+// Döndür
 $rotate = imagerotate($source, $degrees, 0);
 
-// Çıktılayalım
+// Çıktıla
 imagejpeg($rotate);
 
-// Belleği serbest bırakalım
+// Belleği serbest bırak
 imagedestroy($source);
 imagedestroy($rotate);
 ?>
@@ -141,17 +133,17 @@ imagedestroy($rotate);
    </example>
   </para>
  </refsect1>
+
  <refsect1 role="notes">
   &reftitle.notes;
   &note.gd.interpolation;
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>imagesetinterpolation</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>imagesetinterpolation</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 
