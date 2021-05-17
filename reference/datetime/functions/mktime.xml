@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9d45296587225c85e4dab73cc27865ca32e17d3c Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 8cdc6621f9826d04abc3e50438c010804d7e8683 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.mktime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mktime</refname>
@@ -106,40 +105,8 @@
        yıllarıyla eşleşir. Sistemlerdeki time_t türü 32 bit işaretli tamsayı
        türüyle belirtilmiştir ve günümüzde çok kullanılmaktadır.
        <parameter>yıl</parameter> değiştirgesi için geçerli aralık 1901 ve
-       2038 arasındadır. Bununla birlikte, PHP 5.1.0 sürümünden önce bu aralık
-       bazı sistemlerde 1970 ve 2038 arasında sınırlıydı (ör. Windows).
+       2038 arasındadır.
       </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>ysu_var</parameter></term>
-     <listitem>
-      <para>
-        Bu değiştirge, yaz saati uygulaması varsa 1'e yoksa 0'a ya da yaz
-        saati uygulması olup olmadığının bilinmediği durumlarda varsayılan
-        değere yani -1'e ayarlanmalıdır. Bilinmeyen durumlarda PHP bunu
-        çözümleyecektir. Bu beklenmeyen sonuçlara (fakat yanlış olmayan) neden
-        olur. Bazı zamanlarda, PHP çalışırken YSU etkinleştirildiğinde ya da
-        <parameter>ysu_var</parameter> değiştirgesi 1'e ayarlandığında zaman
-        geçersiz olur. Örneğin, eğer saat 2:00'de YSU etkinleştirilirse, 2:00
-        ve 3:00 arasındaki tüm zaman geçersiz olacak ve
-        <function>mktime</function> işlevi anlamsız (genellikle negatif)
-        bir değerle dönecektir. Bazı sistemlerde (ör. Solaris 8) YSU gece
-        yarısında etkinleşir. YSU etkinleştiğinde saat 0:30 ise,  saat bir
-        önceki günün 23:30'u olarak değerlendirilecektir.
-      </para>
-      <note>
-       <para>
-        PHP 5.1.0 sürümünden beri, bu değiştirgenin kullanılması
-        önerilmemektedir. Sonuç olarak, yerine yeni zaman dilimi özellikleri
-        kullanılmalıdır.
-       </para>
-      </note>
-      <note>
-       <para>
-        Bu değiştirge PHP 7.0.0'da kaldırıldı.
-       </para>
-      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -200,7 +167,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// Öntanımlı zaman dilimini belirtelim. PHP 5.1'den beri kullanılabiliyor.
+// Öntanımlı zaman dilimini belirtelim.
 date_default_timezone_set('UTC');
 
 echo "July 1, 2000 is on a " . date("l", mktime(0, 0, 0, 7, 1, 2000));
@@ -253,17 +220,6 @@ echo strftime("2000 Şubat'ının son günü: %d", $songün);
     </programlisting>
    </example>
   </para>
- </refsect1>
-
- <refsect1 role="notes">
-  &reftitle.notes;
-  <caution>
-   <para>
-    PHP 5.1.0 sürümünden önce, negatif zaman damgaları bilinen Windows sürümleri
-    altında ve diğer benzer sistemlerde desteklemiyordu. Bundan dolayı, geçerli
-    yılların aralığı 1970 ile 2038 arasında sınırlıydı.
-   </para>
-  </caution>
  </refsect1>
 
  <refsect1 role="seealso">
