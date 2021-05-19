@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: bab2ab23f62185e886fca5c97720b1c99dd6b176 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-distortimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.distortimage">
  <refnamediv>
   <refname>Imagick::distortImage</refname>
-  <refpurpose>Çeşitli yöntemlerle resmi bozunuma uğratır</refpurpose>
+  <refpurpose>Çeşitli yöntemlerle görüntüyü bozunuma uğratır</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::distortImage</methodname>
    <methodparam><type>int</type><parameter>yöntem</parameter></methodparam>
    <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
@@ -17,14 +17,14 @@
   </methodsynopsis>
   <para>
    <parameter>sığdır</parameter> değiştirgesinde &true; belirtilmedikçe eski
-   ve yeni resimler arasında boyut farkı olmaksızın çeşitli yöntemlerle resmi
-   bozunuma uğratır.
+   ve yeni görüntüler arasında boyut farkı olmaksızın çeşitli yöntemlerle
+   görüntüyü bozunuma uğratır.
   </para>
   <para>
    <parameter>sığdır</parameter> değiştirgesinde &true; belirtildiği takdirde
-   bozunuma uğratılan resim başlangıcı, genişlik ve yüksekliği ayarlanarak
-   yeni resme sığdırılmaya çalışılır. Ayrıca, çoğu durumda, kaynak resmin
-   sanal başlangıcı eşleme sırasında hesaba katılır.
+   bozunuma uğratılan görüntü başlangıcı, genişlik ve yüksekliği ayarlanarak
+   yeni görüntüye sığdırılmaya çalışılır. Ayrıca, çoğu durumda, kaynak
+   görüntünün sanal başlangıcı eşleme sırasında hesaba katılır.
   </para>
   <para>&imagick.method.available.0x636;</para>
  </refsect1>
@@ -54,7 +54,7 @@
      <term><parameter>sığdır</parameter></term>
      <listitem>
       <para>
-       &true; belirtildiği takdirde kaynağın bozunmuş hali yeni resme
+       &true; belirtildiği takdirde kaynağın bozunmuş hali yeni görüntüye
        sığdırmaya çalışılır.
       </para>
      </listitem>
@@ -83,7 +83,7 @@
    <example>
     <title>- <function>Imagick::distortImage</function> örneği</title>
     <para>
-     Resmi bozunuma uğratıp diske yazalım.
+     Görüntüyü bozunuma uğratıp tarayıcıda görüntüler.
     </para>
     <programlisting role="php">
 <![CDATA[
@@ -94,7 +94,7 @@ $im = new Imagick();
 /* Yeni checkerboard örüntüsünü oluşturalım */
 $im->newPseudoImage(100, 100, "pattern:checkerboard");
 
-/* Resim biçemi PNG olsun */
+/* Görüntü biçemi PNG olsun */
 $im->setImageFormat('png');
 
 /* Yeni görünür alanları şeffaf yapalım */
@@ -116,10 +116,10 @@ $controlPoints = array( 10, 10,
                         $im->getImageWidth() - 10, $im->getImageHeight() - 10,
                         $im->getImageWidth() - 10, $im->getImageHeight() - 30);
 
-/* Rasmi bozunuma uğratalım */
+/* Görüntüyü bozunuma uğratalım */
 $im->distortImage(Imagick::DISTORTION_PERSPECTIVE, $controlPoints, true);
 
-/* Resmi çıktılayalım */
+/* Görüntüyü çıktılayalım */
 header("Content-Type: image/png");
 echo $im;
 ?>
@@ -127,6 +127,7 @@ echo $im;
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: Imagick::distortImage() kullanımı</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/distortImage.png"/>
      </imageobject>

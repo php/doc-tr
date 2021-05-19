@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 11be0104641379512d200b80d14851d5c9fb9fa2 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-floodfillpaintimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.floodfillpaintimage">
  <refnamediv>
   <refname>Imagick::floodFillPaintImage</refname>
   <refpurpose>Hedefle eşleşen piksellerin renklerini değiştirir</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::floodFillPaintImage</methodname>
    <methodparam><type>mixed</type><parameter>dolgu</parameter></methodparam>
    <methodparam><type>float</type><parameter>benzerlik</parameter></methodparam>
@@ -82,7 +82,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>channel</parameter></term>
+     <term><parameter>kanal</parameter></term>
      <listitem>
       <para>
        &imagick.parameter.channel;
@@ -109,38 +109,39 @@
 <![CDATA[
 <?php
 
-/* Yeni bir imagick nesnesi oluşturalım */
+/* Yeni bir imagick nesnesi oluştur */
 $im = new Imagick();
 
-/* kırmızı, yeşil ve mavi tuvaller oluşturalım */
+/* kırmızı, yeşil ve mavi tuvaller oluştur */
 $im->newImage(100, 50, "red");
 $im->newImage(100, 50, "green");
 $im->newImage(100, 50, "blue");
 
-/* Bunları birbirlerine ekleyelim */
+/* Bunları birbirlerine ekle */
 $im->resetIterator();
 $combined = $im->appendImages(true);
 
-/* Elde edilen resmi karşılaştırmak için saklayalım */
+/* Elde edilen görüntüyü karşılaştırmak için sakla */
 $combined->writeImage("floodfillpaint_intermediate.png");
 
 /* Boyanacak hedef piksel */
 $x = 1;
 $y = 1;
 
-/* Boyanacak pikselin rengini öğrenelim */
+/* Boyanacak pikselin rengini öğren */
 $target = $combined->getImagePixelColor($x, $y);
 
-/* Hedef pikseli ve aynı renkteki komşu pikselleri siyaha boyayalım */
+/* Hedef pikseli ve aynı renkteki komşu pikselleri siyaha boya */
 $combined->floodfillPaintImage("black", 1, $target, $x, $y, false);
 
-/* Sonucu kaydedelimt */
+/* Sonucu kaydet */
 $combined->writeImage("floodfillpaint_result.png");
 ?>
 ]]>
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
+     <alt>Örnek çıktısı: Imagick::floodfillPaintImage()</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/floodfillpaint_intermediate.png"/>
      </imageobject>
