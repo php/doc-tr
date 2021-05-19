@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-colorizeimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.colorizeimage">
  <refnamediv>
   <refname>Imagick::colorizeImage</refname>
-  <refpurpose>Resmin her pikseline dolgu rengini karıştırır</refpurpose>
+  <refpurpose>Görüntünün her pikseline dolgu rengini karıştırır</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::colorizeImage</methodname>
    <methodparam><type>mixed</type><parameter>renk</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>matlık</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>matlık</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Resmin her pikseline dolgu rengini karıştırır.
+   Görüntünün her pikseline dolgu rengini karıştırır.
   </para>
  </refsect1>
 
@@ -74,7 +73,7 @@
      </thead>
      <tbody>
       <row>
-       <entry>2.1.0</entry>
+       <entry>PECL imagick 2.1.0</entry>
        <entry>
         Artık renk olarak rengi ifade eden bir dizge belirtilebiliyor. Evvelce
         sadece bir <classname>ImagickPixel</classname> nesnesi
@@ -84,6 +83,30 @@
      </tbody>
     </tgroup>
    </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::colorizeImage</function></title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function colorizeImage($imagePath, $color, $opacity) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $opacity = $opacity / 255.0;
+    $opacityColor = new \ImagickPixel("rgba(0, 0, 0, $opacity)");
+    $imagick->colorizeImage($color, $opacityColor);
+    header("Content-Type: image/jpg");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

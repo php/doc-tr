@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-compositeimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.compositeimage">
  <refnamediv>
   <refname>Imagick::compositeImage</refname>
-  <refpurpose>Bir resmi diğeriyle birleştirir</refpurpose>
+  <refpurpose>Bir görüntüyü diğeriyle birleştirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::compositeImage</methodname>
    <methodparam><type>Imagick</type><parameter>birleşik_nesne</parameter></methodparam>
    <methodparam><type>int</type><parameter>işleç</parameter></methodparam>
    <methodparam><type>int</type><parameter>x</parameter></methodparam>
    <methodparam><type>int</type><parameter>y</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>kanal</parameter><initializer>Imagick::CHANNEL_ALL</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kanal</parameter><initializer>Imagick::CHANNEL_DEFAULT</initializer></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Belirtilen konumda resmi bir başka resimle birleştirir.
-  </para>
+   Belirtilen konumda görüntüyü bir başka resimle birleştirir.
+   setImageArtifact'a, birleştirme algoritması için gereken ek değiştirgelerden
+   'compose: args' ilk değiştirge olarak, veriler ikinci değiştirge olarak
+   aktarılmalıdır.
+</para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -31,7 +33,7 @@
      <term><parameter>birleşik_nesne</parameter></term>
      <listitem>
       <para>
-       Birleşik resmin saklanacağı <classname>Imagick</classname> nesnesi.
+       Birleşik görüntünün saklanacağı <classname>Imagick</classname> nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -39,7 +41,7 @@
      <term><parameter>işleç</parameter></term>
      <listitem>
       <para>
-       <link linkend="imagick.constants.compositeop">Birleşitirme işleci
+       <link linkend="imagick.constants.compositeop">Birleştirme işleci
        sabitlerinden</link> biri.
       </para>
      </listitem>
@@ -48,7 +50,7 @@
      <term><parameter>x</parameter></term>
      <listitem>
       <para>
-       Birleşik resmin genişlik başlangıcı.
+       Birleşik görüntünün genişlik başlangıcı.
       </para>
      </listitem>
     </varlistentry>
@@ -56,7 +58,7 @@
      <term><parameter>y</parameter></term>
      <listitem>
       <para>
-       Birleşik resmin yükseklik başlangıcı.
+       Birleşik görüntünün yükseklik başlangıcı.
       </para>
      </listitem>
     </varlistentry>
@@ -65,8 +67,8 @@
      <listitem>
       <para>
        Normalde <link linkend="imagick.constants.channel">kanal türü
-       sabitleri</link>nden biri, ancak bitsel işleçler kullanılarak birden
-       fazla kanal belirtilebilir.
+       sabitleri</link>nden biri belirtilebilir, ancak bitsel işleçler
+       kullanılarak birden fazla kanal da belirtilebilir.
       </para>
      </listitem>
     </varlistentry>
@@ -78,6 +80,46 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+  <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>Imagick::compositeImage</function> kullanımı:</title>
+    <para>
+     'mathematics' birleştirme yöntemi ile iki görüntüyü birleştirmek
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+// convert src1.png src2.png -compose mathematics -define
+// komutunu çalıştırmaya eşdeğerdir
+compose:args="1,0,-0.5,0.5" -composite output.png
+
+$src1 = new \Imagick("./src1.png");
+$src2 = new \Imagick("./src2.png");
+
+$src1->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
+$src1->setImageArtifact('compose:args', "1,0,-0.5,0.5");
+$src1->compositeImage($src2, Imagick::COMPOSITE_MATHEMATICS, 0, 0);
+$src1->writeImage("./output.png");
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>Imagick::setImageArtifact</function></member>
+   </simplelist>
   </para>
  </refsect1>
 
