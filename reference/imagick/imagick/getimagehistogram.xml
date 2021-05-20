@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-getimagehistogram">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.getimagehistogram">
  <refnamediv>
   <refname>Imagick::getImageHistogram</refname>
-  <refpurpose>Resmin renk dağılımını döndürür</refpurpose>
+  <refpurpose>Görüntünün renk dağılımını döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>array</type><methodname>Imagick::getImageHistogram</methodname>
    <void/>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Resmin renk dağılımını bir <classname>ImagickPixel</classname> nesneleri
+   Görüntünün renk dağılımını bir <classname>ImagickPixel</classname> nesneleri
    dizisi olarak döndürür.
   </para>
  </refsect1>
@@ -23,8 +22,113 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Resmin renk dağılımını bir <classname>ImagickPixel</classname> nesneleri
-   dizisi olarak döndürür. &imagick.imagickexception.throw;
+   Görüntünün renk dağılımını bir <classname>ImagickPixel</classname> nesneleri
+   dizisi olarak döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   &imagick.imagick.throws;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::getImageHistogram</function> kullanımı</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function getColorStatistics($histogramElements, $colorChannel) {
+    $colorStatistics = [];
+
+    foreach ($histogramElements as $histogramElement) {
+        $color = $histogramElement->getColorValue($colorChannel);
+        $color = intval($color * 255);
+        $count = $histogramElement->getColorCount();
+
+        if (array_key_exists($color, $colorStatistics)) {
+            $colorStatistics[$color] += $count;
+        }
+        else {
+            $colorStatistics[$color] = $count;
+        }
+    }
+
+    ksort($colorStatistics);
+
+    return $colorStatistics;
+}
+
+function getImageHistogram($imagePath) {
+
+    $backgroundColor = 'black';
+
+    $draw = new \ImagickDraw();
+    $draw->setStrokeWidth(0); // çizgiler mümkün olduğunca ince olsun
+
+    $imagick = new \Imagick();
+    $imagick->newImage(500, 500, $backgroundColor);
+    $imagick->setImageFormat("png");
+    $imagick->drawImage($draw);
+
+    $histogramWidth = 256;
+    $histogramHeight = 100; // RGB segmanların yüksekliği
+
+    $imagick = new \Imagick(realpath($imagePath));
+    // görüntüyü küçült, yoksa PHP belleği tükenecek
+    // Bu, ister istemez "pikselli" görüntülerde kötü sonuçlara sebep olur
+    $imagick->adaptiveResizeImage(200, 200, true);
+    $histogramElements = $imagick->getImageHistogram();
+
+    $histogram = new \Imagick();
+    $histogram->newpseudoimage($histogramWidth, $histogramHeight * 3, 'xc:black');
+    $histogram->setImageFormat('png');
+
+    $getMax = function ($carry, $item)  {
+        if ($item > $carry) {
+            return $item;
+        }
+        return $carry;
+    };
+
+    $colorValues = [
+        'red' => getColorStatistics($histogramElements, \Imagick::COLOR_RED),
+        'lime' => getColorStatistics($histogramElements, \Imagick::COLOR_GREEN),
+        'blue' => getColorStatistics($histogramElements, \Imagick::COLOR_BLUE),
+    ];
+
+    $max = array_reduce($colorValues['red'] , $getMax, 0);
+    $max = array_reduce($colorValues['lime'] , $getMax, $max);
+    $max = array_reduce($colorValues['blue'] , $getMax, $max);
+
+    $scale =  $histogramHeight / $max;
+
+    $count = 0;
+    foreach ($colorValues as $color => $values) {
+        $draw->setstrokecolor($color);
+
+        $offset = ($count + 1) * $histogramHeight;
+
+        foreach ($values as $index => $value) {
+            $draw->line($index, $offset, $index, $offset - ($value * $scale));
+        }
+        $count++;
+    }
+
+    $histogram->drawImage($draw);
+
+    header( "Content-Type: image/png" );
+    echo $histogram;
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
