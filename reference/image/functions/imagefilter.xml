@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- EN-Revision: f85d380904ca6cfcc5d71d5efe44d6a4a673e2b1 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 593ea510e853ff034e03f78a4be0daa41661c9d4 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imagefilter" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imagefilter</refname>
@@ -10,12 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imagefilter</methodname>
-   <methodparam><type>resource</type><parameter>görüntü</parameter></methodparam>
+   <methodparam><type>GdImage</type><parameter>image</parameter></methodparam>
    <methodparam><type>int</type><parameter>süzgeç</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>d1</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>d2</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>d3</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>d4</parameter></methodparam>
+   <methodparam rep="repeat"><type class="union"><type>array</type><type>int</type><type>float</type><type>bool</type></type><parameter>seçenekler</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>imagefilter</function> işlevi, türü <parameter>süzgeç</parameter>
@@ -52,7 +49,7 @@
          <simpara>
           <constant>IMG_FILTER_BRIGHTNESS</constant>: Görüntünün parlaklığını
           değiştirir. Parlaklık seviyesini belirtmek için
-          <parameter>d1</parameter> değiştirgesini kullanın.
+          <parameter>seçenekler[0]</parameter> değiştirgesini kullanın.
           Parlaklık -255 ile 255 arasındadır.
          </simpara>
         </listitem>
@@ -60,7 +57,7 @@
          <simpara>
           <constant>IMG_FILTER_CONTRAST</constant>: Görüntünün karşıtlık
           seviyesini değiştirir. Karşıtlık seviyesini belirtmek için
-          <parameter>d1</parameter> değiştirgesini kullanın.
+          <parameter>seçenekler[0]</parameter> değiştirgesini kullanın.
          </simpara>
         </listitem>
         <listitem>
@@ -68,10 +65,11 @@
           <constant>IMG_FILTER_COLORIZE</constant>: Rengi sizin belirtmeniz
           dışında <constant>IMG_FILTER_GRAYSCALE</constant> gibidir. Kırmızı,
           yeşil ve mavi renk seviyeleri belirtmek için sırayla
-          <parameter>d1</parameter>, <parameter>d2</parameter> ve
-          <parameter>d3</parameter> değiştirgelerini, alfa kanalı için de
-          <parameter>d4</parameter> değiştirgesini kullanın. Ana renklerin
-          seviyesi 0 ile 255 arasında belirtilebilir.
+          <parameter>seçenekler[0]</parameter>,
+          <parameter>seçenekler[1]</parameter> ve
+          <parameter>seçenekler[2]</parameter> değiştirgelerini, alfa kanalı
+          için de <parameter>seçenekler[3]</parameter> değiştirgesini kullanın.
+          Ana renklerin seviyesi 0 ile 255 arasında belirtilebilir.
          </simpara>
         </listitem>
         <listitem>
@@ -107,22 +105,25 @@
          <simpara>
           <constant>IMG_FILTER_SMOOTH</constant>: Görüntünün sert hatlarını
           yumuşatır. Yumuşatma seviyesini belirtmek için
-          <parameter>d1</parameter> değiştirgesini kullanın.
+          <parameter>seçenekler[0]</parameter> değiştirgesini kullanın.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
-          <constant>IMG_FILTER_PIXELATE</constant>: Görüntüye mozaik etkisi verir.
-          Mozaik boyutu için <parameter>d1</parameter> mozaik etki kipini
-          belirtmek için <parameter>d2</parameter> değiştirgesini kullanın.
+          <constant>IMG_FILTER_PIXELATE</constant>: Görüntüye mozaik etkisi
+          verir. Mozaik boyutu için <parameter>seçenekler[0]</parameter>
+          mozaik etki kipini belirtmek için <parameter>seçenekler[1]</parameter>
+          değiştirgesini kullanın.
          </simpara>
         </listitem>
         <listitem>
          <simpara>
           <constant>IMG_FILTER_SCATTER</constant>: Görüntüye saçılma etkisi
-          verir, etki gücünü tanımlamak için <parameter>d1</parameter> ve
-          <parameter>d2</parameter>'yi ve yalnızca seçili piksel renklerini
-          uygulamak için <parameter>d3</parameter>'ü kullanın.
+          verir, etki gücünü tanımlamak için
+          <parameter>seçenekler[0]</parameter> ve
+          <parameter>seçenekler[1]</parameter>'i ve yalnızca seçili piksel
+          renklerini uygulamak için <parameter>seçenekler[2]</parameter>'yi
+          kullanın.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -130,7 +131,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d1</parameter></term>
+     <term><parameter>seçenekler[0]</parameter></term>
      <listitem>
       <para>
        <itemizedlist>
@@ -162,8 +163,8 @@
         <listitem>
          <simpara>
           <constant>IMG_FILTER_SCATTER</constant>: Etki eksiltme seviyesi.
-          Bu, <parameter>d2</parameter> ile ayarlanan toplama seviyesinden
-          daha yüksek veya ona eşit olmamalıdır.
+          Bu, <parameter>seçenekler[1]</parameter> ile ayarlanan toplama
+          seviyesinden daha yüksek veya ona eşit olmamalıdır.
          </simpara>
         </listitem>
        </itemizedlist>
@@ -171,7 +172,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d2</parameter></term>
+     <term><parameter>seçenekler[1]</parameter></term>
      <listitem>
       <para>
        <itemizedlist>
@@ -196,7 +197,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d3</parameter></term>
+     <term><parameter>seçenekler[2]</parameter></term>
      <listitem>
       <para>
        <itemizedlist>
@@ -216,7 +217,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>d4</parameter></term>
+     <term><parameter>seçenekler[3]</parameter></term>
      <listitem>
       <para>
        <itemizedlist>
@@ -254,6 +255,7 @@
       </row>
      </thead>
      <tbody>
+      &gd.changelog.image-param;
       <row>
        <entry>7.4.0</entry>
        <entry>
