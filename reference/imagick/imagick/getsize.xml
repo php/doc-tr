@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-getsize">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.getsize">
  <refnamediv>
   <refname>Imagick::getSize</refname>
   <refpurpose><classname>Imagick</classname> nesnesi ile ilgili boyutları
@@ -11,10 +10,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>array</type><methodname>Imagick::getSize</methodname>
    <void/>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    <classname>Imagick</classname> nesnesi ile ilgili boyutları "columns" ve
    "rows" anahtarlı bir dizi olarak döndürür.
@@ -24,8 +23,56 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <classname>Imagick</classname> nesnesi ile ilgili boyutları "columns" ve
-   "rows" anahtarlı bir dizi olarak döndürür.
+   Önceden <function>Imagick::setSize</function> kullanarak atanmış Imagick
+   nesnesi ile ilgili piksel boyutlarını döndürür.
+  </para>
+  <note>
+   <para>
+    Bu yöntem sadece <function>Imagick::setSize</function> kullanarak atanmış
+    boyutları döndürür. Görüntünün asıl genişlik ve yüksekliğini elde etmek
+    için  <function>Imagick::getImageWidth</function> ve
+    <function>Imagick::getImageHeight</function> işlevlerini kullanın.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- 200x400 boyutlarındaki ham RGB görüntüyü 400x800 boyutlarına
+     büyüttükten sonra boyutlarını döndürmek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Boyutları belirledikten sonra ham görüntüyü yükle
+$img = new Imagick();
+$img->setSize(200, 400);
+$img->readImage("image.rgb");
+
+// Büyüt
+$img->scaleImage(400, 800);
+
+// Şimdi boyutlarına bak
+$size = $img->getSize();
+print_r($size);
+
+echo "$img->getImageWidth()."x".$img->getImageHeight();
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [columns] => 200
+    [rows] => 400
+)
+400x800
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
