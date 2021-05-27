@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-posterizeimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.posterizeimage">
  <refnamediv>
   <refname>Imagick::posterizeImage</refname>
-  <refpurpose>Resimdeki renkleri belli bir sayıya düşürür</refpurpose>
+  <refpurpose>Görüntüdeki renkleri belli bir sayıya düşürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::posterizeImage</methodname>
    <methodparam><type>int</type><parameter>seviyeler</parameter></methodparam>
    <methodparam><type>bool</type><parameter>kıpırtı</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Resimdeki renkleri belli bir sayıya düşürür.
+   Görüntüdeki renkleri belli bir sayıya düşürür.
   </para>
  </refsect1>
 
@@ -49,6 +48,31 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::posterizeImage</function></title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function posterizeImage($imagePath, $posterizeType, $numberLevels) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $imagick->posterizeImage($numberLevels, $posterizeType);
+    $imagick->setImageFormat('png');
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+posterizeImage($imagePath, \Imagick::DITHERMETHOD_RIEMERSMA, 8);
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
