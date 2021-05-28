@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-recolorimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.recolorimage">
  <refnamediv>
   <refname>Imagick::recolorImage</refname>
-  <refpurpose>Resmi yeniden renklendirir</refpurpose>
+  <refpurpose>Görüntüyü yeniden renklendirir</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &imagick.deprecated.function-3-4-4;
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::animateImages</methodname>
    <methodparam><type>array</type><parameter>matris</parameter></methodparam>
   </methodsynopsis>
 
   <para>
-   Resim renklerini döndürür, oranlar, keser, dönüştürür. Her boyda matris
+   Görüntü renklerini döndürür, oranlar, keser, dönüştürür. Her boyda matris
    desteklense de normalde RGBA için 5x5, CMYK için 6x6 matris kullanılır. Son
    satırın normalleştirilmiş değerleri içermesi gerekir.
    &imagick.method.available.0x636;
@@ -51,6 +55,39 @@
    <simplelist>
     <member><function>Imagick::displayImage</function></member>
    </simplelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::recolorImage</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function recolorImage($imagePath) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $remapColor = [ 1, 0, 0,
+        0, 0, 1,
+        0, 1, 0,];
+
+//$remapColor = [
+//    1.438, -0.122, -0.016,  0, 0, -0.03,
+//    -0.062,  1.378, -0.016,  0, 0,  0.05,
+//    -0.062, -0.122, 1.483,   0, 0, -0.02,
+//];
+
+    @$imagick->recolorImage($remapColor);
+
+    header("Content-Type: image/jpg");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

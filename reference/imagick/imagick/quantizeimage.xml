@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-quantizeimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.quantizeimage">
  <refnamediv>
   <refname>Imagick::quantizeImage</refname>
-  <refpurpose>Belli bir resim içindeki renk miktarını bulur</refpurpose>
+  <refpurpose>Belli bir görüntü içindeki renk miktarını bulur</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::quantizeImage</methodname>
-    <methodparam><type>int</type><parameter>renk_sayısı</parameter></methodparam>
-    <methodparam><type>int</type><parameter>renk_uzayı</parameter></methodparam>
-    <methodparam><type>int</type><parameter>ağaç_derinliği</parameter></methodparam>
-    <methodparam><type>bool</type><parameter>kıpırtı</parameter></methodparam>
-    <methodparam><type>bool</type><parameter>ölçme_hatası</parameter></methodparam>
+   <methodparam><type>int</type><parameter>renk_sayısı</parameter></methodparam>
+   <methodparam><type>int</type><parameter>renk_uzayı</parameter></methodparam>
+   <methodparam><type>int</type><parameter>ağaç_derinliği</parameter></methodparam>
+   <methodparam><type>bool</type><parameter>kıpırtı</parameter></methodparam>
+   <methodparam><type>bool</type><parameter>ölçme_hatası</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Belli bir resim içindeki renkleri inceleyip resmi ifade edebilecek sayıda
-   renk seçer. Algoritmanın amacı, girdi ve çıktı resimleri arasındaki renk
+   Belli bir görüntü içindeki renkleri inceleyip görüntüyü ifade edebilecek sayıda
+   renk seçer. Algoritmanın amacı, girdi ve çıktı görüntüleri arasındaki renk
    farkını en aza indirerek işlem zamanını kısaltmaktır.
   </para>
  </refsect1>
@@ -51,7 +50,7 @@
       <para>
        Normalde sıfır ya da bir olup, bu takdirde renk sayısına en uygun ağaç
        seçilir. Ağaç derinliği, en az bellek harcayarak en yüksek işlem
-       hızında resmin en iyi nasıl ifade edilececeğini belirler. Renk ağacını
+       hızında görüntünün en iyi nasıl ifade edilececeğini belirler. Renk ağacını
        tam boyutuna genişletmek için 8 kullanın.
       </para>
      </listitem>
@@ -68,7 +67,7 @@
      <term><parameter>ölçme_hatası</parameter></term>
      <listitem>
       <para>
-       Özgün resimle işlem görmüş resim arasındaki farkın ölçüsü olarak
+       Özgün görüntü ile işlem görmüş görüntü arasındaki farkın ölçüsü olarak
        sıfırdan farklı bir tamsayı.
       </para>
      </listitem>
@@ -88,6 +87,29 @@
   &reftitle.errors;
   <para>
    &imagick.imagick.throws;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::quantizeImage</function></title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function quantizeImage($imagePath, $numberColors, $colorSpace, $treeDepth, $dither) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $imagick->quantizeImage($numberColors, $colorSpace, $treeDepth, $dither, false);
+    $imagick->setImageFormat('png');
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
