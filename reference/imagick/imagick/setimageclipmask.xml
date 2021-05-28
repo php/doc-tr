@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-setimageclipmask">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.setimageclipmask">
  <refnamediv>
   <refname>Imagick::setImageClipMask</refname>
-  <refpurpose>Resim kırpma maskesini tanımlar</refpurpose>
+  <refpurpose>Görüntü kırpma maskesini tanımlar</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &imagick.deprecated.function-3-4-4;
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::setImageClipMask</methodname>
    <methodparam><type>Imagick</type><parameter>kırpıcı_resim</parameter></methodparam>
   </methodsynopsis>
 
   <para>
-   Resmin kırpma maskesi olarak başka bir nesneyi tanımlar.
+   Görüntü kırpma maskesi olarak bir nesne tanımlar.
    &imagick.method.available.0x636;
   </para>
  </refsect1>
@@ -47,6 +51,54 @@
   &reftitle.errors;
   <para>
    &imagick.imagick.throws;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::setImageClipMask</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setImageClipMask($imagePath) {
+    $imagick = new \Imagick();
+    $imagick->readImage(realpath($imagePath));
+
+    $width = $imagick->getImageWidth();
+    $height = $imagick->getImageHeight();
+
+    $clipMask = new \Imagick();
+    $clipMask->newPseudoImage(
+        $width,
+        $height,
+        "canvas:transparent"
+    );
+
+    $draw = new \ImagickDraw();
+    $draw->setFillColor('white');
+    $draw->circle(
+        $width / 2,
+        $height / 2,
+        ($width / 2) + ($width / 4),
+        $height / 2
+    );
+    $clipMask->drawImage($draw);
+    $imagick->setImageClipMask($clipMask);
+
+    $imagick->negateImage(false);
+    $imagick->setFormat("png");
+
+    header("Content-Type: image/png");
+    echo $imagick->getImagesBlob();
+
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

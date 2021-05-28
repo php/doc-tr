@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-setimagedelay">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.setimagedelay">
  <refnamediv>
   <refname>Imagick::setImageDelay</refname>
-  <refpurpose>Resim gecikmesini tanımlar</refpurpose>
+  <refpurpose>Görüntü gecikmesini tanımlar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::setImageDelay</methodname>
    <methodparam><type>int</type><parameter>gecikme</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
-   Resim gecikmesini tanımlar.
+   Görüntü gecikmesini tanımlar. Canlandırmalı görüntüler için, sonraki kareye geçmeden önce beklenecek süredir.
+  </para>
+  <para>
+   Nesnedeki her kare için tek tek gecikme süresi belirlenebilir.
   </para>
  </refsect1>
 
@@ -27,6 +29,8 @@
      <term><parameter>gecikme</parameter></term>
      <listitem>
       <para>
+       Karenin gösterilme süresi 'tikler' ile ifade edilir. Canlandırmalı
+       GIF'lerde 100 tik 1 saniyeye eşittir.
       </para>
      </listitem>
     </varlistentry>
@@ -45,6 +49,38 @@
   &reftitle.errors;
   <para>
    &imagick.imagick.throws;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>Imagick::setImageDelay</function> ile canlandırmalı GIF'te değişiklik yapmak</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+// Burada canlanırmalı GIF kare hızı 50ms'den sıfıra kadar değiştiriliyor.
+// Bu durumda bazı tarayıcılar bazı kareleri atlayabilir.
+$imagick = new Imagick(realpath("Test.gif"));
+$imagick = $imagick->coalesceImages();
+
+$frameCount = 0;
+
+foreach ($imagick as $frame) {
+    $imagick->setImageDelay((($frameCount % 11) * 5));
+    $frameCount++;
+}
+
+$imagick = $imagick->deconstructImages();
+
+$imagick->writeImages("/path/to/save/output.gif", true);
+
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 
