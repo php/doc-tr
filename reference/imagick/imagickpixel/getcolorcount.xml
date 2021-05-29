@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixel-getcolorcount">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.getcolorcount">
  <refnamediv>
   <refname>ImagickPixel::getColorCount</refname>
   <refpurpose>Nesnenin renk sayısını döndürür</refpurpose>
@@ -10,14 +9,22 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>int</type><methodname>ImagickPixel::getColorCount</methodname>
    <void/>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Belirtilen renk nesnesi ile ilişkili renk sayısını döndürür.
   </para>
- </refsect1>
+  <para>
+   Renk sayısı nesne rengindeki piksellerin sayısıdır.
+  </para>
+  <para>
+   ImagickPixel::getColorCount yöntemi sadece
+   <methodname>Imagick::getImageHistogram</methodname> ile oluşturulan
+   <classname>ImagickPixel</classname> nesnelerinde çalışıyor gibi görünüyor.
+  </para>
+</refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
@@ -26,6 +33,34 @@
    <classname>ImagickPixelException</classname> istisnası oluşur.
   </para>
  </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+      <title>- ImagickPixel::getColorCount örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+    $imagick = new \Imagick();
+    $imagick->newPseudoImage(640, 480, "magick:logo");
+    $histogramElements = $imagick->getImageHistogram();
+    $lastColor = array_pop($histogramElements);
+    echo "Son renk pikseli sayısı: ".$lastColor->getColorCount();
+?>
+]]>
+      </programlisting>
+      <para>
+       Çıktısı şuna benzer:
+      </para>
+      <screen role="php">
+<![CDATA[
+Son renk pikseli sayısı: 256244
+]]>
+    </screen>
+    </example>
+  </para>
+</refsect1>
 
 </refentry>
 

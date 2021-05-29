@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: c6c82628fa3b14b4b488190f4af3f9d4b536b9f6 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.issimilar">
  <refnamediv>
   <refname>ImagickPixel::isSimilar</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickPixel::isSimilar</methodname>
    <methodparam><type>ImagickPixel</type><parameter>renk</parameter></methodparam>
    <methodparam><type>float</type><parameter>benzerlik</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    <parameter>renk</parameter> değiştirgesi ile belirtilen ImagickPixel
    nesnesinin rengi ile bu nesnenin rengi arasındaki benzerliği hesaplar. Eğer
@@ -54,6 +53,99 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixel::isSimilar</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+        // Aşağıdaki denemeler 255 olarak ifade edilen azami mesafe ile
+        // yapılmıştır, bu nedenle bunları bir birim küpün köşegen uzunluğu
+        // olan üçün karekökü ile ölçeklendirmemiz gerekir.
+
+        $root3 = 1.732050807568877;
+
+        $tests = array(
+            ['rgb(245, 0, 0)',      'rgb(255, 0, 0)',   9 / $root3,         false,],
+            ['rgb(245, 0, 0)',      'rgb(255, 0, 0)',  10 / $root3,         true,],
+            ['rgb(0, 0, 0)',        'rgb(7, 7, 0)',     9 / $root3,         false,],
+            ['rgb(0, 0, 0)',        'rgb(7, 7, 0)',    10 / $root3,         true,],
+            ['rgba(0, 0, 0, 1)',    'rgba(7, 7, 0, 1)', 9 / $root3,         false,],
+            ['rgba(0, 0, 0, 1)',    'rgba(7, 7, 0, 1)',    10 / $root3,     true,],
+            ['rgb(128, 128, 128)',  'rgb(128, 128, 120)',   7 / $root3,     false,],
+            ['rgb(128, 128, 128)',  'rgb(128, 128, 120)',   8 / $root3,     true,],
+            ['rgb(0, 0, 0)',        'rgb(255, 255, 255)',   254.9,          false,],
+            ['rgb(0, 0, 0)',        'rgb(255, 255, 255)',   255,            true,],
+            ['rgb(255, 0, 0)',      'rgb(0, 255, 255)',     254.9,          false,],
+            ['rgb(255, 0, 0)',      'rgb(0, 255, 255)',     255,            true,],
+            ['black',               'rgba(0, 0, 0)',        0.0,            true],
+            ['black',               'rgba(10, 0, 0, 1.0)',  10.0 / $root3,  true],);
+
+        $output = "<table width='100%' class='infoTable'><thead>
+                <tr>
+                <th>
+                Color 1
+                </th>
+                <th>
+                Color 2
+                </th>
+                <th>
+                    Deneme mesafesi * 255
+                </th>
+                <th>
+                    Mesafe dahilinde
+                </th>
+                </tr>
+        </thead>";
+
+        $output .= "<tbody>";
+
+        foreach ($tests as $testInfo) {
+            $color1 = $testInfo[0];
+            $color2 = $testInfo[1];
+            $distance = $testInfo[2];
+            $expectation = $testInfo[3];
+            $testDistance = ($distance / 255.0);
+
+            $color1Pixel = new \ImagickPixel($color1);
+            $color2Pixel = new \ImagickPixel($color2);
+
+            $isSimilar = $color1Pixel->isPixelSimilar($color2Pixel, $testDistance);
+
+
+            if ($isSimilar !== $expectation) {
+                echo "Deneme mesafesi başarısız. [$color1] ile [$color2] renkleri mesafe içinde değil. $testDistance BAŞARISIZ.".NL;
+            }
+
+            $layout = "<tr>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                <td style='text-align: center;'>%s</td>
+            </tr>";
+
+            $output .= sprintf(
+                $layout,
+                $color1,
+                $color2,
+                $distance,
+                $isSimilar ? 'evet' : 'hayır'
+            );
+        }
+
+        $output .= "</tbody></table>";
+
+        return $output;
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

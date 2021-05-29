@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixel-setcolor">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.setcolor">
  <refnamediv>
   <refname>ImagickPixel::setColor</refname>
   <refpurpose>Renk tanımlar</refpurpose>
@@ -10,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickPixel::setColor</methodname>
    <methodparam><type>string</type><parameter>renk</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Bir renk dizgesi olarak verilen rengi ImagickPixel nesnesi olarak tanımlar.
    Renk dizgesi örnekleri: "blue", "#0000ff", "rgb(0,0,255)",
@@ -41,6 +40,43 @@
   &reftitle.returnvalues;
   <para>
     Belirtilen renk ile nesne tanımlanabilmişse &true; aksi takdirde &false;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixel::setColor</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setColor() {
+    $draw = new \ImagickDraw();
+
+    $strokeColor = new \ImagickPixel('green');
+    $fillColor = new \ImagickPixel();
+    $fillColor->setColor('rgba(100%, 75%, 0%, 1.0)');
+
+    $draw->setstrokewidth(3.0);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+    $draw->rectangle(200, 200, 300, 300);
+
+    $image = new \Imagick();
+    $image->newImage(500, 500, "SteelBlue2");
+    $image->setImageFormat("png");
+
+    $image->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

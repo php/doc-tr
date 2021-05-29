@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixel-construct">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.construct">
  <refnamediv>
   <refname>ImagickPixel::__construct</refname>
   <refpurpose>ImagickPixel nesnesini oluşturur</refpurpose>
@@ -10,7 +9,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>ImagickPixel</type><methodname>ImagickPixel::__construct</methodname>
+   <modifier>public</modifier>
+   <methodname>ImagickPixel::__construct</methodname>
    <methodparam choice="opt"><type>string</type><parameter>renk</parameter></methodparam>
   </methodsynopsis>
   &warn.undocumented.func;
@@ -44,6 +44,68 @@
    <classname>ImagickPixel</classname> nesnesi döner, aksi halde bir
    <classname>ImagickPixelException</classname> istisnası
    oluşur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixel::construct</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function construct() {
+
+    $columns = 4;
+
+    $exampleColors = array(
+        "rgba(100%, 0%, 0%, 0.5)",
+        "hsb(33.3333%, 100%,  75%)", // yeşil
+        "hsl(120, 255,   191.25)", // yeşil
+        "graya(50%, 0.5)", //  yarı şeffaf gri
+        "LightCoral", "none", //"cmyk(0.9, 0.48, 0.83, 0.50)",
+        "#f00", //  #rgb
+        "#ff0000", //  #rrggbb
+        "#ff0000ff", //  #rrggbbaa
+        "#ffff00000000", //  #rrrrggggbbbb
+        "#ffff00000000ffff", //  #rrrrggggbbbbaaaa
+        "rgb(255, 0, 0)", //  her bileşen için 0-255 arasında bir tamsayı
+        "rgb(100.0%, 0.0%, 0.0%)", //  her bileşen için 0—100% arasında bir gerçel sayı
+        "rgb(255, 0, 0)", //  0 - 255 arası
+        "rgba(255, 0, 0, 1.0)", //  aynı, örtük bir şeffaflık değeri ile
+        "rgb(100%, 0%, 0%)", //  0.0% - 100.0% arası
+        "rgba(100%, 0%, 0%, 1.0)", // aynı, örtük bir şeffaflık değeri ile
+    );
+
+    $draw = new \ImagickDraw();
+    $count = 0;
+    $black = new \ImagickPixel('rgb(0, 0, 0)');
+
+    foreach ($exampleColors as $exampleColor) {
+        $color = new \ImagickPixel($exampleColor);
+
+        $draw->setstrokewidth(1.0);
+        $draw->setStrokeColor($black);
+        $draw->setFillColor($color);
+        $offsetX = ($count % $columns) * 50 + 5;
+        $offsetY = intval($count / $columns) * 50 + 5;
+        $draw->rectangle(0 + $offsetX, 0 + $offsetY, 40 + $offsetX, 40 + $offsetY);
+        $count++;
+    }
+
+    $image = new \Imagick();
+    $image->newImage(350, 350, "blue");
+    $image->setImageFormat("png");
+    $image->drawImage($draw);
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

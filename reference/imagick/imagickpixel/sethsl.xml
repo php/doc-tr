@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixel-sethsl">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.sethsl">
  <refnamediv>
   <refname>ImagickPixel::setHSL</refname>
   <refpurpose>Normalleştirilmiş HSL rengini ayarlar</refpurpose>
@@ -10,12 +9,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickPixel::setHSL</methodname>
    <methodparam><type>float</type><parameter>sıcaklık</parameter></methodparam>
    <methodparam><type>float</type><parameter>doygunluk</parameter></methodparam>
    <methodparam><type>float</type><parameter>parlaklık</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    ImagickPixel nesnesi ile tanımlanan rengin sıcaklığını, doygunluğunu ve
    parlaklığını normalleştirir.
@@ -63,6 +62,63 @@
   <para>
    &imagick.return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- Bir rengi değiştirmek için
+     <function>ImagickPixel::setHSL</function> kullanımı</title>
+    <programlisting role="php">
+        <![CDATA[
+<?php
+
+// Saf kırmızıya yakın bir renk oluştur
+$color = new ImagickPixel('rgb(90%, 10%, 10%)');
+
+// HSL değerlerini al
+$colorInfo = $color->getHSL();
+
+// Sıcaklığı 180 derece döndür
+$newHue = $colorInfo['hue'] + 0.5;
+if ($newHue > 1) {
+    $newHue = $newHue - 1;
+}
+
+// ImagickPixel nesnesine yeni pikseli ata
+$colorInfo = $color->setHSL($newHue, $colorInfo['saturation'], $colorInfo['luminosity']);
+
+//Yeni renk mavi/yeşil mi bak
+$colorInfo = $color->getcolor();
+print_r($colorInfo);
+
+?>
+        ]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [r] => 26
+    [g] => 230
+    [b] => 230
+    [a] => 255
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    ImageMagick kütüphanesinin 6.2.9 ve üstü sürümleriyle kullanılabilir.
+   </para>
+  </note>
  </refsect1>
 
 </refentry>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixel-getcolor">
+<!-- EN-Revision: 9bf67e6ba659f2251652d7fe5555bf36ed5567cc Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixel.getcolor">
  <refnamediv>
   <refname>ImagickPixel::getColor</refname>
   <refpurpose>Bir renk döndürür</refpurpose>
@@ -10,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>array</type><methodname>ImagickPixel::getColor</methodname>
-   <methodparam choice="opt"><type>bool</type><parameter>normal</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>normal</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    ImagickPixel nesnesiyle tanımlanmış rengi bir dizi olarak döndürür. Renk bir
    matlık kanalına sahipse bu dördüncü bir elemanla sağlanır.
@@ -28,23 +27,120 @@
      <term><parameter>normal</parameter></term>
      <listitem>
       <para>
-       Renk değerleri normalleştirilmiş mi? &false; öntanımlıdır.
+       Renk değerleri normalleştirilmiş mi? Olası değerler:
+       <literal>0</literal>, <literal>1</literal> veya <literal>2</literal>.
       </para>
+      <table>
+       <title>
+        <parameter>normal</parameter> için olası değerler:
+       </title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry><parameter>normal</parameter></entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <constant>0</constant>
+          </entry>
+          <entry>
+           RGB değeri olarak <literal>0</literal> ile <literal>255</literal>
+           (dahil) arasında tamsayı bir değer, şeffaflık değeri olarak ise
+           tamsayı olarak <literal>0</literal> veya <literal>1</literal> döner.
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <constant>1</constant>
+          </entry>
+          <entry>
+           RGBA değeri olarak <literal>0</literal> ile <literal>1</literal>
+           (dahil) arasında bir gerçel sayı döner.
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <constant>2</constant>
+          </entry>
+          <entry>
+           RGBA değeri olarak <literal>0</literal> ile <literal>255</literal>
+           (dahil) arasında tamsayı bir değer döner.
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
-
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Kanal değerlerini içeren bir dizi. Değiştirge olarak &true; belirtilmişse
    elemanların her biri normalleştirilmiş bir değer içerir. Bir hata durumunda
-   <classname>ImagickPixelException</classname> istisnası oluşur.
+   <classname>ImagickPixelException</classname> yavrulanır.
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>Imagick::getColor</function> temel kullanım örneği
+     </title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+// Kahverengi bir ImagickPixel nesnesi oluştur
+$color = new ImagickPixel('brown');
+
+// %25 şeffaflık/matlık olsun
+$color->setColorValue(Imagick::COLOR_ALPHA, 64 / 256.0);
+
+$colorInfo = $color->getColor();
+
+echo "Standart değerler".PHP_EOL;
+print_r($colorInfo);
+
+$colorInfo = $color->getColor(1);
+
+echo "Normalleştirilmiş değerler:".PHP_EOL;
+print_r($colorInfo);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+    <![CDATA[
+Standart değerler
+Array
+(
+    [r] => 165
+    [g] => 42
+    [b] => 42
+    [a] => 0
+)
+Normalleştirilmiş değerler:
+Array
+(
+    [r] => 0.64705882352941
+    [g] => 0.16470588235294
+    [b] => 0.16470588235294
+    [a] => 0.25000381475547
+)
+    ]]>
+    </screen>
+   </example>
+   </para>
+  </refsect1>
 </refentry>
 
 <!-- Keep this comment at the end of the file
