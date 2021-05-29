@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-transparentpaintimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.transparentpaintimage">
  <refnamediv>
   <refname>Imagick::transparentPaintImage</refname>
   <refpurpose>Pikselleri şeffaflaştırır</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::transparentPaintImage</methodname>
    <methodparam><type>mixed</type><parameter>hedef</parameter></methodparam>
    <methodparam><type>float</type><parameter>şeffaflık</parameter></methodparam>
@@ -63,6 +63,38 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::transparentPaintImage</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function transparentPaintImage($color, $alpha, $fuzz) {
+    $imagick = new \Imagick(realpath("images/BlueScreen.jpg"));
+
+    // Şeffaflığı desteklemesi lazım
+    $imagick->setimageformat('png');
+
+    $imagick->transparentPaintImage(
+        $color, $alpha, $fuzz * \Imagick::getQuantum(), false
+    );
+
+    // Gerekli değil, ancak kalan pikselleri toplamaya yardımcı olur
+    $imagick->despeckleimage();
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

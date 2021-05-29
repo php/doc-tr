@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagick-tintimage">
+<!-- EN-Revision: 0ffb9c9fc8f4bf1589a1a573644e1c23b6b451d1 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagick.tintimage">
  <refnamediv>
   <refname>Imagick::tintImage</refname>
-  <refpurpose>Resimdeki her piksele bir renk yöneyi uygular</refpurpose>
+  <refpurpose>Görüntüdeki her piksele bir renk yöneyi uygular</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>Imagick::tintImage</methodname>
    <methodparam><type>mixed</type><parameter>ton</parameter></methodparam>
    <methodparam><type>mixed</type><parameter>matlık</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>eski</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   &warn.undocumented.func;
   <para>
-   Resimdeki her piksele bir renk yöneyi uygular. Yöneyin uzunluğu siyah ve
+   Görüntüdeki her piksele bir renk yöneyi uygular. Yöneyin uzunluğu siyah ve
    beyaz için 0, ara tonlar için ise en azamisidir. Kullanılan yöney ağırlığı
    işlevi: <literal>f(x)=(1-(4.0*((x-0.5)*(x-0.5))))</literal>.
   </para>
@@ -71,7 +72,7 @@
      </thead>
      <tbody>
       <row>
-       <entry>2.1.0</entry>
+       <entry>PECL imagick 2.1.0</entry>
        <entry>
         Artık, ilk değiştirge için bir renk dizgesi ve ikinci değiştirge
         olarak opaklık miktarını ifade eden bir gerçek sayı
@@ -83,6 +84,35 @@
      </tbody>
     </tgroup>
    </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>Imagick::tintImage</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function tintImage($r, $g, $b, $a) {
+    $a = $a / 100;
+
+    $imagick = new \Imagick();
+    $imagick->newPseudoImage(400, 400, 'gradient:black-white');
+
+    $tint = new \ImagickPixel("rgb($r, $g, $b)");
+    $opacity = new \ImagickPixel("rgb(128, 128, 128, $a)");
+    $imagick->tintImage($tint, $opacity);
+    $imagick->setImageFormat('png');
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
