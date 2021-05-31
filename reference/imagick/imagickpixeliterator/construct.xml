@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixeliterator-construct">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixeliterator.construct">
  <refnamediv>
   <refname>ImagickPixelIterator::__construct</refname>
   <refpurpose>Bir <classname>ImagickPixelIterator</classname> nesnesi oluşturur
@@ -11,7 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>ImagickPixelIterator</type><methodname>ImagickPixelIterator::__construct</methodname>
+   <modifier>public</modifier>
+   <methodname>ImagickPixelIterator::__construct</methodname>
    <methodparam><type>Imagick</type><parameter>kalem</parameter></methodparam>
   </methodsynopsis>
   &warn.undocumented.func;
@@ -24,6 +24,43 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixelIterator::construct</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function construct($imagePath) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $imageIterator = new \ImagickPixelIterator($imagick);
+
+    /* Piksel satırlarında döngü */
+    foreach ($imageIterator as $pixels) {
+        /*Piksel sütunlarında döngü */
+        foreach ($pixels as $column => $pixel) {
+            /** @var $pixel \ImagickPixel */
+            if ($column % 2) {
+                /* Her ikinci pikseli siyah yap */
+                $pixel->setColor("rgba(0, 0, 0, 0)");
+            }
+        }
+        /* Yineleyiciyi eşle, her yinelemede bunu yapmak önemli */
+        $imageIterator->syncIterator();
+    }
+
+    header("Content-Type: image/jpg");
+    echo $imagick;
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

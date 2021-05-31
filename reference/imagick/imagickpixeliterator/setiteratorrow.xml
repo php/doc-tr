@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixeliterator-setiteratorrow">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixeliterator.setiteratorrow">
  <refnamediv>
   <refname>ImagickPixelIterator::setIteratorRow</refname>
   <refpurpose>Piksel yineleyiciyi satırını tanımlar</refpurpose>
@@ -10,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickPixelIterator::setIteratorRow</methodname>
    <methodparam><type>int</type><parameter>satır</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Piksel yineleyiciyi satırını tanımlar.
   </para>
@@ -38,6 +37,43 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixelIterator::setIteratorRow</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setIteratorRow($imagePath) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $imageIterator = $imagick->getPixelRegionIterator(200, 100, 200, 200);
+
+    for ($x = 0; $x < 20; $x++) {
+        $imageIterator->setIteratorRow($x * 5);
+        $pixels = $imageIterator->getCurrentIteratorRow();
+        /* Satırdaki piksellere döngü */
+        foreach ($pixels as $pixel) {
+            /** @var $pixel \ImagickPixel */
+            /* Her ikinci pikseli siyah yap */
+            $pixel->setColor("rgba(0, 0, 0, 0)");
+        }
+
+        /* Yineleyiciyi eşle, her yinelemede bunu yapmak önemli */
+        $imageIterator->syncIterator();
+    }
+
+    header("Content-Type: image/jpg");
+    echo $imagick;
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

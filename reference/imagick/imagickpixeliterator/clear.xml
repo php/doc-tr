@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixeliterator-clear">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixeliterator.clear">
  <refnamediv>
   <refname>ImagickPixelIterator::clear</refname>
   <refpurpose>Piksel yineleyici ile ilişkili özkaynakları temizler</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickPixelIterator::clear</methodname>
    <void/>
   </methodsynopsis>
@@ -23,6 +23,46 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixelIterator::clear</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function clear($imagePath) {
+    $imagick = new \Imagick(realpath($imagePath));
+
+    $imageIterator = $imagick->getPixelRegionIterator(100, 100, 250, 200);
+
+    /* Piksel satırlarında döngü */
+    foreach ($imageIterator as $pixels) {
+        /** @var $pixel \ImagickPixel */
+        /* Piksel sütunlarında döngü */
+        foreach ($pixels as $column => $pixel) {
+            if ($column % 2) {
+                /* Her ikinci pikseli siyah yap */
+                $pixel->setColor("rgba(0, 0, 0, 0)");
+            }
+        }
+        /* Yineleyiciyi eşle, her yinelemede bunu yapmak önemli */
+        $imageIterator->syncIterator();
+    }
+
+    $imageIterator->clear();
+
+    header("Content-Type: image/jpg");
+    echo $imagick;
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickpixeliterator-getnextiteratorrow">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickpixeliterator.getnextiteratorrow">
  <refnamediv>
   <refname>ImagickPixelIterator::getNextIteratorRow</refname>
   <refpurpose>Piksel yineleyicinin sonraki satırını döndürür</refpurpose>
@@ -10,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>array</type><methodname>ImagickPixelIterator::getNextIteratorRow</methodname>
    <void/>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Sonraki satırı piksel yineleyicideki piksel kalemlerinden oluşan bir dizi
    olarak döndürür.
@@ -23,9 +22,50 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Önceki satırı <classname>ImagickPixel</classname> nesnelerinden oluşan
+   Sonraki satırı <classname>ImagickPixel</classname> nesnelerinden oluşan
    bir dizi olarak döndürür. Bir hata durumunda bir
-   <classname>ImagickPixelIteratorException</classname> istisnası oluşur.
+   <classname>ImagickPixelIteratorException</classname> yavrulanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickPixelIterator::getNextIteratorRow</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function getNextIteratorRow($imagePath) {
+    $imagick = new \Imagick(realpath($imagePath));
+    $imageIterator = $imagick->getPixelIterator();
+
+    $count = 0;
+    while ($pixels = $imageIterator->getNextIteratorRow()) {
+        if (($count % 3) == 0) {
+            /* Satırdaki piksellere döngü */
+            foreach ($pixels as $column => $pixel) {
+                /** @var $pixel \ImagickPixel */
+                if ($column % 2) {
+                    /* Her ikinci pikseli siyah yap */
+                    $pixel->setColor("rgba(0, 0, 0, 0)");
+                }
+            }
+            /* Yineleyiciyi eşle, her yinelemede bunu yapmak önemli */
+            $imageIterator->syncIterator();
+        }
+
+        $count += 1;
+    }
+
+    header("Content-Type: image/jpg");
+    echo $imagick;
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
