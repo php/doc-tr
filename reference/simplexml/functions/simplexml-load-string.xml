@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id='function.simplexml-load-string' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 5916fd8f742127259912e6510904451849928020 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.simplexml-load-string" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>simplexml_load_string</refname>
   <refpurpose>Bir XML dizgesini bir nesne haline getirir</refpurpose>
@@ -9,12 +8,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>object</type><methodname>simplexml_load_string</methodname>
+   <type class="union"><type>SimpleXMLElement</type><type>false</type></type><methodname>simplexml_load_string</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sınıfAdı</parameter><initializer>"SimpleXMLElement"</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>sınıfAdı</parameter><initializer>SimpleXMLElement::class</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>isimalanı</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>isimalanı_veya_önek</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    İyi biçemli bir XML dizgesi alır ve bir nesne olarak döndürür.
@@ -47,16 +46,16 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       PHP 5.1.0 ve Libxml 2.6.0'dan beri, bu değiştirge ile <link
+       Libxml 2.6.0'dan beri, bu değiştirge ile <link
        linkend="libxml.constants">ek Libxml değiştirgeleri</link>
        belirtilebilmektedir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isimalanı</parameter></term>
+     <term><parameter>isimalanı_veya_önek</parameter></term>
      <listitem>
-      <para>
+      <para>İsimalanı öneki veya URI.
       </para>
      </listitem>
     </varlistentry>
@@ -64,6 +63,8 @@
      <term><parameter>önek_var</parameter></term>
      <listitem>
       <para>
+       <parameter>isimalanı_veya_önek</parameter> bir önek ise &true;,
+       bir URI ise &false; öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -75,7 +76,7 @@
   &reftitle.returnvalues;
   <para>
    XML belgedeki veriyi içeren, <classname>SimpleXMLElement</classname>
-   sınıfından türetilmiş bir nesne döndürür. Hata durumunda &false; döner.
+   sınıfından türetilmiş bir nesne döndürür,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -135,7 +136,7 @@ SimpleXMLElement Object
 ]]>
     </screen>
     <simpara>
-     Ayrıca, <literal>echo $xml->body</literal> gibi çıktılamalar da
+     Ayrıca, <literal>echo $xml-&gt;body</literal> gibi çıktılamalar da
      yapabilirdiniz.
     </simpara>
    </example>
@@ -148,8 +149,9 @@ SimpleXMLElement Object
    <simplelist>
     <member><function>simplexml_load_file</function></member>
     <member><methodname>SimpleXMLElement::__construct</methodname></member>
-    <member><xref linkend="simplexml.examples-errors" /></member>
+    <member><xref linkend="simplexml.examples-errors"/></member>
     <member><function>libxml_use_internal_errors</function></member>
+    <member><xref linkend="simplexml.examples-basic"/></member>
    </simplelist>
   </para>
  </refsect1>

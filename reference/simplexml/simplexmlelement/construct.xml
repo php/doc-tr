@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id='simplexmlelement.construct' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 5916fd8f742127259912e6510904451849928020 Maintainer: nilgun Status: ready -->
+<refentry xml:id="simplexmlelement.construct" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>SimpleXMLElement::__construct</refname>
   <refpurpose>Yeni bir <classname>SimpleXMLElement</classname> nesnesi
@@ -9,17 +8,14 @@
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
-  <classsynopsis>
-   <ooclass><classname>SimpleXMLElement</classname></ooclass>
-    <constructorsynopsis>
-     <methodname>__construct</methodname>
-     <methodparam><type>string</type><parameter>veri</parameter></methodparam>
-     <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
-     <methodparam choice="opt"><type>bool</type><parameter>veri_bir_url</parameter></methodparam>
-     <methodparam choice="opt"><type>string</type><parameter>isimalanı</parameter></methodparam>
-     <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter></methodparam>
-   </constructorsynopsis>
-  </classsynopsis>
+  <constructorsynopsis>
+   <modifier>public</modifier> <methodname>SimpleXMLElement::__construct</methodname>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>veri_bir_url</parameter><initializer>&false;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>isimalanı_veya_önek</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter><initializer>&false;</initializer></methodparam>
+  </constructorsynopsis>
   <para>
    Yeni bir <classname>SimpleXMLElement</classname> nesnesi oluşturur
   </para>
@@ -42,9 +38,19 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       <link linkend="libxml.constants">Ek Libxml değiştirgelerini</link>
-       belirtmek için isteğe bağlı bir değiştirge.
+       XML belgelerin okunmasını etkileyen <link linkend="libxml.constants">Ek
+       Libxml değiştirgelerini</link> belirtmek için isteğe bağlı bir
+       değiştirge. XML belgelerin çıktısını etkileyen seçenekler (örneğin,
+       LIBXML_NOEMPTYTAG) sessizce yok sayılır.
       </para>
+      <note>
+       <para>
+        Derince iç içe çok büyük metin düğümlerini içeren XML belgeleri
+        işleyebilmek için <link
+        linkend="constant.libxml-parsehuge"><constant>LIBXML_PARSEHUGE</constant></link>
+        sabitini aktarmak gerekebilir.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -52,15 +58,15 @@
      <listitem>
       <para>
        Öntanımlı olarak değeri &false;'tır. <parameter>veri</parameter>
-       değiştirgesinde bir XML belge adresi ya da dosya yolu belirtecekseniz
-       &true; olmalıdır.
+       değiştirgesinde dizge veri değil de XML belge adresi ya da dosya yolu
+       belirtilecekse  &true; olmalıdır.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isimalanı</parameter></term>
+     <term><parameter>isimalanı_veya_önek</parameter></term>
      <listitem>
-      <para>
+      <para>İsim alanı öneki veya URI.
       </para>
      </listitem>
     </varlistentry>
@@ -68,6 +74,8 @@
      <term><parameter>önek_var</parameter></term>
      <listitem>
       <para>
+       &true; ise <parameter>isimalanı_veya_önek</parameter> değiştirgesinin
+       bir önek, &false; ise bir isim alanı içerdiği varsayılır.
       </para>
      </listitem>
     </varlistentry>
@@ -94,14 +102,22 @@
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
-   XML veride saptanan her hata için bir istisna oluşturup bir
-   <constant>E_WARNING</constant> üretir.
+   XML veride saptanan her hata için bir <constant>E_WARNING</constant>
+   üretilir ve ek olarak XML veri çözümlenemezse bir
+   <classname>Exception</classname> yavrulanır.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
+   <note>
+    <para>
+     Aşağıdaki örnekler, <link linkend="simplexml.examples-basic">temel
+      kullanım</link> kılavuzunun ilk örneğinde bulunan XML dizesine atıfta
+     bulunan <literal>example.php</literal> betiğini içerebilir.
+    </para>
+   </note>
    <example>
     <title>- Bir dizgeden bir <classname>SimpleXMLElement</classname> nesnesi
     oluşturmak</title>
@@ -117,6 +133,12 @@ echo $sxe->movie[0]->title;
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+PHP: Behind the Parser
+]]>
+    </screen>
    </example>
   </para>
   <para>
@@ -141,9 +163,10 @@ echo $sxe->asXML();
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><xref linkend="simplexml.examples-basic"/></member>
     <member><function>simplexml_load_string</function></member>
     <member><function>simplexml_load_file</function></member>
-    <member><xref linkend="simplexml.examples-errors" /></member>
+    <member><xref linkend="simplexml.examples-errors"/></member>
     <member><function>libxml_use_internal_errors</function></member>
    </simplelist>
   </para>
