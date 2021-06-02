@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
 <!-- EN-Revision: 3739933b8c796d45aad74410caebb2734dc00aa7 Maintainer: nilgun Status: ready -->
 <chapter xml:id="imagick.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <section xml:id="imagick.examples-1">
    <title>Temel kullanım</title>
   <para>
-   Imagick PHP'de resim işlemlerini nesne yönelimli arayüzü sayesinde oldukça
-   kolaylaştırır. Burada bir resmin küçük bir örneğinin nasıl elde edildiği
+   Imagick PHP'de görüntü işlemlerini nesne yönelimli arayüzü sayesinde oldukça
+   kolaylaştırır. Burada bir görüntünün küçük bir örneğinin nasıl elde edildiği
    gösterilmiştir:
    <example>
-    <title>- Imagick ile resim örneği (thumbnail) oluşturmak</title>
+    <title>- Imagick ile görüntü örneği (thumbnail) oluşturmak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
 header('Content-type: image/jpeg');
 
-$resim = new Imagick('resim.jpg');
+$görüntü = new Imagick('görüntü.jpg');
 
 // Genişlik veya yükseklik olarak 0 verilmişse
 // enboy oranı korunur
-$resim->thumbnailImage(100, 0);
+$görüntü->thumbnailImage(100, 0);
 
 echo $image;
 
@@ -33,8 +32,8 @@ echo $image;
 
   <para>
    Imagick'teki SPL ve nesne yönelimli özellikler kullanarak bir dizin
-   içindeki tüm resim dosyaları kolayca yeniden boyutlandırılabilir
-   (Büyük sayısal kamera resimlerini HTML sayfalarında izlenebilir
+   içindeki tüm görüntü dosyaları kolayca yeniden boyutlandırılabilir
+   (Büyük sayısal kamera görüntülerini HTML sayfalarında izlenebilir
    boyuta indirmek gibi). Temel verileri kaybetmek istemediğimizden bu
    örnekte resize kullanıyoruz:
    <example>
@@ -44,16 +43,16 @@ echo $image;
 <![CDATA[
 <?php
 
-$resimler = new Imagick(glob('images/*.JPG'));
+$görüntüler = new Imagick(glob('images/*.JPG'));
 
-foreach($resimler as $resim) {
+foreach($görüntüler as $görüntü) {
 
-    // 0, resmin enboy oranına uyulmasını sağlar
-    $resim->thumbnailImage(1024,0);
+    // 0, görüntünün enboy oranına uyulmasını sağlar
+    $görüntü->thumbnailImage(1024,0);
 
 }
 
-$resimler->writeImages();
+$görüntüler->writeImages();
 
 ?>
 ]]>
@@ -61,55 +60,55 @@ $resimler->writeImages();
    </example>
   </para>
   <para>
-   Burada bir resmin yansımasının oluşturulması örneklenmiştir. Yansıtma için
-   resmin simetriği alınıp derece derece koyulaşan bir maske uygulanmıştır.
-   Hem özgün resim hem de simetriği aynı tuvalin üzerine yerleştirilmiştir.
+   Burada bir görüntünün yansımasının oluşturulması örneklenmiştir. Yansıtma için
+   görüntünün simetriği alınıp derece derece koyulaşan bir maske uygulanmıştır.
+   Hem özgün görüntü hem de simetriği aynı tuvalin üzerine yerleştirilmiştir.
    <example>
-    <title>- Bir resmin yansımasının oluşturulması</title>
+    <title>- Bir görüntünün yansımasının oluşturulması</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-/* Resmi okuyalım */
+/* Görüntüyü oku */
 $im = new Imagick("test.png");
 
-/* Resmin küçük örneğini oluşturalım */
+/* Görüntünün küçük örneğini oluştur */
 $im->thumbnailImage(200, null);
 
-/* Resme bir çerçeve çizgisi çizelim */
+/* Görüntüye bir çerçeve çizgisi çiz */
 $im->borderImage(new ImagickPixel("white"), 5, 5);
 
-/* Resmi kopyalayıp simetriğini alalım */
+/* Görüntüyü kopyalayıp simetriğini al */
 $reflection = $im->clone();
 $reflection->flipImage();
 
-/* Yansımaya uygulanacak maskeyi oluşturalım */
+/* Yansımaya uygulanacak maskeyi oluştur */
 $gradient = new Imagick();
 
 /* Maske biraz büyük olmalı ve bir çerçevesi olmalı */
 $gradient->newPseudoImage($reflection->getImageWidth() + 10,
         $reflection->getImageHeight() + 10, "gradient:transparent-black");
 
-/* Maskeyi yansımaya uygulayalım */
+/* Maskeyi yansımaya uygula */
 $reflection->compositeImage($gradient, imagick::COMPOSITE_OVER, 0, 0);
 
-/* Biraz matlık ekleyelim. (ImageMagick 6.2.9 ve sonrası gerekir.) */
+/* Biraz matlık ekle (ImageMagick 6.2.9 ve sonrası gerekir.) */
 $reflection->setImageOpacity( 0.3 );
 
-/* Boş bir tuval oluşturalım */
+/* Boş bir tuval oluştur */
 $canvas = new Imagick();
 
-/* Tuval her iki resmi de tutacak kadar büyük olmalı */
+/* Tuval her iki görüntüyü de tutacak kadar büyük olmalı */
 $width = $im->getImageWidth() + 40;
 $height = ($im->getImageHeight() * 2) + 30;
 $canvas->newImage($width, $height, new ImagickPixel("black"));
 $canvas->setImageFormat("png");
 
-/* Her iki resmi tuval üzerinde birleştirelim */
+/* Her iki görüntüyü tuval üzerinde birleştir */
 $canvas->compositeImage($im, imagick::COMPOSITE_OVER, 20, 10);
 $canvas->compositeImage($reflection, imagick::COMPOSITE_OVER,
         20, $im->getImageHeight() + 10);
 
-/* Resmi çıktılayalım */
+/* Görüntüyü çıktıla */
 header("Content-Type: image/png");
 echo $canvas;
 ?>
@@ -117,7 +116,7 @@ echo $canvas;
     </programlisting>
     &example.outputs.similar;
     <mediaobject>
-      <alt>Örneğin çıktısı: Bir resmin yansımasının oluşturulması</alt>
+      <alt>Örneğin çıktısı: Bir görüntünün yansımasının oluşturulması</alt>
      <imageobject>
       <imagedata fileref="en/reference/imagick/figures/hello_world_reflection.png"/>
      </imageobject>
@@ -125,7 +124,7 @@ echo $canvas;
    </example>
   </para>
   <para>
-   Aşağıdaki örnekte çizim sırasında örüntülerle resmin nasıl kaplandığı
+   Aşağıdaki örnekte çizim sırasında örüntülerle görüntünün nasıl kaplandığı
    gösterilmiştir.
    <example>
     <title>- Metni bir örüntü ile kaplamak</title>
@@ -133,47 +132,47 @@ echo $canvas;
 <![CDATA[
 <?php
 
-/* Yeni bir resim nesnesi oluşturalım */
+/* Yeni bir görüntü nesnesi oluştur */
 $im = new Imagick();
 
-/* Örüntü olarak kullanılacak yeni resmi oluşturalım. */
+/* Örüntü olarak kullanılacak yeni görüntüyü oluştur */
 $im->newPseudoImage(50, 50, "gradient:red-black");
 
-/* Bir çizim nesnesi oluşturalım */
+/* Bir çizim nesnesi oluştur */
 $draw = new ImagickDraw();
 
-/* Örüntüyü "gradient" ismiyle oluşturalım */
+/* Örüntüyü "gradient" ismiyle oluştur */
 $draw->pushPattern('gradient', 0, 0, 50, 50);
 
-/* Örüntüyle maskeyi birleştirelim */
+/* Örüntüyle maskeyi birleştir */
 $draw->composite(Imagick::COMPOSITE_OVER, 0, 0, 50, 50, $im);
 
-/* Örüntüyü kapatalım */
+/* Örüntüyü kapat */
 $draw->popPattern();
 
-/* "gradient" örüntüsü ile resmi kaplayalım */
+/* "gradient" örüntüsü ile görüntüyü kapla */
 $draw->setFillPatternURL('#gradient');
 
 /* Yazı tipi boyu 52 olsun */
 $draw->setFontSize(52);
 
-/* Bir şeyler yazalım */
+/* Bir şeyler yaz */
 $draw->annotation(20, 50, "Hello World!");
 
-/* Beyaz zemine sahip bir tuval oluşturalım */
+/* Beyaz zeminli bir tuval oluştur */
 $canvas = new Imagick();
 $canvas->newImage(350, 70, "white");
 
-/* Çizimi tuvalin üzerine yerleştirelim */
+/* Çizimi tuvalin üzerine yerleştir */
 $canvas->drawImage($draw);
 
-/* Resme çerçeve olarak 1px kalınlığında siyah çizgi çizelim */
+/* Görüntüye çerçeve olarak 1px kalınlığında siyah çizgi çiz */
 $canvas->borderImage('black', 1, 1);
 
-/* Resmin dosya biçemi PNG olsun*/
+/* Görüntünün dosya biçemi PNG olsun*/
 $canvas->setImageFormat('png');
 
-/* Resmi çıktılayalım */
+/* Görüntüyü çıktıla */
 header("Content-Type: image/png");
 echo $canvas;
 ?>
@@ -189,26 +188,26 @@ echo $canvas;
    </example>
   </para>
   <para>
-   Canlandırmalı GIF resimleri ile çalışmak.
+   Canlandırmalı GIF görüntüleri ile çalışmak.
    <example>
-    <title>- GIF resmini okumak ve tüm kareleri boyutlandırmak</title>
+    <title>- GIF görüntüyü okumak ve tüm kareleri boyutlandırmak</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
-/* Yeni bir imagick nesnesi oluşturup GIF resmi okutalım */
+/* Yeni bir imagick nesnesi oluşturup GIF görüntüyü okut */
 $im = new Imagick("example.gif");
 
-/* Tüm resim karelerini boyutlandıralım */
+/* Tüm görüntü karelerini boyutlandır */
 foreach ($im as $frame) {
     /* 50x50 kareler */
     $frame->thumbnailImage(50, 50);
 
-    /* Sanal tuvali doğru boyuta ayarlayalım */
+    /* Sanal tuvali doğru boyuta ayarla */
     $frame->setImagePage(50, 50, 0, 0);
 }
 
-/* writeImage yerine writeImages kullanıldığını dikkat edin */
+/* writeImage yerine writeImages kullanılıyor! */
 $im->writeImages("example_small.gif", true);
 ?>
 ]]>
@@ -222,7 +221,7 @@ $im->writeImages("example_small.gif", true);
     <programlisting role="php">
 <![CDATA[
 <?php
-/* SGenişliği ve yüksekliği orijinal PHP logosuyla orantılı olarak ayarla */
+/* Genişliği ve yüksekliği orijinal PHP logosuyla orantılı olarak ayarla */
 $width = 400;
 $height = 210;
 
@@ -257,7 +256,7 @@ $draw->setGravity(Imagick::GRAVITY_CENTER);
 $img->annotateImage($draw, 0, -10, 0, 'php');
 $img->setImageFormat('png');
 
-/* PNG için uygun başlığı ekle ve resmi çıktıla */
+/* PNG için uygun başlığı ekle ve görüntüyü çıktıla */
 header('Content-Type: image/png');
 echo $img;
 ?>
