@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id='simplexmlelement.addChild' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 1367cac761756ee4fce7c63be945b115f2924795 Maintainer: nilgun Status: ready -->
+<refentry xml:id="simplexmlelement.addchild" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>SimpleXMLElement::addChild</refname>
   <refpurpose>XML düğümüne bir çocuk düğüm ekler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
-  <classsynopsis>
-   <ooclass><classname>SimpleXMLElement</classname></ooclass>
-   <methodsynopsis>
-    <type>SimpleXMLElement</type><methodname>addChild</methodname>
-    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-    <methodparam choice="opt"><type>string</type><parameter>değer</parameter></methodparam>
-    <methodparam choice="opt"><type>string</type><parameter>isimalanı</parameter></methodparam>
-   </methodsynopsis>
-  </classsynopsis>
+  <methodsynopsis>
+   <modifier>public</modifier> <type class="union"><type>SimpleXMLElement</type><type>null</type></type><methodname>SimpleXMLElement::addChild</methodname>
+   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>değer</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>isimalanı</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
   <para>
    XML düğümüne bir çocuk düğüm ekleyip çocuk elemanı bir
    <classname>SimpleXMLElement</classname> nesnesi olarak döndürür.
@@ -58,14 +54,21 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  Eklenen çocuk elemanı bir <classname>SimpleXMLElement</classname> nesnesi
-  olarak döndürür.
+   Eklenen çocuk elemanı bir <classname>SimpleXMLElement</classname> nesnesi
+   olarak döndürür. Başarısızlık durumunda &null; döner.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
+   <note>
+    <para>
+     Aşağıdaki örnekler, <link linkend="simplexml.examples-basic">temel
+      kullanım</link> kılavuzunun ilk örneğinde bulunan XML dizesine atıfta
+     bulunan <literal>example.php</literal> betiğini içerebilir.
+    </para>
+   </note>
    <example>
     <title>- Bir <classname>SimpleXMLElement</classname> nesnesine
     öznitelikleriyle çocuk elemanlar eklemek</title>
@@ -95,6 +98,48 @@ echo $sxe->asXML();
 ?>
 ]]>
     </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+<?xml version="1.0" standalone="yes"?>
+<movies type="documentary">
+ <movie>
+  <title>PHP: Behind the Parser</title>
+  <characters>
+   <character>
+    <name>Ms. Coder</name>
+    <actor>Onlivia Actora</actor>
+   </character>
+   <character>
+    <name>Mr. Coder</name>
+    <actor>El Act&#xD3;r</actor>
+   </character>
+  </characters>
+  <plot>
+   So, this language. It's like, a programming language. Or is it a
+   scripting language? All is revealed in this thrilling horror spoof
+   of a documentary.
+  </plot>
+  <great-lines>
+   <line>PHP solves all my web problems</line>
+  </great-lines>
+  <rating type="thumbs">7</rating>
+  <rating type="stars">5</rating>
+ </movie>
+ <movie>
+  <title>PHP2: More Parser Stories</title>
+  <plot>This is all about the people who make it work.</plot>
+  <characters>
+   <character>
+    <name>Mr. Parser</name>
+    <actor>John Doe</actor>
+   </character>
+  </characters>
+  <rating type="stars">5</rating>
+ </movie>
+</movies>
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
@@ -104,9 +149,11 @@ echo $sxe->asXML();
   <para>
    <simplelist>
     <member><methodname>SimpleXMLElement::addAttribute</methodname></member>
+    <member><xref linkend="simplexml.examples-basic"/></member>
    </simplelist>
   </para>
  </refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file

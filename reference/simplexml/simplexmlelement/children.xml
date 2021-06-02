@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xml:id='simplexmlelement.children' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 5916fd8f742127259912e6510904451849928020 Maintainer: nilgun Status: ready -->
+<refentry xml:id="simplexmlelement.children" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>SimpleXMLElement::children</refname>
   <refpurpose>Belirtilen düğümün çocuklarını bulur</refpurpose>
@@ -9,14 +8,11 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <classsynopsis>
-   <ooclass><classname>SimpleXMLElement</classname></ooclass>
-   <methodsynopsis>
-    <type>SimpleXMLElement</type><methodname>children</methodname>
-    <methodparam choice="opt"><type>string</type><parameter>isimalanı</parameter></methodparam>
-    <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter></methodparam>
-   </methodsynopsis>
-  </classsynopsis>
+  <methodsynopsis>
+   <modifier>public</modifier> <type class="union"><type>SimpleXMLElement</type><type>null</type></type><methodname>SimpleXMLElement::children</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>isimalanı_veya_önek</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>önek_var</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
   <para>
    Bu yöntem nesnenin içerdiği alt düğümleri bulur. Sonuçlara
    <literal>foreach</literal> döngüleri üzerinden erişilebilir.
@@ -29,9 +25,9 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>isimalanı</parameter></term>
+     <term><parameter>isimalanı_veya_önek</parameter></term>
      <listitem>
-      <para>
+      <para>Bir XML isimalanı.
       </para>
      </listitem>
     </varlistentry>
@@ -39,7 +35,8 @@
      <term><parameter>önek_var</parameter></term>
      <listitem>
       <para>
-       &false; öntanımlıdır.
+       &true; ise <parameter>isimalanı_veya_önek</parameter> değiştirgesinin
+       bir önek, &false; ise bir isimalanı içerdiği kabul edilir.
       </para>
      </listitem>
     </varlistentry>
@@ -50,30 +47,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.0</entry>
-       <entry>
-        Seçimlik <parameter>önek_var</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
+   Düğümün bir çocuğu olsun olmasın bir
+   <classname>SimpleXMLElement</classname> nesnesi döner.
   </para>
  </refsect1>
 
@@ -120,6 +95,56 @@ begot a daughter who begot a son; and that son begot a son
 ]]>
     </screen>
    </example>
+   <example>
+    <title>- İsimalanlarının kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$xml = '<example xmlns:foo="my.foo.urn">
+  <foo:a>Apple</foo:a>
+  <foo:b>Banana</foo:b>
+  <c>Cherry</c>
+</example>';
+
+$sxe = new SimpleXMLElement($xml);
+
+$kids = $sxe->children('foo');
+var_dump(count($kids));
+
+$kids = $sxe->children('foo', TRUE);
+var_dump(count($kids));
+
+$kids = $sxe->children('my.foo.urn');
+var_dump(count($kids));
+
+$kids = $sxe->children('my.foo.urn', TRUE);
+var_dump(count($kids));
+
+$kids = $sxe->children();
+var_dump(count($kids));
+?>
+]]>
+    </programlisting>
+    <screen>
+<![CDATA[
+int(0)
+int(2)
+int(2)
+int(0)
+int(1)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><methodname>SimpleXMLElement::count</methodname></member>
+    <member><function>count</function></member>
+   </simplelist>
   </para>
  </refsect1>
 

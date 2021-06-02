@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id='simplexmlelement.asXML' xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 5916fd8f742127259912e6510904451849928020 Maintainer: nilgun Status: ready -->
+<refentry xml:id="simplexmlelement.asxml" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>SimpleXMLElement::asXML</refname>
   <refpurpose>Nesnenin içerdiği belgeyi iyi biçemli bir XML dizge olarak
@@ -9,13 +8,10 @@
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
-  <classsynopsis>
-   <ooclass><classname>SimpleXMLElement</classname></ooclass>
-   <methodsynopsis>
-    <type>mixed</type><methodname>asXML</methodname>
-    <methodparam choice="opt"><type>string</type><parameter>dosya</parameter></methodparam>
-   </methodsynopsis>
-  </classsynopsis>
+  <methodsynopsis>
+   <modifier>public</modifier> <type class="union"><type>string</type><type>bool</type></type><methodname>SimpleXMLElement::asXML</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>dosya</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
   <para>
    Nesnenin içerdiği belgeyi iyi biçemli bir XML 1.0 dizgesi olarak döndürür.
   </para>
@@ -29,7 +25,8 @@
      <term><parameter>dosya</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde, sonuç döndürülmeyip bu dosyaya yazılır.
+       Dizge değer belirtildiği takdirde, sonuç döndürülmeyip bu dosyaya
+       yazılır.
       </para>
      </listitem>
     </varlistentry>
@@ -45,6 +42,28 @@
    belirtilir ve dosyaya başarıyla yazılırsa &true; aksi takdirde &false;
    döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>dosya</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -69,11 +88,26 @@ XML;
 
 $xml = new SimpleXMLElement($string);
 
-echo $xml->asXML(); // <?xml ... <a><b><c>text</c><c>stuff</c> ...
+echo $xml->asXML();
 
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+<?xml version="1.0"?>
+<a>
+ <b>
+  <c>text</c>
+  <c>stuff</c>
+ </b>
+ <d>
+  <c>code</c>
+ </d>
+</a>
+]]>
+    </screen>
    </example>
   </para>
   <para>
@@ -89,15 +123,32 @@ echo $xml->asXML(); // <?xml ... <a><b><c>text</c><c>stuff</c> ...
 /* <a><b><c>'yi arayalım */
 $result = $xml->xpath('/a/b/c');
 
-while(list( , $node) = each($result)) {
-    echo $node->asXML(); // <c>text</c> and <c>stuff</c>
+foreach ($result as $node) {
+    echo $node->asXML();
 }
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+<c>text</c><c>stuff</c>
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><methodname>SimpleXMLElement::__toString</methodname></member>
+    <member><xref linkend="simplexml.examples-basic"/></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
 </refentry>
 
 <!-- Keep this comment at the end of the file
