@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.utf8-decode">
  <refnamediv>
   <refname>utf8_decode</refname>
@@ -12,13 +11,31 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>utf8_decode</methodname>
-   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>data</parameter> dizgesindeki
-   <literal>ISO-8859-1</literal> karakterlerinin <literal>UTF-8</literal>
-   gösterimlerini <literal>ISO-8859-1</literal> gösterimlerine dönüştürür.
+   Belirtilen <parameter>dizge</parameter>nin karakter kodlamasını
+   <literal>UTF-8</literal>'den <literal>ISO-8859-1</literal>'e dönüştürür.
+   Geçersiz <literal>UTF-8</literal> karakterler ve
+   <literal>ISO-8859-1</literal> kodlamasında mevcut olmayan
+   (<literal>U+00FF</literal> üstü) karakterlerin yerine <literal>?</literal>
+   imi konur.
   </para>
+  <note>
+   <para>
+    <literal>ISO-8859-1</literal> karakter kodlamasını kullanıyor olarak
+    imlenmiş birçok sayfa aslında benzeri olan <literal>Windows-1252</literal>
+    kodlamasını kullanır ve tarayıcılar <literal>ISO-8859-1</literal> kodlu
+    sayfaları <literal>Windows-1252</literal> olarak yorumlar.
+    <literal>Windows-1252</literal>, belirli <literal>ISO-8859-1</literal>
+    kontrol karakterleri yerine Euro imi (<literal>€</literal>) ve kıvrımlı
+    tırnaklar (<literal>“</literal> <literal>”</literal>) gibi ek
+    yazdırılabilir karakterlere sahiptir. Bu işlev, bu tür
+    <literal>Windows-1252</literal> karakterlerini doğru şekilde
+    dönüştürmeyecektir. <literal>Windows-1252</literal> dönüştürme gerekiyorsa
+    farklı bir işlev kullanılmalıdır.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -26,7 +43,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>veri</parameter></term>
+     <term><parameter>dizge</parameter></term>
      <listitem>
       <para>
        UTF-8 ile kodlanmış bir dizge.
@@ -40,18 +57,46 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen <parameter>veri</parameter> dizgesinin ISO-8859-1 gösterimini
-   döndürür.
+   Belirtilen <parameter>dizge</parameter>nin ISO-8859-1 gösterimini döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        Bu işlev PHP çekirdeğine taşınmıştır. Bu nedenle bu işlevin
+        kullanılabilir olması için XML eklentisine gereksinimi kaldırmıştır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>utf8_encode</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>utf8_encode</function> - Tersine dönüşüm yapar</member>
+   <member><function>mb_convert_encoding</function> - UTF-8, ISO-8859-1 ve
+   Windows-1252 dahil pek çok karakter kodlaması arasında dönüşüm yapar</member>
+   <member><function>iconv</function> - Çeşitli karakter kodlamaları arasında
+   dönüşüm yapar</member>
+   <member><function>recode_string</function> - Çeşitli karakter kodlamaları
+   arasında dönüşüm yapar</member>
+  </simplelist>
  </refsect1>
 
 </refentry>
