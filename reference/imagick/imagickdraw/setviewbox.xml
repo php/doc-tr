@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xml:id="function.imagickdraw-setviewbox" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xml:id="imagickdraw.setviewbox" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ImagickDraw::setViewbox</refname>
   <refpurpose>Tuval boyutunu uçtan uca tanımlar</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::setViewbox</methodname>
    <methodparam><type>int</type><parameter>x1</parameter></methodparam>
    <methodparam><type>int</type><parameter>y1</parameter></methodparam>
@@ -18,7 +18,7 @@
   </methodsynopsis>
   &warn.undocumented.func;
   <para>
-   Tuval boyutunun uçtan uca belirler. Normal olarak,tuval resmi ile aynı boyut
+   Tuval boyutunun uçtan uca belirler. Normal olarak, tuval resmi ile aynı boyut
    kullanılarak belirtilir.  Yöney verisi SVG veya MVG biçemleninde saklandığı
    takdirde, görüntüleyicinin üzerinde yöney verisini kullanacağı tuval boyunu
    belirtirken bu çerçeve kullanılır.
@@ -69,6 +69,57 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::setViewBox</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setViewBox($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+    $draw->setStrokeWidth(2);
+    $draw->setFontSize(72);
+
+    /*
+
+    Çizim vektör verileriyle kaydedilecek genel tuval boyutunu ayarlar.
+    Genellikle bu, tuval görüntüsüyle aynı boyut kullanılarak belirtilir.
+    Vektör verileri SVG veya MVG biçemlerinde kaydedildiğinde, görüntüleme
+    kutusu, bir izleyicinin vektör verilerini üzerinde oluşturacağı tuval
+    görüntüsünün boyutunu belirtmek için kullanılır.
+
+     */
+
+    $draw->circle(250, 250, 250, 0);
+    $draw->setviewbox(0, 0, 200, 200);
+    $draw->circle(125, 250, 250, 250);
+    $draw->translate(250, 125);
+    $draw->circle(0, 0, 125, 0);
+
+
+    $imagick = new \Imagick();
+    $imagick->newImage(500, 500, $backgroundColor);
+    $imagick->setImageFormat("png");
+
+    $imagick->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

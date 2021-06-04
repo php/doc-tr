@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-setstrokelinejoin">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.setstrokelinejoin">
  <refnamediv>
   <refname>ImagickDraw::setStrokeLineJoin</refname>
   <refpurpose>Kalın çizgi ekleminin şeklini belirler</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::setStrokeLineJoin</methodname>
    <methodparam><type>int</type><parameter>eklemTürü</parameter></methodparam>
   </methodsynopsis>
@@ -40,6 +40,60 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::setStrokeLineJoin</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setStrokeLineJoin($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+    $draw->setStrokeWidth(1);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+
+    $draw->setStrokeWidth(20);
+
+    $offset = 220;
+
+    $lineJoinStyle = [
+        \Imagick::LINEJOIN_MITER,
+        \Imagick::LINEJOIN_ROUND,
+        \Imagick::LINEJOIN_BEVEL,
+        ];
+
+    for ($x = 0; $x < count($lineJoinStyle); $x++) {
+        $draw->setStrokeLineJoin($lineJoinStyle[$x]);
+        $points = [
+            ['x' => 40 * 5, 'y' => 10 * 5 + $x * $offset],
+            ['x' => 20 * 5, 'y' => 20 * 5 + $x * $offset],
+            ['x' => 70 * 5, 'y' => 50 * 5 + $x * $offset],
+            ['x' => 40 * 5, 'y' => 10 * 5 + $x * $offset],
+        ];
+
+        $draw->polyline($points);
+    }
+
+    $image = new \Imagick();
+    $image->newImage(500, 700, $backgroundColor);
+    $image->setImageFormat("png");
+
+    $image->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

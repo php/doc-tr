@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-push">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: haluk Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.push">
  <refnamediv>
   <refname>ImagickDraw::push</refname>
   <refpurpose>Geçerli ImagickDraw nesnesini kopyalar ve yığıta basar
@@ -11,6 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::push</methodname>
    <void/>
   </methodsynopsis>
@@ -32,6 +32,45 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::push</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function push($strokeColor, $fillColor, $backgroundColor, $fillModifiedColor) {
+
+    $draw = new \ImagickDraw();
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillModifiedColor);
+    $draw->setStrokeWidth(2);
+    $draw->setFontSize(72);
+    $draw->push();
+    $draw->translate(50, 50);
+    $draw->rectangle(200, 200, 300, 300);
+    $draw->pop();
+    $draw->setFillColor($fillColor);
+    $draw->rectangle(200, 200, 300, 300);
+
+    $imagick = new \Imagick();
+    $imagick->newImage(500, 500, $backgroundColor);
+    $imagick->setImageFormat("png");
+
+    $imagick->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

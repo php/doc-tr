@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-setvectorgraphics">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.setvectorgraphics">
  <refnamediv>
   <refname>ImagickDraw::setVectorGraphics</refname>
   <refpurpose>Yöney çizgesini tanımlar</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::setVectorGraphics</methodname>
    <methodparam><type>string</type><parameter>xml</parameter></methodparam>
   </methodsynopsis>
@@ -43,6 +43,50 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::setVectorGraphics</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setVectorGraphics() {
+    // Yeni bir çizim nesnesi oluşturup bir şeyler çiz
+    $draw = new \ImagickDraw();
+    $draw->setFillColor("red");
+    $draw->circle(20, 20, 50, 50);
+    $draw->setFillColor("blue");
+    $draw->circle(50, 70, 50, 50);
+    $draw->rectangle(50, 120, 80, 150);
+
+    // Çizimi bir dizge olarak döndür
+    $SVG = $draw->getVectorGraphics();
+
+    //$svg bir dizgedir, bir dizgenin kaydedilebileceği her yere kaydedilebilir
+
+    // Yeni bir çizim nesnesi üretmek için kayıtlı çizimi kullan
+    $draw2 = new \ImagickDraw();
+    // SVG metnini yerleştir
+    $draw2->setVectorGraphics("<root>".$SVG."</root>");
+
+    $imagick = new \Imagick();
+    $imagick->newImage(200, 200, 'white');
+    $imagick->setImageFormat("png");
+
+    $imagick->drawImage($draw2);
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

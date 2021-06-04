@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-polygon">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: haluk Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.polygon">
  <refnamediv>
   <refname>ImagickDraw::polygon</refname>
   <refpurpose>Bir çokgen çizer</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::polygon</methodname>
    <methodparam><type>array</type><parameter>koordinatlar</parameter></methodparam>
   </methodsynopsis>
@@ -41,6 +41,49 @@
   &reftitle.returnvalues;
   <para>
    &imagick.return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::polygon</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function polygon($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeOpacity(1);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setStrokeWidth(4);
+
+    $draw->setFillColor($fillColor);
+
+    $points = [
+        ['x' => 40 * 5, 'y' => 10 * 5],
+        ['x' => 20 * 5, 'y' => 20 * 5],
+        ['x' => 70 * 5, 'y' => 50 * 5],
+        ['x' => 60 * 5, 'y' => 15 * 5],
+    ];
+
+    $draw->polygon($points);
+
+    $image = new \Imagick();
+    $image->newImage(500, 300, $backgroundColor);
+    $image->setImageFormat("png");
+    $image->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

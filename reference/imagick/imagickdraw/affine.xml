@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-affine">
+<!-- EN-Revision: fa0c88f1e36a3f28b4fcee0b2d1e188b54e0c44b Maintainer: haluk Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.affine">
  <refnamediv>
   <refname>ImagickDraw::affine</refname>
   <refpurpose>Geçerli homojen koordinatlar matrisini ayarlar</refpurpose>
@@ -10,10 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::affine</methodname>
    <methodparam><type>array</type><parameter>matris</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
   <para>
    Belirtilen matrise göre homojen koordinatlar matrisini ayarlar.
   </para>
@@ -39,6 +38,78 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::affine</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function affine($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeWidth(1);
+    $draw->setStrokeOpacity(1);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+
+    $draw->setStrokeWidth(2);
+
+    $PI = 3.141592653589794;
+    $angle = 60 * $PI / 360;
+
+    // Çizim koordinatlarını ölçekle.
+    $affineScale = array("sx" => 1.75, "sy" => 1.75, "rx" => 0, "ry" => 0, "tx" => 0, "ty" => 0);
+
+    // Çizim koordinatlarını kırp
+    $affineShear = array("sx" => 1, "sy" => 1, "rx" => sin($angle), "ry" => -sin($angle), "tx" => 0, "ty" => 0);
+
+    // Çizim koordinatlarını döndür. Kırpma koordinatları matrisi
+    // yanlış ölçeklendirilmiş çizimler üretir.
+    $affineRotate = array("sx" => cos($angle), "sy" => cos($angle), "rx" => sin($angle), "ry" => -sin($angle), "tx" => 0, "ty" => 0,);
+
+    // Çizimi dönüştür
+    $affineTranslate = array("sx" => 1, "sy" => 1, "rx" => 0, "ry" => 0, "tx" => 30, "ty" => 30);
+
+    // Tanımlı homojen koordinatlar matrisi
+    $affineIdentity = array("sx" => 1, "sy" => 1, "rx" => 0, "ry" => 0, "tx" => 0, "ty" => 0);
+
+    $examples = [$affineScale, $affineShear, $affineRotate, $affineTranslate, $affineIdentity,];
+
+    $count = 0;
+
+    foreach ($examples as $example) {
+        $draw->push();
+        $draw->translate(($count % 2) * 250, intval($count / 2) * 250);
+        $draw->translate(100, 100);
+        $draw->affine($example);
+        $draw->rectangle(-50, -50, 50, 50);
+        $draw->pop();
+        $count++;
+    }
+
+    // Çizim komutlarının işlenebileceği bir görüntü nesnesi oluştur
+    $image = new \Imagick();
+    $image->newImage(500, 750, $backgroundColor);
+    $image->setImageFormat("png");
+
+    // ImagickDraw nesnesindeki çizim komutlarını görüntüye işle
+    $image->drawImage($draw);
+
+    // Görüntüyü tarayıcıya gönder
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 
