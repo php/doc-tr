@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: e2f50c240bebc502a3d990d73633a6141f3bd9fd Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-append" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_append</refname>
-  <refpurpose>Belirtilen posta kutusuna bir dizge ileti ekler</refpurpose>
+  <refpurpose>Belirtilen posta kutusuna bir ileti ekler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imap_append</methodname>
    <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
-   <methodparam><type>string</type><parameter>pk</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizin</parameter></methodparam>
    <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>seçenekler</parameter><initializer>NULL</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>rfc2060_tarih</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen posta kutusuna (<parameter>pk</parameter>) bir dizge
-   <parameter>ileti</parameter> ekler.
+   Belirtilen <parameter>dizin</parameter>e bir <parameter>ileti</parameter>
+   ekler.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -26,12 +26,13 @@
    <variablelist>
     &imap.imap-stream.description;
     <varlistentry>
-     <term><parameter>pk</parameter></term>
+     <term><parameter>dizin</parameter></term>
      <listitem>
       <para>
        Posta kutusu ismi; daha fazla bilgi için <function>imap_open</function>
        işlevine bakınız.
       </para>
+      &imap.mailboxname.insecure;
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -50,19 +51,54 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde posta kutusuna bu seçenekler de yazılır.
+       Belirtildiği takdirde <parameter>dizin</parameter>e bu seçenekler de
+       yazılır.
       </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>rfc2060_tarih</parameter></term>
+     <listitem>
+      <para>
+       Bu değiştirge belirtilmişse, ekli iletinin INTERNALDATE alanına atanır.
+       Değer, RFC2060'a uygun bir tarih dizgesi olmalıdır.
+       </para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>seçenekler</parameter> ve <parameter>rfc2060_tarih</parameter>
+       artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: e2f50c240bebc502a3d990d73633a6141f3bd9fd Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-fetchstructure" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_fetchstructure</refname>
@@ -9,9 +8,9 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>object</type><methodname>imap_fetchstructure</methodname>
+   <type class="union"><type>stdClass</type><type>false</type></type><methodname>imap_fetchstructure</methodname>
    <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
-   <methodparam><type>int</type><parameter>iletinum</parameter></methodparam>
+   <methodparam><type>int</type><parameter>ileti_num</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -24,7 +23,7 @@
    <variablelist>
     &imap.imap-stream.description;
     <varlistentry>
-     <term><parameter>iletinum</parameter></term>
+     <term><parameter>ileti_num</parameter></term>
      <listitem>
       <para>
        İleti numarası.
@@ -36,7 +35,7 @@
      <listitem>
       <para>
        Bu isteğe bağlı değiştirgede tek bir seçenek belirtilebilir:
-       <parameter>iletinum</parameter> değiştirgesinin eşsiz kimlik olarak ele
+       <parameter>ileti_num</parameter> değiştirgesinin eşsiz kimlik olarak ele
        alınmasını sağlayan <constant>FT_UID</constant> sabiti.
       </para>
      </listitem>
@@ -44,11 +43,11 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Aşağıdaki özelliklere sahip bir nesne döner. Nesne ayrıca her MIME eklentisi
-   için benzer birer nesne içerir.
+   Aşağıdaki özelliklere sahip bir nesne,&return.falseforfailure;.
   </para>
   <para>
    <table>
@@ -137,37 +136,47 @@
   </para>
   <para>
    <table>
-     <title>Birincil gövde türü</title>
-     <tgroup cols="2">
-      <tbody>
-      <row><entry>0</entry><entry>text (metin)</entry></row>
-      <row><entry>1</entry><entry>multipart (çok parçalı)</entry></row>
-      <row><entry>2</entry><entry>message (ileti)</entry></row>
-      <row><entry>3</entry><entry>application (çalıştırılabilir)</entry></row>
-      <row><entry>4</entry><entry>audio (işitsel)</entry></row>
-      <row><entry>5</entry><entry>image (resim)</entry></row>
-      <row><entry>6</entry><entry>video (görsel)</entry></row>
-      <row><entry>7</entry><entry>other (diğer)</entry></row>
-      </tbody>
-     </tgroup>
+     <title>Birincil gövde türü (değer kütüphaneye göre değişir, bu bakımdan
+      sabitlerin kullanılması önerilir)</title>
+     <tgroup cols="3">
+     <thead>
+      <row><entry>Değer</entry><entry>Türü</entry><entry>Sabiti</entry></row>
+     </thead>
+     <tbody>
+      <row><entry>0</entry><entry>text</entry><entry>TYPETEXT</entry></row>
+      <row><entry>1</entry><entry>multipart</entry><entry>TYPEMULTIPART</entry></row>
+      <row><entry>2</entry><entry>message</entry><entry>TYPEMESSAGE</entry></row>
+      <row><entry>3</entry><entry>application</entry><entry>TYPEAPPLICATION</entry></row>
+      <row><entry>4</entry><entry>audio</entry><entry>TYPEAUDIO</entry></row>
+      <row><entry>5</entry><entry>image</entry><entry>TYPEIMAGE</entry></row>
+      <row><entry>6</entry><entry>video</entry><entry>TYPEVIDEO</entry></row>
+      <row><entry>7</entry><entry>model</entry><entry>TYPEMODEL</entry></row>
+      <row><entry>8</entry><entry>other</entry><entry>TYPEOTHER</entry></row>
+     </tbody>
+    </tgroup>
    </table>
   </para>
   <para>
    <table>
-     <title>Aktarım kodlaması</title>
-     <tgroup cols="2">
-      <tbody>
-      <row><entry>0</entry><entry>7BIT</entry></row>
-      <row><entry>1</entry><entry>8BIT</entry></row>
-      <row><entry>2</entry><entry>BINARY</entry></row>
-      <row><entry>3</entry><entry>BASE64</entry></row>
-      <row><entry>4</entry><entry>QUOTED-PRINTABLE</entry></row>
-      <row><entry>5</entry><entry>OTHER</entry></row>
+     <title>Aktarım kodlaması (değer kütüphaneye göre değişir, bu bakımdan
+      sabitlerin kullanılması önerilir)</title>
+    <tgroup cols="3">
+     <thead>
+      <row><entry>Değer</entry><entry>Türü</entry><entry>Sabiti</entry></row>
+     </thead>
+     <tbody>
+      <row><entry>0</entry><entry>7bit</entry><entry>ENC7BIT</entry></row>
+      <row><entry>1</entry><entry>8bit</entry><entry>ENC8BIT</entry></row>
+      <row><entry>2</entry><entry>Binary</entry><entry>ENCBINARY</entry></row>
+      <row><entry>3</entry><entry>Base64</entry><entry>ENCBASE64</entry></row>
+      <row><entry>4</entry><entry>Quoted-Printable</entry><entry>ENCQUOTEDPRINTABLE</entry></row>
+      <row><entry>5</entry><entry>other</entry><entry>ENCOTHER</entry></row>
      </tbody>
     </tgroup>
    </table>
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

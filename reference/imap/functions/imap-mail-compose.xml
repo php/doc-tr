@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: e2f50c240bebc502a3d990d73633a6141f3bd9fd Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-mail-compose" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_mail_compose</refname>
@@ -10,12 +9,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>imap_mail_compose</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>imap_mail_compose</methodname>
    <methodparam><type>array</type><parameter>zarf</parameter></methodparam>
-   <methodparam><type>array</type><parameter>gövde</parameter></methodparam>
+   <methodparam><type>array</type><parameter>gövdeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>zarf</parameter> ve <parameter>gövde</parameter>
+   Belirtilen <parameter>zarf</parameter> ve <parameter>gövdeler</parameter>
    bölümlerini kullanarak bir MIME iletisi oluşturur.
   </para>
  </refsect1>
@@ -27,19 +26,127 @@
      <term><parameter>zarf</parameter></term>
      <listitem>
       <para>
-       Başlıkları içeren bir ilişkisel dizi.
+       Başlıkları içeren bir ilişkisel dizi. Geçerli anahtarlar:
+       <literal>"remail"</literal>, <literal>"return_path"</literal>,
+       <literal>"date"</literal>, <literal>"from"</literal>,
+       <literal>"reply_to"</literal>, <literal>"in_reply_to"</literal>,
+       <literal>"subject"</literal>, <literal>"to"</literal>,
+       <literal>"cc"</literal>, <literal>"bcc"</literal> ve
+       <literal>"message_id"</literal>. Bu anahtarlara ileti ile ilgili
+       değerler atanır. Ek başlıklar ayarlamak için, bu başlıkların bir
+       dizisini bekleyen "custom_headers" anahtarı desteklenir, ör.
+       <code>["User-Agent: Posta İstemcim"]</code>.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gövde</parameter></term>
+     <term><parameter>gövdeler</parameter></term>
      <listitem>
       <para>
-       Gövdeleri içeren bir ilişkisel dizi.
+       Gövdeleri içeren bir ilişkisel dizi. İlk gövde, iletinin ana gövdesidir;
+       yalnızca <constant>TYPEMULTIPART</constant> türünde ise, diğer gövdeler
+       işlenir; bu gövdeler parçaların gövdelerini oluşturur.
       </para>
       <para>
-       İlişkisel dizi şu anahtarları içerir: "type", "encoding", "subtype",
-       "description" ve "contents.data"
+       <table>
+        <title>Gövde dizisinin yapısı</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Anahtar</entry>
+           <entry>Tür</entry>
+           <entry>Açıklama</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><literal>type</literal></entry>
+           <entry><type>int</type></entry>
+           <entry>
+            MIME türü.
+            <constant>TYPETEXT</constant> (öntanımlı),
+            <constant>TYPEMULTIPART</constant>,
+            <constant>TYPEMESSAGE</constant>,
+            <constant>TYPEAPPLICATION</constant>,
+            <constant>TYPEAUDIO</constant>, <constant>TYPEIMAGE</constant>,
+            <constant>TYPEMODEL</constant>, <constant>TYPEOTHER</constant>
+            sabitlerinden biri.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>encoding</literal></entry>
+           <entry><type>int</type></entry>
+           <entry>
+            <literal>Content-Transfer-Encoding</literal>.
+            <constant>ENC7BIT</constant> (öntanımlı),
+            <constant>ENC8BIT</constant>, <constant>ENCBINARY</constant>,
+            <constant>ENCBASE64</constant>,
+            <constant>ENCQUOTEDPRINTABLE</constant>,
+            <constant>ENCOTHER</constant> sabitlerinden biri.
+           </entry>
+          </row>
+          <row>
+           <entry><literal>charset</literal></entry>
+           <entry><type>string</type></entry>
+           <entry>MIME türünün karakter kümesi.</entry>
+          </row>
+          <row>
+           <entry><literal>type.parameters</literal></entry>
+           <entry><type>array</type></entry>
+           <entry><literal>Content-Type</literal> isim ve değerlerini içeren
+            ilişkisel bir dizi.</entry>
+          </row>
+          <row>
+           <entry><literal>subtype</literal></entry>
+           <entry><type>string</type></entry>
+           <entry>MIME alt türü; <constant>TYPEIMAGE</constant> için
+            <literal>'jpeg'</literal> gibi.</entry>
+          </row>
+          <row>
+           <entry><literal>id</literal></entry>
+           <entry><type>string</type></entry>
+           <entry><literal>Content-ID</literal>.</entry>
+          </row>
+          <row>
+           <entry><literal>description</literal></entry>
+           <entry><type>string</type></entry>
+           <entry><literal>Content-Description</literal>.</entry>
+          </row>
+          <row>
+           <entry><literal>disposition.type</literal></entry>
+           <entry><type>string</type></entry>
+           <entry><literal>Content-Disposition</literal>, örn.
+            <literal>'attachment'</literal>.</entry>
+          </row>
+          <row>
+           <entry><literal>disposition</literal></entry>
+           <entry><type>array</type></entry>
+           <entry><literal>Content-Disposition</literal> isim ve değerlerini
+            içeren ilişkisel bir dizi.</entry>
+          </row>
+          <row>
+           <entry><literal>contents.data</literal></entry>
+           <entry><type>string</type></entry>
+           <entry>İş yükü.</entry>
+          </row>
+          <row>
+           <entry><literal>lines</literal></entry>
+           <entry><type>int</type></entry>
+           <entry>Yüklü satır sayısı.</entry>
+          </row>
+          <row>
+           <entry><literal>bytes</literal></entry>
+           <entry><type>int</type></entry>
+           <entry>Yüklü bayt miktarı.</entry>
+          </row>
+          <row>
+           <entry><literal>md5</literal></entry>
+           <entry><type>string</type></entry>
+           <entry>Yükün MD5 aşı.</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
       </para>
      </listitem>
     </varlistentry>
@@ -49,7 +156,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   MIME iletisi döner.
+   Dizge olarak MIME iletisi,&return.falseforfailure;.
   </para>
  </refsect1>
  <refsect1 role="examples">
