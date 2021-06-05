@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 67acb98daee3519f0dd843fe7835bcd636de931c Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-utf8" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>imap_utf8</refname>
@@ -14,7 +13,9 @@
   </methodsynopsis>
   <para>
    Belirtilen MIME kodlu <parameter>mimeli_metin</parameter> dizgesinin
-   karakter kodlamasını UTF-8'e dönüştürür.
+   karakter kodlamasını, karakter kümesi libc_istemci tarafından biliniyorsa
+   UTF-8'e dönüştürür, aksi takdirde belirtilen metnin kodlaması çözümlenir ama
+   UTF-8'e dönüştürülmez.
   </para>
  </refsect1>
  <refsect1 role="parameters">
@@ -34,12 +35,34 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   UTF-8 kodlanmış bir dizge.
+   Kodu çözülmüş ve mümkünse UTF-8'e dönüştürülmüş dizge.
   </para>
  </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="imap-utf8.example.basic">
+   <title>- <function>imap_utf8</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+echo imap_utf8("Johannes =?ISO-8859-1?Q?Schl=FCter?=");
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Johannes Schlüter
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
