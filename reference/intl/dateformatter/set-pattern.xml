@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.setpattern" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::setPattern</refname>
@@ -11,16 +10,17 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
    <type>bool</type><methodname>IntlDateFormatter::setPattern</methodname>
-   <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam><type>string</type><parameter>pattern</parameter></methodparam>
    </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="procedural">
    <type>bool</type><methodname>datefmt_set_pattern</methodname>
   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
@@ -46,7 +46,8 @@
      <term><parameter>kalıp</parameter></term>
      <listitem>
       <para>
-       Kullanılacak kalıp dizgesi.
+       Kullanılacak kalıp dizgesi. Olası kalıplar için bkz: <link
+       xlink:href="&url.icu.datepattern;">&url.icu.datepattern;</link>
       </para>
      </listitem>
     </varlistentry>
@@ -70,31 +71,41 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create(  "tr_TR" ,IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "dd/MM/yyyy");
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/MM/yyyy"
+);
 echo "Biçem kalıbı: ".datefmt_get_pattern($fmt)."\n";
-echo "İlk biçem kalıplı çıktı: ".datefmt_format( $fmt , 0)."\n";
+echo "İlk biçem kalıplı çıktı: ".datefmt_format($fmt, 0)."\n";
 datefmt_set_pattern($fmt,'dd-MM-yyyy hh:mm:ss z');
 echo "Yeni biçem kalıbı: ".datefmt_get_pattern($fmt)."\n";
-echo "İkinci biçem kalıplı çıktı: ".datefmt_format( $fmt , 0)."\n";
+echo "İkinci biçem kalıplı çıktı: ".datefmt_format($fmt, 0)."\n";
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter( "tr_TR" ,IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "dd/MM/yyyy"  );
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/MM/yyyy"
+);
 echo "Biçem kalıbı: ".$fmt->getPattern()."\n";
-echo "İlk biçem kalıplı çıktı: ".datefmt_format( $fmt , 0)."\n";
+echo "İlk biçem kalıplı çıktı: ".$fmt->format(0)."\n";
 $fmt->setPattern('dd-MM-yyyy hh:mm:ss z');
 echo "Yeni biçem kalıbı: ".$fmt->getPattern()."\n";
-echo "İkinci biçem kalıplı çıktı: ".datefmt_format( $fmt , 0)."\n";
+echo "İkinci biçem kalıplı çıktı: ".$fmt->format(0)."\n";
 ?>
 ]]>
     </programlisting>

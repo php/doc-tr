@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.geterrormessage" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getErrorMessage</refname>
@@ -10,18 +9,18 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>string</type><methodname>IntlDateFormatter::getErrorMessage</methodname>
-      <void />
-   </methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier> <type>string</type><methodname>IntlDateFormatter::getErrorMessage</methodname>
+   <void/>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="procedural">
    <type>string</type><methodname>datefmt_get_error_message</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type>IntlDateFormatter</type><parameter>formatter</parameter></methodparam>
   </methodsynopsis>
   <para>
    Son işlemin hata iletisini döndürür.
@@ -54,57 +53,70 @@
 
  <refsect1 role="examples">
   &reftitle.examples;
-   <example>
-    <title>- <function>datefmt_get_error_message</function> örneği</title>
-    <programlisting role="php">
+  <example>
+   <title>- <function>datefmt_get_error_message</function> örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = datefmt_create(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 $str = datefmt_format($fmt);
-if(!$str) {
-    echo "HATA: ".datefmt_get_error_message($fmt) . " (" .
-          datefmt_get_error_code($fmt) . ")\n";
+if (!$str) {
+    printf(
+        "HATA: %s (%d)\n",
+        datefmt_get_error_message($fmt),
+        datefmt_get_error_code($fmt)
+    );
 }
 ?>
 ]]>
-    </programlisting>
-   </example>
-   <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
-    <programlisting role="php">
+   </programlisting>
+  </example>
+  <example>
+   <title>- &style.oop; örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 $str = $fmt->format();
-if(!$str) {
-    echo "HATA: ".$fmt->getErrorMessage() . " (" .$fmt->getErrorCode() . ")\n";
+if (!$str) {
+    printf(
+        "HATA: %s (%d)\n",
+        $fmt->getErrorMessage(),
+        $fmt->getErrorCode()
+    );
 }
 
 ?>
 ]]>
-    </programlisting>
-   </example>
-     &example.outputs;
-     <screen>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
 <![CDATA[
 HATA: U_ZERO_ERROR (0)
 ]]>
-     </screen>
+  </screen>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-    <simplelist>
-    <member><function>datefmt_get_error_code</function></member>
-    <member><function>intl_get_error_code</function></member>
-    <member><function>intl_is_failure</function></member>
-    </simplelist>
-  </para>
+  <simplelist>
+   <member><function>datefmt_get_error_code</function></member>
+   <member><function>intl_get_error_code</function></member>
+   <member><function>intl_is_failure</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

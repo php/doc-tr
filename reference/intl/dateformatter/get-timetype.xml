@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.gettimetype" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getTimeType</refname>
@@ -11,18 +10,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>int</type><methodname>IntlDateFormatter::getTimeType</methodname>
-      <void />
-   </methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>int</type><type>false</type></type><methodname>IntlDateFormatter::getTimeType</methodname>
+   <void/>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>int</type><methodname>datefmt_get_timetype</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>int</type><type>false</type></type><methodname>datefmt_get_timetype</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    IntlDateFormatter tarafından kullanılan zaman gösterim türünü
@@ -51,69 +51,86 @@
   &reftitle.returnvalues;
   <para>
    Biçemleyicinin geçerli <link
-   linkend="intl.intldateformatter-constants">tarih gösterim türü</link>.
+   linkend="intl.intldateformatter-constants">tarih gösterim
+   türü</link>,&return.falseforfailure;.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
-   <example>
-    <title>- <function>datefmt_get_timetype</function> örneği</title>
-    <programlisting role="php">
+  <example>
+   <title>- <function>datefmt_get_timetype</function> örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyicinin tarih gösterim türü: ".datefmt_get_timetype($fmt);
-echo "\nBiçemli çıktı: ".datefmt_format($fmt, 1234567890);
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::SHORT, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+echo "\nBiçemli çıktı: ".datefmt_format($fmt, 0);
+
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::SHORT,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyicinin yeni tarih gösterim türü: ".datefmt_get_timetype($fmt);
-echo "\nİkinci biçemli çıktı: ".datefmt_format($fmt, 1234567890);
+echo "\nİkinci biçemli çıktı: ".datefmt_format($fmt, 0);
 ?>
 ]]>
-    </programlisting>
-   </example>
-   <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
-    <programlisting role="php">
+   </programlisting>
+  </example>
+  <example>
+   <title>- &style.oop; örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyicinin tarih gösterim türü: ".$fmt->getTimeType();
-echo "\nBiçemli çıktı: ".datefmt_format( $fmt, 1234567890);
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::SHORT,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+echo "\nBiçemli çıktı: ".$fmt->format(0);
+
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::SHORT,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyicinin yeni tarih gösterim türü: ".$fmt->getTimeType();
-echo "\nİkinci biçemli çıktı: ".datefmt_format( $fmt, 1234567890);
+echo "\nİkinci biçemli çıktı: ".$fmt->format(0);
 ?>
 ]]>
-    </programlisting>
-   </example>
-     &example.outputs;
-     <screen>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
 <![CDATA[
 Biçemleyicinin tarih gösterim türü: 0
-Biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Türkiye Saati
+Biçemli çıktı: 1 Ocak 1970 Perşembe 02:00:00 Doğu Avrupa Standart Saati
 Biçemleyicinin yeni tarih gösterim türü: 3
-İkinci biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31
+İkinci biçemli çıktı: 1 Ocak 1970 Perşembe 02:00
 ]]>
-     </screen>
+  </screen>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-    <simplelist>
-    <member><function>datefmt_get_datetype</function></member>
-    <member><function>datefmt_create</function></member>
-    </simplelist>
-  </para>
+  <simplelist>
+   <member><function>datefmt_get_datetype</function></member>
+   <member><function>datefmt_create</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

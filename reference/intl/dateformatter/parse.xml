@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.parse" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::parse</refname>
@@ -10,22 +9,22 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>int</type><methodname>IntlDateFormatter::parse</methodname>
+   <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>int</type><type>float</type><type>false</type></type><methodname>IntlDateFormatter::parse</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter
-   role="reference">başlangıç</parameter></methodparam>
-   </methodsynopsis>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">başlangıç</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>int</type><methodname>datefmt_parse</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
-  <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-  <methodparam choice="opt"><type>int</type><parameter role="reference">başlangıç</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>int</type><type>float</type><type>false</type></type><methodname>datefmt_parse</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">başlangıç</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>dizge</parameter>'nin
@@ -61,8 +60,7 @@
        <parameter>başlangıç</parameter>, dizgenin başlangıcı 0 kabul edilerek
        bulunur.  Dizgeden veri toplanırken bir hata oluşmazsa, bu değiştirgeye
        -1 yerleştirilir, aksi takdirde hata oluştuğu sırada okunan son konum
-       yerleştirilir. <parameter>başlangıç</parameter> > strlen($dizge) ise
-       çözümleme, anında başarısız olur.
+       yerleştirilir. <parameter>başlangıç</parameter> &gt; <code>strlen($string)</code> ise  çözümleme, anında başarısız olur.
      </para>
      </listitem>
     </varlistentry>
@@ -74,46 +72,63 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Zaman damgası.
+   Zaman damgası,&return.falseforfailure;.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
    <example>
-    <title>- <function>datefmt_parse</function> örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "İlk çözümleme sonucu: ".
-        $fmt->parse("Wednesday, December 20, 1989 4:00:00 PM PT");
-$fmt = new IntlDateFormatter("tr-TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+        $fmt->parse("Wednesday, December 20, 1989 4:00:00 PM Pacific Standard Time");
+$fmt = new IntlDateFormatter(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nİkinci  çözümleme sonucu: ".
-        $fmt->parse("21 Aralık 1989 Perşembe 02:00:00 Türkiye Saati")."\n";
+        $fmt->parse("21 Aralık 1989 Perşembe 02:00:00 Doğu Avrupa Standart Saati")."\n";
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- <function>datefmt_parse</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create( "en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = datefmt_create(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "İlk çözümleme sonucu: ". datefmt_parse( $fmt,
-        "Wednesday, December 20, 1989 4:00:00 PM PT");
-$fmt = datefmt_create( "tr-TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+        "Wednesday, December 20, 1989 4:00:00 PM Pacific Standard Time");
+$fmt = datefmt_create(
+$fmt = new IntlDateFormatter(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nİkinci  çözümleme sonucu: ".datefmt_parse( $fmt,
-        "21 Aralık 1989 Perşembe 02:00:00 Türkiye Saati")."\n";
+        "21 Aralık 1989 Perşembe 02:00:00 Doğu Avrupa Standart Saati")."\n";
 ?>
 ]]>
     </programlisting>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.setcalendar" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::setCalendar</refname>
@@ -10,19 +9,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>bool</type><methodname>IntlDateFormatter::setCalendar</methodname>
-   <methodparam><type>int</type><parameter>takvim</parameter></methodparam>
-   </methodsynopsis>
+   <methodsynopsis role="oop">
+   <modifier>public</modifier> <type>bool</type><methodname>IntlDateFormatter::setCalendar</methodname>
+   <methodparam><type class="union"><type>IntlCalendar</type><type>int</type><type>null</type></type><parameter>takvim</parameter></methodparam>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="procedural">
    <type>bool</type><methodname>datefmt_set_calendar</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
-  <methodparam><type>int</type><parameter>takvim</parameter></methodparam>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type class="union"><type>IntlCalendar</type><type>int</type><type>null</type></type><parameter>takvim</parameter></methodparam>
   </methodsynopsis>
   <para>
    Biçemleyici tarafından kullanılacak takvimi tanımlar.
@@ -45,10 +44,21 @@
      <term><parameter>takvim</parameter></term>
      <listitem>
       <para>
-       Kullanılacak <link
-       linkend="intl.intldateformatter-constants.calendartypes">takvim</link>
-       <constant>IntlDateFormatter::GREGORIAN</constant> öntanımlıdır.
+       Ya kullanılacak <link
+       linkend="intl.intldateformatter-constants.calendartypes">takvim</link>dir.
+       Ya <constant>IntlDateFormatter::GREGORIAN</constant>'dır;
+       bu öntanımlı olup &null; belirtildiğinde de kullanılır.
+       Ya da <classname>IntlCalendar</classname> nesnesidir.
      </para>
+     <para>
+      Aktarılan <classname>IntlCalendar</classname> nesneleri kopyalanır
+      fakat değişiklik yapılmaz.
+     </para>
+     <para>
+      <classname>IntlCalendar</classname> nesnesi aktarılırsa biçemleyicinin
+      zaman dilimine dokunulmaz, aksi takdirde aktarılan nesnenin zaman dilimi
+      geçerli olur.
+      </para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -63,6 +73,30 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.5.0/PECL 3.0.0</entry>
+       <entry>
+        Artık <classname>IntlCalendar</classname> nesnesi aktarılabiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
    <example>
@@ -70,9 +104,13 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyici takvimi: ".datefmt_get_calendar($fmt);
 datefmt_set_calendar($fmt,IntlDateFormatter::TRADITIONAL);
 echo "\nYenisi: ".datefmt_get_calendar($fmt);
@@ -81,13 +119,17 @@ echo "\nYenisi: ".datefmt_get_calendar($fmt);
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyici takvimi: ".$fmt->getCalendar();
 $fmt->setCalendar(IntlDateFormatter::TRADITIONAL);
 echo "\nYenisi: ".$fmt->getCalendar();
@@ -95,13 +137,39 @@ echo "\nYenisi: ".$fmt->getCalendar();
 ]]>
     </programlisting>
    </example>
-     &example.outputs;
-     <screen>
+   &example.outputs;
+   <screen>
 <![CDATA[
 Biçemleyici takvimi: 1
 Yenisi: 0
 ]]>
-     </screen>
+   </screen>
+   <example>
+   <title>- <classname>IntlCalendar</classname> nesneli örnek</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$time = strtotime("2013-03-03 00:00:00 UTC");
+$formatter = IntlDateFormatter::create("tr_TR", NULL, NULL, "Europe/Amsterdam");
+
+echo "önce: ", $formatter->format($time), "\n";
+
+/* takvimin yerelinin kullanılmayışına dikkat! */
+$formatter->setCalendar(IntlCalendar::createInstance(
+               "America/New_York", "pt_BR@calendar=islamic"));
+
+echo "sonra:  ", $formatter->format($time), "\n";
+
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+önce: 3 Mart 2013 Pazar 01:00:00 Orta Avrupa Standart Saati
+sonra:  20 Rebiülahir 1434 Cumartesi 19:00:00 Kuzey Amerika Doğu Standart Saati
+]]>
+   </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="seealso">

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.getlocale" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getLocale</refname>
@@ -10,19 +9,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>string</type><methodname>IntlDateFormatter::getLocale</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter></methodparam>
-   </methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier> <type class="union"><type>string</type><type>false</type></type><methodname>IntlDateFormatter::getLocale</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer><constant>ULOC_ACTUAL_LOCALE</constant></initializer></methodparam>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>string</type><methodname>datefmt_get_locale</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
-  <methodparam choice="opt"><type>int</type><parameter>tür</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>string</type><type>false</type></type><methodname>datefmt_get_locale</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer><constant>ULOC_ACTUAL_LOCALE</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Biçemleyicinin kullandığı yereli döndürür.
@@ -59,70 +58,84 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Hata oluşmuşsa &false;, oluşmamışsa biçemleyicinin kullandığı yerel.
+   Biçemleyicinin kullandığı yerel,&return.falseforfailure;.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
-   <example>
-    <title>- <function>datefmt_get_locale</function> örneği</title>
-    <programlisting role="php">
+  <example>
+   <title>- <function>datefmt_get_locale</function> örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = datefmt_create(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyici yereli: ".datefmt_get_locale($fmt);
 echo "\nBiçemli çıktı: ".datefmt_format( $fmt , 0);
 
-$fmt = datefmt_create("tr-TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = datefmt_create(
+    'de-DE',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyici yereli: ".datefmt_get_locale($fmt);
 echo "\nYeni biçemli çıktı: ".datefmt_format( $fmt , 0);
 ?>
 ]]>
-    </programlisting>
-   </example>
-   <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
-    <programlisting role="php">
+   </programlisting>
+  </example>
+  <example>
+   <title>- &style.oop; örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyici yereli: ".$fmt->getLocale();
 echo "\nBiçemli çıktı: ".$fmt->format(0);
 
-$fmt = new IntlDateFormatter("tr-TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyici yereli: ".$fmt->getLocale();
 echo "\nYeni biçemli çıktı: ".$fmt->format(0);
 ?>
 ]]>
-    </programlisting>
-   </example>
-     &example.outputs;
-     <screen>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
 <![CDATA[
 Biçemleyici yereli: en
-Biçemli çıktı: Thursday, January 1, 1970 2:00:00 AM Turkey Time
+Biçemli çıktı: Wednesday, December 31, 1969 at 4:00:00 PM Pacific Standard Time
 Biçemleyici yereli: tr
-Yeni biçemli çıktı: 01 Ocak 1970 Perşembe 02:00:00 Türkiye Saati
+Yeni biçemli çıktı: 31 Aralık 1969 Çarşamba 16:00:00 Kuzey Amerika Pasifik Standart Saati
 ]]>
      </screen>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-    <simplelist>
-    <member><function>datefmt_create</function></member>
-    </simplelist>
-  </para>
+  <simplelist>
+   <member><function>datefmt_create</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 
