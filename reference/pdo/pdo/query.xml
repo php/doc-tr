@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 4f7498ac51c5227c0b40906535ddca1566e7b1df Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.query" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::query</refname>
@@ -10,29 +9,30 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>PDOStatement</type><methodname>PDO::query</methodname>
+   <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
-   <type>PDOStatement</type><methodname>PDO::query</methodname>
+   <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam><type>int</type><parameter>PDO::FETCH_COLUMN</parameter></methodparam>
-   <methodparam><type>int</type><parameter>sütunnum</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_COLUMN</initializer></methodparam>
+   <methodparam><type>int</type><parameter>sütun_num</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
-   <type>PDOStatement</type><methodname>PDO::query</methodname>
+   <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam><type>int</type><parameter>PDO::FETCH_CLASS</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sınıfadı</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_CLASS</initializer></methodparam>
+   <methodparam><type>string</type><parameter>sınıf_adı</parameter></methodparam>
    <methodparam><type>array</type><parameter>kurucu_değiştirgeleri</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
-   <type>PDOStatement</type><methodname>PDO::query</methodname>
+   <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam><type>int</type><parameter>PDO::FETCH_INTO</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_INTO</initializer></methodparam>
    <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
   </methodsynopsis>
 
@@ -55,13 +55,11 @@
    kaynakları serbest bırakmak için
    <function>PDOStatement::closeCursor</function> çağrısı yapmalısınız.
   </para>
-
   <note>
    <para>
-    Bu işlev, tek bir değiştirgeye sahipmiş gibi belgelendirilmesine rağmen
-    işleve başka değiştirgeler de aktarabilirsiniz. Bunlar, sonuç nesnesi
-    üzerinde <function>PDOStatement::setFetchMode</function> çağrısı yapılmış
-    gibi ele alınırlar.
+    İşleve fazladan değiştirge aktarılırsa, bunlar sonuç nesnesi üzerinde
+    <function>PDOStatement::setFetchMode</function> çağrısı yapılmış
+    gibi ele alınır.
    </para>
   </note>
 
@@ -106,13 +104,11 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-function getFruit($conn) {
-    $sql = 'SELECT name, colour, calories FROM fruit ORDER BY name';
-    foreach ($conn->query($sql) as $row) {
-        print $row['NAME'] . "\t";
-        print $row['COLOUR'] . "\t";
-        print $row['CALORIES'] . "\n";
-    }
+$sql = 'SELECT name, color, calories FROM fruit ORDER BY name';
+foreach ($conn->query($sql) as $row) {
+    print $row['name'] . "\t";
+    print $row['color'] . "\t";
+    print $row['calories'] . "\n";
 }
 ?>
 ]]>
