@@ -1,23 +1,22 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.fetch" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->fetch</refname>
+  <refname>PDOStatement::fetch</refname>
   <refpurpose>Sonuç kümesindeki sonraki satırı döndürür</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>PDOStatement::fetch</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>alım_tarzı</parameter><initializer>PDO::FETCH_BOTH</initializer></methodparam>
+   <modifier>public</modifier> <type>mixed</type><methodname>PDOStatement::fetch</methodname>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_DEFAULT</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>göst_yönü</parameter><initializer>PDO::FETCH_ORI_NEXT</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>göst_başlangıcı</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
-
   <para>
    PDOStatement nesnesi ile ilişkili sonuç kümesinden bir sonraki satırı
-   döndürür. <parameter>alım_tarzı</parameter> değiştirgesi ile PDO'nun satırı
+   döndürür. <parameter>kip</parameter> değiştirgesi ile PDO'nun satırı
    nasıl döndüreceği belirtilir.
   </para>
  </refsect1>
@@ -27,15 +26,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>alım_tarzı</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
        Sonrakı satırın nasıl döndürüleceğini belirtmek için kullanılır.
        <literal>PDO::FETCH_*</literal> sabitlerinden biri olmalıdır.
-       <constant>PDO::FETCH_BOTH</constant> öntanımlı değerdir.
+       <constant>PDO::FETCH_DEFAULT</constant> öntanımlı değerdir.
        <itemizedlist>
         <listitem><para>
-         <constant>PDO::FETCH_ASSOC</constant>: Sütun isimlerine göre indisli
+         <constant>PDO::FETCH_ASSOC</constant>: Sütun isimlerine indisli
          bir dizi döner.
         </para></listitem>
         <listitem><para>
@@ -50,8 +49,9 @@
         </para></listitem>
         <listitem><para>
          <constant>PDO::FETCH_CLASS</constant>: İstenen sınıfın özelliklerini
-         sütun isimlerine eşleyerek sınıfın bir örneğini döndürür. Eğer
-         <parameter>alım_tarzı</parameter> değiştirgesi
+         sütun isimlerine eşleyerek sınıfın bir örneğini döndürür ve
+         <literal>PDO::FETCH_PROPS_LATE</literal> ayrıca belirtilmemişse
+         ardından kurucu çağrılır. Eğer <parameter>kip</parameter> değiştirgesi
          <constant>PDO::FETCH_CLASSTYPE</constant> sabitini içeriyorsa (örn,
          <literal>PDO::FETCH_CLASS | PDO::FETCH_CLASSTYPE</literal>) sınıf
          ismi ilk sütunun değerine göre belirlenir.
@@ -66,12 +66,24 @@
          <constant>PDO::FETCH_OBJ</constant> sabitlerinin birleşimidir.
         </para></listitem>
         <listitem><para>
+         <constant>PDO::FETCH_NAMED</constant>: Aynı isimde birden fazla sütun
+         olmaması şartıyla <constant>PDO::FETCH_ASSOC</constant> sabitindeki
+         gibi bir dizi döndürür. Bir anahtar tarafından atıfta bulunulan değer,
+         anahtarla aynı isimli sütundaki tüm değerlerin dizisini içerecektir.
+        </para></listitem>
+        <listitem><para>
          <constant>PDO::FETCH_NUM</constant>: Sütun numaralarına göre
          indislenmiş bir dizi döner. İlk sütunun indisi 0'dır.
         </para></listitem>
         <listitem><para>
          <constant>PDO::FETCH_OBJ</constant>: Özellik isimlerinin sınıf
          isimlerine denk düştüğü bir anonim nesne örneği döndürür.
+        </para></listitem>
+        <listitem><para>
+         <constant>PDO::FETCH_PROPS_LATE</constant>:
+         <constant>PDO::FETCH_CLASS</constant> ile birlikte kullanıldığında,
+         özellikler ilgili sütundaki değerlere atanmadan önce sınıf kurucusu
+         çağrılır.
         </para></listitem>
        </itemizedlist>
       </para>
@@ -87,8 +99,8 @@
        <constant>PDO::FETCH_ORI_NEXT</constant> öntanımlı değerdir.
        PDOStatement nesnenize bir kaydırılabilir gösterici isteği yapmak için
        SQL deyimini <function>PDO::prepare</function> ile hazırlarken
-       <literal>PDO::CURSOR_SCROLL</literal> özelliğine
-       <literal>PDO::ATTR_CURSOR</literal> özniteliğini atamalısınız.
+       <constant>PDO::CURSOR_SCROLL</constant> özelliğine
+       <constant>PDO::ATTR_CURSOR</constant> özniteliğini atamalısınız.
       </para>
      </listitem>
     </varlistentry>
@@ -98,13 +110,13 @@
       <para>
        Kaydırılabilir göstericili bir PDOStatement nesnesi
        için <parameter>göst_yönü</parameter> değiştirgesinde
-       <literal>PDO::FETCH_ORI_ABS</literal> belirtilirse bu değer sonuç
+       <constant>PDO::FETCH_ORI_ABS</constant> belirtilirse bu değer sonuç
        kümesinden alınacak mutlak satır numarasını belirler.
       </para>
       <para>
        Kaydırılabilir göstericili bir PDOStatement nesnesi
        için <parameter>göst_yönü</parameter> değiştirgesinde
-       <literal>PDO::FETCH_ORI_REL</literal> belirtilirse bu değer alınacak
+       <constant>PDO::FETCH_ORI_REL</constant> belirtilirse bu değer alınacak
        satırı bir önceki <function>PDOStatement::fetch</function> çağrısındaki
        gösterici konumuna göreli olarak belirler.
       </para>
@@ -126,7 +138,7 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- Farklı alım tarzlarıyla satırların döndürülmesi</title>
+    <title>- Farklı kiplerle satırların döndürülmesi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -155,7 +167,7 @@ print("\n");
 print("PDO::FETCH_OBJ:\n");
 echo "Her özelliğin bir sütun ismine denk düştüğü bir anonim nesne olarak:\n";
 $result = $sth->fetch(PDO::FETCH_OBJ);
-print $result->NAME;
+print $result->ad;
 print("\n");
 ?>
 ]]>
@@ -167,17 +179,17 @@ PDO::FETCH_ASSOC:
 Sütun isimlerine göre indisli bir dizi olarak:
 Array
 (
-    [AD] => elma
-    [RENK] => kırmızı
+    [ad] => elma
+    [renk] => kırmızı
 )
 
 PDO::FETCH_BOTH:
 Sütun isimlerine ve numaralarına göre indisli bir dizi olarak:
 Array
 (
-    [AD] => muz
+    [ad] => muz
     [0] => muz
-    [RENK] => sarı
+    [renk] => sarı
     [1] => sarı
 )
 
@@ -185,8 +197,8 @@ PDO::FETCH_LAZY:
 Her özelliğin bir sütun ismine denk düştüğü bir anonim nesne olarak:
 PDORow Object
 (
-    [AD] => portakal
-    [RENK] => turuncu
+    [ad] => portakal
+    [renk] => turuncu
 )
 
 PDO::FETCH_OBJ:
@@ -201,37 +213,25 @@ kivi
 <![CDATA[
 <?php
 function readDataForwards($dbh) {
-  $sql = 'SELECT hand, won, bet FROM mynumbers ORDER BY BET';
-  try {
+    $sql = 'SELECT hand, won, bet FROM mynumbers ORDER BY BET';
     $stmt = $dbh->prepare($sql,
               array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
     $stmt->execute();
     while ($row = $stmt->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
-      $data = $row[0] . "\t" . $row[1] . "\t" . $row[2] . "\n";
-      print $data;
+        $data = $row[0] . "\t" . $row[1] . "\t" . $row[2] . "\n";
+        print $data;
     }
-    $stmt = null;
-  }
-  catch (PDOException $e) {
-    print $e->getMessage();
-  }
 }
 function readDataBackwards($dbh) {
-  $sql = 'SELECT hand, won, bet FROM mynumbers ORDER BY bet';
-  try {
-    $stmt = $dbh->prepare($sql,
+   $sql = 'SELECT hand, won, bet FROM mynumbers ORDER BY bet';
+   $stmt = $dbh->prepare($sql,
               array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_LAST);
     do {
-      $data = $row[0] . "\t" . $row[1] . "\t" . $row[2] . "\n";
-      print $data;
+        $data = $row[0] . "\t" . $row[1] . "\t" . $row[2] . "\n";
+        print $data;
     } while ($row = $stmt->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_PRIOR));
-    $stmt = null;
-  }
-  catch (PDOException $e) {
-    print $e->getMessage();
-  }
 }
 
 print "İleriye doğru okuma:\n";
@@ -257,7 +257,56 @@ Geriye doğru okuma:
 ]]>
     </screen>
    </example>
+   <example><title>- Oluşturma sırası</title>
+    <simpara>
+     Nesneler <literal>PDO::FETCH_CLASS</literal> üzerinden alındığında,
+     önce nesne özellikleri atanır, ardından sınıf kurucusu çağrılır. Ek
+     olarak <literal>PDO::FETCH_PROPS_LATE</literal> sabiti de belirtilmişse,
+     bu sıra tersine döner, yani önce kurucu çağrılır ardından özellikler
+     atanır.
+    </simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Person
+{
+    private $name;
 
+    public function __construct()
+    {
+        $this->tell();
+    }
+
+    public function tell()
+    {
+        if (isset($this->name)) {
+            echo "Ben {$this->name}.\n";
+        } else {
+            echo "Henüz adım yok.\n";
+        }
+    }
+}
+
+$sth = $dbh->query("SELECT * FROM people");
+$sth->setFetchMode(PDO::FETCH_CLASS, 'Person');
+$person = $sth->fetch();
+$person->tell();
+$sth->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Person');
+$person = $sth->fetch();
+$person->tell();
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Ben Ali.
+Ben Ali.
+Henüz adım yok.
+Ben Veli.
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 

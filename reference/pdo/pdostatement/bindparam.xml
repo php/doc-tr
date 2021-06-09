@@ -1,21 +1,22 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.bindparam" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->bindParam</refname>
+  <refname>PDOStatement::bindParam</refname>
   <refpurpose>Bir değiştirgeyi belirtilen değişkenle ilişkilendirir
   </refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::bindParam</methodname>
-   <methodparam><type>mixed</type><parameter>değiştirge</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter>değiştirge</parameter></methodparam>
    <methodparam><type>mixed</type><parameter role="reference">değişken</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>veri_türü</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>veri_türü</parameter><initializer>PDO::PARAM_STR</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir PHP değişkenini hazır SQL deyimindeki bir isimli veya soru imli
@@ -26,10 +27,11 @@
   </para>
   <para>
    Değiştirgeler çoğunlukla girdi değiştirgesidir, yani değiştirgeler sadece
-   sorguda salt okunur olarak ele alınır. Bazı sürücüler, veriyi çıktı
-   değiştirgelerinde döndüren kayıtlı yordamların kullanımını mümkün kılar.
-   Bazıları ise aynı değiştirgelerin hem girdi hem de çıktı için kullanımını
-   mümkün kılar.
+   sorguda salt okunur olarak ele alınır (ancak yine de
+   <parameter>veri_türü</parameter>ne göre tür dönüşümü olabilir). Bazı
+   sürücüler, veriyi çıktı değiştirgelerinde döndüren kayıtlı yordamların
+   kullanımını mümkün kılar. Bazıları ise aynı değiştirgelerin hem girdi hem de
+   çıktı için kullanımını mümkün kılar.
   </para>
 
  </refsect1>
@@ -60,8 +62,8 @@
      <term><parameter>veri_türü</parameter></term>
       <listitem>
        <para>
-        PDO::PARAM_* sabitlerinden biri olarak veri türü.
-        <constant>PDO::PARAM_STR</constant> öntanımlıdır.
+        <link linkend="pdo.constants"><literal>PDO::PARAM_*</literal>
+        sabitlerinden</link> biri olarak veri türü.
         Değiştirgeden değer de döndürmek istiyorsanız
         <constant>PDO::PARAM_INPUT_OUTPUT</constant> sabitini burada, bit
         seviyesinde VEYAlayın.

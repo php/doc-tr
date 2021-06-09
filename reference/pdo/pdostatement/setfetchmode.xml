@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.setfetchmode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->setFetchMode</refname>
+  <refname>PDOStatement::setFetchMode</refname>
   <refpurpose>Deyim için öntanımlı veri alım kipini belirler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::setFetchMode</methodname>
    <methodparam><type>int</type><parameter>kip</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::setFetchMode</methodname>
-   <methodparam><type>int</type><parameter>PDO::FETCH_COLUMN</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_COLUMN</initializer></methodparam>
    <methodparam><type>int</type><parameter>sütunnum</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::setFetchMode</methodname>
-   <methodparam><type>int</type><parameter>PDO::FETCH_CLASS</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_CLASS</initializer></methodparam>
    <methodparam><type>string</type><parameter>sınıfadı</parameter></methodparam>
-   <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::setFetchMode</methodname>
-   <methodparam><type>int</type><parameter>PDO::FETCH_INTO</parameter></methodparam>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_INTO</initializer></methodparam>
    <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
   </methodsynopsis>
 
@@ -85,7 +88,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarı durumunda <literal>1</literal> aksi takdirde &false;.
+   &return.success;
   </para>
  </refsect1>
 
@@ -101,21 +104,15 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$sql = 'SELECT isim, renk, kalori FROM meyveler';
-try {
-  $stmt = $dbh->query($sql);
-  $result = $stmt->setFetchMode(PDO::FETCH_NUM);
-  while ($col = $stmt->fetch()) {
+$stmt = $dbh->query('SELECT name, colour, calories FROM fruit');
+$stmt->setFetchMode(PDO::FETCH_NUM);
+foreach ($stmt as $row) {
     print $col[0] . "\t" . $col[1] . "\t" . $col[2] . "\n";
-  }
-}
-catch (PDOException $e) {
-  print $e->getMessage();
 }
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 elma      kırmızı     150
@@ -124,7 +121,6 @@ portakal  turuncu     300
 kivi      kahverengi  75
 limon     sarı        25
 armut     yeşil       150
-ahududu   mor         90
 ]]>
     </screen>
    </example>

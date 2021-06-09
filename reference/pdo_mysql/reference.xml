@@ -1,10 +1,7 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
-<!-- Purpose: database.vendors -->
-<!-- Membership: bundled, external, pecl -->
-
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: a714378ed87cdbdbde3b10ded183e8df7b243cb4 Maintainer: nilgun Status: ready -->
  <reference xml:id="ref.pdo-mysql" xmlns="http://docbook.org/ns/docbook">
+  <?phpdoc extension-membership="bundledexternal" ?>
   <title>MySQL (PDO_MYSQL) İşlevleri</title>
   <titleabbrev>MySQL (PDO)</titleabbrev>
   <partintro>
@@ -13,14 +10,36 @@
    &reftitle.intro;
     <para>
      PDO_MYSQL, <link linkend="intro.pdo">PHP Veri Nesneleri Arayüzünün
-     (PDO)</link> MySQL 3.x, 4.x ve 5.x veritabanlarına erişimini mümkün
+     (PDO)</link> MySQL veritabanlarına erişimini mümkün
      kılmak için gerçeklenmiş bir sürücüdür.
     </para>
     <para>
-     PDO_MYSQL eklentisi, MySQL'in 4.1 ve üstü sürümlerinde bulunan yerleşik
-     hazır deyim desteğinden de yararlanır. MySQL'in daha eski istemci
-     kütüphanelerini kullanıyorsanız PDO bu desteği sizin için kendisi
-     sağlayacaktır.
+     PDO_MYSQL eklentisi, öntanımlı olarak öykünülmüş hazır deyimleri kullanır.
+    </para>
+    <para>
+      <emphasis role="bold">MySQL 8</emphasis>
+    </para>
+    <para>
+     7.1.16'dan önceki bir PHP sürümünü veya 7.2.4'ten önceki PHP 7.2'yi
+     çalıştırırken, MySQL 8 Sunucusunun öntanımlı parola eklentisini
+     <emphasis>mysql_native_password</emphasis> olarak ayarlayın, aksi
+     takdirde, <emphasis>caching_sha2_password</emphasis> kullanılmadığında
+     bile "sunucu tarafından istenen [caching_sha2_password] kimlik doğrulama
+     yöntemini istemci bilmiyor" anlamında <emphasis>The server requested
+      authentication method unknown to the client
+      [caching_sha2_password]</emphasis> gibi hatalar görürsünüz.
+    </para>
+    <para>
+     Bunun nedeni MySQL 8'in öntanımlı olarak eski PHP (mysqlnd) sürümleri
+     tarafından tanınmayan bir eklenti olan
+     <emphasis>caching_sha2_password</emphasis>'e ayarlanmasıdır.
+     <filename>my.cnf</filename>'de
+     <literal>default_authentication_plugin=mysql_native_password</literal>
+     ayarını yaparak bunu değiştirin.
+     <emphasis>caching_sha2_password</emphasis> eklentisi gelecekteki PHP
+     sürümlerinin birinde muhtemelen desteklenecektir. O zamana dek, bunu
+     destekleyen <link linkend="book.mysql-xdevapi">mysql_xdevapi</link>
+     eklentisi kullanılabilir.
     </para>
     <warning>
      <para>
@@ -32,7 +51,9 @@
      </para>
     </warning>
    </section>
+   &reference.pdo-mysql.configure;
    &reference.pdo-mysql.constants;
+   &reference.pdo-mysql.ini;
   </partintro>
 
   <refentry xml:id="ref.pdo-mysql.connection">
@@ -55,7 +76,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>host</constant></term>
+       <term><literal>host</literal></term>
        <listitem>
         <para>
          Veritabanı sunucusunu barındıran konağın ismi.
@@ -63,7 +84,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>port</constant></term>
+       <term><literal>port</literal></term>
        <listitem>
         <para>
          Veritabanı sunucusunun dinlediği portun numarası.
@@ -71,7 +92,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>dbname</constant></term>
+       <term><literal>dbname</literal></term>
        <listitem>
         <para>
          Veritabanının ismi.
@@ -79,7 +100,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>unix_socket</constant></term>
+       <term><literal>unix_socket</literal></term>
        <listitem>
         <para>
          MySQL Unix soketi (<literal>host</literal> veya
@@ -87,9 +108,20 @@
         </para>
        </listitem>
       </varlistentry>
+      <varlistentry>
+       <term><literal>charset</literal></term>
+       <listitem>
+        <para>
+         Karakter kümesi. Daha ayrıntılı bilgi
+         <link linkend="mysqlinfo.concepts.charset">karakter kümesi</link>
+         kavramları belgelerinde bulunabilir.
+        </para>
+       </listitem>
+      </varlistentry>
      </variablelist>
     </para>
    </refsect1>
+
    <refsect1 role="examples">
     &reftitle.examples;
     <para>
@@ -113,6 +145,22 @@ mysql:unix_socket=/tmp/mysql.sock;dbname=testdb
       </para>
      </example>
     </para>
+   </refsect1>
+
+   <refsect1 role="notes">
+    &reftitle.notes;
+    <note>
+     <title>Unix'e özel:</title>
+     <para>
+      Bilgisayar adı  <literal>"localhost"</literal> olarak ayarlandığında,
+      sunucuya bağlantı bir etki alanı soketi aracılığıyla yapılır. PDO_MYSQL
+      libmysqlclient kullanmak üzere derlenirse, soket dosyasının konumu
+      libmysqlclient'in derlendiği konumdur. PDO_MYSQL mysqlnd kullanmak üzere
+      derlenirse, <link
+      linkend="ini.pdo-mysql.default-socket">pdo_mysql.default_socket</link>
+      ini yönergesi aracılığıyla öntanımlı soket ayarlanabilir.
+     </para>
+    </note>
    </refsect1>
   </refentry>
 

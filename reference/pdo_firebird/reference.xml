@@ -1,20 +1,17 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
-<!-- Purpose: database.vendors -->
-<!-- Membership: bundled, external, pecl -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 40e3ec6efd533c7e729335a30057b1e036f6178d Maintainer: nilgun Status: ready -->
 <!-- State: experimental -->
-
  <reference xml:id="ref.pdo-firebird" xmlns="http://docbook.org/ns/docbook">
-  <title>Firebird/Interbase (PDO_FIREBIRD) İşlevleri</title>
-  <titleabbrev>Firebird/Interbase (PDO)</titleabbrev>
+  <?phpdoc extension-membership="bundledexternal" ?>
+  <title>Firebird İşlevleri (PDO_FIREBIRD)</title>
+  <titleabbrev>Firebird (PDO)</titleabbrev>
   <partintro>
 
    <section xml:id="pdo-firebird.intro">
    &reftitle.intro;
     <para>
      &warn.experimental;
-     PDO_FIREBIRD, PHP Veri Nesneleri Arayüzünün (PDO) Firebird ve Interbase
+     PDO_FIREBIRD, PHP Veri Nesneleri Arayüzünün (PDO) Firebird
      veritabanlarına erişimini mümkün kılmak için gerçeklenmiş bir sürücüdür.
     </para>
    </section>
@@ -24,7 +21,7 @@
   <refentry xml:id="ref.pdo-firebird.connection">
    <refnamediv>
     <refname>PDO_FIREBIRD DSN</refname>
-    <refpurpose>Firebird ve Interbase veritabanı bağlantısı</refpurpose>
+    <refpurpose>Firebird veritabanı bağlantısı</refpurpose>
    </refnamediv>
 
    <refsect1 role="description">
@@ -41,7 +38,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>dbname</constant></term>
+       <term><literal>dbname</literal></term>
        <listitem>
         <para>
          Veritabanının ismi.
@@ -49,7 +46,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>charset</constant></term>
+       <term><literal>charset</literal></term>
        <listitem>
         <para>
          Karakter kümesi.
@@ -57,10 +54,20 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><constant>role</constant></term>
+       <term><literal>role</literal></term>
        <listitem>
         <para>
          SQL rol adı.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>dialect</literal></term>
+       <listitem>
+        <para>
+         Veritabanının lehçesi; ya <literal>1</literal> ya da <literal>3</literal>.
+         Belirtilmezse, öntanımlı lehçe <literal>3</literal>'tür.
+         PHP 7.4.0 ve sonrasında kullanılabilir.
         </para>
        </listitem>
       </varlistentry>
@@ -71,15 +78,51 @@
     &reftitle.examples;
     <para>
      <example>
-      <title>- PDO_FIREBIRD DSN örneği</title>
+      <title>- Yol belirtilen PDO_FIREBIRD DSN örneği</title>
       <para>
-       Aşağıdaki örnekte, bir Firebird veritabanına bağlanmak için kullanılan
-       PDO_FIREBIRD DSN'si gösterilmiştir.
+       Aşağıdaki örnekte Firebird veritabanlarına bağlanmak için
+       PDO_FIREBIRD DSN kullanımı gösterilmiştir.
        <programlisting><![CDATA[
-firebird:dbname=DATABASE.GDE
+firebird:dbname=/path/to/DATABASE.FDB
 ]]>
        </programlisting>
       </para>
+     </example>
+     <example>
+      <title>- Port ve yol belirtilen PDO_FIREBIRD DSN örneği</title>
+      <para>
+       Aşağıdaki örnekte, bir Firebird veritabanına yol ve port belirterek
+       bağlanmak için PDO_FIREBIRD DSN kullanımı gösterilmiştir.
+       <programlisting><![CDATA[
+firebird:dbname=hostname/port:/path/to/DATABASE.FDB
+]]>
+       </programlisting>
+      </para>
+     </example>
+     <example>
+      <title>- Debian üzerinde localhost ve employee.fdb yolu belirtilen
+       PDO_FIREBIRD DSN örneği</title>
+      <para>
+       Aşağıdaki örnekte localhost kullanılarak employee.fdb adlı Firebird
+       veritabanına bağlanmak için PDO_FIREBIRD DSN kullanımı gösterilmiştir.
+       <programlisting><![CDATA[
+firebird:dbname=localhost:/var/lib/firebird/2.5/data/employee.fdb
+]]>
+       </programlisting>
+      </para>
+     </example>
+     <example>
+      <title>- dialect=1 veritabanına bağlanan PDO_FIREBIRD DSN örneği</title>
+      <para>
+       Aşağıdaki örnekte dialect 1 ile oluşturulmuş test.fdb adlı Firebird
+       veritabanına bağlanmak için PDO_FIREBIRD DSN kullanımı gösterilmiştir.
+       Bu sadece PHP 7.4.0 ve sonrasında çalışır.
+      </para>
+      <programlisting>
+<![CDATA[
+firebird:dbname=localhost:/var/lib/firebird/2.5/data/test.fdb;charset=utf-8;dialect=1
+]]>
+</programlisting>
      </example>
     </para>
    </refsect1>

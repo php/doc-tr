@@ -1,27 +1,35 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 91bec719b351e11e6f0fe618f091edbb82b9acc2 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.execute" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->execute</refname>
+  <refname>PDOStatement::execute</refname>
   <refpurpose>Bir hazır deyimi çalıştırır</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::execute</methodname>
-   <methodparam choice="opt"><type>array</type><parameter>girdiler</parameter><initializer>array()</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>null</type></type><parameter>girdiler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bir hazır deyimi çalıştırır. Hazır deyim değiştirge içeriyorsa şu ikisinden
-   birini yapmalısınız:
+   Bir <link linkend="pdo.prepared-statements">hazır deyimi</link> çalıştırır.
+   Hazır deyim değiştirge içeriyorsa şu ikisinden birini yapmalısınız:
    <itemizedlist>
-    <listitem><simpara>Değiştirgeleri veya soru imlerini PHP değişkenleri ile
-    ilişkilendirmek için <function>PDOStatement::bindParam</function>
-    yöntemini kullanın; değişkenleri, değerleriyle girdi olarak ve çıktı
-    değerini almak için kullanabilirsiniz.</simpara></listitem>
-    <listitem><simpara>Ya da sadece girdi değiştirgelerinin değerlerini bir
-    dizi içinde aktarın.</simpara></listitem>
+    <listitem>
+     <simpara>
+      Değiştirgeleri ve/veya değerleri soru imleri ile ilişkilendirmek için
+      (sırasıyla)  <function>PDOStatement::bindParam</function> ve/veya
+      <function>PDOStatement::bindValue</function> yöntemi kullanılmalıdır.
+      İlişkili değişkenler, değerlerini girdi olarak iletir ve varsa çıktı
+      değerlerini
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      ya da aktarılan salt-girdi değiştirge değerlerini bir dizi olarak alır.
+     </simpara>
+    </listitem>
    </itemizedlist>
   </para>
  </refsect1>
@@ -35,12 +43,20 @@
      <listitem>
       <para>
        Çalıştırılacak SQL deyimiyle ilişkilendirilmiş değiştirge sayısı kadar
-       değer içeren bir dizi.
+       değer içeren bir dizi. Tüm değerler <constant>PDO::PARAM_STR</constant>
+       olarak ele alınır.
       </para>
       <para>
-       Tek bir değiştirgeye birden fazla değer belirtemezsiniz. Örneğin bir
-       IN() yan tümcesindeki tek bir isimli değiştirgeye iki değer
-       belirtemezsiniz.
+       Tek bir değiştirgeye birden fazla değer belirtilemez. Örneğin bir
+       IN() yan tümcesindeki tek bir isimli değiştirge iki değerle
+       ilişkilendirilemez.
+      </para>
+      <para>
+       Belirtilenden daha fazla değeri ilişkilendirmek mümkün değildir;
+       <parameter>girdiler</parameter> içinde
+       <methodname>PDO::prepare</methodname> yönteminde belirtilen
+       deyimdekinden daha fazla anahtar mevcutsa, deyim başarısız olur ve
+       bir hata çıktılanır.
       </para>
      </listitem>
     </varlistentry>
@@ -58,18 +74,18 @@
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
-   <title>- Değişkenlerle ilişkili bir hazır deyimin çalıştırılması</title>
+   <title>- İlişkili değişken ve değerlerle bir hazır deyimin çalıştırılması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-/* PHP değişkenleriyle ilişkilendirilmiş bir hazır deyimi çalıştıralım */
+/* PHP değişken ve değerleriyle ilişkilendirilmiş bir hazır deyimi çalıştıralım */
 $calories = 150;
 $colour = 'red';
 $sth = $dbh->prepare('SELECT name, colour, calories
     FROM fruit
-    WHERE calories < :calories AND colour = :colour');
+    WHERE calories < :calories AND colour LIKE :colour');
 $sth->bindParam(':calories', $calories, PDO::PARAM_INT);
-$sth->bindParam(':colour', $colour, PDO::PARAM_STR, 12);
+$sth->bindParam(':colour', "%{$colour}%");
 $sth->execute();
 ?>
 ]]>
@@ -77,8 +93,7 @@ $sth->execute();
   </example>
 
   <example>
-   <title>- Yerleştirilecek değerlere (isimli değiştirgelere) sahip bir hazır
-   deyimin çalıştırılması</title>
+   <title>- İsimli değerler dizisi ile hazır bir deyimin çalıştırılması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -96,8 +111,8 @@ $sth->execute(array(':calories' => $calories, ':colour' => $colour));
   </example>
 
   <example>
-   <title>- - Yerleştirilecek değerlere (soru imli değiştirgelere) sahip bir
-   hazır deyimin çalıştırılması</title>
+   <title>- - Konumlu değerler dizisi ile bir hazır deyimin çalıştırılması
+   </title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -132,6 +147,41 @@ $sth->execute();
 ]]>
    </programlisting>
   </example>
+  <example>
+   <title>- IN yan tümcesi için dizi kullanarak bir hazır deyimin
+    çalıştırılması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+/* IN yan tümcesi için dizi kullanarak hazır deyimi çalıştır */
+$params = array(1, 21, 63, 171);
+/* Değiştirge sayısı kadar yer tutucu içeren bir dizge oluştur */
+$place_holders = implode(',', array_fill(0, count($params), '?'));
+
+/*
+    Bu, $params dizimizdeki her değer için yeterli adsız yer tutucuyla
+    ifadeyi hazırlar. $params dizisinin değerleri, deyim yürütüldüğünde
+    hazırlanan deyimdeki yer tutucularla ilişkilendirilir. Bu, değişkene
+    bir başvuru gerektirdiğinden, PDOStatement::bindParam() kullanımıyla
+    aynı değildir. PDOStatement::execute() ise yalnızca değere göre
+    ilişkilendirme yapar.
+*/
+$sth = $dbh->prepare("SELECT id, name FROM contacts WHERE id IN ($place_holders)");
+$sth->execute($params);
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Bazı sürücüler sonraki deyimi çalıştırmadan önce <link
+    linkend="pdostatement.closecursor">göstericiyi kapatmayı</link> gerektirir.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
