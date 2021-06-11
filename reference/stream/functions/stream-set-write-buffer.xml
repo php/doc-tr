@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<!-- splitted from ./en/functions/filesystem.xml, last change in rev 1.2 -->
+<!-- EN-Revision: 56293cbaa639e0a883b7135a1121b0e3f9ee215b Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.stream-set-write-buffer" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>stream_set_write_buffer</refname>
-  <refpurpose>Dosya tamponunu ayarlar</refpurpose>
+  <refpurpose>Belirtilen akımda dosya yazma tamponunu ayarlar</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
@@ -18,11 +16,6 @@
    <parameter>akım</parameter> üzerinde yazma işlemleri için
    <parameter>tampon</parameter> baytlık tamponu etkin kılar.
   </para>
-  <simpara>
-   Normalde <function>fwrite</function> tamponu 8K'lıktır. Yani, aynı çıktı
-   akımına (dosyaya) yazmak isteyen iki süreç varsa her biri diğerini 8K'lık
-   veri yazana kadar bekler.
-  </simpara>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -55,8 +48,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İstek yerine getirilememişse <acronym>EOF</acronym>, işlem başarılmışsa
-   <literal>0</literal> döner.
+   Başarı durumunda <literal>0</literal>, istek yerine getirilememişse
+   sıfırdan farklı bir değer döner.
   </para>
  </refsect1>
 
@@ -74,9 +67,11 @@
 <?php
 $dt = fopen($file, "w");
 if ($dt) {
-  stream_set_write_buffer($dt, 0);
-  fwrite($dt, $output);
-  fclose($dt);
+    if (stream_set_write_buffer($fp, 0) !== 0) {
+        // tampon ayarlanamadı
+    }
+    fwrite($dt, $output);
+    fclose($dt);
 }
 ?>
 ]]>

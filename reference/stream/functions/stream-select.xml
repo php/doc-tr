@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4754397753fd79f1c846868b66a2448babab1c54 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.stream-select" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>stream_select</refname>
@@ -60,17 +59,11 @@
        <para>
         <function>stream_select</function> dönerken
         <parameter>oku</parameter>, <parameter>yaz</parameter> ve
-        <parameter>hariç</parameter> dizilerinde akım özkaynaklarının değişen
-        durumlarını belirten değişklikler yapılır.
+        <parameter>dış</parameter> dizilerinde akım özkaynaklarının değişen
+        durumlarını belirten değişklikler yapılır. Dizilerin özgün anahtarları
+        korunur.
        </para>
       </note>
-      <simpara>
-       <function>stream_select</function> işlevine bu dizilerin hepsini
-       aktarmak zorunda değilsiniz. Kullanmayacağınız dizileri ya boş bırakın
-       ya da dizi yerine &null; belirtin. Ayrıca, bu dizilerin gönderimli
-       aktarıldıklarını ve <function>stream_select</function> dönerken
-       bunlarda değişiklik yapılacağını da unutmayın.
-      </simpara>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -181,7 +174,7 @@ stream_select($o, $y, $d, 0);
   </note>
   <note>
    <para>
-    Hat durumlarını sınarken <literal>===</literal> işlecini kullanmanız
+    Hata durumlarını sınarken <literal>===</literal> işlecini kullanmanız
     gerektiğini unutmayın. Çünkü işlev <literal>0</literal> döndürdüğünde
     <literal>==</literal> işleci bunu &true; olarak değerlendirir. Örnek:
    <programlisting role="php">
@@ -205,15 +198,21 @@ if (false === stream_select($o, $y, $d, 0)) {
   </note>
   <note>
    <para>
-    Windows uyumluluğu: Windows 98 altında, <function>proc_open</function>
-    işlevinden dönen bir boru üzerinde <function>stream_select</function>
-    kullanımı veri kaybına sebep olabilir.
+    Bazı akımlar (<literal>zlib</literal> gibi) bu işlevle seçilemez.
    </para>
+  </note>
+  <note>
+   <title>Windows uyumluluğu</title>
    <para>
      Windows altında, <function>proc_open</function>
     işlevinden dönen dosya tanıtıcıları üzerinde
-    <function>stream_select</function> kullanımı başarısız olabilir ve
-    &false; dönebilir.
+    <function>stream_select</function> kullanımı başarısız olur ve
+    &false; döner.
+   </para>
+   <para>
+    Bir konsoldan <emphasis>herhangi bir</emphasis> girdi kullanılabilir
+    olduğu anda STDIN durum değiştirir, ancak akımdan okuma yine de
+    engellenebilir.
    </para>
   </note>
  </refsect1>

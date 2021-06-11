@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.stream-resolve-include-path" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>stream_resolve_include_path</refname>
-  <refpurpose>Bir göreli yol ile yapılacak <function>fopen</function>
-  çağrısıyla açılacak dosyayı belirler</refpurpose>
+  <refpurpose>Göreli dosya adını mutlak yoluna çözümler </refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -13,9 +11,71 @@
   <methodsynopsis>
    <type>string</type><methodname>stream_resolve_include_path</methodname>
    <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
-   <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
   </methodsynopsis>
-  &warn.undocumented.func;
+  <para>
+  <function>fopen</function>/<function>include</function> işlevlerinin
+  kurallarıyla göreli yoluyla belirtilen <parameter>dosya</parameter>yı
+  mutlak yoluna çözümler.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>dosya</parameter></term>
+     <listitem>
+      <para>
+       Yolu çözümlenecek dosya.
+      </para>
+     </listitem>
+    </varlistentry>
+    <!--
+    <varlistentry>
+     <term><parameter>context</parameter></term>
+     <listitem>
+      <para>
+       A valid context resource created with <function>stream_context_create</function>.
+      </para>
+     </listitem>
+    </varlistentry>
+    -->
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Çözümlenen mutlak dosya yolunu içeren bir dizge
+   döner,&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>stream_resolve_include_path</function> örneği</title>
+    <para>
+     Temel kullanım örneği
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(stream_resolve_include_path("test.php"));
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+string(22) "/var/www/html/test.php"
+]]>
+    </screen>
+   </example>
+  </para>
  </refsect1>
 
 </refentry>
