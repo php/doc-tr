@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fb5362c8b9b4695a181a4498d50074d089c96296 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionparameter.getclass" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionParameter::getClass</refname>
-  <refpurpose>Sınıfı döndürür</refpurpose>
+  <refpurpose>Veri ipucu olarak sınıfı döndürür</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+   &warn.deprecated.function-8-0-0;
+ </refsynopsisdiv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <modifier>public</modifier> <type>ReflectionClass</type><methodname>ReflectionParameter::getClass</methodname>
+   <modifier>public</modifier>
+   <type class="union"><type>ReflectionClass</type><type>null</type></type><methodname>ReflectionParameter::getClass</methodname>
    <void />
   </methodsynopsis>
   <para>
-   Sınıfı döndürür.
+   Değiştirge için veri ipucu olan sınıfı <classname>ReflectionClass</classname>
+   nesnesi olarak döndürür.
   </para>
-
-  &warn.undocumented.func;
-
+  <para>
+   PHP 8.0.0 itibariyle bu işlevin kullanımı önerilmemektedir. Bunun yerine,
+   değiştirgenin <classname>ReflectionType</classname> nesnesini almak için
+   <methodname>ReflectionParameter::getType</methodname> kullanın ve değiştirge
+   türünü saptamak için aldığınız nesneyi sorgulayın.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,7 +37,30 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir <classname>ReflectionClass</classname> nesnesi.
+   Bir <classname>ReflectionClass</classname> nesnesi; tür bildirilmemişse
+   veya bildirilen tür bir sınıf veya arayüz değilse &null;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <classname>ReflectionParameter</classname> sınıfının kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo(Exception $a) { }
+
+$functionReflection = new ReflectionFunction('foo');
+$parameters = $functionReflection->getParameters();
+$aParameter = $parameters[0];
+
+echo $aParameter->getClass()->name;
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 
