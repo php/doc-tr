@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ae9210b4725b38bc869134fe9bd3d6036a2331e2 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionfunction.invoke" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionFunction::invoke</refname>
@@ -11,10 +10,10 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>mixed</type><methodname>ReflectionFunction::invoke</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Yansıtılmış bir işlevi çağırır.
+   Yansıtılan işlevi çağırır.
   </para>
  </refsect1>
 
@@ -39,18 +38,58 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-
+   Çağrılan işlevin sonucunu döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionFunction::invoke</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function title($title, $name)
+{
+    return sprintf("%s. %s\r\n", $title, $name);
+}
+
+$function = new ReflectionFunction('title');
+
+echo $function->invoke('Dr', 'Phil');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Dr. Phil
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <methodname>ReflectionFunction::invoke</methodname>
+    değer döndürülen değiştirgeler varsa kullanılamaz. Yerine
+    <methodname>ReflectionFunction::invokeArgs</methodname> kullanılmalıdır
+    (değiştirge listesinde gönderimleri aktararak).
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><methodname>ReflectionFunction::export</methodname></member>
-    <member><link linkend="language.oop5.magic.invoke">__invoke</link></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>ReflectionFunction::export</methodname></member>
+   <member><link linkend="object.invoke">__invoke()</link></member>
+   <member><function>call_user_func</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>
