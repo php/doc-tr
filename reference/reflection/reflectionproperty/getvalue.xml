@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 98df2cf9a939729d73adee1484ec05929c74c98b Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionproperty.getvalue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionProperty::getValue</refname>
@@ -11,14 +10,11 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>mixed</type><methodname>ReflectionProperty::getValue</methodname>
-   <methodparam choice="opt"><type>string</type><parameter>özellik</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>object</type><type>null</type></type><parameter>nesne</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Özelliğin değerini döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -26,10 +22,14 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>özellik</parameter></term>
+     <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       Yansıtılan nesne.
+       Özellik statik olmayan bir nesne ise özelliğin ait olduğu nesne
+       burada belirtilmelidir.
+       Bir nesne belirtmeden öntanımlı özellik döndürülmek istenirse bu yöntem
+       yerine <methodname>ReflectionClass::getDefaultProperties</methodname>
+       yöntemi kullanılmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -41,6 +41,75 @@
   &reftitle.returnvalues;
   <para>
    Özelliğin değeri.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Özellik erişilebilir değilse <classname>ReflectionException</classname>
+   yavrulanır. Protected veya private bir özelliği erişilebilir kılmak için
+   <methodname>ReflectionProperty::setAccessible</methodname> kullanılmalıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>nesne</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionProperty::getValue</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public static $staticProperty = 'foobar';
+
+    public $property = 'barfoo';
+    protected $privateProperty = 'foofoo';
+}
+
+$reflectionClass = new ReflectionClass('Foo');
+
+var_dump($reflectionClass->getProperty('staticProperty')->getValue());
+var_dump($reflectionClass->getProperty('property')->getValue(new Foo));
+
+$reflectionProperty = $reflectionClass->getProperty('privateProperty');
+$reflectionProperty->setAccessible(true);
+var_dump($reflectionProperty->getValue(new Foo));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(6) "foobar"
+string(6) "barfoo"
+string(6) "foofoo"
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 

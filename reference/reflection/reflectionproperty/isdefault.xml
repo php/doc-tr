@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d6d57b5f931f2607219688c4175a4865358a964a Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionproperty.isdefault" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionProperty::isDefault</refname>
-  <refpurpose>Öntanımlı değer mi atanmış diye bakar</refpurpose>
+  <refpurpose>Özellik öntanımlı mı diye bakar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -14,7 +13,8 @@
    <void />
   </methodsynopsis>
   <para>
-   Öntanımlı değer atanmışsa &true; döner.
+   Özellik derleme sırasında mı yoksa dinamik olarak çalışma anında mı
+   bildirilmiş diye bakar.
   </para>
  </refsect1>
 
@@ -26,8 +26,41 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Özellik derleme sırasında bildirildiği gibiyse &true;, çalışma anında
+   Özellik derleme sırasında bildirilmişse &true;, çalışma anında
    oluşturulmuşsa &false; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionClass::isDefault</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public $bar;
+}
+
+$o = new Foo();
+$o->bar = 42;
+$o->baz = 42;
+
+$ro = new ReflectionObject($o);
+var_dump($ro->getProperty('bar')->isDefault());
+var_dump($ro->getProperty('baz')->isDefault());
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(true)
+bool(false)
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 

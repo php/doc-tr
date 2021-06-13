@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 98df2cf9a939729d73adee1484ec05929c74c98b Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionproperty.getdoccomment" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionProperty::getDocComment</refname>
-  <refpurpose>Bilgilendirici açıklamaları döndürür</refpurpose>
+  <refpurpose>Özellik açıklamalarını döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <modifier>public</modifier> <type>string</type><methodname>ReflectionProperty::getDocComment</methodname>
-   <void />
+   <modifier>public</modifier>
+   <type class="union"><type>string</type><type>false</type></type><methodname>ReflectionProperty::getDocComment</methodname>
+   <void/>
   </methodsynopsis>
   <para>
-   Bilgilendirici açıklamaları döndürür.
+   Özellik ile ilgili açıklamaları döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -29,7 +26,73 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir dizge.
+   Varsa açıklamalar, yoksa &false;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionProperty::getDocComment</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Str
+{
+    /**
+     * @var int  Dizge uzunluğu
+     */
+    public $length = 5;
+}
+
+$prop = new ReflectionProperty('Str', 'length');
+
+var_dump($prop->getDocComment());
+
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+string(44) "/**
+     * @var int  Dizge uzunluğu
+     */"
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Çoklu özellik bildirimi</title>
+    <para>
+     Aynı belgelendirme açıklaması birden fazla özellik hakkında ise açıklama
+     sadece ilk özellik için döner.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    /** @var string */
+    public $a, $b;
+}
+$class = new \ReflectionClass('Foo');
+foreach ($class->getProperties() as $property) {
+    echo $property->getName() . ': ' . var_export($property->getDocComment(), true) . PHP_EOL;
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+a: '/** @var string */'
+b: false
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
