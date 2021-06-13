@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a871ef72edf436c59422dedd538594db2541d5f1 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-create">
  <refnamediv>
   <refname>socket_create</refname>
@@ -10,15 +9,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>socket_create</methodname>
+   <type class="union"><type>Socket</type><type>false</type></type><methodname>socket_create</methodname>
    <methodparam><type>int</type><parameter>aile</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
    <methodparam><type>int</type><parameter>protokol</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Bir soket özkaynağı döndürmenin yanında iletişim için uçlardan birini
-   belirler. Normal bir ağ bağlantısı iki soketle yapılır. Biri istemci
-   olurken diğeri sunucu olur.
+   Bir <classname>Socket</classname> örneği döndürmenin yanında iletişim için
+   uçlardan birini belirler. Normal bir ağ bağlantısı iki soketle yapılır.
+   Biri istemci olurken diğeri sunucu olur.
   </para>
  </refsect1>
 
@@ -110,7 +109,7 @@
           <entry>
            Ham ağ protokolü erişimi sağlar. Bu özel soket türü elle bir
            protokol oluşturmak için kullanılabilir. Bu soketin bilinen bir
-           kullanım da ICMP istekleridir (ping, traceroute komutları gibi).
+           kullanım da ICMP istekleridir (ping gibi).
           </entry>
          </row>
          <row>
@@ -189,34 +188,11 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda &false;, aksi takdirde bir soket özkaynağı
-   döndürür. Hata kodu <function>socket_last_error</function> işlevi ile
+   Başarısızlık durumunda &false;, aksi takdirde bir
+   <classname>Socket</classname> örneği döndürür.
+   Hata kodu <function>socket_last_error</function> işlevi ile
    alınabilir. Bu hata kodunu <function>socket_strerror</function> işlevine
    aktararak hatayı açıklayan dizgeyi alabilirsiniz.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <constant>AF_INET6</constant> sabiti eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -229,6 +205,29 @@
     değerleri belirtildiğini varsayar ve bu durumu bir
     <constant>E_WARNING</constant> iletisiyle bildirir.
    </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Başarı durumunda artık bir <classname>Socket</classname> nesnesi
+       dönüyor; evvelce <type>resource</type> türünde bir değer dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

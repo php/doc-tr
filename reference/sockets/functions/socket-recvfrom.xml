@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14dc7c47365f2b71f6c907a5ba5bccf42534d5a9 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-recvfrom">
  <refnamediv>
   <refname>socket_recvfrom</refname>
@@ -10,21 +9,21 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>socket_recvfrom</methodname>
-   <methodparam><type>resource</type><parameter>soket</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>socket_recvfrom</methodname>
+   <methodparam><type>Socket</type><parameter>soket</parameter></methodparam>
    <methodparam><type>string</type><parameter role="reference">tmmpon</parameter></methodparam>
    <methodparam><type>int</type><parameter>uzunluk</parameter></methodparam>
    <methodparam><type>int</type><parameter>seçenekler</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">isim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">port</parameter></methodparam>
+   <methodparam><type>string</type><parameter role="reference">adres</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">port</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>socket_recvfrom</function> işlevi belirtilen
    <parameter>soket</parameter> üzerinden <parameter>tampon</parameter>
    tamponundan <parameter>uzunluk</parameter> baytlık veriyi
-   <parameter>port</parameter>. porttaki  <parameter>isim</parameter>'den alır.
-   İşlev bağlantılı (tcp) ve bağlantısız (udp) soketlerle çalışabilir. Ayrıca,
-   bazı seçeneklerle işlevin davranışında değişiklik yapılabilir.
+   <parameter>adres</parameter>'teki <parameter>port</parameter>. porttan
+   alır. İşlev bağlantılı (tcp) ve bağlantısız (udp) soketlerle çalışabilir.
+   Ayrıca, bazı seçeneklerle işlevin davranışında değişiklik yapılabilir.
   </para>
   <para>
    <parameter>isim</parameter> ve <parameter>port</parameter> gönderimli
@@ -36,6 +35,7 @@
    soket olması durumunda <parameter>port</parameter> uzak konağın port
    numarasını içerecektir.
   </para>
+  &note.bin-safe;
  </refsect1>
 
  <refsect1 role="parameters">
@@ -46,12 +46,11 @@
      <term><parameter>soket</parameter></term>
      <listitem>
       <para>
-       <function>socket_create</function> ile oluşturulmuş geçerli bir soket
-       özkaynağı.
+       <function>socket_create</function> ile oluşturulmuş geçerli bir
+       <classname>Socket</classname> nesnesi.
       </para>
      </listitem>
     </varlistentry>
-
     <varlistentry>
      <term><parameter>tampon</parameter></term>
      <listitem>
@@ -60,7 +59,6 @@
       </para>
      </listitem>
     </varlistentry>
-
     <varlistentry>
      <term><parameter>uzunluk</parameter></term>
      <listitem>
@@ -69,14 +67,12 @@
       </para>
      </listitem>
     </varlistentry>
-
     <varlistentry>
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
        Aşağıdaki değerlerin bitsel VEYAlanmış (|) bir birleşimi olabilir
       </para>
-
       <table>
        <title>Olası <parameter>seçenekler</parameter></title>
        <tgroup cols="2">
@@ -119,9 +115,8 @@
       </table>
      </listitem>
     </varlistentry>
-
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>adres</parameter></term>
      <listitem>
       <para>
        Soket <constant>AF_UNIX</constant> türündeyse dosya yolu, bağlantısız
@@ -130,7 +125,6 @@
       </para>
      </listitem>
     </varlistentry>
-
     <varlistentry>
      <term><parameter>port</parameter></term>
      <listitem>
@@ -141,7 +135,6 @@
       </para>
      </listitem>
     </varlistentry>
-
    </variablelist>
   </para>
  </refsect1>
@@ -155,6 +148,23 @@
    kodunu <function>socket_strerror</function> işlevine aktararak hatayı
    açıklayan dizgeyi alabilirsiniz.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &sockets.changelog.socket-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -183,30 +193,6 @@ echo "$from adresinin $port. portundan $buf bayt alındı" . PHP_EOL;
      oluşturup uzak konaktan alınacak 12 bayta kadar veriyi gösterir.
     </para>
    </example>
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <function>socket_recvfrom</function> artık ikil olarak güvenli.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
