@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3result.fetcharray" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3Result::fetchArray</refname>
@@ -10,7 +9,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <modifier>public</modifier> <type>array</type><methodname>SQLite3Result::fetchArray</methodname>
+   <modifier>public</modifier>
+   <type class="union"><type>array</type><type>false</type></type><methodname>SQLite3Result::fetchArray</methodname>
    <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>SQLITE3_BOTH</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -56,14 +56,21 @@
     </varlistentry>
    </variablelist>
   </para>
-
  </refsect1>
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Satır isimleriyle veya satır numaraları ile ya da her ikisiyle de
-   indislenmiş bir dizi döner.
+   indislenmiş bir dizi döner. Hiç satır yoksa &false; döner.
+  </para>
+  <para>
+   Dönen dizinin değerlerinin türü şu SQLite3 türleriyle eşleştirilir:
+   <constant>PHP_INT_MIN</constant>..<constant>PHP_INT_MAX</constant>
+   aralığındaki tamsayılar <type>int</type> türüne, aksi takdirde
+   <type>string</type> türüne, gerçel sayılar <type>float</type> türüne,
+   <literal>NULL</literal> değerler <type>null</type> türüne, dizgeler ve
+   blob'lar ise <type>string</type> türüne eşlenir.
   </para>
  </refsect1>
 
