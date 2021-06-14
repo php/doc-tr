@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14dc7c47365f2b71f6c907a5ba5bccf42534d5a9 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-select">
  <refnamediv>
   <refname>socket_select</refname>
@@ -11,19 +10,18 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>socket_select</methodname>
-   <methodparam><type>array</type><parameter role="reference">oku</parameter></methodparam>
-   <methodparam><type>array</type><parameter role="reference">yaz</parameter></methodparam>
-   <methodparam><type>array</type><parameter role="reference">diğer</parameter></methodparam>
-   <methodparam><type>int</type><parameter>tv_sec</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>socket_select</methodname>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter role="reference">oku</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter role="reference">yaz</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter role="reference">diğer</parameter></methodparam>
+   <methodparam><type class="union"><type>int</type><type>null</type></type><parameter>tv_sec</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>tv_usec</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>socket_select</function> işlevi değiştirge olarak soket dizileri
-   alır ve durumları değişinceye kadar bekler. Soket özkaynakları BSD
+   alır ve durumları değişinceye kadar bekler. Bu soket dizileri BSD
    soketlerinden kaynaklanan bir kabulle dosya tanıtıcıları olarak da
-   bilinir. İşleve birbirinden bağımsız üç çeşit soket özkaynağı
-   belirtilebilir.
+   bilinir. İşleve birbirinden bağımsız üç çeşit soket dizisi belirtilebilir.
   </para>
  </refsect1>
 
@@ -36,8 +34,8 @@
      <listitem>
       <para>
        Karakterlerin okunmaya hazır hale gelmesine kadar (başka bir deyişle,
-       okumanın engellenmediği görülene kadar) dinlenecek soket özkaynakları
-       dizisi. (Okunacak tek şeyin dosyasonu karakteri olduğu durumda
+       okumanın engellenmediği görülene kadar) dinlenecek soket dizisi.
+       (Okunacak tek şeyin dosyasonu karakteri olduğu durumda
        <function>socket_read</function> sıfır uzunlukta bir dizge ile döner.)
       </para>
      </listitem>
@@ -47,7 +45,7 @@
      <listitem>
       <para>
        Yazmanın engellenmediği görülene kadar (soket yazmaya hazır hale
-       gelene kadar) dinlenecek soket özkaynakları dizisi.
+       gelene kadar) dinlenecek soket dizisi.
       </para>
      </listitem>
     </varlistentry>
@@ -186,7 +184,7 @@ if ($degisen_soket_sayısı === false) {
   <note>
    <para>
     Bazı soket gerçeklenimlerinin çok dikkatli olmayı gerektirdiğini
-    bilmenizde yarar var. Bir kaç temel kural:
+    bilmeniz gereken bir kaç temel kural:
     <itemizedlist>
      <listitem>
       <simpara>
@@ -199,9 +197,9 @@ if ($degisen_soket_sayısı === false) {
      <listitem>
       <simpara>
        <function>socket_select</function> çağrısından sonra üzerinde hiçbir
-       işlem yapmayacağınız soket özkaynaklarını hiçbir diziye eklemeyin.
-       <function>socket_select</function> döndükten sonra tüm soket
-       özkaynaklarına mutlaka bakılmalıdır. Yazmaya hazır soketlere
+       işlem yapmayacağınız soket nesnelerini hiçbir diziye eklemeyin.
+       <function>socket_select</function> döndükten sonra dizilerdeki tüm
+       soketlere mutlaka bakılmalıdır. Yazmaya hazır soketlere
        yazılmalı, okunmaya hazır soketler okunmalıdır.
       </simpara>
      </listitem>
