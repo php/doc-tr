@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-foreignkeys" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_foreignkeys</refname>
@@ -11,13 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_foreignkeys</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>ba_niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>ba_sahibi</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_foreignkeys</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ba_katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ba_şema</parameter></methodparam>
    <methodparam><type>string</type><parameter>ba_tablo</parameter></methodparam>
-   <methodparam><type>string</type><parameter>ya_niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>ya_sahibi</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ya_katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ya_şema</parameter></methodparam>
    <methodparam><type>string</type><parameter>ya_tablo</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -32,24 +31,24 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ba_niteleyici</parameter></term>
+     <term><parameter>ba_katalog</parameter></term>
      <listitem>
       <para>
-       Birincil anahtarın niteleyicisi.
+       Birincil anahtar için &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ba_sahibi</parameter></term>
+     <term><parameter>ba_şema</parameter></term>
      <listitem>
       <para>
-       Birincil anahtarın sahibi.
+       Birincil anahtar için &odbc.parameter.schema;
       </para>
      </listitem>
     </varlistentry>
@@ -62,18 +61,18 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ya_niteleyici</parameter></term>
+     <term><parameter>ya_katalog</parameter></term>
      <listitem>
       <para>
-       Yabancı anahtarın niteleyicisi.
+       Yabancı anahtar için &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ya_sahibi</parameter></term>
+     <term><parameter>ya_şema</parameter></term>
      <listitem>
       <para>
-       Yabancı anahtarın sahibi.
+       Yabancı anahtar &odbc.parameter.schema;
       </para>
      </listitem>
     </varlistentry>
@@ -98,21 +97,33 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>PKTABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>PKTABLE_OWNER</simpara></listitem>
-    <listitem><simpara>PKTABLE_NAME</simpara></listitem>
-    <listitem><simpara>PKCOLUMN_NAME</simpara></listitem>
-    <listitem><simpara>FKTABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>FKTABLE_OWNER</simpara></listitem>
-    <listitem><simpara>FKTABLE_NAME</simpara></listitem>
-    <listitem><simpara>FKCOLUMN_NAME</simpara></listitem>
-    <listitem><simpara>KEY_SEQ</simpara></listitem>
-    <listitem><simpara>UPDATE_RULE</simpara></listitem>
-    <listitem><simpara>DELETE_RULE</simpara></listitem>
-    <listitem><simpara>ya_NAME</simpara></listitem>
-    <listitem><simpara>ba_NAME</simpara></listitem>
+    <listitem><simpara><literal>PKTABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>PKTABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>PKTABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>PKCOLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>FKTABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>FKTABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>FKTABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>FKCOLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>KEY_SEQ</literal></simpara></listitem>
+    <listitem><simpara><literal>UPDATE_RULE</literal></simpara></listitem>
+    <listitem><simpara><literal>DELETE_RULE</literal></simpara></listitem>
+    <listitem><simpara><literal>FK_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>PK_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>DEFERRABILITY</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
   </para>
+  <simpara>
+   Birincil anahtarla ilişkili yabancı anahtarlar isteniyorsa, sonuç kümesi
+   <literal>FKTABLE_CAT</literal>, <literal>FKTABLE_SCHEM</literal>,
+   <literal>FKTABLE_NAME</literal> ve <literal>KEY_SEQ</literal> alanlarına
+   göre sıralanır.
+   Yabancı anahtarla ilişkili birincil anahtar isteniyorsa, sonuç kümesi
+   <literal>PKTABLE_CAT</literal>, <literal>PKTABLE_SCHEM</literal>,
+   <literal>PKTABLE_NAME</literal> ve <literal>KEY_SEQ</literal> alanlarına
+   göre sıralanır.
+  </simpara>
   <simpara>
    <parameter>ba_tablo</parameter> bir tablo ismi içeriyorsa, işlev bu
    tablonun birincil anahtarını ve ona atıf yapan tüm yabancı anahtarları
@@ -130,6 +141,14 @@
    yabancı anahtarları içeren bir sonuç kümesi döndürür. Bunu tek bir
    anahtardan ibaret olması gerekir.
   </simpara>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>odbc_tables</function></member>
+   <member><function>odbc_primarykeys</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

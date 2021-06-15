@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-tables" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_tables</refname>
@@ -11,33 +10,33 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_tables</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sahibi</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>tablo_türü</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_tables</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>şema</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>tablo</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>türler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belitilen aralıktaki tüm tablo isimlerini listeler.
   </para>
   <para>
-   <parameter>niteleyici</parameter>, <parameter>sahibi</parameter>,
-   <parameter>isim</parameter> ve <parameter>tablo_türü</parameter>
+   <parameter>katalog</parameter>, <parameter>şema</parameter>,
+   <parameter>tablo</parameter> ve <parameter>türler</parameter>
    değiştirgeleri ile seçim şöyle yapılır:
    <itemizedlist>
     <listitem>
      <simpara>
-      <parameter>niteleyici</parameter> tek bir yüzde iminden (%) ibaretse
-      ve, <parameter>sahibi</parameter> ve <parameter>isim</parameter> birer
+      <parameter>katalog</parameter> tek bir yüzde iminden (%) ibaretse
+      ve, <parameter>şema</parameter> ve <parameter>tablo</parameter> birer
       boş dizgeyse sonuç, veri kaynağındaki geçerli niteleyicileri içerir.
       (TABLE_QUALIFIER sütunu dışında tüm sütunlar &null; içerir.)
      </simpara>
     </listitem>
     <listitem>
      <simpara>
-      <parameter>sahibi</parameter> tek bir yüzde iminden (%) ibaretse ve,
-      <parameter>niteleyici</parameter> ve <parameter>isim</parameter> birer
+      <parameter>şema</parameter> tek bir yüzde iminden (%) ibaretse ve,
+      <parameter>katalog</parameter> ve <parameter>tablo</parameter> birer
       boş dizgeyse sonuç, veri kaynağındaki geçerli sahipleri içerir.
       (TABLE_OWNER sütunu dışında tüm sütunlar &null; içerir.)
      </simpara>
@@ -45,8 +44,8 @@
     <listitem>
      <simpara>
       <parameter>tablo_türü</parameter> tek bir yüzde iminden (%) ibaretse ve,
-      <parameter>niteleyici</parameter>, <parameter>sahibi</parameter> ve
-      <parameter>isim</parameter> birer boş dizgeyse sonuç, veri kaynağındaki
+      <parameter>katalog</parameter>, <parameter>şema</parameter> ve
+      <parameter>tablo</parameter> birer boş dizgeyse sonuç, veri kaynağındaki
       geçerli tablo türlerini içerir. (TABLE_TYPE sütunu dışında tüm sütunlar
       &null; içerir.)
      </simpara>
@@ -60,29 +59,29 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+       &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi. &odbc.parameter.search;
+       &odbc.parameter.schema; &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>tablo</parameter></term>
      <listitem>
       <para>
        İsim. &odbc.parameter.search;
@@ -90,15 +89,16 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tablo_türü</parameter></term>
+     <term><parameter>türler</parameter></term>
      <listitem>
       <para>
-       <parameter>tablo_türü</parameter> boş bir dizge değilse tablo
+       <parameter>türler</parameter> boş bir dizge değilse tablo
        türlerinden oluşan virgül ayraçlı bir liste olmalıdır. Her değer ya
        tek tırnaklar (') arasına alınmalı ya da hiç tırnak içine
-       alınmamalıdır. Örnek: "'TABLE','VIEW'" veya "TABLE, VIEW". Eğer veri
-       kaynağı belirtilen tablo türlerini desteklemiyorsa, işlev, bu tablo
-       türlerinde hiçbir sonuç döndürmez.
+       alınmamalıdır. Örnek: <literal>'TABLE','VIEW'</literal> veya
+       <literal>TABLE, VIEW</literal>. Eğer veri kaynağı belirtilen tablo
+       türlerini desteklemiyorsa, işlev, bu tablo türlerinde hiçbir sonuç
+       döndürmez.
       </para>
      </listitem>
     </varlistentry>
@@ -109,23 +109,79 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-  Hata durumunda &false; yoksa istenen bilgiyi içeren bir ODBC sonuç
-  tanıtıcısı döner.
+  İstenen bilgiyi içeren bir ODBC sonuç tanıtıcısı,&return.falseforfailure;.
   </para>
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_OWNER</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>TABLE_TYPE</simpara></listitem>
-    <listitem><simpara>REMARKS</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_TYPE</literal></simpara></listitem>
+    <listitem><simpara><literal>REMARKS</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
   </para>
   <simpara>
-   Sonuç kümesi TABLE_TYPE, TABLE_QUALIFIER, TABLE_OWNER ve TABLE_NAME
+   Sonuç kümesi <literal>TABLE_TYPE</literal>, <literal>TABLE_CAT</literal>,
+   <literal>TABLE_SCHEM</literal> ve <literal>TABLE_NAME</literal>
    sütunlarına göre sıralanır.
   </simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>şema</parameter>, <parameter>tablo</parameter> ve
+       <parameter>türler</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-tables.example.basic">
+   <title>- Katalogdaki tabloların listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$tables = odbc_tables($conn, 'SalesOrders', 'dbo', '%', 'TABLE');
+while (($row = odbc_fetch_array($tables))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => SalesOrders
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => Orders
+    [TABLE_TYPE] => TABLE
+    [REMARKS] =>
+)
+]]>
+   </screen>
+  </example>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -133,6 +189,10 @@
   <para>
    <simplelist>
     <member><function>odbc_tableprivileges</function></member>
+    <member><function>odbc_columns</function></member>
+    <member><function>odbc_specialcolumns</function></member>
+    <member><function>odbc_statistics</function></member>
+    <member><function>odbc_procedures</function></member>
    </simplelist>
   </para>
  </refsect1>

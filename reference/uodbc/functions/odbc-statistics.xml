@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-statistics" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_statistics</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_statistics</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>tablo_ismi</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_statistics</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>şema</parameter></methodparam>
+   <methodparam><type>string</type><parameter>tablo</parameter></methodparam>
    <methodparam><type>int</type><parameter>eşsiz</parameter></methodparam>
    <methodparam><type>int</type><parameter>doğruluk</parameter></methodparam>
   </methodsynopsis>
@@ -28,29 +27,29 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+      &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi.
+       &odbc.parameter.schema;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tablo_ismi</parameter></term>
+     <term><parameter>tablo</parameter></term>
      <listitem>
       <para>
        Tablo ismi.
@@ -61,7 +60,8 @@
      <term><parameter>eşsiz</parameter></term>
      <listitem>
       <para>
-       <literal>unique</literal> özniteliği.
+       Sıralama türü. <constant>SQL_INDEX_UNIQUE</constant> ya da
+       <constant>SQL_INDEX_ALL</constant>.
       </para>
      </listitem>
     </varlistentry>
@@ -69,7 +69,10 @@
      <term><parameter>doğruluk</parameter></term>
      <listitem>
       <para>
-       Doğruluk.
+       <constant>SQL_ENSURE</constant> ya da <constant>SQL_QUICK</constant>.
+       İkncisi, sadece kolayca sunucudan alınabilecekse, sürücünün
+       <literal>CARDINALITY</literal> ve <literal>PAGES</literal> alanlarını
+       almasını ister.
       </para>
      </listitem>
     </varlistentry>
@@ -86,25 +89,76 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_OWNER</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>NON_UNIQUE</simpara></listitem>
-    <listitem><simpara>INDEX_QUALIFIER</simpara></listitem>
-    <listitem><simpara>INDEX_NAME</simpara></listitem>
-    <listitem><simpara>TYPE</simpara></listitem>
-    <listitem><simpara>SEQ_IN_INDEX</simpara></listitem>
-    <listitem><simpara>COLUMN_NAME</simpara></listitem>
-    <listitem><simpara>COLLATION</simpara></listitem>
-    <listitem><simpara>CARDINALITY</simpara></listitem>
-    <listitem><simpara>PAGES</simpara></listitem>
-    <listitem><simpara>FILTER_CONDITION</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>NON_UNIQUE</literal></simpara></listitem>
+    <listitem><simpara><literal>INDEX_QUALIFIER</literal></simpara></listitem>
+    <listitem><simpara><literal>INDEX_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>TYPE</literal></simpara></listitem>
+    <listitem><simpara><literal>ORDINAL_POSITION</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>ASC_OR_DESC</literal></simpara></listitem>
+    <listitem><simpara><literal>CARDINALITY</literal></simpara></listitem>
+    <listitem><simpara><literal>PAGES</literal></simpara></listitem>
+    <listitem><simpara><literal>FILTER_CONDITION</literal></simpara></listitem>
    </itemizedlist>
-  </para>
+   &odbc.result.driver-specific;
+   </para>
   <simpara>
-   Sonuç kümesi şu sütunlara göre sıralanır: NON_UNIQUE, TYPE,
-   INDEX_QUALIFIER, INDEX_NAME ve SEQ_IN_INDEX.
+   Sonuç kümesi şu sütunlara göre sıralanır: <literal>NON_UNIQUE</literal>,
+   <literal>TYPE</literal>, <literal>INDEX_QUALIFIER</literal>,
+   <literal>INDEX_NAME</literal> ve <literal>ORDINAL_POSITION</literal>
   </simpara>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-statistics.example.basic">
+   <title>- Tablo istatistikleri listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$statistics = odbc_statistics($conn, 'TutorialDB', 'dbo', 'TEST', SQL_INDEX_UNIQUE, SQL_QUICK);
+while (($row = odbc_fetch_array($statistics))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => TutorialDB
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => TEST
+    [NON_UNIQUE] =>
+    [INDEX_QUALIFIER] =>
+    [INDEX_NAME] =>
+    [TYPE] => 0
+    [ORDINAL_POSITION] =>
+    [COLUMN_NAME] =>
+    [ASC_OR_DESC] =>
+    [CARDINALITY] => 15
+    [PAGES] => 3
+    [FILTER_CONDITION] =>
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>odbc_tables</function></member>
+   </simplelist>
+  </para>
  </refsect1>
 
 </refentry>

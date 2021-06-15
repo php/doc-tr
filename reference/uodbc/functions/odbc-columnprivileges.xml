@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-columnprivileges" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_columnprivileges</refname>
@@ -10,12 +9,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_columnprivileges</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>tablo_ismi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sütun_ismi</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_columnprivileges</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>şema</parameter></methodparam>
+   <methodparam><type>string</type><parameter>tablo</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sütun</parameter></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen tablo ile ilgili izinleri ve sütunları listeler.
@@ -26,52 +25,45 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+       &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi.
+       &odbc.parameter.schema;
+       &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tablo_ismi</parameter></term>
+     <term><parameter>tablo</parameter></term>
      <listitem>
       <para>
-       Tablo ismi.
+       Tablo ismi. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sütun_ismi</parameter></term>
+     <term><parameter>sütun</parameter></term>
      <listitem>
       <para>
-       <parameter>sütun_ismi</parameter> değiştirgesinde arama şablonları
-       belirtilebilir (sıfır veya daha fazla karakterle eşleşmek üzere '%' ve
-       tek bir karakterle eşleşmek üzere '_').
+       Sütun adı. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </para>
-  <para>
-   <parameter>sahibi</parameter>, <parameter>tablo_ismi</parameter> ve
-   <parameter>sütun_ismi</parameter> değiştirgesinde arama şablonları
-   belirtilebilir (sıfır veya daha fazla karakterle eşleşmek üzere '%' ve tek
-   bir karakterle eşleşmek üzere '_').
   </para>
  </refsect1>
  <refsect1 role="returnvalues">
@@ -84,19 +76,57 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_OWNER</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>GRANTOR</simpara></listitem>
-    <listitem><simpara>GRANTEE</simpara></listitem>
-    <listitem><simpara>PRIVILEGE</simpara></listitem>
-    <listitem><simpara>IS_GRANTABLE</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>GRANTOR</literal></simpara></listitem>
+    <listitem><simpara><literal>GRANTEE</literal></simpara></listitem>
+    <listitem><simpara><literal>PRIVILEGE</literal></simpara></listitem>
+    <listitem><simpara><literal>IS_GRANTABLE</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
   </para>
-  <para>
-   Sonuç kümesi TABLE_QUALIFIER, TABLE_OWNER ve TABLE_NAME sütunlarına göre
-   sıralıdır.
-  </para>
+  <simpara>
+   Sonuç kümesi <literal>TABLE_CAT</literal>, <literal>TABLE_SCHEM</literal>,
+   <literal>TABLE_NAME</literal>, <literal>COLUMN_NAME</literal> ve
+   <literal>PRIVILEGE</literal> sütunlarına göre sıralıdır.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-columnprivileges.example.basic">
+   <title>- Sütunlar için Liste Ayrıcalıkları</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$privileges = odbc_columnprivileges($conn, 'TutorialDB', 'dbo', 'test', 'id');
+while (($row = odbc_fetch_array($privileges))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => TutorialDB
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => test
+    [COLUMN_NAME] => id
+    [GRANTOR] => dbo
+    [GRANTEE] => dbo
+    [PRIVILEGE] => INSERT
+    [IS_GRANTABLE] => YES
+)
+]]>
+   </screen>
+  </example>
  </refsect1>
 </refentry>
 

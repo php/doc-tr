@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-primarykeys" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_primarykeys</refname>
@@ -9,10 +8,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_primarykeys</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_primarykeys</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>şema</parameter></methodparam>
    <methodparam><type>string</type><parameter>tablo</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -25,22 +24,22 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
-      <para>
+      <para>&odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
-      <para>
+      <para>&odbc.parameter.schema;
       </para>
      </listitem>
     </varlistentry>
@@ -63,13 +62,62 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_OWNER</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>COLUMN_NAME</simpara></listitem>
-    <listitem><simpara>KEY_SEQ</simpara></listitem>
-    <listitem><simpara>PK_NAME</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>KEY_SEQ</literal></simpara></listitem>
+    <listitem><simpara><literal>PK_NAME</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
+  </para>
+  <simpara>
+   Sonuç kümesi <literal>TABLE_CAT</literal>, <literal>TABLE_SCHEM</literal>,
+   <literal>TABLE_NAME</literal> ve <literal>KEY_SEQ</literal> alanlarına göre
+   sıralanır.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-primarykeys.example.basic">
+   <title>- Sütundaki birincil anahtarların listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$primarykeys = odbc_primarykeys($conn, 'TutorialDB', 'dbo', 'TEST');
+while (($row = odbc_fetch_array($primarykeys))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => TutorialDB
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => TEST
+    [COLUMN_NAME] => id
+    [KEY_SEQ] => 1
+    [PK_NAME] => PK__TEST__3213E83FE141F843
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>odbc_tables</function></member>
+    <member><function>odbc_foreignkeys</function></member>
+   </simplelist>
   </para>
  </refsect1>
 </refentry>

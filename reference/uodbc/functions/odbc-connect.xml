@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-connect" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_connect</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_connect</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_connect</methodname>
    <methodparam><type>string</type><parameter>dsn</parameter></methodparam>
    <methodparam><type>string</type><parameter>kullanıcı</parameter></methodparam>
    <methodparam><type>string</type><parameter>parola</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>imleç_türü</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>imleç_türü</parameter><initializer><constant>SQL_CUR_USE_DRIVER</constant></initializer></methodparam>
   </methodsynopsis>
   <simpara>
    Diğer ODBC işlevleri tarafından kullanılmak üzere bir bağlantı tanıtıcısı
@@ -25,11 +24,11 @@
    Bazı ODBC sürücülerinde, karmaşık bir saklanmış yordamın çalıştırılması
    şuna benzer bir hata üretebilir: "Cannot open a cursor on a stored
    procedure that has anything other than a single select statement
-   in it" (Türkçesi: tek bir seçim deyiminden fazlası için saklanmış yordam
-   veya imleç açılamaz).  SQL_CUR_USE_ODBC kullanarak bu hatadan
-   kurtulabilirsiniz. Ayrıca bazı sürücüler,
+   in it" (Türkçesi: tek bir 'select' deyiminden başka hiçbir şey için
+   saklanmış yordam üzerinde imleç açılamaz).  SQL_CUR_USE_ODBC kullanarak
+   bu hatadan kurtulabilirsiniz. Ayrıca bazı sürücüler,
    <function>odbc_fetch_row</function> işlevindeki
-   <parameter>satırnum</parameter> değiştirgesini de desteklemezler. Böyle
+   <parameter>satır</parameter> değiştirgesini de desteklemezler. Böyle
    bir durumda SQL_CUR_USE_ODBC sabitinin yardımı olabilir.
   </simpara>
  </refsect1>
@@ -42,7 +41,7 @@
      <term><parameter>dsn</parameter></term>
      <listitem>
       <para>
-       Bağlanılacak veritabanı kaynağının ismi. Bir DNS'siz bağlantı dizgesi
+       Bağlanılacak veritabanı kaynağının ismi. Bir DSN'siz bağlantı dizgesi
        de belirtilebilir.
       </para>
      </listitem>
@@ -102,7 +101,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata varsa 0 (&false;), yoksa bir bağlantı tanıtıcısı döner.
+   ODBC Bağlantısı,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -110,7 +109,7 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>DNS'siz bağlantı</title>
+    <title>DSN'siz bağlantı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
