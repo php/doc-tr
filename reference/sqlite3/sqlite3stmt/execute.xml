@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3stmt.execute" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3Stmt::execute</refname>
@@ -11,12 +10,22 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <modifier>public</modifier> <type>SQLite3Result</type><methodname>SQLite3Stmt::execute</methodname>
-   <void />
+   <modifier>public</modifier>
+  <type class="union"><type>SQLite3Result</type><type>false</type></type><methodname>SQLite3Stmt::execute</methodname>
+   <void/>
   </methodsynopsis>
   <para>
    Hazır deyimi çalıştırır ve sonuç kümesini bir nesne olarak döndürür
   </para>
+  <caution>
+   <para>
+    Aynı deyim nesnesi üzerinde bu yöntem çağrılarak elde edilen sonuç kümesi
+    nesneleri bağımsızdır, ancak aynı alt yapıyı paylaşırlar. Bu bakımdan aynı
+    deyim nesnesi üzerinde tekrar <methodname>SQLite3Stmt::execute</methodname>
+    çağırmadan önce <methodname>SQLite3Result::finalize</methodname> çağrılması
+    önerilir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -30,6 +39,15 @@
    İşlem başarılı olmuşsa bir <classname>SQLite3Result</classname> nesnesi
    yoksa &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><methodname>SQLite3::prepare</methodname></member>
+   <member><methodname>SQLite3Stmt::bindValue</methodname></member>
+   <member><methodname>SQLite3Stmt::bindParam</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>
