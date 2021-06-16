@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: wip -->
-<!-- 418de4470840c212677d03adb64c372f77fdf510 değişiklikleri dosyada var.
-Sadece çevirmek lazım, uzun sürecek görünüyor. -->
+<!-- EN-Revision: 184f3f7bd45643cb80f828d0bb001991ec3a5fad Maintainer: nilgun Status: wip -->
 <chapter xml:id="session.security" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Oturumlar ve Güvenlik</title>
  <para>
@@ -21,7 +18,9 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
    <sect2 xml:id="features.session.security.management.basic">
     <title>Oturum Güvenliği</title>
     <para>
-     Oturum modülü bir oturumda saklanan verinin sadece oturumun kullanıcısı tarafından görüldüğünü garanti edemez. Oturumun bütünlüğünü etkin olarak korumak için oturumun önemine bağlı olarak ek tedbirler alınması gerekir.
+     Oturum modülü bir oturumda saklanan verinin sadece oturumun kullanıcısı
+     tarafından görüldüğünü garanti edemez. Oturumun bütünlüğünü etkin olarak
+     korumak için oturumun önemine bağlı olarak ek tedbirler alınması gerekir.
     </para>
     <para>
      Oturumlarınız tarafından taşınan verinin önemine ve konuşlandırdığınız ek
@@ -63,9 +62,8 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
     durumdadır. Uyarlanabilir bir oturum yöneticisi ek riskler içerir.
    </para>
    <para>
-    PHP 5.5.2 ve sonrasında,
     <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
-    kullanılabilmektedir. Etkin olduğunda ve oturum kayıt işleyicisi
+    etkin olduğunda ve oturum kayıt işleyicisi
     destekliyorsa, ilklendirilmemiş bir oturum kimliği reddedilir ve yenisi
     oluşturulur. Bu, kullanıcıyı bilinen bir oturum kimliğini kullanmaya
     zorlayan bir saldırıyı engeller. Bir saldırgan bağlantıları kopyalayabilir
@@ -75,7 +73,7 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
     etkinse, kurban, saldırgan tarafından sağlanan oturum kimliğini kullanarak
     bir oturum başlatacaktır.
     <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
-    bu riskin acısını dindirir.
+    bu riski azaltır.
    </para>
    <warning>
     <simpara>
@@ -94,18 +92,18 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
     linkend="ini.session.use-only-cookies">session.use_only_cookies</link>
     kullanımı bu sorunu çözümlemez.
     <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
-    bu riskin acısını dindirir. <link
+    bu riski azaltır. <link
     linkend="ini.session.use-strict-mode">session.use_strict_mode</link>=On
     ile ilklendirilmemiş bir oturum kimliği reddedilir.
    </para>
    <note>
     <simpara><link
      linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
-     uyarlanabilir oturum yönetimi riskinin acısını dindirse de, bir saldırgan
+     uyarlanabilir oturum yönetimi riskini azaltsa da, bir saldırgan
      yine de kullanıcıyı ilklendirilmemiş bir oturum kimliğini kullanmaya
      zorlayabilir; böyle bir oturum kimliği saldırgan tarafından JavaScript
-     zerki ile oluşturulabilir. Bu saldırının acısı bu kılavuzun tavsiyelerine
-     uyularak azaltılabilir.
+     zerki ile oluşturulabilir. Bu saldırının riskleri bu kılavuzun
+     tavsiyelerine uyularak azaltılabilir.
     </simpara>
     <simpara>
      Bu kılavuzu izleyerek, geliştiriciler, <link
@@ -162,101 +160,113 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
     <function>session_regenerate_id</function> işlevini de kullanmalıdır.
    </para>
    <para>
-    Session ID regeneration reduces the risk of stolen session IDs, thus
-    <function>session_regenerate_id</function> must be called periodically.
-    E.g. Regenerate the session ID every 15 minutes for security sensitive content.
-    Even in the case that a session ID is stolen, both the legitimate
-    user's and the attacker's session will expire.
-    In other words access by the user or the attacker will
-    generate an obsolete session access error.
+    Oturum kimliğinin yenilenmesi oturum kimliklerinin çalınma riskini
+    azaltır, bu bakımdan <function>session_regenerate_id</function> belirli
+    aralıklarla sürekli çağrılmalıdır. Örneğin, güvenlik açısından hassas
+    içerik için oturum kimliğini her 15 dakikada bir yeniden oluşturun. Bir
+    oturum kimliğinin çalınması durumunda bile, hem meşru kullanıcının hem de
+    saldırganın oturumu sona erecektir. Başka bir deyişle, kullanıcı veya
+    saldırgan tarafından erişim, eski bir oturuma erişim hatası üretecektir.
    </para>
 
    <para>
-    Session IDs <emphasis>must</emphasis> be regenerated when user privileges
-    are elevated, such as after authenticating.
-    <function>session_regenerate_id</function> must be called prior to
-    setting the authentication information to $_SESSION. (As of PHP 7.0.0,
-    <function>session_regenerate_id</function> saves the current session data
-    automatically in order to save timestamp/etc. to the current session.)
-    Ensure only the new session contains the authenticated flag.
+    Oturum kimlikleri, kullanıcı ayrıcalıkları yükseltildiğinde, kimlik
+    doğrulamasından sonra yapıldığı gibi <emphasis>yeniden
+    oluşturulmalıdır</emphasis>. Kimlik doğrulama bilgisi $_SESSION dizisine
+    atamadan önce <function>session_regenerate_id</function> çağrılmalıdır.
+    (PHP 7.0.0'dan itibaren, <function>session_regenerate_id</function>, zaman
+    damgasını/ve benzerlerini geçerli oturuma kaydetmek için mevcut oturum
+    verilerini otomatik olarak kaydeder.) Yalnızca yeni oturumun doğrulanmış
+    bayrağı içerdiğinden emin olun.
    </para>
 
    <para>
-    Developers <emphasis>must not</emphasis> rely on session ID expiration by
-    <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>.
-    Attackers may access a victim's session ID periodically to prevent its
-    expiration and keep exploiting it, including an authenticated session.
+    Geliştiriciler,
+    <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>
+    değerine göre oturum kimliğinin süresinin dolmasına güvenmemelidir.
+    Saldırganlar, süresinin dolmasını önlemek ve kimliği doğrulanmış bir oturum
+    da dahil olmak üzere oturumu kullanmaya devam edebilmek için bir kurbanın
+    oturum kimliğine düzenli aralıklarla erişebilir.
    </para>
 
    <para>
-     Instead, developers must implement timestamp based session data management.
+    Bunun yerine, geliştiricilerin zaman damgasına dayalı oturum verisi
+    yönetimini gerçeklemesi gerekir.
    </para>
 
    <warning>
     <simpara>
-     Although the session manager can manage timestamps transparently,
-     this feature is not implemented. Old session data must be kept until GC.
-     Simultaneously, developers must assure themselves obsolete session data
-     is removed. However, developers must not remove active session data immediately.
-     I.e. <literal>session_regenerate_id(true);</literal> and
-     <function>session_destroy</function> must never be called together for an active session.
-     This may sound contradictory, but this is a mandatory requirement.
+     Oturum yöneticisi zaman damgalarını şeffaf bir şekilde yönetebilse de bu
+     özellik uygulanmaz. Eski oturum verileri çöp toplayıcıya gidene kadar
+     saklanmalıdır. Aynı zamanda, geliştiriciler, eski oturum verilerinin
+     silindiğinden emin olmalıdır. Ancak geliştiriciler, etkin oturum
+     verilerini hemen silmemelidir.
+     Yani <literal>session_regenerate_id(true);</literal> ve
+     <function>session_destroy</function> etkin bir oturum için asla birlikte
+     çağrılmamalıdır. Bu çelişkili gelebilir, ancak bu zorunlu bir
+     gerekliliktir.
     </simpara>
    </warning>
 
    <para>
-    <function>session_regenerate_id</function> does <emphasis>not</emphasis>
-    delete outdated sessions by default.
-    Obsolete authenticated sessions may be present for use.
-    Developers must prevent outdated sessions to be consumed by anyone.
-    They must prohibit access to obsolete session data by themselves using timestamps.
+    <function>session_regenerate_id</function> öntanımlı olarak eski
+    oturumları <emphasis>silmez</emphasis>. Eski kimliği doğrulanmış
+    oturumlar kullanım için mevcut olabilir. Geliştiriciler, eski oturumların
+    herkes tarafından tüketilmesini engellemeli, zaman damgalarını kullanarak
+    eski oturum verilerine kendi başlarına erişimi yasaklamalıdır.
    </para>
 
    <warning>
     <simpara>
-     The sudden removal of an active session produces undesirable side effects.
-     Sessions can vanish when there are concurrent connections to the web
-     application and/or the network is unstable.
+     Etkin bir oturumun aniden kaldırılması istenmeyen yan etkilere neden olur.
+     Sunucuya eşzamanlı bağlantılar olduğunda ve/veya ağ kararsız olduğunda
+     oturumlar kaybedilebilir.
     </simpara>
     <simpara>
-     Potential malicious access is undetectable with the sudden removal of active sessions.
+     Etkin oturumların aniden kaldırılmasıyla olası bir kötü amaçlı erişim
+     tespit edilemez.
     </simpara>
     <simpara>
-     Instead of deleting outdated sessions immediately, developers must set a
-     short-term expiration time (timestamp) in $_SESSION,
-     and prohibit access to the session data by themselves.
+     Geliştiriciler, güncel olmayan oturumları hemen silmek yerine,
+     $_SESSION'da kısa süreli bir zaman aşımı (bir zaman damgası) belirlemeli
+     ve kulanıcıların oturum verilerine kendi başlarına erişmesi
+     engellenmellidir.
     </simpara>
     <simpara>
-     Developers must not prohibit access to old session data immediately after
-     <function>session_regenerate_id</function>. It must be prohibited at a
-     later stage. E.g. a few seconds later for stable networks, like a wired network,
-     and a few minutes later for unstable networks such as cell phones or Wi-Fi.
+     Geliştiriciler, <function>session_regenerate_id</function> işleminin
+     hemen ardından eski oturum verilerine erişimi yasaklamamalı, daha sonraki
+     bir aşamada yasaklamalıdır. Örneğin. kablolu ağ gibi kararlı ağlar için
+     birkaç saniye sonra ve cep telefonları veya Wi-Fi gibi kararsız ağlar
+     için birkaç dakika sonra.
     </simpara>
     <simpara>
-     If a user accesses an obsolete session (expired session), access to it should be denied.
-     It is also recommended to remove the authenticated status from all of the user's
-     sessions to as it is likely to represent an attack.
+     Bir kullanıcı eski bir oturuma (süresi dolmuş oturum) erişirse, buna
+     erişim reddedilmelidir. Ayrıca, bir saldırıyı temsil etmesi muhtemel
+     olduğundan, kimlik doğrulamalı durumunun kullanıcının tüm oturumlarından
+     kaldırılması önerilir.
     </simpara>
    </warning>
 
-   <para>
-    Proper use of <link linkend="ini.session.use-only-cookies">session.use_only_cookies</link>
-    and <function>session_regenerate_id</function> can cause personal DoS with
-    undeletable cookies set by attackers. In this case, developers may invite users
-    to remove cookies and advise them they may be affected by a security issue.
-    Attackers may set malicious cookies via a vulnerable web application,
-    an exposed/vicious browser plugin, a physically compromised device, etc.
+   <para><link
+    linkend="ini.session.use-only-cookies">session.use_only_cookies</link> ve
+    <function>session_regenerate_id</function> öğelerinin doğru kullanımı,
+    saldırganlar tarafından ayarlanan silinemeyen çerezlerle kişisel DoS'a
+    neden olabilir. Bu durumda geliştiriciler, kullanıcıları çerezleri
+    kaldırmaya davet edebilir ve bir güvenlik sorunundan etkilenebileceklerini
+    bildirebilir. Saldırganlar, güvenlik açığı bulunan bir web uygulaması,
+    açıkta kalan/kötü niyetli bir tarayıcı eklentisi, fiziksel olarak güvenliği
+    ihlal edilmiş bir cihaz vb. aracılığıyla kötü amaçlı çerezler atayabilir.
    </para>
 
    <warning>
     <simpara>
-     Do not misunderstand the DoS risk. <literal>use_strict_mode=On</literal>
-     is mandatory for general session ID security! All sites are advised
-     to enable <literal>use_strict_mode</literal>.
+     DoS riski yanlış anlaşılmasın. <literal>use_strict_mode=On</literal>
+     genel oturum kimliği güvenliği için zorunludur! Tüm sitelerin
+     <literal>use_strict_mode</literal>'u etkinleştirmesi önerilir.
     </simpara>
     <simpara>
-     DoS can only happen when the account is under attack. A JavaScript injection
-     vulnerability in an application represents the most common cause.
+     DoS, yalnızca hesap saldırı altındayken gerçekleşebilir.
+     Bir uygulamadaki JavaScript zerki güvenlik açığı en yaygın sebeplerdendir.
     </simpara>
    </warning>
 
@@ -266,71 +276,75 @@ Sadece çevirmek lazım, uzun sürecek görünüyor. -->
    <title>Oturum Verisinin Silinmesi</title>
 
    <para>
-    Obsolete session data must be inaccessible and deleted.
-    The current session module does not handle this well.
+    Eski oturum verisi erişilemez ve silinmiş olmalıdır.
+    Geçerli oturum modülü bunu gerektiği gibi yerine getiremez.
    </para>
 
    <para>
-    Obsolete session data should be removed as soon as possible.
-    However, active sessions must not be removed instantly.
-    To satisfy those requirements, developers must implement timestamp
-    based session data management by themselves.
+    Eski oturum verileri mümkün olan en kısa sürede silinmelidir. Ancak,
+    etkin oturumlar hemen kaldırılmamalıdır. Bu gereksinimleri karşılamak
+    için geliştiriciler, zaman damgasına dayalı oturum veri yönetimini kendi
+    başlarına uygulamalıdır.
    </para>
 
    <para>
-    Set and manage expiration timestamp in $_SESSION.
-    Prohibit access to outdated session data.
-    When access to obsolete session data is detected, it is advised to remove all
-    authenticated status from the user's sessions and force them to re-authenticate.
-    Access to obsolete session data can represent an attack.
-    To achieve this, developers must keep track of all active sessions of every user.
+    $_SESSION içinde zaman aşımı damgasını ayarlayın ve yönetin. Güncel
+    olmayan oturum verilerine erişimi yasaklayın. Eski oturum verilerine
+    erişim tespit edildiğinde, kullanıcının oturumlarından tüm kimliği
+    doğrulanmış durumları kaldırıp onları yeniden kimlik doğrulamaya
+    zorlamanız önerilir. Eski oturum verilerine erişim bir saldırıyı temsil
+    edebilir. Bunu başarmak için geliştiriciler, her kullanıcının tüm etkin
+    oturumlarını takip etmelidir.
    </para>
 
    <note>
     <simpara>
-     Access to an obsolete session can also happen because of an unstable network
-     and/or concurrent access to the web site.
-     E.g the server tried to set a new session ID via a cookie, but the Set-Cookie
-     packet may not have reached the client due to loss of connection.
-     One connection may issue a new session ID by <function>session_regenerate_id</function>,
-     but another concurrent connection may not have received the new session ID yet.
-     Therefore, developers must prohibit access to obsolete session at a later stage.
-     I.e. timestamp based session management is mandatory.
+     Eski bir oturuma erişim, kararsız bir ağ ve/veya siteye eşzamanlı erişim
+     nedeniyle de gerçekleşebilir. Örneğin, sunucu bir çerez aracılığıyla yeni
+     bir oturum kimliği belirlemeye çalışmış, ancak bağlantının kesilmesi
+     nedeniyle Set-Cookie paketi istemciye ulaşmamış olabilir. Bir bağlantıya
+     <function>session_regenerate_id</function> tarafından yeni bir oturum
+     kimliği verilebilir, ancak başka bir eşzamanlı bağlantı henüz yeni oturum
+     kimliğini almamış olabilir. Bu nedenle, geliştiriciler daha sonraki bir
+     aşamada eski oturuma erişimi yasaklamalıdır. Yani zaman damgası tabanlı
+     oturum yönetimi zorunludur.
     </simpara>
    </note>
 
    <para>
-    In summary, session data must not be destroyed with
-    <function>session_regenerate_id</function> nor <function>session_destroy</function>,
-    but timestamps must be used to control access to session data.
-    Let <function>session_gc</function> remove obsolete data from the session data storage.
+    Özetle, oturum verileri ne <function>session_regenerate_id</function>
+    ne de <function>session_destroy</function> ile yok edilmeli, oturum
+    verilerine erişimi denetlemek için zaman damgaları kullanılmalıdır.
+    <function>session_gc</function>'nin oturum veri deposundaki eski verileri
+    silmesine izin verin.
    </para>
 
   </sect2>
 
   <sect2 xml:id="features.session.security.management.session-locking">
-   <title>Oturum ve Kilitleme</title>
+   <title>Oturum Kilitleme</title>
 
    <para>
-    Session data is locked to avoid race conditions by default.
-    Locking is mandatory to keep session data consistent across requests.
+    Yarış koşullarından kaçınmak için oturum verileri öntanımlı olarak
+    kilitlenir. Oturum verilerinin istekler arasındaki tutarlılığını sağlamak
+    için kilitleme zorunludur.
    </para>
 
    <para>
-    However, session-locking can be abused by attackers to perform DoS attacks.
-    To mitigate the risk of a DoS attack by session-locking, minimize locks.
-    Use read only sessions when session data does not need to be updated.
-    Use the 'read_and_close' option with <function>session_start</function>.
-    <literal>session_start(['read_and_close'=>1]);</literal>
-    Close the session as soon as possible after updating $_SESSION by
-    using <function>session_commit</function>.
+    Ancak oturum kilitleme, saldırganlar tarafından DoS saldırıları
+    gerçekleştirmek için kötüye kullanılabilir. Oturum kilitleyerek DoS
+    saldırısı riskini azaltmak için kilitleri en aza indirin. Oturum
+    verilerinin güncellenmesi gerekmediğinde salt okunur oturumlar kullanın.
+    <function>session_start</function> işlevini 'read_and_close' seçeneği ile
+    kullanın: <literal>session_start(['read_and_close'=>1]);</literal>
+    <function>session_commit</function> kullanarak $_SESSION güncellendikten
+    hemen sonra, mümkün olan en kısa sürede oturumu kapatın.
    </para>
 
    <para>
-    The current session module does <emphasis>not</emphasis>
-    detect any modification of $_SESSION when the session is inactive.
-    It is the developer's responsibility not to modify $_SESSION when
-    the session is inactive.
+    Geçerli oturum modülü, oturum etkin olmadığında $_SESSION üzerinde
+    herhangi bir değişiklik algılamaz. Oturum etkin değilken $_SESSION
+    üzerinde değişiklik yapmamak geliştiricinin sorumluluğundadır.
    </para>
 
   </sect2>
