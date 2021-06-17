@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<!-- $Revision$ -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkcs12-read">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkcs12-read" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkcs12_read</refname>
   <refpurpose>Bir PKCS#12 Sertifika Deposunu bir diziye çözümler
@@ -31,7 +30,7 @@
      <term><parameter>pkcs12</parameter></term>
      <listitem>
       <para>
-       PKCS#12 sertifika deposunu içeren dosyanın yolu.
+       PKCS#12 sertifika deposunun içeriği, dosyası değil.
       </para>
      </listitem>
     </varlistentry>
@@ -60,6 +59,31 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- <function>openssl_pkcs12_read</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+if (!$cert_store = file_get_contents("/certs/file.p12")) {
+    echo "Hata: Sertifika dosyası okunamadı\n";
+    exit;
+}
+
+if (openssl_pkcs12_read($cert_store, $cert_info, "parola_burada")) {
+    echo "Sertifika Bilgisi\n";
+    print_r($cert_info);
+} else {
+    echo "Hata: Sertifika deposu okunamadı\n";
+    exit;
+}
+?>
+]]>
+   </programlisting>
+  </example>
  </refsect1>
 
 </refentry>

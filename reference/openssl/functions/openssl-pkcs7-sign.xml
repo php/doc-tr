@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e8ce329fd5025766d9cf4d983435a373cf9666a Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkcs7-sign">
  <refnamediv>
   <refname>openssl_pkcs7_sign</refname>
@@ -13,15 +12,15 @@
    <type>bool</type><methodname>openssl_pkcs7_sign</methodname>
    <methodparam><type>string</type><parameter>girdi_dosyası</parameter></methodparam>
    <methodparam><type>string</type><parameter>çıktı_dosyası</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>imza_sertifikası</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>gizli_anahtar</parameter></methodparam>
-   <methodparam><type>array</type><parameter>başlıklar</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>PKCS7_DETACHED</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_sertifikalar</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>gizli_anahtar</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter>başlıklar</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>PKCS7_DETACHED</constant></initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>güvenilmez_sertifikalar_dosyası</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    İleti <parameter>girdi_dosyası</parameter>'ndan okunur,
-   <parameter>imza_sertifikası</parameter> ve bununla ilgili
+   <parameter>sertifika</parameter> ve bununla ilgili
    <parameter>gizli_anahtar</parameter> kullanılarak imzalanır, elde edilen
    imzalı ileti <parameter>çıktı_dosyası</parameter>'na kaydedilir.
   </para>
@@ -35,6 +34,7 @@
      <term><parameter>girdi_dosyası</parameter></term>
      <listitem>
       <para>
+       İmzalanacak girdiyi içeren dosya.
       </para>
      </listitem>
     </varlistentry>
@@ -42,13 +42,17 @@
      <term><parameter>çıktı_dosyası</parameter></term>
      <listitem>
       <para>
+       İmzalanan girdinin kaydedileceği dosya.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>imza_sertifikası</parameter></term>
+     <term><parameter>sertifika</parameter></term>
      <listitem>
       <para>
+       <parameter>girdi_dosyası</parameter>nı imzalamakta kullanılacak
+       X.509 sertifikası. Geçerli değerler için bkz: <link
+       linkend="openssl.certparams">Anahtar/Sertifika değiştirgeleri</link>
       </para>
      </listitem>
     </varlistentry>
@@ -56,6 +60,9 @@
      <term><parameter>gizli_anahtar</parameter></term>
      <listitem>
       <para>
+       <parameter>sertifika</parameter> ile ilişkili gizli anahtar. Geçerli
+       değerler için bkz: <link linkend="openssl.certparams">Gizli/Genel
+       Anahtar değiştirgeleri</link>
       </para>
      </listitem>
     </varlistentry>
@@ -64,7 +71,8 @@
      <listitem>
       <para>
        İleti imzalandıktan sonra hazırlanan başlıkları içeren bir dizidir. Bu
-       değiştirge ile ilgili ayrıntılı bilgi için <function>openssl_pkcs7_encrypt</function>işlevine bakınız.
+       değiştirge ile ilgili ayrıntılı bilgi için
+       <function>openssl_pkcs7_encrypt</function> işlevine bakınız.
       </para>
      </listitem>
     </varlistentry>
@@ -72,14 +80,13 @@
      <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Çıktıda değişiklik yapmak için kullanılır. <link
-       linkend="openssl.pkcs7.flags">PKCS7 sabitlerine bakınız</link>.
-       Belirtilmezse <constant>PKCS7_DETACHED</constant> öntanımlıdır.
+       Çıktıda değişiklik yapmak için kullanılır. Bkz: <link
+       linkend="openssl.pkcs7.flags">PKCS7 sabitleri</link>.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ek_sertifikalar</parameter></term>
+     <term><parameter>güvenilmez_sertifikalar_dosyası</parameter></term>
      <listitem>
       <para>
        Alıcının imzayı doğrulamasına yardımcı olması için imzaya eklenecek
@@ -96,6 +103,41 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>sertifika</parameter> artık
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL X.509 CSR</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>gizli_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL X.509
+        CSR</literal> özkaynağı kabul edilirdi.
+       was accepted.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -121,10 +163,10 @@ fwrite($fp, $data);
 fclose($fp);
 
 // şifreleyelim
-if (openssl_pkcs7_sign("msg.txt", "signed.txt", "mycert.pem",
+if (openssl_pkcs7_sign("msg.txt", "signed.txt", "file://mycert.pem",
     array("file://mycert.pem", "mypassphrase"),
-    array("To" => "joes@example.com",   // anahtarlı sözdizimi
-          "From: HQ <ceo@example.com>", // indisli sözdizimi
+    array("To" => "joes@example.com",   // ilişkisel
+          "From: HQ <ceo@example.com>", // indisli
           "Subject" => "Kişiye özel")
     )) {
     // ileti imzalandığına göre gönderebiliriz!
