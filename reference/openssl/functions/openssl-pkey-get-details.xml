@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkey-get-details">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkey-get-details" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkey_get_details</refname>
   <refpurpose>Anahtarla ilgili ayrıntıları bir dizi içinde döndürür
@@ -11,8 +10,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>openssl_pkey_get_details</methodname>
-   <methodparam><type>resource</type><parameter>anahtar</parameter></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>openssl_pkey_get_details</methodname>
+   <methodparam><type>OpenSSLAsymmetricKey</type><parameter>anahtar</parameter></methodparam>
   </methodsynopsis>
   <para>
    Anahtarla ilgili ayrıntıları (bit sayısı, anahtar, türü gibi) bir dizi
@@ -48,6 +47,196 @@
    <constant>OPENSSL_KEYTYPE_DH</constant>,
    <constant>OPENSSL_KEYTYPE_EC</constant> veya bilinmiyor anlamında -1).
   </para>
+  <para>
+   Kullanılan anahtar türüne bağlı olarak, ek ayrıntılar dönebilir.
+   Bazı elemanların her zaman kullanılamayacağına dikkat edin.
+  </para>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <constant>OPENSSL_KEYTYPE_RSA</constant>, ek olarak anahtar verisini
+     içeren <literal>"rsa"</literal> adlı bir dizi anahtarı döner.
+    </simpara>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Anahtar</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><literal>"n"</literal></entry>
+         <entry>modül</entry>
+        </row>
+        <row>
+         <entry><literal>"e"</literal></entry>
+         <entry>genel üs</entry>
+        </row>
+        <row>
+         <entry><literal>"d"</literal></entry>
+         <entry>gizli üs</entry>
+        </row>
+        <row>
+         <entry><literal>"p"</literal></entry>
+         <entry>asal 1</entry>
+        </row>
+        <row>
+         <entry><literal>"q"</literal></entry>
+         <entry>asal 2</entry>
+        </row>
+        <row>
+         <entry><literal>"dmp1"</literal></entry>
+         <entry>üs1, d mod (p-1)</entry>
+        </row>
+        <row>
+         <entry><literal>"dmq1"</literal></entry>
+         <entry>üs2, d mod (q-1)</entry>
+        </row>
+        <row>
+         <entry><literal>"iqmp"</literal></entry>
+         <entry>katsayı, (q'nun tersi) mod p</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>OPENSSL_KEYTYPE_DSA</constant>, ek olarak anahtar verisini
+     içeren <literal>"dsa"</literal> adlı bir dizi anahtarı döner.
+    </simpara>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Anahtar</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><literal>"p"</literal></entry>
+         <entry>asal sayı (genel)</entry>
+        </row>
+        <row>
+         <entry><literal>"q"</literal></entry>
+         <entry>160-bit alt asal, q | p-1 (genel)</entry>
+        </row>
+        <row>
+         <entry><literal>"g"</literal></entry>
+         <entry>alt grup üreteci (genel)</entry>
+        </row>
+        <row>
+         <entry><literal>"priv_key"</literal></entry>
+         <entry>gizli anahtar x</entry>
+        </row>
+        <row>
+         <entry><literal>"pub_key"</literal></entry>
+         <entry>genel anahtar y = g^x</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>OPENSSL_KEYTYPE_DH</constant>, ek olarak anahtar verisini
+     içeren <literal>"dh"</literal> adlı bir dizi anahtarı döner.
+    </simpara>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Anahtar</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><literal>"p"</literal></entry>
+         <entry>asal sayı (paylaşımlı)</entry>
+        </row>
+        <row>
+         <entry><literal>"g"</literal></entry>
+         <entry>Z_p üreteci (paylaşımlı)</entry>
+        </row>
+        <row>
+         <entry><literal>"priv_key"</literal></entry>
+         <entry>gizli DH değeri x</entry>
+        </row>
+        <row>
+         <entry><literal>"pub_key"</literal></entry>
+         <entry>genel DH değeri g^x</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+   </listitem>
+   <listitem>
+    <simpara>
+     <constant>OPENSSL_KEYTYPE_EC</constant>, ek olarak anahtar verisini
+     içeren <literal>"ec"</literal> adlı bir dizi anahtarı döner.
+    </simpara>
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Anahtar</entry>
+         <entry>&Description;</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry><literal>"curve_name"</literal></entry>
+         <entry>eğri adı, bkz: <function>openssl_get_curve_names</function></entry>
+        </row>
+        <row>
+         <entry><literal>"curve_oid"</literal></entry>
+         <entry>EC eğrisi için ASN1 Nesne Kimliği (OID).</entry>
+        </row>
+        <row>
+         <entry><literal>"x"</literal></entry>
+         <entry>x koordinatı (genel)</entry>
+        </row>
+        <row>
+         <entry><literal>"y"</literal></entry>
+         <entry>y koordinatı (genel)</entry>
+        </row>
+        <row>
+         <entry><literal>"d"</literal></entry>
+         <entry>gizli anahtar</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+   </listitem>
+  </itemizedlist>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>
