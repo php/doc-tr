@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-x509-read">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-x509-read" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_x509_read</refname>
-  <refpurpose>Bir X.509 sertifikasını çözümleyip sertifika için bir tanıtıcı
+  <refpurpose>X.509 sertifikasını çözümleyip sertifika için nesne
   döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>openssl_x509_read</methodname>
-   <methodparam><type>mixed</type><parameter>x509srtfk_verisi</parameter></methodparam>
+   <type class="union"><type>OpenSSLCertificate</type><type>false</type></type><methodname>openssl_x509_read</methodname>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>x509srtfk_verisi</parameter> ile belirtilen sertifikayı
-   çözümleyip sertifika ile ilgili bir özkaynak tanıtıcısı döndürür.
+   <parameter>sertifika</parameter> ile belirtilen sertifikayı
+   çözümleyip sertifika ile ilgili bir nesne döndürür.
   </para>
  </refsect1>
 
@@ -24,13 +23,7 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>x509srtfk_verisi</parameter></term>
-     <listitem>
-      <para>
-      </para>
-     </listitem>
-    </varlistentry>
+    &openssl.param.x509;
    </variablelist>
   </para>
  </refsect1>
@@ -38,8 +31,43 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Başarısızlık durumunda &false; yoksa bir özkaynak tanıtıcısı döner.
+   Başarı durumunda <classname>OpenSSLCertificate</classname>
+   nesnesi,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+  <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Başarı durumunda işlev artık <classname>OpenSSLAsymmetricKey</classname>
+       örneği döndürüyor; evvelce <literal>OpenSSL key</literal> özkaynağı
+       dönerdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>genel_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

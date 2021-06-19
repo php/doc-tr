@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-public-decrypt">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-public-decrypt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_public_decrypt</refname>
   <refpurpose>Gizli anahtarla şifrelenmiş verinin şifresini genel anahtarla
@@ -13,9 +12,9 @@
   <methodsynopsis>
    <type>bool</type><methodname>openssl_public_decrypt</methodname>
    <methodparam><type>string</type><parameter>şifreli_veri</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">veri</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>anahtar</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>dolgu</parameter><initializer>OPENSSL_PKCS1_PADDING</initializer></methodparam>
+   <methodparam><type>string</type><parameter role="reference">şifresiz_veri</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>genel_anahtar</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>dolgu</parameter><initializer><constant>OPENSSL_PKCS1_PADDING</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Evvelce <function>openssl_private_encrypt</function> tarafından
@@ -40,14 +39,14 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>veri</parameter></term>
+     <term><parameter>şifresiz_veri</parameter></term>
      <listitem>
       <para>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>anahtar</parameter></term>
+     <term><parameter>genel_anahtar</parameter></term>
      <listitem>
       <para>
        Veriyi şifrelemekte kullanılan gizli anahtarın karşılığı olan genel
@@ -59,8 +58,9 @@
      <term><parameter>dolgu</parameter></term>
      <listitem>
       <para>
-       <constant>OPENSSL_PKCS1_PADDING</constant> öntanımlı olup yerine
-       <constant>OPENSSL_NO_PADDING</constant> belirtilebilir.
+       Şunlardan biri ollabilir:
+       <constant>OPENSSL_PKCS1_PADDING</constant>,
+       <constant>OPENSSL_NO_PADDING</constant>.
       </para>
      </listitem>
     </varlistentry>
@@ -73,6 +73,32 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>genel_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

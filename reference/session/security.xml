@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 184f3f7bd45643cb80f828d0bb001991ec3a5fad Maintainer: nilgun Status: wip -->
+<!-- EN-Revision: 184f3f7bd45643cb80f828d0bb001991ec3a5fad Maintainer: nilgun Status: ready -->
 <chapter xml:id="session.security" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Oturumlar ve Güvenlik</title>
  <para>
@@ -353,49 +353,50 @@
    <title>Etkin Oturumlar</title>
 
    <para>
-    Developers should keep track of all active sessions for every user.
-    And notify them of how many active sessions, from which IP (and area),
-    how long it has been active, etc.
-    PHP does not keep track of these. Developers are supposed to do so.
+    Geliştiriciler, her kullanıcı için tüm etkin oturumları izlemelidir. Ve
+    onlara kaç tane etkin oturum, hangi IP'den (ve alandan), ne kadar süredir
+    etkin olduklarını vs. bildirin. PHP bunları takip etmez. Bunu
+    geliştiricilerin yapacağı varsayılır.
    </para>
 
    <para>
-    Various ways to implement this exist.
-    One possible implementation is setting up a database that keeps track
-    of the required data and stores any relevant information.
-    Since session data is GCed, developers must take care of the GCed data
-    to maintain the active session database consistency.
+    Bunu uygulamak için çeşitli yollar mevcuttur. Olası bir uygulama, gerekli
+    verileri takip eden ve ilgili tüm bilgileri depolayan bir veritabanı
+    oluşturmaktır. Geçersiz oturum verileri çöp toplayıcıya gittiğinden,
+    geliştiricilerin etkin oturum veritabanı tutarlılığını korumak için çöp
+    toplayıcı verileriyle de ilgilenmesi gerekir.
    </para>
 
    <para>
-    One of the simplest implementations is "User ID prefixed session ID"
-    and store the required information in $_SESSION.
-    Many databases posses good performance for selecting string prefix.
-    Developers MAY use <function>session_regenerate_id</function> and
-    <function>session_create_id</function> for this.
+    En basit uygulamalardan biri "oturum kimliği ile öncelenmiş kullanıcı
+    kimliği"dir ve gerekli bilgiler $_SESSION içinde saklanır. Birçok
+    veritabanı, bu öneki seçebilmektedir. Geliştiriciler bunun için
+    <function>session_regenerate_id</function> ve
+    <function>session_create_id</function> kullanabilir.
    </para>
 
    <warning>
     <simpara>
-     Never employ confidential data as a prefix.
-     If the user ID is confidential, consider using
-     <function>hash_hmac</function>.
+     Gizli verileri asla önek olarak kullanmayın. Kullanıcı kimliği gizliyse
+     <function>hash_hmac</function> önerilir.
     </simpara>
    </warning>
 
    <warning>
     <simpara>
-     Enabling <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
-     is mandatory for this setup. Ensure it is enabled.
-     Otherwise the active session database can be compromised.
+     Bu uygulama için <link
+     linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
+     yönergesinin etkinleştirilmesi zorunludur. Etkin olduğundan emin olun.
+     Aksi takdirde aktif oturum veritabanı tehlikeye girebilir.
     </simpara>
    </warning>
 
    <para>
-    Timestamp based session management is mandatory to detect access to obsolete sessions.
-    When access to an obsolete session is detected, authentication flags should
-    be removed from all active sessions of the user.
-    This prevents attackers to keep exploiting stolen sessions.
+    Eski oturumlara erişimi tespit etmek için zaman damgasına dayalı oturum
+    yönetimi zorunludur. Eski bir oturuma erişim tespit edildiğinde,
+    kullanıcının tüm etkin oturumlarından kimlik doğrulama bayrakları
+    silinmelidir. Bu, saldırganların çalınan oturumlardan yararlanmaya
+    devam etmesini önler.
    </para>
 
   </sect2>
@@ -404,35 +405,38 @@
    <title>Oturum ve Otomatik Oturum Açmak</title>
 
    <para>
-    Developers must not use long life session IDs for auto-login because it
-    increases the risk of stolen sessions.
-    An auto-login feature should be implemented by the developer.
+    Oturumun çalınma riskini artırdığından, geliştiriciler otomatik oturum
+    açma için uzun ömürlü oturum kimlikleri kullanmamalıdır. Otomatik giriş
+    özelliğini geliştirici gerçeklemelidir.
    </para>
 
    <para>
-    Use a secure one time hash key as an auto-login key using
-    <function>setcookie</function>. Use a secure hash stronger than SHA-2.
-    E.g. SHA-256 or greater with random data from <function>random_bytes</function>
-    or /dev/urandom.
+    <function>setcookie</function> kullanarak otomatik oturum açma anahtarı
+    olarak tek seferlik güvenli bir aşlama anahtarı kullanın. SHA-2'den daha
+    güçlü bir aşlama algoritması kullanın. Örneğin, /dev/urandom veya
+    <function>random_bytes</function>'dan rastgele verilerle SHA-256 veya üstü.
    </para>
 
    <para>
-    If the user is unauthenticated, check whether the one-time auto-login key is valid or not.
-    In the case it is valid, authenticate the user and set a new secure one-time hash key.
-    An auto-login key must only be used once, i.e. never reuse an auto-login key,
-    always generate a new one.
+    Kullanıcının kimliği doğrulanmamışsa, tek seferlik otomatik giriş
+    anahtarının geçerli olup olmadığına bakın. Geçerli olması durumunda,
+    kullanıcının kimliğini doğrulayın ve yeni bir güvenli tek seferlik aşlama
+    anahtarı atayın. Otomatik oturum açma anahtarı yalnızca bir kez
+    kullanılmalıdır, yani bir otomatik oturum açma anahtarını asla yeniden
+    kullanmayın, her zaman yeni bir tane oluşturun.
    </para>
 
    <para>
-    An auto-login key is a long life authentication key,
-    it should be protected as much as possible.
-    Use path/httponly/secure/SameSite cookie attributes to secure it.
-    I.e. never transmit the auto-login key unless required.
+    Otomatik oturum açma anahtarı, uzun ömürlü bir kimlik doğrulama
+    anahtarıdır, mümkün olduğunca korunması gerekir. Güvenli hale getirmek
+    için path/httponly/secure/SameSite çerezinin özniteliklerini kullanın.
+    Yani otomatik giriş anahtarını gerekmedikçe asla aktarmayın.
    </para>
 
    <para>
-    Developer must implement the features that disables
-    auto-login and removes unneeded auto-login key cookie.
+    Geliştirici, otomatik oturum açmayı devre dışı bırakan ve gereksiz
+    otomatik oturum açma anahtarı tanımlama bilgisini kaldıran özellikleri
+    uygulamalıdır.
    </para>
 
   </sect2>
@@ -441,31 +445,32 @@
    <title>CSRF (Siteler Arası Talep Sahtekarlıkları) Saldırıları</title>
 
    <para>
-    Sessions and authentication do not protect against CSRF attacks.
-    Developers must implement CSRF protection by themselves.
+    Oturumlar ve kimlik doğrulama, CSRF saldırılarına karşı koruma sağlamaz.
+    Geliştiriciler, CSRF korumasını kendileri gerçeklemelidir.
    </para>
 
    <para>
-    <function>output_add_rewrite_var</function> can be used for CSRF protection.
-    Refer to the manual page for more details.
+    CSRF koruması için <function>output_add_rewrite_var</function>
+    kullanılabilir. Daha fazla bilgi için işlevin sayfasına bakın.
    </para>
 
    <note>
     <simpara>
-     PHP prior to 7.2.0 uses the same output buffer and INI setting as trans sid.
-     Therefore, use of <function>output_add_rewrite_var</function>
-     with PHP prior to version 7.2.0 is not advised.
+     PHP 7.2.0 öncesinde, şeffaf oturum kimliği ile aynı çıktı tamponu ve
+     INI ayarı kullanılırdı. Bu nedenle, 7.2.0 öncesi PHP sürümleri ile
+     <function>output_add_rewrite_var</function> kullanılması önerilmez.
     </simpara>
    </note>
 
    <para>
-    Most web application frameworks support CSRF protection.
-    Refer to the web application framework manual for more details.
+    Çoğu sayfa uygulama çerçevesi CSRF korumasını destekler. Daha fazla
+    ayrıntı için sayfa uygulama çerçevesi kılavuzunuza bakın.
    </para>
 
    <para>
-    As of PHP 7.3 the SameSite attribute for the session cookie can be set.
-    This is an additional measure which can mitigate CSRF vulnerabilities.
+    PHP 7.3'ten itibaren, oturum çerezi için SameSite özniteliği
+    ayarlanabiliyor. Bu, CSRF güvenlik açıklarını azaltabilecek ek bir
+    önlemdir.
    </para>
   </sect2>
  </sect1>
@@ -474,9 +479,9 @@
   <title>Oturum INI Ayarlarının Güvenliği</title>
 
   <para>
-   By securing session related INI settings, developers can improve session security.
-   Some important INI settings do not have any recommended settings.
-   Developers are responsible for hardening session settings.
+   Geliştiriciler, oturumla ilgili INI ayarlarını güvenli duruma getirerek
+   oturum güvenliğini iyileştirebilir. Bazı önemli INI ayarlarında bir değer
+   önerilmez. Oturum ayarlarının güçlendirilmesinden geliştiriciler sorumludur.
   </para>
 
   <itemizedlist>
@@ -485,17 +490,18 @@
       <link linkend="ini.session.cookie-lifetime">session.cookie_lifetime</link>=0
      </para>
      <para>
-      <literal>0</literal> possesses a particular meaning.
-      It informs browsers not to store the cookie to permanent storage.
-      Therefore, when the browser is terminated, the session ID cookie is deleted immediately.
-      If developers set this other than 0, it may allow other users to use the session ID.
-      Most applications should use "<literal>0</literal>" for this.
+      <literal>0</literal> belirli bir anlama sahiptir. Tarayıcıları,
+      çerezi kalıcı depoya kaydetmemeleri konusunda bilgilendirir.
+      Bu nedenle, tarayıcı sonlandırıldığında, oturum kimliği çerezi hemen
+      silinir. Geliştiriciler yönergeye sıfırdan farklı bir değer atarsa,
+      diğer kullanıcıların oturum kimliğini kullanmasına izin verebilir.
+      Çoğu gerçeklenimde bunun için "<literal>0</literal>" kullanılmalıdır.
      </para>
      <para>
-      If an auto-login feature is required,
-      developers must implement their own secure auto-login feature.
-      Do not use long life session IDs for this.
-      More information can be found above in the relevant section.
+      Otomatik oturum açma özelliği gerekiyorsa, geliştiricilerin kendi
+      güvenli otomatik oturum açma özelliklerini gerçeklemeleri gerekir.
+      Bunun için uzun ömürlü oturum kimlikleri kullanmayın. Daha fazla
+      bilgiyi yukarıdaki ilgili bölümde bulabilirsiniz.
      </para>
     </listitem>
 
@@ -507,15 +513,15 @@
       <link linkend="ini.session.use-only-cookies">session.use_only_cookies</link>=On
      </para>
      <para>
-      Although HTTP cookies suffer some problems,
-      cookies remain the preferred way to manage session IDs.
-      Only use cookies for session ID management when it is possible.
-      Most applications should use a cookie for the session ID.
+      HTTP çerezleri bazı sorunlara yol açsa da çerezler oturum kimliklerini
+      yönetmek için tercih edilmeye devam etmektedir. Çerezleri yalnızca mümkün
+      olduğunda oturum kimliği yönetimi için kullanın. Çoğu uygulama, oturum
+      kimliği için bir çerez kullanmaktadır.
      </para>
      <para>
-      If <literal>session.use_only_cookies</literal>=Off,
-      the session module will use the session ID values set by
-      GET/POST/URL provided the session ID cookie is uninitialized.
+      <literal>session.use_only_cookies</literal>=Off ise, oturum modülü,
+      oturum kimliği çerezinin ilklendirilmemiş olması koşuluyla,
+      GET/POST/URL tarafından atanan oturum kimliği değerlerini kullanır.
      </para>
     </listitem>
 
@@ -524,28 +530,31 @@
       <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>=On
      </para>
      <para>
-      Although, enabling <literal>session.use_strict_mode</literal>
-      is mandatory for secure sessions. It is disabled by default.
+      Bununla birlikte, güvenli oturumlar için
+      <literal>session.use_strict_mode</literal>'un etkinleştirilmesi
+      zorunludur. Önatnımlı olarak devre dışıdır.
      </para>
      <para>
-      This prevents the session module to use an uninitialized session ID.
-      Put differently, the session module only accepts valid session IDs
-      generated by the session module.
-      It rejects any session ID supplied by users.
+      Bu, oturum modülünün ilklendirilmemiş oturum kimliği kullanmasını
+      engeller. Başka bir deyişle, oturum modülü yalnızca oturum modülü
+      tarafından üretilen geçerli oturum kimliklerini kabul eder. Kullanıcılar
+      tarafından sağlanan herhangi bir oturum kimliğini reddeder.
      </para>
      <para>
-      Due to the cookie specification, attackers are capable to place
-      non removable session ID cookies by locally setting a cookie database
-      or JavaScript injections.
-      <literal>session.use_strict_mode</literal> can prevent an attacker
-      initialized session ID of being used.
+      Çerez belirtiminden dolayı, saldırganlar JavaScript zerkleriyle veya
+      yerel olarak bir çerez veritabanı atayarak kaldırılamayan oturum kimliği
+      çerezleri yerleştirebilir. <literal>session.use_strict_mode</literal>,
+      bir saldırganın ilklendirdiği oturum kimliğinin kullanılmasını
+      engelleyebilir.
      </para>
      <note>
       <para>
-       Attackers may initialize a session ID with their device and may set
-       the session ID of the victim. They must keep the session ID active to abuse.
-       Attackers require additional steps to perform an attack in this scenario.
-       Therefore, <literal>session.use_strict_mode</literal> works as a mitigation.
+       Saldırganlar, oturum kimliğini kendi cihazlarında ilklendirip kurbanın
+       oturum kimliğini atayabilir. Kötüye kullanım için oturum kimliğini
+       etkin tutmaları gerekir. Bu senaryoda bir saldırı gerçekleştirmek için
+       saldırganlara ek adımlar gerekir. Bu nedenle,
+       <literal>session.use_strict_mode</literal> bir risk azaltıcı olarak
+       çalışır.
       </para>
      </note>
     </listitem>
@@ -555,18 +564,20 @@
       <link linkend="ini.session.cookie-httponly">session.cookie_httponly</link>=On
      </para>
      <para>
-      Refuses access to the session cookie from JavaScript.
-      This setting prevents cookies snatched by a JavaScript injection.
+      Oturum çerezine JavaScript'ten erişimi reddeder. Bu yönerge, bir
+      JavaScript zerkiyle çerezlerin kaçırılmasını önler.
      </para>
      <para>
-      It is possible to use a session ID as a CSRF token, but this is not recommended.
-      For example, HTML sources may be saved and sent to other users.
-      Developers should not write session IDs in web pages for better security.
-      Almost all applications must use the httponly attribute for the session ID cookie.
+      Bir oturum kimliğini CSRF dizgeciği olarak kullanmak mümkündür, ancak
+      bu önerilmez. Örneğin, HTML kaynakları kaydedilebilir ve diğer
+      kullanıcılara gönderilebilir. Geliştiriciler, daha iyi güvenlik için
+      oturum kimliklerini sayfaya yazmamalıdır. Hemen hemen tüm uygulamalarda,
+      oturum kimliği çerezi için httponly özniteliğini kullanılmalıdır.
      </para>
      <note>
       <para>
-       The CSRF token should be renewed periodically just like the session ID.
+       CSRF dizgeciği oturum kimliği gibi düzenli aralıklarla olarak
+       yenilenmelidir.
       </para>
      </note>
     </listitem>
@@ -576,66 +587,68 @@
       <link linkend="ini.session.cookie-secure">session.cookie_secure</link>=On
      </para>
      <para>
-      Allow access to the session ID cookie only when the protocol is HTTPS.
-      If a website is only accessible via HTTPS, it should enable this setting.
+      Yalnızca protokol HTTPS olduğunda oturum kimliği çerezine erişime izin
+      verin. Bir sitenin yalnızca HTTPS üzerinden erişilebiliyorsa, bu ayarı
+      etkinleştirmesi gerekir.
      </para>
      <para>
-      HSTS should be considered for websites accessible only via HTTPS.
+      HSTS, yalnızca HTTPS aracılığıyla erişilebilen siteler için
+      düşünülmelidir.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <link linkend="ini.session.cookie-samesite">session.cookie_samesite</link>="Lax" or
+      <link linkend="ini.session.cookie-samesite">session.cookie_samesite</link>="Lax" veya
       <link linkend="ini.session.cookie-samesite">session.cookie_samesite</link>="Strict"
      </para>
      <para>
-      As of PHP 7.3 the <literal>"SameSite"</literal> attribute can be set for the session ID cookie.
-      This attribute is a way to mitigate CSRF (Cross Site Request Forgery) attacks.
+      PHP 7.3'ten itibaren, oturum kimliği çerezi için
+      <literal>"SameSite"</literal>  özniteliği atanabilir. Bu özniteliğin
+      kullanımı, CSRF (Siteler Arası İstek Sahteciliği) saldırılarını
+      azaltmanın bir yoludur.
      </para>
      <para>
-      The difference between Lax and Strict is the accessibility of the cookie in
-      requests originating from another registrable domain employing the HTTP GET method.
-      Cookies using Lax will be accessible in a GET request originated from
-      another registrable domain, whereas cookies using Strict will not.
+      Lax ve Strict arasındaki fark, HTTP GET yöntemini kullanan başka bir
+      kaydedilebilir etki alanından kaynaklanan isteklerde çerezin
+      erişilebilirliğidir. Lax kullanan çerezlere başka bir kaydedilebilir
+      alandan gelen bir GET isteğinde erişilebilirken, Strict kullanan
+      çerezlerde erişilemez.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>=[choose smallest possible]
+      <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>=[en küçük olasılığı seç]
      </para>
      <para>
-      <literal>session.gc_maxlifetime</literal>
-      is a setting for deleting obsolete session ID.
-      Reliance on this setting is <emphasis>not</emphasis> recommended.
-      Developers should manage the lifetime of sessions with a timestamp by themselves.
+      <literal>session.gc_maxlifetime</literal>, eski oturum kimliğini silmek
+      içindir. Bu ayara <emphasis>güvenilmemelidir</emphasis>. Geliştiriciler,
+      oturumların ömrünü bir zaman damgasıyla kendileri yönetmelidir.
      </para>
      <para>
-      Session GC (garbage collection) is best performed by using <function>session_gc</function>.
-      The <function>session_gc</function> function should be executed by a task
-      managers. E.g. cron on UNIX like systems.
+      Oturum çöp toplayıcısı en iyi şekilde <function>session_gc</function>
+      kullanılarak gerçekleştirilir. <function>session_gc</function> işlevi,
+      bir görev yöneticisi tarafından çağrılmalıdır. Örneğin, UNIX benzeri
+      sistemlerde cron kullanılabilir.
      </para>
      <para>
-      GC is performed by probability by default.
-      This setting does <emphasis>not</emphasis> guarantee that an outdated
-      session is deleted.
-      Although developers cannot rely on this setting,
-      specifying it to the smallest possible value is recommended.
-      Adjusting <link
-      linkend="ini.session.gc-probability">session.gc_probability</link>
-      and <link
-      linkend="ini.session.gc-divisor">session.gc_divisor</link> so
-      that obsolete sessions are deleted at an appropriate frequency.
-      If an auto-login feature is required, developers must implement their own
-      secure auto-login feature, see above for more information.
-      Never use long life session ID for this feature.
+      Çöp toplayıcı, öntanımlı olarak olasılıklara bağlı çalışır. Bu ayar, eski
+      bir oturumun silineceğini garanti etmez. Geliştiriciler bu ayara
+      güvenemese de, mümkün olan en küçük değerde belirtilmesi önerilir. <link
+      linkend="ini.session.gc-probability">session.gc_probability</link> ve
+      <link linkend="ini.session.gc-divisor">session.gc_divisor</link>
+      yönergelerinin, eski oturumlar uygun bir sıklıkta silinecek şekilde
+      ayarlanması önerilir. Otomatik oturum açma özelliği gerekliyse
+      geliştiricilerin kendi güvenli otomatik oturum açma özelliklerini
+      gerçeklemeleri gerekir, daha fazla bilgi için yukarıya bakın.
+      Bu özellik için asla uzun ömürlü oturum kimliği kullanmayın,
      </para>
      <note>
       <para>
-       Some session save handler modules do not use this setting for probability
-       based expiration. E.g. memcached, memcache.
-       Refer to the session save handler documentation for details.
+       Bazı oturum kayıt işleyici modülleri, olasılığa dayalı süre sonu için bu
+       ayarı kullanmaz. Örneğin, memcache'li memcache. Ayrıntılar için oturum
+       kayıt işleyici belgelerine bakın.
       </para>
      </note>
     </listitem>
@@ -645,56 +658,55 @@
       <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>=Off
      </para>
      <para>
-      Use of a transparent session ID management is not prohibited.
-      Developers may employ it when it is required.
-      However, disabling transparent session ID management improves the general session
-      ID security by eliminating the possibility of a session ID injection and/or leak.
+      Şeffaf oturum kimliği yönetiminin kullanılması yasaklanmıştır.
+      Geliştiriciler gerektiğinde kullanabilir. Ancak, şeffaf oturum kimliği
+      yönetimini devre dışı bırakmak, oturum kimliği ekleme ve/veya sızıntı
+      olasılığını ortadan kaldırarak genel oturum kimliği güvenliğini
+      iyileştirir.
      </para>
      <note>
       <para>
-       Session ID may leak from bookmarked URLs, e-mailed URLs, saved HTML source, etc.
+       Oturum kimliği, yer imlerine kaydedilen ve e-postayla gönderilen
+       URL'lerden, kaydedilmiş HTML kaynağından vb. sızabilir.
       </para>
      </note>
     </listitem>
 
     <listitem>
      <para>
-      <link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link>=[limited tags]
+      <link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link>=[sınırlı etiketler]
      </para>
      <para>
-      (PHP 7.1.0 &gt;=) Developers should not rewrite unneeded HTML tags.
-      Default value should be sufficient for most usages.
-      Older PHP versions use
-      <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> instead.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      <link linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link>=[limited hosts]
-     </para>
-     <para>
-      (PHP 7.1.0 &gt;=) This INI defines whitelist hosts that allows trans sid rewrite.
-      Never add untrusted hosts.
-      Session module only allows <literal>$_SERVER['HTTP_HOST']</literal>
-      when this setting is empty.
+      (PHP 7.1.0 ve üstü) Geliştiriciler, gereksiz HTML etiketlerini yeniden
+      yazmamalıdır. öntanımlı değer çoğu kullanım için yeterli olmalıdır. Daha
+      eski PHP sürümleri bunun yerine <link
+      linkend="ini.url-rewriter.tags">url_rewriter.tags</link> kullanabilir.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <link linkend="ini.session.referer-check">session.referer_check</link>=[originating URL]
+      <link linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link>=[sınırlı konaklar]
      </para>
      <para>
-      When <link
-      linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
-      is enabled.
-      It reduces the risk of session ID injection.
-      If a website is http://example.com/, set http://example.com/ to it.
-      Note that with HTTPS browsers will not send the referrer header.
-      Browsers may not send the referrer header by configuration.
-      Therefore, this setting is not a reliable security measure.
-      Use of this setting is recommended.
+      (PHP 7.1.0 ve üstü) Bu INI, effaf oturum kimliğini yeniden yazmaya
+      izin veren beyaz listeli konakları tanımlar. Asla güvenilmeyen
+      konakları eklemeyin. Oturum modülü yalnızca bu ayar boş olduğunda
+      <literal>$_SERVER['HTTP_HOST']</literal> öğesine izin verir.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <link linkend="ini.session.referer-check">session.referer_check</link>=[kaynaklanan URL]
+     </para>
+     <para>
+      <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
+      etkinleştirildiğinde. Oturum kimliği zerk riskini azaltır. Site örneğin
+      http://example.com/ ise, yönergeye http://example.com/ atayın. HTTPS ile
+      tarayıcıların referrer başlığını göndermeyeceğini unutmayın. Tarayıcılar,
+      referrer başlığını yapılandırmaya göre gönderemez. Bu nedenle, bu ayar
+      güvenilir bir güvenlik önlemi değildir. Bu ayarın kullanılması önerilir.
      </para>
     </listitem>
 
@@ -703,12 +715,13 @@
       <link linkend="ini.session.cache-limiter">session.cache_limiter</link>=nocache
      </para>
      <para>
-      Ensure HTTP content are uncached for authenticated sessions.
-      Allow caching only when the content is not private.
-      Otherwise, content may be exposed. "private" may be employed if HTTP content does not
-      include security sensitive data.
-      Note that "private" may transmit private data cached by shared clients.
-      "public" must only be used when HTTP content does not contain any private data at all.
+      Kimliği doğrulanmış oturumlar için HTTP içeriğinin önbelleğe
+      alınmadığından emin olun. Yalnızca içerik gizli olmadığında önbelleğe
+      almaya izin verin. Aksi takdirde, içerik açığa çıkabilir. HTTP içeriği
+      güvenlik açısından hassas veriler içermiyorsa "private" kullanılabilir.
+      "private" ataması nedeniyle, paylaşılan istemciler tarafından önbelleğe
+      alınan özel verilerin aktarılabileceğini unutmayın. "public" yalnızca
+      HTTP içeriği hiçbir özel veri içermediğinde kullanılmalıdır.
      </para>
     </listitem>
 
@@ -717,10 +730,11 @@
       <link linkend="ini.session.sid-length">session.sid_length</link>="48"
      </para>
      <para>
-      (PHP 7.1.0 &gt;=) Longer session IDs results in stronger session IDs.
-      Developers should consider a session ID length of 32 characters or more.
-      At least 26 characters are required when
-      <link linkend="ini.session.sid-bits-per-character">session.sid_bits_per_character</link>="5".
+      (PHP 7.1.0 ve üstü) Oturum kimlikleri uzadıkça, daha güçlü oturum
+      kimlikleri haline gelir. Geliştiriciler, 32 karakter ve üstü oturum
+      kimliği uzunluklarını dikkate almalıdır. <link
+      linkend="ini.session.sid-bits-per-character">session.sid_bits_per_character</link>="5"
+      olduğunda en az 26 karakter gerekir.
      </para>
     </listitem>
 
@@ -729,9 +743,9 @@
       <link linkend="ini.session.sid-bits-per-character">session.sid_bits_per_character</link>="6"
      </para>
      <para>
-      (PHP 7.1.0 &gt;=) The more bits there are in a session ID character,
-      the stronger the session ID generated by the session module is for an
-      identical session ID length.
+      (PHP 7.1.0 ve üstü) Bir oturum kimliği karakterinde ne kadar çok bit
+      varsa, oturum modülü tarafından oluşturulan oturum kimliği, aynı
+      uzunluktaki sıradan bir oturum kimliğinden daha güçlü olur.
      </para>
     </listitem>
 
@@ -740,24 +754,24 @@
       <link linkend="ini.session.hash-function">session.hash_function</link>="sha256"
      </para>
      <para>
-      (PHP 7.1.0 &lt;) A stronger hash function will generate a stronger session ID.
-      Although hash collision is unlikely even with the MD5 hashing algorithm,
-      developers should use SHA-2 or a stronger hashing algorithm like sha384 and sha512.
-      Developers must ensure they feed a long enough
-      <link linkend="ini.session.entropy-length">entropy</link>
-      for the hashing function used.
+      (PHP 7.1.0 ve üstü) Daha güçlü bir aşlama işlevi, daha güçlü bir oturum
+      kimliği üretecektir. MD5 aşlama algoritmasında bile aş çakışması
+      olasılığı olmasa da, geliştiriciler SHA-2 veya sha384 ve hatta sha512
+      gibi daha güçlü bir aşlama algoritması kullanmalıdır. Geliştiriciler,
+      kullanılan aşlama işlevini yeterince uzun bir  <link
+      linkend="ini.session.entropy-length">karmaşa</link> ile beslediklerinden
+      emin olmalıdır.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <link linkend="ini.session.save-path">session.save_path</link>=[non world-readable directory]
+      <link linkend="ini.session.save-path">session.save_path</link>=[herkesçe-okunamayan-dizin]
      </para>
      <para>
-      If this is set to a world-readable directory, such as
-      <filename>/tmp</filename> (the default), other users on the
-      server may be able to hijack sessions by getting the list of
-      files in that directory.
+      Bu, <filename>/tmp</filename> (öntanımlıdır) gibi herkesçe okunabilir
+      bir dizine ayarlanırsa, sunucudaki diğer kullanıcılar bu dizindeki
+      dosyaların listesini alarak oturumları ele geçirebilir.
      </para>
     </listitem>
 

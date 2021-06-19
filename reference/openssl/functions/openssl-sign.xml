@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-sign">
- <refnamediv>
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-sign" xmlns="http://docbook.org/ns/docbook"> <refnamediv>
   <refname>openssl_sign</refname>
   <refpurpose>İmza üretir</refpurpose>
  </refnamediv>
@@ -13,13 +11,13 @@
    <type>bool</type><methodname>openssl_sign</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
    <methodparam><type>string</type><parameter role="reference">imza</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>gizankim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>algoritma</parameter><initializer>OPENSSL_ALGO_SHA1</initializer></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>gizli_anahtar</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>int</type></type><parameter>algoritma</parameter><initializer><constant>OPENSSL_ALGO_SHA1</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>veri</parameter> için <parameter>gizankim</parameter>
-   ile ilişkili gizli anahtarı SHA1 özeti çıkarmak için kullanarak bir imza
-   hesaplar. Veri şifrelenmez.
+   <parameter>gizli_anahtar</parameter>ı kullanarak kriptografik bir imza
+   üreterek belirtilen <parameter>veri</parameter> için bir imza hesaplar.
+   Veri şifrelenmez.
   </para>
  </refsect1>
 
@@ -44,10 +42,15 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gizankim</parameter></term>
+     <term><parameter>gizli_anahtar</parameter></term>
      <listitem>
       <para>
        İmza bu anahtar kullanılarak oluşturulur.
+       Ya bir <classname>OpenSSLAsymmetricKey</classname> örneğidir;
+       <function>openssl_get_privatekey</function> ile üretilir.
+      </para>
+      <para>
+       Ya da PEM  biçemli bir anahtar dizgesidir.
       </para>
      </listitem>
     </varlistentry>
@@ -55,8 +58,13 @@
      <term><parameter>algoritma</parameter></term>
      <listitem>
       <para>
-       <constant>OPENSSL_ALGO_SHA1</constant> öntanımlıdır. Daha ayrıntılı
-       bilgi için <xref linkend="openssl.signature-algos" /> bölümüne bakınız.
+       <type>int</type> türünde, <link
+       linkend="openssl.signature-algos">İmzalama algoritmaları</link>ndan biri.
+      </para>
+      <para>
+       <type>string</type> türünde, <function>openssl_get_md_methods</function>
+       işlevinden döndürülmüş geçerli bir dizge
+       (örn: "sha256WithRSAEncryption" veya "sha384".
       </para>
      </listitem>
     </varlistentry>
@@ -73,26 +81,28 @@
 
  <refsect1 role="changelog">
   &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.0.0</entry>
-       <entry>
-        <parameter>algoritma</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>genel_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -105,17 +115,48 @@
 <?php
 // $veri'nin imzalanacak veriyi içerdiği varsayılıyor
 
-// Gizli anahtarı dosyadan alıp hazırlayalım
-$dt = fopen("/src/openssl-0.9.6/demos/sign/key.pem", "r");
-$gizli_anh = fread($dt, 8192);
-fclose($dt);
-$genankim = openssl_get_privatekey($gizli_anh);
+// Gizli anahtarı dosyadan alıp hazırla
+$pkeyid = openssl_pkey_get_private("file://src/openssl-0.9.6/demos/sign/key.pem");
 
-// İmzayı hesaplayalım
+// İmzayı hesapla
 openssl_sign($veri, $imza, $genankim);
 
-// Anahtar belleğini serbest bırakalım
+// Anahtar belleğini serbest bırak
 openssl_free_key($genankim);
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- <function>openssl_sign</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// imzalanacak veri
+$data = 'my data';
+
+// genel ve gizli anahtarları üret
+$new_key_pair = openssl_pkey_new(array(
+    "private_key_bits" => 2048,
+    "private_key_type" => OPENSSL_KEYTYPE_RSA,
+));
+openssl_pkey_export($new_key_pair, $private_key_pem);
+
+$details = openssl_pkey_get_details($new_key_pair);
+$public_key_pem = $details['key'];
+
+// imzayı üret
+openssl_sign($data, $signature, $private_key_pem, OPENSSL_ALGO_SHA256);
+
+// kullanmak üzere kaydet
+file_put_contents('private_key.pem', $private_key_pem);
+file_put_contents('public_key.pem', $public_key_pem);
+file_put_contents('signature.dat', $signature);
+
+// imzayı doğrula
+$r = openssl_verify($data, $signature, $public_key_pem, "sha256WithRSAEncryption");
+// göster
+var_dump($r);
 ?>
 ]]>
     </programlisting>

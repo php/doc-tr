@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-x509-parse">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-x509-parse" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_x509_parse</refname>
   <refpurpose>Bir X509 sertifikasını çözümleyip bilgileri bir dizi içinde
@@ -11,14 +10,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>openssl_x509_parse</methodname>
-   <methodparam><type>mixed</type><parameter>x509sert</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>kısa_adlar</parameter><initializer>true</initializer></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>openssl_x509_parse</methodname>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>kısa_adlar</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>x509sert</parameter> ile belirtilen sertifika ile ilgili (konu
-   ismi, yayıncı ismi, amaçlar, geçerli olduğu tarihler gibi) bilgiler
-   döndürür.
+   <parameter>sertifika</parameter> ile belirtilen sertifika ile ilgili bilgiler
+   (konu ismi, yayıncı ismi, amaçlar, geçerli olduğu tarihler gibi) döndürür.
   </para>
  </refsect1>
 
@@ -26,15 +24,7 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>x509sert</parameter></term>
-     <listitem>
-      <para>
-       <function>openssl_x509_read</function> tarafından döndürülen bir X509
-       sertifika özkaynağı.
-      </para>
-     </listitem>
-    </varlistentry>
+    &openssl.param.x509;
     <varlistentry>
      <term><parameter>kısa_adlar</parameter></term>
      <listitem>
@@ -55,6 +45,30 @@
    <emphasis>Dönen verinin yapısında değişiklik yapılma ihtimali olduğundan,
    yapı (ihtiyaten) henüz belgelenmemiştir.</emphasis>
   </para>
+ </refsect1>
+
+  <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>sertifika</parameter> artık
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

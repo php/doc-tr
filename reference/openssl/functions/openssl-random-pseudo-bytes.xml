@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 3ce9368539aaacb6eba5c5049209f271ebf16e39 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-random-pseudo-bytes">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-random-pseudo-bytes" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_random_pseudo_bytes</refname>
-  <refpurpose>Yarı-rasgele dizge üretir</refpurpose>
+  <refpurpose>Yarı-rasgele bayt dizesi üretir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>openssl_random_pseudo_bytes</methodname>
-   <methodparam><type>string</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam><type>string</type><parameter>güçlü</parameter></methodparam>
+   <type>string</type><methodname>openssl_random_pseudo_bytes</methodname>
+   <methodparam><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter role="reference">güçlü_sonuç</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>uzunluk</parameter> karakterlik bir dizge döndürür. Ayrıca,
-   ikinci değiştirgede bu yarı rasgele baytları üretmek için güçlü bir
-   algoritma kullanılıp kullanılmadığı da belirtilecektir.
+   <parameter>uzunluk</parameter> karakterlik bir dizge döndürür.
+  </para>
+  <para>
+   Ayrıca, yarı-rastgele baytları üretmek için kriptografik olarak güçlü bir
+   algoritma kullanılmışsa  <parameter>güçlü_sonuç</parameter> değiştirgesinde
+   bu bilgi de döner. &false; değeri nadirdir, ancak bazı sistemler bozulmuş
+   veya eski olabilir.
   </para>
  </refsect1>
 
@@ -36,11 +39,12 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>güçlü</parameter></term>
+     <term><parameter>güçlü_sonuç</parameter></term>
      <listitem>
       <para>
        Güçlü bir algoritma kullanılmışsa bu değiştirgede &true; döner. Bir
-       hata oluşursa bu değer &null; olacaktır.
+       hata oluşursa bu değer &null; olacaktır (örneğin, GPG parolası
+       kullanımı güvenlidir).
       </para>
      </listitem>
     </varlistentry>
@@ -51,8 +55,30 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İşlem başarılı olursa üretilen dizge, yoksa &false; döner.
+   İşlem başarılı olursa üretilen dizge,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>güçlü_sonuç</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
