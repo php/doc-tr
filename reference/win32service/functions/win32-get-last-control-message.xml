@@ -1,48 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4d72f13eaf9e06715ae68eac72aa3fd6ae83eb78 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.win32-get-last-control-message" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>win32_get_last_control_message</refname>
   <refpurpose>Hizmete gönderilmiş son denetim kodunu döndürür</refpurpose>
  </refnamediv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>win32_get_last_control_message</methodname>
    <void/>
   </methodsynopsis>
-
   <para>
    Bu hizmet sürecine gönderilmiş son denetim kodunu döndürür. Bir hizmet
    olarak çalışma sırasında sürecin durup durmadığını saptamak için bu
    denetimi belirli aralıklarla yapmalısınız.
   </para>
+  <caution>
+   <para>
+    0.2.0 sürümünden beri, bu işlev sadece "cli" SAPI ile çalışır.
+    Diğer SAPI'lerde bu işlev devre dışıdır.
+   </para>
+  </caution>
 
  </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  &no.function.parameters;
+ </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir denetim sabiti döner. Şunlardan biri olabilir:
+   <link linkend="win32service.constants.servicecontrol">Win32Service Hizmet
+   Denetim İletisi Sabitleri</link>nden biri döner:
    <constant>WIN32_SERVICE_CONTROL_CONTINUE</constant>,
-   <constant>WIN32_SERVICE_CONTROL_INTERROGATE</constant>,
-   <constant>WIN32_SERVICE_CONTROL_PAUSE</constant>,
-   <constant>WIN32_SERVICE_CONTROL_STOP</constant>,
+   <constant>WIN32_SERVICE_CONTROL_DEVICEEVENT</constant>,
    <constant>WIN32_SERVICE_CONTROL_HARDWAREPROFILECHANGE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_INTERROGATE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_NETBINDADD</constant>,
+   <constant>WIN32_SERVICE_CONTROL_NETBINDDISABLE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_NETBINDENABLE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_NETBINDREMOVE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_PARAMCHANGE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_PAUSE</constant>,
    <constant>WIN32_SERVICE_CONTROL_POWEREVENT</constant>,
-   <constant>WIN32_SERVICE_CONTROL_SESSIONCHANGE</constant>.
+   <constant>WIN32_SERVICE_CONTROL_PRESHUTDOWN</constant>,
+   <constant>WIN32_SERVICE_CONTROL_SESSIONCHANGE</constant>,
+   <constant>WIN32_SERVICE_CONTROL_SHUTDOWN</constant>,
+   <constant>WIN32_SERVICE_CONTROL_STOP</constant>.
+  </para>
+  <para>
+   Değer 128 ile 255 arasındaysa, denetim kodu özeldir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   1.0.0 öncesinde, SAPI <literal>"cli"</literal> değilse, bu işlev <constant>E_ERROR</constant> seviyesinde bir hata çıktılardı.
+  </para>
+   <para>
+    1.0.0 ve sonrasında, SAPI <literal>"cli"</literal> değilse, bu işlev
+    <classname>Win32ServiceException</classname> yavrular.
+   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>PECL win32service 1.0.0</entry>
+       <entry>
+        Değiştirgelerdeki veri geçersiz ise artık
+        <classname>ValueError</classname> yavrulanıyor,
+        evvelce &false; dönerdi.
+       </entry>
+      </row>
+      <row>
+       <entry>PECL win32service 1.0.0</entry>
+       <entry>
+        Hata durumunda artık <classname>Win32ServiceException</classname>
+        yavrulanıyor, evvelce bir <link xmlns="http://docbook.org/ns/docbook"
+        linkend="win32service.constants.errors">Win32 Hata Kodu</link> dönerdi.
+       </entry>
+      </row>
+      <row>
+       <entry>PECL win32service 0.2.0</entry>
+       <entry>
+        Bu işlev sadece <literal>"cli"</literal> SAPI ile çalışır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>win32_start_service_ctrl_dispatcher</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>win32_start_service_ctrl_dispatcher</function></member>
+   <member><function>win32_set_service_status</function></member>
+   <member><function>win32_set_service_exit_mode</function></member>
+   <member><function>win32_set_service_exit_code</function></member>
+   <member><link linkend="win32service.constants.servicecontrol">Win32Service
+    Hizmet Denetim İletisi Sabitleri</link></member>
+  </simplelist>
  </refsect1>
-
 
 </refentry>
 
