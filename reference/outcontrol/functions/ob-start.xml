@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9e0a39029d6e66cd5f7c7e8cfecf76fdb8ad7f49 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-start">
  <refnamediv>
   <refname>ob_start</refname>
@@ -42,6 +41,10 @@
    <function>ob_end_flush</function> çağrısı yapmayı unutmayın. Eğer çok
    sayıda çıktı geriçağırım işlevi etkinse, her biri iç içelik sırası
    gözetilerek çıktıyı süzerler.
+  </para>
+  <para>
+   Betik sonlandığında çıktı tamponu hala etkinse, içeriği PHP tarafından
+   otomatik olarak çıktılanır.
   </para>
  </refsect1>
 
@@ -132,11 +135,6 @@
        sebep olan bir çıktılama çağrısından sonra tampon boşaltılır. Öntanımlı
        0 değerinin anlamı işlevin sadece çıktı tamponu kapandığında
        çağrılacağı anlamına gelir.
-      </para>
-      <para>
-       PHP 5.4.0 öncesinde, özel <literal>1</literal> değeri
-       <parameter>parça_boyu</parameter> olarak 4096 kullanılacağı anlamına
-       gelirdi.
       </para>
      </listitem>
     </varlistentry>
@@ -250,18 +248,12 @@ ob_end_flush();
 
   <para>
    <example xml:id="function.ob-start.flags-bc">
-    <title>Çıktı tamponunun hem PHP 5.3 hem de 5.4 ile uyumlu olmasını sağlayan
-    ve çıktı tamponunun silinmesini önleyen kod örneği</title>
+    <title>- Çıktı tamponunun silinmesini önleyen kod örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
 
-if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
-  ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS ^
-    PHP_OUTPUT_HANDLER_REMOVABLE);
-} else {
-  ob_start(null, 0, false);
-}
+ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS ^ PHP_OUTPUT_HANDLER_REMOVABLE);
 
 ?>
 ]]>
