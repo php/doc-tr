@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f5da09b29868c155822672ed132aea70bce960a9 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a44dc91a4dd2f8ff98f195f8b22621ec91aba1d5 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
@@ -1919,6 +1919,15 @@ bağlantısı sırasında gönderilir.</para><para>Libmysqlclient, ya
 <function>mysqli_options</function> işlevinde belirtilen karakter kümesini
 kullanır.</para></note>'>
 
+<!ENTITY mysqli.sqlinjection.warning '<warning xmlns="http://docbook.org/ns/docbook">
+<title>Güvenlik Uyarısı: SQL zerki</title><para>Sorgu herhangi bir değişken
+girdi içeriyorsa, bunun yerine <link
+linkend="mysqli.quickstart.prepared-statements">değiştirgeli hazırlanmış
+deyimler</link> kullanılmalıdır. Veya, veriler düzgün biçimde
+biçimlendirilmeli ve tüm dizgeler
+<function>mysqli_real_escape_string</function> işlevi kullanılarak
+öncelenmelidir.</para></warning>'>
+
 <!-- Notes for SAPI/Apache -->
 <!ENTITY apache.req.module '<simpara xmlns="http://docbook.org/ns/docbook">Bu işlev sadece PHP bir Apache modülü olarak kuruluysa desteklenir.</simpara>'>
 
@@ -2894,11 +2903,14 @@ uster is used.</entry>
           <entry><type>array</type></entry>
           <entry>
            <para>
-            A document containing the configuration for one or more KMS providers, which are used to encrypt data keys. Currentl
- <literal>aws</literal> or <literal>local</literal>are supported and at least one must be specified.
+            A document containing the configuration for one or more KMS
+            providers, which are used to encrypt data keys. Currently
+            <literal>"aws"</literal>, <literal>"azure"</literal>,
+            <literal>"gcp"</literal>, and <literal>"local"</literal> are
+            supported and at least one must be specified.
            </para>
            <para>
-            The format for <literal>aws</literal> is as follows:
+            The format for <literal>"aws"</literal> is as follows:
            </para>
            <programlisting role="javascript">
 <![CDATA[
@@ -2909,13 +2921,40 @@ aws: {
 ]]>
            </programlisting>
            <para>
-            The format for <literal>local</literal> is as follows:
+            The format for <literal>"azure"</literal> is as follows:
+           </para>
+           <programlisting role="javascript">
+<![CDATA[
+azure: {
+    tenantId: <string>,
+    clientId: <string>,
+    clientSecret: <string>,
+    identityPlatformEndpoint: <optional string> // Defaults to "login.microsoftonline.com"
+
+}
+]]>
+           </programlisting>
+           <para>
+            The format for <literal>"gcp"</literal> is as follows:
+           </para>
+           <programlisting role="javascript">
+<![CDATA[
+aws: {
+    email: <string>,
+    privateKey: <base64 string>|<MongoDB\BSON\Binary>,
+    endpoint: <optional string> // Defaults to "oauth2.googleapis.com"
+
+}
+]]>
+           </programlisting>
+           <para>
+            The format for <literal>"local"</literal> is as follows:
            </para>
            <programlisting role="javascript">
 <![CDATA[
 local: {
-    // The master key used to encrypt/decrypt data keys
-    key: <96-byte MongoDB\BSON\Binary with subtype 0>
+    // 96-byte master key used to encrypt/decrypt data keys
+    key: <base64 string>|<MongoDB\BSON\Binary>
 }
 ]]>
            </programlisting>
