@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 8e732e84a1425cf0ab3a5b0da8fe113c7a6da85e Maintainer: nilgun Status: ready -->
+<sect1 xml:id="install.windows.manual" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Windows üzerine Elle PHP Kurulum Adımları</title>
+ <sect2>
+  <title>Web Sunucusunu seçin</title>
+  <sect3>
+   <title>IIS</title>
+   <para>
+    IIS Windows'ta yerleşiktir. Windows Sunucusunda, IIS rolü Sunucu Yöneticisi
+    üzerinden eklenebilir.CGI Rol Özelliği dahil edilmelidir. Windows
+    Masaüstünde, IIS'nin Denetim Masası'ndaki Program Ekle/Kaldır aracılığıyla
+    eklenmesi gerekir. Microsoft belgelerinde <link
+    xlink:href="https://docs.microsoft.com/en-us/previous-versions/ms181052(v=vs.80)">ayrıntılı
+    talimatlar</link> bulunmaktadır. Masaüstü web uygulamaları ve web
+    geliştirme için IIS/Express veya PHP Desktop da kullanılabilir.
+    <example>
+     <title>IIS ve PHP'yi yapılandırmak için komut satırı kullanımı</title>
+     <programlisting>
+<![CDATA[
+
+@echo off
+
+REM http://windows.php.net/downloads/ adresinden PHP kurulumu için
+REM .ZIP dosyasını indirin
+
+REM PHP .ZIP dosyasını açtığınız dizinin yolunu phppath=c:\php
+REM (sonda \ yok) olarak ayarlayın
+
+REM Geçerli PHP işleyicilerini temizleyin:
+%windir%\system32\inetsrv\appcmd clear config /section:system.webServer/fastCGI
+
+REM PHP kurulu değilse aşağıdaki komut bir hata iletisi üretir.
+REM Bu yok sayılabilir.
+%windir%\system32\inetsrv\appcmd set config /section:system.webServer/handlers /-[name='PHP_via_FastCGI']
+
+REM PHP işleyicisini ayarlayın
+%windir%\system32\inetsrv\appcmd set config /section:system.webServer/fastCGI /+[fullPath='%phppath%\php-cgi.exe']
+%windir%\system32\inetsrv\appcmd set config /section:system.webServer/handlers /+[name='PHP_via_FastCGI',path='*.php',verb='*',modules='FastCgiModule',scriptProcessor='%phppath%\php-cgi.exe',resourceType='Unspecified']
+%windir%\system32\inetsrv\appcmd set config /section:system.webServer/handlers /accessPolicy:Read,Script
+
+REM FastCGI Değişkenlerini Yapılandırın
+%windir%\system32\inetsrv\appcmd set config -section:system.webServer/fastCgi /[fullPath='%phppath%\php-cgi.exe'].instanceMaxRequests:10000
+%windir%\system32\inetsrv\appcmd.exe set config -section:system.webServer/fastCgi /+"[fullPath='%phppath%\php-cgi.exe'].environmentVariables.[name='PHP_FCGI_MAX_REQUESTS',value='10000']"
+%windir%\system32\inetsrv\appcmd.exe set config -section:system.webServer/fastCgi /+"[fullPath='%phppath%\php-cgi.exe'].environmentVariables.[name='PHPRC',value='%phppath%\php.ini']"
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect3>
+
+  <sect3>
+   <title>Apache</title>
+   <para>
+    Windows için çeşitli Apache2 derlemeleri mevcuttur.
+    ApacheLounge'un Apache2 derlemeleri önerilir, fakat but diğer seçenekler
+    arasında otomatik kurulum araçları sağlayan XAMPP, WampServer ve BitNami
+    bulunur. PHP, Apache'de mod_php veya mod_fastcgi aracılığıyla
+    kullanılabilir. mod_php, aynı Visual C sürümü ve aynı CPU (x86 veya x64)
+    ile oluşturulmuş bir TS Apache derlemesi gerektirir.
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2>
+  <title>Derlenmiş paket seçimi</title>
+  <para>
+   PHP'nin Windows derlemeleri
+   <link xlink:href="http://windows.php.net/download/"
+   >http://windows.php.net/download/</link> adresinden indirilebilir. Tüm
+   derlemeler (<abbrev>PGO</abbrev>) en iyilenmiş olup QA ve GA sürümleri
+   kapsamlı bir şekilde denenmiştir.
+  </para>
+  <para>
+   4 tür PHP derlemesi vardır:
+   <itemizedlist spacing="compact">
+    <listitem>
+     <para>Thread-Safe(TS) - tek süreçli web sunucular için -
+      Apache ve mod_php gibi</para>
+    </listitem>
+    <listitem>
+     <para>Non-Thread-Safe(NTS) - IIS ve diğer FastCGI web sunucuları için -
+      (Apache ve mod_fastcgi)- komut satırı betikleri için önerilir.</para>
+    </listitem>
+    <listitem>
+     <para>x86 - 32 bitlik sistemler için</para>
+    </listitem>
+    <listitem>
+     <para>x64 - 64 bitlik sistemler için</para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </sect2>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
