@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dd522120279a5d08a8aeeaabfaafdea235991d72 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.assert" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>assert</refname>
+  <refpurpose>Savın doğruluğuna bakar</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>PHP 5 ve 7</para>
+  <methodsynopsis>
+   <type>bool</type><methodname>assert</methodname>
+   <methodparam><type>mixed</type><parameter>sav</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>açıklama</parameter></methodparam>
+  </methodsynopsis>
+  <para>PHP 7</para>
+  <methodsynopsis>
+   <type>bool</type><methodname>assert</methodname>
+   <methodparam><type>mixed</type><parameter>sav</parameter></methodparam>
+   <methodparam choice="opt"><type>Throwable</type><parameter>açıklama</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   <function>assert</function> işlevi belirtilen
+   <parameter>sav</parameter>ın doğruluğuna bakar ve sonuç &false; ise
+   uygun eylemi devreye sokar.
+  </para>
+  <refsect2>
+   <title>Geleneksel savlar (PHP 5 ve 7)</title>
+   <para>
+    <parameter>sav</parameter> bir dizge olarak verilirse,
+    <function>assert</function> tarafından PHP kodu olarak değerlendirilir.
+    <parameter>sav</parameter> olarak mantıksal bir koşul belirtilirse, bu
+    koşul, <function>assert_options</function> ile tanımlamış olabileceğiniz
+    sav işlevine bir değiştirge olarak görünmeyecektir. Bu işleyici işlev
+    çağrılmadan önce koşul bir dizgeye dönüştürülür; mantıksal &false;e
+    boş dizgeye dönüştürülür.
+   </para>
+   <para>
+    Savlar yalnızca hata ayıklama özelliği olarak kullanılmalıdır. Bunları,
+    her zaman &true; olması gereken ve değilse bazı programlama hatalarını
+    gösteren koşulları veya eklenti işlevleri, belirli sistem sınırları ve
+    özellikleri gibi belirli özelliklerin varlığını sınamak için
+    kullanabilirsiniz.
+   </para>
+   <para>
+    Savlar, girdi değiştirgesi sınamaları gibi normal çalışma zamanı
+    işlemleri için kullanılmamalıdır. Genel bir kural olarak, sav sınaması
+    etkinleştirilmemiş olsa bile kodunuz her zaman doğru şekilde
+    çalışabilmelidir.
+   </para>
+   <para>
+    <function>assert</function> işlevinin davranışı,
+    <function>assert_options</function> ile veya bu işlevlerin kılavuz
+    sayfalarında açıklanan .ini ayarları kullanılarak yapılandırılabilir.
+   </para>
+   <para>
+    <function>assert_options</function> işlevi ve/veya
+    <constant>ASSERT_CALLBACK</constant> yapılandırma yönergesi, başarısız
+    savları işlemek için bir geri çağırım işlevinin tanımlanmasını sağlar.
+   </para>
+   <para>
+    <function>assert</function> geri çağırımları, otomatikleştirilmiş
+    denemeler yapmak için özellikle kullanışlıdır, çünkü sava aktarılan kod
+    ve savın yapıldığı yer gibi bilgilerin kolayca yakalanmasına olanak tanır.
+    Bu bilgiler başka yöntemlerle elde edilebilirse de savlar kullanılarak
+    çok daha hızlı ve kolay hale getirilebilir!
+   </para>
+   <para>
+    Geri çağırım işlevinin üç değiştirge kabul etmesi gerekir. İlk değiştirge
+    savın başarısız olduğu dosyayı, ikinci değiştirge savın başarısız olduğu
+    satırı ve üçüncü değiştirge başarısız olan ifadeyi içerecektir (&#x2014;
+    karakteri varsa 1 veya "iki" gibi değişmez değerler bu değiştirge ile
+    aktarılamaz). PHP 5.4.8 ve sonraki sürümlerde ayrıca,
+    <function>assert</function> işlevine aktarılan
+    <parameter>açıklama</parameter>yı içeren dördüncü bir seçimlik
+    değiştirgenin aktarımı da mümkündür.
+   </para>
+  </refsect2>
+  <refsect2 xml:id="function.assert.expectations">
+   <title>Beklentiler (sadece PHP 7 için)</title>
+   <para>
+    <function>assert</function>, PHP 7'de beklentilerin tanımlanmasına izin
+    veren bir dil yapısıdır: geliştirme ve deneme ortamlarında etkili olan,
+    ancak üretimdeki maliyeti sıfır olacak şekilde en iyilenmiş savlar.
+   </para>
+   <para>
+    <function>assert_options</function> geriye uyumluluk nedenleriyle
+    yukarıda açıklandığı gibi davranışı denetim altında tutmak için
+    kullanılabilirken, PHP 7'ye özgü kod, <function>assert</function>
+    işlevinin davranışını denetlemek için aşağıdaki iki yeni yapılandırma
+    yönergesini kullanmalı ve <function>assert_options</function> işlevini
+    çağırMAmalıdır.
+   </para>
+   <table>
+    <title>
+     <function>assert</function> için PHP 7 yapılandırma yönergeleri
+    </title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Yönerge</entry>
+       <entry>Öntanımlı değer</entry>
+       <entry>Olası değerler</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <link linkend="ini.zend.assertions">zend.assertions</link>
+       </entry>
+       <entry><literal>1</literal></entry>
+       <entry>
+        <simplelist>
+         <member>
+          <literal>1</literal>: kodu üret ve çalıştır (geliştirme kipi)
+         </member>
+         <member>
+          <!-- TODO: look up the RFC to figure out why you'd want this -->
+          <literal>0</literal>: kodu üret ama çalışma anında etrafından dolaş
+         </member>
+         <member>
+          <literal>-1</literal>: kod üretme (üretim kipi)
+         </member>
+        </simplelist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <link linkend="ini.assert.exception">assert.exception</link>
+       </entry>
+       <entry><literal>0</literal></entry>
+       <entry>
+        <simplelist>
+         <member>
+          <literal>1</literal>: Sav başarısız olursa istisnayı yavrula:
+          Ya <parameter>istisna</parameter> değiştirgesi ile sağlanan nesneyi
+          ya da bir nesne sağlanmamışsa <classname>AssertionError</classname>
+          nesnesini.
+         </member>
+         <member>
+          <literal>0</literal>: Yukarıda açıklandığı gibi bir
+          <classname>Throwable</classname> kullan veya oluştur, ancak o
+          nesneyi örnekllemek yerine nesneyi temel alan bir uyarı oluştur
+          (PHP 5 davranışıyla uyumlu)
+         </member>
+        </simplelist>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </refsect2>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>sav</parameter></term>
+     <listitem>
+      <para>
+       PHP 5'te, bu değerlendirilecek bir dizge veya sınanacak mantıksal bir
+       ifade, PHP 7'de, ayrıca, çalıştırılacak ve sonucu, savın başarının
+       belirlemekte kullanılacak değeri döndüren bir ifade olmalıdır.
+      </para>
+      <warning>
+       <para>
+        PHP 7.2 ve sonrasında, <parameter>sav</parameter> olarak dizge
+        kullanımı artık <emphasis>ÖNERİLMEMEKTEDİR</emphasis>.
+       </para>
+      </warning>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>açıklama</parameter></term>
+     <listitem>
+      <para>
+       <parameter>sav</parameter> başarısız olursa başarısızlık iletisine
+       dahil edilecek isteğe bağlı bir açıklama. PHP 7'den itibaren, bir
+       açıklama belirtilmemişse, <function>assert</function> çağrısı için
+       kaynak koduna eşit bir öntanımlı açıklama sağlanır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>istisna</parameter></term>
+     <listitem>
+      <para>
+       PHP 7'de, ikinci değiştirge açıklayıcı bir dizge yerine bir
+       <classname>Throwable</classname> nesnesi olabilir; sav başarısız
+       olursa ve <link linkend="ini.assert.exception">assert.exception</link>
+       yapılandırma yönergesi de etkinse bu nesne yavrulanır.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Sav başarısız olursa &false; olmazsa &true; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        Bir isim alanı içinde <literal>assert()</literal> adlı bir işlevin
+        bildirilmesine artık izin verilmiyor ve böyle bir bildirim olursa
+        <constant>E_COMPILE_ERROR</constant> çıktılanıyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.3.0</entry>
+       <entry>
+        Bir isim alanı içinde <literal>assert()</literal> adlı bir işlev
+        bildirimi <emphasis>artık önerilmiyor</emphasis> ve böyle bir
+        bildirim olursa bir <constant>E_DEPRECATED</constant> uyarısı
+        veriliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        Sav olarak bir dizge <emphasis>kullanımı artık önerilmiyor</emphasis>.
+        Artık hem <link linkend="ini.assert.active">assert.active</link> hem
+        de <link linkend="ini.zend.assertions">zend.assertions</link> için 1
+        atanmışsa bir <constant>E_DEPRECATED</constant> uyarısı veriliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>7.0.0</entry>
+       <entry>
+        <function>assert</function> artık bir işlev değil bir dil oluşumu.
+        <parameter>sav</parameter> artık bir ifade olabiliyor. İkinci
+        değiştirge ya bir <parameter>istisna</parameter> (bir
+        <classname>Throwable</classname> nesnesi belirtilmişse), ya da 5.4.8
+        sürümünden beri desteklendiği gibi bir <parameter>açıklama</parameter>
+        olabiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <refsect2>
+   <title>- Geleneksel savlar (PHP 5 ve 7)</title>
+   <para>
+    <example>
+     <title>- Başarısız savın özel bir işleyici ile ele alınması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Savı etkinleştir ve sessizleştir
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// İşleyici işlevi oluştur
+function my_assert_handler($file, $line, $code)
+{
+    echo "<hr>Sav başarısız:
+        Dosya '$file'<br />
+        Satır '$line'<br />
+          Kod '$code'<br /><hr />";
+}
+
+// Geri çağırım işlevini kaydet
+assert_options(ASSERT_CALLBACK, 'my_assert_handler');
+
+// Başarısız bir sav
+assert('mysql_query("")');
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    <example>
+     <title>- Bir açıklama göstermek için özel işleyici kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// Savı etkinleştir ve sessizleştir
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// İşleyici işlevi oluştur
+function my_assert_handler($file, $line, $code, $desc = null)
+{
+    echo "Sav başarısız - $file:$line: $code";
+    if ($desc) {
+        echo ": $desc";
+    }
+    echo "\n";
+}
+
+//Geri çağırım işlevini kaydet
+assert_options(ASSERT_CALLBACK, 'my_assert_handler');
+
+// Başarısız savlar
+assert('2 < 1');
+assert('2 < 1', 'İki birden küçüktür');
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+ <![CDATA[
+Sav başarısız - test.php:21: 2 < 1
+Sav başarısız - test.php:22: 2 < 1: İki birden küçüktür
+ ]]>
+     </screen>
+    </example>
+   </para>
+  </refsect2>
+  <refsect2>
+   <title>- Beklentiler (sadece PHP 7 için)</title>
+   <example>
+    <title>- Özel bir sav olmaksızın beklentiler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+assert(true == false);
+echo 'Hi!';
+?>
+]]>
+    </programlisting>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 0
+     atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Hi!
+]]>
+    </screen>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 1
+     ve <link linkend="ini.assert.exception">assert.exception</link>
+     yönergesine 0 atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Warning: assert(): assert(true == false) failed in - on line 2
+Hi!
+]]>
+    </screen>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 1
+     ve <link linkend="ini.assert.exception">assert.exception</link>
+     yönergesine 1 atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Fatal error: Uncaught AssertionError: assert(true == false) in -:2
+Stack trace:
+#0 -(2): assert(false, 'assert(true == ...')
+#1 {main}
+  thrown in - on line 2
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- Özel bir sav varken beklentiler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class CustomError extends AssertionError {}
+
+assert(true == false, new CustomError('True is not false!'));
+echo 'Hi!';
+?>
+]]>
+    </programlisting>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 0
+     atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Hi!
+]]>
+    </screen>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 1
+     ve <link linkend="ini.assert.exception">assert.exception</link>
+     yönergesine 0 atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Warning: assert(): CustomError: True is not false! in -:4
+Stack trace:
+#0 {main} failed in - on line 4
+Hi!
+]]>
+    </screen>
+    <para>
+     <link linkend="ini.zend.assertions">zend.assertions</link> yönergesine 1
+     ve <link linkend="ini.assert.exception">assert.exception</link>
+     yönergesine 1 atandığında yukarıdaki örneğin çıktısı:
+    </para>
+    <screen>
+<![CDATA[
+Fatal error: Uncaught CustomError: True is not false! in -:4
+Stack trace:
+#0 {main}
+  thrown in - on line 4
+]]>
+    </screen>
+   </example>
+  </refsect2>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>assert_options</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
