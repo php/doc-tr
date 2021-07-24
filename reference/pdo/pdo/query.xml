@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c29dbc6680b264f548ae0bbc03912c7ff39e211a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 053f0940f7e1ebd51ee609d04701b5b9a86a38ec Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.query" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::query</refname>
@@ -10,20 +10,20 @@
   <methodsynopsis>
    <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>getirme_kipi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
    <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_COLUMN</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>getirme_kipi</parameter><initializer>PDO::FETCH_COLUMN</initializer></methodparam>
    <methodparam><type>int</type><parameter>sütun_num</parameter></methodparam>
   </methodsynopsis>
 
   <methodsynopsis>
    <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_CLASS</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>getirme_kipi</parameter><initializer>PDO::FETCH_CLASS</initializer></methodparam>
    <methodparam><type>string</type><parameter>sınıf_adı</parameter></methodparam>
    <methodparam><type>array</type><parameter>kurucu_değiştirgeleri</parameter></methodparam>
   </methodsynopsis>
@@ -31,7 +31,7 @@
   <methodsynopsis>
    <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::query</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>fetch_kipi</parameter><initializer>PDO::FETCH_INTO</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>getirme_kipi</parameter><initializer>PDO::FETCH_INTO</initializer></methodparam>
    <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
   </methodsynopsis>
 
@@ -40,31 +40,24 @@
    <classname>PDOStatement</classname> nesnesi olarak döndürür.
   </para>
   <para>
-   Defalarca yineleyeceğiniz bir sorguyu <function>PDO::prepare</function>
+   Defalarca yineleyeceğiniz bir sorguyu <methodname>PDO::prepare</methodname>
    yöntemini kullanarak bir <classname>PDOStatement</classname> nesnesi haline
-   getirip bunu <function>PDOStatement::execute</function> ile defalarca
+   getirip bunu <methodname>PDOStatement::execute</methodname> ile defalarca
    çalıştırmak başarımı arttıracaktır.
   </para>
   <para>
-   Tekrar bir <function>PDO::query</function> çağrısı yapmadan önce sonuç
+   Tekrar bir <methodname>PDO::query</methodname> çağrısı yapmadan önce sonuç
    kümesindeki veriyi almazsanız çağrınız başarısızlıkla sonuçlanabilir. Yeni
-   bir <function>PDO::query</function> çağrısını yapmadan önce
+   bir <methodname>PDO::query</methodname> çağrısını yapmadan önce
    <classname>PDOStatement</classname> nesnesi ile ilişkilendirilmiş
    kaynakları serbest bırakmak için
-   <function>PDOStatement::closeCursor</function> çağrısı yapmalısınız.
+   <methodname>PDOStatement::closeCursor</methodname> çağrısı yapmalısınız.
   </para>
   <note>
    <para>
-    İşleve fazladan değiştirge aktarılırsa, bunlar sonuç nesnesi üzerinde
-    <function>PDOStatement::setFetchMode</function> çağrısı yapılmış
-    gibi ele alınır.
-   </para>
-  </note>
-  <note>
-   <para>
     <parameter>deyim</parameter> yer tutucular içeriyorsa, deyim
-    <function>PDO::prepare</function> ve
-    <function>PDOStatement::execute</function> yöntemleri kullanılarak
+    <methodname>PDO::prepare</methodname> ve
+    <methodname>PDOStatement::execute</methodname> yöntemleri kullanılarak
     hazırlanıp çalıştırılmalıdır.
    </para>
   </note>
@@ -82,11 +75,30 @@
        </para>
        <para>
         SQL deyimi yer tutucular içeriyorsa, bu yöntem yerine
-        <function>PDO::prepare</function> ve
-        <function>PDOStatement::execute</function> yöntemleri kullanılmalıdır.
-        Veya, SQL deyimi <function>PDO::query</function> çağrılmadan önce
+        <methodname>PDO::prepare</methodname> ve
+        <methodname>PDOStatement::execute</methodname> yöntemleri
+        kullanılmalıdır.
+        Veya, SQL deyimi <methodname>PDO::query</methodname> çağrılmadan önce
         elle hazırlanmalı, sürücü destekliyorsa
-        <function>PDO::quote</function> kullanılarak düzgünce öncelenmelidir.
+        <methodname>PDO::quote</methodname> kullanılarak düzgünce
+        öncelenmelidir.
+       </para>
+      </listitem>
+     </varlistentry>
+    <varlistentry>
+     <term><parameter>getirme_kipi</parameter></term>
+      <listitem>
+       <para>
+        Döndürülen <classname>PDOStatement</classname> nesnesi için
+        öntanımlı getirme kipi.
+        <link linkend="pdo.constants"><literal>PDO::FETCH_*</literal></link>
+        sabitlerinden biri olmalıdır.
+       </para>
+       <para>
+        İşleve fazladan değiştirge aktarılırsa, bunlar sonuç nesnesi üzerinde
+        <methodname>PDOStatement::setFetchMode</methodname> çağrısı yapılmış
+        gibi ele alınır. Sonraki değiştirgeler, seçilen getirme kipine bağlı
+        olarak değişir.
        </para>
       </listitem>
      </varlistentry>
@@ -107,7 +119,7 @@
   <para>
    <example>
     <title>- Yer tutucu içermeyen SQL deyimi kullanılan
-     <function>PDO::query</function> örneği</title>
+     <methodname>PDO::query</methodname> örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -140,9 +152,9 @@ watermelon      pink    90
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><function>PDO::exec</function></member>
-    <member><function>PDO::prepare</function></member>
-    <member><function>PDOStatement::execute</function></member>
+    <member><methodname>PDO::exec</methodname></member>
+    <member><methodname>PDO::prepare</methodname></member>
+    <member><methodname>PDOStatement::execute</methodname></member>
    </simplelist>
   </para>
  </refsect1>
