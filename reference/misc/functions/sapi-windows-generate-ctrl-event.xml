@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 58f224110635890a9fb1449e00d787439c2d915a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.sapi-windows-generate-ctrl-event" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>sapi_windows_generate_ctrl_event</refname>
+  <refpurpose>Belirtilen sürece bir CTRL olayı gönderir</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>sapi_windows_generate_ctrl_event</methodname>
+   <methodparam><type>int</type><parameter>olay</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>pid</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Aynı süreç grubundaki başka bir sürece belirtilen CTRL olayını gönderir.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>olay</parameter></term>
+    <listitem>
+     <para>
+      Önderilecek <literal>CTRL</literal> olayı;
+      <constant>PHP_WINDOWS_EVENT_CTRL_C</constant>
+      veya <constant>PHP_WINDOWS_EVENT_CTRL_BREAK</constant> olabilir.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>pid</parameter></term>
+    <listitem>
+     <para>
+      Olayın gönderileceği sürecin kimliği. <literal>0</literal> belirtilirse
+      olay süreç grubundaki tüm süreçlere gönderilir.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="sapi-windows-generate-ctrl-event.example.basic">
+   <title>- <function>sapi_windows_generate_ctrl_event</function> örneği</title>
+   <para>
+    Bu örnek, <literal>CTRL+BREAK</literal> olaylarının bir alt sürece
+    nasıl iletileceğini gösterir. Bu durumda, kullanıcı
+    <literal>CTRL+BREAK</literal> tuşlarına basıp süreci sonlandırana
+    kadar kadar süreç her saniye <literal>Hala etkinim</literal> dizgesini
+    çıktılar.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// çocuk süreçlere CTRL+BREAK olaylarını ilet
+sapi_windows_set_ctrl_handler('sapi_windows_generate_ctrl_event');
+
+// Her saniye bir çıktı verecek bir süreç oluştur
+$cmd = ['php', '-r', 'while (true) { echo "Hala etkinim\n"; sleep(1); }'];
+$descspec = array(['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']);
+$options = ['create_process_group' => true];
+$proc = proc_open($cmd, $descspec, $pipes, null, null, $options);
+while (true) {
+    echo fgets($pipes[1]);
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>proc_open</function></member>
+   <member><function>sapi_windows_set_ctrl_handler</function></member>
+  </simplelist>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

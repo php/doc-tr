@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 58f224110635890a9fb1449e00d787439c2d915a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.sapi-windows-set-ctrl-handler" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>sapi_windows_set_ctrl_handler</refname>
+  <refpurpose>CTRL olayı işleyiciyi tanımlar veya kaldırır</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>bool</type><methodname>sapi_windows_set_ctrl_handler</methodname>
+   <methodparam><type>callable</type><parameter>geri_çağırım</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>ekle</parameter><initializer>&true;</initializer></methodparam>
+  </methodsynopsis>
+  <para>
+   Windows CLI süreçlerinin <literal>CTRL+C</literal> ve
+   <literal>CTRL+BREAK</literal> olaylarını yakalamasını veya yok saymasını
+   sağlayan bir CTRL olay işleyici tanımlar veya kaldırır. Çok evreli
+   ortamlarda işlev yalnızca ana evreden çağrıldığında bu mümkündür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>geri_çağırım</parameter></term>
+    <listitem>
+     <para>
+      Atanacak veya kaldırılacak geri çağırım işlevi. Atanırsa, bir
+      <literal>CTRL+C</literal> veya <literal>CTRL+BREAK</literal> olayı
+      meydana geldiğinde bu işlev çağrılır. İşlevin sözdizimi aşağıdaki gibi
+      olmalıdır:
+      <methodsynopsis>
+       <type>void</type><methodname>işleyici</methodname>
+       <methodparam><type>int</type><parameter>olay</parameter></methodparam>
+      </methodsynopsis>
+      <variablelist>
+       <varlistentry>
+        <term><parameter>olay</parameter></term>
+        <listitem>
+         <simpara>
+          Yakalanacak <literal>CTRL</literal> olayı;
+          <constant>PHP_WINDOWS_EVENT_CTRL_C</constant>
+          veya <constant>PHP_WINDOWS_EVENT_CTRL_BREAK</constant> olabilir.
+         </simpara>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+      <parameter>geri_çağırım</parameter> değiştirgesine &null; aktarımı
+      sürecin <literal>CTRL+C</literal> olaylarını yok saymasını ancak
+      <literal>CTRL+BREAK</literal> olaylarını yakalamasına sebep olur.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>ekle</parameter></term>
+    <listitem>
+     <para>
+      &true; ise işleyici atanır, &false; ise kaldırılır.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="sapi-windows-set-ctrl-handler.example.basic">
+   <title>- <function>sapi_windows_set_ctrl_handler</function> örneği</title>
+   <para>
+    Bu örnekte <literal>CTRL</literal> olaylarının nasıl yakalanacağı
+    gösterilmiştir.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function ctrl_isleyici(int $olay)
+{
+    switch ($olay) {
+        case PHP_WINDOWS_EVENT_CTRL_C:
+            echo "CTRL+C tuşlandı\n";
+            break;
+        case PHP_WINDOWS_EVENT_CTRL_BREAK:
+            echo "CTRL+BREAK tuşlandı\n";
+            break;
+    }
+}
+
+sapi_windows_set_ctrl_handler('ctrl_isleyici');
+while (true); // sonsuz döngü, işleyici tetiklenene dek sürer
+?>
+]]>
+   </programlisting>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>sapi_windows_generate_ctrl_event</function></member>
+  </simplelist>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
