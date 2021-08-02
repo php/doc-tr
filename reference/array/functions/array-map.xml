@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f9c4a68ef4f89e51e6d9b905ad3ddb6492386dd3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d042804100d34f5389fe122b0e1cd41087fd94ba Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-map" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_map</refname>
@@ -18,10 +18,12 @@
   <para>
    <function>array_map</function> işlevi belirtilen dizinin
    (<parameter>diziler</parameter> ile daha fazla dizi belirtilmişse, onların
-   da) ilgili elemanlarının her birine <parameter>işlev</parameter> geri çağırım
-   işlevini uygulayıp sonucu bir dizi olarak döndürür. Geriçağırım işlevinin
-   değiştirge sayısı <function>array_map</function> işlevine aktarılan
-   değiştirge sayısını kabul edebilmelidir.
+   da) ilgili elemanlarının her birine <parameter>işlev</parameter> geri
+   çağırım işlevini uygulayıp sonucu bir dizi olarak döndürür. Geriçağırım
+   işlevinin değiştirge sayısı <function>array_map</function> işlevine
+   aktarılan değiştirge sayısını kabul edebilmelidir. Fazladan belirtilen
+   diziler yok sayılır. Değiştirge sayısı yetersizse
+   <classname>ArgumentCountError</classname> yavrulanır.
   </para>
  </refsect1>
 
@@ -123,11 +125,16 @@ Array
     <programlisting role="php">
 <![CDATA[
 <?php
-$func = function($deger) {
+$func = function(int $deger): int {
     return $deger * 2;
 };
 
 print_r(array_map($func, range(1, 5)));
+
+// Veya PHP 7.4.0 ve sonrasında:
+
+print_r(array_map(fn($value): int => $value * 2, range(1, 5)));
+
 ?>
 ]]>
     </programlisting>
@@ -151,12 +158,12 @@ Array
     <programlisting role="php">
 <![CDATA[
 <?php
-function show_Spanish($n, $m)
+function show_Spanish(int $n, string $m): string
 {
     return("İspanyolcada {$n} sayısının ismi: {$m}");
 }
 
-function map_Spanish($n, $m)
+function map_Spanish(int $n, string $m): array
 {
     return [$n => $m];
 }
@@ -369,6 +376,46 @@ array(1) {
     [1]=>
     string(5) "deger"
   }
+}
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- <function>array_map</function> ve ilişkisel diziler</title>
+    <para>
+     <function>array_map</function> dizi anahtarlarının doğrudan girdi olarak
+     kullanımını desteklemese de <function>array_keys</function> kullanılarak
+     bu yapılabilir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$arr = [
+    'v1' => 'ilk sürüm',
+    'v2' => 'ikinci sürüm',
+    'v3' => 'üçüncü sürüm',
+];
+
+// Bilgi: 7.4.0 öncesinde, anonim işlevler için bunun yerine uzun
+// sözdizimi kullanılırdı.
+$callback = fn(string $k, string $v): string => "$k $v idi";
+
+$result = array_map($callback, array_keys($arr), array_values($arr));
+
+var_dump($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  string(24) "v1 ilk sürüm idi"
+  [1]=>
+  string(25) "v2 ikinci sürüm idi"
+  [2]=>
+  string(24) "v3 üçüncü sürüm idi"
 }
 ]]>
     </screen>
