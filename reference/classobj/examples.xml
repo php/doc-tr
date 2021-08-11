@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 62d53f70bd8d83c2b5abf2b6d39b53657a2f41ae Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6f11457f11d91834e1240c3351d8c4e289371b6d Maintainer: nilgun Status: ready -->
 <appendix xml:id="classobj.examples">
  &reftitle.examples;
  <para>
   Bu örnekte, önce bir temel sınıf ve bu sınıfın bir türevini
-  tanımlayacağız. Temel sınıf, genel olarak bitkileri, yenebilir olup
-  olmadıkları ve renkleri ile tanımlayacak. <varname>Lahana</varname> alt
-  sınıfı, sebzeyi pişirmek için bir yöntem ile pişirilmiş olup olmadığını
-  bulan bir başka yöntem ekleyecek.
+  tanımlayacağız. Temel sınıf, genel olarak bitkileri, yenilebilirlikleri
+  ve renkleri ile tanımlayacak. <varname>Lahana</varname> alt
+  sınıfı, sebzenin pişirilebilir olup olmadığını bulan bir başka yöntem ekleyecek.
  </para>
  <para>
   <example>
-   <title>sınıflar.inc</title>
+   <title>- Sınıf Tanımları</title>
+   <para><varname>Bitki</varname></para>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -20,45 +19,58 @@
 // Üye özellikler ve yöntemlerle temel sınıf
 class Bitki {
 
-   var $yenir;
-   var $renk;
+   public $yenir;
+   public $renk;
+   public $isim;
 
-   function __construct($yenir, $renk="yeşil")
+   public function __construct($yenir="", $renk="yeşil", $isim="")
    {
        $this->yenir = $yenir;
        $this->renk = $renk;
+       $this->isim = $isim;
    }
 
-   function yenir_mi()
+   public function yenir_mi()
    {
        return $this->yenir;
    }
 
-   function ne_renk()
+   public function ne_renk()
    {
        return $this->renk;
    }
 
+   public function ismi()
+   {
+       return $this->isim;
+   }
+
 } // Bitki sınıfının sonu
 
-// temel sınıfı türetelim
-class Lahana extends Bikti {
+?>
+]]>
+   </programlisting>
+   <para><varname>Lahana</varname></para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Lahana extends Bitki {
 
-   var $pişmiş = false;
+   public $pişirilir = "evet";
 
-   function __construct()
+   public function __construct($yenir="evet", $renk="yeşil", $isim="Lahana")
    {
-       parent::__construct(true, "yeşil");
+       parent::__construct($yenir, $renk, $isim);
    }
 
-   function pişir()
+   public function pişirilir()
    {
-       $this->pişmiş = true;
+       $this->pişirilir = "evet";
    }
 
-   function pişmiş_mi()
+   public function pişirilir_mi()
    {
-       return $this->pişmiş;
+       return $this->pişirilir;
    }
 
 } // Lahana sınıfının sonu
@@ -78,79 +90,99 @@ class Lahana extends Bikti {
    <title>dnm.php</title>
    <programlisting role="php">
 <![CDATA[
-<pre>
 <?php
 
-include "sınıflar.inc";
+// sınıfları yüklemek için otomatik yükleyiciyi kaydet
+spl_autoload_register();
 
-// biçemleme işlevleri
-
-function print_vars($obj)
+function printProperties($obj)
 {
-foreach (get_object_vars($obj) as $prop => $val) {
-    echo "\t$prop = $val\n";
-}
-}
-
-function print_methods($obj)
-{
-$arr = get_class_methods(get_class($obj));
-foreach ($arr as $method) {
-    echo "\t$method() işlevi\n";
-}
+    foreach (get_object_vars($obj) as $prop => $val) {
+        echo "\t$prop = $val\n";
+    }
 }
 
-function class_parentage($obj, $class)
+function printMethods($obj)
 {
-if (is_subclass_of($GLOBALS[$obj], $class)) {
-    echo "$obj nesnesinin ait olduğu sınıf: " . get_class($GLOBALS[$obj]);
-    echo ", alt sınıf ise: $class\n";
-} else {
-    echo "$obj nesnesi $class alt sınıfına ait değildir.\n";
+    $arr = get_class_methods(get_class($obj));
+    foreach ($arr as $method) {
+        echo "\t$method() işlevi\n";
+    }
 }
+
+function objectBelongsTo($obj, $class)
+{
+    if (is_subclass_of($obj, $class)) {
+        echo "$obj->isim, $class sınıfının alt sınıfı olan ";
+        echo get_class($obj), " sınıfındandır.\n";
+    } else {
+        echo "$obj->isim, $class sınıfının alt sınıflarından değildir.\n";
+    }
 }
 
 // 2 nesne örnekleyelim
 
-$sebze = new Bitki(true, "mavi");
-$tombul = new Lahana();
+$sebze = new Bitki("belki", "yeşil", "sebze");
+$tombul = new Lahana("evet", "mavi", "Brüksel Lahanası");
 
 // Nesne bilgilerini basalım
 echo "sebze: " . get_class($sebze) . " sınıfında\n";
 echo "tombul: " . get_class($tombul) . " sınıfında";
 echo ", ATA sınıfı " . get_parent_class($tombul) . "\n";
 
-// Sebze özelliklerini gösterelim
+// Özellikleri gösterelim
 echo "\nsebze: Özellikler\n";
-print_vars($sebze);
+printProperties($sebze);
+echo "\n\ntombul: Özellikler\n";
+printProperties($tombul);
 
 // ve tompul yöntemleri
 echo "\ntombul: Yöntemler\n";
-print_methods($tombul);
+printMethods($tombul);
 
 echo "\nEbeveynler:\n";
-class_parentage("tombul", "Lahana");
-class_parentage("tombul", "Bitki");
+objectBelongsTo($tombul, Lahana::class);
+objectBelongsTo($tombul, Bitki::class);
 ?>
-</pre>
 ]]>
    </programlisting>
+   &examples.outputs;
+   <screen>
+<![CDATA[
+sebze: Bitki sınıfında
+tombul: Lahana sınıfında, ATA sınıfı Bitki
+
+sebze: Özellikler
+        yenir = belki
+        renk = yeşil
+        isim = sebze
+
+
+tombul: Özellikler
+        pişirilir = evet
+        yenir = evet
+        renk = mavi
+        isim = Brüksel Lahanası
+
+tombul: Yöntemler
+        __construct() işlevi
+        pişirilir() işlevi
+        pişirilir_mi() işlevi
+        yenir_mi() işlevi
+        ne_renk() işlevi
+        ismi() işlevi
+
+Ebeveynler:
+Brüksel Lahanası, Lahana sınıfının alt sınıflarından değildir.
+Brüksel Lahanası, Bitki sınıfının alt sınıfı olan Lahana sınıfındandır.
+]]>
+   </screen>
    <para>
     Yukarıdaki örnekte önemli şeylerden biri, <varname>$tombul</varname>
     nesnesinin <classname>Lahana</classname> sınıfının bir örneği,
     <classname>Lahana</classname> sınıfının ise <classname>Bitki</classname>
-    sınıfının ise bir alt sınıfı oluşudur. Bu bakımdan betiğin son kısmının
-    çıktısı şöyle olur:
+    sınıfının ise bir alt sınıfı oluşudur.
    </para>
-   <screen>
-<![CDATA[
-   [...]
-Ebeveynler:
-tombul nesnesi Lahana alt sınıfına ait değildir.
-tombul nesnesinin ait olduğu sınıf: Lahana, alt sınıf ise: Bitki
-
-]]>
-   </screen>
   </example>
  </para>
 </appendix>
