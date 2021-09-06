@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 19726d906f782efd4e7cd8c22068d65f0ab616db Maintainer: haluk Status: ready -->
 <refentry xml:id="numberformatter.create" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>NumberFormatter::create</refname>
@@ -13,22 +13,24 @@
   <para>
    &style.oop;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="oop">
    <modifier>public</modifier>
    <modifier>static</modifier>
-   <type>NumberFormatter</type><methodname>NumberFormatter::create</methodname>
+   <type class="union"><type>NumberFormatter</type><type>null</type></type>
+   <methodname>NumberFormatter::create</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>NumberFormatter</type><methodname>numfmt_create</methodname>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>NumberFormatter</type><type>null</type></type>
+   <methodname>numfmt_create</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    &style.oop; (kurucu):
@@ -38,7 +40,7 @@
     <methodname>NumberFormatter::__construct</methodname>
     <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
     <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-    <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+    <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
    </constructorsynopsis>
   <para>
    Bir sayı biçemleyici oluşturur.
@@ -86,13 +88,34 @@
   </para>
  </refsect1>
 
-
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata oluşursa &false;, aksi takdirde
+   Bir hata oluşursa &null;, aksi takdirde
    <classname>NumberFormatter</classname> nesnesi döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>kalıp</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -104,7 +127,7 @@
 <?php
 $fmt = numfmt_create( 'de_DE', NumberFormatter::DECIMAL );
 echo numfmt_format($fmt, 1234567.891234567890000)."\n";
-$fmt = numfmt_create( 'it', NumberFormatter::SPELLOUT );
+$fmt = numfmt_create( 'tr', NumberFormatter::SPELLOUT );
 echo numfmt_format($fmt, 1142)."\n";
 ?>
 ]]>
@@ -117,7 +140,7 @@ echo numfmt_format($fmt, 1142)."\n";
 <?php
 $fmt = new NumberFormatter( 'de_DE', NumberFormatter::DECIMAL );
 echo $fmt->format(1234567.891234567890000)."\n";
-$fmt = new NumberFormatter( 'it', NumberFormatter::SPELLOUT );
+$fmt = new NumberFormatter( 'tr', NumberFormatter::SPELLOUT );
 echo $fmt->format(1142)."\n";
 ?>
 ]]>
@@ -127,7 +150,7 @@ echo $fmt->format(1142)."\n";
   <screen>
 <![CDATA[
 1.234.567,891
-millicentoquarantadue
+bin yüz kırk iki
 ]]>
   </screen>
  </refsect1>
