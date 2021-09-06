@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: dda28ddda643c442e40b428ccb8f0d65f75686b1 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="locale.getdisplayname">
+<!-- EN-Revision: 6fcf444471febbbc7ad0a52f16303f6957362447 Maintainer: nilgun Status: ready -->
+<refentry xml:id="locale.getdisplayname" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>Locale::getDisplayName</refname>
   <refname>locale_get_display_name</refname>
@@ -13,23 +13,25 @@
   <para>
    &style.oop;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="oop">
    <modifier>public</modifier>
    <modifier>static</modifier>
-   <type>string</type><methodname>Locale::getDisplayName</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>Locale::getDisplayName</methodname>
    <methodparam><type>string</type><parameter>hedef_yerel</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>adlandırma_yereli</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>adlandırma_yereli</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>string</type><methodname>locale_get_display_name</methodname>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>string</type><type>false</type></type><methodname>locale_get_display_name</methodname>
    <methodparam><type>string</type><parameter>hedef_yerel</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>adlandırma_yereli</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>adlandırma_yereli</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Girdi yerelinin yerelleştirilmiş ismini döndürür. &null; belirtilmişse öntanımlı yerelin ismini döndürür
+   Girdi yerelinin yerelleştirilmiş ismini döndürür.
+   <parameter>adlandırma_yereli</parameter> &null; ise öntanımlı yerel
+   kullanılır.
   </para>
  </refsect1>
 
@@ -56,14 +58,35 @@
   </para>
  </refsect1>
 
-
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    <parameter>hedef_yerel</parameter> ile belirtilen yerelin
    <parameter>adlandırma_yereli</parameter> ile belirtilen yereldeki
-   ismini döndürür.
+   ismi döner,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>adlandırma_yereli</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
