@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 06126805f490aba6f6c107980f673eada0c79e6c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 871fdba56fc1afc8a2664b9368ed346b4f60718b Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -1051,7 +1051,8 @@ $greet('PHP');
     değişkenler <literal>use</literal> dil oluşumuna aktarılmalıdır.
     PHP 7.1 itibariyle, bu değişkenler &link.superglobals;,
     <varname>$this</varname> veya bir değiştirge ile aynı isimdeki
-    değişkenleri içeremez.
+    değişkenleri içeremez. İşlevin dönüş türü bildirimi
+    <literal>use</literal> sözcüğünden <emphasis>sonra</emphasis> gelmelidir.
    </simpara>
 
    <example>
@@ -1096,7 +1097,13 @@ $example = function ($arg) use ($message) {
     var_dump($arg . ' ' . $message);
 };
 $example("hello");
-?>
+
+// Dönüş türü bildirimi use sözcüğündan sonra gelir
+$example = function () use ($message): string {
+    return "hello $message";
+};
+var_dump($example());
+>
 ]]>
     </programlisting>
     &example.outputs.similar;
@@ -1108,6 +1115,7 @@ string(5) "hello"
 string(5) "hello"
 string(5) "hello"
 string(5) "world"
+string(11) "hello world"
 string(11) "hello world"
 ]]>
     </screen>
