@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7f99d5e488d161ce3b12d1dae405a283728933c3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8ad9c12d9bf30c0a0c06f150643c0669d02c3125 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="function.hash-pbkdf2">
  <refnamediv>
   <refname>hash_pbkdf2</refname>
@@ -142,14 +142,19 @@ $yineleme = 1000;
 $tuz = openssl_random_pseudo_bytes(16);
 
 $aş = hash_pbkdf2("sha256", $parola, $tuz, $yineleme, 20);
-echo $aş;
+var_dump($aş);
+
+// ham ikil durumunda, eşdeğer sonuç için $uzunluk yarıya düşer
+$aş = hash_pbkdf2("sha256", $parola, $tuz, $yineleme, 10, true);
+var_dump(bin2hex($aş));?>
 ?>
 ]]>
     </programlisting>
     &example.outputs.similar;
     <screen>
 <![CDATA[
-120fb6cffcf8b32c43e7
+string(20) "120fb6cffcf8b32c43e7"
+string(20) "120fb6cffcf8b32c43e7"
 ]]>
     </screen>
    </example>
