@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7f99d5e488d161ce3b12d1dae405a283728933c3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 426d9a8f156bca7be9cb5475e24ba104ee814bc1 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.sapi-windows-vt100-support" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>sapi_windows_vt100_support</refname>
@@ -11,10 +11,10 @@
   <methodsynopsis>
    <type>bool</type><methodname>sapi_windows_vt100_support</methodname>
    <methodparam><type>resource</type><parameter>akım</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>etkin</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>bool</type><type>null</type></type><parameter>etkin</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>etkin</parameter> atlandığında, <parameter>akım</parameter>
+   <parameter>etkin</parameter> &null; ise ve <parameter>akım</parameter>
    için VT100 denetim kodları etkinse &true;, değilse &false; döner.
   </para>
   <para>
@@ -69,12 +69,35 @@
  <refsect1 role="returnvalues"><!-- {{{ -->
   &reftitle.returnvalues;
   <para>
-   <parameter>etkin</parameter> atlanmışsa ve VT100 özelliği etkinse &true;, değilse &false; döner.
+   <parameter>etkin</parameter> &null; ise ve VT100 özelliği etkinse &true;,
+   değilse &false; döner.
   </para>
   <para>
-   <parameter>etkin</parameter> belirtilmişse: &return.success;
+   <parameter>etkin</parameter> içn mantıksal bir değer belirtilmişse: &return.success;
   </para>
  </refsect1><!-- }}} -->
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>etkin</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
 
  <refsect1 role="examples"><!-- {{{ -->
   &reftitle.examples;
@@ -85,7 +108,7 @@
     <constant>STDERR</constant> üzerinde VT100 denetim kodları etkindir.
    </para>
    <programlisting role="sh">
-php -r "var_export(sapi_windows_vt100_support(STDOUT));echo ' ';var_export(sapi_windows_vt100_support(STDERR));"
+php -r "var_export(sapi_windows_vt100_support(STDOUT));echo ' ';var_export(sapi_windows_vt100_support(STDERR));" 2&gt;NUL
    </programlisting>
    &example.outputs.similar;
    <screen>
@@ -97,7 +120,7 @@ true true
     Eğer akımlar yönlendirilmişse VT100 özelliği etkinleştirilemeyebilir:
    </para>
    <programlisting role="sh">
-php -r "var_export(sapi_windows_vt100_support(STDOUT));echo ' ';var_export(sapi_windows_vt100_support(STDERR));" 2>NUL
+php -r "var_export(sapi_windows_vt100_support(STDOUT, true));echo ' ';var_export(sapi_windows_vt100_support(STDERR, true));" 2&gt;NUL
    </programlisting>
    &example.outputs.similar;
    <screen>
