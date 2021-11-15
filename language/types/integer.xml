@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: d494ffa4d9f83b60fe66972ec2c0cf0301513b4a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 085c38d45e466691062b4444c71f4dbe4198f884 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
  <title><code>int</code></title>
 
@@ -43,8 +42,10 @@
 
   <para>
    Sekizlik gösterimde sayıların önüne <literal>0</literal> (sıfır),
-   onaltılık gösterimde <literal>0x</literal> ve ikil gösterimde 
+   onaltılık gösterimde <literal>0x</literal> ve ikil gösterimde
    <literal>0b</literal> getirilir.
+   PHP 8.1.0 ve sonrasında sekizlik gösterim ayrıca, <literal>0o</literal> veya
+   <literal>0O</literal> ile öncelenmiş de olabilir.
   </para>
 
   <para>
@@ -58,12 +59,13 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-$a = 1234; // onluk tabanda bir sayı
-$a = -123; // negatif bir sayı
-$a = 0123; // sekizlik tabanda bir sayı (onluk: 83)
-$a = 0x1A; // onaltılık tabanda bir sayı (onluk: 26)
+$a = 1234; // onluk sayı
+$a = -123; // negatif sayı
+$a = 0123; // sekizlik sayı (onluk: 83)
+$a = 0o123; // sekizlik sayı (PHP 8.1.0 ve sonrası)
+$a = 0x1A; // onaltılık sayı (onluk: 26)
 $a = 0b11111111; // ikil sayı (onluk: 255)
-$a = 1_234.567; // onluk tabanda bir sayı (PHP 7.4.0 ve sonrası)
+$a = 1_234.567; // onluk sayı (PHP 7.4.0 ve sonrası)
 ?>
 ]]>
    </programlisting>
@@ -82,7 +84,7 @@ onluk     : [1-9][0-9]*(_[0-9]+)*
 
 onaltılık : 0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*
 
-sekizlik  : 0[0-7]+(_[0-7]+)*
+sekizlik  : 0[oO]?[0-7]+(_[0-7]+)*
 
 ikil      : 0[bB][01]+(_[01]+)*
 
@@ -98,9 +100,9 @@ tamsayı   : onluk
    Bir <type>intr</type> türün genişliği platforma göre değişir. 32 bitlik
    sistemlerde azami değer 2 milyon civarında iken 64 bitlik sistemlerde 9E18
    civarındadır. PHP işaretsiz tamsayıları (C'deki unsigned) desteklemez.
-   <type>int</type> türün genişliği <constant>PHP_INT_SIZE</constant> 
-   sabitine, olası en büyük değeri <constant>PHP_INT_MAX</constant> 
-   sabitine ve en küçük değeri ise <constant>PHP_INT_MIN</constant> 
+   <type>int</type> türün genişliği <constant>PHP_INT_SIZE</constant>
+   sabitine, olası en büyük değeri <constant>PHP_INT_MAX</constant>
+   sabitine ve en küçük değeri ise <constant>PHP_INT_MIN</constant>
    sabitine atanmıştır.
   </para>
  </sect2>
@@ -188,8 +190,8 @@ var_dump(round(25/7));  // float(4)
   </simpara>
 
   <simpara>
-   Bir <type>resource</type> bir <type>inte</type> sayıya dönüştürülürse, 
-   sonuç, PHP tarafından çalışma anında özkaynağa atanan eşsiz özkaynak 
+   Bir <type>resource</type> bir <type>inte</type> sayıya dönüştürülürse,
+   sonuç, PHP tarafından çalışma anında özkaynağa atanan eşsiz özkaynak
    numarası olacaktır.
   </simpara>
 
@@ -228,8 +230,8 @@ var_dump(round(25/7));  // float(4)
 
    <note>
     <para>
-     <type>int</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır 
-     olacaktır. 
+     <type>int</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır
+     olacaktır.
     </para>
    </note>
 

@@ -116,7 +116,7 @@ bar();
    </para>
    <para>
     PHP'de tüm işlevler ve sınıflar betik genelinde geçerlidir - bir işlevin
-    içinden bile tanımlanmış olsalar işlevin dışından çağrılabilirler.
+    içinden tanımlanmış olsalar bile işlevin dışından çağrılabilirler.
    </para>
    <simpara>
     PHP işlevlerin farklı değiştirgeli yeni tanımlarının yapılmasını
@@ -159,10 +159,10 @@ function recursion($a)
     </example>
     <note>
      <simpara>
-     Kendini çağıran işlev ve yöntemler bunu 100-200 kere yaparsa yığıt
-     taşabilir ve çalışan betiğin durdurulmasına sebep olabilir. Özellikle,
-     kendini çağırma sayısı sonsuza giderse bu bir programlama hatası
-     sayılır.
+      Kendini çağıran işlev ve yöntemler bunu 100-200 kere yaparsa yığıt
+      taşabilir ve çalışan betiğin durdurulmasına sebep olabilir. Özellikle,
+      kendini çağırma sayısı sonsuza giderse bu bir programlama hatası
+      sayılır.
      </simpara>
     </note>
    </para>
@@ -194,7 +194,7 @@ function recursion($a)
 <?php
 function dizi_kabul_eder($girdi)
 {
-    echo "$girde[0] + $girdi[1] = ", $girdi[0]+$girdi[1];
+    echo "$girdi[0] + $girdi[1] = ", $girdi[0]+$girdi[1];
 }
 ?>
 ]]>
@@ -230,11 +230,12 @@ function takes_many_args(
    </para>
    <para>
     PHP 8.0.0'dan itibaren, zorunlu değiştirgelerin seçimlik değiştirgelerden
-    sonra aktarımı kullanımdan kaldırılmıştır. Bu sorun genellikle öntanımlı
-    değeri yazmamak suretiyle çözümlenebilir. Bunun tek istisnası &null;
-    öntanımlamasının türü örtük olarak nullable yapan <code>Type $param =
-    null</code> şeklindeki değiştirgelerdir. Bu kullanımda kalmışsa da örtük
-    bir nullable türü kullanılacaksa önerilir.
+    sonra aktarımının kullanımı önerilmemektedir. Bu sorun genellikle
+    öntanımlı değer yazılmamak suretiyle çözümlenebilir. Bunun tek istisnası
+    &null; öntanımlamasının türün örtük olarak null olabilmesini sağlayan
+    <code>Type $param = null</code> şeklindeki değiştirgelerdir. Bu kullanıma
+    hala izin veriliyor olsa da bunun açıkça bildirimde null türünü de
+    içererek yapılması önerilir.
    </para>
    <para>
    <example>
@@ -265,7 +266,7 @@ function bar(?A $a, $b) {}       // Önerilen
     </simpara>
     <para>
       Bir işleve bir değiştirgenin daima gönderimli olarak aktarılmasını
-      istiyorsanız, işlev tanımladığınız yerde o değiştirgenin başına &amp;
+      istiyorsanız, işlev bildiriminde o değiştirgenin başına &amp;
       karakterini koyarak bunu sağlayabilirsiniz:
     </para>
     <para>
@@ -288,8 +289,8 @@ echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
      </example>
     </para>
     <para>
-     Başvuruyla iletilmesi beklenen bir değeri değiştirge olarak iletmek
-     bir hatadır.
+     Gönderimli aktarılması beklenen bir değeri değişkeniyle değil değeriyle
+     aktarmak bir hatadır.
     </para>
    </sect2>
 
@@ -327,8 +328,8 @@ Bir fincan az şekerli kahve yapalım.
      </example>
     </para>
     <para>
-      PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün
-      kullanımına da izin verir, örneğin:
+     PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün
+     kullanımına da izin verir, örneğin:
     </para>
     <para>
      <example>
@@ -350,14 +351,14 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
     </para>
 
     <simpara>
-      Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
-      değil, bir sabit ifadesi olmalıdır.
+     Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
+     değil, bir sabit ifadesi olmalıdır.
     </simpara>
     <para>
-      Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
-      değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer
-      alması gerektiğine dikkat edin. Aksi takdirde işler yolunda
-      gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
+     Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
+     değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer
+     alması gerektiğine dikkat edin. Aksi takdirde işler yolunda
+     gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
     </para>
     <para>
      <example>
@@ -508,15 +509,15 @@ echo add(...$a);
    <para>
     <literal>...</literal> dizgeciğinden önce normal konumsal değiştirgeler
     belirtilebilir. Bu durumda <literal>...</literal> ile üretilen diziye
-    sadece bir konumsal değiştirge ile eşleşmeyen tokeni izleyen
-    değiştirgeler eklenir.
+    sadece konumsal değiştirgelerle eşleşen sonuncu değiştirgeyi izleyen
+    eşleşmeyen değiştirgeler eklenir.
    </para>
 
    <para>
     <literal>...</literal> dizgeciğinin önüne <link
     linkend="language.types.declarations">tür bildirimi</link> de
     eklenebilir. Bu durumda <literal>...</literal> kapsamındaki tüm
-    değiştirgelerin bu tür bildimi ile eşleşmesi gerekir.
+    değiştirgelerin bu tür bildirimi ile eşleşmesi gerekir.
     <example>
      <title>Değişken değiştirgelerde tür bildirimi</title>
      <programlisting role="php">
@@ -551,17 +552,17 @@ Catchable fatal error: Argument 2 passed to total_intervals() must be an instanc
 
    <para>
     Son olarak, <literal>...</literal> dizgeciğinin önüne bir
-     <literal>&amp;</literal> ekleyerek değişken değiştirgeleri
-     <link linkend="functions.arguments.by-reference">gönderimli</link>
-     olarak da aktarabilirsiniz.
+    <literal>&amp;</literal> ekleyerek değişken değiştirgeleri
+    <link linkend="functions.arguments.by-reference">gönderimli</link>
+    olarak da aktarabilirsiniz.
    </para>
 
   <sect3 xml:id="functions.variable-arg-list.old">
    <title>Daha eski PHP sürümlerinde</title>
 
    <para>
-    Bir işlevin değişken sayıda değiştirge içerebilmesi özel bir sözdizimi
-    gerekmez; ancak işlevin değiştirgelerine erişim için
+    Bir işlevin değişken sayıda değiştirge içerebilmesi için özel bir
+    sözdizimi gerekmez; ancak işlevin değiştirgelerine erişim için
     <function>func_num_args</function>, <function>func_get_arg</function>
     ve <function>func_get_args</function> kullanmak gerekir.
    </para>
@@ -605,7 +606,7 @@ echo sum(1, 2, 3, 4);
     PHP 8.0.0, var olan konumsal değiştirgelerin bir uzantısı olarak isimli
     değiştirgeleri tanıttı. İsimli değiştirgeler, değiştirgelerin konuma
     göre değil değiştirge adına göre işleve iletilmesine izin verir. Bu,
-    değiştirgenin anlamını kendi kendine belgelendirir, değiştirgeleri
+    değiştirgeyi kendini belgelendiren değiştirge haline, değiştirgeleri de
     sıralamadan bağımsız hale getirir ve öntanımlı değerlerin keyfi olarak
     atlanmasına izin verir.
    </para>
@@ -662,10 +663,10 @@ array_fill(value: 50, count: 100, start_index: 0);
     </example>
    </para>
    <para>
-     İsimli değiştirgeler konumsal değiştirgelerle birleştirilebilir. Bu
-     durumda, isimli değiştirgeler konumsal değiştirgelerden sonra gelmelidir.
-     Sıralarına bakılmaksızın, bir işlevin isteğe bağlı değiştirgelerinden
-     yalnızca bazılarını belirtmek de mümkündür.
+    İsimli değiştirgeler konumsal değiştirgelerle birleştirilebilir. Bu
+    durumda, isimli değiştirgeler konumsal değiştirgelerden sonra gelmelidir.
+    Sıralarına bakılmaksızın, bir işlevin isteğe bağlı değiştirgelerinden
+    yalnızca bazılarını belirtmek de mümkündür.
    </para>
    <para>
     <example>
@@ -699,7 +700,7 @@ function foo($param) { ... }
 foo(param: 1, param: 2);
 // Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
 foo(1, param: 2);
-// $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
+// Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
 ?>
 ]]>
      </programlisting>
