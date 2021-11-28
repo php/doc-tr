@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 975e9114e8aaf86762bce636d589eb043e72ccb6 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9dd74f527dc164165dee7f19058bec75a901e770 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.declarations">
  <title>Tür Bildirimleri</title>
 
@@ -351,12 +351,12 @@ function get_item(): ?string {
 
   <note>
    <para>
-    PHP 7.1.0 öncesinde, <literal>null</literal>'u öntanımlı değer yaparak
-    boş olabilen değiştirgeler elde etmek mümkündü. Kalıtım sırasında
-    kesildiği için bu önerilmez.
+    <literal>null</literal>'u öntanımlı değer yaparak null değerli olabilen
+    değiştirgeler elde etmek mümkündür. Kalıtım sırasında bozulduğundan
+    bunun yapılması önerilmez.
    </para>
    <example>
-    <title>- Boş olabilen değiştirge yapmanın eski yolu</title>
+    <title>- Null olabilen değiştirge yapmanın eski yolu</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -510,6 +510,25 @@ function foo(): X|Y {} // izin verilir (fazlalık sadece çalışma anında anla
     dönüş türüdür. Bundan dolayı birleşim türündeki bildirimlerde yer alamaz.
     PHP 7.1.0 ve sonrasında geçerlidir.
    </para>
+   <note>
+    <para>
+     <type>void</type> işlevden gönderimli değer döndürülmesi tutarsız
+     olduğundan PHP 8.1.0 itibariyle bunun yapılması önerilmemektedir.
+     Evvelce, böyle bir durumda şu <constant>E_NOTICE</constant> çıktılanırdı:
+     <literal>Only variable references should be returned by reference</literal>
+     (Yalnızca gönderimli değişkenler gönderimli döndürülebilir).
+
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function &test(): void {}
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+   </note>
   </sect3>
 
   <sect3 xml:id="language.types.declarations.never">
