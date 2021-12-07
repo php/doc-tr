@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 3ba4c7d287231ab2dbcd3af5c25ae9442a419c0e Maintainer: nilgun Status: wip -->
+<!-- EN-Revision: 3ba4c7d287231ab2dbcd3af5c25ae9442a419c0e Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.enumerations" xmlns="http://docbook.org/ns/docbook">
   <title>Numaralandırmalar</title>
   <sect1 xml:id="language.enumerations.overview">
@@ -170,8 +170,8 @@ enum Deste: string
   </programlisting>
 
   <para>
-   Basitçe bir değerle "destekli" olduğundan sayıl eşdeğeri olan kılıflara
-   "Destekli Kılıf" denir. Yalnızca desteki kılıflar içeren numaralandırmalara
+   Basitçe bir değerle "desteklenmiş" olduğundan sayıl eşdeğeri olan kılıflara
+   "Destekli Kılıf" denir. Yalnızca destekli kılıflar içeren numaralandırmalara
    "Destekli Numaralandırma" denir. Destekli bir numaralandırma sadece
    destekli kılıfları içerir, desteksiz kılıf içermez. Desteksiz bir
    numaralama ise sadece desteksiz kılıfları içerir, destekli kılıf içermez.
@@ -213,7 +213,7 @@ print Deste::Sinekler->value;
   </programlisting>
 
   <para>
-   <literal>value</literal> özelliğinin salt-okunurluğunu zorlamak amacıyla
+   <literal>value</literal> özelliğin salt-okunurluğunu zorlamak amacıyla
    bir değişkene gönderimli atanamaz. Yani, aşağıdaki örnek bir hata üretir:
   </para>
 
@@ -236,9 +236,10 @@ $ref = &$deste->value;
    <member>
     <literal>from(int|string): self</literal> yöntemi bir sayıl değer alır ve
     karşılığı olan numaralandırma kılıfını döndürür. Böyle bir kılıf yoksa
-    <classname>ValueError</classname> istisnası yavrulanır. Girdi olarak sayıl
+    <classname>ValueError</classname> istisnası oluşur. Girdi olarak sayıl
     değere güvenildiği ancak karşılığında bir numaralandırma değerinin
-    olmadığı durumda uygulama durduran bir hata gerekiyorsa yararlı olabilir.
+    olmadığı durumda uygulamayı durduracak bir hata gerekiyorsa yararlı
+    olabilir.
    </member>
    <member>
     <literal>tryFrom(int|string): ?self</literal> yöntemi bir sayıl değer alır
@@ -278,7 +279,7 @@ print $deste->value;
 
   <para>
    <literal>from()</literal> veya <literal>tryFrom()</literal> yöntemini
-   geliştirici destekli bir numaralandırma üzerinde kendi tanımlarsa sonuç
+   destekli bir numaralandırma üzerinde geliştirici kendi tanımlarsa sonuç
    ölümcül hata olur.
   </para>
 
@@ -289,7 +290,7 @@ print $deste->value;
 
   <para>
    Numaralandırmalar (destekli ve desteksiz, her ikiside) yöntemler içerebilir
-   ve arayüazleri gerçekleyebilir. Bir numaralandırma, bir arayüzü
+   ve arayüzleri gerçekleyebilir. Bir numaralandırma, bir arayüzü
    gerçekliyorsa bu arayüz için her tür sınaması bu numaralandırmanın tüm
    sınıflarını kabul edecektir.
   </para>
@@ -331,7 +332,7 @@ print Deste::Karolar->kesim(); //  "Dörtgen"
   <para>
    Bu örnekte, dört <literal>Deste</literal> örneğinin hepsi iki yönteme
    sahiptir: <literal>renk()</literal> ve <literal>kesim()</literal>. Kod
-   çağrılır çağrılmaz tür sınamaları yapılır. Bu diğer nesne örneklerine
+   çağrılır çağrılmaz tür sınamaları yapılır. Bu, diğer nesne örneklerine
    uygulanandan farklı değildir.
   </para>
 
@@ -436,24 +437,25 @@ final class Deste implements UnitEnum, Renkli
   <title>Statik Numaralandırma Yöntemleri</title>
 
   <para>
-   Enumerations may also have static methods.  The use for static methods on the
-   enumeration itself is primarily for alternative constructors.  E.g.:
+   Numaralandırmaların statik yöntemleri de olabilir. Statik yöntemlerin
+   numaralandırmalar üzerinde kullanımının birincil amacı kurucu
+   oluşturmaktır. Örnek:
   </para>
 
   <programlisting role="php">
 <![CDATA[
 <?php
-enum Size
+enum Boyut
 {
-    case Small;
-    case Medium;
-    case Large;
-    public static function fromLength(int $cm): static
+    case Küçük;
+    case Normal;
+    case Büyük;
+    public static function uzunluğaGöre(int $cm): static
     {
         return match(true) {
-            $cm < 50 => static::Small,
-            $cm < 100 => static::Medium,
-            default => static::Large,
+            $cm < 50 => static::Küçük,
+            $cm < 100 => static::Normal,
+            default => static::Büyük,
         };
     }
 }
@@ -462,8 +464,8 @@ enum Size
   </programlisting>
 
   <para>
-   Static methods may be public, private, or protected, although in practice private
-   and protected are equivalent as inheritance is not allowed.
+   Statik yöntemler public, private veya protected olabilirse de kalıtıma izin
+   verilmediğinden uygulamada private ve protected eşdeğerdir.
   </para>
 
  </sect1>
@@ -472,21 +474,20 @@ enum Size
   <title>Numaralandırma Sabitleri</title>
 
   <para>
-   Enumerations may include constants, which may be public, private, or protected,
-   although in practice private and protected are equivalent as inheritance is not allowed.
+   Numaralandırmalar public, private veya protected olabilen sabitler içerebilir.
   </para>
 
-  <para>An enum constant may refer to an enum case:</para>
+  <para>Bir enum sabiti, bir kılıfa atıfta bulunabilir:</para>
 
   <programlisting role="php">
 <![CDATA[
 <?php
-enum Size
+enum Boyut
 {
-    case Small;
-    case Medium;
-    case Large;
-    public const Huge = self::Large;
+    case Küçük;
+    case Normal;
+    case Büyük;
+    public const Kocaman = self::Büyük;
 }
 ?>
 ]]>
@@ -499,35 +500,35 @@ enum Size
   <para>
    Numaralandırmalar, sınıflardaki gibi davranan niteliklerden yararlanabilir.
    Ancak, bir numaralandırma içinde kullanılan niteliklerin özelliklerinin
-   olmamasına dikkat edilmelidir. Sadece yöntemler ve statik yöntemler
+   olmamasına dikkat edilmelidir; sadece yöntemler ve statik yöntemler
    içerebilir. Özellikleri olan bir nitelik ölümcül hata ile sonuçlanır.
   </para>
 
   <programlisting role="php">
 <![CDATA[
 <?php
-interface Colorful
+interface Renkli
 {
-    public function color(): string;
+    public function renk(): string;
 }
-trait Rectangle
+trait Dörtgen
 {
-    public function shape(): string {
-        return "Rectangle";
+    public function kesim(): string {
+        return "Dörtgen";
     }
 }
-enum Suit implements Colorful
+enum Deste implements Renkli
 {
-    use Rectangle;
-    case Hearts;
-    case Diamonds;
-    case Clubs;
-    case Spades;
-    public function color(): string
+    use Dörtgen;
+    case Kupalar;
+    case Karolar;
+    case Sinekler;
+    case Maçalar;
+    public function renk(): string
     {
         return match($this) {
-            Suit::Hearts, Suit::Diamonds => 'Red',
-            Suit::Clubs, Suit::Spades => 'Black',
+            Deste::Kupalar, Deste::Karolar => 'Kırmızı',
+            Deste::Sinekler, Deste::Maçalar => 'Siyah',
         };
     }
 }
@@ -540,23 +541,26 @@ enum Suit implements Colorful
   <title>Sabit ifadelerinde numaralandırma değerleri</title>
 
   <para>
-   Because cases are represented as constants on the enum itself, they may be used as static
-   values in most constant expressions: property defaults, static variable defaults, parameter
-   defaults, global and class constant values. They may not be used in other enum case values, but
-   normal constants may refer to an enum case.
+   Kılıflar enum üzerinde sabitler olarak temsil edildiğinden, çoğu sabit
+   ifadesinde statik değerler olarak kullanılabilir: özellik öntanımlıları,
+   statik değişken öntanımlıları, değiştirge öntanımlıları, küresel ve sınıf
+   sabitlerinin değerleri. Ancak diğer kılıf değerlerinde kullanılamaz, sadece
+   enum sabitleri bir kılıfa atıfta bulunabilir.
   </para>
 
   <para>
-   However, implicit magic method calls such as <classname>ArrayAccess</classname> on enums are not allowed in static
-   or constant definitions as we cannot absolutely guarantee that the resulting value is deterministic
-   or that the method invocation is free of side effects. Function calls, method calls, and
-   property access continue to be invalid operations in constant expressions.
+   Ancak, sonuç değerinin belirleyici olduğunu veya yöntem çağrılarının yan
+   etkilerden arınmış olduğunu kesinlikle garanti edemediğimiz için,
+   numaralandırmalarda <classname>ArrayAccess</classname> gibi örtük sihirli
+   yöntem çağrılarına statik veya sabit tanımlar içinde izin verilmez. İşlev
+   çağrıları, yöntem çağrıları ve özellik erişimi, sabit ifadeler içinde
+   geçersiz işlemler olarak kalmaya devam eder.
   </para>
 
   <programlisting role="php">
 <![CDATA[
 <?php
-// This is an entirely legal Enum definition.
+// Bu tamamen geçerli bir numaralandırma tanımıdır.
 enum Direction implements ArrayAccess
 {
     case Up;
@@ -568,13 +572,13 @@ enum Direction implements ArrayAccess
 }
 class Foo
 {
-    // This is allowed.
+    // Buna izin verilir.
     const Bar = Direction::Down;
-    // This is disallowed, as it may not be deterministic.
+    // Buna izin verilmez, belirleyici olmayabilir.
     const Bar = Direction::Up['short'];
-    // Fatal error: Cannot use [] on enums in constant expression
+    // Ölümcül Hata: enum üzerinde sabit ifadesi içinde [] kullanılamaz
 }
-// This is entirely legal, because it's not a constant expression.
+// Bu, bir sabit ifadesi olmadığından tamamen geçerlidir.
 $x = Direction::Up['short'];
 ?>
 ]]>
@@ -615,9 +619,9 @@ $x = Direction::Up['short'];
    <member>
     Numaralandırmalar ve kılıfların kendilerine ekli
     <link linkend="language.attributes">öznitelikleri</link> olabilir.
-    <constant>TARGET_CLASS</constant> hedef süzgeci Numaralandırmaların
+    <constant>TARGET_CLASS</constant> hedef süzgeci numaralandırmaların
     kendilerini içerir. <constant>TARGET_CLASS_CONST</constant> hedef süzgeci
-    ise Numaralandırma Kılıflarını içerir.
+    ise numaralandırma kılıflarını içerir.
    </member>
    <member>
     <link linkend="object.call">__call</link>,
@@ -630,7 +634,7 @@ $x = Direction::Up['short'];
 
   <para>
    Bir numaralandırma türündeki <literal>::class</literal> sihirli sabiti,
-   tamamen bir nesnedeki gibi isimalanlı tür adı olarak değerlendirilir. Bir
+   tamamen bir nesnedeki gibi isim alanlı tür adı olarak değerlendirilir. Bir
    kılıf örneğindeki <literal>::class</literal> sihirli sabiti ise, o türün
    tekil örneği olduğu için numaralandırma olarak değerlendirilir.
   </para>
@@ -645,10 +649,10 @@ $x = Direction::Up['short'];
   <programlisting role="php">
 <![CDATA[
 <?php
-$trefl = new Suit();
-// Hata: enum Suit örneklenemez
-$kör = (new ReflectionClass(Suit::class))->KurucusuzYeniÖrnek()
-// Hata: enum Suit örneklenemez
+$trefl = new Deste();
+// Hata: enum Deste örneklenemez
+$kör = (new ReflectionClass(Deste::class))->KurucusuzYeniÖrnek()
+// Hata: enum Deste örneklenemez
 ?>
 ]]>
   </programlisting>
@@ -658,7 +662,7 @@ $kör = (new ReflectionClass(Suit::class))->KurucusuzYeniÖrnek()
   <title>Değer Listeleme</title>
 
   <para>
-   Saf ve destekli numaralandırmaların her ikisi de
+   Destekli ya da desteksiz, numaralandırmaların her ikisi de
    <interfacename>UnitEnum</interfacename> adlı dahili bir arayüzü gerçekler.
    <literal>UnitEnum</literal> arayüzü <literal>cases()</literal> statik
    yöntemini içerir. <literal>cases()</literal> yöntemi, bildirim sırasında
@@ -668,8 +672,8 @@ $kör = (new ReflectionClass(Suit::class))->KurucusuzYeniÖrnek()
   <programlisting role="php">
 <![CDATA[
 <?php
-Suit::cases();
-// Şunları üretir: [Suit::Hearts, Suit::Diamonds, Suit::Clubs, Suit:Spades]
+Deste::cases();
+// Şunları üretir: [Deste::Kupalar, Deste::Karolar, Deste::Sinekler, Deste:Maçalar]
 ?>
 ]]>
   </programlisting>
@@ -694,16 +698,16 @@ Suit::cases();
   <programlisting role="php">
 <![CDATA[
 <?php
-Suit::Hearts === unserialize(serialize(Suit::Hearts));
-print serialize(Suit::Hearts);
-// E:11:"Suit:Hearts";
+Deste::Kupalar === unserialize(serialize(Deste::Kupalar));
+print serialize(Deste::Kupalar);
+// E:14:"Deste::Kupalar";
 ?>
 ]]>
   </programlisting>
 
   <para>
    Nesneleştirme sırasında bir numaralandırma ve kılıfın eşleşeceği
-   dizgeleştirilmiş bir değer yoksa bir uyarı çıktılanıp
+   dizgeleştirilmiş bir değer yoksa bir uyarı çıktılayıp
    <literal>false</literal> döndürülür.
   </para>
 
