@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d8567f0b1ac7071dfa5aba57df8318273cd445c3 Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.connections" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Bağlantılar ve Bağlantı Yönetimi</title>
  <para>
@@ -66,6 +65,14 @@ try {
   yapabilirsiniz. Bunu siz yapmazsanız, PHP betiğiniz sonlandığında bunu sizin
   yerinize yapacaktır.
  </para>
+ <note>
+  <simpara>
+   Bu PDO örneğine hala başka gönderimler varsa (örneğin bir PDOStatement
+   örneğinden veya aynı PDO örneğine gönderimli diğer değişkenlerden),
+   bunların da kaldırılması gerekir (örneğin, PDOStatement'a başvuran
+   değişkene &null; atanarak).
+  </simpara>
+ </note>
  <para>
   <example>
    <title>- Bir bağlantının kapatılışı</title>
@@ -75,8 +82,10 @@ try {
 $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
 // burada bağlantıyı kullanıyoruz
 
+$sth = $dbh->query('SELECT * FROM foo');
 
 // İşimiz bittiğine göre bağlantıyı kapatabiliriz.
+$sth = null;
 $dbh = null;
 ?>
 ]]>
@@ -104,6 +113,15 @@ $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass, array(
 ]]>
    </programlisting>
   </example>
+ </para>
+ <para>
+  <constant>PDO::ATTR_PERSISTENT</constant> seçeneğinin değeri, sayısal
+  olmayan bir dizge olmadığı sürece &boolean;'a (kalıcı bağlantıları
+  etkinleştir/devre dışı bırak) dönüştürülür, bu durumda çok sayıda kalıcı
+  bağlantı havuzunun kullanımına izin verilir. Bu, farklı bağlantılar uyumsuz
+  ayarlar kullanıyorsa, örneğin farklı
+  <constant>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY</constant> değerleri
+  kullanılıyorsa yararlıdır.
  </para>
  <note>
   <para>

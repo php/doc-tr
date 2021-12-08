@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 8cdc6621f9826d04abc3e50438c010804d7e8683 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 83a17a7324c2597bd6385148abf19f76127229f5 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-callable" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_callable</refname>
-  <refpurpose>Bir değişkenin içeriğinin bir işlev olarak çağrılabilirliğini
+  <refpurpose>Bir değişkenin değerinin bir işlev olarak çağrılabilirliğini
   doğrular</refpurpose>
  </refnamediv>
 
@@ -11,13 +11,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>is_callable</methodname>
-   <methodparam><type>mixed</type><parameter>işlev</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
 
    <methodparam choice="opt"><type>bool</type><parameter>sözdizimsel</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter role="reference">isim</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-  <parameter>işlev</parameter> <type>callable</type> türündeyse &true; döner.
+  <parameter>değer</parameter> <type>callable</type> türündeyse &true; döner.
   </para>
  </refsect1>
 
@@ -26,7 +26,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>işlev</parameter></term>
+     <term><parameter>değer</parameter></term>
      <listitem>
       <para>
        Bir işlev ismi.
@@ -63,7 +63,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen <parameter>işlev</parameter> bir işlev olarak çağrılabiliyorsa &true;, aksi takdirde &false; döner.
+   Belirtilen <parameter>değer</parameter> bir işlev olarak çağrılabiliyorsa &true;, aksi takdirde &false; döner.
   </para>
  </refsect1>
 
@@ -147,6 +147,29 @@ bool(false)
    </example>
   </para>
  </refsect1>
+
+ <refsect1 role="notes">
+ &reftitle.notes;
+ <simplelist>
+  <member>
+   Bir nesne <link linkend="object.invoke">__invoke()</link> örnekliyorsa
+   nesne ismi çağrılabilirdir ve geçerli etki alanında görünür olur.
+  </member>
+  <member>
+   Bir sınıf <link linkend="object.callstatic">__callStatic()</link>
+   örnekliyorsa sınıf ismi çağrılabilirdir.
+  </member>
+  <member>
+   Bir nesne <link linkend="object.call">__call()</link> örnekliyorsa, nesne
+   ismi çağrılabilirdir ve nesne üzerindeki her yöntem için, yöntem
+   tanımlanmamış olsa bile &true; döndürür.
+  </member>
+  <member>
+   Bir çağrılabilir, sınıfın ismiyle çağrılırsa otomatik yüklemeyi
+   tetikleyebilir.
+  </member>
+ </simplelist>
+</refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;

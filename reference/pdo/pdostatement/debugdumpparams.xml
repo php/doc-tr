@@ -1,24 +1,24 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 3d69f8f11fcade2ce4fd908d176cbf874603fe57 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.debugdumpparams" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->debugDumpParams</refname>
+  <refname>PDOStatement::debugDumpParams</refname>
   <refpurpose>Bir SQL hazır komutunu dökümler</refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>PDOStatement::debugDumpParams</methodname>
-   <void />
+   <modifier>public</modifier>
+   <type class="union"><type>bool</type><type>null</type></type><methodname>PDOStatement::debugDumpParams</methodname>
+   <void/>
   </methodsynopsis>
   <para>
    Bir hazır deyimin içerdiği bilgiyi doğrudan çıktıya dökümler. Bu bilgi,
-   kullanımdaki SQL sorgusu (<literal>SQL</literal>), kullanılan değiştirge
-   sayısı (<literal>Params</literal>), isim ve tamsayı olarak türleri
-   (<literal>paramtype</literal>) ile değiştirge listesi, değiştirgelerin
-   isimleri veya konumları, değerleri ve sorgudaki konumlarını (PDO sürücü
-   destekliyorsa; yoksa -1'dir) içerir.
+   kullanımdaki SQL sorgusu (<literal>SQL</literal>), anahtar adı veya
+   konumlarıyla birlikte değiştirgelerin listesini, adlarını, sorgudaki
+   konumlarını (PDO sürücü destekliyorsa; yoksa -1'dir) tamsayı olarak türünü
+   (<literal>param_type</literal>) ve <literal>is_param</literal> mantıksal
+   değerini içerir.
   </para>
   <para>
    Bu işlev, veriyi doğrudan çıktıya basan bir hata ayıklama işlevidir.
@@ -30,10 +30,42 @@
   </para>
  </refsect1>
 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  &no.function.parameters;
+ </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.void;
+   Başarı durumunda &null;, hata durumunda &false; döner.
+  </para>
+ </refsect1>
+
+  <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <methodname>PDOStatement::debugDumpParams</methodname> artık
+        veritabanına gönderilen SQL deyimini eksiksiz ve ham (yer tutucuların
+        yerine ilişkili değerler konmuş) olarak döndürüyor. Ancak, bu sadece
+        öykünülmüş hazır deyimler etkin kılınmışsa kullanılabilir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -126,7 +158,6 @@ param_type=2
 ]]>
    </screen>
   </example>
-
  </refsect1>
 
  <refsect1 role="seealso">

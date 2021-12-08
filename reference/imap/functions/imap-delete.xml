@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 620dfaa2440aeb9324ff34fa7b162eb7d64ae6b9 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-delete" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_delete</refname>
@@ -10,12 +9,12 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imap_delete</methodname>
-   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
-   <methodparam><type>int</type><parameter>iletinum</parameter></methodparam>
+   <methodparam><type>IMAP\Connection</type><parameter>imap</parameter></methodparam>
+   <methodparam><type>string</type><parameter>ileti_num</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>iletinum</parameter> ile belirtilen iletileri silinmek üzere
+   <parameter>ileti_num</parameter> ile belirtilen iletileri silinmek üzere
    imler. Bu iletiler bir <function>imap_expunge</function> çağrısına kadar
    veya <constant>CL_EXPUNGE</constant> seçeneği ile yapılan bir
    <function>imap_close</function> çağrısına kadar posta kutusunda kalır.
@@ -25,12 +24,14 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    &imap.imap-stream.description;
+    &imap.imap-parameter.imap;
     <varlistentry>
-     <term><parameter>iletinum</parameter></term>
+     <term><parameter>ileti_num</parameter></term>
      <listitem>
       <para>
-       İleti numarası.
+       IMAP4 tarzı aralık dizgesi biçeminde bir veya daha fazla ileti içeren
+       bir dizge (<literal>"n"</literal>, <literal>"n:m"</literal> veya
+       bunların virgüllerle ayrılmış birleşimleri).
       </para>
      </listitem>
     </varlistentry>
@@ -39,7 +40,7 @@
      <listitem>
       <para>
        Bu değiştirgede <constant>FT_UID</constant> sabiti belirtilirse
-       <parameter>iletinum</parameter> değiştirgesinin eşsiz kimlikleri
+       <parameter>ileti_num</parameter> değiştirgesinin eşsiz kimlikleri
        içerdiği varsayılır.
       </para>
      </listitem>
@@ -52,6 +53,22 @@
   <para>
    &true; döner.
   </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &imap.changelog.imap-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
@@ -90,7 +107,7 @@ imap_close($mbox);
   &reftitle.notes;
   <note>
    <para>
-    POP3 posta kutuları bağlantılar arasında ileti imlerini saklamazlar. Bu
+    IMAP posta kutuları bağlantılar arasında ileti imlerini saklamazlar. Bu
     nedenle silinmek üzere imlenmiş iletileri gerçekten silmek için
     <function>imap_expunge</function> işlevini aynı oturumda kullanmalısınız.
    </para>

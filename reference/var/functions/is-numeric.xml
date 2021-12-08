@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: d6cd01d707f065e852e9495061da6b923d7f3422 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ff054fcb4e0c795093255f1e71be2cae68fc6284 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.is-numeric" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>is_numeric</refname>
@@ -73,9 +73,9 @@ $tests = Array(
 foreach($tests as $element)
 {
   if(is_numeric($element))  {
-      echo var_export($element, true), " sayısaldır", PHP_EOL;
+      echo var_export($element, true), " sayısal", PHP_EOL;
   } else {
-      echo var_export($element, true), " sayısal DEĞİLdir", PHP_EOL;
+      echo var_export($element, true), " sayısal DEĞİL", PHP_EOL;
   }
 }
 ?>
@@ -84,26 +84,93 @@ foreach($tests as $element)
     &example.outputs;
     <screen>
 <![CDATA[
-'42' sayısaldır
-1337 sayısaldır
-1337 sayısaldır
-1337 sayısaldır
-1337 sayısaldır
-1337.0 sayısaldır
-'0x539' sayısal DEĞİLdir
-'02471' sayısaldır
-'0b10100111001' sayısal DEĞİLdir
-'1337e0' sayısaldır
-'sayısal değil' sayısal DEĞİLdir
+'42' sayısal
+1337 sayısal
+1337 sayısal
+1337 sayısal
+1337 sayısal
+1337.0 sayısal
+'0x539' sayısal DEĞİL
+'02471' sayısal
+'0b10100111001' sayısal DEĞİL
+'1337e0' sayısal
+'sayısal değil' sayısal DEĞİL
 array (
-) sayısal DEĞİLdir
-9.1 sayısaldır
-NULL sayısal DEĞİLdir
-'' sayısal DEĞİLdir
+) sayısal DEĞİL
+9.1 sayısal
+NULL sayısal DEĞİL
+'' sayısal DEĞİL
 ]]>
     </screen>
    </example>
   </para>
+
+  <para>
+   <example>
+    <title>- Boşluk karakterli <function>is_numeric</function> örneği</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+$tests = [
+    " 42",
+    "42 ",
+    " 9001", // yapışkan boşluk
+    "9001 ", // yapışkan boşluk
+];
+
+foreach ($tests as $element) {
+    if (is_numeric($element)) {
+        echo var_export($element, true) . " sayısal", PHP_EOL;
+    } else {
+        echo var_export($element, true) . " sayısal DEĞİL", PHP_EOL;
+    }
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.8;
+    <screen>
+     <![CDATA[
+' 42' sayısal
+'42 ' sayısal
+' 9001' sayısal DEĞİL
+'9001 ' sayısal DEĞİL
+]]>
+    </screen>
+    &example.outputs.7;
+    <screen>
+     <![CDATA[
+' 42' sayısal
+'42 ' sayısal DEĞİL
+' 9001' sayısal DEĞİL
+'9001 ' sayısal DEĞİL
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Boşlukla biten sayısal dizgeler (<literal>"42 "</literal>) için artık
+       &true; dönüyor. Evvelce, &false; dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

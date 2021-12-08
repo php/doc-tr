@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3.createfunction" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3::createFunction</refname>
@@ -13,13 +12,14 @@
   <methodsynopsis>
    <modifier>public</modifier> <type>bool</type><methodname>SQLite3::createFunction</methodname>
    <methodparam><type>string</type><parameter>isim</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>işlev</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>değ_sayısı</parameter><initializer>-1</initializer></methodparam>
+   <methodparam><type>callable</type><parameter>işlev</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>değş_sayısı</parameter><initializer>-1</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    Mevcut veya yeni bir SQL işlevinin davranışını tanımlamak üzere bir
-   geriçağırım işlevi olarak kullanılacak bir PHP işlevi veya kullanıcı tanımlı
-   bir işlevi kayda geçirir.
+   geriçağırım işlevi olarak kullanılacak bir geriçağırım işlevini kayda
+   geçirir.
   </para>
  </refsect1>
 
@@ -39,8 +39,35 @@
      <term><parameter>işlev</parameter></term>
      <listitem>
       <para>
-       SQL işlevinin davranışını tanımlamak üzere bir geriçağırım işlevi olarak
-       kullanılacak bir PHP işlevi veya kullanıcı tanımlı bir işlevin ismi.
+       SQL işlevinin davranışını tanımlamak üzere bir geriçağırım işlevi
+       olarak kullanılacak bir PHP işlevi veya kullanıcı tanımlı bir
+       işlevin ismi.
+      </para>
+      <para>
+       Bu işlev şöyle tanımlanmalıdır:
+       <methodsynopsis>
+        <type>mixed</type><methodname><replaceable>işlev</replaceable></methodname>
+        <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+        <methodparam rep="repeat"><type>mixed</type><parameter>değerler</parameter></methodparam>
+       </methodsynopsis>
+       <variablelist>
+        <varlistentry>
+         <term><parameter>değer</parameter></term>
+         <listitem>
+          <para>
+           SQL işlevine aktarılacak ilk değiştirge.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><parameter>değerler</parameter></term>
+         <listitem>
+          <para>
+           SQL işlevine aktarılacak diğer değiştirgeler.
+          </para>
+         </listitem>
+        </varlistentry>
+       </variablelist>
       </para>
      </listitem>
     </varlistentry>
@@ -48,8 +75,18 @@
      <term><parameter>değ_sayısı</parameter></term>
      <listitem>
       <para>
-       SQL işlevinin alacağı değiştirge sayısı. Negatif bir sayı belirtilirse
-       SQL işlevi herhangi bir sayıda değiştirge alabilir demektir.
+       SQL işlevinin alacağı değiştirge sayısı. <literal>-1</literal>
+       belirtilirse SQL işlevi herhangi bir sayıda değiştirge alabilir
+       demektir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Seçeneklerin bitsel birleşimi. Şimdilik sadece, işlevin tek bir SQL deyiminde aynı girdiler verildiğinde her zaman aynı sonucu
+       döndüreceğini belirten <constant>SQLITE3_DETERMINISTIC</constant> desteklenmektedir.
       </para>
      </listitem>
     </varlistentry>
@@ -63,6 +100,28 @@
   <para>
    İşlev başarıyla oluşturulmuşsa &true; yoksa &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.1.4</entry>
+      <entry>
+       <parameter>seçenekler</parameter> değiştirgesi eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

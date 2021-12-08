@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 34892f82742329af7e7b4b22be6ad21418fd9768 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-open" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_open</refname>
@@ -10,12 +9,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>imap_open</methodname>
+   <type class="union"><type>IMAP\Connection</type><type>false</type></type><methodname>imap_open</methodname>
    <methodparam><type>string</type><parameter>pk</parameter></methodparam>
    <methodparam><type>string</type><parameter>kullanıcı</parameter></methodparam>
    <methodparam><type>string</type><parameter>parola</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>NIL</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>bayraklar</parameter><initializer>NIL</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>dnm_sayısı</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen posta kutusuna (<parameter>pk</parameter>) bir
@@ -42,6 +42,7 @@
        hale getirilmek üzere <function>imap_utf7_encode</function> ile
        kodlanır.
       </para>
+      &imap.mailboxname.insecure;
       <para>
        Posta kutusu isminin sunucu parçası  '{' ve '}' ayraçları arasına
        yazılmış sunucu adı veya IP adresine iki nokta imi ile eklemlenebilen
@@ -196,7 +197,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>seçenekler</parameter></term>
+     <term><parameter>bayraklar</parameter></term>
      <listitem>
       <para>
        Aşağıdakilerden bir veya birkaçını içeren bir bit maskesidir:
@@ -268,36 +269,55 @@
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Bağlantı değiştirgeleri. Aşağıdaki anahtarlar bunlardan biri veya bir
+       kaçını atamakta kullanılabilir:
+       <itemizedlist>
+        <listitem>
+         <simpara>
+          <literal>DISABLE_AUTHENTICATOR</literal> - Kimlik kanıtlama
+          özelliklerini iptal eder.
+         </simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
    </variablelist>
   </para>
  </refsect1>
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Hata durumunda &false; yoksa bir IMAP akımı döner.
+   Hata durumunda &false; yoksa bir <classname>IMAP\Connection</classname>
+   nesnesi döner.
   </para>
  </refsect1>
 
  <refsect1 role="changelog">
   &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>5.2.0</entry>
-       <entry><parameter>dnm_sayısı</parameter> değiştirgesi eklendi.</entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.1.0</entry>
+      <entry>
+       Artık <classname>IMAP\Connection</classname> nesnesi dönüyor;
+       evvelce imap akımı özkaynağı dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -309,22 +329,22 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// Yerel makinenin 143. portunda çalışan IMAP sunucusuna bağlanalım
+// Yerel makinenin 143. portunda çalışan IMAP sunucusuna bağlan
 $mbox = imap_open("{localhost:143}INBOX", "birey", "parola");
 
-// Yerel makinenin 110. portunda çalışan POP3 sunucusuna bağlanalım
+// Yerel makinenin 110. portunda çalışan POP3 sunucusuna bağlan
 $mbox = imap_open ("{localhost:110/pop3}INBOX", "birey", "parola");
 
 // Protokol belirtimi olarak /ssl kullanarak
-// bir SSL IMAP veya POP3 sunucusuna bağlanalım
+// bir SSL IMAP veya POP3 sunucusuna bağlan
 $mbox = imap_open ("{localhost:993/imap/ssl}INBOX", "birey", "parola");
 
 // Protokol belirtimi olarak /ssl/novalidate-cert kullanarak öz-imzalı
-// sertifika kullanan bir SSL IMAP veya POP3 sunucusuna bağlanalım
+// sertifika kullanan bir SSL IMAP veya POP3 sunucusuna bağlan
 $mbox = imap_open ("{localhost:995/pop3/ssl/novalidate-cert}",
           "birey", "parola");
 
-// Yerel makinenin 119. portunda çalışan NNTP sunucusuna bağlanalım
+// Yerel makinenin 119. portunda çalışan NNTP sunucusuna bağlan
 $nntp = imap_open ("{localhost:119/nntp}comp.test", "", "");
 // Bir uzak sunucuya bağlanmak için "localhost" yerine sunucunun adını
 // veya IP adresini yazın.

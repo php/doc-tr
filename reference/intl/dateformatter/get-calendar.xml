@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.getcalendar" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getCalendar</refname>
   <refname>datefmt_get_calendar</refname>
-  <refpurpose>IntlDateFormatter tarafından kullanılan takvimi döndürür
+  <refpurpose>IntlDateFormatter tarafından kullanılan takvim türünü döndürür
   </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
    <methodsynopsis>
    <type>int</type><methodname>IntlDateFormatter::getCalendar</methodname>
       <void />
    </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>int</type><methodname>datefmt_get_calendar</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>int</type><type>false</type></type><methodname>datefmt_get_calendar</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Biçemleyici tarafından kullanılan takvimi döndürür.
+   Biçemleyici tarafından kullanılan takvimin türünü döndürür.
   </para>
   </refsect1>
 
@@ -49,7 +48,11 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Biçemleyici tarafından kullanılan takvim.
+   Biçemleyici tarafından kullanılan <link
+   linkend="intl.intldateformatter-constants.calendartypes">takvim türü</link>.
+   <constant>IntlDateFormatter::TRADITIONAL</constant> veya
+   <constant>IntlDateFormatter::GREGORIAN</constant> olabilir.
+   Başarısızlık durumunda &false; döner.
   </para>
  </refsect1>
 
@@ -60,24 +63,32 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
-echo "Biçemleyicinin takvimi: ".datefmt_get_calendar($fmt);
-datefmt_set_calendar($fmt,IntlDateFormatter::TRADITIONAL);
-echo "\nBiçemleyicinin yeni takvimi: ".datefmt_get_calendar($fmt);
+$fmt = datefmt_create(
+    "en_US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
+echo "Biçemleyicinin takvimi: " . datefmt_get_calendar($fmt);
+datefmt_set_calendar($fmt, IntlDateFormatter::TRADITIONAL);
+echo "\nBiçemleyicinin yeni takvimi: " . datefmt_get_calendar($fmt);
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    "en_US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyicinin takvimi: ".$fmt->getCalendar();
 $fmt->setCalendar(IntlDateFormatter::TRADITIONAL);
 echo "\nBiçemleyicinin yeni takvimi: ".$fmt->getCalendar();
@@ -97,12 +108,11 @@ Biçemleyicinin yeni takvimi: 0
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
   <simplelist>
-    <member><function>datefmt_set_calendar</function></member>
-    <member><function>datefmt_create</function></member>
+   <member><function>datefmt_get_calendar_object</function></member>
+   <member><function>datefmt_set_calendar</function></member>
+   <member><function>datefmt_create</function></member>
   </simplelist>
-  </para>
  </refsect1>
 </refentry>
 

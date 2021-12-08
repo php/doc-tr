@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fce2e1a41a75a140ed5dee42c368488542864a8e Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.create" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::create</refname>
@@ -11,41 +10,42 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-  <methodsynopsis>
-   <modifier>static</modifier>
-   <type>IntlDateFormatter</type><methodname>IntlDateFormatter::create</methodname>
-   <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <modifier>static</modifier> <type class="union"><type>IntlDateFormatter</type><type>null</type></type><methodname>IntlDateFormatter::create</methodname>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tarih_türü</parameter></methodparam>
    <methodparam><type>int</type><parameter>saat_türü</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>zaman_dilimi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>takvim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlTimeZone</type><type>DateTimeZone</type><type>string</type><type>null</type></type><parameter>zaman_dilimi</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlCalendar</type><type>int</type><type>null</type></type><parameter>takvim</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Nesne yönelimli kullanım (kurucu)
+   &style.oop; (kurucu)
   </para>
   <constructorsynopsis>
+   <modifier>public</modifier>
    <methodname>IntlDateFormatter::__construct</methodname>
-   <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tarih_türü</parameter></methodparam>
    <methodparam><type>int</type><parameter>saat_türü</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>zaman_dilimi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>takvim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlTimeZone</type><type>DateTimeZone</type><type>string</type><type>null</type></type><parameter>zaman_dilimi</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlCalendar</type><type>int</type><type>null</type></type><parameter>takvim</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter><initializer>""</initializer></methodparam>
   </constructorsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>IntlDateFormatter</type><methodname>datefmt_create</methodname>
-   <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>IntlDateFormatter</type><type>null</type></type><methodname>datefmt_create</methodname>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tarih_türü</parameter></methodparam>
    <methodparam><type>int</type><parameter>saat_türü</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>zaman_dilimi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>takvim</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlTimeZone</type><type>DateTimeZone</type><type>string</type><type>null</type></type><parameter>zaman_dilimi</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>IntlCalendar</type><type>int</type><type>null</type></type><parameter>takvim</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir tarih biçemleyici oluşturur
@@ -60,7 +60,9 @@
      <term><parameter>yerel</parameter></term>
      <listitem>
       <para>
-       Biçemleme ve çözümleme için kullanılacak yerel.
+       Biçemleme ve çözümleme için kullanılacak yerel veya <link
+       linkend="ini.intl.default-locale">intl.default_locale</link> ini
+       yönergesinde belirtilen değeri kullanmak için &null;.
       </para>
      </listitem>
     </varlistentry>
@@ -68,7 +70,10 @@
      <term><parameter>tarih_türü</parameter></term>
      <listitem>
       <para>
-       Kullanılacak tarih türü (yok, kısa, orta, uzun, tam). <link
+       Kullanılacak tarih türü: <constant>none</constant>,
+       <constant>short</constant>, <constant>medium</constant>,
+       <constant>long</constant>, <constant>full</constant>
+       (yok, kısa, orta, uzun, tam). <link
        linkend="intl.intldateformatter-constants">IntlDateFormatter
        sabitlerinden biri</link> olmalıdır.
       </para>
@@ -78,7 +83,10 @@
      <term><parameter>saat_türü</parameter></term>
      <listitem>
       <para>
-       Kullanılacak saat türü (yok, kısa, orta, uzun, tam). <link
+       Kullanılacak saat türü: <constant>none</constant>,
+       <constant>short</constant>, <constant>medium</constant>,
+       <constant>long</constant>, <constant>full</constant>
+       (yok, kısa, orta, uzun, tam). <link
        linkend="intl.intldateformatter-constants">IntlDateFormatter
        sabitlerinden biri</link> olmalıdır.
       </para>
@@ -88,7 +96,13 @@
      <term><parameter>zaman_dilimi</parameter></term>
      <listitem>
       <para>
-       Zaman dilimi. Sistem öntanımlısı, öntanımlıdır.
+       Zaman dilimi. Öntanımlı değer (&null; belirtilirse kullanılan),
+       <function>date_default_timezone_get</function> tarafından döndürülen
+       veya varsa, <parameter>takvim</parameter> değiştirgesi için aktarılan
+       <classname>IntlCalendar</classname> nesnesinde tanımlı olandır.
+       Bu değer, ICU'nun veritabanında geçerli bir tanımlayıcı veya
+       <literal>GMT-05:30</literal> gibi açık bir konumu temsil eden bir
+       değer olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -96,11 +110,18 @@
      <term><parameter>takvim</parameter></term>
      <listitem>
       <para>
-       Biçemleme ve çözümleme için kullanılacak takvim; Gregoriyen
-       öntanımlıdır. <link
+       Biçemleme ve çözümleme için kullanılacak takvim.
+       Öntanımlı değer, <constant>IntlDateFormatter::GREGORIAN</constant>
+       sabitine karşılık gelen &null; değeridir. Bu, <link
        linkend="intl.intldateformatter-constants.calendartypes">
-       IntlDateFormatter takvim sabitlerinden biri</link> olmalıdır.
-     </para>
+       IntlDateFormatter takvim sabitleri</link>nden biri veya
+       <classname>IntlCalendar</classname> nesnesi olabilir. Aktarılan herhangi
+       bir <classname>IntlCalendar</classname> nesnesi kopyalanır;
+       <classname>IntlDateFormatter</classname> tarafından değiştirilmez. Bu,
+       kullanılan takvim türünü (Gregoryen, İslami, Fars vb.) ve
+       <parameter>zaman_dilimi</parameter> değiştirgesi için &null; değeri
+       verilirse kullanılan saat dilimini de belirler.
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -108,6 +129,8 @@
      <listitem>
       <para>
        Biçemleme ve çözümleme için kullanılacak isteğe beğlı kalıp.
+       Olası kalıplar için bkz: <link
+       xlink:href="&url.icu.datepattern;">&url.icu.datepattern;</link>
       </para>
      </listitem>
     </varlistentry>
@@ -119,7 +142,50 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-     </para>
+   Oluşturulan <classname>IntlDateFormatter</classname> nesnesi
+   veya başarısızlık durumunda &null; döner.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>5.5.0/PECL 3.0.0</entry>
+       <entry>
+        <para>
+         <parameter>takvim</parameter> değiştirgesinde artık
+         <classname>IntlCalendar</classname> türünde nesne kabul ediliyor.
+        </para>
+        <para>
+         <parameter>zaman_dilimi</parameter> değiştirgesinde artık
+         <classname>IntlTimeZone</classname> ve
+         <classname>DateTimeZone</classname> türünde nesne kabul ediliyor.
+        </para>
+        <para>
+         <parameter>zaman_dilimi</parameter> değiştirgesinde artık  geçersiz
+         zaman dilimi tanımlayıcılara (boş dizge dahil) izin verilmiyor.
+        </para>
+        <para>
+         <parameter>zaman_dilimi</parameter> için &null; belirtilirse,
+         <function>date_default_timezone_get</function> ile belirlenen zaman
+         dilimi tanımlayıcı artık ICU öntanımlısı yerine kullanılıyor.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
  </refsect1>
 
  <refsect1 role="examples">
@@ -179,8 +245,8 @@ echo "\nİkinci kalıbın çıktısı: ".$fmt->format(1234567890);
    &example.outputs;
    <screen>
 <![CDATA[
-İlk biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Türkiye Saati
-İkinci biçemli çıktı: Saturday, February 14, 2009 1:31:30 AM Turkey Time
+İlk biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Doğu Avrupa Standart Saati
+İkinci biçemli çıktı: Saturday, February 14, 2009 at 1:31:30 AM Eastern European Standard Time
 İlk kalıbın çıktısı: 14/02/2009
 İkinci kalıbın çıktısı: 02/14/2009
 ]]>

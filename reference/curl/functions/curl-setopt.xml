@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f9c4a68ef4f89e51e6d9b905ad3ddb6492386dd3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 75c0d66b7c6d9b5eb983baf430d9aeb8e38c7fea Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.curl-setopt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>curl_setopt</refname>
@@ -970,11 +970,12 @@
           <row>
            <entry valign="top"><constant>CURLOPT_SSL_VERIFYHOST</constant></entry>
            <entry valign="top">
-            SSL eş sertifikasında ortak bir ismin varlığına bakılması için 1
-            olmalıdır. Ortak bir ismin varlığının yanında sağlanan konak
-            ismi ile eşleşmenin de aranması için 2, isimlere bakmak  için
-            <literal>0</literal> olmalıdır. Üretim ortamlarında bu seçeneğin
-            değeri <literal>2</literal> (öntanımlıdır) olarak tutulmalıdır.
+            Common Name veya Subject Alternate Name alanının varlığının
+            yanında sağlanan konak ismi ile eşleşmenin de aranması için
+            <literal>2</literal>, isimlere bakmak  için <literal>0</literal>
+            olmalıdır. <literal>1</literal> kullanılmamalıdır. Üretim
+            ortamlarında bu seçeneğin değeri <literal>2</literal>
+            (öntanımlıdır) olarak tutulmalıdır.
            </entry>
            <entry valign="top">
             <literal>1</literal> değeri için destek cURL 7.28.1'de kaldırıldı.
@@ -1141,15 +1142,20 @@
             alınacağı belirtilir. Sayfayı sadece,
             <constant>CURLOPT_TIMEVALUE</constant> ile belirtilen süre
             içinde değiştirilmediği takdirde döndürmek için
-            <constant>CURL_TIMECOND_IFMODSINCE</constant> kullanın. Sayfa
+            <constant>CURL_TIMECOND_IFMODSINCE</constant> kullanılır. Sayfa
             değişmişse, <constant>CURLOPT_HEADER</constant> seçeneğinin
             &true; olduğu varsayımıyla <literal>"304 Not Modified"</literal>
             (304 değişiklik yok) başlığı döndürülür. Bu davranışı ters
             çevirmek için  <constant>CURL_TIMECOND_IFUNMODSINCE</constant>
-            kullanın. <constant>CURL_TIMECOND_IFMODSINCE</constant>
-            öntanımlıdır.
+            kullanılır. <constant>CURLOPT_TIMEVALUE</constant> değerini
+            yoksayıp sayfayı daima döndürmek için
+            <constant>CURL_TIMECOND_NONE</constant> kulllanılır.
+            <constant>CURL_TIMECOND_NONE</constant> öntanımlıdır.
            </entry>
-           <entry />
+           <entry valign="top">
+            cURL 7.46.0 öncesinde
+            <constant>CURL_TIMECOND_IFMODSINCE</constant> öntanımlıydı.
+           </entry>
           </row>
           <row>
            <entry valign="top"><constant>CURLOPT_TIMEOUT</constant></entry>
@@ -1177,8 +1183,7 @@
            <entry valign="top">
             1 Ocak 1970'den beri geçen saniye sayısı. Bu değer
             <constant>CURLOPT_TIMECONDITION</constant> tarafından
-            kullanılır. <constant>CURL_TIMECOND_IFMODSINCE</constant>
-            öntanımlıdır.
+            kullanılır.
            </entry>
            <entry />
           </row>
@@ -1536,9 +1541,10 @@
             <literal>multipart/form-data</literal> atanır.
             </simpara>
             <simpara>
-              Dosyalar, <classname>CURLFile</classname> kullanılarak
-              gönderilebilir, bu durumda <parameter>value</parameter> bir dizi
-              olmalıdır.
+             <parameter>value</parameter> bir dizi olduğu takdirde,
+             dosyalar <classname>CURLFile</classname> veya
+             <classname>CURLStringFile</classname> kullanılarak
+             gönderilebilir.
             </simpara>
            </entry>
            <entry valign="top">
@@ -2026,9 +2032,18 @@
            </entry>
            <entry valign="top">
             cURL 7.19.1'de eklendi.
-            </entry>
-           </row>
-         <row>
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PASSWORD</constant></entry>
+           <entry valign="top">
+            Kimlik kanıtlamada kullanılacak parola.
+           </entry>
+           <entry valign="top">
+            cURL 7.19.1'de eklendi.
+           </entry>
+          </row>
+          <row>
            <entry valign="top"><constant>CURLOPT_USERPWD</constant></entry>
            <entry valign="top">
             Bağlantı için kullanılmak üzere
@@ -2467,11 +2482,11 @@ curl_close($ct);
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>curl_setopt_array</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>curl_setopt_array</function></member>
+   <member><classname>CURLFile</classname></member>
+   <member><classname>CURLStringFile</classname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

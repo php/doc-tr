@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3db49ee0a331a657dd97b539a749f53d3965b593 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-object">
  <refnamediv>
   <refname>xml_set_object</refname>
@@ -11,8 +10,8 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>xml_set_object</methodname>
-   <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
-   <methodparam><type>object</type><parameter role="reference">nesne</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev, <parameter>çözümleyici</parameter> ile belirtilen XML
@@ -32,9 +31,7 @@
      <term><parameter>çözümleyici</parameter></term>
      <listitem>
       <para>
-       <function>xml_parser_create</function> ve
-       <function>xml_parser_create_ns</function> işlevleri tarafından
-       döndürülen bir XML özkaynağı.
+       <parameter>nesne</parameter> içinde kullanılacak XML çözümleyici nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -42,7 +39,7 @@
      <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       Eylemci yöntemleri içeren nesne.
+       XML çözümleyicinin içinde kullanılacağı nesne.
       </para>
      </listitem>
     </varlistentry>
@@ -57,6 +54,23 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &xml.changelog.parser-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -65,16 +79,23 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class xml  {
-    var $çözümleyici;
+class XMLParser
+{
+    private $parser;
 
-    function xml()
+    function __construct()
     {
         $this->çözümleyici = xml_parser_create();
 
         xml_set_object($this->çözümleyici, $this);
         xml_set_element_handler($this->çözümleyici, "etiketAç", "etiketKapa");
         xml_set_character_data_handler($this->çözümleyici, "cdata");
+    }
+
+    function __destruct()
+    {
+        xml_parser_free($this->çözümleyici);
+        unset($this->çözümleyici);
     }
 
     function çözümle($veri)
@@ -84,26 +105,38 @@ class xml  {
 
     function etiketAç($çözümleyici, $etiket, $değiştirgeler)
     {
-        var_dump($çözümleyici, $etiket, $değiştirgeler);
+        var_dump($etiket, $değiştirgeler);
     }
 
     function cdata($çözümleyici, $cdata)
     {
-        var_dump($çözümleyici, $cdata);
+        var_dump($cdata);
     }
 
     function etiketKapa($çözümleyici, $etiket)
     {
-        var_dump($çözümleyici, $etiket);
+        var_dump($etiket);
     }
 
-} // xml sınıfının sonu
+}
 
-$xml_çözümleyici = new xml();
+$xml_çözümleyici = new XMLParser();
 $xml_çözümleyici->çözümle("<A ID='alo'>PHP</A>");
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(1) "A"
+array(1) {
+  ["ID"]=>
+  string(5) "hallo"
+}
+string(3) "PHP"
+string(1) "A"
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>

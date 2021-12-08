@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: c07214dc9ca7583c3d6095e801ce122d8077c100 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 93cc19efef135794877bc9013f7f891b459f4989 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.attributes" xmlns="http://docbook.org/ns/docbook">
   <title>Öznitelikler</title>
   <sect1 xml:id="language.attributes.overview">
@@ -201,9 +200,9 @@ class AnotherThing
     Yansıtılan öznitelik temsilinin gerçek örnekten bu şekilde ayrılması,
     programcının eksik öznitelik sınıfları, yanlış yazılmış veya eksik
     değiştirgelerle ilgili hataları elde etme konusundaki denetimini artırır.
-    Öznitelik sınıfının nesneleri, yalnızca <function>newInstance</function>
-    çağrıldıktan sonra başlatılırsa değiştirgelerin doğru eşleşmesi sağlanır,
-    daha önce değil.
+    Öznitelik sınıfının nesneleri, yalnızca
+    <function>ReflectionAttribute::newInstance</function> çağrıldıktan sonra
+    başlatılırsa değiştirgelerin doğru eşleşmesi sağlanır, daha önce değil.
    </para>
 
    <example>
@@ -278,7 +277,7 @@ function dumpMyAttributeData($reflection) {
     }
 }
 
-dumpAttributeData(new ReflectionClass(Thing::class));
+dumpMyAttributeData(new ReflectionClass(Thing::class));
 ]]>
      </programlisting>
     </example>
@@ -295,8 +294,7 @@ dumpAttributeData(new ReflectionClass(Thing::class));
    </para>
 
   <example>
-   <title>- Özniteliklerin kullanılabileceği yerleri kısıtlamak için hedef
-    belirtiminin kullanımı</title>
+   <title>- Basit Öznitelik sınıfı</title>
 
    <programlisting role="php">
 <![CDATA[
@@ -320,7 +318,8 @@ class MyAttribute
   </para>
 
   <example>
-   <title>- Basit Öznitelik sınıfı</title>
+   <title>- Özniteliklerin kullanılabileceği yerleri kısıtlamak için hedef
+    belirtiminin kullanımı</title>
 
    <programlisting role="php">
 <![CDATA[
@@ -338,11 +337,23 @@ class MyAttribute
     </programlisting>
 
     <para>
-     <classname>MyAttribute</classname> sınıfını başka bir türde bildirilmesi,
-     <function>ReflectionAttribute::newInstance</function> çağrısı sırasında bir
-     istisna oluşmasına sebep olur.
+     <classname>MyAttribute</classname> sınıfının başka bir türde
+     bildirilmesi, <function>ReflectionAttribute::newInstance</function>
+     çağrısı sırasında bir istisna oluşmasına sebep olur.
     </para>
    </example>
+
+   <para>Şu hedefler belirtilebilir:</para>
+
+   <simplelist>
+    <member><constant>Attribute::TARGET_CLASS</constant></member>
+    <member><constant>Attribute::TARGET_FUNCTION</constant></member>
+    <member><constant>Attribute::TARGET_METHOD</constant></member>
+    <member><constant>Attribute::TARGET_PROPERTY</constant></member>
+    <member><constant>Attribute::TARGET_CLASS_CONSTANT</constant></member>
+    <member><constant>Attribute::TARGET_PARAMETER</constant></member>
+    <member><constant>Attribute::TARGET_ALL</constant></member>
+   </simplelist>
 
    <para>
     Öntanımlı olarak, bir öznitelik her bildirimde yalnızca bir kere

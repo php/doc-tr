@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3stmt.bindparam" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3Stmt::bindParam</refname>
-  <refpurpose>Bir değiştirgeyi bir deyim değişkeni ile ilişkilendirir
+  <refpurpose>Bir PHP değişkenini bir SQL değişkeni ile ilişkilendirir
   </refpurpose>
  </refnamediv>
 
@@ -12,15 +11,24 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>bool</type><methodname>SQLite3Stmt::bindParam</methodname>
-   <methodparam><type>string</type><parameter>değişken</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter role="reference">değiştirge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sql_değişkeni</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter role="reference">php_değişkeni</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer><constant>SQLITE3_TEXT</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>değiştirge</parameter>'yi
-   <parameter>değişken</parameter> ile belirtilen deyim değişkeni ile
-   ilişkilendirir.
+   <parameter>php_değişkeni</parameter> ile
+   <parameter>sql_değişkeni</parameter>ni ilişkilendirir.
   </para>
+  <caution>
+   <para>
+    PHP 7.2.14 ve 7.3.0 öncesinde, <parameter>sql_değişkeni</parameter>nin izleyen <methodname>SQLite3Stmt::execute</methodname> çağrıları ile uygun şekilde güncellenmesi gerekiyorsa ilk
+    <methodname>SQLite3Stmt::execute</methodname> çağrısından sonra <methodname>SQLite3Stmt::reset</methodname> çağrılmalıdır. <methodname>SQLite3Stmt::reset</methodname> çağrılmazsa,
+    <methodname>SQLite3Stmt::bindParam</methodname> yöntemine aktarılan
+    <parameter>php_değişkeni</parameter>e atanan değer değişse veya
+    <methodname>SQLite3Stmt::bindParam</methodname> yeniden çağrılsa bile
+    <parameter>sql_değişkeni</parameter>nin değeri değişmeyecektir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -28,19 +36,25 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değişken</parameter></term>
+     <term><parameter>sql_değişkeni</parameter></term>
      <listitem>
       <para>
-       <parameter>değiştirge</parameter> ile ilişkilendirilecek değişkenin
-       ismi.
+       <parameter>php_değişkeni</parameter>nin ilişkilendirileceği <parameter>sql_değişkeni</parameter>ni tanımlayan bir dizge
+       (isimli değiştirgeler için) veya tamsayı (konumsal değiştirgeler için).
+       İki nokta üst üste  (<literal>:</literal>) imi veya
+       <literal>@</literal> imi ile öncelenmemiş bir isimli
+       <parameter>sql_değişkeni</parameter>
+       iki nokta üst üste imi ile otomatik olarak öncelenir.
+       Konumsal değişkenler <literal>1</literal>'den başlar.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>değiştirge</parameter></term>
+     <term><parameter>php_değişkeni</parameter></term>
      <listitem>
       <para>
-       Deyim değişkeni ile ilişkilendirilecek değiştirge.
+       <parameter>sql_değişkeni</parameter>i ile ilişkilendirilecek
+       değişken.
       </para>
      </listitem>
     </varlistentry>
@@ -48,7 +62,7 @@
      <term><parameter>tür</parameter></term>
      <listitem>
       <para>
-       İlişkilendirilecek değiştirgenin veri türü
+       İlişkilendirilecek <parameter>php_değişkeni</parameter>nin veri türü
        <itemizedlist>
         <listitem>
          <para>
@@ -81,6 +95,24 @@
         </listitem>
        </itemizedlist>
       </para>
+      <para>
+       PHP 7.0.7 itibariyle, <parameter>tür</parameter> atlanmışsa,
+       <parameter>php_değişkeni</parameter>: <type>bool</type> türünden
+       otomatik olarak saptanır.
+       <type>int</type> türü <constant>SQLITE3_INTEGER</constant> olarak,
+       <type>float</type> türü <constant>SQLITE3_FLOAT</constant> olarak,
+       <type>null</type> türü <constant>SQLITE3_NULL</constant> ve
+       tüm diğerleri<constant>SQLITE3_TEXT</constant> olarak ele alınır.
+       Evvelce, <parameter>tür</parameter> atlanmışsa,
+       <constant>SQLITE3_TEXT</constant> öntanımlıydı.
+      </para>
+      <note>
+       <para>
+        <parameter>php_değişkeni</parameter> için &null; belirtilmişse,
+        belirtilen <parameter>tür</parameter>e bakılmaksızın daima
+        <constant>SQLITE3_NULL</constant> olarak ele alınır.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -91,9 +123,90 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Değiştirge deyim değişkeni ile ilişkilendirilebilmişse &true; yoksa &false;
-   döner.
+   <parameter>php_değişkeni</parameter> ile
+   <parameter>sql_değişkeni</parameter> ilişkilendirilebilmişse &true;
+   yoksa &false;  döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       <parameter>sql_değişkeni</parameter> için artık
+       <literal>@sql_değişkeni</literal> gösterimi de destekleniyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>SQLite3Stmt::bindParam</function> kullanımı</title>
+    <para>
+     Bu örnekte, tek bir değiştirge ile ilişkilendirilmiş tek bir hazırlanmış
+     deyimin farklı değerlere sahip çok sayıda satırı yerleştirmek için nasıl
+     kulllanılacağı gösterilmiştir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$db = new SQLite3(':memory:');
+$db->exec("CREATE TABLE foo (bar TEXT)");
+
+$stmt = $db->prepare("INSERT INTO foo VALUES (:bar)");
+$stmt->bindParam(':bar', $bar, SQLITE3_TEXT);
+
+$bar = 'baz';
+$stmt->execute();
+
+$bar = 42;
+$stmt->execute();
+
+$res = $db->query("SELECT * FROM foo");
+while (($row = $res->fetchArray(SQLITE3_ASSOC))) {
+    var_dump($row);
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+array(1) {
+  ["bar"]=>
+  string(3) "baz"
+}
+array(1) {
+  ["bar"]=>
+  string(2) "42"
+}
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><methodname>SQLite3Stmt::bindValue</methodname></member>
+   <member><methodname>SQLite3::prepare</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

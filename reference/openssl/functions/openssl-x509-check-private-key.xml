@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-x509-check-private-key">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-x509-check-private-key" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_x509_check_private_key</refname>
   <refpurpose>Bir gizli anahtarın bir sertifikaya karşılık olup olmadığına
@@ -12,13 +11,22 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>openssl_x509_check_private_key</methodname>
-   <methodparam><type>mixed</type><parameter>x509sert</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>anahtar</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>gizli_anahtar</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen gizli anahtarın belirtilen sertifikaya karşılık olup olmadığına
-   bakar.
+   Belirtilen <parameter>gizli_anahtar</parameter>ın belirtilen
+   <parameter>sertifika</parameter>ya karşılık olup olmadığına bakar.
   </para>
+  <warning>
+    <para>
+     İşlev <parameter>gizli_anahtar</parameter>ın bir gizli anahtar olup olmadığına bakmaz. Sadece genel öğeleri (RSA anahtarının üssü ve modülü gibi) ve/veya anahtar çiftinin anahtar değiştirgelerini (EC anahtarının EC değiştirgeleri gibi) karşılaştırır.
+    </para>
+    <para>
+     Yani, örneğin, <parameter>gizli_anahtar</parameter> için bir genel
+     anahtar verilebilir ve işlev &true; döndürebilirdi.
+    </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -26,16 +34,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>x509sert</parameter></term>
+     <term><parameter>sertifika</parameter></term>
      <listitem>
       <para>
-       <function>openssl_x509_read</function> tarafından döndürülen bir X509
-       sertifika özkaynağı.
+       Sertifika nesnesi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>anahtar</parameter></term>
+     <term><parameter>gizli_anahtar</parameter></term>
      <listitem>
       <para>
        Gizli anahtar.
@@ -49,9 +56,43 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Gizli <parameter>anahtar</parameter>, <parameter>x509sert</parameter>'in
+   Gizli <parameter>anahtar</parameter>, <parameter>sertifika</parameter>'nın
    karşılığı ise &true; yoksa &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>sertifika</parameter> artık
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>gizli_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

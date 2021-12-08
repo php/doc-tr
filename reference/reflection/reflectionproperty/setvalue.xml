@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c0575c87fbc508205c885277db704b583abe9b17 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionproperty.setvalue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionProperty::setValue</refname>
@@ -14,12 +13,13 @@
    <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
   </methodsynopsis>
+  <methodsynopsis>
+   <modifier>public</modifier> <type>void</type><methodname>ReflectionProperty::setValue</methodname>
+   <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+  </methodsynopsis>
   <para>
-   Bir özelliğin değerini değiştirir.
+   Bir özelliğe değer atar.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -30,7 +30,8 @@
      <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       Bir <classname>ReflectionProperty</classname> nesnesi.
+       Özellik statik değilse özelliğin ait olduğu nesne burada belirtilmelidir. Statik ise nesne belirtmeye gerek yoktur.
+       Sadece <parameter>değer</parameter> belirtmek yeterlidir.
       </para>
      </listitem>
     </varlistentry>
@@ -53,13 +54,66 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Özellik erişilebilir değilse <classname>ReflectionException</classname>
+   yavrulanır. Protected veya private bir özelliği erişilebilir kılmak için
+   <methodname>ReflectionProperty::setAccessible</methodname> kullanılmalıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionProperty::setValue</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public static $staticProperty;
+
+    public $property;
+    protected $privateProperty;
+}
+
+$reflectionClass = new ReflectionClass('Foo');
+
+$reflectionClass->getProperty('staticProperty')->setValue('foo');
+var_dump(Foo::$staticProperty);
+
+$foo = new Foo;
+
+$reflectionClass->getProperty('property')->setValue($foo, 'bar');
+var_dump($foo->property);
+
+$reflectionProperty = $reflectionClass->getProperty('privateProperty');
+$reflectionProperty->setAccessible(true);
+$reflectionProperty->setValue($foo, 'foobar');
+var_dump($reflectionProperty->getValue($foo));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(3) "foo"
+string(3) "bar"
+string(6) "foobar"
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><methodname>ReflectionProperty::getValue</methodname></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>ReflectionProperty::getValue</methodname></member>
+   <member><methodname>ReflectionProperty::setAccessible</methodname></member>
+   <member><methodname>ReflectionClass::setStaticPropertyValue</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

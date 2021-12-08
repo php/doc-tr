@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-rectangle">
+<!-- EN-Revision: 668b6fc28891062b1c96202009ccb70b7147740d Maintainer: haluk Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.rectangle">
  <refnamediv>
   <refname>ImagickDraw::rectangle</refname>
   <refpurpose>Bir dikdörtgen çizer</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::rectangle</methodname>
    <methodparam><type>float</type><parameter>x1</parameter></methodparam>
    <methodparam><type>float</type><parameter>y1</parameter></methodparam>
@@ -67,6 +67,42 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::rectangle</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function rectangle($strokeColor, $fillColor, $backgroundColor) {
+    $draw = new \ImagickDraw();
+    $strokeColor = new \ImagickPixel($strokeColor);
+    $fillColor = new \ImagickPixel($fillColor);
+
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+    $draw->setStrokeOpacity(1);
+    $draw->setStrokeWidth(2);
+
+    $draw->rectangle(200, 200, 300, 300);
+    $imagick = new \Imagick();
+    $imagick->newImage(500, 500, $backgroundColor);
+    $imagick->setImageFormat("png");
+
+    $imagick->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

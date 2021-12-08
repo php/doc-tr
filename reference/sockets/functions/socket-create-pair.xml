@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14dc7c47365f2b71f6c907a5ba5bccf42534d5a9 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-create-pair">
  <refnamediv>
   <refname>socket_create_pair</refname>
@@ -15,11 +14,11 @@
    <methodparam><type>int</type><parameter>aile</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
    <methodparam><type>int</type><parameter>protokol</parameter></methodparam>
-   <methodparam><type>array</type><parameter role="reference">dt</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">çift</parameter></methodparam>
   </methodsynopsis>
   <para>
    <function>socket_create_pair</function> iki tane bağlı ve ayrılması
-   olanaksız soket oluşturur ve bunları <parameter>dt</parameter> dizisine
+   olanaksız soket oluşturur ve bunları <parameter>çift</parameter> dizisine
    yerleştirir. Bu işlev genellikle süreçler arası iletişim için kullanılır.
   </para>
  </refsect1>
@@ -29,7 +28,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>domain</parameter></term>
+     <term><parameter>aile</parameter></term>
      <listitem>
       <para>
        Soket tarafından kullanılacak protokol ailesi. Tam liste için
@@ -63,10 +62,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dt</parameter></term>
+     <term><parameter>çift</parameter></term>
      <listitem>
       <para>
-       Soket çiftinin yerleştirileceği gönderimli dizi.
+       İki <classname>Socket</classname> örneğinin yerleştirileceği dizi.
       </para>
      </listitem>
     </varlistentry>
@@ -94,15 +93,11 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.3.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        İşlev Windows platformlarında yeniden kullanılabilir oldu.
-       </entry>
-      </row>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        İşlev bir hatadan dolayı Windows platformlarında kullanılamaz oldu.
+        <parameter>çift</parameter> dizisine artık
+        <classname>Socket</classname> örnekleri yerleştiriliyor; evvelce dizi
+        elemanları <type>resource</type> türünde olabiliyordu.
        </entry>
       </row>
      </tbody>
@@ -121,16 +116,16 @@
 <?php
 $sockets = array();
 
-/* Windows'ta AF_INET kullanmamız lazım */
+/* Windows'ta AF_INET kullanmak lazım */
 $domain = (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' ? AF_INET : AF_UNIX);
 
-/* Soket çiftini alalım */
+/* Soket çiftini al */
 if (socket_create_pair($domain, SOCK_STREAM, 0, $sockets) === false)
 {
     echo "socket_create_pair başarısız oldu. Sebep: ".
           socket_strerror(socket_last_error());
 }
-/* Veri gönderip alalım */
+/* Veri gönderip al */
 if (socket_write($sockets[0], "ABCdnm123\n", strlen("ABCdnm123\n")) === false)
 {
     echo "socket_write() başarısız oldu. Sebep: ".
@@ -144,7 +139,7 @@ if (($data = socket_read($sockets[1], strlen("ABCdef123\n"),
 }
 var_dump($data);
 
-/* Soketleri kapatalım */
+/* Soketleri kapat */
 socket_close($sockets[0]);
 socket_close($sockets[1]);
 ?>

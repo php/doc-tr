@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.prepare" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::prepare</refname>
@@ -9,35 +8,47 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>PDOStatement</type><methodname>PDO::prepare</methodname>
+   <modifier>public</modifier> <type class="union"><type>PDOStatement</type><type>false</type></type><methodname>PDO::prepare</methodname>
    <methodparam><type>string</type><parameter>deyim</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>array()</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
 
   <para>
    <function>PDOStatement::execute</function> yöntemi ile çalıştırılmak üzere
-   bir SQL deyimi hazırlar. SQL deyimi sıfır veya daha fazla sayıda birer
+   bir SQL deyimi hazırlar. Deyim şablonu sıfır veya daha fazla sayıda birer
    isimle (:isim) veya birer soru imi (?) ile ifade edilen değiştirge
    içerebilir. Deyimin çalıştırılması sırasında bu değiştirgelere farklı
-   değerler atanarak aynı deyim defalarca kullanılabilir. Aynı SQL deyiminde
+   değerler atanarak aynı deyim defalarca kullanılabilir. Aynı deyim şablonunda
    hem isimli hem de soru imli değiştirgeleri kullanamazsınız. İkisinden
-   birini seçmek zorundasınız.
+   birini seçmek zorundasınız. Herhangi bir kullanıcı girişini bağlamak için
+   bu değiştirgeleri kullanın, kullanıcı girişini doğrudan sorguya dahil
+   etmeyin.
   </para>
   <para>
    <function>PDOStatement::execute</function> işlevinde aktaracağınız her
-   değer için eşsiz bir değiştirge imleyici belirtmelisiniz. İsimli
-   değiştirgeler eşsiz olmak zorundadır, aynı ismi birden fazla değiştirgede
-   kullanamazsınız. Çok sayıda değeri, örneğin bir SQL deyiminin IN
-   cümleciğinde tek bir isimli değiştirgeyle ilişkilendiremezsiniz.
+   değer için eşsiz bir değiştirge imleyici belirtmelisiniz.
+   Öykünme kipi açık olmadığı sürece, hazırlanmış bir ifadede aynı ismi birden
+   fazla isimli değiştirge işaretçisinde kullanamazsınız.
   </para>
+  <note>
+   <para>
+    Değiştirge işaretçileri yalnızca eksiksiz bir değişmez veriyi temsil
+    edebilir. Ne değişmez parçasının, ne anahtar sözcük, ne tanımlayıcı ne de
+    herhangi bir keyfi sorgu parçasının değiştirge kullanılarak bağlanması
+    mümkün değildir. Örneğin, bir SQL ifadesinin IN() yan tümcesinde tek bir
+    değiştirgeye birden çok değer bağlayamazsınız.
+   </para>
+  </note>
   <para>
    Bir SQL deyiminin farklı değerlerle defalarca çalıştırılmak üzere
    <function>PDO::prepare</function> ve
    <function>PDOStatement::execute</function> yöntemlerine aktarılması, bu SQL
    deyimiyle ilgili sorgu planının ve temel verilerin müzakere edilmek üzere
    sürücü tarafından istemci ve/veya sunucu tarafında önbelleklemesiyle
-   uygulamanızın başarımını yükseltecek en iyilemelerin yapılması mümkün olur
-   ve değiştirgelerin elle öncelenmesi gereğini ortadan kaldırarak SQL zerk
+   uygulamanızın başarımını yükseltecek en iyilemelerin yapılması mümkün olur.
+   Ayrıca, <function>PDO::prepare</function> ve
+   <function>PDOStatement::execute</function> işlevlerinin kullanımı,
+   değiştirgelerin elle öncelenmesi gereğini ortadan kaldırarak SQL zerk
    saldırılarını engellemeye yardımcı olur.
   </para>
   <para>
@@ -46,6 +57,19 @@
    isimli ve soru imli değiştirge aktarım tarzlarından yalnız birini
    destekliyorsa PDO diğer tarzı da taklit eder.
   </para>
+  <note>
+   <simpara>
+    Öykünülmüş hazırlanmış ifadeler ve isimli veya soru işareti tarzı
+    değiştirgelerinin yeniden yazılması için kullanılan çözümleyici, tek ve
+    çift tırnaklar için standart olmayan tersbölülü öncelemeyi destekler. Bu,
+    bir tersbölü ile öncelenmiş sonlandırma tırnaklarında bu kullanımın
+    desteklenmediği anlamına gelir, bu da değiştirgelerin yanlış algılanmasına
+    neden olarak hazırlanan ifadenin yürütüldüğünde başarısız olmasına sebep
+    olabilir. Çözüm, bu tür SQL sorguları için öykünülmüş hazırlıklar
+    kullanmamak ve sürücü tarafından yerel olarak desteklenen bir değiştirge
+    tarzı kullanarak değiştirgelerin yeniden yazılmasını önlemektir.
+   </simpara>
+  </note>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
@@ -55,7 +79,7 @@
      <term><parameter>deyim</parameter></term>
      <listitem>
       <para>
-       Hedef veritabanı sunucusu için geçerli bir SQL deyimi olmalıdır.
+       Hedef veritabanı sunucusu için geçerli bir SQL deyimi şablonu olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -82,13 +106,15 @@
   <para>
    Veritabanı sunucusu deyimi başarıyla hazırlayabilmişse
    <function>PDO::prepare</function> bir
-   <classname>PDOStatement</classname> nesnesi döndürür; aksi takdirde bir
-   <classname>PDOException</classname> istisnası oluşur.
+   <classname>PDOStatement</classname> nesnesi döndürür; aksi takdirde ya bir
+   <classname>PDOException</classname> yavrulanır veya işlev &false; döndürür
+   (<link linkend="pdo.error-handling">hata işleme</link>ye bağımlı olarak).
   </para>
   <note>
    <para>
-    Taklit hazır deyimler için veritabanı sunucusuyla müzakere yapılmadığından
-    <function>PDO::prepare</function> deyim üzerinde bir sınama yapmaz.
+    Öykünülmüş hazır deyimler için veritabanı sunucusuyla müzakere
+    yapılmadığından <function>PDO::prepare</function> deyim üzerinde bir
+    sınama yapmaz.
    </para>
   </note>
  </refsect1>
@@ -97,7 +123,7 @@
   &reftitle.examples;
   <para>
    <example>
-    <title>- İsimli değiştirgelerle bir SQL deyiminin hazırlanması</title>
+    <title>- İsimli değiştirgeli SQL deyim şablonu</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -108,14 +134,14 @@ $sql = 'SELECT name, colour, calories
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute(array(':calories' => 150, ':colour' => 'red'));
 $red = $sth->fetchAll();
-$sth->execute(array('calories' => 175, 'colour' => 'yellow'));
+$sth->execute(array(':calories' => 175, ':colour' => 'yellow'));
 $yellow = $sth->fetchAll();
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Soru imli değiştirgelerle bir SQL deyiminin hazırlanması</title>
+    <title>- Soru imi değiştirgeli SQL deyim şablonu</title>
     <programlisting role="php">
 <![CDATA[
 <?php

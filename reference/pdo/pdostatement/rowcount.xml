@@ -1,19 +1,18 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 3d69f8f11fcade2ce4fd908d176cbf874603fe57 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.rowcount" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->rowCount</refname>
+  <refname>PDOStatement::rowCount</refname>
   <refpurpose>Son SQL deyiminden etkilenen satır sayısını döndürür
   </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>int</type><methodname>PDOStatement::rowCount</methodname>
    <void/>
   </methodsynopsis>
-
   <para>
    <literal>PDOStatement</literal> nesnesi tarafından çalıştırılan son
    DELETE, INSERT veya UPDATE deyiminden etkilenen satır sayısını döndürür.
@@ -25,6 +24,18 @@
    edilmediğinden taşınıbilir bir uygulamada bu davranışa itibar
    edilmemelidir.
   </para>
+  <note>
+   <para>
+    Bu yöntem SQLite sürücü ile ve <constant>PDO::CURSOR_SCROLL</constant>
+    özniteliğine <constant>PDO::ATTR_CURSOR</constant> atandığında PostgreSQL
+    sürücüsü ile daima "0" (sıfır) döndürür.
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  &no.function.parameters;
  </refsect1>
 
   <refsect1 role="returnvalues">
@@ -55,7 +66,7 @@ print("$count satır silindi.\n");
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 9 satır silindi.
@@ -76,41 +87,23 @@ print("$count satır silindi.\n");
 <![CDATA[
 <?php
 $sql = "SELECT COUNT(*) FROM fruit WHERE calories > 100";
-if ($res = $conn->query($sql)) {
+$res = $conn->query($sql);
+$count = $res->fetchColumn();
 
-    /* Bu deyimden etkilenen satır sayısına bakalım */
-  if ($res->fetchColumn() > 0) {
-
-        /* Gerçek SELECT deyimini kullanarak sonuçları alabiliriz */
-         $sql = "SELECT name FROM fruit WHERE calories > 100";
-       foreach ($conn->query($sql) as $row) {
-           print "Meyve: " .  $row['NAME'] . "\n";
-         }
-    }
-    /* Etkilenen satır yokmuş; gereğini yapalım */
-  else {
-      print "Sorguyla eşleşen satır yok.";
-    }
-}
-
-$res = null;
-$conn = null;
+print "Etkilenen " . $count . " kayıt var.";
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
-apple
-banana
-orange
-pear
+Etkilenen 2 kayıt var.
 ]]>
     </screen>
    </example>
-
   </para>
  </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

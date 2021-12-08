@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b95e76e41de2ffe5c75e04be1b187d80ca745359 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.quote" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::quote</refname>
@@ -10,9 +9,10 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>PDO::quote</methodname>
+   <modifier>public</modifier>
+   <type class="union"><type>string</type><type>false</type></type><methodname>PDO::quote</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>değiştirge_türü</parameter><initializer>PDO::PARAM_STR</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer>PDO::PARAM_STR</initializer></methodparam>
   </methodsynopsis>
 
   <para>
@@ -33,7 +33,17 @@
    PDO sürücülerinin hepsi bu yöntemi gerçeklemez. (özellikle PDO_ODBC) Bu
    bakımdan hazır deyimleri kullanmaya hazır olmalısınız.
   </para>
+  <caution>
+   <title>Güvenlik: Öntanımlı karakter kümesi</title>
+   <para>
+    Karakter kümesi, <methodname>PDO::quote</methodname>'u etkilemesi için
+    ya sunucu seviyesinde ya da (sürücüye bağlı olarak) veritabanı
+    bağlantısının kendisinde ayarlanmalıdır. Daha fazla bilgi için <link
+    linkend="pdo.drivers">sürücüye özel belgelere</link> bakılabilir.
+   </para>
+  </caution>
  </refsect1>
+
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
@@ -47,18 +57,19 @@
       </listitem>
      </varlistentry>
     <varlistentry>
-     <term><parameter>değiştirge_türü</parameter></term>
+     <term><parameter>tür</parameter></term>
       <listitem>
        <para>
-        İkincil bir önceleme tarzına sahip sürücüler için ipucu olarak bir
-        veri türü belirtilir. <constant>PDO::PARAM_STR</constant>
-        öntanımlıdır.
+        İkincil bir önceleme tarzı olan sürücülere veri türü olarak bir ipucu
+        sağlar. Örneğin, <constant>PDO_PARAM_LOB</constant> sabiti sürücüye
+        ikil veriyi öncelemesini söyler.
        </para>
       </listitem>
      </varlistentry>
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>

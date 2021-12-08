@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-csr-new">
  <refnamediv>
   <refname>openssl_csr_new</refname>
@@ -10,16 +9,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>openssl_csr_new</methodname>
-   <methodparam><type>array</type><parameter>dn</parameter></methodparam>
-   <methodparam><type>resource</type><parameter role="reference">gizanh</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>ayarlar</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>ek_seçenekler</parameter></methodparam>
+   <type class="union"><type>OpenSSLCertificateSigningRequest</type><type>false</type></type><methodname>openssl_csr_new</methodname>
+   <methodparam><type>array</type><parameter>ayırdedici_adlar</parameter></methodparam>
+   <methodparam><type>OpenSSLAsymmetricKey</type><parameter role="reference">gizli_anh</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>null</type></type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>null</type></type><parameter>ek_seçenekler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dn</parameter> ile belirtilen, sertifika için kullanılacak
-   ayırt edilebilir isim ile sağlanan bilgiye dayanarak yeni bir sertifika
-   imzalama isteği (CSR) üretir.
+   <parameter>ayırdedici_adlar</parameter> ile sağlanan bilgilere dayalı olarak
+   yeni bir sertifika imzalama isteği (CSR) üretir.
   </para>
   &note.openssl.cnf;
  </refsect1>
@@ -29,15 +27,15 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dn</parameter></term>
+     <term><parameter>ayırdedici_adlar</parameter></term>
      <listitem>
       <para>
-       Sertifika için kullanılacak ayırt edilebilir isim.
+       Sertifika için kullanılacak ayırt edilebilir isim veya konu alanları.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gizanh</parameter></term>
+     <term><parameter>gizli_anh</parameter></term>
      <listitem>
       <para>
        <function>openssl_pkey_new</function> (veya başka bir openssl_pkey
@@ -47,16 +45,16 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ayarlar</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
        İsteği ilklendirmek için öntanımlı olarak sisteminizdeki
        <literal>openssl.conf</literal> kullanılır.
-       <parameter>ayarlar</parameter> dizisinin
+       <parameter>seçenekler</parameter> dizisinin
        <literal>config_section_section</literal> anahtarında başka bir
        yapılandırma dosyası bölümü belirtebileceğiniz gibi
        <literal>config</literal> anahtarında başka bir openssl yapılandırma
-       dosyasının yolunu da belirtebilirsiniz. <parameter>ayarlar</parameter>
+       dosyasının yolunu da belirtebilirsiniz. <parameter>seçenekler</parameter>
        dizisi aşağıdaki anahtarları içerebilir. Bu anahtarlar
        <literal>openssl.conf</literal> dosyasındaki eşdeğerleri gibi
        davranırlar.
@@ -65,7 +63,7 @@
         <tgroup cols="3">
          <thead>
           <row>
-           <entry><parameter>ayarlar</parameter> anahtarı</entry>
+           <entry><parameter>seçenekler</parameter> anahtarı</entry>
            <entry>Türü</entry>
            <entry><literal>openssl.conf</literal> eşdeğeri</entry>
            <entry>Açıklama</entry>
@@ -76,7 +74,7 @@
            <entry>digest_alg</entry>
            <entry><type>string</type></entry>
            <entry>default_md</entry>
-           <entry>Kullanılacak özet yöntemini belirler.</entry>
+           <entry>Özet yöntemi veya imza aşı, genellikle <function>openssl_get_md_methods</function> yöntemlerinden biridir.</entry>
           </row>
           <row>
            <entry>x509_extensions</entry>
@@ -94,27 +92,51 @@
           </row>
           <row>
            <entry>private_key_bits</entry>
-           <entry><type>integer</type></entry>
+           <entry><type>int</type></entry>
            <entry>default_bits</entry>
            <entry>Bir gizli anahtarın kaç bitlik olacağını belirler.</entry>
           </row>
           <row>
            <entry>private_key_type</entry>
-           <entry><type>integer</type></entry>
+           <entry><type>int</type></entry>
            <entry>none</entry>
            <entry>Üretilecek gizli anahtarın türünü belirler. Şu sabitlerden
             biri olabilir: <constant>OPENSSL_KEYTYPE_DSA</constant>,
             <constant>OPENSSL_KEYTYPE_DH</constant>,
-            <constant>OPENSSL_KEYTYPE_RSA</constant>.
-            Öntanımlı değer <constant>OPENSSL_KEYTYPE_RSA</constant> olup
-            şimdilik desteklenen tek anahtar türüdür.
+            <constant>OPENSSL_KEYTYPE_RSA</constant> veya
+            <constant>OPENSSL_KEYTYPE_EC</constant>.
+            Öntanımlı değer <constant>OPENSSL_KEYTYPE_RSA</constant>'dır.
            </entry>
           </row>
           <row>
            <entry>encrypt_key</entry>
-           <entry><type>boolean</type></entry>
+           <entry><type>bool</type></entry>
            <entry>encrypt_key</entry>
            <entry>İhraç edilecek anahtar (bir parola ile) şifrelenececek mi?
+           </entry>
+          </row>
+          <row>
+           <entry>encrypt_key_cipher</entry>
+           <entry><type>int</type></entry>
+           <entry>none</entry>
+           <entry>
+            <link linkend="openssl.ciphers">şifreleme sabitleri</link>nden biri.
+           </entry>
+          </row>
+          <row>
+           <entry>curve_name</entry>
+           <entry><type>string</type></entry>
+           <entry>none</entry>
+           <entry>
+            <function>openssl_get_curve_names</function> adlarından biri.
+           </entry>
+          </row>
+          <row>
+           <entry>config</entry>
+           <entry><type>string</type></entry>
+           <entry>N/A</entry>
+           <entry>
+            Size özel openssl.conf dosyasının yolu.
            </entry>
           </row>
          </tbody>
@@ -128,7 +150,8 @@
      <listitem>
       <para>
        CSR için kullanılacak ek seçenekleri belirtmek için kullanılır.
-       <parameter>dn</parameter> ve  <parameter>ek_seçenekler</parameter>
+       <parameter>ayırdedici_adlar</parameter> ve
+       <parameter>ek_seçenekler</parameter>
        birer ilişkisel dizi olup anahtarları nesne kimliklerine (OID)
        dönüştürülerek isteğin ilgili parçasına uygulanır.
       </para>
@@ -141,8 +164,48 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Üretilen CSR'yi döndürür.
+   Üretilen CSR,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Başarı durumunda artık
+       <classname>OpenSSLCertificateSigningRequest</classname> örneği
+       dönüyor; evvelce <literal>OpenSSL X.509 CSR</literal> türünde bir
+       özkaynak dönerdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>gizli_anh</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> örneği kabul ediyor;
+       evvelce <literal>OpenSSL key</literal> türünde bir özkaynak kabul ederdi.
+      </entry>
+     </row>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>seçenekler</parameter> artık <literal>curve_name</literal>
+       seçeneğini destekliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -153,14 +216,12 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// Sertifikada ayırt edilebilir isim için kullanılacak veriyi oluşturalım.
-// Bu anahtar değerlerinde, isminiz, şirketiniz ve hatta sertifikanın adına
-// üretildiği şirketin veya şahsın isminin bulunmasını sağlayın.
-// SSL sertifikaları için commonName genellikle sertifikayı kullanacak
-// alan ismidir. Fakat S/MIME sertifikalar için commonName, sertifikayı
-// kullanacak şahsın ismidir.
+// SSL sertifikaları için commonName genellikle sertifikanın kullanılacağı
+// alanın ismidir. Fakat S/MIME sertifikalar için commonName, eposta adresi/
+// sahibinin ismidir. location ve identification alanları ise güvenceye konu
+// alan veya eposta sahibinin ismini içerir.
 $dn = array(
-    "countryName" => "UK",
+    "countryName" => "GB",
     "stateOrProvinceName" => "Somerset",
     "localityName" => "Glastonbury",
     "organizationName" => "The Brain Room Limited",
@@ -170,22 +231,20 @@ $dn = array(
 );
 
 // Yeni bir gizli/genel anahtar çifti üretelim
-$privkey = openssl_pkey_new();
+$privkey = openssl_pkey_new(array(
+    "private_key_bits" => 2048,
+    "private_key_type" => OPENSSL_KEYTYPE_RSA,
+));
 
 // Bir sertifika imzalama isteği üretelim
-$csr = openssl_csr_new($dn, $privkey);
+$csr = openssl_csr_new($dn, $privkey, array('digest_alg' => 'sha256'));
 
-// CA'nız isteği yerine getirene kadar bir öz-imzalı sertifika üretelim.
-// Bu sertifika 365 günlük olsun.
-$sscert = openssl_csr_sign($csr, null, $privkey, 365);
+// 365 günlük, öz-imzalı sertifika üretelim.
+$x509 = openssl_csr_sign($csr, null, $privkey, $days=365, array('digest_alg' => 'sha256'));
 
-// (Sertifikanın kullanılacağı yere bağlı olarak) posta istemcisine,
-// posta sunucusuna veya HTTP sunucusuna kurulacak öz-imzali sertifikayı,
-// CSR'yi ve gizli anahtarı alalım. Örnekte bunlar değişkenlere atanmıştır.
-// Fakat siz bunları doğrudan dosyalarına kaydedebilirsiniz.
-// CSR genellikle "gerçek" sertifikayı üretecek CA'ya gönderilir.
+// Öz-imzali sertifika, CSR ve gizli anahtarı ileride kullanım için saklayalım.
 openssl_csr_export($csr, $csrout); var_dump($csrout);
-openssl_x509_export($sscert, $certout); var_dump($certout);
+openssl_x509_export($x509, $certout) and var_dump($certout);
 openssl_pkey_export($privkey, $pkeyout, "mypassword"); var_dump($pkeyout);
 
 // Oluşan hatalar varsa gösterelim
@@ -196,7 +255,40 @@ while (($e = openssl_error_string()) !== false) {
 ]]>
     </programlisting>
    </example>
+   <example>
+    <title>- Öz-imzalı ECC sertifikası oluşrurmak (PHP 7.1.0 ve üstü)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$subject = array(
+    "commonName" => "docs.php.net",
+);
+
+// Gizli/Genel Anahtar çiftini üretelim
+$private_key = openssl_pkey_new(array(
+    "private_key_type" => OPENSSL_KEYTYPE_EC,
+    "curve_name" => 'prime256v1',
+));
+
+// Sertifika imzalama isteği (csr) üretelim
+$csr = openssl_csr_new($subject, $private_key, array('digest_alg' => 'sha384'));
+
+// Öz-imzalı EC setifikası üretelim
+$x509 = openssl_csr_sign($csr, null, $private_key, $days=365, array('digest_alg' => 'sha384'));
+openssl_x509_export_to_file($x509, 'ecc-cert.pem');
+openssl_pkey_export_to_file($private_key, 'ecc-private.key');
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>openssl_csr_sign</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

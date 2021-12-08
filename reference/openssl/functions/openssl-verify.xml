@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-verify">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-verify" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_verify</refname>
   <refpurpose>İmzayı doğrular</refpurpose>
@@ -10,14 +9,14 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>openssl_verify</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>openssl_verify</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
    <methodparam><type>string</type><parameter>imza</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>genankim</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>algoritma</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>genel_anahtar</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>int</type></type><parameter>algoritma</parameter><initializer><constant>OPENSSL_ALGO_SHA1</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>genankim</parameter> ile ilişkili genel anahtarı kullanarak
+   <parameter>genel_anahtar</parameter> kimlikli genel anahtarı kullanarak
    belirtilen <parameter>veri</parameter> için belirtilen
    <parameter>imza</parameter> ile imza doğrulaması yapar.
   </para>
@@ -31,7 +30,7 @@
      <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       İmzalı veri.
+       İmzayı üretmek için kullanılmış veri.
       </para>
      </listitem>
     </varlistentry>
@@ -44,10 +43,15 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>genankim</parameter></term>
+     <term><parameter>genel_anahtar</parameter></term>
      <listitem>
       <para>
-       Genel anahtarı tanımlayıcı kimlik.
+       <classname>OpenSSLAsymmetricKey</classname> -
+       <function>openssl_get_publickey</function> ile döndürülmüş bir anahtar
+      </para>
+      <para>
+       <type>string</type> - PEM biçemli anahtar, örnek:,
+       "-----BEGIN PUBLIC KEY----- MIIBCgK..."
       </para>
      </listitem>
     </varlistentry>
@@ -55,8 +59,13 @@
      <term><parameter>algoritma</parameter></term>
      <listitem>
       <para>
-       <constant>OPENSSL_ALGO_SHA1</constant> öntanımlıdır. Daha ayrıntılı
-       bilgi için <xref linkend="openssl.signature-algos" /> bölümüne bakınız.
+       <type>int</type> türünde, <link
+       linkend="openssl.signature-algos">İmzalama algoritmaları</link>ndan biri.
+      </para>
+      <para>
+       <type>string</type> türünde, <function>openssl_get_md_methods</function>
+       işlevinden döndürülmüş geçerli bir dizge
+       (örn: "sha256WithRSAEncryption" veya "sha384".
       </para>
      </listitem>
     </varlistentry>
@@ -67,7 +76,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İmza doğruysa 1, yanlışsa 0, hata oluşmuşsa -1 döner.
+   İmza doğruysa 1, yanlışsa 0, hata oluşmuşsa -1 veya &false; döner.
   </para>
  </refsect1>
 
@@ -84,9 +93,13 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>algoritma</parameter> değiştirgesi eklendi.
+       <parameter>genel_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
        </entry>
       </row>
      </tbody>
@@ -105,13 +118,10 @@
 <?php
 // $veri ve $imza'nın veriyi ve imzayı içerdiği varsayılıyor
 
-// Genel anahtarı sertifikadan alıp hazırlayalım
-$dt = fopen("/src/openssl-0.9.6/demos/sign/cert.pem", "r");
-$sert = fread($dt, 8192);
-fclose($dt);
-$genankim = openssl_get_publickey($sert);
+// Genel anahtarı sertifikadan alıp hazırla
+$pubkeyid = openssl_pkey_get_public("file://src/openssl-0.9.6/demos/sign/cert.pem");
 
-// imza doğru mu, bir bakıbakıverelim
+// imza doğru mu?
 $ok = openssl_verify($veri, $imza, $genankim);
 if ($ok == 1) {
     echo "iyi";
@@ -120,13 +130,45 @@ if ($ok == 1) {
 } else {
     echo "çirkin, bir hata oluştu";
 }
-// Anahtar belleğini serbest bırakalım
+// Anahtar belleğini serbest bırak
 openssl_free_key($genankim);
 ?>
 ]]>
     </programlisting>
    </example>
-  </para>
+   <example>
+    <title>- <function>openssl_verify</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// imzalanacak veri
+$data = 'my data';
+
+// yeni genel ve gizli anahtar üret
+$private_key_res = openssl_pkey_new(array(
+    "private_key_bits" => 2048,
+    "private_key_type" => OPENSSL_KEYTYPE_RSA,
+));
+$details = openssl_pkey_get_details($private_key_res);
+$public_key_res = openssl_pkey_get_public($details['key']);
+
+// imza üret
+openssl_sign($data, $signature, $private_key_res, "sha256WithRSAEncryption");
+
+// imzayı doğrula
+$ok = openssl_verify($data, $signature, $public_key_res, OPENSSL_ALGO_SHA256);
+if ($ok == 1) {
+    echo "geçerli";
+} elseif ($ok == 0) {
+    echo "geçersiz";
+} else {
+    echo "hata: ".openssl_error_string();
+}
+?>
+]]>
+    </programlisting>
+   </example>
+ </para>
  </refsect1>
 
  <refsect1 role="seealso">

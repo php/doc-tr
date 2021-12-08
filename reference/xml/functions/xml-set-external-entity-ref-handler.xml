@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3db49ee0a331a657dd97b539a749f53d3965b593 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-external-entity-ref-handler">
  <refnamediv>
   <refname>xml_set_external_entity_ref_handler</refname>
-  <refpurpose>Harici öğe gönderimi eylemcisini belirler</refpurpose>
+  <refpurpose>Harici öğe gönderimi işleyiciyi belirler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>xml_set_external_entity_ref_handler</methodname>
-   <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>eylemci</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
-   harici öğe gönderimi eylemcisini belirler.
+   harici öğe gönderimi işleyiciyi belirler.
   </para>
  </refsect1>
 
@@ -28,14 +27,13 @@
      <term><parameter>çözümleyici</parameter></term>
      <listitem>
       <para>
-       <function>xml_parser_create</function> ve
-       <function>xml_parser_create_ns</function> işlevleri tarafından
-       döndürülen bir XML özkaynağı.
+       Harici öğe başvurusu işleyici işlevini ayarlamak için XML çözümleyiciye
+       başvuru.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>eylemci</parameter></term>
+     <term><parameter>işleyici</parameter></term>
      <listitem>
       <para>
        <function>xml_parse</function> işlevi
@@ -43,15 +41,15 @@
        gereken işlevin ismini içeren dizge.
       </para>
       <para>
-       İsmi <parameter>eylemci</parameter> değiştirgesiyle belirtilen işlev
+       İsmi <parameter>işleyici</parameter> değiştirgesiyle belirtilen işlev
        beş değiştirge kabul etmeli ve bir tamsayı değer döndürmelidir. Eğer
        &false; döndürülürse (bir değer dönmemesi hali), XML çözümleyici
        çözümlemeyi durdurur ve <function>xml_get_error_code</function> işlevi
        <constant>XML_ERROR_EXTERNAL_ENTITY_HANDLING</constant> hatasını
-       döndürür. Eylemci işlev sözdizimi:
+       döndürür. İşleyici işlev sözdizimi:
        <methodsynopsis>
-        <methodname><replaceable>eylemci</replaceable></methodname>
-        <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
+        <methodname><replaceable>işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
         <methodparam><type>string</type><parameter>açık_öğe_isimleri</parameter></methodparam>
         <methodparam><type>string</type><parameter>taban</parameter></methodparam>
         <methodparam><type>string</type><parameter>sistem_id</parameter></methodparam>
@@ -62,8 +60,7 @@
          <term><parameter>çözümleyici</parameter></term>
          <listitem>
           <simpara>
-           İlk değiştirge, eylemci işlevi çağıran XML çözümleyicinin
-           tanıtıcısıdır.
+           İlk değiştirge, işleyici işlevi çağıran XML çözümleyici nesnesi
           </simpara>
          </listitem>
         </varlistentry>
@@ -108,8 +105,8 @@
        </variablelist>
       </para>
       <para>
-       <parameter>eylemci</parameter> değiştirgesinde işlev olarak boş bir
-       dizge veya &false; belirtilirse ilgili eylemci iptal edilir.
+       <parameter>işleyici</parameter> değiştirgesinde işlev olarak boş bir
+       dizge veya &false; belirtilirse ilgili işleyici iptal edilir.
       </para>
       &note.func-callback;
      </listitem>
@@ -123,6 +120,31 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+      &xml.changelog.parser-param;
+     <row>
+      <entry>7.3.0</entry>
+      <entry>
+       Eklenti libxml'e dayalı oluşturulmuşsa <parameter>işleyici</parameter>
+       dönüş değeri artık yoksayılmıyor. Evvelce dönüş değeri yoksayılır ve
+       çözümleme hiç bitmezdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

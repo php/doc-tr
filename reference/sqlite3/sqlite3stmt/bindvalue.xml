@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d15a12639faeb8d1b4bcf7eff008de2885017d1e Maintainer: nilgun Status: ready -->
 <refentry xml:id="sqlite3stmt.bindvalue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>SQLite3Stmt::bindValue</refname>
@@ -12,16 +11,21 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>bool</type><methodname>SQLite3Stmt::bindValue</methodname>
-   <methodparam><type>string</type><parameter>değişken</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter>değişken</parameter></methodparam>
    <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer><constant>SQLITE3_TEXT</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>değer</parameter>'i
-   <parameter>değişken</parameter> ile belirtilen deyim değişkeni ile
-   ilişkilendirir.
-
+   deyim <parameter>değişken</parameter>i ile ilişkilendirir.
   </para>
+  <caution>
+   <para>
+    PHP 7.2.14 ve 7.3.0 öncesinde, deyimin her çalıştırılışında,
+    ilişkili değiştirgelerin güncellenebilmesi için
+    <methodname>SQLite3Stmt::reset</methodname> çağrılması gerekirdi.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -32,8 +36,14 @@
      <term><parameter>değişken</parameter></term>
      <listitem>
       <para>
-       <parameter>değer</parameter> ile ilişkilendirilecek deyim değişkeninin
-       ismi.
+       <parameter>değer</parameter>in ilişkilendirileceği
+       <parameter>değişken</parameter>i tanımlayan bir dizge
+       (isimli değiştirgeler için) veya tamsayı (konumsal değiştirgeler için).
+       İki nokta üst üste  (<literal>:</literal>) imi veya
+       <literal>@</literal> imi ile öncelenmemiş bir isimli
+       <parameter>değişken</parameter>
+       iki nokta üst üste imi ile otomatik olarak öncelenir.
+       Konumsal değişkenler <literal>1</literal>'den başlar.
       </para>
      </listitem>
     </varlistentry>
@@ -82,6 +92,24 @@
         </listitem>
        </itemizedlist>
       </para>
+      <para>
+       PHP 7.0.7 itibariyle, <parameter>tür</parameter> atlanmışsa,
+       <parameter>değer</parameter>: <type>bool</type> türünden
+       otomatik olarak saptanır.
+       <type>int</type> türü <constant>SQLITE3_INTEGER</constant> olarak,
+       <type>float</type> türü <constant>SQLITE3_FLOAT</constant> olarak,
+       <type>null</type> türü <constant>SQLITE3_NULL</constant> ve
+       tüm diğerleri<constant>SQLITE3_TEXT</constant> olarak ele alınır.
+       Evvelce, <parameter>tür</parameter> atlanmışsa,
+       <constant>SQLITE3_TEXT</constant> öntanımlıydı.
+      </para>
+      <note>
+       <para>
+        <parameter>değer</parameter> için &null; belirtilmişse,
+        belirtilen <parameter>tür</parameter>e bakılmaksızın daima
+        <constant>SQLITE3_NULL</constant> olarak ele alınır.
+       </para>
+      </note>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -92,9 +120,32 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Değer, deyim değişkeni ile ilişkilendirilebilmişse &true; yoksa &false;
-   döner.
+   Değer, deyim değişkeni ile ilişkilendirilebilmişse
+   &true;,&return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       <parameter>değişken</parameter> için artık <literal>@değişken</literal>
+       gösterimi de destekleniyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -105,8 +156,7 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-unlink('mysqlitedb.db');
-$db = new SQLite3('mysqlitedb.db');
+$db = new SQLite3(':memory:');
 
 $db->exec('CREATE TABLE foo (id INTEGER, bar STRING)');
 $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'Bu bir denemedir')");
@@ -115,12 +165,29 @@ $stmt = $db->prepare('SELECT bar FROM foo WHERE id=:id');
 $stmt->bindValue(':id', 1, SQLITE3_INTEGER);
 
 $result = $stmt->execute();
-var_dump($result->fetchArray());
+var_dump($result->fetchArray(SQLITE3_ASSOC));
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+array(1) {
+  ["bar"]=>
+  string(16) "Bu bir denemedir"
+}
+]]>
+    </screen>
    </example>
   </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><methodname>SQLite3Stmt::bindParam</methodname></member>
+   <member><methodname>SQLite3::prepare</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

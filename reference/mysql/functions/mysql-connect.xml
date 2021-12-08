@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: mustafa Status: ready -->
+<!-- EN-Revision: 5fabd07880ab15b0ad2cf7eb055c7c2b36d7120f Maintainer: mustafa Status: ready -->
 <refentry xml:id="function.mysql-connect" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mysql_connect</refname>
   <refpurpose>MySQL Sunucusuna bir bağlantı açar</refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+  <warning>
+   &mysql.alternative.note;
+   <simplelist role="alternatives">
+    <member><function>mysqli_connect</function></member>
+    <member><methodname>PDO::__construct</methodname></member>
+   </simplelist>
+  </warning>
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>mysql_connect</methodname>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>mysql_connect</methodname>
    <methodparam choice="opt"><type>string</type><parameter>sunucu</parameter><initializer>ini_get("mysql.default_host")</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>kullanıcı_adı</parameter><initializer>ini_get("mysql.default_user")</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>parola</parameter><initializer>ini_get("mysql.default_password")</initializer></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>yeni_bağlantı</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>yeni_bağlantı</parameter><initializer>&false;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>istemci_seçenekleri</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -102,36 +111,6 @@
   <para>
    Başarı durumunda bir MySQL bağlantı belirteci döndürür, hata durumunda
    &false; döndürür.
-  </para>
- </refsect1>
-
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        <parameter>istemci_seçenekleri</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-      <row>
-       <entry>4.2.0</entry>
-       <entry>
-        <parameter>yeni_bağlantı</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
   </para>
  </refsect1>
 
@@ -228,13 +207,6 @@ mysql_close($link);
    <para>
     Sunucuya bağlantı, eğer daha önceden <function>mysql_close</function>
     kullanılarak kapatılmadıysa, betiğin çalışması biter bitmez kapatılır.
-   </para>
-  </note>
-  <note>
-   <para>
-    Hata iletisini işlev adının önüne bir
-    <link linkend="language.operators.errorcontrol">@</link> imi koyarak
-    önleyebilirsiniz.
    </para>
   </note>
   <note>

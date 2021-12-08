@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-open">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-open" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_open</refname>
   <refpurpose>Mühürlü veriyi açar</refpurpose>
@@ -11,16 +10,18 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>openssl_open</methodname>
-   <methodparam><type>string</type><parameter>mühürlü_veri</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">veri</parameter></methodparam>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam><type>string</type><parameter role="reference">çıktı</parameter></methodparam>
    <methodparam><type>string</type><parameter>zarf_anahtarı</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>gizankim</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>gizli_anahtar</parameter></methodparam>
+   <methodparam><type>string</type><parameter>algoritma</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>ilklendirme_yöneyi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>gizankim</parameter> ile ilgili gizli anahtar ve
+   <parameter>gizli_anahtar</parameter> ile ilgili gizli anahtar ve
    <parameter>zarf_anahtarı</parameter> kullanılarak
-   <parameter>mühürlü_veri</parameter>'nin mühürü ve şifresi çözüldükten
-   sonra <parameter>veri</parameter> değiştirgesine konur.
+   <parameter>veri</parameter>'nin mühürü ve şifresi çözüldükten
+   sonra <parameter>çıktı</parameter> değiştirgesine konur.
    <parameter>zarf_anahtarı</parameter> veri mühürlenirken üretilir ve sadece
    belli bir gizli anahtarla birlikte kullanılabilir. Daha fazla bilgi için
    <function>openssl_seal</function> işlevine bakınız.
@@ -32,14 +33,14 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>mühürlü_veri</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>veri</parameter></term>
+     <term><parameter>çıktı</parameter></term>
      <listitem>
       <para>
        İşlem başarılı olursa çözümlenen veri bu değiştirgeye konur.
@@ -54,9 +55,31 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>gizankim</parameter></term>
+     <term><parameter>gizli_anahtar</parameter></term>
      <listitem>
       <para>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>algoritma</parameter></term>
+     <listitem>
+      <para>
+       Şifreleme yöntemi.
+       <caution>
+        <simpara>
+         Öntanımlı değerin (<literal>'RC4'</literal>) güvensiz olduğu
+         varsayılır. Burada güvenli bir şifreleme yöntemi belirtmelisiniz.
+        </simpara>
+       </caution>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ilklendirme_yöneyi</parameter></term>
+     <listitem>
+      <para>
+       İlklendirme yöneyi
       </para>
      </listitem>
     </varlistentry>
@@ -69,6 +92,38 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>gizli_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL X.509
+       CSR</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>algoritma</parameter> artık seçimlik değil.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

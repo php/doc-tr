@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6fcf444471febbbc7ad0a52f16303f6957362447 Maintainer: nilgun Status: ready -->
 <refentry xml:id="locale.composelocale" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>Locale::composeLocale</refname>
@@ -11,20 +10,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
    <modifier>static</modifier>
-   <type>string</type>
-   <methodname>Locale::composeLocale</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>Locale::composeLocale</methodname>
    <methodparam><type>array</type><parameter>alt_yaftalar</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>string</type>
-   <methodname>locale_compose</methodname>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>string</type><type>false</type></type><methodname>locale_compose</methodname>
    <methodparam><type>array</type><parameter>alt_yaftalar</parameter></methodparam>
   </methodsynopsis>
   <para>
@@ -46,16 +44,21 @@
        alt yaftalarla ilişkili değerler olduğu bir ilişkisel dizi.
        <note>
         <para>
-         'extlang' anahtarı en fazla 3 değer alabilirken 'variant' ve
-         'private' alt yaftaları en fazla 15 değer alabilir ve 0-14
-         indislerine sahip olabilir. Bu bakımdan, girdi dizisindeki anahtarlar
-         variant0, variant1, ...,variant14 olabilir. Döndürülen yerele bu
+         <literal>'extlang'</literal> anahtarı en fazla 3 değer alabilirken
+         <literal>'variant'</literal> ve <literal>'private'</literal> alt
+         yaftaları en fazla 15 değer alabilir ve 0-14 indislerine sahip
+         olabilir. Bu bakımdan, girdi dizisindeki anahtarlar
+         <literal>variant0</literal>, <literal>variant1</literal>, …,
+         <literal>variant14</literal> olabilir. Döndürülen yerele bu
          yaftalar sonek olarak bu sırayla yerleştirilir.
         </para>
         <para>
-         'variant', 'private' ve 'extlang' için çoklu değerler belli bir anahtarın
-         ('variant' gibi) alt dizisi olarak belirtilebileceği gibi 'variant0',
-         'variant1', şeklinde ayrı ayrı anahtar-değer çiftleriyle de belirtilebilir.
+         <literal>'variant'</literal>, <literal>'private'</literal> ve
+         <literal>'extlang'</literal> için çoklu değerler belli bir anahtarın
+         (<literal>'variant'</literal> gibi) alt dizisi olarak (bu durumda alt
+         yafta numara sınırlaması uygulanmaz) belirtilebileceği gibi
+         <literal>'variant0'</literal>, <literal>'variant1'</literal>,
+         şeklinde ayrı ayrı anahtar-değer çiftleriyle de belirtilebilir.
         </para>
        </note>
       </para>
@@ -65,11 +68,11 @@
   </para>
  </refsect1>
 
-
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Oluşturulan yerel.
+   <parameter>alt_yaftalar</parameter> boşsa &false;, yoksa oluşturulan
+   yerelin tanıtıcısı döner.
   </para>
  </refsect1>
 
@@ -81,34 +84,34 @@
     <![CDATA[
 <?php
 $arr = array(
-    'language'=>'en' ,
-    'script'  =>'Hans' ,
+    'language'=>'en',
+    'script'  =>'Hans',
     'region'  =>'CN',
-    'variant2'=>'rozaj' ,
-    'variant1'=>'nedis' ,
-    'private1'=>'prv1' ,
+    'variant2'=>'rozaj',
+    'variant1'=>'nedis',
+    'private1'=>'prv1',
     'private2'=>'prv2'
 );
-echo locale_compose( $arr );
+echo locale_compose($arr);
 ?>
 ]]>
    </programlisting>
   </example>
   <example>
-   <title>- Nesne yönelimli kullanım örneği</title>
+   <title>- &style.oop; örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 $arr = array(
-    'language'=>'en' ,
-    'script'  =>'Hans' ,
+    'language'=>'en',
+    'script'  =>'Hans',
     'region'  =>'CN',
-    'variant2'=>'rozaj' ,
-    'variant1'=>'nedis' ,
-    'private1'=>'prv1' ,
+    'variant2'=>'rozaj',
+    'variant1'=>'nedis',
+    'private1'=>'prv1',
     'private2'=>'prv2'
 );
-echo Locale::composeLocale( $arr );
+echo Locale::composeLocale($arr);
 ?>
 ]]>
    </programlisting>
@@ -117,6 +120,47 @@ echo Locale::composeLocale( $arr );
   <screen>
 <![CDATA[
 Locale: en_Hans_CN_nedis_rozaj_x_prv1_prv2
+]]>
+  </screen>
+  <example xml:id="locale.composelocale.example.limits">
+   <title>- Alt yafta sınırlaması</title>
+   <para>
+     <parameter>alt_yaftalar</parameter> numara sonlandırmalı olarak ayrı
+     anahtarlar olarak belirtilirse, desteklenmeyen anahtarlar sessizce yok
+     sayılır (bu durumda<literal>'extlang3'</literal>) ve sonuç numaralara
+     göre sıralanır. Alt yaftalar bir dizi olarak belirtilirse sıralamaya
+     numara sınırlaması uygulanmaz.
+   </para>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+$arr = array(
+    'language' => 'en',
+    'script'   => 'Hans',
+    'region'   => 'CN',
+    'extlang3' => 'd',
+    'extlang2' => 'c',
+    'extlang1' => 'b',
+    'extlang0' => 'a',
+);
+echo locale_compose($arr), PHP_EOL;
+
+$arr = array(
+    'language' => 'en',
+    'script'   => 'Hans',
+    'region'   => 'CN',
+    'extlang'  => ['a', 'b', 'c', 'd'],
+);
+echo locale_compose($arr), PHP_EOL;
+?>
+]]>
+   </programlisting>
+  </example>
+  &example.outputs;
+  <screen>
+<![CDATA[
+en_a_b_c_Hans_CN
+en_a_b_c_d_Hans_CN
 ]]>
   </screen>
  </refsect1>

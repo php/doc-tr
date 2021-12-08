@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f114783c6e2da939aca5b38ef7034884fd4459fd Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fb5362c8b9b4695a181a4498d50074d089c96296 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionparameter.isarray" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionParameter::isArray</refname>
@@ -7,7 +7,8 @@
  </refnamediv>
 
  <refsynopsisdiv>
-   &warn.deprecated.function-8-0-0;
+  &warn.deprecated.function-8-0-0;
+  <para>Bu bilgiyi türetmenin bir diğer yolu aşağıdaki örnektedir.</para>
  </refsynopsisdiv>
 
  <refsect1 role="description">
@@ -30,6 +31,37 @@
   &reftitle.returnvalues;
   <para>
    Değiştirge değeri bir dizi olacaksa &true; yoksa &false;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- PHP 8.0.0 eşdeğeri</title>
+    <para>
+     PHP 8.0.0 itibariyle, <type>array</type>, <type>union</type> içinde
+     bildiriliyorsa aşağıdaki kod bunu raporlar.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function declaresArray(ReflectionParameter $reflectionParameter): bool
+{
+    $reflectionType = $reflectionParameter->getType();
+
+    if (!$reflectionType) return false;
+
+    $types = $reflectionType instanceof ReflectionUnionType
+        ? $reflectionType->getTypes()
+        : [$reflectionType];
+
+   return in_array('array', array_map(fn(ReflectionNamedType $t) => $t->getName(), $types));
+}
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 

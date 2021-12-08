@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f7503d75d526770b3657fecb439b85293106443d Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionmethod.invoke" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionMethod::invoke</refname>
@@ -11,15 +10,12 @@
   &reftitle.description;
   <methodsynopsis>
    <modifier>public</modifier> <type>mixed</type><methodname>ReflectionMethod::invoke</methodname>
-   <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
-   <methodparam><type>string</type><parameter>değiştirgeler</parameter></methodparam>
+   <methodparam><type class="union"><type>object</type><type>null</type></type><parameter>nesne</parameter></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
    Yansıtılan yöntemi çağırır.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -30,7 +26,8 @@
      <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       Çağrılacak nesne.
+       Yöntemin çağrılacağı nesne. Statik yöntemlerde bu değiştirgeye
+       &null; aktarılır.
       </para>
      </listitem>
     </varlistentry>
@@ -38,8 +35,9 @@
      <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
-       Aktarılacak değiştirge listesi. <function>call_user_func</function>
-       işlevindeki gibi yeteri sayıda değiştirge aktarabilirsiniz.
+       Yönteme aktarılacak değiştirge listesi.
+       <function>call_user_func</function>
+       işlevindeki gibi yönteme değişken sayıda değiştirge aktarılabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -50,18 +48,73 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-
+   Yöntemin sonucu döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   <parameter>nesne</parameter> değiştirgesi bu yöntemin bildirildiği
+   sınıfın örneğini içermiyorsa bir <classname>ReflectionException</classname>
+   yavrulanır.
+  </para>
+  <para>
+   Yöntem çağrısı başarısız olursa bir
+   <classname>ReflectionException</classname> yavrulanır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionMethod::invoke</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class HelloWorld {
+
+    public function sayHelloTo($name) {
+        return 'Hello ' . $name;
+    }
+
+}
+
+$reflectionMethod = new ReflectionMethod('HelloWorld', 'sayHelloTo');
+echo $reflectionMethod->invoke(new HelloWorld(), 'Mike');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Hello Mike
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Değer döndüren değiştirgelerin varlığında
+    <methodname>ReflectionMethod::invoke</methodname> kullanılamaz. Yerine
+    <methodname>ReflectionMethod::invokeArgs</methodname> kullanılmalıdır
+    (değiştirge listesinde bunları gönderimli aktararak).
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><methodname>ReflectionMethod::invokeArgs</methodname></member>
-    <member><link linkend="language.oop5.magic.invoke">__invoke</link></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>ReflectionMethod::invokeArgs</methodname></member>
+   <member><link linkend="object.invoke">__invoke()</link></member>
+   <member><function>call_user_func</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

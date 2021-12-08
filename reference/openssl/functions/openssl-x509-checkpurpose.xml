@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-x509-checkpurpose">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-x509-checkpurpose" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_x509_checkpurpose</refname>
   <refpurpose>Sertifikanın belli bir amaçla kulanılıp kullanılmayacağına bakar
@@ -11,11 +10,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>openssl_x509_checkpurpose</methodname>
-   <methodparam><type>mixed</type><parameter>x509sert</parameter></methodparam>
+   <type class="union"><type>bool</type><type>int</type></type><methodname>openssl_x509_checkpurpose</methodname>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
    <methodparam><type>int</type><parameter>amaç</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>CA_bilgisi</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>güvencesiz_dosya</parameter></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>CA_bilgisi</parameter><initializer>[]</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>güvenilmez_sertifikalar_dosyası</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen sertifikanın belirtilen amaç için kullanılıp kullanılmayacağına
@@ -28,11 +27,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>x509sert</parameter></term>
+     <term><parameter>sertifika</parameter></term>
      <listitem>
       <para>
-       <function>openssl_x509_read</function> tarafından döndürülen bir X509
-       sertifika özkaynağı.
+       İncelenen sertifika.
       </para>
      </listitem>
     </varlistentry>
@@ -103,7 +101,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>güvencesiz_dosya</parameter></term>
+     <term><parameter>güvenilmez_sertifikalar_dosyası</parameter></term>
      <listitem>
       <para>
        Belirtildiği takdirde, sertifikayı doğrulamaya yardımcı olacak
@@ -122,6 +120,37 @@
    Sertifika belirtilen amaç için kullanılabiliyorsa &true;, kullanılamıyorsa
    &false;, bir hata oluşmuşsa -1 döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>sertifika</parameter> artık
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>güvenilmez_sertifikalar_dosyası</parameter> artık &null;
+       olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

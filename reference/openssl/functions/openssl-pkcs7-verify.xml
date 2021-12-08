@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkcs7-verify">
+<!-- EN-Revision: 7ae2b3f82dfae417a0107b69a1ae7d7658652a7a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkcs7-verify" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkcs7_verify</refname>
   <refpurpose>S/MIME imzalı bir iletinin imzasını doğrular</refpurpose>
@@ -10,16 +9,17 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>openssl_pkcs7_verify</methodname>
-   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+   <type class="union"><type>bool</type><type>int</type></type><methodname>openssl_pkcs7_verify</methodname>
+   <methodparam><type>string</type><parameter>girdi_dosyası</parameter></methodparam>
    <methodparam><type>int</type><parameter>seçenekler</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sertifikalar</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>CA_bilgisi</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ek_sertifikalar</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>çıktı_dosyası</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>imzacı_sertifikaları_dosyası</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>CA_bilgisi</parameter><initializer>[]</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>güvenilmez_sertifikalar_dosyası</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>içerik</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>çıktı_dosyası</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   S/MIME imzalı iletiyi içeren <parameter>dosya</parameter> okunur ve
+   S/MIME imzalı iletiyi içeren <parameter>girdi_dosyası</parameter> okunur ve
    iletinin imzası doğrulanmaya çalışılır.
   </para>
  </refsect1>
@@ -29,10 +29,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dosya</parameter></term>
+     <term><parameter>girdi_dosyası</parameter></term>
      <listitem>
       <para>
-       İletinin bulunduğu dosyanın yolu..
+       İletinin bulunduğu dosyanın yolu.
       </para>
      </listitem>
     </varlistentry>
@@ -46,10 +46,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sertifikalar</parameter></term>
+     <term><parameter>imzacı_sertifikaları_dosyası</parameter></term>
      <listitem>
       <para>
-       Belirtildiği takdirde, şahsın iletileri imzalamakta kullandığı
+       Belirtildiği takdirde, iletileri imzalamakta kullanılan
        sertifikaların PEM biçemli olarak saklandığı dosyanın yolu olmalıdır.
       </para>
      </listitem>
@@ -66,11 +66,19 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ek_sertifikalar</parameter></term>
+     <term><parameter>güvenilmez_sertifikalar_dosyası</parameter></term>
      <listitem>
       <para>
        Belirtildiği takdirde, güvenilmez CA'lar olarak kullanılacak
        sertifikaların bulunduğu dosyanın yolu olmalıdır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>içerik</parameter></term>
+     <listitem>
+      <para>
+
       </para>
      </listitem>
     </varlistentry>
@@ -107,16 +115,35 @@
       </row>
      </thead>
      <tbody>
-      <row>
-       <entry>5.1.0</entry>
-       <entry>
-        <parameter>çıktı_dosyası</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>imzacı_sertifikaları_dosyası</parameter>,
+       <parameter>güvenilmez_sertifikalar_dosyası</parameter>,
+       <parameter>içerik</parameter> ve <parameter>çıktı_dosyası</parameter>
+       artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.2.0</entry>
+      <entry>
+       <parameter>çıktı_dosyası</parameter> değiştirgesi eklendi.
+      </entry>
+     </row>
      </tbody>
     </tgroup>
    </informaltable>
   </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <simpara>
+    RFC 2045'te belirtildiği gibi, <parameter>girdi_dosyası</parameter>
+    satırları 76 karakterden uzun olamaz.
+   </simpara>
+  </note>
  </refsect1>
 
 </refentry>

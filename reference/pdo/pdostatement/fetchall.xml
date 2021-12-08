@@ -1,21 +1,40 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 126161cc61f420766c5be5613d5cff0afc0b60e4 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.fetchall" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->fetchAll</refname>
+  <refname>PDOStatement::fetchAll</refname>
   <refpurpose>Sonuç kümesinin tüm satırlarını içeren bir dizi döndürür
   </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>array</type><methodname>PDOStatement::fetchAll</methodname>
-   <methodparam choice="opt"><type>int</type><parameter>alım_tarzı</parameter><initializer>PDO::FETCH_BOTH</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>sütunnum</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>değiştirgeler</parameter><initializer>array()</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_DEFAULT</initializer></methodparam>
   </methodsynopsis>
 
+  <methodsynopsis>
+   <modifier>public</modifier>
+   <type>array</type><methodname>PDOStatement::fetchAll</methodname>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_COLUMN</initializer></methodparam>
+   <methodparam><type>int</type><parameter>sütun</parameter></methodparam>
+  </methodsynopsis>
+
+  <methodsynopsis>
+   <modifier>public</modifier>
+   <type>array</type><methodname>PDOStatement::fetchAll</methodname>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_CLASS</initializer></methodparam>
+   <methodparam><type>string</type><parameter>sınıf</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter>değiştirgeler</parameter></methodparam>
+  </methodsynopsis>
+
+  <methodsynopsis>
+   <modifier>public</modifier>
+   <type>array</type><methodname>PDOStatement::fetchAll</methodname>
+   <methodparam><type>int</type><parameter>kip</parameter><initializer>PDO::FETCH_FUNC</initializer></methodparam>
+   <methodparam><type>callable</type><parameter>geriçağırım</parameter></methodparam>
+  </methodsynopsis>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -23,39 +42,39 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>alım_tarzı</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
        <function>PDOStatement::fetch</function> yönteminde açıklandığı gibi
        döndürülen dizinin içeriğini belirleyen sabit.
-       <literal>PDO::FETCH_BOTH</literal> öntanımlıdır.
+       <constant>PDO::FETCH_DEFAULT</constant> öntanımlıdır.
       </para>
       <para>
        Sonuç kümesindeki tek bir sütunun tüm değerleri içeren bir dizi
-       döndürmek için <literal>PDO::FETCH_COLUMN</literal> belirtin. Bu
+       döndürmek için <constant>PDO::FETCH_COLUMN</constant> belirtin. Bu
        durumda hangi sütunun içeriğinin alınacağını
-       <parameter>sütunnum</parameter> ile belirtin.
+       <parameter>sütun</parameter> ile belirtin.
       </para>
       <para>
        Sonuç kümesindeki tek bir sütunun eşsiz değerleri içeren bir dizi
-       döndürmek için <literal>PDO::FETCH_COLUMN</literal> ile
-       <literal>PDO::FETCH_UNIQUE</literal> sabitini bit seviyesinde
+       döndürmek için <constant>PDO::FETCH_COLUMN</constant> ile
+       <constant>PDO::FETCH_UNIQUE</constant> sabitini bit seviyesinde
        VEYAlayın.
       </para>
       <para>
        Belirtilen sütunun değerlerine göre gruplanmış bir ilişkisel dizi
-       döndürmek için <literal>PDO::FETCH_COLUMN</literal> ile
-       <literal>PDO::FETCH_GROUP</literal> sabitini bit seviyesinde
+       döndürmek için <constant>PDO::FETCH_COLUMN</constant> ile
+       <constant>PDO::FETCH_GROUP</constant> sabitini bit seviyesinde
        VEYAlayın.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sütunnum</parameter></term>
+     <term><parameter>sütun</parameter></term>
      <listitem>
       <para>
-       <parameter>alım_tarzı</parameter> değiştirgesinde
-       <literal>PDO::FETCH_COLUMN</literal> belirtildiği takdirde alınacak
+       <parameter>kip</parameter> değiştirgesinde
+       <constant>PDO::FETCH_COLUMN</constant> belirtildiği takdirde alınacak
        sütun numarası burada belirtilir. İlk sütunun indisi
        <literal>0</literal> olup öntanımlı değerdir.
       </para>
@@ -65,10 +84,43 @@
      <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
-       Bu dizinin elemanları kurucuya değiştirge olarak aktarılır..
+       <parameter>kip</parameter> değiştirgesinin değerine bağlı olarak
+       bu değiştirgenin farklı anlamları vardır:
+       <itemizedlist>
+        <listitem>
+         <para>
+          <constant>PDO::FETCH_COLUMN</constant>: 0 indisli sütunu döndürür
+           column.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>PDO::FETCH_CLASS</constant>: Belirtilen sınıfın isimli
+          özelliklerine her satırdaki sütunları eşleyerek sınıfın örneklerini
+          döndürür.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <constant>PDO::FETCH_FUNC</constant>: Belirtilen işlevin
+          değiştirgelerine her satırın sütunlarını eşleyerek işlevi
+          çağırıp sonucunu döndürür.
+         </para>
+        </listitem>
+       </itemizedlist>
       </para>
      </listitem>
     </varlistentry>
+     <varlistentry>
+     <term><parameter>constructorArgs</parameter></term>
+     <listitem>
+      <para>
+       <parameter>kip</parameter> değiştirgesine
+       <constant>PDO::FETCH_CLASS</constant> belirtildiğinde
+       sınıf kurucusunun değiştirgeleri.
+       </para>
+      </listitem>
+     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -79,16 +131,39 @@
    Sonuç kümesinde kalan satırların tümünü bir dizi olarak döndürür. Dizinin
    her elemanı birer satır içerir ve bu satır elemanları sütun değerlerini
    içeren bir dizi ya da sütun isimlerinin özelliklere karşı düştüğü bir nesne
-   içerir.
+   içerir. Sıfır sonuç için boş dizi döner.
   </para>
   <para>
    Büyük sonuç kümelerini almak için bu yöntemi kullanmak sistem ve muhtemelen
    ağ kaynaklarından aşırı taleplere yol açar. Tüm veriyi alıp PHP ile işleme
    tabi tutmak yerine sonuç kümeleri üzerinde işlem yapmak için veritabanı
    sunucusunu kullanmak daha iyi olabilir. Örneğin, SQL'de WHERE ve
-   SORT BY yan tümcelerini kullanarak, PHP'de işleme sokmadan önce sonuç
+   ORDER BY yan tümcelerini kullanarak, PHP'de işleme sokmadan önce sonuç
    kümesini küçültebilirsiniz.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu yöntem artık daima bir dizi döndürüyor, evvelce başarısızlık
+       durumunda &false; dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -109,7 +184,7 @@ print_r($result);
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 Sonuç kümesindeki tüm satırlar:
@@ -117,17 +192,17 @@ Array
 (
     [0] => Array
         (
-            [AD] => armut
+            [ad] => armut
             [0] => armut
-            [RENK] => yeşil
+            [renk] => yeşil
             [1] => yeşil
         )
 
     [1] => Array
         (
-            [AD] => ahududu
+            [ad] => ahududu
             [0] => ahududu
-            [RENK] => mor
+            [renk] => mor
             [1] => mor
         )
 
@@ -154,7 +229,7 @@ var_dump($result);
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 Array(3)
@@ -192,7 +267,7 @@ var_dump($sth->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP));
 ?>
 ]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 array(3) {
@@ -201,26 +276,127 @@ array(3) {
     [0]=>
     string(5) "yeşil"
     [1]=>
-    string(3) "kırmızı"
+    string(7) "kırmızı"
   }
   ["armut"]=>
   array(2) {
     [0]=>
     string(5) "yeşil"
     [1]=>
-    string(6) "sarı"
+    string(4) "sarı"
   }
   ["ahududu"]=>
   array(1) {
     [0]=>
-    string(5) "mor"
+    string(3) "mor"
   }
 }
 
 ]]>
     </screen>
    </example>
+   <example><title>- Her sonuç için bir sınıf örneklemek</title>
+    <para>
+     Aşağıda <constant>PDO::FETCH_CLASS</constant> alım kipinin davranışı
+     örneklenmiştir:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class fruit {
+    public $name;
+    public $colour;
+}
 
+$sth = $dbh->prepare("SELECT name, colour FROM fruit");
+$sth->execute();
+
+$result = $sth->fetchAll(PDO::FETCH_CLASS, "fruit");
+var_dump($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  object(fruit)#1 (2) {
+    ["name"]=>
+    string(5) "apple"
+    ["colour"]=>
+    string(5) "green"
+  }
+  [1]=>
+  object(fruit)#2 (2) {
+    ["name"]=>
+    string(4) "pear"
+    ["colour"]=>
+    string(6) "yellow"
+  }
+  [2]=>
+  object(fruit)#3 (2) {
+    ["name"]=>
+    string(10) "watermelon"
+    ["colour"]=>
+    string(4) "pink"
+  }
+  [3]=>
+  object(fruit)#4 (2) {
+    ["name"]=>
+    string(5) "apple"
+    ["colour"]=>
+    string(3) "red"
+  }
+  [4]=>
+  object(fruit)#5 (2) {
+    ["name"]=>
+    string(4) "pear"
+    ["colour"]=>
+    string(5) "green"
+  }
+}
+]]>
+    </screen>
+   </example>
+   <example><title>- Her sonuç için bir işlev çağırmak</title>
+    <para>
+     Aşağıda <constant>PDO::FETCH_FUNC</constant> alım kipinin davranışı
+     örneklenmiştir:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function fruit($name, $colour) {
+    return "{$name}: {$colour}";
+}
+
+$sth = $dbh->prepare("SELECT name, colour FROM fruit");
+$sth->execute();
+
+$result = $sth->fetchAll(PDO::FETCH_FUNC, "fruit");
+var_dump($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  string(12) "apple: green"
+  [1]=>
+  string(12) "pear: yellow"
+  [2]=>
+  string(16) "watermelon: pink"
+  [3]=>
+  string(10) "apple: red"
+  [4]=>
+  string(11) "pear: green"
+}
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 

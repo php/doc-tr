@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-setstrokemiterlimit">
+<!-- EN-Revision: 668b6fc28891062b1c96202009ccb70b7147740d Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.setstrokemiterlimit">
  <refnamediv>
   <refname>ImagickDraw::setStrokeMiterLimit</refname>
   <refpurpose>Gönyenin kesildiği sınırı tanımlar</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::setStrokeMiterLimit</methodname>
    <methodparam><type>int</type><parameter>gönyeSınırı</parameter></methodparam>
   </methodsynopsis>
@@ -43,6 +43,60 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <function>ImagickDraw::setStrokeMiterLimit</function> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setStrokeMiterLimit($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeColor($strokeColor);
+    $draw->setStrokeOpacity(0.6);
+    $draw->setFillColor($fillColor);
+    $draw->setStrokeWidth(10);
+
+    $yOffset = 100;
+
+    $draw->setStrokeLineJoin(\Imagick::LINEJOIN_MITER);
+
+    for ($y = 0; $y < 3; $y++) {
+
+        $draw->setStrokeMiterLimit(40 * $y);
+
+        $points = [
+            ['x' => 22 * 3, 'y' => 15 * 4 + $y * $yOffset],
+            ['x' => 20 * 3, 'y' => 20 * 4 + $y * $yOffset],
+            ['x' => 70 * 5, 'y' => 45 * 4 + $y * $yOffset],
+        ];
+
+        $draw->polygon($points);
+    }
+
+    $image = new \Imagick();
+    $image->newImage(500, 500, $backgroundColor);
+    $image->setImageFormat("png");
+    $image->drawImage($draw);
+
+    $image->setImageType(\Imagick::IMGTYPE_PALETTE);
+    $image->setImageCompressionQuality(100);
+    $image->stripImage();
+
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f32912d04f3da53ad720bd782ad5a2483a1d79a0 Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.header">
  <refnamediv>
   <refname>header</refname>
@@ -68,7 +67,12 @@ exit;
         <programlisting role="php">
 <![CDATA[
 <?php
-header("HTTP/1.0 404 Not Found");
+// Bu örnekte "HTTP/" için özel bir durum gösterilmiştir.
+// Her durumda geçerli olacak kullanım şöyle olurdu:
+// 1. header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+//    (Hala HTTP/1.0 kullanan istemci için http durum iletisinin yerini alır)
+// 2. http_response_code(404); (öntanımlı iletiyi kullanmak için)
+header("HTTP/1.1 404 Not Found");
 ?>
 ]]>
         </programlisting>
@@ -138,6 +142,15 @@ header('WWW-Authenticate: NTLM', false);
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Gönderilecek başlığın zamanlamasındaki bir başarısızlık,
+   <function>header</function> işlevinin <constant>E_WARNING</constant>
+   seviyesinde bir hata çıktılamasına sebep olur.
   </para>
  </refsect1>
 
@@ -231,14 +244,6 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Geçmişte bir tarih
    </para>
   </note>
   <note>
-   <para>
-    Microsoft Internet Explorer 4.01'de bunun çalışmasını engelleyen bir hata
-    vardır ve bundan kurtulmanın çaresi yoktur. Ayrıca, Microsoft Internet
-    Explorer 5.5'te de böyle bir hata vardır. Fakat SP2'ye yükselterek bu
-    sorundan kurtulmak mümkündür.
-   </para>
-  </note>
-  <note>
    <para>Çoğu çağdaş istemci
     <link xlink:href="&spec.http1.1;#section-7.1.2">Location:</link>
     için değiştirge olarak göreli bir <acronym>URI</acronym> kabul etmektedir, fakat bazı eski istemciler şema, konak ismi ve mutlak dosya yolu içeren mutlak bir URI gerektirir. Bir mutlak
@@ -279,6 +284,7 @@ exit;
     <member><function>setcookie</function></member>
     <member><function>http_response_code</function></member>
     <member><function>header_remove</function></member>
+    <member><function>header_list</function></member>
    </simplelist>
   </para>
  </refsect1>

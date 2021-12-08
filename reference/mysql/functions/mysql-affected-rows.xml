@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: mustafa Status: ready -->
+<!-- EN-Revision: 65e697ff671608989432a6e6bf8ae8128b2be2c7 Maintainer: mustafa Status: ready -->
 <refentry xml:id="function.mysql-affected-rows" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mysql_affected_rows</refname>
@@ -8,11 +7,21 @@
   </refpurpose>
  </refnamediv>
 
+ <refsynopsisdiv>
+  <warning>
+   &mysql.alternative.note;
+   <simplelist role="alternatives">
+    <member><function>mysqli_affected_rows</function></member>
+    <member><methodname>PDOStatement::rowCount</methodname></member>
+   </simplelist>
+  </warning>
+ </refsynopsisdiv>
+
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>mysql_affected_rows</methodname>
-   <methodparam choice="opt"><type>resource</type><parameter>bağlantı_belirteci</parameter></methodparam>
+   <methodparam choice="opt"><type>resource</type><parameter>bağlantı_belirteci</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>bağlantı_belirteci</parameter> ile ilişkili son INSERT, UPDATE,
@@ -50,6 +59,10 @@
    REPLACE ifadesi aynı birincil anahtara sahip olan kayıtları siler, daha
    sonra yeni kaydı girer. Bu işlev silinen kayıtların sayısı artı girilen
    kayıtların sayısını döndürür.
+  </para>
+  <para>
+   "INSERT ... ON DUPLICATE KEY UPDATE" sorgularında, yerleştirme yapılmışsa
+   <literal>1</literal>, mevcut satır güncellenmişse <literal>2</literal> döner.
   </para>
  </refsect1>
 

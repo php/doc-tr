@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 35af8187d0ca49b354a55f613ac5d62f5741f402 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2ff6e6bcad9700adaf50f9e1639c6d7d7d1f059d Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.array">
  <title><code>array</code></title>
 
@@ -432,9 +432,10 @@ $dizi[] = <replaceable>değer</replaceable>;
 // <replaceable>değer</replaceable> herhangi bir türde olabilir.</synopsis>
 
    <para>
-    <varname>$dizi</varname> mevcut değilse oluşturulur. Yani bu işlem yeni
-    bir dizi oluşturmak için kullanılabilir. Ancak bunun yapılması önerilmez.
-    Çünkü  <varname>$dizi</varname> bir dize değer içeriyor olabileceğnden bu
+    <varname>$dizi</varname> mevcut değilse, değer olarak &null; veya &false;
+    atanmışsa dizi oluşturulur. Yani bu işlem yeni bir dizi oluşturmak için
+    kullanılabilir. Ancak bunun yapılması önerilmez. Çünkü
+    <varname>$dizi</varname> bir dize değer içeriyor olabileceğinden bu
     değer yerinde kalır ve <literal>[]</literal> aslında bir
     <link linkend="language.types.string.substr">dize erişim işleci</link>
     haline gelir. Bir değişkeni doğrudan atamayla ilkendirmek daha iyidir.
@@ -443,6 +444,14 @@ $dizi[] = <replaceable>değer</replaceable>;
     <simpara>
      PHP 7.1.0 ve sonrasında, boş indis işlecini bir dizeye uygulamak ölümcül
      hataya sebep olur. Evvelce, dize sessizce bir diziye dönüştürülürdü.
+    </simpara>
+   </note>
+
+   <note>
+    <simpara>
+     PHP 8.1.0 itibariyle, &false; değerden yeni bir dizi oluşturulması
+     önerilmemektedir. &null; ve tanımsız değerlerden yeni bir dizi
+     oluşturulması ise hala mümkündür.
     </simpara>
    </note>
 
@@ -623,10 +632,12 @@ echo $foo[bar];
    </para>
    <warning>
     <simpara>
-     Son çare olarak, tanımlanmamış bir sabiti çıplak bir dize olarak işleme
-     sokulması PHP 7.2.0'dan itibaren kullanımdan kaldırılmış olup
-     <constant>E_WARNING</constant> seviyesinde bir hataya sebep olur. Evvelce
-     <constant>E_NOTICE</constant> seviyesinde bir hata çıktılanırdı.
+     Son çare olarak, tanımlanmamış bir sabitin çıplak bir dize olarak işleme
+     sokulması <constant>E_NOTICE</constant> seviyesinde bir hata
+     çıktılanmasına sebep olur. Bu, PHP 7.2.0'dan itibaren kullanımdan
+     kaldırılmış olup <constant>E_WARNING</constant> seviyesinde bir hataya
+     sebep olur.  PHP 8.0.0 ve sonrasında, bu durumda, bir
+     <classname>Error</classname> istisnası yavrulanmaktadır.
     </simpara>
    </warning>
 
@@ -851,6 +862,8 @@ $error_descriptions[8] = "Bu sadece bilgilendirici bir uyarı";
    isimleri getirilir; <literal>public</literal> değişkenlerin önünde bir
    '*' olur. Diğer taraftan, başlarına birşeyler eklenmiş böyle değişkenlerin
    değerleri &null; olur.
+   <link linkend="language.oop5.properties.typed-properties">Veri türüne sahip
+   özellikler</link> ilklendirilmemişse sessizce yok sayılır.
   </para>
 
   <informalexample>
@@ -940,6 +953,107 @@ array(3) {
    linkend="language.operators.array">dizi işleçleri</link> kullanılarak
    karşılaştırmak mümkündür.
   </para>
+ </sect2>
+
+ <sect2 xml:id="language.types.array.unpacking">
+  <title>Dizi genişletme</title>
+
+  <para>
+   <code>...</code> ile öncelenmiş bir dizi dizinin tanımlanması sırasında
+   bulunduğu yerde genişletilir. Yalnızca
+   <interfacename>Traversable</interfacename> arayüzünü gerçekleyen diziler
+   genişletilebilir. <code>...</code> ile genişletme PHP 7.4.0 ve sonrasında
+   kullanılabilmektedir.
+  </para>
+
+  <para>
+   Defalarca genişletme yapmak ve <code>...</code> işlecinin önüne ve ardına
+   normal elemanları eklemek mümkündür:
+
+   <example>
+    <title>- Basit dizi genişletmesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Kısa dizi sözdizimi kullanarak.
+// Ayrıca, array() sözdizimi da çalışır.
+$arr1 = [1, 2, 3];
+$arr2 = [...$arr1]; //[1, 2, 3]
+$arr3 = [0, ...$arr1]; //[0, 1, 2, 3]
+$arr4 = [...$arr1, ...$arr2, 111]; //[1, 2, 3, 1, 2, 3, 111]
+$arr5 = [...$arr1, ...$arr1]; //[1, 2, 3, 1, 2, 3]
+
+function getArr() {
+  return ['a', 'b'];
+}
+$arr6 = [...getArr(), 'c' => 'd']; //['a', 'b', 'c' => 'd']
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   <code>...</code> işleci ile bir diziyi genişletme işlemi
+   <function>array_merge</function> işlevindeki gibi yapılır. Yani, sonraki
+   dizge anahtarlar öncekileri geçersiz kılarken tamsayı anahtarlar yeniden
+   sıralanır:
+
+   <example>
+    <title>- Yinelenen anahtarlarla dizi genişletme</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// dizge anahtar
+$arr1 = ["a" => 1];
+$arr2 = ["a" => 2];
+$arr3 = ["a" => 0, ...$arr1, ...$arr2];
+var_dump($arr3); // ["a" => 2]
+
+// integer key
+$arr4 = [1, 2, 3];
+$arr5 = [4, 5, 6];
+$arr6 = [...$arr4, ...$arr5];
+var_dump($arr6); // [1, 2, 3, 4, 5, 6]
+// [0 => 1, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 6]
+// Burada özgün tamsayı anahtarlar korunmamıştır.
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <note>
+   <para>
+    Dizge ya da tamsayı olmayan anahtarlar <classname>TypeError</classname>
+    istisnasına yol açar. Böyle anahtarlar sadece
+    <interfacename>Traversable</interfacename> nesnesi tarafından
+    üretilebilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    PHP 8.1 öncesinde, dizge anahtarlı bir dizi genişletilmiyordu:
+   </para>
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$arr1 = [1, 2, 3];
+$arr2 = ['a' => 4];
+$arr3 = [...$arr1, ...$arr2];
+// Ölümcül hata: Dizge anahtarlı diziler genişletilemez: example.php:5
+
+$arr4 = [1, 2, 3];
+$arr5 = [4, 5];
+$arr6 = [...$arr4, ...$arr5]; // works. [1, 2, 3, 4, 5]
+?>
+]]>
+    </programlisting>
+   </informalexample>
+  </note>
+
  </sect2>
 
  <sect2 xml:id="language.types.array.examples">

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7f99d5e488d161ce3b12d1dae405a283728933c3 Maintainer: nilgun Status: ready -->
+<refentry xml:id="com.construct" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>com::__construct</refname>
+  <refpurpose>com nesnesi oluşturur</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <constructorsynopsis>
+   <modifier>public</modifier> <methodname>com::__construct</methodname>
+   <methodparam><type>string</type><parameter>modül_adı</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>string</type><type>null</type></type><parameter>sunucu_adı</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kodlama</parameter><initializer><constant>CP_ACP</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>kütüphane</parameter><initializer>""</initializer></methodparam>
+  </constructorsynopsis>
+  <para>
+   Yeni bir com nesnesi oluşturur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>modül_adı</parameter></term>
+    <listitem>
+     <simpara>
+      Yüklenecek bileşeni adlandıran bir süreç kimliği, sınıf kimliği veya bir
+      takma ad olabilir.
+     </simpara>
+     <simpara>
+      Süreç kimliği genelde bir uygulama veya DLL adını izleyen bir nokta ve
+      nesne adından oluşur (<literal>Word.Application</literal> gibi).
+     </simpara>
+     <simpara>
+      Sınıf kimliği belirtilen sınıfı eşsiz olarak betimleyen bir UUID'dir.
+     </simpara>
+     <simpara>
+      Takma ad, URL şemasına benzer özel bir isimlendirme şeklidir. Bir
+      özkaynağı betimler ve nasıl yükleneceğini belirtir. Örnek olarak,
+      Word'ü yükleyebilir ve modül adı olarak word belgesinin tam yolunu
+      belirterek bir word belgesini temsil eden bir nesne alabilirsiniz
+      veya ADSI arayüzünü kullanmak için LDAP:'ı bir takma ad olarak
+      kullanabilirsiniz.
+     </simpara>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>sunucu_adı</parameter></term>
+    <listitem>
+     <simpara>
+      Bileşenin yüklenip çalıştırılacağı DCOM sunucusunun adı. &null; ise,
+      nesne, uygulama öntanımlısı kullanılarak çalıştırılır. Bu öntanımlı
+      değer genelde uygulamayı yerel makinede çalıştırmak içindir (yönetici,
+      uygulamayı farklı bir makinede çalıştırılacak şekilde yapılandırmış
+      olsa bile).
+     </simpara>
+     <simpara>
+       Sunucu olarak &null; olmayan bir değer belirtirseniz, PHP,
+       <xref linkend="ini.com.allow-dcom"/> yapılandırma seçeneğinin değeri
+       &true; olmadıkça nesneyi yüklemeyi reddedecektir.
+     </simpara>
+     <para>
+      <parameter>sunucu_adı</parameter> bir diziyse, aşağıdaki öğeleri
+      içermelidir (büyük/küçük harfe duyarlı!). Hepsinin isteğe bağlı
+      olduğunu unutmayın (Kullanıcı Adı ve Parolayı birlikte belirtmeniz
+      gerekmesine rağmen); Sunucu değerlerini atlarsanız, öntanımlı sunucu
+      kullanılır (yukarıda belirtildiği gibi) ve nesnenin örneklenmesi
+      <xref linkend="ini.com.allow-dcom"/> yönergesinden etkilenmez.
+      <table>
+       <title>DCOM sunucu adı</title>
+       <tgroup cols="3">
+        <thead>
+         <row>
+          <entry>Anahtar</entry>
+          <entry>Tür</entry>
+          <entry>Açıklama</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>Server</entry>
+          <entry>string</entry>
+          <entry>Sunucunun adı.</entry>
+         </row>
+         <row>
+          <entry>Username</entry>
+          <entry>string</entry>
+          <entry>Bağlanacak kullanıcının adı.</entry>
+         </row>
+         <row>
+          <entry>Password</entry>
+          <entry>string</entry>
+          <entry><literal>Username</literal> için parola.</entry>
+         </row>
+         <row>
+          <entry>Domain</entry>
+          <entry>string</entry>
+          <entry><literal>server</literal> alan adı.</entry>
+         </row>
+         <row>
+          <entry>Flags</entry>
+          <entry>integer</entry>
+          <entry>
+           <constant>CLSCTX_INPROC_SERVER</constant>,
+           <constant>CLSCTX_INPROC_HANDLER</constant>,
+           <constant>CLSCTX_LOCAL_SERVER</constant>,
+           <constant>CLSCTX_REMOTE_SERVER</constant>,
+           <constant>CLSCTX_SERVER</constant> ve
+           <constant>CLSCTX_ALL</constant> sabitlerinden biri veya bitsel
+           VEYA'sı. Bir değer belirtilmez ve <literal>Server</literal>
+           atlanırsa <constant>CLSCTX_SERVER</constant> öntanımlıdır;
+           <parameter>sunucu_adı</parameter> belirtilmezse
+           <constant>CLSCTX_REMOTE_SERVER</constant> öntanımlıdır.
+           Bu sabitlerin anlamı hakkında daha fazla bilgi için
+           CoCreateInstance ile ilgili Microsoft belgelerine bakmalısınız;
+           genellikle bunları kullanmak zorunda kalmazsınız.
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>kodlama</parameter></term>
+    <listitem>
+     <simpara>
+      Dizgeleri UTF-8 dizgelerine dönüştürmek veya tersini yapmak için
+      kullanılacak karakter kodlamasıdır. Dönüşüm, nesneye bir PHP dizgesi
+      değiştirge olarak aktarıldığında veya nesnenin bir yönteminden dönen
+      değere uygulanır. Karakter kodlaması yapışkandır, yani nesneden
+      döndürülen nesnelere ve değişkenlere de uygulanır.
+     </simpara>
+     <simpara>
+      Olası değerler: <constant>CP_ACP</constant> (sistem öntanımlısı ANSI
+      kodlaması kullanılır - bu değiştirge atlanırsa öntanımlıdır),
+      <constant>CP_MACCP</constant> <constant>CP_OEMCP</constant>,
+      <constant>CP_SYMBOL</constant>, <constant>CP_THREAD_ACP</constant>
+      (çalışmakta olan evrenin karakter kodlaması veya yereli kullanılır),
+      <constant>CP_UTF7</constant> ve <constant>CP_UTF8</constant>. Ayrıca,
+      karakter kodlamasını belirtmek için numarası da kullanılabilir, bu
+      numaralar hakkında bilgi edinmek için Microsoft belgelerine bakılabilir.
+     </simpara>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

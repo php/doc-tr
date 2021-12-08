@@ -1,23 +1,22 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 2fd3f0c96d9d221fe37109775af4df4cf949d5d8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c9c158137b0f4658c29faef4043472dc74896d0c Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.bindcolumn" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
-  <refname>PDOStatement->bindColumn</refname>
+  <refname>PDOStatement::bindColumn</refname>
   <refpurpose>Bir sütunu bir PHP değişkeni ile ilişkilendirir
   </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
    <methodsynopsis>
-    <type>bool</type><methodname>PDOStatement::bindColumn</methodname>
-    <methodparam><type>mixed</type><parameter>sütun</parameter></methodparam>
-    <methodparam><type>mixed</type><parameter role="reference">değişken</parameter></methodparam>
-    <methodparam choice="opt"><type>int</type><parameter>veri_türü</parameter></methodparam>
-    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
-    <methodparam choice="opt"><type>mixed</type><parameter>seçenekler</parameter></methodparam>
-   </methodsynopsis>
-
+   <modifier>public</modifier>
+   <type>bool</type><methodname>PDOStatement::bindColumn</methodname>
+   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter>sütun</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter role="reference">değişken</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>veri_türü</parameter><initializer>PDO::PARAM_STR</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
   <para>
    Bir sorgunun sonuç kümesindeki belli bir sütunu bir değişken ile
    ilişkilendirir. Her <function>PDOStatement::fetch</function> veya
@@ -67,7 +66,8 @@
      <term><parameter>veri_türü</parameter></term>
      <listitem>
       <para>
-        PDO::PARAM_* sabitlerinden biri olarak veri türü.
+       <link linkend="pdo.constants"><literal>PDO::PARAM_*</literal>
+       sabitlerinden</link> biri olarak veri türü.
       </para>
      </listitem>
     </varlistentry>
@@ -114,33 +114,22 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-function readData($dbh) {
-  $sql = 'SELECT name, colour, calories FROM fruit';
-  try {
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
+$stmt = $dbh->prepare('SELECT name, colour, calories FROM fruit');
+$stmt->execute();
 
-    /* Bind by column number */
-    $stmt->bindColumn(1, $name);
-    $stmt->bindColumn(2, $colour);
+/* Sütun numarasına göre ilişkilendir */
+$stmt->bindColumn(1, $name);
+$stmt->bindColumn(2, $colour);
 
-    /* Bind by column name */
-    $stmt->bindColumn('calories', $cals);
+/* Sütun ismine göre ilişkilendir */
+$stmt->bindColumn('calories', $cals);
 
-    while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
-      $data = $name . "\t" . $colour . "\t" . $cals . "\n";
-      print $data;
-    }
-  }
-  catch (PDOException $e) {
-    print $e->getMessage();
-  }
+while ($stmt->fetch(PDO::FETCH_BOUND)) {
+    print $name . "\t" . $colour . "\t" . $cals . "\n";
 }
-readData($dbh);
-?>
-  ]]>
+]]>
     </programlisting>
-    &example.outputs;
+    &example.outputs.similar;
     <screen>
 <![CDATA[
 apple   red     150

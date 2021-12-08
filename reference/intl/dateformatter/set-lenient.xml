@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.setlenient" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::setLenient</refname>
@@ -10,19 +9,20 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>bool</type><methodname>IntlDateFormatter::setLenient</methodname>
-   <methodparam><type>bool</type><parameter>esnek</parameter></methodparam>
+   <methodsynopsis role="oop">
+    <modifier>public</modifier>
+    <type>void</type><methodname>IntlDateFormatter::setLenient</methodname>
+    <methodparam><type>bool</type><parameter>esnek</parameter></methodparam>
    </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>bool</type><methodname>datefmt_set_lenient</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
-  <methodparam><type>bool</type><parameter>esnek</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type>void</type><methodname>datefmt_set_lenient</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type>bool</type><parameter>esnek</parameter></methodparam>
   </methodsynopsis>
   <para>
    Kalıpla tam olarak eşleşmeyen girdilerin yorumlanmasında çözümleyicinin
@@ -50,7 +50,7 @@
      <listitem>
       <para>
        Çözümleyicinin esnek olması isteniyorsa &true; istenmiyorsa &false;
-       belirtilir. &false; öntanımlıdır.
+       belirtilir. &true; öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -73,74 +73,80 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  ,"dd/mm/yyyy");
-echo "Biçemleyici esnek mi?: ";
-if( $fmt->isLenient() ){
-        echo('EVET');
-}else{
-        echo('HAYIR');
+$fmt = datefmt_create(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    'dd/MM/yyyy'
+);
+echo 'Biçemleyici esnek mi?: ';
+if ($fmt->isLenient()) {
+    echo 'EVET';
+} else {
+    echo 'HAYIR';
 }
-datefmt_parse($fmt,"35/13/1971");
-echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
-        datefmt_parse($fmt,"35/13/1971");
-if( intl_get_error_code() !=0 ){
-        echo "\n Hata iletisi: ".intl_get_error_message();
-        echo "\n Hata kodu: ".intl_get_error_code();
+datefmt_parse($fmt, '35/13/1971');
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " . datefmt_parse($fmt, '35/13/1971');
+if (intl_get_error_code() != 0) {
+    echo "\n Hata iletisi: " . intl_get_error_message();
+    echo "\n Hata kodu: " . intl_get_error_code();
 }
-datefmt_set_lenient($fmt,false);
-echo "\nYeni biçemleyici esnek mi?: ";
-if( $fmt->isLenient() ){
-        echo('EVET');
-}else{
-        echo('HAYIR');
+datefmt_set_lenient($fmt, false);
+echo "\nNow lenient of the formatter is : ";
+if ($fmt->isLenient()) {
+    echo 'EVET';
+} else {
+    echo 'HAYIR';
 }
-datefmt_parse($fmt,"35/13/1971");
-echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
-        datefmt_parse($fmt,"35/13/1971");
-if( intl_get_error_code() !=0 ){
-        echo "\n Hata iletisi: ".intl_get_error_message();
-        echo "\n Hata kodu: ".intl_get_error_code()."\n";
+datefmt_parse($fmt, '35/13/1971');
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " . datefmt_parse($fmt, '35/13/1971');
+if (intl_get_error_code() != 0) {
+    echo "\n Hata iletisi: ".intl_get_error_message();
+    echo "\n Hata kodu: ".intl_get_error_code();
 }
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN,"dd/mm/yyyy"  );
-echo "Biçemleyici esnek mi?: ";
-if( $fmt->isLenient() ){
-        echo('EVET');
-}else{
-        echo('HAYIR');
+$fmt = new IntlDateFormatter(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    'dd/MM/yyyy'
+);
+echo 'Biçemleyici esnek mi?: ';
+if ($fmt->isLenient()) {
+    echo 'EVET';
+} else {
+    echo 'HAYIR';
 }
-$fmt->parse("35/13/1971");
-echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .
-        $fmt->parse("35/13/1971");
-if( intl_get_error_code() !=0 ){
-        echo "\n Hata iletisi: ".intl_get_error_message();
-        echo "\n Hata kodu: ".intl_get_error_code();
+$fmt->parse('35/13/1971');
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " . $fmt->parse('35/13/1971');
+if (intl_get_error_code() != 0) {
+    echo "\n Hata iletisi: " . intl_get_error_message();
+    echo "\n Hata kodu: " . intl_get_error_code();
 }
-
 $fmt->setLenient(FALSE);
 echo "\nYeni biçemleyici esnek mi?: ";
-if( $fmt->isLenient() ){
-        echo('EVET');
-}else{
-        echo('HAYIR');
+if ($fmt->isLenient()) {
+    echo 'EVET';
+} else {
+    echo 'HAYIR';
 }
-$fmt->parse("35/13/1971");
-echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " .$fmt->parse("35/13/1971");
-if( intl_get_error_code() !=0 ){
-        echo "\n Hata iletisi: ".intl_get_error_message();
-        echo "\n Hata kodu: ".intl_get_error_code()."\n";
+$fmt->parse('35/13/1971');
+echo "\n '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: " . $fmt->parse('35/13/1971');
+if (intl_get_error_code() != 0) {
+    echo "\n Hata iletisi: " . intl_get_error_message();
+    echo "\n Hata kodu: " . intl_get_error_code();
 }
 ?>
 ]]>
@@ -148,9 +154,9 @@ if( intl_get_error_code() !=0 ){
    </example>
      &example.outputs;
      <screen>
-<![CDATA[
+         <![CDATA[
 Biçemleyici esnek mi?: EVET
- '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: 34467180
+ '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: 66002400
 Yeni biçemleyici esnek mi?: HAYIR
  '35/13/1971' çözümlenmeye çalışılıyor. Sonuç:
  Hata iletisi: Date parsing failed: U_PARSE_ERROR

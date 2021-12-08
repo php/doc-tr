@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<!-- $Revision$ -->
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-csr-export">
  <refnamediv>
   <refname>openssl_csr_export</refname>
@@ -11,13 +10,13 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>openssl_csr_export</methodname>
-   <methodparam><type>resource</type><parameter>csr</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">çıktı</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>metinsiz</parameter><initializer>true</initializer></methodparam>
+   <methodparam><type class="union"><type>OpenSSLCertificateSigningRequest</type><type>string</type></type><parameter>csr</parameter></methodparam>
+   <methodparam><type>OpenSSLAsymmetricKey</type><parameter role="reference">çıktı</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>metinsiz</parameter><initializer>&true;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>csr</parameter> ile belirtilen sertifika imzalama isteğini ascii
-   zırhlı bir metne dönüştürüp <parameter>çıktı</parameter> değiştirgesine
+   <parameter>csr</parameter> ile belirtilen sertifika imzalama isteğini PEM
+   biçemli bir metne dönüştürüp <parameter>çıktı</parameter> değiştirgesine
    kaydeder.
   </para>
  </refsect1>
@@ -26,17 +25,12 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>csr</parameter></term>
-     <listitem>
-      <para>
-      </para>
-     </listitem>
-    </varlistentry>
+    &openssl.param.csr;
     <varlistentry>
      <term><parameter>çıktı</parameter></term>
      <listitem>
       <para>
+       Başarı durumunda bu dizge PEM kodlu CSR içerir.
       </para>
      </listitem>
     </varlistentry>
@@ -54,6 +48,59 @@
   &reftitle.returnvalues;
   <para>
    &return.success;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>csr</parameter> artık
+       <classname>OpenSSLCertificateSigningRequest</classname> örneği kabul
+       ediyor; evvelce <literal>OpenSSL X.509 CSR</literal> türünde bir
+       özkaynak kabul ederdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- openssl_csr_export() örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$subject = array(
+    "commonName" => "example.com",
+);
+$private_key = openssl_pkey_new(array(
+    "private_key_bits" => 2048,
+    "private_key_type" => OPENSSL_KEYTYPE_RSA,
+));
+$configargs = array(
+    'digest_alg' => 'sha256WithRSAEncryption'
+);
+$csr = openssl_csr_new($subject, $private_key, $configargs);
+openssl_csr_export($csr, $csr_string);
+echo $csr_string;
+?>
+]]>
+    </programlisting>
+   </example>
   </para>
  </refsect1>
 

@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-seal">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-seal" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_seal</refname>
-  <refpurpose>Veriyi mühürler</refpurpose>
+  <refpurpose>Veriyi mühürler (şifreler)</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>openssl_seal</methodname>
+   <type class="union"><type>int</type><type>false</type></type><methodname>openssl_seal</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
    <methodparam><type>string</type><parameter role="reference">mühürlü_veri</parameter></methodparam>
-   <methodparam><type>array</type><parameter role="reference">zarf_mühürleri</parameter></methodparam>
-   <methodparam><type>array</type><parameter>genankim_dizisi</parameter></methodparam>
+   <methodparam><type>array</type><parameter role="reference">zarf_anahtarları</parameter></methodparam>
+   <methodparam><type>array</type><parameter>genel_anahtar</parameter></methodparam>
+   <methodparam><type>string</type><parameter>algoritma</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">ilklendirme_yöneyi</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Rasgele üretilmiş bir gizli anahtarla RC4 kullanarak
-   <parameter>veri</parameter>'yi şifreler. Anahtar,
-   <parameter>genankim_dizisi</parameter> içindeki kimliklerle ilişkili
-   anahtarlarla ve <parameter>zarf_mühürleri</parameter> içindeki şifreli
-   anahtarlarla şifrelenir. Böylece, şifreli veri çok sayıda alıcıya
-   gönderilebilir (alıcıların genel anahtarları kullanılır). Her alıcının
-   mühürlü veri ile birlikte alıcının genel anahtarı ile şifrelenmiş zarf
-   anahtarını da alması gerekir.
+   Rasgele üretilmiş bir gizli anahtarla verilen
+   <parameter>algoritma</parameter>'yı kullanarak <parameter>veri</parameter>yi
+   mühürler (şifreler) ve <parameter>mühürlü_veri</parameter> değiştirgesinde
+   döndürür. Gizli anahtar, <parameter>genel_anahtar</parameter> içindeki
+   tanımlayıcılarla ilişkili genel anahtarlarla şifrelenir ve
+   <parameter>zarf_anahtarları</parameter> dizisinde döndürülür. Bu, bir
+   kişinin birden fazla alıcıya mühürlü veri gönderebileceği anlamına gelir
+   (genel anahtarlarının elinde olması şartıyla). Her alıcının, hem mühürlü
+   veriyi hem de alıcının genel anahtarıyla şifrelenmiş zarf anahtarını alması
+   gerekir.
   </para>
  </refsect1>
 
@@ -36,7 +39,7 @@
      <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Genel anahtarlarla şifrelenip zarf anahtarları ile mühürlenecek veri.
+       Mühürlenecek veri.
       </para>
      </listitem>
     </varlistentry>
@@ -49,20 +52,45 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>zarf_mühürleri</parameter></term>
+     <term><parameter>zarf_anahtarları</parameter></term>
      <listitem>
       <para>
+       Genel anahtarlarla şirelenmiş gizli anahtarların döndürüldüğü dizi.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>genankim_dizisi</parameter></term>
+     <term><parameter>genel_anahtar</parameter></term>
      <listitem>
       <para>
-       Genel anahtar kimliklerini içeren dizi.
+       Genel anahtarları içeren <classname>OpenSSLAsymmetricKey</classname>
+       örnekleri dizisi.
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><parameter>algoritma</parameter></term>
+     <listitem>
+      <para>
+       Şifreleme yöntemi.
+       <caution>
+        <simpara>
+         Öntanımlı değerin (<literal>'RC4'</literal>) günenilmez olduğu
+         varsayılır. Güvenilir bir şifreleme yöntemi belirtilmesi şiddetle
+         önerilir. method.
+        </simpara>
+       </caution>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ilklendirme_yöneyi</parameter></term>
+     <listitem>
+      <para>
+       İlklendirme yöneyi.
+       </para>
+      </listitem>
+     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
@@ -71,10 +99,48 @@
   &reftitle.returnvalues;
   <para>
    İşlem başarılı olursa mühürlü veri <parameter>mühürlü_veri</parameter>
-   değiştirgesine, zarf anahtarları <parameter>zarf_mühürleri</parameter>
+   değiştirgesine, zarf mühürleri <parameter>zarf_anahtarları</parameter>
    değiştirgesine konup mühürlü verinin uzunluğu döndürülür. Hata oluşursa
    &false; döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>genel_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>algoritma</parameter> artık seçimlik değil.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>ilklendirme_yöneyi</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

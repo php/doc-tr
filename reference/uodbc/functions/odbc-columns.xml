@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-columns" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_columns</refname>
@@ -9,12 +8,12 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_columns</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>şema</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>tablo_ismi</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sütun_ismi</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_columns</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>şema</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>tablo</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>sütun</parameter></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen aralıktaki tüm sütunları listeler.
@@ -25,16 +24,16 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+       &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
@@ -42,33 +41,27 @@
      <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi.
+      &odbc.parameter.schema; &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tablo_ismi</parameter></term>
+     <term><parameter>tablo</parameter></term>
      <listitem>
       <para>
-       Tablo ismi
+       Tablo ismi. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sütun_ismi</parameter></term>
+     <term><parameter>sütun</parameter></term>
      <listitem>
       <para>
-       Sütun ismi.
+       Sütun ismi. &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </para>
-  <para>
-   <parameter>şema</parameter>, <parameter>tablo_ismi</parameter> ve
-   <parameter>sütun_ismi</parameter> olarak arama şablonları belirtilebilir
-   (sıfır veya daha fazla karakterle eşleşmek üzere '%' ve tek bir karakterle
-   eşleşmek üzere '_').
   </para>
  </refsect1>
  <refsect1 role="returnvalues">
@@ -79,32 +72,108 @@
   <para>
    Sonuç kümesi şu sütunlara sahiptir:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_SCHEM</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>COLUMN_NAME</simpara></listitem>
-    <listitem><simpara>DATA_TYPE</simpara></listitem>
-    <listitem><simpara>TYPE_NAME</simpara></listitem>
-    <listitem><simpara>PRECISION</simpara></listitem>
-    <listitem><simpara>LENGTH</simpara></listitem>
-    <listitem><simpara>SCALE</simpara></listitem>
-    <listitem><simpara>RADIX</simpara></listitem>
-    <listitem><simpara>NULLABLE</simpara></listitem>
-    <listitem><simpara>REMARKS</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>DATA_TYPE</literal></simpara></listitem>
+    <listitem><simpara><literal>TYPE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_SIZE</literal></simpara></listitem>
+    <listitem><simpara><literal>BUFFER_LENGTH</literal></simpara></listitem>
+    <listitem><simpara><literal>DECIMAL_DIGITS</literal></simpara></listitem>
+    <listitem><simpara><literal>NUM_PREC_RADIX</literal></simpara></listitem>
+    <listitem><simpara><literal>NULLABLE</literal></simpara></listitem>
+    <listitem><simpara><literal>REMARKS</literal></simpara></listitem>
+    <listitem><simpara><literal>COLUMN_DEF</literal></simpara></listitem>
+    <listitem><simpara><literal>SQL_DATA_TYPE</literal></simpara></listitem>
+    <listitem><simpara><literal>SQL_DATETIME_SUB</literal></simpara></listitem>
+    <listitem><simpara><literal>CHAR_OCTET_LENGTH</literal></simpara></listitem>
+    <listitem><simpara><literal>ORDINAL_POSITION</literal></simpara></listitem>
+    <listitem><simpara><literal>IS_NULLABLE</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
   </para>
-  <para>
-   Sonuç, TABLE_QUALIFIER, TABLE_SCHEM ve TABLE_NAME sütunlarına göre
-   sıralanır.
-  </para>
+  <simpara>
+   Sonuç, <literal>TABLE_CAT</literal>, <literal>TABLE_SCHEM</literal>,
+   <literal>TABLE_NAME</literal> ve <literal>ORDINAL_POSITION</literal>
+   sütunlarına göre sıralanır.
+  </simpara>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>şema</parameter>, <parameter>tablo</parameter> ve
+       <parameter>sütun</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-columns.example.basic">
+   <title>- Tablo sütunlarının listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$columns = odbc_columns($conn, 'TutorialDB', 'dbo', 'test', '%');
+while (($row = odbc_fetch_array($columns))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => TutorialDB
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => TEST
+    [COLUMN_NAME] => id
+    [DATA_TYPE] => 4
+    [TYPE_NAME] => int
+    [COLUMN_SIZE] => 10
+    [BUFFER_LENGTH] => 4
+    [DECIMAL_DIGITS] => 0
+    [NUM_PREC_RADIX] => 10
+    [NULLABLE] => 0
+    [REMARKS] =>
+    [COLUMN_DEF] =>
+    [SQL_DATA_TYPE] => 4
+    [SQL_DATETIME_SUB] =>
+    [CHAR_OCTET_LENGTH] =>
+    [ORDINAL_POSITION] => 1
+    [IS_NULLABLE] => NO
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>odbc_columnprivileges</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>odbc_columnprivileges</function></member>
+   <member><function>odbc_procedurecolumns</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

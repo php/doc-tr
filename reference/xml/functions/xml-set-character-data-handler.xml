@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3db49ee0a331a657dd97b539a749f53d3965b593 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-character-data-handler">
  <refnamediv>
   <refname>xml_set_character_data_handler</refname>
-  <refpurpose>Karakter verisi eylemcisini belirler</refpurpose>
+  <refpurpose>Karakter verisi işleyiciyi belirler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>xml_set_character_data_handler</methodname>
-   <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>eylemci</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>işleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
-   karakter verisi eylemcisini belirler.
+   karakter verisi işleyici belirler.
   </para>
  </refsect1>
 
@@ -28,14 +27,13 @@
      <term><parameter>çözümleyici</parameter></term>
      <listitem>
       <para>
-       <function>xml_parser_create</function> ve
-       <function>xml_parser_create_ns</function> işlevleri tarafından
-       döndürülen bir XML özkaynağı.
+       Karakter veri işleyici işlevini ayarlamak için XML çözümleyiciye
+       başvuru.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>eylemci</parameter></term>
+     <term><parameter>işleyici</parameter></term>
      <listitem>
       <para>
        <function>xml_parse</function> işlevi
@@ -43,11 +41,11 @@
        gereken işlevin ismini içeren dizge.
       </para>
       <para>
-       İsmi <parameter>eylemci</parameter> ile belirtilen işlevin iki
+       İsmi <parameter>işleyici</parameter> ile belirtilen işlevin iki
        değiştirge kabul etmesi gerekir:
        <methodsynopsis>
-        <methodname><replaceable>eylemci</replaceable></methodname>
-        <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
+        <methodname><replaceable>işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
         <methodparam><type>string</type><parameter>veri</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
@@ -55,13 +53,12 @@
          <term><parameter>çözümleyici</parameter></term>
          <listitem>
           <simpara>
-           İlk değiştirge, eylemci işlevi çağıran XML çözümleyicinin
-           tanıtıcısıdır.
+           İlk değiştirge, işleyici işlevi çağıran XML çözümleyici nesnesidir.
           </simpara>
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term><parameter>data</parameter></term>
+         <term><parameter>veri</parameter></term>
          <listitem>
           <simpara>
            İkinci değiştirge olan  <parameter>veri</parameter>, karakter verisini dizge olarak içerir.
@@ -71,13 +68,13 @@
        </variablelist>
       </para>
       <para>
-       Karakter verisi eylemcisi, XML belgedeki her metin parçası için ayrı
+       Karakter verisi işleyici, XML belgedeki her metin parçası için ayrı
        ayrı çağrılır. Her bölümde defalarca çağrılabilir (örneğin, ascii
        olmayan dizgelerde).
       </para>
       <para>
-       <parameter>eylemci</parameter> değiştirgesinde işlev olarak boş bir
-       dizge veya &false; belirtilirse ilgili eylemci iptal edilir.
+       <parameter>işleyici</parameter> değiştirgesinde işlev olarak boş bir
+       dizge veya &false; belirtilirse ilgili işleyici iptal edilir.
       </para>
       &note.func-callback;
      </listitem>
@@ -91,6 +88,23 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &xml.changelog.parser-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

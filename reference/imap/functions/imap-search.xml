@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 34892f82742329af7e7b4b22be6ad21418fd9768 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-search" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>imap_search</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>imap_search</methodname>
-   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>imap_search</methodname>
+   <methodparam><type>IMAP\Connection</type><parameter>imap</parameter></methodparam>
    <methodparam><type>string</type><parameter>kural</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>SE_FREE</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>NIL</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <acronym>IMAP</acronym> akımı üzerinde açılmış posta kutusunda
@@ -25,14 +24,15 @@
    döndürmek için şu kural kullanılır: "UNANSWERED FROM annem". Arama işlemi
    harf büyüklüğüne duyarsızdır. UW c-client kaynak kodundan okunan kural
    listesi eksik veya yanlış olabilir (ayrıca bakınız: <link
-   xlink:href="&url.rfc;2060">RFC2060</link>, bölüm 6.4.4).
+   xlink:href="&url.rfc;1176">RFC1176</link>, "tag SEARCH search_criteria"
+   bölümü).
   </para>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
-    &imap.imap-stream.description;
+    &imap.imap-parameter.imap;
     <varlistentry>
      <term><parameter>kural</parameter></term>
      <listitem>
@@ -187,7 +187,7 @@
     <varlistentry>
      <term><parameter>karküm</parameter></term>
      <listitem>
-      <para>Karakter kümesi.
+      <para>Dizge aramasında kullanılacak MIME karakter kümesi.
       </para>
      </listitem>
     </varlistentry>
@@ -204,29 +204,75 @@
    veya kurala uyan hiçbir ileti yoksa &false; döner.
   </para>
  </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        <parameter>karküm</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &imap.changelog.imap-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="imap-search.examples">
+   <title>- <function>imap_search</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$imap   = imap_open('{imap.example.com:993/imap/ssl}INBOX', 'foo@example.com', 'pass123', OP_READONLY);
+
+$some   = imap_search($imap, 'SUBJECT "HOWTO be Awesome" SINCE "8 August 2008"', SE_UID);
+$msgnos = imap_search($imap, 'ALL');
+$uids   = imap_search($imap, 'ALL', SE_UID);
+
+print_r($some);
+print_r($msgnos);
+print_r($uids);
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [0] => 4
+    [1] => 6
+    [2] => 11
+)
+Array
+(
+    [0] => 1
+    [1] => 2
+    [2] => 3
+    [3] => 4
+    [4] => 5
+    [5] => 6
+)
+Array
+(
+    [0] => 1
+    [1] => 4
+    [2] => 6
+    [3] => 8
+    [4] => 11
+    [5] => 12
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-procedures" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_procedures</refname>
@@ -11,15 +10,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_procedures</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-  </methodsynopsis>
-  <methodsynopsis>
-   <type>resource</type><methodname>odbc_procedures</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_procedures</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>şema</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>yordam</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen aralıktaki tüm yordamları listeler.
@@ -31,29 +26,29 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+       &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi. &odbc.parameter.search;
+        &odbc.parameter.schema; &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>yordam</parameter></term>
      <listitem>
       <para>
        İsim. &odbc.parameter.search;
@@ -73,15 +68,88 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>PROCEDURE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>PROCEDURE_OWNER</simpara></listitem>
-    <listitem><simpara>PROCEDURE_NAME</simpara></listitem>
-    <listitem><simpara>NUM_INPUT_PARAMS</simpara></listitem>
-    <listitem><simpara>NUM_OUTPUT_PARAMS</simpara></listitem>
-    <listitem><simpara>NUM_RESULT_SETS</simpara></listitem>
-    <listitem><simpara>REMARKS</simpara></listitem>
-    <listitem><simpara>PROCEDURE_TYPE</simpara></listitem>
+    <listitem><simpara><literal>PROCEDURE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>PROCEDURE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>PROCEDURE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>NUM_INPUT_PARAMS</literal></simpara></listitem>
+    <listitem><simpara><literal>NUM_OUTPUT_PARAMS</literal></simpara></listitem>
+    <listitem><simpara><literal>NUM_RESULT_SETS</literal></simpara></listitem>
+    <listitem><simpara><literal>REMARKS</literal></simpara></listitem>
+    <listitem><simpara><literal>PROCEDURE_TYPE</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
+  </para>
+  <simpara>
+    Sonuç kümesi şu alanlara göre sıralanır: <literal>PROCEDURE_CAT</literal>,
+    <literal>PROCEDURE_SCHEMA</literal> ve <literal>PROCEDURE_NAME</literal>.
+  </simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu sürümden önce, işlev ya bir ya da beş değiştirge ile
+       çağrılabiliyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-procedures.example.basic">
+   <title>- Veritabanındaki saklı yordamların listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$procedures = odbc_procedures($conn, $catalog, $schema, '%');
+while (($row = odbc_fetch_array($procedures))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [PROCEDURE_CAT] => TutorialDB
+    [PROCEDURE_SCHEM] => dbo
+    [PROCEDURE_NAME] => GetEmployeeSalesYTD;1
+    [NUM_INPUT_PARAMS] => -1
+    [NUM_OUTPUT_PARAMS] => -1
+    [NUM_RESULT_SETS] => -1
+    [REMARKS] =>
+    [PROCEDURE_TYPE] => 2
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>odbc_procedurecolumns</function></member>
+    <member><function>odbc_tables</function></member>
+   </simplelist>
   </para>
  </refsect1>
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0ff45f21e8633bccf996a1907bfe6d3d6f415f69 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-get-option">
  <refnamediv>
   <refname>socket_get_option</refname>
@@ -10,8 +9,8 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>mixed</type><methodname>socket_get_option</methodname>
-   <methodparam><type>resource</type><parameter>soket</parameter></methodparam>
+   <type class="union"><type>array</type><type>int</type><type>false</type></type><methodname>socket_get_option</methodname>
+   <methodparam><type>Socket</type><parameter>soket</parameter></methodparam>
    <methodparam><type>int</type><parameter>seviye</parameter></methodparam>
    <methodparam><type>int</type><parameter>seçenek</parameter></methodparam>
   </methodsynopsis>
@@ -29,9 +28,8 @@
      <term><parameter>soket</parameter></term>
      <listitem>
       <para>
-       <function>socket_create</function> veya
-       <function>socket_accept</function> ile oluşturulmuş geçerli bir soket
-       özkaynağı.
+       <function>socket_create</function> ile oluşturulmuş geçerli bir
+       <classname>Socket</classname> nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -84,6 +82,15 @@
           <entry><constant>SO_REUSEADDR</constant></entry>
           <entry>
            Yerel adresin yeniden kullanılabilir olup olmadığını belirtir.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_REUSEPORT</constant></entry>
+          <entry>
+           Yerel portların yeniden kullanılabilir olduğunu belirtir.
           </entry>
           <entry>
            <type>int</type>
@@ -239,6 +246,227 @@
            <type>int</type>
           </entry>
          </row>
+         <row>
+          <entry><constant>MCAST_JOIN_GROUP</constant></entry>
+          <entry>
+           Çok noktaya yayın grubuna katılır.
+          </entry>
+          <entry>
+           <type>array</type>.
+           IPv4 veya IPv6 çok noktaya yayın adresi içeren
+           <literal>"group"</literal> anahtarlı ve <literal>"eth0"</literal>
+           gibi arabirim adını veya <type>int</type> türünde
+           bir arabirim numarası (arabirimin yönlendirme kuralları
+           kullanılarak seçilmesi gerektiğini belirtmek için
+           <literal>0</literal> belirtilebilir) içeren
+           <literal>"interface"</literal> anahtarlı bir dizi
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>MCAST_LEAVE_GROUP</constant></entry>
+          <entry>
+           Çok noktaya yayın grubunu terkeder.
+          </entry>
+          <entry>
+           <type>array</type>. Daha fazla bilgi için bkz:
+           <constant>MCAST_JOIN_GROUP</constant>
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>MCAST_BLOCK_SOURCE</constant></entry>
+          <entry>
+           Evvelce bağlanılmış olması gereken belli bir çok noktaya yayın
+           grubuna belli bir kaynaktan gelen paketleri engeller.
+          </entry>
+          <entry>
+           <type>array</type>.
+           <constant>MCAST_JOIN_GROUP</constant> seçeneğindeki anahtarlara ek
+           olarak <literal>source</literal> anahtarına da sahip bir dizi.
+           <literal>source</literal> anahtarı, engellenen IPv4 veya IPv6
+           kaynak adresini belirten bir dizge içerir.
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>MCAST_UNBLOCK_SOURCE</constant></entry>
+          <entry>
+           Evvelce bağlanılmış olması gereken belli bir çok noktaya yayın
+           grubuna belli bir kaynaktan gelen paketlerin engellemesini kaldırır
+           (yeniden almaya başlar).
+          </entry>
+          <entry>
+           <type>array</type>.
+           <constant>MCAST_BLOCK_SOURCE</constant> ile aynı biçemde bir dizi.
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>MCAST_JOIN_SOURCE_GROUP</constant></entry>
+          <entry>
+           Kaynak adresi belli bir değerle eşleşen belli bir çok noktaya
+           yayın grubunu hedefleyen paketleri alır.
+          </entry>
+          <entry>
+           <type>array</type>.
+           <constant>MCAST_BLOCK_SOURCE</constant> ile aynı biçemde bir dizi.
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>MCAST_LEAVE_SOURCE_GROUP</constant></entry>
+          <entry>
+           Kaynak adresi belli bir değerle eşleşen belli bir çok noktaya
+           yayın grubunu hedefleyen paketlerin alımını durdurur.
+          </entry>
+          <entry>
+           <type>array</type>.
+           <constant>MCAST_BLOCK_SOURCE</constant> ile aynı biçemde bir dizi.
+           Sadece <function>socket_set_option</function> işlevinde
+           kullanılabilir.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IP_MULTICAST_IF</constant></entry>
+          <entry>
+           IPv4 çok noktaya yayın giden paketleri için arabirim.
+          </entry>
+          <entry>
+           <type>int</type> veya <type>string</type>.
+           Arabirim numarasını içeren <type>int</type> türünde bir değer veya
+           <literal>eth0</literal> gibi arabirim adını içeren
+           <type>string</type> türünde bir değer. Arabirim seçiminde
+           yönlendirme tablosunun kullanılacağını ifade etmek için
+           <type>0</type> değeri belirtilebilir.
+           <function>socket_get_option</function> işlevi bir arabirim indisi
+           döndürür.  C API'sinin tersine bu seçenek bir IP adresi almaz.
+           Bu, <constant>IP_MULTICAST_IF</constant> ile
+           <constant>IPV6_MULTICAST_IF</constant> arasındaki farkın
+           yoksayılmasını sağlar.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IPV6_MULTICAST_IF</constant></entry>
+          <entry>
+           IPv6 çok noktaya yayın giden paketleri için arabirim.
+          </entry>
+          <entry>
+           <type>int</type> veya <type>string</type>.
+           <constant>IP_MULTICAST_IF</constant> ile aynı.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IP_MULTICAST_LOOP</constant></entry>
+          <entry>
+           Bu soket tarafından kullanılan arabirimden gönderilen çok noktaya
+           yayın paketlerinin, aynı konaktaki aynı çok noktaya yayın grubuna
+           katılan alıcılara da ulaşıp ulaşmayacağını belirleyen, IPv4
+           paketleri için çok noktaya yayın geri-döngü ilkesi. Bu öntanımlı
+           durumdur.
+          </entry>
+          <entry>
+           <type>int</type>.
+           (<literal>0</literal> ya da <literal>1</literal>).
+           <function>socket_set_option</function> işlevi için kabul edilebilir
+           veya uygun PHP kurallarıyla mantıksal bir değere dönüştürülebilir
+           herhangi bir değer.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IPV6_MULTICAST_LOOP</constant></entry>
+          <entry>
+           IPv6 için olması dışında <constant>IP_MULTICAST_LOOP</constant> ile benzer.
+          </entry>
+          <entry>
+           <type>int</type>.
+           Bkz: <constant>IP_MULTICAST_LOOP</constant>.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IP_MULTICAST_TTL</constant></entry>
+          <entry>
+           Giden IPv4 çok noktaya yayın paketleri için yaşam süresi. 0 (arabirimi bırakma) ile 255 arasında bir değer. Öntanımlı değer
+           1'dir (sadece yerel ağa ulaşılır).
+          </entry>
+          <entry>
+           <type>int</type>. 0 ile 255 arası bir tamsayı.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>IPV6_MULTICAST_HOPS</constant></entry>
+          <entry>
+           IPv6 için olması dışında <constant>IP_MULTICAST_TTL</constant> ile
+           benzer. Ayrıca, öntanımlı yol kullanılacak anlamında -1 de kabul
+           edilir.
+          </entry>
+          <entry>
+           <type>int</type>. -1 ile 255 arası bir tamsayı.
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_MARK</constant></entry>
+          <entry>
+           Linux'ta' paketleri süzme amacıyla soket üzerinde bir tanıtıcı
+           tanımlar.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_ACCEPTFILTER</constant></entry>
+          <entry>
+           FreeBSD/NetBSD'de  dinlenen sokete kabul süzgeci ekler.
+           FreeBSD'de kabul süzgecinin çekirdek modülü önceden yüklenmelidir
+           (örn, accf_http).
+          </entry>
+          <entry>
+           <type>string</type> name of the filter (length 15 max).
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_USER_COOKIE</constant></entry>
+          <entry>
+           FreeBSD'de paketleri süzme amacıyla soket üzerinde bir tanıtıcı
+           tanımlar.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_DONTTRUNC</constant></entry>
+          <entry>
+           Okunmamış veriler korunur.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
+         <row>
+          <entry><constant>SO_WANTMORE</constant></entry>
+          <entry>
+           Daha fazla veri hazır olduğunda bir ipucu verilir.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
+         <row>
+          <entry><constant>TCP_DEFER_ACCEPT</constant></entry>
+          <entry>
+           Veri hazır olana kadar dinleme soketi uyarılmaz.
+          </entry>
+          <entry>
+           <type>int</type>
+          </entry>
+         </row>
         </tbody>
        </tgroup>
       </table>
@@ -253,6 +481,23 @@
   <para>
    Hata durumunda &false; yoksa belirtilen seçeneğin değerini döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &sockets.changelog.socket-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -276,29 +521,13 @@ var_dump(socket_get_option($socket, SOL_SOCKET, SO_REUSEADDR));
   </para>
  </refsect1>
 
- <refsect1 role="changelog">
-  &reftitle.changelog;
-  <para>
-   <informaltable>
-    <tgroup cols="2">
-     <thead>
-      <row>
-       <entry>&Version;</entry>
-       <entry>&Description;</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>4.3.0</entry>
-       <entry>
-        İşleven ismi değişti. Evvelce <literal>socket_getopt()</literal> idi.
-       </entry>
-      </row>
-     </tbody>
-    </tgroup>
-   </informaltable>
-  </para>
- </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>socket_create_listen</function></member>
+   <member><function>socket_set_option</function></member>
+  </simplelist>
+  </refsect1>
 
 </refentry>
 

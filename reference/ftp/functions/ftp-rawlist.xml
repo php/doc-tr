@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 18680fd1681731888c6fb7c530cfdb712f53e954 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4d1c34c9b7a30cfc3a59641122c707a2812cfed7 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ftp-rawlist" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ftp_rawlist</refname>
@@ -11,7 +10,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type class="union"><type>array</type><type>false</type></type><methodname>ftp_rawlist</methodname>
-   <methodparam><type>resource</type><parameter>ftp</parameter></methodparam>
+   <methodparam><type>FTP\Connection</type><parameter>ftp</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizin</parameter></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>ardışık</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
@@ -27,9 +26,7 @@
     <varlistentry>
      <term><parameter>ftp</parameter></term>
      <listitem>
-      <para>
-       FTP bağlantısının bağlantı tanıtıcısı.
-      </para>
+      &ftp.parameter.ftp;
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -64,6 +61,24 @@
    yorumlanacağına karar vermek için yararlı olabilir.
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &ftp.changelog.ftp-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
@@ -74,17 +89,17 @@
 <?php
 
 // FTP sunucusuna bağlanalım
-$conn = ftp_connect('ftp.example.com');
-if (!$conn) die('ftp.example.com ile bağlantı kurulamadı');
+$ftp = ftp_connect('ftp.example.com');
+if (!$ftp) die('ftp.example.com ile bağlantı kurulamadı');
 
 // kullanıcı adı ve parola ile oturum açalım
-$login_result = ftp_login($conn, $ftp_user_name, $ftp_user_pass);
+$login_result = ftp_login($ftp, $ftp_user_name, $ftp_user_pass);
 
 // / için dosya listesini alalım
-$buff = ftp_rawlist($conn, '/');
+$buff = ftp_rawlist($ftp, '/');
 
 // bağlantıyı kapatalım
-ftp_close($conn);
+ftp_close($ftp);
 
 // tamponu çıktılayalım
 var_dump($buff);

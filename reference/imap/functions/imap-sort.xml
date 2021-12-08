@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 34892f82742329af7e7b4b22be6ad21418fd9768 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-sort" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>imap_sort</refname>
@@ -9,13 +8,13 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>imap_sort</methodname>
-   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>imap_sort</methodname>
+   <methodparam><type>IMAP\Connection</type><parameter>imap</parameter></methodparam>
    <methodparam><type>int</type><parameter>kural</parameter></methodparam>
-   <methodparam><type>int</type><parameter>tersine</parameter></methodparam>
+   <methodparam><type>bool</type><parameter>tersine</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>arama_kuralı</parameter><initializer>NULL</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>karküm</parameter><initializer>NIL</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>arama_kuralı</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>karküm</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen değiştirgelere göre iletileri sıralar ve döndürür.
@@ -25,7 +24,7 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    &imap.imap-stream.description;
+    &imap.imap-parameter.imap;
     <varlistentry>
      <term><parameter>kural</parameter></term>
      <listitem>
@@ -106,6 +105,8 @@
      <term><parameter>arama_kuralı</parameter></term>
      <listitem>
       <para>
+       IMAP2 biçemi arama kuralı dizgesi. Ayrıntılar için bkz:
+       <function>imap_search</function>
       </para>
      </listitem>
     </varlistentry>
@@ -113,6 +114,7 @@
      <term><parameter>karküm</parameter></term>
      <listitem>
       <para>
+       Dizgeleri sıralamakta kullanılacak MIME karakter kümesi.
       </para>
      </listitem>
     </varlistentry>
@@ -122,7 +124,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen değiştirgelere göre sıralanmış olarak bir ileti dizisi döner.
+   Belirtilen değiştirgelere göre sıralanmış olarak bir ileti dizisi
+   döner,&return.falseforfailure;.
   </para>
  </refsect1>
  <refsect1 role="changelog">
@@ -137,12 +140,21 @@
       </row>
      </thead>
      <tbody>
-      <row>
-       <entry>4.3.3</entry>
-       <entry>
-        <parameter>karküm</parameter> değiştirgesi eklendi.
-       </entry>
-      </row>
+      &imap.changelog.imap-param;
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>tersine</parameter> artık  <type>int</type> değil
+       <type>bool</type> türünde.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>arama_kuralı</parameter> ve <parameter>karküm</parameter>
+       artık &null; olabiliyor.
+      </entry>
+     </row>
      </tbody>
     </tgroup>
    </informaltable>

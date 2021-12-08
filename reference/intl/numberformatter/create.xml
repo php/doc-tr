@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 19726d906f782efd4e7cd8c22068d65f0ab616db Maintainer: haluk Status: ready -->
 <refentry xml:id="numberformatter.create" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>NumberFormatter::create</refname>
@@ -12,34 +11,36 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
    <modifier>static</modifier>
-   <type>NumberFormatter</type>
+   <type class="union"><type>NumberFormatter</type><type>null</type></type>
    <methodname>NumberFormatter::create</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>NumberFormatter</type>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>NumberFormatter</type><type>null</type></type>
    <methodname>numfmt_create</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Nesne yönelimli kullanım (kurucu):
+   &style.oop; (kurucu):
   </para>
    <constructorsynopsis>
+    <modifier>public</modifier>
     <methodname>NumberFormatter::__construct</methodname>
     <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
     <methodparam><type>int</type><parameter>tür</parameter></methodparam>
-    <methodparam choice="opt"><type>string</type><parameter>kalıp</parameter></methodparam>
+    <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>kalıp</parameter><initializer>&null;</initializer></methodparam>
    </constructorsynopsis>
   <para>
    Bir sayı biçemleyici oluşturur.
@@ -62,7 +63,7 @@
      <term><parameter>tür</parameter></term>
      <listitem>
       <para>
-       <link linkend="intl.numberformatter-constants.UNumberFormatStyle">
+       <link linkend="intl.numberformatter-constants.unumberformatstyle">
        Biçemleyici türü</link> sabitlerinden biri. Eğer değer olarak
        <constant>NumberFormatter::PATTERN_DECIMAL</constant>
        veya <constant>NumberFormatter::PATTERN_RULEBASED</constant>
@@ -87,13 +88,34 @@
   </para>
  </refsect1>
 
-
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir hata oluşursa &false;, aksi takdirde
+   Bir hata oluşursa &null;, aksi takdirde
    <classname>NumberFormatter</classname> nesnesi döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>kalıp</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -105,20 +127,20 @@
 <?php
 $fmt = numfmt_create( 'de_DE', NumberFormatter::DECIMAL );
 echo numfmt_format($fmt, 1234567.891234567890000)."\n";
-$fmt = numfmt_create( 'it', NumberFormatter::SPELLOUT );
+$fmt = numfmt_create( 'tr', NumberFormatter::SPELLOUT );
 echo numfmt_format($fmt, 1142)."\n";
 ?>
 ]]>
    </programlisting>
   </example>
   <example>
-   <title>- Nesne yönelimli kullanım örneği</title>
+   <title>- &style.oop; örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 $fmt = new NumberFormatter( 'de_DE', NumberFormatter::DECIMAL );
 echo $fmt->format(1234567.891234567890000)."\n";
-$fmt = new NumberFormatter( 'it', NumberFormatter::SPELLOUT );
+$fmt = new NumberFormatter( 'tr', NumberFormatter::SPELLOUT );
 echo $fmt->format(1142)."\n";
 ?>
 ]]>
@@ -128,7 +150,7 @@ echo $fmt->format(1142)."\n";
   <screen>
 <![CDATA[
 1.234.567,891
-millicentoquarantadue
+bin yüz kırk iki
 ]]>
   </screen>
  </refsect1>

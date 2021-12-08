@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkcs7-decrypt">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkcs7-decrypt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkcs7_decrypt</refname>
   <refpurpose>S/MIME şifreli bir iletinin şifresini çözer</refpurpose>
@@ -13,13 +12,13 @@
    <type>bool</type><methodname>openssl_pkcs7_decrypt</methodname>
    <methodparam><type>string</type><parameter>girdi_dosyası</parameter></methodparam>
    <methodparam><type>string</type><parameter>çıktı_dosyası</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>alıcı_sertifikaları</parameter></methodparam>
-   <methodparam choice="opt"><type>mixed</type><parameter>alıcı_anahtarı</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type><type>null</type></type><parameter>gizli_anahtar</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    Şifreli iletiyi <parameter>girdi_dosyası</parameter>'ndan okur,
-   <parameter>alıcı_sertifikaları</parameter> ile belirtilen sertifikaları ve
-   <parameter>alıcı_anahtarı</parameter> ile belirtilen gizli anahtarı
+   <parameter>sertifika</parameter> ile belirtilen sertifikaları ve
+   <parameter>gizli_anahtar</parameter> ile belirtilen gizli anahtarı
    kullanarak iletinin şifresini çözer ve sonucu
    <parameter>çıktı_dosyası</parameter>'na kaydeder.
   </para>
@@ -45,14 +44,14 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>alıcı_sertifikaları</parameter></term>
+     <term><parameter>sertifika</parameter></term>
      <listitem>
       <para>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>alıcı_anahtarı</parameter></term>
+     <term><parameter>gizli_anahtar</parameter></term>
      <listitem>
       <para>
       </para>
@@ -67,6 +66,32 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>gizli_anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL X.509
+       CSR</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

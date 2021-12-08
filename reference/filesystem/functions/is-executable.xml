@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: e41aab5ecacf449e51179886c17f1d41735b0234 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8d8cd43bfcd67415f3d548b7209c5b1a63d88fd1 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.is-executable">
  <refnamediv>
   <refname>is_executable</refname>
@@ -40,7 +39,15 @@
   <para>
    <parameter>dosyaismi</parameter> ile belirtilen dosya mevcutsa ve
    çalıştırılabilir bir dosya ise &true; aksi takdirde &false; döndürür.
+   POSIX sistemlerde, dosya izinlerinde çalıştırılabilir biti etkin kılınmışsa
+   dosya çalıştırılabilir bir dosya olur. Windows için aşağıda Notlar bölümüne
+   bakın.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &fs.emits.warning.on.failure;
  </refsect1>
 
  <refsect1 role="examples">
@@ -67,15 +74,23 @@ if (is_executable($dosya)) {
   </para>
  </refsect1>
 
- <refsect1 role="errors">
-  &reftitle.errors;
-  &fs.emits.warning.on.failure;
- </refsect1>
-
  <refsect1 role="notes">
   &reftitle.notes;
   &note.clearstatcache;
   &tip.fopen-wrapper.stat;
+  <note>
+   <simpara>
+    Windows'ta, bir dosya Win API <literal>GetBinaryType()</literal> tarafından
+    tamamen çalıştırılabilir bir dosya olarak raporlanıyorsa dosya
+    çalıştırılabilir bir dosya olarak kabul edilir. Tarihsel sebeplerle,
+    <filename>.bat</filename> ve <filename>.cmd</filename> uzantılı dosyalar da
+    çalıştırılabilir dosyalar olarak kabul edilir. PHP 7.4.0 öncesinde,
+    <filename>.exe</filename> veya <filename>.com</filename> uzantılı bir dosya
+    boş değilse çalıştırılabilir dosya olduğu varsayılırdı.
+    <function>is_executable</function> işlevi açısından
+    <envar>PATHEXT</envar>'in konu dışı oluşuna dikkat edin.
+   </simpara>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">

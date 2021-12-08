@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 477c5f97a6e31b77a02cabcd9950a3ed0fd91fa2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f6e8402a6d10031e02395933fb2fb99dc7a067e8 Maintainer: nilgun Status: ready -->
 <section xml:id="errorfunc.configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.runtime;
  &extension.runtime;
@@ -30,9 +30,11 @@
     </row>
     <row>
      <entry><link linkend="ini.display-startup-errors">display_startup_errors</link></entry>
-     <entry>"0"</entry>
+     <entry>"1"</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry></entry>
+     <entry>
+      PHP 8.0.0 öncesinde, öntanımlı değer <literal>"0"</literal> idi.
+     </entry>
     </row>
     <row>
      <entry><link linkend="ini.log-errors">log_errors</link></entry>
@@ -68,7 +70,8 @@
      <entry><link linkend="ini.track-errors">track_errors</link></entry>
      <entry>"0"</entry>
      <entry>PHP_INI_ALL</entry>
-     <entry>PHP 7.2.0 ve sonrasında kullanımı önerilmiyor.</entry>
+     <entry>PHP 7.2.0 ve sonrasında kullanımı önerilmemekte olup
+      PHP 8.0.0'da kullanımdan kaldırılmıştır.</entry>
     </row>
     <row>
      <entry><link linkend="ini.html-errors">html_errors</link></entry>
@@ -163,7 +166,7 @@
       bakınız.
      </para>
      <para>
-      PHP 5.3 ve sonrasında öntanımlı değer:
+      Öntanımlı değer:
       <constant>E_ALL</constant> &amp;
       ~<constant>E_NOTICE</constant> &amp;
       ~<constant>E_STRICT</constant> &amp;
@@ -171,10 +174,6 @@
       <constant>E_STRICT</constant> ve <constant>E_DEPRECATED</constant>
       seviyesinden hatalar burada gösterilmez. Bunları yazılımınızı
       geliştirirken kendiniz ekleyebilirsiniz.
-      PHP 5.3.0 öncesinde öntanımlı değer:
-      is <constant>E_ALL</constant> &amp;
-      ~<constant>E_NOTICE</constant> &amp;
-      ~<constant>E_STRICT</constant>.
      </para>
      <note>
       <para><constant>E_NOTICE</constant> seviyesindeki hataların geliştirme
@@ -189,22 +188,6 @@
       yerine <literal>$arr['item']</literal> yazmak daha iyidir. Belirttiğiniz
       indis bir sabit değilse PHP bunu dizinin bir anahtarı (dizgesel indisi)
       olarak kabul edecektir.
-      </para>
-     </note>
-     <note>
-      <para>
-       PHP 5.4.0 öncesinde <constant>E_ALL</constant> ile birlikte açıkça
-       belirtilmedikçe <constant>E_STRICT</constant> seviyesinden hata
-       raporları etkin olmayacaktır. PHP 5.4.0 sonrasında
-       <constant>E_STRICT</constant> seviyesinden hataların geliştirme aşamasında
-       gösterilmesinin bazı yararları vardır. STRICT iletiler, kodunuzun en iyi
-       birlikte çalışabilirliğini ve iletilebilirliğini sağlamaya yardımcı
-       olabilecek öneriler sunar. Bu iletiler, duruk olmayan yöntemlerin duruk
-       olarak çağrılması, kullanılan bir özellik tanımlıyken uyumlu bir sınıf
-       tanımında tekrar tanımlanması ve PHP 5.3'ten önce bazı kullanımdan
-       kaldırılmış özelliklerin (örnekleme sırasında nesnelerin başvuruya göre
-       atanması gibi) <constant>E_STRICT</constant> hatası ataması gibi şeyler
-       içerebilir.
       </para>
      </note>
      <note>
@@ -237,9 +220,7 @@
      <para>
       <literal>"stderr"</literal> değeri hataları <literal>stdout</literal>
       (standart çıktı) yerine <literal>stderr</literal>'e (standart hataya)
-      gönderir. Bu değer PHP'nin 5.2.4 sürümünden beri kullanılabilmektedir.
-      Eski sürümlerde bu yönerge sadece <type>bool</type> türünde değer
-      kabul ederdi.
+      gönderir.
      </para>
      <note>
       <para>
@@ -479,7 +460,9 @@
     </term>
     <listitem>
      <para>
-      Bir hata iletisinden önce çıktılanacak dizge.
+      Hata iletisinden önce çıktılanacak dizge.
+      Sadece hata iletisi ekranda gösterilecekse kullanılır. Asıl amaç hata
+      iletisinin önüne HTML kodu ekleyebilmeyi mümkün kılmaktır.
      </para>
     </listitem>
    </varlistentry>
@@ -492,6 +475,8 @@
     <listitem>
      <para>
       Bir hata iletisinden sonra çıktılanacak dizge.
+      Sadece hata iletisi ekranda gösterilecekse kullanılır. Asıl amaç hata
+      iletisinin ardına HTML kodu ekleyebilmeyi mümkün kılmaktır.
      </para>
     </listitem>
    </varlistentry>
@@ -574,6 +559,9 @@
        sürümlerle kullanılabilir.
       </para>
      </note>
+     <simpara>
+      Bu yönerge Windows üzerinde desteklenmez.
+     </simpara>
     </listitem>
    </varlistentry>
 

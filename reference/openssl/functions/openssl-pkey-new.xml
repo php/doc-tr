@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkey-new">
+<!-- EN-Revision: 2e02eeb87167732c245530d970b79061b8aaa24a Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkey-new" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkey_new</refname>
-  <refpurpose>Yeni bir anahtar çifti üretir</refpurpose>
+  <refpurpose>Yeni bir gizli anahtar üretir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>openssl_pkey_new</methodname>
-   <methodparam choice="opt"><type>array</type><parameter>ayarlar</parameter></methodparam>
+   <type class="union"><type>OpenSSLAsymmetricKey</type><type>false</type></type><methodname>openssl_pkey_new</methodname>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>null</type></type><parameter>seçenekler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Yeni bir gizli/genel anahtar çifti üretir. Üretilen çiftin genel anahtarını
-   <function>openssl_pkey_get_public</function> işleviyle alabilirsiniz.
+   Yeni bir gizli anahtar üretir. Genel anahtarın elde edilişi aşağıdaki
+   örnekte gösterilmiştir.
   </para>
   &note.openssl.cnf;
  </refsect1>
@@ -25,12 +24,12 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>ayarlar</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
        Anahtar üretimine ince ayar çekmek için (bit sayısını belirtmek gibi)
        kullanılabilir. Daha ayrıntılı bilgi için
-       <function>openssl_csr_new</function>işlevine bakınız.
+       <function>openssl_csr_new</function> işlevine bakınız.
       </para>
      </listitem>
     </varlistentry>
@@ -41,9 +40,73 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   İşlem başarısız olursa &false; yoksa anahtar çifti için bir özkaynak
-   tanıtıcısı döner.
+   İşlem başarısız olursa &false; yoksa
+   <classname>OpenSSLAsymmetricKey</classname> örneği döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Başarı durumunda işlev artık <classname>OpenSSLAsymmetricKey</classname>
+       örneği döndürüyor; evvelce <literal>OpenSSL key</literal> özkaynağı
+       dönerdi.
+      </entry>
+     </row>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       EC anahtarlarının üretilebilmesi için <literal>curve_name</literal>
+       seçeneği eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="function.openssl-pkey-new.example.public-key">
+   <title>- Genel anahtarın gizli anahtardan elde edilmesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$private_key = openssl_pkey_new();
+$public_key_pem = openssl_pkey_get_details($private_key)['key'];
+echo $public_key_pem;
+$public_key = openssl_pkey_get_public($public_key_pem);
+var_dump($public_key);
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZFsmN2P6rx1Xt7YV95o
+gcdlal0k3ryiIhFNzjwtRNNTXfEfBr6lUuaIJYQ8/XqEBX0hpcfuuF6tTRlonA3t
+WLME0QFD93YVsAaXcy76YqjjqcRRodIBphAbYyyMI/lXkQAdn7kbAmr7neSOsMYJ
+El9Wo4Hl4oG6e52ZnYHyqW9dxh4hX93eupR2TmcCdVf+r9xoHewP0KJYSHt7vDUX
+AQlWYcQiWHIadFsmL0orr6mutlXFReoHbesgKY9/3YLOu0JfxflSjIZ2JeL1NTl1
+MsmODsUwgAUrwnWKKx+eQUP5g3GnSB3dPkRh9zRVRiLNWbCugyjrf3e6DgQWrW7j
+pwIDAQAB
+-----END PUBLIC KEY-----
+resource(5) of type (OpenSSL key)
+]]>
+   </screen>
+  </example>
  </refsect1>
 
 </refentry>

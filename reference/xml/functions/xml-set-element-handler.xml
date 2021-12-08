@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3db49ee0a331a657dd97b539a749f53d3965b593 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-element-handler">
  <refnamediv>
   <refname>xml_set_element_handler</refname>
-  <refpurpose>Açılış ve kapanış etiketi eylemcilerini belirler</refpurpose>
+  <refpurpose>Açılış ve kapanış etiketi işleyicileri belirler</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>xml_set_element_handler</methodname>
-   <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>açılış_etiketi_eylemcisi</parameter></methodparam>
-   <methodparam><type>callback</type><parameter>kapanış_etiketi_eylemcisi</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>açılış_işleyici</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>kapanış_işleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
-   açılış ve kapanış etiketi eylemcilerini belirler.
-   <parameter>açılış_etiketi_eylemcisi</parameter> ve
-   <parameter>kapanış_etiketi_eylemcisi</parameter> işlevleri
+   açılış ve kapanış etiketi işleyicileri belirler.
+   <parameter>açılış_işleyici</parameter> ve
+   <parameter>kapanış_işleyici</parameter> işlevleri
    <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
    <function>xml_parse</function> çağrılmadan önce tanımlanmış olmalıdır.
   </para>
@@ -33,18 +32,20 @@
      <term><parameter>çözümleyici</parameter></term>
      <listitem>
       <para>
+       Açılış ve kapanış etiketi işleyicileri ayarlamak için XML çözümleyiciye
+       başvuru.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>açılış_etiketi_eylemcisi</parameter></term>
+     <term><parameter>açılış_işleyici</parameter></term>
      <listitem>
       <para>
-       İsmi <parameter>açılış_etiketi_eylemcisi</parameter> ile belirtilen
+       İsmi <parameter>açılış_işleyici</parameter> ile belirtilen
        işlevin üç değiştirge kabul etmesi gerekir:
        <methodsynopsis>
-        <methodname><replaceable>açılış_etiketi_eylemcisi</replaceable></methodname>
-        <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
+        <methodname><replaceable>açılış_işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
         <methodparam><type>string</type><parameter>isim</parameter></methodparam>
         <methodparam><type>array</type><parameter>öznitelikler</parameter></methodparam>
        </methodsynopsis>
@@ -94,14 +95,14 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kapanış_etiketi_eylemcisi</parameter></term>
+     <term><parameter>kapanış_işleyici</parameter></term>
      <listitem>
       <para>
-       İsmi <parameter>kapanış_etiketi_eylemcisi</parameter> ile belirtilen
+       İsmi <parameter>kapanış_işleyici</parameter> ile belirtilen
        işlevin iki değiştirge kabul etmesi gerekir:
        <methodsynopsis>
-        <methodname><replaceable>kapanış_etiketi_eylemcisi</replaceable></methodname>
-        <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
+        <methodname><replaceable>kapanış_işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
         <methodparam><type>string</type><parameter>isim</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
@@ -109,7 +110,7 @@
          <term><parameter>çözümleyici</parameter></term>
          <listitem>
           <simpara>
-           İlk değiştirge, eylemci işlevi çağıran XML çözümleyicinin
+           İlk değiştirge, işleyici işlevi çağıran XML çözümleyicinin
            tanıtıcısıdır.
           </simpara>
          </listitem>
@@ -118,7 +119,7 @@
          <term><parameter>isim</parameter></term>
          <listitem>
           <simpara>
-           İkinci değiştirge olan <parameter>isim</parameter>, bu eylemcinin
+           İkinci değiştirge olan <parameter>isim</parameter>, bu işleyicinin
            çağrılacağı elemanın ismidir. Eğer çözümleyicide <link
            linkend="xml.case-folding">büyük harfe dönüşüm</link> etkinse
            eleman isminin harfleri büyük harfe dönüştürülür.
@@ -128,8 +129,8 @@
        </variablelist>
       </para>
       <para>
-       <parameter>eylemci</parameter> değiştirgesinde işlev olarak boş bir
-       dizge veya &false; belirtilirse ilgili eylemci iptal edilir.
+       <parameter>işleyici</parameter> değiştirgesinde işlev olarak boş bir
+       dizge veya &false; belirtilirse ilgili işleyici iptal edilir.
       </para>
      </listitem>
     </varlistentry>
@@ -142,6 +143,23 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &xml.changelog.parser-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

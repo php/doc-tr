@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkcs7-encrypt">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkcs7-encrypt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkcs7_encrypt</refname>
   <refpurpose>Bir S/MIME iletiyi şifreler</refpurpose>
@@ -13,16 +12,17 @@
    <type>bool</type><methodname>openssl_pkcs7_encrypt</methodname>
    <methodparam><type>string</type><parameter>girdi_dosyası</parameter></methodparam>
    <methodparam><type>string</type><parameter>çıktı_dosyası</parameter></methodparam>
-   <methodparam><type>mixed</type><parameter>alıcı_sertifikaları</parameter></methodparam>
-   <methodparam><type>array</type><parameter>başlıklar</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>sertifika</parameter></methodparam>
+   <methodparam><type class="union"><type>array</type><type>null</type></type><parameter>başlıklar</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>şifre</parameter><initializer>OPENSSL_CIPHER_RC2_40</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>algoritma</parameter><initializer><constant>OPENSSL_CIPHER_RC2_40</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>alıcı_sertifikaları</parameter> ile okunabilir hale
-   getirmek üzere 40 bitlik bir RC2 şifresi kullanarak
-   <parameter>girdi_dosyası</parameter> ile belirtilen içeriği şifreler ve
-   şifreli iletiyi <parameter>çıktı_dosyası</parameter>'na kaydeder.
+   <parameter>girdi_dosyası</parameter>nın içeriğini alır ve yalnızca
+   <parameter>sertifika</parameter> ile belirtilen alıcılar
+   tarafından okunabilmeleri için bir RC2 40 bit
+   <parameter>algoritma</parameter> kullanarak bunları şifreler ve şifreli
+   iletiyi <parameter>çıktı_dosyası</parameter>'na kaydeder.
   </para>
  </refsect1>
 
@@ -45,10 +45,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>alıcı_sertifikaları</parameter></term>
+     <term><parameter>sertifika</parameter></term>
      <listitem>
       <para>
-      Ya tek bir X.509 setifikasını içeren bir dizge ya da X.509
+      Ya tek bir X.509 sertifikasını içeren bir dizge ya da X.509
       sertifikalarını içeren bir dizi olmalıdır.
       </para>
      </listitem>
@@ -75,10 +75,10 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>şifre</parameter></term>
+     <term><parameter>algoritma</parameter></term>
      <listitem>
       <para>
-       Kullanılacak <link linkend="openssl.ciphers">şifre</link>.
+       <link linkend="openssl.ciphers">Şifreleme sabitlerinden</link> biri.
       </para>
      </listitem>
     </varlistentry>
@@ -106,10 +106,12 @@
      </thead>
      <tbody>
       <row>
-       <entry>5.0.0</entry>
+       <entry>8.0.0</entry>
        <entry>
-        <parameter>şifre</parameter> değiştirgesi eklendi.
-       </entry>
+        <parameter>sertifika</parameter> artık
+        <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+        evvelce, <literal>OpenSSL X.509 CSR</literal> özkaynağı kabul edilirdi.
+        </entry>
       </row>
      </tbody>
     </tgroup>

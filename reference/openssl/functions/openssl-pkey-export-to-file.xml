@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.openssl-pkey-export-to-file">
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.openssl-pkey-export-to-file" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>openssl_pkey_export_to_file</refname>
   <refpurpose>Bir anahtarın ihraç edilebilir gösterimini bir dosyaya kaydeder </refpurpose>
@@ -11,13 +10,14 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>openssl_pkey_export_to_file</methodname>
-   <methodparam><type>mixed</type><parameter>anahtar</parameter></methodparam>
-   <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>parolası</parameter></methodparam>
-   <methodparam choice="opt"><type>array</type><parameter>ayarlar</parameter></methodparam>
+   <methodparam><type class="union"><type>OpenSSLAsymmetricKey</type><type>OpenSSLCertificate</type><type>array</type><type>string</type></type><parameter>anahtar</parameter></methodparam>
+   <methodparam><type>string</type><parameter>çıktı_dosyası</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>parola</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>array</type><type>null</type></type><parameter>seçenekler</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Anahtarın ASCII zırhlı (PEM kodlu) eşdeğerini belirtilen dosyaya kaydeder.
+   Anahtarın ASCII zırhlı (PEM kodlu) eşdeğerini belirtilen
+   <parameter>çıktı_dosyası</parameter>na kaydeder.
   </para>
   &note.openssl.cnf;
  </refsect1>
@@ -34,7 +34,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dosya</parameter></term>
+     <term><parameter>çıktı_dosyası</parameter></term>
      <listitem>
       <para>
        ASCII zırhlı anahtarın kaydedileceği dosyanın yolu.
@@ -42,16 +42,16 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>parolası</parameter></term>
+     <term><parameter>parola</parameter></term>
      <listitem>
       <para>
-       Belirtilen anahtar bir parola ile korunuyorsa bu parola burada
+       Belirtilen anahtar bir parola ile korunuyorsa parola burada
        belirtilir.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ayarlar</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
        İhraç işlemine ince ayar çekmek için ve/veya openssl yapılandırma
@@ -69,6 +69,32 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>anahtar</parameter> artık
+       <classname>OpenSSLAsymmetricKey</classname> veya
+       <classname>OpenSSLCertificate</classname> örneği kabul ediyor;
+       evvelce, <literal>OpenSSL key</literal> veya <literal>OpenSSL
+       X.509</literal> özkaynağı kabul edilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
 </refentry>

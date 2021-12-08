@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 6f2a633c724ec85d782aa19349987258b7b13557 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 84e8f0960b841a5ebca9d81cd2c2311b6504a371 Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.prepared-statements" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Hazır deyimler ve Saklı Yordamlar</title>
  <para>
@@ -110,10 +109,9 @@ $deyim->execute();
 <![CDATA[
 <?php
 $deyim = $dbh->prepare("SELECT * FROM KUTUK where isim = ?");
-if ($deyim->execute(array($_GET['isim']))) {
-  while ($satır = $deyim->fetch()) {
+$deyim->execute([$_GET['isim']]);
+foreach ($deyim as $satır) {
     print_r($satır);
-  }
 }
 ?>
 ]]>
@@ -179,11 +177,11 @@ print "dönen değer: $değer\n";
 <![CDATA[
 <?php
 $deyim = $dbh->prepare("SELECT * FROM KUTUK where isim LIKE '%?%'");
-$deyim->execute(array($_GET['isim']));
+$deyim->execute([$_GET['isim']]);
 
-// değiştirge değerin yerinde kullanılmalı
+// değiştirge değerin bütünün yerine kullanılmalı
 $deyim = $dbh->prepare("SELECT * FROM KUTUK where isim LIKE ?");
-$deyim->execute(array("%$_GET[isim]%"));
+$deyim->execute(["%$_GET[isim]%"]);
 ?>
 ]]>
    </programlisting>

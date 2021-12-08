@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.islenient" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::isLenient</refname>
@@ -11,18 +10,18 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>bool</type><methodname>IntlDateFormatter::isLenient</methodname>
-      <void />
-   </methodsynopsis>
+  <methodsynopsis role="procedural">
+   <modifier>public</modifier> <type>bool</type><methodname>IntlDateFormatter::isLenient</methodname>
+   <void/>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
   <methodsynopsis>
    <type>bool</type><methodname>datefmt_is_lenient</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    Kalıpla tam olarak eşleşmeyen girdilerin yorumlanmasında çözümleyicinin
@@ -51,23 +50,29 @@
   &reftitle.returnvalues;
   <para>
    Çözümleyici esnekse &true; değilse &false;.
+   Öntanımlı olarak çözümleyici esnektir.
   </para>
  </refsect1>
 
  <refsect1 role="examples">
   &reftitle.examples;
-   <example>
-    <title>- <function>datefmt_is_lenient</function> örneği</title>
-    <programlisting role="php">
+  <example>
+   <title>- <function>datefmt_is_lenient</function> örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN  ,"dd/mm/yyyy");
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/mm/yyyy"
+);
 echo "Biçemleyici esnek mi?: ";
 if( $fmt->isLenient() ){
         echo('EVET');
-}else{
+} else {
         echo('HAYIR');
 }
 datefmt_parse($fmt,"35/13/1971");
@@ -81,7 +86,7 @@ datefmt_set_lenient($fmt,false);
 echo "\nYeni biçemleyici esnek mi?: ";
 if( $fmt->isLenient() ){
         echo('EVET');
-}else{
+} else {
         echo('HAYIR');
 }
 datefmt_parse($fmt,"35/13/1971");
@@ -93,20 +98,25 @@ if( intl_get_error_code() !=0 ){
 }
 ?>
 ]]>
-    </programlisting>
-   </example>
-   <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
-    <programlisting role="php">
+   </programlisting>
+  </example>
+  <example>
+   <title>- &style.oop; örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN,"dd/mm/yyyy"  );
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/mm/yyyy"
+);
 echo "Biçemleyici esnek mi?: ";
 if( $fmt->isLenient() ){
         echo('EVET');
-}else{
+} else {
         echo('HAYIR');
 }
 $fmt->parse("35/13/1971");
@@ -121,7 +131,7 @@ $fmt->setLenient(FALSE);
 echo "\nYeni biçemleyici esnek mi?: ";
 if( $fmt->isLenient() ){
         echo('EVET');
-}else{
+} else {
         echo('HAYIR');
 }
 $fmt->parse("35/13/1971");
@@ -132,11 +142,11 @@ if( intl_get_error_code() !=0 ){
 }
 ?>
 ]]>
-    </programlisting>
-   </example>
-     &example.outputs;
-     <screen>
-         <![CDATA[
+   </programlisting>
+  </example>
+    &example.outputs;
+    <screen>
+        <![CDATA[
 Biçemleyici esnek mi?: EVET
  '35/13/1971' çözümlenmeye çalışılıyor. Sonuç: 34467180
 Yeni biçemleyici esnek mi?: HAYIR
@@ -144,17 +154,15 @@ Yeni biçemleyici esnek mi?: HAYIR
  Hata iletisi: Date parsing failed: U_PARSE_ERROR
  Hata kodu: 9
 ]]>
-     </screen>
+  </screen>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-    <simplelist>
-    <member><function>datefmt_set_lenient</function></member>
-    <member><function>datefmt_create</function></member>
-    </simplelist>
-  </para>
+  <simplelist>
+   <member><function>datefmt_set_lenient</function></member>
+   <member><function>datefmt_create</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

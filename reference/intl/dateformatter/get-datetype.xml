@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.getdatetype" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getDateType</refname>
@@ -11,18 +10,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>int</type><methodname>IntlDateFormatter::getDateType</methodname>
-      <void />
-   </methodsynopsis>
+   <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>int</type><type>false</type></type><methodname>IntlDateFormatter::getDateType</methodname>
+   <void/>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>int</type><methodname>datefmt_get_datetype</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>int</type><type>false</type></type><methodname>datefmt_get_datetype</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    Biçemleyici tarafından kullanılan tarih gösterim türünü döndürür.
@@ -50,7 +50,7 @@
   &reftitle.returnvalues;
   <para>
    Geçerli <link linkend="intl.intldateformatter-constants">tarih gösterim
-   türü</link>.
+   türü</link>,&return.falseforfailure;.
   </para>
  </refsect1>
 
@@ -61,14 +61,23 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyicinin tarih gösterim türü: ".datefmt_get_datetype($fmt);
 echo "\nBiçemli çıktı: ".datefmt_format($fmt, 1234567890);
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::SHORT,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::SHORT,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyicinin yeni tarih gösterim türü: ".datefmt_get_datetype($fmt);
 echo "\nİkinci biçemli çıktı: ".datefmt_format($fmt, 1234567890);
 ?>
@@ -76,18 +85,27 @@ echo "\nİkinci biçemli çıktı: ".datefmt_format($fmt, 1234567890);
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "Biçemleyicinin tarih gösterim türü: ".$fmt->getDateType();
 echo "\nBiçemli çıktı: ".datefmt_format( $fmt, 1234567890);
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::SHORT,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::SHORT,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nBiçemleyicinin yeni tarih gösterim türü: ".$fmt->getDateType();
 echo "\nİkinci biçemli çıktı: ".datefmt_format( $fmt, 1234567890);
 ?>
@@ -98,9 +116,9 @@ echo "\nİkinci biçemli çıktı: ".datefmt_format( $fmt, 1234567890);
      <screen>
 <![CDATA[
 Biçemleyicinin tarih gösterim türü: 0
-Biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Türkiye Saati
+Biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Doğu Avrupa Standart Saati
 Biçemleyicinin yeni tarih gösterim türü: 3
-İkinci biçemli çıktı: 14.02.2009 01:31:30
+İkinci biçemli çıktı: 14.02.2009 01:31:30 Doğu Avrupa Standart Saati
 ]]>
      </screen>
  </refsect1>

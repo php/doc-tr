@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 069ce7647cdc4322493d15647354c3a622ea0a9b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3926279f825d418fdd2e7079968507d8b0c62b7d Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
@@ -59,8 +58,11 @@
   <warning>
    <para>
     Bir sihirli yöntemin tanımında yapılan tür bildirimleri bu belgede
-    açıklandığı gibi yapılmalıdır. Aksi takdirde, ölümcül bir hata çıktılanır.
+    açıklandığı gibi yapılmalıdır. Aksi takdirde, ölümcül hata çıktılanır.
     PHP 8.0.0 öncesinde hiçbir uyarı yapılmazdı.
+    Bundan başka, <link linkend="object.construct">__construct()</link> ve
+    <link linkend="object.destruct">__destruct()</link> yöntemleri de
+    bir dönüş türü bildirmemelidir, yoksa ölümcül hata oluşur.
    </para>
   </warning>
 
@@ -405,9 +407,10 @@ bool(true)
     sınıflar için çağrılır.
    </para>
    <para>
-    Bu yöntemin tek değiştirgesi <literal>['</literal><replaceable
-    >özellik</replaceable><literal>' => </literal><replaceable>değer</replaceable><literal>,
-    ...]</literal> biçeminde ihraç edilen özellikleri içeren bir dizidir.
+    Bu yöntemin tek değiştirgesi
+    <literal>['</literal><replaceable>özellik</replaceable><literal>' =>
+    </literal><replaceable>değer</replaceable><literal>, ...]</literal>
+    biçeminde ihraç edilen özellikleri içeren bir dizidir.
    </para>
    <example>
     <title>- <link linkend="object.set-state">__set_state()</link> kullanımı
@@ -460,16 +463,16 @@ object(A)#2 (2) {
    </example>
    <note>
     <simpara>
-     Bir nesne ihraç edilirken,
+     Bir nesne ihraç edilirken, <function>var_export</function> işlevi
      <link linkend="object.set-state">__set_state()</link> nesnenin sınıfı
-     tarafından gerçeklenmiş mi diye <function>var_export</function> bakmaz,
-     dolayısıyla böyle nesnelerin yeniden ithali __set_state() hiç
-     gerçeklenmemiş gibi başarısız olur. Bu kısmen bazı dahili sınıfları da
-     etkiler.
+     tarafından gerçeklenmiş mi diye bakmaz,  dolayısıyla böyle nesnelerin
+     yeniden ithali __set_state() hiç gerçeklenmemiş gibi bir
+     <classname>Error</classname> istisnası yavrulanmasına sebep olur.
+     Bu kısmen bazı dahili sınıfları da etkiler.
     </simpara>
     <simpara>
      Sadece, __set_state() gerçekleyen sınıfın nesnelerinin yeniden ithal
-     edileceğini doğrulamak yazılımcının sorumluluğundadır.
+     edilmesini sağlamak yazılımcının sorumluluğundadır.
     </simpara>
    </note>
   </sect2>

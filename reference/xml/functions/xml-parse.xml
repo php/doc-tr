@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3db49ee0a331a657dd97b539a749f53d3965b593 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-parse">
  <refnamediv>
   <refname>xml_parse</refname>
@@ -11,9 +10,9 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>xml_parse</methodname>
-   <methodparam><type>resource</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>son</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>son</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>xml_parse</function> işlevi bir XML belgeyi çözümler.
@@ -30,9 +29,7 @@
      <term><parameter>çözümleyici</parameter></term>
      <listitem>
       <para>
-       <function>xml_parser_create</function> ve
-       <function>xml_parser_create_ns</function> işlevleri tarafından
-       döndürülen bir XML özkaynağı.
+       XMLParser nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -75,10 +72,53 @@
   </para>
   <note>
    <para>
-    Öğe hataları sadece <parameter>son</parameter> değiştirgesine &true;
-    atandığı veri sonunda raporlanır.
+    Öğe hataları gibi bazı hatalar sadece <parameter>son</parameter>
+    değiştirgesine &true; atandığı takdirde veri sonunda raporlanır.
    </para>
   </note>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &xml.changelog.parser-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="xml_parse.example.chunked">
+   <title>- Büyük bir XML belgenin bölümlerine çözümlenmesi</title>
+   <para>
+     Bu örnekte, tüm belgenin bellekte tutulmasına gerek kalmaması için büyük
+     XML belgelerin bölümler halinde nasıl okunabileceği ve çözümlenebileceği
+     gösterilmiştir. Kısa olması için hata işleme atlanmıştır.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$stream = fopen('large.xml', 'r');
+$parser = xml_parser_create();
+// işleyici burada
+while (($data = fread($stream, 16384))) {
+    xml_parse($parser, $data); // geçerli bölümü çözümle
+}
+xml_parse($parser, '', true); // çözümlemeyi bitir
+xml_parser_free($parser);
+fclose($stream);
+]]>
+   </programlisting>
+  </example>
  </refsect1>
 
 </refentry>

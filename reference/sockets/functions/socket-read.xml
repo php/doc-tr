@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14dc7c47365f2b71f6c907a5ba5bccf42534d5a9 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-read">
  <refnamediv>
   <refname>socket_read</refname>
@@ -10,15 +9,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>socket_read</methodname>
-   <methodparam><type>resource</type><parameter>soket</parameter></methodparam>
+   <type class="union"><type>string</type><type>false</type></type><methodname>socket_read</methodname>
+   <methodparam><type>Socket</type><parameter>soket</parameter></methodparam>
    <methodparam><type>int</type><parameter>uzunluk</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>tür</parameter><initializer>PHP_BINARY_READ</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer>PHP_BINARY_READ</initializer></methodparam>
   </methodsynopsis>
   <para>
    <function>socket_create</function> veya
    <function>socket_accept</function> işleviyle oluşturulmuş
-   <parameter>soket</parameter> özkaynağından veri okur.
+   <parameter>soket</parameter> nesnesinden veri okur.
   </para>
  </refsect1>
 
@@ -31,8 +30,8 @@
      <listitem>
       <para>
        <function>socket_create</function> veya
-       <function>socket_accept</function> ile oluşturulmuş geçerli bir soket
-       özkaynağı.
+       <function>socket_accept</function> ile oluşturulmuş geçerli bir
+       <classname>Socket</classname> nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -41,14 +40,14 @@
      <listitem>
       <para>
        Okunacak azami bayt sayısını belirler. Belirtilmediği takdirde,
-       okumayı bitirmek için <parameter>tür</parameter> değiştirgesine bağlı
-       olarak <constant>&#92;r</constant>, <constant>&#92;n</constant> veya
-       <constant>&#92;0</constant> kullanabilirsiniz (aşağıya bakınız).
+       okumayı bitirmek için <parameter>kip</parameter> değiştirgesine bağlı
+       olarak <constant>\r</constant>, <constant>\n</constant> veya
+       <constant>\0</constant> kullanabilirsiniz (aşağıya bakınız).
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>tür</parameter></term>
+     <term><parameter>kip</parameter></term>
      <listitem>
       <para>
        Belirtilmesi isteğe bağlı olup şu sabitlerden biri olabilir:
@@ -102,14 +101,7 @@
       </row>
      </thead>
      <tbody>
-      <row>
-       <entry>4.1.0</entry>
-       <entry>
-        <parameter>tür</parameter> değiştirgesinin öntanımlı değeri
-        <constant>PHP_NORMAL_READ</constant> iken
-        <constant>PHP_BINARY_READ</constant> oldu.
-       </entry>
-      </row>
+      &sockets.changelog.socket-param;
      </tbody>
     </tgroup>
    </informaltable>

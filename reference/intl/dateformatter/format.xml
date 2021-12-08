@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.format" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::format</refname>
@@ -10,19 +9,20 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
-   <type>string</type><methodname>IntlDateFormatter::format</methodname>
-   <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
-   </methodsynopsis>
+   <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>string</type><type>false</type></type><methodname>IntlDateFormatter::format</methodname>
+   <methodparam><type class="union"><type>IntlCalendar</type><type>DateTimeInterface</type><type>array</type><type>string</type><type>int</type><type>float</type></type><parameter>değer</parameter></methodparam>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>string</type><methodname>datefmt_format</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
-  <methodparam><type>mixed</type><parameter>değer</parameter></methodparam>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>string</type><type>false</type></type><methodname>datefmt_format</methodname>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type class="union"><type>IntlCalendar</type><type>DateTimeInterface</type><type>array</type><type>string</type><type>int</type><type>float</type></type><parameter>değer</parameter></methodparam>
   </methodsynopsis>
   <para>
    Zaman değerini bir dizge olarak biçemler.
@@ -45,9 +45,22 @@
      <term><parameter>değer</parameter></term>
      <listitem>
       <para>
-       Biçemlenecek değer. Tamsayı olarak bir Unix zaman damgası (Unix zaman
-       başlangıcından itibaren saniye sayısı) olabileceği gibi bir
-       <function>localtime</function>  dizisi de olabilir.
+       Biçemlenecek değer. Bu bir <classname>DateTimeInterface</classname>
+       nesnesi, bir <classname>IntlCalendar</classname> nesnesi, Unix zaman
+       başlangıcından itibaren saniye sayısını (muhtemelen kesirli) temsil
+       eden sayısal bir tür veya <function>localtime</function> tarafından
+       çıktılanan biçimde bir dizi olabilir.
+      </para>
+      <para>
+       Değer olarak <classname>DateTime</classname> veya
+       <classname>IntlCalendar</classname> nesnesi iletilirse, zaman dilimi
+       dikkate alınmaz. Nesne, biçimlendiricinin yapılandırılmış zaman dilimi
+       kullanılarak biçimlendirilir. Biçimlendirilecek nesnenin zaman dilimi
+       kullanılmak istenirse,
+       <function>IntlDateFormatter::setTimeZone</function> nesnenin zaman
+       dilimiyle çağrılmalıdır. Veya, bunun yerine
+       <function>IntlDateFormatter::formatObject</function> statik işlevi de
+       kullanılabilir.
      </para>
      </listitem>
     </varlistentry>
@@ -63,6 +76,40 @@
   </para>
  </refsect1>
 
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.1.5</entry>
+       <entry>
+        <parameter>değer</parameter> değiştirgesine genel
+        <classname>DateTimeInterface</classname> nesnelerinin aktarımı artık
+        destekleniyor. Evvelce, sadece uygun <classname>DateTime</classname>
+        nesneleri desteklenirdi.
+       </entry>
+      </row>
+      <row>
+       <entry>PECL 3.0.0</entry>
+       <entry>
+        <parameter>değer</parameter> değiştirgesine artık
+        <classname>IntlCalendar</classname> nesneleri belirtilebiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
    <example>
@@ -70,62 +117,145 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "İlk biçemli çıktı: ".datefmt_format($fmt, 1234567890);
-$fmt = datefmt_create("en-US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+
+$fmt = datefmt_create(
+    "en-US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+ );
 echo "\nİkinci biçemli çıktı: ".datefmt_format($fmt, 1234567890);
 
-$fmt = datefmt_create("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "dd/MM/yyyy");
+$fmt = datefmt_create(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/MM/yyyy"
+);
 echo "\nİlk kalıbın çıktısı: ".datefmt_format( $fmt, 1234567890);
-$fmt = datefmt_create("en-US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "MM/dd/yyyy");
+
+$fmt = datefmt_create(
+    "en-US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "MM/dd/yyyy"
+);
 echo "\nİkinci kalıbın çıktısı: ".datefmt_format($fmt, 1234567890);
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "İlk biçemli çıktı: ".$fmt->format(1234567890);
-$fmt = new IntlDateFormatter("en-US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN);
+
+$fmt = new IntlDateFormatter(
+    "en-US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN
+);
 echo "\nİkinci biçemli çıktı: ".$fmt->format(1234567890);
 
-$fmt = new IntlDateFormatter("tr_TR", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "dd/MM/yyyy");
+$fmt = new IntlDateFormatter(
+    "tr_TR",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "dd/MM/yyyy"
+);
 echo "\nİlk kalıbın çıktısı: ".$fmt->format(1234567890);
-$fmt = new IntlDateFormatter("en-US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'Europe/Istanbul',
-        IntlDateFormatter::GREGORIAN, "MM/dd/yyyy");
+
+$fmt = new IntlDateFormatter(
+    "en-US",
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'Europe/Istanbul',
+    IntlDateFormatter::GREGORIAN,
+    "MM/dd/yyyy"
+);
 echo "\nİkinci kalıbın çıktısı: ".$fmt->format(1234567890);
 ?>
 ]]>
     </programlisting>
    </example>
-     &example.outputs;
-     <screen>
+   &example.outputs;
+   <screen>
 <![CDATA[
-İlk biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Türkiye Saati
-İkinci biçemli çıktı: Saturday, February 14, 2009 1:31:30 AM Turkey Time
+İlk biçemli çıktı: 14 Şubat 2009 Cumartesi 01:31:30 Doğu Avrupa Standart Saati
+İkinci biçemli çıktı: Saturday, February 14, 2009 at 1:31:30 AM Eastern European Standard Time
 İlk kalıbın çıktısı: 14/02/2009
 İkinci kalıbın çıktısı: 02/14/2009
 ]]>
-     </screen>
+   </screen>
+   <example>
+   <title>- <classname>IntlCalendar</classname> nesnesi ile</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$tz = reset(iterator_to_array(IntlTimeZone::createEnumeration('FR')));
+$formatter = IntlDateFormatter::create(
+    'tr_TR',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    $tz,
+    IntlDateFormatter::GREGORIAN
+);
+
+$cal = IntlCalendar::createInstance($tz, '@calendar=islamic-civil');
+$cal->set(IntlCalendar::FIELD_MONTH, 8); //9. ay, Ramazan
+$cal->set(IntlCalendar::FIELD_DAY_OF_MONTH, 1); //İlk gün
+$cal->clear(IntlCalendar::FIELD_HOUR_OF_DAY);
+$cal->clear(IntlCalendar::FIELD_MINUTE);
+$cal->clear(IntlCalendar::FIELD_SECOND);
+$cal->clear(IntlCalendar::FIELD_MILLISECOND);
+
+echo "İslami yılda Ramazan başlangıcı:\n\t",
+        $formatter->format($cal), "\n";
+
+// Biçemleyici zaman dilimi değişirse
+$formatter->setTimeZone('Asia/Tokyo');
+echo "Zaman dilimi değiştiğinde:\n\t",
+        $formatter->format($cal), "\n";
+
+// Örnek hatalı... Gün doğru; saat yanlış.
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+İslami yılda Ramazan başlangıcı:
+        13 Nisan 2021 Salı 15:00:00 Orta Avrupa Yaz Saati
+Zaman dilimi değiştiğinde:
+        13 Nisan 2021 Salı 22:00:00 Japonya Standart Saati
+]]>
+    </screen>
+   </example>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -136,6 +266,7 @@ echo "\nİkinci kalıbın çıktısı: ".$fmt->format(1234567890);
     <member><function>datefmt_parse</function></member>
     <member><function>datefmt_get_error_code</function></member>
     <member><function>datefmt_get_error_message</function></member>
+    <member><function>datefmt_format_object</function></member>
    </simplelist>
   </para>
  </refsect1>

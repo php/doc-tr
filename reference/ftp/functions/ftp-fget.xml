@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 18680fd1681731888c6fb7c530cfdb712f53e954 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4d1c34c9b7a30cfc3a59641122c707a2812cfed7 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.ftp-fget" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>ftp_fget</refname>
@@ -11,7 +10,7 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>ftp_fget</methodname>
-   <methodparam><type>resource</type><parameter>ftp</parameter></methodparam>
+   <methodparam><type>FTP\Connection</type><parameter>ftp</parameter></methodparam>
    <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
    <methodparam><type>string</type><parameter>uzak_dosya</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer><constant>FTP_BINARY</constant></initializer></methodparam>
@@ -28,9 +27,7 @@
     <varlistentry>
      <term><parameter>ftp</parameter></term>
      <listitem>
-      <para>
-       FTP bağlantısının bağlantı tanıtıcısı.
-      </para>
+      &ftp.parameter.ftp;
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -87,6 +84,7 @@
      </row>
     </thead>
     <tbody>
+     &ftp.changelog.ftp-param;
      <row>
       <entry>7.3.0</entry>
       <entry>
@@ -115,20 +113,20 @@ $yerel = 'localfile.txt';
 $dt = fopen($yerel, 'w');
 
 // temel bağlantıyı kuralım
-$conn_id = ftp_connect($ftp_server);
+$ftp = ftp_connect($ftp_server);
 
 // Kullanıcı adı ve parola ile oturum açalım
-$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+$login_result = ftp_login($ftp, $ftp_user_name, $ftp_user_pass);
 
 // $uzak dosyasını indirip $dt tanıtıcısına yazmayı deneyelim
-if (ftp_fget($conn_id, $dt, $uzak, FTP_ASCII, 0)) {
+if (ftp_fget($ftp, $dt, $uzak, FTP_ASCII, 0)) {
  echo "$yerel dosyasına başarıyla yazıldı\n";
 } else {
  echo "$uzak dosyası $yerel dosyasına yazılırken bir hata oluştu\n";
 }
 
 // bağlantıyı ve dosya tanıtıcısını kapatalım
-ftp_close($conn_id);
+ftp_close($ftp);
 fclose($dt);
 ?>
 ]]>

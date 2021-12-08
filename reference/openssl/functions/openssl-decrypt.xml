@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: f658721332c6080e237ed6a1c29517225237b639 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d1e3ea622e5d4f542cd36eca59a9f22aa0142633 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.openssl-decrypt" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>openssl_decrypt</refname>
@@ -10,20 +9,20 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>openssl_decrypt</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>openssl_decrypt</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
    <methodparam><type>string</type><parameter>yöntem</parameter></methodparam>
    <methodparam><type>string</type><parameter>parola</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>ham_girdi</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>iy</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>etiket</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ek_kiml_knt_verisi</parameter><initializer>""</initializer></methodparam>
   </methodsynopsis>
   <para>
    Bir ham veya base64 kodlu bir dizgeyi <parameter>veri</parameter> olarak
    alıp belirtilen <parameter>yöntem</parameter> ve
    <parameter>parola</parameter>'yı kullanarak verinin şifresini çözer.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -42,7 +41,8 @@
      <term><parameter>yöntem</parameter></term>
      <listitem>
       <para>
-       Şifreleme yöntemi.
+       Şifreleme yöntemi. Kullanılabilir şifreleme yöntemleri için
+       <function>openssl_get_cipher_methods</function> işlevine bakılabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -50,17 +50,51 @@
      <term><parameter>parola</parameter></term>
      <listitem>
       <para>
-       Parola.
+       Anahtar.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ham_girdi</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       &true; belirtilirse <parameter>veri</parameter> değiştirgesinde ham
-       bir dizge, &false; belirtilirse base64 kodlu bir dizge bulunduğu
-       varsayılır.
+       <constant>OPENSSL_RAW_DATA</constant>,
+       <constant>OPENSSL_ZERO_PADDING</constant> sabitlerinin bitsel
+       birleşimi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>iy</parameter></term>
+      <listitem>
+       <para>
+       &null; olmayan bir ilklendirme yöneyi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>etiket</parameter></term>
+     <listitem>
+      <para>
+       AEAD şifreleme kipinde kimlik kanıtlama etiketi.
+       Yanlışsa, kimlik kanıtlama başarısız olur ve işlev &false; döndürür.
+      </para>
+      <caution>
+       <simpara>
+        İşlev <parameter>etiket</parameter> uzunluğuna bakmaz.
+        <function>openssl_encrypt</function> çağrıldığında alınan etiket
+        uzunluğu ile eşleşmesini sağlamak işlevi çağıranın sorumluluğundadır.
+        Aksi takdirde, belirtilen etiket sadece uygun etiketin başlangıcıyla
+        eşleşirse şifre çözme başarılı olabilir.
+       </simpara>
+      </caution>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ek_kiml_knt_verisi</parameter></term>
+     <listitem>
+      <para>
+       Ek kimlik kanıtlama verisi.
       </para>
      </listitem>
     </varlistentry>
@@ -83,6 +117,33 @@
    algoritması belirtilmişse <constant>E_WARNING</constant> seviyesinde bir
    hata oluşur.
   </para>
+  <para>
+   <parameter>iy</parameter> değiştirgesi üzerinden boş bir dizge aktarılırsa
+   <constant>E_WARNING</constant> seviyesinde bir hata oluşur.
+   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>etiket</parameter> ve <parameter>ek_kiml_knt_verisi</parameter>
+       değiştirgeleri eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="seealso">

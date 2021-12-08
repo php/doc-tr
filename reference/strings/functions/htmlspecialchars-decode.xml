@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e095023e408c8cb6378ae16bb6870343a3946919 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e4b52745bc8ef288726f8e76e7fdc6277a2f656f Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.htmlspecialchars-decode">
  <refnamediv>
   <refname>htmlspecialchars_decode</refname>
@@ -11,7 +11,7 @@
   <methodsynopsis>
    <type>string</type><methodname>htmlspecialchars_decode</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_COMPAT</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>ENT_QUOTES</constant> | <constant>ENT_SUBSTITUTE</constant> | <constant>ENT_HTML401</constant></initializer></methodparam>
   </methodsynopsis>
 
   <para>
@@ -46,7 +46,8 @@
        Kullanılan belge türünün ve tırnakların nasıl ele alınacağını
        belirten aşağıdaki seçenekler bitsel VEYAlanarak
        <parameter>seçenekler</parameter> değiştirgesinde belirtilebilir.
-       <literal>ENT_COMPAT | ENT_HTML401</literal> öntanımlıdır.
+       <literal>ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401</literal>
+       öntanımlıdır.
        <table>
         <title>Sabit <parameter>seçenekler</parameter>i</title>
         <tgroup cols="2">
@@ -69,6 +70,14 @@
           <row>
            <entry><constant>ENT_NOQUOTES</constant></entry>
            <entry>Ne tek ne de çift tırnaklar dönüştürülür</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_SUBSTITUTE</constant></entry>
+           <entry>
+            Geçersiz kod dizilimi için boş bir dizge döndürülmeyip dizilimin
+            yerine Unicode Değiştirme Karakteri (U+FFFD veya &amp;#FFFD;)
+            yerleştirilir.
+           </entry>
           </row>
           <row>
            <entry><constant>ENT_HTML401</constant></entry>
@@ -109,6 +118,31 @@
   <para>
    Kodlaması çözülmüş dizge.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.1.0</entry>
+      <entry>
+       <parameter>seçenekler</parameter> değiştirgesinin öntanımlı değeri
+       <constant>ENT_COMPAT</constant> iken <constant>ENT_QUOTES</constant> |
+       <constant>ENT_SUBSTITUTE</constant> | <constant>ENT_HTML401</constant>
+        oldu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

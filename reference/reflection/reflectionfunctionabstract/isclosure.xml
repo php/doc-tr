@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: af8e8b6315dc41f15409df879c3fbe0f3f60ed70 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionfunctionabstract.isclosure" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionFunctionAbstract::isClosure</refname>
@@ -14,7 +13,8 @@
    <void />
   </methodsynopsis>
   <para>
-   Bir anonim işlev ise &true; döner.
+   Yansıtılan işlev bir <classname>Closure</classname> (isimsiz) ise &true;
+   döner.
   </para>
 
   &warn.undocumented.func;
@@ -29,17 +29,47 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bir anonim işlev ise &true; yoksa &false; döner
+   İşlev bir <classname>Closure</classname> ise &true; yoksa &false; döner.
+  </para>
+ </refsect1>
+
+<refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionFunctionAbstract::isClosure</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// non-Closure - İşlev isimli
+$function1 = 'str_replace';
+$reflection1 = new ReflectionFunction($function1);
+var_dump($reflection1->isClosure());
+
+// Closure - işlev isimsiz
+$function2 = function () {};
+$reflection2 = new ReflectionFunction($function2);
+var_dump($reflection2->isClosure());
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+bool(false)
+bool(true)
+]]>
+    </screen>
+   </example>
   </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><methodname>ReflectionFunctionAbstract::isinternal</methodname></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>ReflectionFunctionAbstract::isinternal</methodname></member>
+   <member><methodname>ReflectionFunctionAbstract::isGenerator</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

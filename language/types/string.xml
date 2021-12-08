@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 35af8187d0ca49b354a55f613ac5d62f5741f402 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 59244d9ae93cc5059a07c7eadf36b02a1704512c Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.string">
  <title><code>string</code></title>
  <para>
@@ -219,18 +219,195 @@ echo 'Variables do not $expand $either';
 
    <simpara>
     Kapanış betimleyicisinin dizeden sonraki satırın başında olması
-    <emphasis>gerekir</emphasis>. Ayrıca, betimleyici PHP'deki diğer isimlere
-    uygulanan kurallara uygun olmalıdır: Sadece bir harfle veya alt çizgi imi
-    ile başlayabilir; sadece harfler, rakamlar veya alt çizgi imleri
-    içerebilir.
+    gerekmez. Boşluk veya sekme karakterleriyle girintilenebilir. Bu durumda
+    girinti miktarı dizedeki tüm satırlardan ayıklanır. PHP 7.3.0 öncesinde
+    kapanış betimleyicisinin satırın başında olması
+    <emphasis>gerekirdi</emphasis>.
    </simpara>
+
+   <simpara>
+    Ayrıca, betimleyici PHP'deki diğer isimlere uygulanan kurallara uygun
+    olmalıdır: Sadece bir harfle veya alt çizgi imi ile başlayabilir; sadece
+    harfler, rakamlar veya alt çizgi imleri içerebilir.
+   </simpara>
+   <example>
+    <title>- PHP 7.3.0 ve sonrası için Yorumlu Metin örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// girintisiz
+echo <<<END
+      a
+     b
+    c
+\n
+END;
+
+// 4 boşluk girintili
+echo <<<END
+      a
+     b
+    c
+    END;
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+      a
+     b
+    c
+
+  a
+ b
+c
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    Kapanış betimleyicisi, dizedeki tüm satırlardan daha uzun girintilenmişse
+    <classname>ParseError</classname> istisnası yavrulanır:
+   </simpara>
+
+   <example>
+    <title>- Kapanış betimleyicisi, dizedeki tüm satırlardan daha uzun girintilenmemeli</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo <<<END
+  a
+ b
+c
+   END;
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+PHP Parse error:  Invalid body indentation level (expecting an indentation level of at least 3) in example.php on line 4
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    Kapanış betimleyicisi ve metin girintilenirken sekmeler kullanılabilir,
+    ancak sekmeler ve boşluklar birlikte kullanılmamalıdır. Böyle bir durumda
+    <classname>ParseError</classname> istisnası yavrulanır. Girinti için
+    sekmeleri ve boşlukları karıştırmak okunabilirliğe zararlı olduğundan bu
+    kısıtlamaya gidilmiştir.
+   </simpara>
+
+   <example>
+    <title>- Kapanış betimleyicisin girintilenirken sekmeler ve boşluklar
+     birlikte kullanılmamalı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Aşağıdaki kod çalışmaz.
+
+// Metin boşluklarla kapanış betimleyici sekmelerle girintilenmiş
+{
+       echo <<<END
+        a
+               END;
+}
+
+// Metinde boşluk ve sekmelerin karışık kullanımı
+{
+    echo <<<END
+       a
+     END;
+}
+
+// Kapanış betimleyicide boşluk ve sekmelerin karışık kullanımı
+{
+       echo <<<END
+                 a
+                END;
+}
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+PHP Parse error:  Invalid indentation - tabs and spaces cannot be mixed in example.php line 8
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    Kapanış betimleyicisinin noktalı virgül ve satırsonu ile sonlandırılması
+    gerekmez. Örneğin PHP 7.3.0 ve sonrasında aşağıdaki gibi bir kod çalışır:
+   </simpara>
+
+   <example>
+    <title>- Kapanış betimleyicisinden sonra devam eden ifade</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$values = [<<<END
+a
+  b
+    c
+END, 'd e f'];
+var_dump($values);
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+array(2) {
+  [0] =>
+  string(11) "a
+  b
+    c"
+  [1] =>
+  string(5) "d e f"
+}
+]]>
+    </screen>
+   </example>
 
    <warning>
     <simpara>
-     Kapanış betimleyicisinin bulunduğu satırda betimleyicinin hemen ardına
-     konan <emphasis>muhtemel</emphasis> bir noktalı virgül
-     (<literal>;</literal>) dışında hiçbir karakter bulunmaması çok önemli
-     olup buna özellikle dikkat etmelisiniz. Yani,
+     Kapanış betimleyicisi satırın hemen başındaysa başka bir sözcüğün parçası
+     olup olmadığında bakılmaksızın kapanış betimleyici olarak ele alınır ve
+     <classname>ParseError</classname> istisnasına sebep olur.
+    </simpara>
+
+    <example>
+     <title>- Metin içindeki kapanış betimleyici dizesi ParseError yavrulatır</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$values = [<<<END
+a
+b
+END ING
+END, 'd e f'];
+]]>
+     </programlisting>
+     &example.outputs.73;
+    <screen>
+<![CDATA[
+PHP Parse error:  syntax error, unexpected identifier "ING", expecting "]" in example.php on line 6
+]]>
+     </screen>
+    </example>
+
+    <simpara>
+     Bu sorundan kaçınmak için basit bir kurala uymak yeterlidir:
+     <emphasis>Kapanış betimleyicisini metin içinden seçmeyin.</emphasis>.
+    </simpara>
+   </warning>
+
+   <warning>
+    <simpara>
+     PHP 7.3.0 öncesinde, kapanış betimleyicisinin bulunduğu satırda
+     betimleyicinin hemen ardına konan <emphasis>muhtemel</emphasis> bir
+     noktalı virgül (<literal>;</literal>) dışında hiçbir karakter
+     bulunmaması çok önemli olup buna özellikle dikkat etmelisiniz. Yani,
      betimleyici özellikle <emphasis>girintilenmemeli</emphasis>; noktalı
      virgülden önce ve sonra herhangi bir boşluk karakteri bulunmamalıdır.
      Ayrıca, kapanış betimleyicisinden hemen önce gelen karakterin yerel
@@ -257,7 +434,7 @@ echo 'Variables do not $expand $either';
     </para>
 
     <example>
-     <title>- Geçersiz örnek</title>
+     <title>- PHP 7.3.0 öncesi için geçersiz örnek</title>
      <programlisting role="php">
       <!-- This is an INVALID example -->
 <![CDATA[
@@ -273,7 +450,7 @@ bar
      </programlisting>
     </example>
     <example>
-     <title>- Geçerli örnek</title>
+     <title>-  PHP 7.3.0 öncesi için bile geçerli örnek</title>
      <programlisting role="php">
       <!-- This is a VALID example -->
 <![CDATA[
@@ -664,13 +841,13 @@ Changing the character at index -3 to o gives strong.
 
     <simpara>
      Herhangi bir sayıl değer, dizi elemanı veya nesne özelliği bir dize
-     içinde bu sözdizimi ile yer alabilir. İfade basitçe dize dışındaki
-     gösterimiyle yazılıp
-     <literal>{</literal> ve <literal>}</literal> arasına alınır.
+     içinde bu sözdizimi ile yer alabilir. İfade dize dışındaki gösterimiyle
+     yazılıp <literal>{</literal> ve <literal>}</literal> arasına alınır.
      <literal>{</literal> öncelenemeyeceğinden bu sözdizimi sadece
      <literal>$</literal> iminin <literal>{</literal> iminin hemen ardında
-     yer aldığı durumlarda tanınır. <literal>{\$</literal> kullanımı bir
-     sayıl <literal>{$</literal> alınmasıyla sonuçlanır. Bazı örnekler:
+     yer aldığı durumlarda tanınır. <literal>{\$</literal> kullanımı
+     <literal>{$</literal> imlerinin kendilerinin alınmasıyla sonuçlanır.
+     Bazı örnekler:
     </simpara>
 
     <informalexample>
@@ -721,6 +898,11 @@ echo "Adı \$object->getName() yönteminin dönüş değeri olan değişkenin de
 
 // Çalışmaz, çıktısı: This is the return value of getName(): {getName()}
 echo "This is the return value of getName(): {getName()}";
+
+// Çalışmaz, çıktısı: C:\folder\{harika}.txt
+echo "C:\folder\{$şahane}.txt"
+// Çalışır, çıktısı: C:\folder\harika.txt
+echo "C:\\folder\\{$şahane}.txt"
 ?>
 ]]>
      </programlisting>

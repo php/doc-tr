@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="messageformatter.formatmessage">
+<!-- EN-Revision: 9c5aaaab3cd80669dd42311e40d2486c359542af Maintainer: nilgun Status: ready -->
+<refentry xml:id="messageformatter.formatmessage" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>MessageFormatter::formatMessage</refname>
   <refname>msgfmt_format_message</refname>
@@ -11,21 +10,22 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
    <modifier>static</modifier>
-   <type>string</type>
+   <type class="union"><type>string</type><type>false</type></type>
    <methodname>MessageFormatter::formatMessage</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
    <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>string</type>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>string</type><type>false</type></type>
    <methodname>msgfmt_format_message</methodname>
    <methodparam><type>string</type><parameter>yerel</parameter></methodparam>
    <methodparam><type>string</type><parameter>kalıp</parameter></methodparam>
@@ -89,10 +89,10 @@
 <![CDATA[
 <?php
 echo msgfmt_format_message("en_US", "{0,number,integer} monkeys on {1,number,
-     integer} trees make {2,number} monkeys per tree",
+     integer} trees make {2,number} monkeys per tree\n",
         array(4560, 123, 4560/123));
 echo msgfmt_format_message("tr", "{0,number,integer} ağaçta {1,number,
-     integer} maymun, ağaç başına {2,number} maymun eder",
+     integer} maymun, ağaç başına {2,number} maymun eder\n",
         array(123, 4560, 4560/123));
 ]]>
    </programlisting>
@@ -102,12 +102,14 @@ echo msgfmt_format_message("tr", "{0,number,integer} ağaçta {1,number,
    <programlisting role="php">
 <![CDATA[
 <?php
-echo msgfmt_format_message("en_US", "{0,number,integer} monkeys on {1,number,
-     integer} trees make {2,number} monkeys per tree",
-        array(4560, 123, 4560/123));
-echo msgfmt_format_message("tr", "{0,number,integer} ağaçta {1,number,
-     integer} maymun, ağaç başına {2,number} maymun eder",
-        array(123, 4560, 4560/123));
+echo MessageFormatter::formatMessage("en_US", "{0,number,
+    integer} monkeys on {1,number,
+    integer} trees make {2,number} monkeys per tree\n",
+    array(4560, 123, 4560/123));
+echo MessageFormatter::formatMessage("tr", "{0,number,
+    integer} ağaçta {1,number,
+    integer} maymun, ağaç başına {2,number} maymun eder\n",
+    array(123, 4560, 4560/123));
 ?>
 ]]>
    </programlisting>

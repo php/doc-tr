@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14dc7c47365f2b71f6c907a5ba5bccf42534d5a9 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.socket-last-error">
  <refnamediv>
   <refname>socket_last_error</refname>
@@ -11,18 +10,23 @@
   &reftitle.description;
   <methodsynopsis>
    <type>int</type><methodname>socket_last_error</methodname>
-   <methodparam choice="opt"><type>resource</type><parameter>soket</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>Socket</type><type>null</type></type><parameter>soket</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    İşlev <parameter>soket</parameter> değiştirgesi belirtilerek kullanılırsa
-   belirtilen soket üzerinde son oluşan hatanın kodu döndürülür. Bir soket
+   belirtilen soket üzerinde son oluşan hatanın kodu döndürülür.
+   Bir <classname>Socket</classname> nesnesi
    belirtilmezse başarısız olan son işlemle ilgili hata numarası döner.
-   İkincisi, bir hata durumunda bir soket döndürmeyen
-   <function>socket_create</function> ve belli bir soketle doğrudan ilişkili
-   olmayan bir sebeple başarısız olabilen <function>socket_select</function>
-   gibi işlevler için yararlıdır. Elde edilen hata kodunu
-   <function>socket_strerror</function> işlevinde kullanarak hatanın
-   açıklamasına içeren bir dizge almak mümkündür.
+   İşlev, bir hata durumunda bir <classname>Socket</classname> nesnesi
+   döndürmeyen <function>socket_create</function> ve belli bir soketle
+   doğrudan ilişkili olmayan bir sebeple başarısız olabilen
+   <function>socket_select</function> gibi işlevler için de yararlıdır.
+   Elde edilen hata kodunu <function>socket_strerror</function> işlevinde
+   kullanarak hatanın açıklamasına içeren bir dizge almak mümkündür.
+  </para>
+  <para>
+   Hiç hata oluşmamışsa veya hata <function>socket_clear_error</function> ile
+   temizlenmişse, işlev <literal>0</literal> döndürür.
   </para>
  </refsect1>
 
@@ -34,8 +38,8 @@
      <term><parameter>soket</parameter></term>
      <listitem>
       <para>
-       <function>socket_create</function> ile oluşturulmuş geçerli bir soket
-       özkaynağı.
+       <function>socket_create</function> ile oluşturulmuş geçerli bir
+       <classname>Socket</classname> nesnesi .
       </para>
      </listitem>
     </varlistentry>
@@ -48,6 +52,29 @@
   <para>
    Bir soket hata kodu döner.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &sockets.changelog.socket-param;
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>soket</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

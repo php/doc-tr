@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 0edc11c6c46753ef0b81d0060b925b4f58552996 Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.get-debug-type" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>get_debug_type</refname>
+  <refpurpose>Hata ayıklamaya uygun şekilde değişkenin tür adını döndürür</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>get_debug_type</methodname>
+   <methodparam><type>mixed</type><parameter>value</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   PHP değişken değerinin çözümlenmiş adını döndürür. Bu işlev, tür
+   bildirimlerinde kullanılacak olan nesneleri sınıf adlarına, kaynakları
+   kaynak türü adlarına ve sayıl değerleri bilinen adlarına çözümler.
+  </para>
+  <para>
+   Bu işlev, tarihsel nedenlerle mevcut olanlardan ziyade güncel kullanımla
+   daha tutarlı olan tür adları döndürmesi bakımından
+   <function>gettype</function> işlevinden farklıdır.
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>değer</parameter></term>
+     <listitem>
+      <para>
+       Sınanacak değişken değeri.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+     Dönen dizgenin olası değerleri:
+     <informaltable>
+      <tgroup cols="2">
+       <thead>
+        <row>
+         <entry>Tür + Durum</entry>
+         <entry>Dönen Değer</entry>
+         <entry>Bilgi</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>null</entry>
+         <entry>
+          <literal>"null"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Mantıksallar (true veya false)</entry>
+         <entry>
+          <literal>"bool"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Tamsayılar</entry>
+         <entry>
+          <literal>"int"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Kayan noktalılar</entry>
+         <entry>
+          <literal>"float"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Dizgeler</entry>
+         <entry>
+          <literal>"string"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Diziler</entry>
+         <entry>
+          <literal>"array"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Özkaynaklar</entry>
+         <entry>
+          <literal>"resource (özkaynak_adı)"</literal>
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>Özkaynaklar (Kapalı)</entry>
+         <entry>
+          <literal>"resource (closed)"</literal>
+         </entry>
+         <entry>Örnek: fclose ile kapandıktan sonra bir dosya akımı.</entry>
+        </row>
+        <row>
+         <entry>İsimli Sınıfların Nesneleri</entry>
+         <entry>
+          <literal>Foo\Bar</literal> gibi bir isim alanını da içermek üzere
+          sınıfın tam adı.
+         </entry>
+         <entry>-</entry>
+        </row>
+        <row>
+         <entry>İsimsiz Sınıfların Nesneleri</entry>
+         <entry>
+          <literal>"class@anonymous"</literal>
+         </entry>
+         <entry>
+          <literal>$x = new class { ... }</literal> sözdizimi ile oluşturulan
+          isimsiz sınıflar.
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <function>get_debug_type</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo get_debug_type(null) . PHP_EOL;
+echo get_debug_type(true) . PHP_EOL;
+echo get_debug_type(1) . PHP_EOL;
+echo get_debug_type(0.1) . PHP_EOL;
+echo get_debug_type("foo") . PHP_EOL;
+echo get_debug_type([]) . PHP_EOL;
+
+$fp = fopen(__FILE__, 'rb');
+echo get_debug_type($fp) . PHP_EOL;
+
+fclose($fp);
+echo get_debug_type($fp) . PHP_EOL;
+
+echo get_debug_type(new stdClass) . PHP_EOL;
+echo get_debug_type(new class {}) . PHP_EOL;
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+null
+bool
+int
+float
+string
+array
+resource (stream)
+resource (closed)
+stdClass
+class@anonymous
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>gettype</function></member>
+    <member><function>get_class</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

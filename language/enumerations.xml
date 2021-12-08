@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 3ba4c7d287231ab2dbcd3af5c25ae9442a419c0e Maintainer: nilgun Status: ready -->
+ <chapter xml:id="language.enumerations" xmlns="http://docbook.org/ns/docbook">
+  <title>Numaralandırmalar</title>
+  <sect1 xml:id="language.enumerations.overview">
+   <title>Numaralandırmalara giriş</title>
+   <?phpdoc print-version-for="enumerations"?>
+
+   <para>
+    Numaralandırmalar (veya tür adı olarak "enum") tanımlamalarda, olası
+    değer kümelerinden biriyle sınırlanabilen özel bir veri türünü
+    kullanabilmeyi sağlar. Bu, "geçersiz durumların devredışı bırakılmasını"
+    sağladığından, bir etki alanı modeli tanımlarken özellikle yararlı
+    olabilir.
+   </para>
+
+   <para>
+    Numaralandırmalar çoğu yazılım dilinde çok çeşitli farklı özelliklerle
+    yer almaktadır. PHP'de ise, <literal>enum</literal> özel bir nesne
+    çeşididir. Kendisi bir sınıf olup içeriği kılıflar (case) bu sınıfın tekil
+    olarak örneklenmiş nesneleridir. Yani, bir numaralandırma kılıfı (enum
+    case) geçerli bir nesne olup, tür sınamaları dahil, bir nesnenin
+    kullanılabildiği her yerde kullanılabilir.
+   </para>
+
+   <para>
+    Numaralandırmaların en bilinen örneği, &true; ve &false; değerlerini
+    (ikil) numaralı tür olarak içeren yerleşik mantıksal türdür.
+    Numaralandırmalar geliştiricinin kendi keyfi numaralandırmalarını
+    tanımlayabilmesini sağlar.
+   </para>
+  </sect1>
+  <sect1 xml:id="language.enumerations.basics">
+   <title>Temel Numaralandırmalar</title>
+
+   <para>
+    Numaralandırmalar sınıflara benzer ve sınıflar, arayüzler ve niteliklerle
+    aynı isim alanını paylaşır. Ayrıca, aynı yolla otomatik yüklenebilir.  Her
+    numaralandırma, sınırlı ve sabit sayıda olası değer içeren yeni bir tür
+    tanımlar.
+   </para>
+
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+enum Deste
+{
+    case Kupalar;
+    case Karolar;
+    case Sinekler;
+    case Maçalar;
+}
+?>
+]]>
+   </programlisting>
+
+   <para>
+    Bu bildirim <literal>Deste</literal> adında yalnız ve yalnız dört meşru
+    değer içeren yeni bir numaralı tür oluşturur:
+    <literal>Deste::Kupalar</literal>, <literal>Deste::Karolar</literal>,
+    <literal>Deste::Sinekler</literal> ve <literal>Deste::Maçalar</literal>.
+    Değişkenlere bu dört değerden biri atanabilir. Yalnızca numaralandırılmış
+    türde değerlerin aktarılabileceği bir işlevin türü sadece o
+    numaralandırılmış türe karşı tür denetimine tabi tutulabilir.
+   </para>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+function kart_seç(Deste $deste) { ... }
+$val = Deste::Karolar;
+// OK
+kart_seç($val);
+// OK
+kart_seç(Deste::Sinekler);
+// Tür hatası: kart_seç(): Değiştirge #1 ($deste) Deste türünde olmalıyken string türünde
+kart_seç('Sinekler');
+?>
+]]>
+   </programlisting>
+
+   <para>
+    Bir numaralandırma sıfır veya daha fazla sayıda <literal>case</literal>
+    tanımı içerebilir ve azami bir sınır yoktur. <literal>case</literal>
+    içermeyen numaralandırmalar sözdizimsel olarak geçerli olsa da
+    yararsızdır.
+   </para>
+
+   <para>
+    Öntanımlı olarak, bir <literal>case</literal> özünde bir sayıl değerle
+    desteklenmez. Yani, <literal>Deste::Kupalar</literal> sayıl olarak
+    <literal>"0"</literal> değerine eşit değildir. Bunun yerine, her
+    <literal>case</literal> taşıdığı isimde tekil bir nesneyle desteklenir.
+    Şöyle ki:
+   </para>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = Deste::Sinekler;
+$b = Deste::Sinekler;
+$a === $b; // true
+$a instanceof Deste;  // true
+?>
+]]>
+   </programlisting>
+
+   <para>
+    Bu ayrıca, numaralı değerlerin birbirlerinden büyük veya küçük
+    olamayacağı anlamına da gelir (zaten nesneler arasında böyle bir
+    karşılaştıma anlamsızdır).
+   </para>
+
+   <para>
+    Bir değer içermeyen <literal>case</literal> türüne "Desteksiz Kılıf"
+    denir. Sadece desteksiz kılıflar içeren numaralandırmalara "Desteksiz
+    Numaralandırma" denir.
+   </para>
+
+   <para>
+    Tüm desteksiz kılıflar içerildikleri numaralandırmayı gerçekleyen
+    örneklerdir. <literal>enum</literal> türü dahili olarak bir sınıfla
+    ifade edilir.
+   </para>
+
+   <para>
+    Tüm kılıflar birer salt-okunur özellik olup <literal>name</literal> harf
+    büyüklüğüne duyarsız olarak kılıfın kendi ismidir. Bu, hata ayıklama
+    amacıyla bazı durumlarda yararlı olabilir.
+   </para>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+print Deste::Sinekler->name;
+// çıktısı: "Sinekler"
+?>
+]]>
+   </programlisting>
+
+  </sect1>
+
+ <sect1 xml:id="language.enumerations.backed">
+  <title>Destekli Numaralandırmalar</title>
+
+  <para>
+   Öntanımlı olarak numaralı kılıfların sayıl bir karşılığı yoktur. Basitçe
+   tekil nesnelerdir. Bununla birlikte, bir numaralandırılmış kılıfın bir
+   veritabanına veya benzer bir veri deposuna giriş-çıkış yapabilmesini
+   gerektiren çok sayıda durum vardır, dolayısıyla, dahili olarak tanımlanmış
+   yerleşik bir sayıl (ve dolayısıyla dizgeleştirilebilir) eşdeğerin varlığı
+   yararlıdır.
+  </para>
+
+  <para>Bir numaralandırmaya sayıl bir eşdeğer tanımlama sözdizimi:</para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+enum Deste: string
+{
+    case Kupalar = 'Ku';
+    case Karolar = 'Ka';
+    case Sinekler = 'S';
+    case Maçalar = 'M';
+}
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Basitçe bir değerle "desteklenmiş" olduğundan sayıl eşdeğeri olan kılıflara
+   "Destekli Kılıf" denir. Yalnızca destekli kılıflar içeren numaralandırmalara
+   "Destekli Numaralandırma" denir. Destekli bir numaralandırma sadece
+   destekli kılıfları içerir, desteksiz kılıf içermez. Desteksiz bir
+   numaralama ise sadece desteksiz kılıfları içerir, destekli kılıf içermez.
+  </para>
+
+  <para>
+   Destekli bir numaralandırma, <literal>int</literal> veya
+   <literal>string</literal> türünde bir değerle ama daima tek bir türdeki
+   değerlerle desteklenebilir (yani ya hepsi <literal>int</literal>  ya da
+   hepsi <literal>string</literal> türünde olabilir). Bir numaralandırma sayıl
+   bir eşdeğere sahip olarak imlenmişse, tüm kılıflarına açıkça eşsiz birer
+   değer tanımlanmış olmalıdır. Sayıl eşdeğerler otomatik olarak
+   üretilmeyecektir (örneğin, sıralı tamsayılar). Destekli kılıflar diğer
+   kılıflar arasında eşsiz olmalı, aynı sayıl eşdeğere sahip birden fazla
+   kılıf olmamalıdır. Ancak, bir takma ad oluşturmak amacıyla bir sabite
+   atanabilir. Bkz: <link
+   linkend="language.enumerations.constants">Numaralandırma Sabitleri</link>.
+  </para>
+
+  <para>
+   Sayıl eşdeğerler sayılların kendileri olabileceği gibi sayıl ifadeleri de
+   olabilir. Sabitler ve sabit ifadeleri desteklenmez. Yani,
+   <literal>1 + 1</literal> geçerli, fakat <literal>1 + SOME_CONST</literal>
+   geçersizdir.
+  </para>
+
+  <para>
+   Destekli Kılıflar ayrıca salt-okunur özellikler olup,
+   <literal>value</literal> tanımda belirtilen değerdir.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+print Deste::Sinekler->value;
+// Çıktısı: "S"
+?>
+]]>
+  </programlisting>
+
+  <para>
+   <literal>value</literal> özelliğin salt-okunurluğunu zorlamak amacıyla
+   bir değişkene gönderimli atanamaz. Yani, aşağıdaki örnek bir hata üretir:
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+$deste = Deste::Sinekler;
+$ref = &$deste->value;
+// hata: Deste::$value özelliğine gönderim sağlanamıyor
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Destekli numaralandırmalar dahili olarak iki ek yöntem sağlayan
+   <interfacename>BackedEnum</interfacename> arayüzü ile gerçeklenir:
+  </para>
+
+  <simplelist>
+   <member>
+    <literal>from(int|string): self</literal> yöntemi bir sayıl değer alır ve
+    karşılığı olan numaralandırma kılıfını döndürür. Böyle bir kılıf yoksa
+    <classname>ValueError</classname> istisnası oluşur. Girdi olarak sayıl
+    değere güvenildiği ancak karşılığında bir numaralandırma değerinin
+    olmadığı durumda uygulamayı durduracak bir hata gerekiyorsa yararlı
+    olabilir.
+   </member>
+   <member>
+    <literal>tryFrom(int|string): ?self</literal> yöntemi bir sayıl değer alır
+    ve karşılığı olan numaralandırma kılıfını döndürür. Böyle bir kılıf yoksa,
+    yönrem <literal>null</literal> döndürür. Girdi olarak sayıl
+    değere güvenilmediği durumda geliştirici hatayı kendi ele almak isterse
+    veya bir öntanımlama yapmak isterse yararlı olabilir.
+   </member>
+  </simplelist>
+
+  <para>
+   <literal>from()</literal> ve <literal>tryFrom()</literal> yöntemleri
+   standart gevşek/katı kodlama kurallarını izler. Gevşek kodlama kipinde, bir
+   tamsayı veya dizge aktarımı kabul edilebilir ve sistem değeri buna göre
+   zorlar. Bir gerçel sayı da çalışır ve bu da zorlanır. Katı kodlama kipinde,
+   bir dizge kılıf değeri durumunda <literal>from()</literal> yöntemine bir
+   tamsayı (veya gerçel sayı) aktarımı (veya tersi)
+   <classname>TypeError</classname> istisnasına yol açar. Her iki kipte, tüm
+   diğer değiştirge türleri <classname>TypeError</classname> istisnasına yol
+   açar.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+$record = get_stuff_from_database($id);
+print $record['deste'];
+$deste =  Deste::from($record['deste']);
+// Geçersiz veri ValueError yavrulatır: "X" değeri enum "Deste" için geçerli bir sayıl değer değildir
+print $deste->value;
+$deste = Deste::tryFrom('A') ?? Deste::Sinekler;
+// Geçersiz veri null döndürür, yerine Deste::Sinekler kullanılır.
+print $deste->value;
+?>
+]]>
+  </programlisting>
+
+  <para>
+   <literal>from()</literal> veya <literal>tryFrom()</literal> yöntemini
+   destekli bir numaralandırma üzerinde geliştirici kendi tanımlarsa sonuç
+   ölümcül hata olur.
+  </para>
+
+  </sect1>
+
+ <sect1 xml:id="language.enumerations.methods">
+  <title>Numaralandırma Yöntemleri</title>
+
+  <para>
+   Numaralandırmalar (destekli ve desteksiz, her ikiside) yöntemler içerebilir
+   ve arayüzleri gerçekleyebilir. Bir numaralandırma, bir arayüzü
+   gerçekliyorsa bu arayüz için her tür sınaması bu numaralandırmanın tüm
+   sınıflarını kabul edecektir.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+interface Renkli
+{
+    public function renk(): string;
+}
+enum Deste implements Renkli
+{
+    case Kupalar;
+    case Karolar;
+    case Sinekler;
+    case Maçalar;
+    // Arayüzle anlaşmayı sağlar.
+    public function renk(): string
+    {
+        return match($this) {
+            Deste::Kupalar, Deste::Karolar => 'Kırmızı',
+            Deste::Sinekler, Deste::Maçalar => 'Siyah',
+        };
+    }
+    // bir arayüzün parçası değil; ama geçerli.
+    public function kesim(): string
+    {
+        return "Dörtgen";
+    }
+}
+function boya(Renkli $c) { ... }
+boya(Deste::Sinekler);  // çalışır
+print Deste::Karolar->kesim(); //  "Dörtgen"
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Bu örnekte, dört <literal>Deste</literal> örneğinin hepsi iki yönteme
+   sahiptir: <literal>renk()</literal> ve <literal>kesim()</literal>. Kod
+   çağrılır çağrılmaz tür sınamaları yapılır. Bu, diğer nesne örneklerine
+   uygulanandan farklı değildir.
+  </para>
+
+  <para>
+   Destekli numaralamada arayüz bildirimi, desteki tür bildiriminden sonra
+   ele alınır.
+  </para>
+
+  <programlisting role="php">
+   <![CDATA[
+<?php
+interface Renkli
+{
+    public function renk(): string;
+}
+enum Deste: string implements Renkli
+{
+    case Kupalar = 'Ku';
+    case Karolar = 'Ka';
+    case Sinekler = 'S';
+    case Maçalar = 'M';
+    // arayüzle anlaşmayı sağlar
+    public function renk(): string
+    {
+        return match($this) {
+            Deste::Kupalar, Deste::Karolar => 'Kırmızı',
+            Deste::Sinekler, Deste::Maçalar => 'Siyah',
+        };
+    }
+}
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Yöntemin içindeki <literal>$this</literal> değişkeni değer olarak kılıf
+   örneği alır.
+  </para>
+
+  <para>
+   Yöntemler keyfi olarak karmaşık olabilir, ancak uygulamada, farklı
+   durumlara farklı sonuçlar sağlamak için genellikle statik bir değer döner
+   veya <literal>$this</literal> ile
+   <link linkend="control-structures.match">eşleşir</link>.
+  </para>
+
+  <para>
+   Bu durumda, Kırmızı ve Siyah değerleriyle bir RenkliDeste Enum türü
+   tanımlamak ve bunun yerine onu döndürmek daha iyi bir veri modelleme
+   uygulaması olacaktır. Ancak bu, örneği daha da karmaşıklaştıracaktır.
+  </para>
+
+  <para>
+   Yukarıdaki hiyerarşi mantıksal olarak aşağıdaki sınıf yapısına benzer
+   (bu, çalışan asıl kod olmasa da):
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+interface Renkli
+{
+    public function renk(): string;
+}
+final class Deste implements UnitEnum, Renkli
+{
+    public const Kupalar = new self('Kupalar');
+    public const Karolar = new self('Karolar');
+    public const Sinekler = new self('Sinekler');
+    public const Maçalar = new self('Maçalar');
+    private function __construct(public readonly string $name) {}
+    public function renk(): string
+    {
+        return match($this) {
+            Deste::Kupalar, Deste::Karolar => 'Kırmızı',
+            Deste::Sinekler, Deste::Maçalar => 'Siyah',
+        };
+    }
+    public function kesim(): string
+    {
+        return "Dörtgen";
+    }
+    public static function cases(): array
+    {
+        // Geçersiz yöntem
+        // Bir Enum üzerinde cases() yöntemini geliştirici tanımlayamaz.
+        // "Değer listeleme" bölümüne bakınız.
+    }
+}
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Yöntemler public, private veya protected olabilir, ancak uygulamada
+   private ve protected kalıtıma izin verilmediğinden eşdeğerdir.
+  </para>
+
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.static-methods">
+  <title>Statik Numaralandırma Yöntemleri</title>
+
+  <para>
+   Numaralandırmaların statik yöntemleri de olabilir. Statik yöntemlerin
+   numaralandırmalar üzerinde kullanımının birincil amacı kurucu
+   oluşturmaktır. Örnek:
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+enum Boyut
+{
+    case Küçük;
+    case Normal;
+    case Büyük;
+    public static function uzunluğaGöre(int $cm): static
+    {
+        return match(true) {
+            $cm < 50 => static::Küçük,
+            $cm < 100 => static::Normal,
+            default => static::Büyük,
+        };
+    }
+}
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Statik yöntemler public, private veya protected olabilirse de kalıtıma izin
+   verilmediğinden uygulamada private ve protected eşdeğerdir.
+  </para>
+
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.constants">
+  <title>Numaralandırma Sabitleri</title>
+
+  <para>
+   Numaralandırmalar public, private veya protected olabilen sabitler içerebilir.
+  </para>
+
+  <para>Bir enum sabiti, bir kılıfa atıfta bulunabilir:</para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+enum Boyut
+{
+    case Küçük;
+    case Normal;
+    case Büyük;
+    public const Kocaman = self::Büyük;
+}
+?>
+]]>
+  </programlisting>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.traits">
+  <title>Nitelikler</title>
+
+  <para>
+   Numaralandırmalar, sınıflardaki gibi davranan niteliklerden yararlanabilir.
+   Ancak, bir numaralandırma içinde kullanılan niteliklerin özelliklerinin
+   olmamasına dikkat edilmelidir; sadece yöntemler ve statik yöntemler
+   içerebilir. Özellikleri olan bir nitelik ölümcül hata ile sonuçlanır.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+interface Renkli
+{
+    public function renk(): string;
+}
+trait Dörtgen
+{
+    public function kesim(): string {
+        return "Dörtgen";
+    }
+}
+enum Deste implements Renkli
+{
+    use Dörtgen;
+    case Kupalar;
+    case Karolar;
+    case Sinekler;
+    case Maçalar;
+    public function renk(): string
+    {
+        return match($this) {
+            Deste::Kupalar, Deste::Karolar => 'Kırmızı',
+            Deste::Sinekler, Deste::Maçalar => 'Siyah',
+        };
+    }
+}
+?>
+]]>
+  </programlisting>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.expressions">
+  <title>Sabit ifadelerinde numaralandırma değerleri</title>
+
+  <para>
+   Kılıflar enum üzerinde sabitler olarak temsil edildiğinden, çoğu sabit
+   ifadesinde statik değerler olarak kullanılabilir: özellik öntanımlıları,
+   statik değişken öntanımlıları, değiştirge öntanımlıları, küresel ve sınıf
+   sabitlerinin değerleri. Ancak diğer kılıf değerlerinde kullanılamaz, sadece
+   enum sabitleri bir kılıfa atıfta bulunabilir.
+  </para>
+
+  <para>
+   Ancak, sonuç değerinin belirleyici olduğunu veya yöntem çağrılarının yan
+   etkilerden arınmış olduğunu kesinlikle garanti edemediğimiz için,
+   numaralandırmalarda <classname>ArrayAccess</classname> gibi örtük sihirli
+   yöntem çağrılarına statik veya sabit tanımlar içinde izin verilmez. İşlev
+   çağrıları, yöntem çağrıları ve özellik erişimi, sabit ifadeler içinde
+   geçersiz işlemler olarak kalmaya devam eder.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+// Bu tamamen geçerli bir numaralandırma tanımıdır.
+enum Direction implements ArrayAccess
+{
+    case Up;
+    case Down;
+    public function offsetGet($val) { ... }
+    public function offsetExists($val) { ... }
+    public function offsetSet($val) { throw new Exception(); }
+    public function offsetUnset($val) { throw new Exception(); }
+}
+class Foo
+{
+    // Buna izin verilir.
+    const Bar = Direction::Down;
+    // Buna izin verilmez, belirleyici olmayabilir.
+    const Bar = Direction::Up['short'];
+    // Ölümcül Hata: enum üzerinde sabit ifadesi içinde [] kullanılamaz
+}
+// Bu, bir sabit ifadesi olmadığından tamamen geçerlidir.
+$x = Direction::Up['short'];
+?>
+]]>
+  </programlisting>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.object-differences">
+  <title>Nesnelerden farkları</title>
+
+  <para>
+   Numaralandırmalar, sınıflar ve nesnelerde yerleşik bulunabilirse de,
+   nesnelerle ilgili işlevselliğin tamamını kullanamaz. Özellikle,
+   numaralandırmalar durumlu olamaz.
+  </para>
+
+  <simplelist>
+   <member>Kurucular ve yıkıcılar kullanılamaz.</member>
+   <member>Kalıtım desteklenmez. Numaralandırmalar ne genişletebilir ne de
+    genişletilebilir.</member>
+   <member>Statik ve nesne özelliklere izin verilmez.</member>
+   <member>Bir numaralandırmanın kopyalanması, kılıfların tekil örnekler
+    olması gerektiğinden desteklenmez.</member>
+   <member>Aşağıda sıralananlar dışında kalan
+    <link linkend="language.oop5.magic">Sihirli yöntemlere</link> izin
+    verilmez.</member>
+  </simplelist>
+
+  <para>
+   Aşağıdaki nesne işlevselliği kullanılabilir ve diğer nesnelerdeki
+   davranış elde edilir:
+  </para>
+
+  <simplelist>
+   <member>Public, private ve protected yöntemler.</member>
+   <member>Public, private ve protected static yöntemler.</member>
+   <member>Public, private ve protected sabitler.</member>
+   <member>Numaralandırmalar çok sayıda arayüz gerçekleyebilir.</member>
+   <member>
+    Numaralandırmalar ve kılıfların kendilerine ekli
+    <link linkend="language.attributes">öznitelikleri</link> olabilir.
+    <constant>TARGET_CLASS</constant> hedef süzgeci numaralandırmaların
+    kendilerini içerir. <constant>TARGET_CLASS_CONST</constant> hedef süzgeci
+    ise numaralandırma kılıflarını içerir.
+   </member>
+   <member>
+    <link linkend="object.call">__call</link>,
+    <link linkend="object.callstatic">__callStatic</link>,
+    ve <link linkend="object.invoke">__invoke</link> sihirli yöntemleri
+   </member>
+   <member><constant>__CLASS__</constant> ve <constant>__FUNCTION__</constant>
+    sabitleri normal olarak davranır.</member>
+  </simplelist>
+
+  <para>
+   Bir numaralandırma türündeki <literal>::class</literal> sihirli sabiti,
+   tamamen bir nesnedeki gibi isim alanlı tür adı olarak değerlendirilir. Bir
+   kılıf örneğindeki <literal>::class</literal> sihirli sabiti ise, o türün
+   tekil örneği olduğu için numaralandırma olarak değerlendirilir.
+  </para>
+
+  <para>
+   Ayrıca, numaralandırma kılıfları doğrudan <literal>new</literal> ile
+   örneklenemediği gibi yansıtma içinde
+   <methodname>ReflectionClass::newInstanceWithoutConstructor</methodname> ile
+   de örneklenemez.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+$trefl = new Deste();
+// Hata: enum Deste örneklenemez
+$kör = (new ReflectionClass(Deste::class))->KurucusuzYeniÖrnek()
+// Hata: enum Deste örneklenemez
+?>
+]]>
+  </programlisting>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.listing">
+  <title>Değer Listeleme</title>
+
+  <para>
+   Destekli ya da desteksiz, numaralandırmaların her ikisi de
+   <interfacename>UnitEnum</interfacename> adlı dahili bir arayüzü gerçekler.
+   <literal>UnitEnum</literal> arayüzü <literal>cases()</literal> statik
+   yöntemini içerir. <literal>cases()</literal> yöntemi, bildirim sırasında
+   tanımlanmış tüm kılıfları içeren bir dizi döndürür.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+Deste::cases();
+// Şunları üretir: [Deste::Kupalar, Deste::Karolar, Deste::Sinekler, Deste:Maçalar]
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Bir numaralandırmada <literal>cases()</literal> yöntemini kendiniz
+   tanımlarsanız ölümcül bir hata alırsınız.
+  </para>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.serialization">
+  <title>Dizgeleştirme</title>
+
+  <para>
+   Numalandırmaların dizgeleştirmesi nesnelerden farklıdır. Özellikle,
+   kendilerine özgü bir dizgeleştirme kodu olarak numaralandırma kılıfı ismini
+   belirten <literal>"E"</literal> koduna sahiptir. Nesneleştirme sırasında
+   kod bunu mevcut tekil değeri bir değişkene atamakta kullanır. Sonuçta
+   aşağıdaki gibi bir durumun gerçeklenmesi sağlanır:
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+Deste::Kupalar === unserialize(serialize(Deste::Kupalar));
+print serialize(Deste::Kupalar);
+// E:14:"Deste::Kupalar";
+?>
+]]>
+  </programlisting>
+
+  <para>
+   Nesneleştirme sırasında bir numaralandırma ve kılıfın eşleşeceği
+   dizgeleştirilmiş bir değer yoksa bir uyarı çıktılayıp
+   <literal>false</literal> döndürülür.
+  </para>
+
+  <para>
+   Desteksiz bir numaralandırmayı JSON'a dizgeleştirme bir hataya yol açar.
+   Destekli bir numaralandırmayı JSON'a dizgeleştirme ise uygun türdeki sayıl
+   değeri ile gösterilir. Her iki davranış
+   <classname>JsonSerializable</classname> gerçeklenerek geçersiz kılınabilir.
+  </para>
+
+  <para>
+   <function>print_r</function> için, numaralandırma kılıfı çıktısı,
+   karışıklığı azaltmak için nesnelerdekinden oldukça farklıdır.
+  </para>
+
+  <programlisting role="php">
+<![CDATA[
+<?php
+enum Foo {
+    case Bar;
+}
+enum Baz: int {
+    case Beep = 5;
+}
+print_r(Foo::Bar);
+print_r(Baz::Beep);
+/* Çıktısı:
+Foo Enum (
+    [name] => Bar
+)
+Baz Enum:int {
+    [name] => Beep
+    [value] => 5
+}
+*/
+?>
+]]>
+  </programlisting>
+ </sect1>
+
+ <sect1 xml:id="language.enumerations.examples">
+  &reftitle.examples;
+
+  <para>
+   <example>
+    <title>- Basit sınırlı değerler</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+enum Sırala
+{
+    case ART;
+    case AZAL;
+}
+function sorgu($alanlar, $süzgeç, Sırala $sırala = Sırala::ART) { ... }
+?>
+]]>
+    </programlisting>
+    <para>
+     <literal>sorgu()</literal> işlevi, $sırala'nın Sırala::ART veya
+     Sırala::AZAL olduğunun garanti edildiği bilgisiyle artık güvenli bir
+     şekilde ilerleyebilir. Başka herhangi bir değer
+     <classname>TypeError</classname> ile sonuçlanırdı, bu nedenle daha fazla
+     hata denetimi veya sınaması yapmak gerekmez.
+    </para>
+   </example>
+  </para>
+
+  <para>
+
+   <example>
+    <title>- Daha ileri özel değerler</title>
+
+    <programlisting role="php">
+<![CDATA[
+<?php
+enum UserStatus: string
+{
+    case Pending = 'B';
+    case Active = 'E';
+    case Suspended = 'A';
+    case CanceledByUser = 'V';
+    public function yafta(): string
+    {
+        return match($this) {
+            static::Pending => 'Beklemede',
+            static::Active => 'Etkin',
+            static::Suspended => 'Askıda',
+            static::CanceledByUser => 'Kullanıcı Vazgeçti',
+        };
+    }
+}
+?>
+]]>
+    </programlisting>
+
+    <para>
+     Bu örnekte kullanıcının durumu, özellikle şu durumlardan biri olabilir:
+     <literal>UserStatus::Pending</literal>,
+     <literal>UserStatus::Active</literal>,
+     <literal>UserStatus::Suspended</literal> veya
+     <literal>UserStatus::CanceledByUser</literal>.
+     <literal>UserStatus</literal> türünde değiştirge içeren bir işlev sadece
+     bu dört değerden birini kabul edebilir.
+    </para>
+
+    <para>
+     Dört değer için, insan okuyabilir dizge döndüren
+     <literal>yafta()</literal> yöntemi kullanılmıştır. Bu dizge,
+     bir veritabanı alanında veya HTML seçim kutusunda kullanılabilen
+     "makine adı" sayıl eşdeğeri olan dizgeden farklı ve bağımsızdır.
+    </para>
+
+    <programlisting role="php">
+<![CDATA[
+<?php
+foreach (UserStatus::cases() as $case) {
+    printf('<option value="%s">%s</option>\n', $case->value, $case->yafta());
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+ </sect1>
+
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

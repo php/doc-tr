@@ -195,6 +195,9 @@ aşağıdaki komutu verin ve `revcheck.html` dosyasını tarayıcınız ile aç�
 ```bash
 php doc-base/scripts/revcheck.php tr > revcheck.html
 ```
+Veya http://doc.php.net/revcheck.php?p=filesummary&lang=tr adresine bakın
+(4 saatte bir güncellenmektedir).
+
 
 ### Sözlük
 

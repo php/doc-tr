@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 8a7c2e03689cc5edf0dfb6710c9d3fe0b450849f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3ef3e56c80f7ae6b6a7291b7eb57dc6250b50801 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.count" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>count</refname>
-  <refpurpose>Bir dizideki eleman sayısını veya bir nesnedeki şeylerin sayısını
-  döndürür</refpurpose>
+  <refpurpose>Bir dizideki veya bir <interfacename>Countable</interfacename> nesnesindeki eleman sayısını döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -15,20 +14,10 @@
    <methodparam choice="opt"><type>int</type><parameter>kip</parameter><initializer><constant>COUNT_NORMAL</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
-   Bir dizideki eleman sayısını veya bir nesnedeki şeylerin sayısını döndürür.
-  </para>
-  <para>
-   Nesneler için, eğer <link linkend="ref.spl">SPL</link> kuruluysa
-   <classname>Countable</classname> tarafından gerçeklenen
-   <methodname>Countable::count</methodname> yöntemini sonucu almak için
-   kullanabilirsiniz. Nesne arayüzü sadece bir yönteme,
-   <function>count</function> işlevinden dönen değeri döndüren
-   <methodname>Countable::count</methodname> yöntemine sahiptir.
-  </para>
-  <para>
-   PHP'de kullanılan dizilerin nasıl gerçeklendiği ile ilgili daha ayrıntılı
-   bilgi edinmek için <link linkend="language.types.array">array</link>
-   sayfasına bakınız.
+   Bir dizi belirtilirse dizideki eleman sayısını döndürür.
+   <interfacename>Countable</interfacename> arayüzünü gerçekleyen bir nesne
+   belirtilirse <methodname>Countable::count</methodname> yönteminin dönüş
+   değerini döndürür.
   </para>
  </refsect1>
 
@@ -40,7 +29,7 @@
      <term><parameter>girdi</parameter></term>
      <listitem>
       <para>
-       Dizi veya <classname>Countable</classname> nesnesi.
+       Dizi veya <interfacename>Countable</interfacename> nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -73,10 +62,10 @@
   &reftitle.returnvalues;
   <para>
    <parameter>girdi</parameter>'deki eleman sayısını döndürür.
-   <parameter>girdi</parameter> bir dizi veya <classname>Countable</classname>
-   arayüzü ile gerçeklenmiş bir nesne değilse <literal>1</literal> döner. Tek
-   istisnası <parameter>girdi</parameter>'nin &null; olması durumu olup böyle
-   bir durumda <literal>0</literal> döner.
+   PHP 8.0.0 öncesinde <parameter>girdi</parameter> bir dizi veya
+   <interfacename>Countable</interfacename> arayüzü ile gerçeklenmiş bir nesne
+   değilse <literal>1</literal> dönerdi, <parameter>girdi</parameter>'nin
+   &null; olması durumunda ise <literal>0</literal> dönerdi.
   </para>
  </refsect1>
 
@@ -114,7 +103,7 @@
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   <example>
+   <example xml:id="count.example.basic">
     <title>- <function>count</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
@@ -139,7 +128,7 @@ int(3)
    </example>
   </para>
   <para>
-   <example>
+   <example xml:id="count.example.badexample">
     <title>- <function>count</function> geçersiz Countable|array örneği (kötü örnek - yapmaktan sakının)</title>
     <programlisting role="php">
 <![CDATA[
@@ -186,7 +175,7 @@ Fatal error: Uncaught TypeError: count(): Argument #1 ($var) must be of type Cou
    </example>
   </para>
   <para>
-   <example>
+   <example xml:id="count.example.recursive">
     <title>- Ardışık <function>count</function> örneği</title>
     <programlisting role="php">
 <![CDATA[
@@ -195,29 +184,66 @@ $food = array('fruits' => array('orange', 'banana', 'apple'),
               'veggie' => array('carrot', 'collard', 'pea'));
 
 // ardışık sayım
-echo count($food, COUNT_RECURSIVE); // 8
+var_dump(count($food, COUNT_RECURSIVE));
 
 // normal sayım
-echo count($food); // 2
+var_dump(count($food));
 
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+int(8)
+int(2)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example xml:id="count.example.countable">
+    <title>- <interfacename>Countable</interfacename> nesnesi</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class CountOfMethods implements Countable
+{
+    private function someMethod()
+    {
+    }
+
+    public function count(): int
+    {
+        return count(get_class_methods($this));
+    }
+}
+
+$obj = new CountOfMethods();
+var_dump(count($obj));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+int(2)
+]]>
+    </screen>
    </example>
   </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>empty</function></member>
-    <member><function>is_array</function></member>
-    <member><function>is_countable</function></member>
-    <member><function>isset</function></member>
-    <member><function>strlen</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>is_array</function></member>
+   <member><function>isset</function></member>
+   <member><function>empty</function></member>
+   <member><function>strlen</function></member>
+   <member><function>is_countable</function></member>
+   <member><link linkend="language.types.array">Diziler</link></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

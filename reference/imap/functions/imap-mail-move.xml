@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 91a4618df8c82d4e84bbb8a9ed430b840cd7da65 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.imap-mail-move" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>imap_mail_move</refname>
@@ -10,21 +9,24 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>imap_mail_move</methodname>
-   <methodparam><type>resource</type><parameter>imap_akımı</parameter></methodparam>
+   <methodparam><type>IMAP\Connection</type><parameter>imap</parameter></methodparam>
    <methodparam><type>string</type><parameter>iletiler</parameter></methodparam>
    <methodparam><type>string</type><parameter>pk</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>iletiler</parameter> değiştirgesinde belirtilen posta iletileri
-   belirtilen posta kutusuna (<parameter>pk</parameter>) taşınır.
+   belirtilen posta kutusuna (<parameter>pk</parameter>) taşınır.  Aslında,
+   iletiler posta kutusuna <emphasis>kopyalandıktan sonra</emphasis> özgün
+   iletiler silinmek üzere işaretlenir. Bu, posta kutusundaki iletilere yeni
+   kullanıcı kimliklerin atanacağı anlamına gelir.
   </para>
  </refsect1>
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
-    &imap.imap-stream.description;
+    &imap.imap-parameter.imap;
     <varlistentry>
      <term><parameter>iletiler</parameter></term>
      <listitem>
@@ -42,6 +44,7 @@
        Posta kutusu ismi; daha fazla bilgi için
        <function>imap_open</function> işlevine bakınız.
       </para>
+      &imap.mailboxname.insecure;
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -63,12 +66,42 @@
    </variablelist>
   </para>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    &return.success;
   </para>
  </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &imap.changelog.imap-param;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    <function>imap_mail_move</function> özgün postayı bir silme bayrağıyla
+    işaretler, postayı gerçekten silmek için <function>imap_expunge</function>
+    işlevi çağrılmalıdır.
+   </para>
+  </note>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

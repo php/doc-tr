@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce46b05403346a4b21937db0b923173431104145 Maintainer: nilgun Status: ready -->
 <refentry xml:id="intldateformatter.geterrorcode" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>IntlDateFormatter::getErrorCode</refname>
@@ -10,18 +9,19 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-   <methodsynopsis>
+   <methodsynopsis role="oop">
+   <modifier>public</modifier>
    <type>int</type><methodname>IntlDateFormatter::getErrorCode</methodname>
-      <void />
-   </methodsynopsis>
+   <void/>
+  </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
+  <methodsynopsis role="procedural">
    <type>int</type><methodname>datefmt_get_error_code</methodname>
-  <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
+   <methodparam><type>IntlDateFormatter</type><parameter>biçemleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
    Son işlemin hata kodunu döndürür.
@@ -60,29 +60,44 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = datefmt_create("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = datefmt_create(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 $str = datefmt_format($fmt);
-if(!$str) {
-    echo "HATA: ".datefmt_get_error_message($fmt) . " (" .
-      datefmt_get_error_code($fmt) . ")\n";
+if (!$str) {
+    printf(
+        "HATA: %s (%d)\n",
+        datefmt_get_error_message($fmt),
+        datefmt_get_error_code($fmt)
+    );
 }
 ?>
 ]]>
     </programlisting>
    </example>
    <example>
-    <title>- Nesne yönelimli kullanım örneği</title>
+    <title>- &style.oop; örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new IntlDateFormatter("en_US", IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL, 'America/Los_Angeles',
-        IntlDateFormatter::GREGORIAN  );
+$fmt = new IntlDateFormatter(
+    'en_US',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::FULL,
+    'America/Los_Angeles',
+    IntlDateFormatter::GREGORIAN
+);
 $str = $fmt->format();
-if(!$str) {
-    echo "HATA: ".$fmt->getErrorMessage() . " (" .$fmt->getErrorCode() .")\n";
+if (!$str) {
+    printf(
+        "HATA: %s (%d)\n",
+        $fmt->getErrorMessage(),
+        $fmt->getErrorCode()
+    );
 }
 ?>
 ]]>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: haluk Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-pathcurvetoquadraticbezierabsolute">
+<!-- EN-Revision: 0f49e97eebd971ba0468bc1b7c6265fd457f60c8 Maintainer: haluk Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.pathcurvetoquadraticbezierabsolute">
  <refnamediv>
   <refname>ImagickDraw::pathCurveToQuadraticBezierAbsolute</refname>
   <refpurpose>İkinci dereceden bir Bezier eğrisi çizer</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::pathCurveToQuadraticBezierAbsolute</methodname>
    <methodparam><type>float</type><parameter>x1</parameter></methodparam>
    <methodparam><type>float</type><parameter>y1</parameter></methodparam>
@@ -70,6 +70,72 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>-       <methodname>ImagickDraw::pathCurveToQuadraticBezierAbsolute</methodname>
+      örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function pathCurveToQuadraticBezierAbsolute($strokeColor, $fillColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeOpacity(1);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+
+    $draw->setStrokeWidth(2);
+    $draw->setFontSize(72);
+
+    $draw->pathStart();
+    $draw->pathMoveToAbsolute(50,250);
+
+    // Bu, başlangıç noktası olarak geçerli konumu olan ikinci dereceden
+    // bir bezier eğrisini belirtir, denetim noktası ilk iki değiştirge
+    // ve bitiş noktası son iki değiştirgedir.
+    $draw->pathCurveToQuadraticBezierAbsolute(
+        150,50,
+        250,250
+    );
+
+    // Bu, başlangıç noktası olarak geçerli konumla ikinci dereceden bir
+    // bezier eğrisini belirtir, denetim noktası önceki eğrilerin denetim
+    // noktasından yansıtılır ve bitiş noktası x, y değerleri ile tanımlanır.
+    $draw->pathCurveToQuadraticBezierSmoothAbsolute(
+        450,250
+    );
+
+    // Bu, başlangıç noktası olarak geçerli konumun bulunduğu ikinci dereceden
+    // bir bezier eğrisini belirtir, denetim noktası önceki eğrilerin denetim
+    // noktasından yansıtılır ve bitiş noktası, x, y değerleriyle geçerli
+    // konumdan göreli olarak tanımlanır.
+    $draw->pathCurveToQuadraticBezierSmoothRelative(
+        200,-100
+    );
+
+    $draw->pathFinish();
+
+    $imagick = new \Imagick();
+    $imagick->newImage(700, 500, $backgroundColor);
+    $imagick->setImageFormat("png");
+
+    $imagick->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $imagick->getImageBlob();
+
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

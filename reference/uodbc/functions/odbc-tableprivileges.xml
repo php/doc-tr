@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 902c2b77f827e8d0ecccf4f62fb90065d2f6ef79 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.odbc-tableprivileges" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>odbc_tableprivileges</refname>
@@ -10,11 +9,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>odbc_tableprivileges</methodname>
-   <methodparam><type>resource</type><parameter>bağlantı_kimliği</parameter></methodparam>
-   <methodparam><type>string</type><parameter>niteleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>sahibi</parameter></methodparam>
-   <methodparam><type>string</type><parameter>isim</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_tableprivileges</methodname>
+   <methodparam><type>resource</type><parameter>odbc</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>katalog</parameter></methodparam>
+   <methodparam><type>string</type><parameter>şema</parameter></methodparam>
+   <methodparam><type>string</type><parameter>tablo</parameter></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen aralıktaki tabloların izinlerini isimlerine göre listeler.
@@ -26,29 +25,29 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>bağlantı_kimliği</parameter></term>
+     <term><parameter>odbc</parameter></term>
      <listitem>
       &odbc.connection.id;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>niteleyici</parameter></term>
+     <term><parameter>katalog</parameter></term>
      <listitem>
       <para>
-       Niteleyici.
+      &odbc.parameter.catalog;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sahibi</parameter></term>
+     <term><parameter>şema</parameter></term>
      <listitem>
       <para>
-       Sahibi. &odbc.parameter.search;
+       &odbc.parameter.schema; &odbc.parameter.search;
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>isim</parameter></term>
+     <term><parameter>tablo</parameter></term>
      <listitem>
       <para>
        İsim. &odbc.parameter.search;
@@ -68,19 +67,64 @@
   <para>
    Sonuç kümesi şu sütunlardan oluşur:
    <itemizedlist>
-    <listitem><simpara>TABLE_QUALIFIER</simpara></listitem>
-    <listitem><simpara>TABLE_OWNER</simpara></listitem>
-    <listitem><simpara>TABLE_NAME</simpara></listitem>
-    <listitem><simpara>GRANTOR</simpara></listitem>
-    <listitem><simpara>GRANTEE</simpara></listitem>
-    <listitem><simpara>PRIVILEGE</simpara></listitem>
-    <listitem><simpara>IS_GRANTABLE</simpara></listitem>
+    <listitem><simpara><literal>TABLE_CAT</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_SCHEM</literal></simpara></listitem>
+    <listitem><simpara><literal>TABLE_NAME</literal></simpara></listitem>
+    <listitem><simpara><literal>GRANTOR</literal></simpara></listitem>
+    <listitem><simpara><literal>GRANTEE</literal></simpara></listitem>
+    <listitem><simpara><literal>PRIVILEGE</literal></simpara></listitem>
+    <listitem><simpara><literal>IS_GRANTABLE</literal></simpara></listitem>
    </itemizedlist>
+   &odbc.result.driver-specific;
   </para>
   <simpara>
-   Sonuç kümesi TABLE_QUALIFIER, TABLE_OWNER ve TABLE_NAME
-   sütunlarına göre sıralanır.
+   Sonuç kümesi <literal>TABLE_CAT</literal>, <literal>TABLE_SCHEM</literal>,
+   <literal>TABLE_NAME</literal>, <literal>PRIVILEGE</literal> ve
+   <literal>GRANTEE</literal> sütunlarına göre sıralanır.
   </simpara>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example xml:id="odbc-tableprivileges.example.basic">
+   <title>Tablo ayrıcalıkları listesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$conn = odbc_connect($dsn, $user, $pass);
+$privileges = odbc_tableprivileges($conn, 'SalesOrders', 'dbo', 'Orders');
+while (($row = odbc_fetch_array($privileges))) {
+    print_r($row);
+    break;
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+Array
+(
+    [TABLE_CAT] => SalesOrders
+    [TABLE_SCHEM] => dbo
+    [TABLE_NAME] => Orders
+    [GRANTOR] => dbo
+    [GRANTEE] => dbo
+    [PRIVILEGE] => DELETE
+    [IS_GRANTABLE] => YES
+)
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>odbc_tables</function></member>
+   </simplelist>
+  </para>
  </refsect1>
 
 </refentry>

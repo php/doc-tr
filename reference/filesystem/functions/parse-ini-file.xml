@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f9c4a68ef4f89e51e6d9b905ad3ddb6492386dd3 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: f8b0bb410016270b696b28d3d416672dd2f7e66b Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.parse-ini-file">
  <refnamediv>
   <refname>parse_ini_file</refname>
@@ -230,12 +230,13 @@ echo '(yüklenen) magic_quotes_gpc = ' .
   </para>
   <para>
    <example>
-    <title>ara değerler</title>
+    <title>Ara Değerler</title>
     <para>
-     Sabitleri değerlendirmeye ek olarak, belirli karakterlerin bir ini
-     değerinde özel anlamları vardır. Buna ek olarak, ortam değişkenleri ve
-     önceden tanımlanmış değerler <code>${}</code>sözdizimi kullanılaraqk
-     okunabilir.
+     Sabitleri değerlendirmeye ek olarak, belirli karakterlerin ini
+     değerlerinde özel anlamları vardır. Buna ek olarak, ortam değişkenleri ve
+     önceden tanımlanmış yapılandırma seçenekleri
+     (bkz: <function>get_cfg_var</function>) <code>${}</code>sözdizimi
+     kullanılarak okunabilir.
     </para>
     <programlisting>
 <![CDATA[
@@ -254,24 +255,73 @@ negative_two = ~1
 ; gruplama için () kullanılır
 seven = (8|7)&(6|5)
 
-; bir değeri öncelemek için \ kullanılır.
-satırsonu_mu = "\\n" ; dize içinde "\n" olarak sonuçlanır,
-; satırsonu karakteri olarak değil.
-tırnaklı = "She said \"Exactly my point\"." ; İçinde tırnak imleri bulunan
-; bir dize elde edilir.
-
 path = ${PATH}
 also_five = ${five}
 
 ]]>
     </programlisting>
-    &example.outputs.similar;
-    <screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>Öncelleme Karakterleri</title>
+    <para>
+     Bazı karakterlerin çift tırnaklı dizgelerde özel anlamları olduğundan
+     önlerine tersbölü çizgisi konarak öncelenmeleri gerekir. Hepsinden önce,
+     dizgenin sınırlarını belirleyen  çift tırnak <code>"</code> ve
+     tersbölünün <code>\</code> kendisi (özel karakterlerden birini
+     önceliyorsa) bu özel karakterlerdendir:
+    </para>
+    <programlisting>
 <![CDATA[
-(parsed) magic_quotes_gpc = Yes
-(loaded) magic_quotes_gpc = Yes
+tırnaklı = "She said \"Exactly my point\"."
+; İçinde tırnak imleri bulunan; bir dize elde edilir.
+
+ipucu = "Çift tırnağı öncelemek için \\\" kullan"
+; Sonuç: Çift tırnağı öncelemek için \" kullan
 ]]>
-    </screen>
+    </programlisting>
+    <para>
+     Windows benzeri dosya yollarında bunun bir istisnası vardır:
+     Tırnaklı dizgeyi bir satırsonu izliyorsa sondaki ters bölüyü
+     öncelememek mümkündür:
+    </para>
+    <programlisting>
+<![CDATA[
+save_path = "C:\Temp\"
+]]>
+    </programlisting>
+    <para>
+     Çok satırlı bir değerde ardından satır sonu gelen bir çift tırnağın
+     öncelenmesi gerekiyorsa, değer birleştirmeyi aşağıdaki şekilde kullanmak
+     mümkündür (bir çift tırnaklı dizenin hemen ardından bir diğeri gelir):
+    </para>
+    <programlisting>
+<![CDATA[
+long_text = "Lorem \"ipsum\"""
+ dolor" ; Sonuç: Lorem "ipsum"\n dolor
+]]>
+    </programlisting>
+    <para>
+     Özel anlamı olan karakterlerden bir diğeri <code>$</code> dolar imidir.
+     Ardından açan kaşlı ayraç geliyorsa dolar iminin öncelenmesi gerekir:
+    </para>
+    <programlisting>
+<![CDATA[
+code = "\${test}"
+]]>
+    </programlisting>
+    <para>
+     Karakter önceleme <constant>INI_SCANNER_RAW</constant> kipinde
+     desteklenmez (bu kipte tüm karakterler "oldukları gibi" işlenir).
+    </para>
+    <para>
+     İni çözümleyicisinin standart öncelemleri (<code>\n</code>,
+     <code>\t</code> ve benzerlerini) desteklemediğini dikkate almak gerekir.
+     Gerekirse, <function>parse_ini_file</function> işlevinin sonucunu
+     <function>stripcslashes</function> işleviyle yeniden işlemden geçirmek
+     gerekebilir.
+    </para>
    </example>
   </para>
  </refsect1>

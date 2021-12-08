@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: b71e8b802f19ebed1067898d628e8a03b0550a11 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fcddfb2551140fba9a14a4c44dc9fa60004440c8 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionfunction.invokeargs" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionFunction::invokeArgs</refname>
@@ -14,7 +13,7 @@
    <methodparam><type>array</type><parameter>değiştirgeler</parameter></methodparam>
   </methodsynopsis>
   <para>
-   İşlev değiştirgelerini çağırır.
+   İşlevi değiştirgelerini dizi içinde aktararak çağırır.
   </para>
 
   &warn.undocumented.func;
@@ -29,7 +28,8 @@
      <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
-       Çağrılacak değiştirgeler.
+       <function>call_user_func_array</function> işlevindeki gibi işleve
+       değiştirgeleri dizi olarak aktarılır.
       </para>
      </listitem>
     </varlistentry>
@@ -40,19 +40,95 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-
+   Çağrılan işlevin sonucunu döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- <methodname>ReflectionFunction::invokeArgs</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function title($title, $name)
+{
+    return sprintf("%s. %s\r\n", $title, $name);
+}
+
+$function = new ReflectionFunction('title');
+
+echo $function->invokeArgs(array('Dr', 'Phil'));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Dr. Phil
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Değer döndüren değiştirgeli işlevle <methodname>ReflectionFunction::invokeArgs</methodname> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function get_false_conditions(array $conditions, array &$false_conditions)
+{
+    foreach ($conditions as $condition) {
+        if (!$condition) {
+            $false_conditions[] = $condition;
+        }
+    }
+}
+
+$function_ref     = new ReflectionFunction('get_false_conditions');
+
+$conditions       = array(true, false, -1, 0, 1);
+$false_conditions = array();
+
+$function_ref->invokeArgs(array($conditions, &$false_conditions));
+
+var_dump($false_conditions);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(2) {
+  [0]=>
+  bool(false)
+  [1]=>
+  int(0)
+}
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    &reflection.invoke.reference;
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><methodname>ReflectionFunction::invoke</methodname></member>
-    <member><methodname>ReflectionFunctionAbstract::getNumberOfParameters</methodname></member>
-    <member><link linkend="language.oop5.magic.invoke">__invoke</link></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>ReflectionFunction::invoke</methodname></member>
+   <member><methodname>ReflectionFunctionAbstract::getNumberOfParameters</methodname></member>
+   <member><link linkend="object.invoke">__invoke()</link></member>
+   <member><function>call_user_func_array</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: ae956cd678e63a4c5c47d9aa23f68ac552581a09 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 14e006b4eea529ce9c3df9e550b27fb507aaa44c Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -40,11 +40,13 @@ function foo($arg_1, $arg_2, /* ..., */ $arg_n)
    </para>
    <simpara>
     İşlevlerin çağrılmadan önce tanımlanmaları, aşağıdaki iki örnekte
-    görüldüğü gibi koşullu olarak tanımlandıkları durumlar haricinde gerekmez.
+    görüldüğü gibi koşullu olarak tanımlandıkları durumlar haricinde
+    gerekmez.
    </simpara>
    <para>
     Bir işlev aşağıdaki iki örnekte gösterildiği gibi koşullu olarak
-    tanımlandıysa, bu işlev tanımının işlev çağrılmadan <emphasis>önce</emphasis> yapılması gerekmektedir.
+    tanımlandıysa, bu işlev tanımının işlev çağrılmadan
+    <emphasis>önce</emphasis> yapılması gerekmektedir.
    </para>
    <para>
     <example>
@@ -114,7 +116,7 @@ bar();
    </para>
    <para>
     PHP'de tüm işlevler ve sınıflar betik genelinde geçerlidir - bir işlevin
-    içinden bile tanımlanmış olsalar işlevin dışından çağrılabilirler.
+    içinden tanımlanmış olsalar bile işlevin dışından çağrılabilirler.
    </para>
    <simpara>
     PHP işlevlerin farklı değiştirgeli yeni tanımlarının yapılmasını
@@ -124,7 +126,8 @@ bar();
    <note>
     <simpara>
       İşlev isimleri <literal>A</literal>'dan <literal>Z</literal>'ye kadar
-      ASCII karakterler için büyük-küçük harf duyarsızdır, ancak işlev isimlerini tanımlandıkları halleriyle kullanmak daha iyidir.
+      ASCII karakterler için büyük-küçük harf duyarsızdır, ancak işlev
+      isimlerini tanımlandıkları halleriyle kullanmak daha iyidir.
     </simpara>
    </note>
    <simpara>
@@ -156,9 +159,10 @@ function recursion($a)
     </example>
     <note>
      <simpara>
-     Kendini çağıran işlev ve yöntemler bunu 100-200 kere yaparsa yığıt
-     taşabilir ve çalışan betiğin durdurulmasına sebep olabilir. Özellikle,
-     kendini çağırma sayısı sonsuza giderse bu bir programlama hatası sayılır.
+      Kendini çağıran işlev ve yöntemler bunu 100-200 kere yaparsa yığıt
+      taşabilir ve çalışan betiğin durdurulmasına sebep olabilir. Özellikle,
+      kendini çağırma sayısı sonsuza giderse bu bir programlama hatası
+      sayılır.
      </simpara>
     </note>
    </para>
@@ -170,7 +174,8 @@ function recursion($a)
 
    <simpara>
     Bir işleve veri, virgül ayraçlı ifadelerden oluşan bir değiştirge listesi
-    ile aktarılır. Değitirgeler soldan sağa doğru değerlendirilir.
+    ile aktarılır. İşlev çalıştırılmadan önce değiştirgeler soldan sağa doğru
+    değerlendirilir (<emphasis>hevesli</emphasis> değerlendirme).
    </simpara>
    <para>
     PHP, değiştirgelerin değerleriyle aktarılmalarını (öntanımlı), <link
@@ -189,7 +194,7 @@ function recursion($a)
 <?php
 function dizi_kabul_eder($girdi)
 {
-    echo "$girde[0] + $girdi[1] = ", $girdi[0]+$girdi[1];
+    echo "$girdi[0] + $girdi[1] = ", $girdi[0]+$girdi[1];
 }
 ?>
 ]]>
@@ -225,11 +230,12 @@ function takes_many_args(
    </para>
    <para>
     PHP 8.0.0'dan itibaren, zorunlu değiştirgelerin seçimlik değiştirgelerden
-    sonra aktarımı kullanımdan kaldırılmıştır. Bu sorun genellikle öntanımlı
-    değeri yazmamak suretiyle çözümlenebilir. Bunun tek istisnası &null;
-    öntanımlamasının türü örtük olarak nullable yapan <code>Type $param =
-    null</code> şeklindeki değiştirgelerdir. Bu kullanımda kalmışsa da örtük
-    bir nullable türü kullanılacaksa önerilir.
+    sonra aktarımının kullanımı önerilmemektedir. Bu sorun genellikle
+    öntanımlı değer yazılmamak suretiyle çözümlenebilir. Bunun tek istisnası
+    &null; öntanımlamasının türün örtük olarak null olabilmesini sağlayan
+    <code>Type $param = null</code> şeklindeki değiştirgelerdir. Bu kullanıma
+    hala izin veriliyor olsa da bunun açıkça bildirimde null türünü de
+    içererek yapılması önerilir.
    </para>
    <para>
    <example>
@@ -260,7 +266,7 @@ function bar(?A $a, $b) {}       // Önerilen
     </simpara>
     <para>
       Bir işleve bir değiştirgenin daima gönderimli olarak aktarılmasını
-      istiyorsanız, işlev tanımladığınız yerde o değiştirgenin başına &amp;
+      istiyorsanız, işlev bildiriminde o değiştirgenin başına &amp;
       karakterini koyarak bunu sağlayabilirsiniz:
     </para>
     <para>
@@ -283,8 +289,8 @@ echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
      </example>
     </para>
     <para>
-     Başvuruyla iletilmesi beklenen bir değeri değiştirge olarak iletmek
-     bir hatadır.
+     Gönderimli aktarılması beklenen bir değeri değişkeniyle değil değeriyle
+     aktarmak bir hatadır.
     </para>
    </sect2>
 
@@ -322,8 +328,8 @@ Bir fincan az şekerli kahve yapalım.
      </example>
     </para>
     <para>
-      PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün
-      kullanımına da izin verir, örneğin:
+     PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün
+     kullanımına da izin verir, örneğin:
     </para>
     <para>
      <example>
@@ -345,14 +351,14 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
     </para>
 
     <simpara>
-      Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
-      değil, bir sabit ifadesi olmalıdır.
+     Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
+     değil, bir sabit ifadesi olmalıdır.
     </simpara>
     <para>
-      Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
-      değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer
-      almasına gerektiğine dikkat edin. Aksi takdirde işler yolunda
-      gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
+     Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
+     değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer
+     alması gerektiğine dikkat edin. Aksi takdirde işler yolunda
+     gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
     </para>
     <para>
      <example>
@@ -503,14 +509,18 @@ echo add(...$a);
    <para>
     <literal>...</literal> dizgeciğinden önce normal konumsal değiştirgeler
     belirtilebilir. Bu durumda <literal>...</literal> ile üretilen diziye
-    sadece bir konumsal değiştirge ile eşleşmeyen tokeni izleyen değiştirgeler
-    eklenir.
+    sadece konumsal değiştirgelerle eşleşen sonuncu değiştirgeyi izleyen
+    eşleşmeyen değiştirgeler eklenir.
    </para>
 
    <para>
-   <example>
-      <title>Değişken değiştirgelerinde tür bildirimi</title>
-      <programlisting role="php">
+    <literal>...</literal> dizgeciğinin önüne <link
+    linkend="language.types.declarations">tür bildirimi</link> de
+    eklenebilir. Bu durumda <literal>...</literal> kapsamındaki tüm
+    değiştirgelerin bu tür bildirimi ile eşleşmesi gerekir.
+    <example>
+     <title>Değişken değiştirgelerde tür bildirimi</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 function total_intervals($unit, DateInterval ...$intervals) {
@@ -529,41 +539,41 @@ echo total_intervals('d', $a, $b).' gün';
 echo total_intervals('d', null);
 ?>
 ]]>
-       </programlisting>
-       &example.outputs;
-       <screen>
+     </programlisting>
+     &example.outputs;
+     <screen>
 <![CDATA[
 3 gün
 Catchable fatal error: Argument 2 passed to total_intervals() must be an instance of DateInterval, null given, called in - on line 14 and defined in - on line 2
 ]]>
-       </screen>
-      </example>
-     </para>
+     </screen>
+    </example>
+   </para>
 
-     <para>
-      Son olarak, <literal>...</literal> dizgeciğinin önüne bir
-       <literal>&amp;</literal> ekleyerek değişken değiştirgelerini
-       <link linkend="functions.arguments.by-reference">gönderimli</link>
-       olarak da aktarabilirsiniz.
-     </para>
+   <para>
+    Son olarak, <literal>...</literal> dizgeciğinin önüne bir
+    <literal>&amp;</literal> ekleyerek değişken değiştirgeleri
+    <link linkend="functions.arguments.by-reference">gönderimli</link>
+    olarak da aktarabilirsiniz.
+   </para>
 
-    <sect3 xml:id="functions.variable-arg-list.old">
-     <title>Daha eski PHP sürümlerinde</title>
+  <sect3 xml:id="functions.variable-arg-list.old">
+   <title>Daha eski PHP sürümlerinde</title>
 
-     <para>
-      Bir işlevin değişken sayıda değiştirge içerebilmesi özel bir sözdizimi
-      gerekmez; ancak işlevin değiştirgelerine erişim için
-      <function>func_num_args</function>, <function>func_get_arg</function>
-      ve <function>func_get_args</function> kullanmak gerekir.
-     </para>
+   <para>
+    Bir işlevin değişken sayıda değiştirge içerebilmesi için özel bir
+    sözdizimi gerekmez; ancak işlevin değiştirgelerine erişim için
+    <function>func_num_args</function>, <function>func_get_arg</function>
+    ve <function>func_get_args</function> kullanmak gerekir.
+   </para>
 
-     <para>
-      Eski PHP sürümlerinde yukarıdaki ilk örnek şöyle gerçeklenirdi;
-     </para>
-     <para>
-      <example>
-       <title>Eski PHP sürümlerinde değişken değiştirgelerine erişim</title>
-       <programlisting role="php">
+   <para>
+    Eski PHP sürümlerinde yukarıdaki ilk örnek şöyle gerçeklenirdi;
+   </para>
+   <para>
+    <example>
+     <title>Eski PHP sürümlerinde değişken değiştirgelere erişim</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 function sum() {
@@ -577,40 +587,40 @@ function sum() {
 echo sum(1, 2, 3, 4);
 ?>
 ]]>
-       </programlisting>
-       &example.outputs;
-       <screen>
+      </programlisting>
+      &example.outputs;
+      <screen>
 <![CDATA[
 10
 ]]>
-       </screen>
-      </example>
-     </para>
-    </sect3>
-   </sect2>
-
-   <sect2 xml:id="functions.named-arguments">
-    <title>İsimli değiştirgeler</title>
-
-    <para>
-     PHP 8.0.0, var olan konumsal değitirgelerin bir uzantısı olarak isimli
-     değiştirgeleri tanıttı. İsimli değiştirgeler, değiştirgelerin konuma göre
-     değil değiştirge adına göre işleve iletilmesine izin verir. Bu,
-     değiştirgenin anlamını kendi kendine belgelendirir, değiştirgeleri
-     sıralamadan bağımsız hale getirir ve öntanımlı değerlerin keyfi olarak
-     atlanmasına izin verir.
+      </screen>
+     </example>
     </para>
+   </sect3>
+  </sect2>
 
-    <para>
-     İsimli değiştirgeler, değerin önüne iki nokta üst üste ile değiştirge adı
-     eklenerek iletilir. Ayrılmış anahtar sözcüklerin değiştirge adları olarak
-     kullanılmasına izin verilir. Değiştirge adı bir tanımlayıcı olmalıdır,
-     bir değişkenle belirtilmesine izin verilmez.
-    </para>
-    <para>
-     <example>
-      <title>- İsimli değiştirge sözdizimi</title>
-      <programlisting role="php">
+  <sect2 xml:id="functions.named-arguments">
+   <title>İsimli değiştirgeler</title>
+
+   <para>
+    PHP 8.0.0, var olan konumsal değiştirgelerin bir uzantısı olarak isimli
+    değiştirgeleri tanıttı. İsimli değiştirgeler, değiştirgelerin konuma
+    göre değil değiştirge adına göre işleve iletilmesine izin verir. Bu,
+    değiştirgeyi kendini belgelendiren değiştirge haline, değiştirgeleri de
+    sıralamadan bağımsız hale getirir ve öntanımlı değerlerin keyfi olarak
+    atlanmasına izin verir.
+   </para>
+
+   <para>
+    İsimli değiştirgeler, değerin önüne iki nokta üst üste ile değiştirge
+    adı eklenerek iletilir. Ayrılmış anahtar sözcüklerin değiştirge adları
+    olarak kullanılmasına izin verilir. Değiştirge adı bir tanımlayıcı
+    olmalıdır, bir değişkenle belirtilmesine izin verilmez.
+   </para>
+   <para>
+    <example>
+     <title>- İsimli değiştirge sözdizimi</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 işlevim(değiştirgeAdı: $değer);
@@ -653,10 +663,10 @@ array_fill(value: 50, count: 100, start_index: 0);
     </example>
    </para>
    <para>
-     İsimli değiştirgeler konumsal değiştirgelerle birleştirilebilir. Bu
-     durumda, isimli değiştirgeler konumsal değiştirgelerden sonra gelmelidir.
-     Sıralarına bakılmaksızın, bir işlevin isteğe bağlı değiştirgelerinden
-     yalnızca bazılarını belirtmek de mümkündür.
+    İsimli değiştirgeler konumsal değiştirgelerle birleştirilebilir. Bu
+    durumda, isimli değiştirgeler konumsal değiştirgelerden sonra gelmelidir.
+    Sıralarına bakılmaksızın, bir işlevin isteğe bağlı değiştirgelerinden
+    yalnızca bazılarını belirtmek de mümkündür.
    </para>
    <para>
     <example>
@@ -667,7 +677,7 @@ array_fill(value: 50, count: 100, start_index: 0);
 <?php
 htmlspecialchars($string, double_encode: false);
 // Same as
-htmlspecialchars($string, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8', false);
 ?>
 ]]>
      </programlisting>
@@ -675,11 +685,13 @@ htmlspecialchars($string, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
    </para>
 
    <para>
-    Aynı değiştirgeyi birden fazla kullanmak bir Error istisnasına yol açar.
+    Aynı değiştirgeyi birden fazla kullanmak bir <classname>Error</classname>
+    istisnasına yol açar.
    </para>
    <para>
     <example>
-     <title>- Aynı değiştirgeyi birden fazla kullanırken Error istisnası
+     <title>- Aynı değiştirgeyi birden fazla kullanırken
+      <classname>Error</classname> istisnası
      </title>
      <programlisting role="php">
       <![CDATA[
@@ -688,7 +700,7 @@ function foo($param) { ... }
 foo(param: 1, param: 2);
 // Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
 foo(1, param: 2);
-// $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
+// Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
 ?>
 ]]>
      </programlisting>
@@ -730,8 +742,8 @@ echo square(4);   // çıktısı: '16'.
     </example>
    </para>
    <para>
-    Bir işlev çok sayıda değer döndürebildiği gibi bir dizi döndürerek de aynı
-    sonuç sağlanabilir.
+    Bir işlev çok sayıda değer döndürebildiği gibi bir dizi döndürerek de
+    aynı sonuç sağlanabilir.
    </para>
    <para>
     <example>
@@ -741,10 +753,15 @@ echo square(4);   // çıktısı: '16'.
 <?php
 function small_numbers()
 {
-    return array (0, 1, 2);
+    return (0, 1, 2);
 }
 
-list ($zero, $one, $two) = small_numbers();
+// Burada dizi üyeleri tek tek toplanmaktadır
+[$zero, $one, $two] = small_numbers();
+
+// 7.1.0 öncesinde, bu sadece list() oluşumu ile sağlanabilirdi
+list($zero, $one, $two) = small_numbers();
+
 ?>
 ]]>
       </programlisting>
@@ -775,8 +792,8 @@ $newref =& returns_reference();
     </para>
     <simpara>
      Gönderimler hakkında daha fazla bilgi için <link
-     linkend="language.references">Gönderimlerle İlgili Herşey</link> bölümüne
-     bakınız.
+     linkend="language.references">Gönderimlerle İlgili Herşey</link>
+     bölümüne bakınız.
     </simpara>
   </sect1>
 
@@ -865,7 +882,8 @@ $foo->$funcname();  // Bu $foo->Variable() işlevini çağıracaktır
     </example>
    </para>
    <para>
-    Static türünden yöntemleri çağırırken işlev çağrısı 'static property' işlecinden daha güçlüdür:
+    Static türünden yöntemleri çağırırken işlev çağrısı 'static property'
+    işlecinden daha güçlüdür:
     <example>
      <title>Statik özellikli yöntem çağrısı örneği</title>
      <programlisting role="php">
@@ -926,7 +944,8 @@ $func(); // "bar" basar
       <member><function>is_callable</function></member>
       <member><function>call_user_func</function></member>
       <member><function>function_exists</function></member>
-      <member><link linkend="language.variables.variable">değişken değişkenler </link></member>
+      <member><link linkend="language.variables.variable">değişken
+        değişkenler </link></member>
      </simplelist>
     </para>
    </sect2>
@@ -969,6 +988,17 @@ $func(); // "bar" basar
     bulunmaktadır. Bu önemli (ve sıklıkla algılanması güç) farklılıkların
     bilinmesi, doğru PHP kodunun yazılabilmesi için büyük önem taşımaktadır.
    </para>
+   <note>
+    <simpara>
+     Bir işleve, işlevin kabul etmeyeceği bir değiştirge (örneğin, bir dizge
+     gerekirken bir dizi) belirtilmesi durumunda işlevin döndüreceği değer
+     tanımsızdır (beklenen değer olmayabilir). Böyle bir durumda çoğunlukla
+     &null; döner, fakat bu böyle düzenlenmiş demek değildir ve buna
+     güvenilmemelidir. PHP 8.0.0 itibariyle, böyle bir durumda bir
+     <classname>TypeError</classname> istisnası yavrulanması gerekir.
+    </simpara>
+   </note>
+
    <sect2 role="seealso">
     &reftitle.seealso;
     <para>
@@ -1036,8 +1066,9 @@ $greet('PHP');
     Anonim işlevler değişkenleri üst etki alanından miras alabilirler. Böyle
     değişkenler <literal>use</literal> dil oluşumuna aktarılmalıdır.
     PHP 7.1 itibariyle, bu değişkenler &link.superglobals;,
-    <varname>$this</varname> veya bir değiştirge ile aynı isimdeki değişkenleri
-    içeremez.
+    <varname>$this</varname> veya bir değiştirge ile aynı isimdeki
+    değişkenleri içeremez. İşlevin dönüş türü bildirimi
+    <literal>use</literal> sözcüğünden <emphasis>sonra</emphasis> gelmelidir.
    </simpara>
 
    <example>
@@ -1082,7 +1113,13 @@ $example = function ($arg) use ($message) {
     var_dump($arg . ' ' . $message);
 };
 $example("hello");
-?>
+
+// Dönüş türü bildirimi use sözcüğündan sonra gelir
+$example = function () use ($message): string {
+    return "hello $message";
+};
+var_dump($example());
+>
 ]]>
     </programlisting>
     &example.outputs.similar;
@@ -1095,13 +1132,14 @@ string(5) "hello"
 string(5) "hello"
 string(5) "world"
 string(11) "hello world"
+string(11) "hello world"
 ]]>
     </screen>
    </example>
 
    <para>
-    Etki alanından miras alınan değişkenler listesinin sonunda bir virgül varsa
-    PHP 8.0.0 itibariyle bu virgül yoksayılmaktadır.
+    Etki alanından miras alınan değişkenler listesinin sonunda bir virgül
+    varsa PHP 8.0.0 itibariyle bu virgül yoksayılmaktadır.
    </para>
    <simpara>
     Üst etki alanından
@@ -1430,11 +1468,13 @@ fn($x, ...$rest) => $rest;
     Değişken bağlamını değeriyle kullanmaktan kasıt, dış etki alanındaki
     herhangi bir değerin değiştirilmesinin mümkün olmayacağıdır.
     Değişken bağlamını gönderimiyle kullanmak için
-    <link linkend="functions.anonymous">anonim işlevler</link> kullanılabilir.
+    <link linkend="functions.anonymous">anonim işlevler</link>
+    kullanılabilir.
    </simpara>
    <para>
     <example>
-     <title>- Dış etki alanındaki değerler ok işlevleri kullanılarak değiştirilemez</title>
+     <title>- Dış etki alanındaki değerler ok işlevleri kullanılarak
+      değiştirilemez</title>
      <programlisting role="php">
 <![CDATA[
 <?php

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9e0f03ac354d797d1d16c0fcc1663e5e170f2727 Maintainer: onurozgurozkan Status: ready -->
-<!-- splitted from ./en/functions/array.xml, last change in rev 1.20 -->
+<!-- EN-Revision: 2eb43ad4f41a8c62516abd804721786e50717af6 Maintainer: onurozgurozkan Status: ready -->
 <refentry xml:id="function.call-user-func" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>call_user_func</refname>
@@ -65,6 +63,11 @@ echo $a."\n";
 // yerine bu da kullanılabilir
 call_user_func_array('say', array(&$a));
 echo $a."\n";
+
+// ayrıca, bir değişken işlev de kullanılabilir
+$increment = 'increment';
+$increment($a);
+echo $a."\n";
 ?>
 ]]>
          </programlisting>
@@ -74,6 +77,7 @@ echo $a."\n";
 Warning: Parameter 1 to increment() expected to be a reference, value given in …
 0
 1
+2
 ]]>
          </screen>
         </example>
@@ -133,10 +137,7 @@ class Misal {
     }
 }
 
-// PHP 5.3.0 ve sonrası
 call_user_func(__NAMESPACE__ .'\Misal\dnm');
-
-// PHP 5.3.0 ve sonrası
 call_user_func(array(__NAMESPACE__ .'\Misal', 'dnm'));
 
 ?>
@@ -167,7 +168,7 @@ class Sınıfım {
 $sınıf = "Sınıfım";
 
 call_user_func(array($sınıf, 'selam_ver'));
-call_user_func($sınıf .'::selam_ver'); // PHP 5.2.3 ve sonrası
+call_user_func($sınıf .'::selam_ver');
 
 $nesne = new Sınıfım();
 
@@ -191,7 +192,6 @@ Merhaba!
     <programlisting role="php">
 <![CDATA[
 <?php
-// PHP 5.3.0 ve sonrası
 call_user_func(function($arg) { print "[$arg]\n"; }, 'test');
 ?>
 ]]>
@@ -213,14 +213,13 @@ call_user_func(function($arg) { print "[$arg]\n"; }, 'test');
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>call_user_func_array</function></member>
-    <member><function>is_callable</function></member>
-    <member><methodname>ReflectionFunction::invoke</methodname></member>
-    <member><methodname>ReflectionMethod::invoke</methodname></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>call_user_func_array</function></member>
+   <member><function>is_callable</function></member>
+   <member><link linkend="functions.variable-functions">Değişken işlevler</link></member>
+   <member><methodname>ReflectionFunction::invoke</methodname></member>
+   <member><methodname>ReflectionMethod::invoke</methodname></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

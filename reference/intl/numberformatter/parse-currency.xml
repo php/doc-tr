@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: haluk Status: ready -->
+<!-- EN-Revision: 19726d906f782efd4e7cd8c22068d65f0ab616db Maintainer: haluk Status: ready -->
 <refentry xml:id="numberformatter.parsecurrency" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>NumberFormatter::parseCurrency</refname>
@@ -11,28 +10,29 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   Nesne yönelimli kullanım
+   &style.oop;
   </para>
-  <methodsynopsis>
-   <type>float</type>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>float</type><type>false</type></type>
    <methodname>NumberFormatter::parseCurrency</methodname>
-   <methodparam><type>string</type><parameter>değer</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">konum</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+   <methodparam><type>string</type><parameter role="reference">para_simgesi</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">konum</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Yordamsal kullanım
+   &style.procedural;
   </para>
-  <methodsynopsis>
-   <type>float</type>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>float</type><type>false</type></type>
    <methodname>numfmt_parse_currency</methodname>
    <methodparam><type>NumberFormatter</type><parameter>biçemleyici</parameter></methodparam>
-   <methodparam><type>string</type><parameter>değer</parameter></methodparam>
-   <methodparam><type>string</type><parameter role="reference">para_simgesi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">konum</parameter></methodparam>
+   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
+    <methodparam><type>string</type><parameter role="reference">para_simgesi</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">konum</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Geçerli biçemleyiciyi kullanarak, bir para dizgesini <type>double</type>
+   Geçerli biçemleyiciyi kullanarak, bir para dizgesini <type>float</type>
    türünde bir sayıya ve para birimine dönüştürür.
   </para>
  </refsect1>
@@ -46,6 +46,14 @@
      <listitem>
       <para>
        <classname>NumberFormatter</classname> nesnesi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>dizge</parameter></term>
+     <listitem>
+      <para>
+       Sayıya dönüştürülecek dizge.
       </para>
      </listitem>
     </varlistentry>
@@ -86,20 +94,21 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = numfmt_create( 'tr_TR', NumberFormatter::CURRENCY );
-$num = "1.234.567,89 $";
-echo numfmt_parse_currency($fmt, $num, $curr)." $curr paramız var.\n";
-?>]]>
+$fmt = numfmt_create( 'de_DE', NumberFormatter::CURRENCY );
+$num = "1.234.567,89\xc2\xa0$";
+echo "We have ".numfmt_parse_currency($fmt, $num, $curr)." in $curr\n";
+?>
+]]>
    </programlisting>
   </example>
   <example>
-   <title>- Nesne yönelimli kullanım örneği</title>
+   <title>- &style.oop; örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-$fmt = new NumberFormatter( 'tr_TR', NumberFormatter::CURRENCY );
-$num = "1.234.567,89 $";
-echo $fmt->parseCurrency($num, $curr)." $curr paramız var.\n";
+$fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
+$num = "1.234.567,89\xc2\xa0$";
+echo "We have ".$fmt->parseCurrency($num, $curr)." in $curr\n";
 ?>
 ]]>
    </programlisting>
@@ -107,7 +116,7 @@ echo $fmt->parseCurrency($num, $curr)." $curr paramız var.\n";
   &example.outputs;
   <screen>
 <![CDATA[
-1234567.89 USD paramız var.
+We have 1234567.89 in USD
 ]]>
   </screen>
  </refsect1>

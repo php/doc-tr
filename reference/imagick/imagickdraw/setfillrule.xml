@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 96c9d88bad9a7d7d44bfb7f26c226df7ee9ddf26 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.imagickdraw-setfillrule">
+<!-- EN-Revision: 0f49e97eebd971ba0468bc1b7c6265fd457f60c8 Maintainer: nilgun Status: ready -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="imagickdraw.setfillrule">
  <refnamediv>
   <refname>ImagickDraw::setFillRule</refname>
   <refpurpose>Çokgen çizerken kullanılacak dolgu kuralını belirler</refpurpose>
@@ -10,6 +9,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
+   <modifier>public</modifier>
    <type>bool</type><methodname>ImagickDraw::setFillRule</methodname>
    <methodparam><type>int</type><parameter>dolgu_kuralı</parameter></methodparam>
   </methodsynopsis>
@@ -28,7 +28,7 @@
      <listitem>
       <para>
        <link linkend="imagick.constants.fillrule">Dolgu kuralı
-       sabitleri</link>nden biri.
+       sabitleri</link>nden biri (<literal>imagick::FILLRULE_*</literal>).
       </para>
      </listitem>
     </varlistentry>
@@ -40,6 +40,74 @@
   &reftitle.returnvalues;
   <para>
    &return.void;
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+    <example>
+      <title>- <methodname>ImagickDraw::setFillRule</methodname> örneği</title>
+      <programlisting role="php">
+      <![CDATA[
+<?php
+function setFillRule($fillColor, $strokeColor, $backgroundColor) {
+
+    $draw = new \ImagickDraw();
+
+    $draw->setStrokeWidth(1);
+    $draw->setStrokeColor($strokeColor);
+    $draw->setFillColor($fillColor);
+
+    $fillRules = [\Imagick::FILLRULE_NONZERO, \Imagick::FILLRULE_EVENODD];
+
+    $points = 11;
+    $size = 150;
+
+    $draw->translate(175, 160);
+
+    for ($x = 0; $x < 2; $x++) {
+        $draw->setFillRule($fillRules[$x]);
+        $draw->pathStart();
+        for ($n = 0; $n < $points * 2; $n++) {
+
+            if ($n >= $points) {
+                $angle = fmod($n * 360 * 4 / $points, 360) * pi() / 180;
+            }
+            else {
+                $angle = fmod($n * 360 * 3 / $points, 360) * pi() / 180;
+            }
+
+            $positionX = $size * sin($angle);
+            $positionY = $size * cos($angle);
+
+            if ($n == 0) {
+                $draw->pathMoveToAbsolute($positionX, $positionY);
+            }
+            else {
+                $draw->pathLineToAbsolute($positionX, $positionY);
+            }
+        }
+
+        $draw->pathClose();
+        $draw->pathFinish();
+
+        $draw->translate(325, 0);
+    }
+
+    $image = new \Imagick();
+    $image->newImage(700, 320, $backgroundColor);
+    $image->setImageFormat("png");
+    $image->drawImage($draw);
+
+    header("Content-Type: image/png");
+    echo $image->getImageBlob();
+}
+
+?>
+]]>
+      </programlisting>
+    </example>
   </para>
  </refsect1>
 

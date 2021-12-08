@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9eed6aef54900ebe7b1266e4d09d9461255a1a18 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: b548fc8e5592b577d29aabf9cf2e79d5385ae549 Maintainer: haluk Status: ready -->
 <refentry xml:id="function.idn-to-utf8" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>idn_to_utf8</refname>
-  <refpurpose>Alan adı kodlamasını IDNA ASCII'den evrenkoda dönüştürür
+  <refpurpose>Alan adı kodlamasını IDNA ASCII'den UTF-8'e dönüştürür
   </refpurpose>
  </refnamediv>
  <refsect1 role="description">
   &reftitle.description;
-  <para>Procedural style</para>
+  <para>&style.procedural;</para>
   <methodsynopsis>
-   <type>string</type><methodname>idn_to_utf8</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>idn_to_utf8</methodname>
    <methodparam><type>string</type><parameter>alan</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>varyant</parameter><initializer><constant>INTL_IDNA_VARIANT_UTS46</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter role="reference">idna_info</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen IDNA ASCII kodlamalı Evrenkod alan adını normal Evrenkod kodlamalı
+   Belirtilen IDNA ASCII kodlamalı Unicode alan adını normal UTF-8 kodlamalı
    alan adına dönüştürür.
   </para>
   </refsect1>
@@ -29,7 +30,7 @@
      <term><parameter>alan</parameter></term>
      <listitem>
       <para>
-       Kodlaması Evrenkod'a dönüştürülecek IDNA ASCII kodlu alan adı.
+       Kodlaması UTF-8'e dönüştürülecek IDNA ASCII kodlu alan adı.
       </para>
      </listitem>
     </varlistentry>
@@ -38,6 +39,34 @@
      <listitem>
       <para>
        IDNA_* sabitlerinden oluşan dönüşüm seçenekleri.
+       (IDNA_ERROR_* sabitleri hariç)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>varyant</parameter></term>
+     <listitem>
+      <para>
+       Ya IDNA 2003 için <constant>INTL_IDNA_VARIANT_2003</constant> (kullanımı
+       PHP 7.2.0 itibariyle önerilmiyor)  ya da UTS #46 için
+       <constant>INTL_IDNA_VARIANT_UTS46</constant> (sadece ICU 4.6 ve üstü ile
+       kullanılabilir).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>idna_info</parameter></term>
+     <listitem>
+      <para>
+       Bu değiştirge sadece <parameter>varyant</parameter> için
+       <constant>INTL_IDNA_VARIANT_UTS46</constant> kullanılmışsa
+       kullanılabilir. Bu durumda, muhtemelen meşru olmayan bir dönüşümün
+       sonucu olarak <literal>'result'</literal>, sonucu değiştirmiş ya da
+       değiştirecek olan UTS #46'nın geçiş mekanizmalarının kullanımının
+       değişip değişmediğini gösteren bir mantıksal değer olarak
+       <literal>'isTransitionalDifferent'</literal> ve IDNA_ERROR_* hata
+       sabitlerinin bir bit kümesini temsil eden birer tamsayı olarak
+       <literal>'errors'</literal> anahtarlı bir dizi ile doldurulur.
       </para>
      </listitem>
     </varlistentry>
@@ -45,11 +74,45 @@
   </para>
  </refsect1>
 
-
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Evrenkod ile kodlanmış alan adı. PHP5'ta alan adı UTF-8 kodlanır.
+   UTF-8 kodlu alan adı,&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        <parameter>varyant</parameter> değiştirgesinin öntanımlısı artık
+        <constant>INTL_IDNA_VARIANT_UTS46</constant> oldu; evvelce
+        <constant>INTL_IDNA_VARIANT_2003</constant> idi ve kulllanımı
+        önerilmiyordu.
+       </entry>
+      </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <constant>INTL_IDNA_VARIANT_2003</constant> sabitinin kulllanımı
+        artık önerilmiyor; yerine <constant>INTL_IDNA_VARIANT_UTS46</constant>
+        kullanılmalıdır.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </para>
  </refsect1>
 
@@ -77,11 +140,9 @@ täst.de
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>idn_to_unicode</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>idn_to_ascii</function></member>
+  </simplelist>
  </refsect1>
 </refentry>
 

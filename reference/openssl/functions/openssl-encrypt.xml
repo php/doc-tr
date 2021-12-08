@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: f658721332c6080e237ed6a1c29517225237b639 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: eec6a4a36bf452bf271f116e7b6b9bb09d1181c3 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.openssl-encrypt" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>openssl_encrypt</refname>
@@ -10,11 +9,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>string</type><methodname>openssl_encrypt</methodname>
+   <type class="union"><type>string</type><type>false</type></type><methodname>openssl_encrypt</methodname>
    <methodparam><type>string</type><parameter>veri</parameter></methodparam>
    <methodparam><type>string</type><parameter>yöntem</parameter></methodparam>
    <methodparam><type>string</type><parameter>parola</parameter></methodparam>
-   <methodparam choice="opt"><type>bool</type><parameter>ham_çıktı</parameter><initializer>false</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>iy</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">etiket</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>ek_kiml_knt_verisi</parameter><initializer>""</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>etiket_uzunluğu</parameter><initializer>16</initializer></methodparam>
   </methodsynopsis>
   <para>
    Belirtilen <parameter>veri</parameter>'yi belirtilen
@@ -22,9 +25,6 @@
    şifreler ve bir base64 kodlu dizge olarak veya ham bir dizge olarak
    döndürür.
   </para>
-
-  &warn.undocumented.func;
-
  </refsect1>
 
  <refsect1 role="parameters">
@@ -35,7 +35,7 @@
      <term><parameter>veri</parameter></term>
      <listitem>
       <para>
-       Şifrelenecek veri.
+       Şifrelenecek düz metin ileti verisi.
       </para>
      </listitem>
     </varlistentry>
@@ -43,7 +43,8 @@
      <term><parameter>yöntem</parameter></term>
      <listitem>
       <para>
-       Şifreleme yöntemi.
+       Şifreleme yöntemi. Şifreleme yöntemlerinin listesi için bkz:
+       <function>openssl_get_cipher_methods</function>
       </para>
      </listitem>
     </varlistentry>
@@ -51,16 +52,51 @@
      <term><parameter>parola</parameter></term>
      <listitem>
       <para>
-       Parola.
+       Parola. Beklenenden kısaysa &null; ile dolgu yapılır, uzunsa kırpılır ve bunun için bir uyarı verilmez.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ham_çıktı</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       Çıktı ham olarak döndürülecekse &true;, base64 kodlanmış olarak
-       döndürülecekse &false; olmalıdır.
+       <constant>OPENSSL_RAW_DATA</constant> ve
+       <constant>OPENSSL_ZERO_PADDING</constant> sabitlerinin bitsel
+       birleşimi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>iy</parameter></term>
+      <listitem>
+       <para>
+       &null; olmayan bir ilklendirme yöneyi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>etiket</parameter></term>
+     <listitem>
+      <para>
+       AEAD şifreleme kipi (GCM veya CCM) kullanıldığında gönderimli
+       aktarılan kimlik kanıtlama etiketi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>ek_kiml_knt_verisi</parameter></term>
+     <listitem>
+      <para>
+       Ek kimlik kanıtlama verisi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>etiket_uzunluğu</parameter></term>
+     <listitem>
+      <para>
+       Kimlik kanıtlama <parameter>etiket</parameter>inin uzunluğu.
+       GCM kipinde değer 4-16 arasında olabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -82,15 +118,98 @@
    algoritması belirtilmişse <constant>E_WARNING</constant> seviyesinde bir
    hata oluşur.
   </para>
+  <para>
+   <parameter>iy</parameter> değiştirgesi üzerinden boş bir dizge aktarılırsa
+   <constant>E_WARNING</constant> seviyesinde bir hata oluşur.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>7.1.0</entry>
+      <entry>
+       <parameter>etiket</parameter>,
+       <parameter>ek_kiml_knt_verisi</parameter> ve
+       <parameter>etiket_uzunluğu</parameter> değiştirgeleri eklendi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>- PHP 7.1+ için GCM kipinde AES Kimlik Kanıtlamalı Şifreleme örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// $key, daha önce openssl_random_pseudo_bytes gibi kriptografik olarak
+// güvenilir bir yolla oluşturulmuş olmalıdır.
+$plaintext = "şifrelenecek ileti";
+$cipher = "aes-128-gcm";
+if (in_array($cipher, openssl_get_cipher_methods()))
+{
+    $ivlen = openssl_cipher_iv_length($cipher);
+    $iv = openssl_random_pseudo_bytes($ivlen);
+    $ciphertext = openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv, $tag);
+    // Şifreyi daha sonra çözmek için $cipher, $iv ve $tag saklanacak
+    $original_plaintext = openssl_decrypt($ciphertext, $cipher, $key, $options=0, $iv, $tag);
+    echo $original_plaintext."\n";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- PHP 7.1 öncesi için GCM kipinde AES Kimlik Kanıtlamalı Şifreleme örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+//$key evvelce openssl_random_pseudo_bytes gibi güvenli bir yolla üretilmiş olmalı
+$plaintext = "şifrelenecek ileti";
+$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$iv = openssl_random_pseudo_bytes($ivlen);
+$ciphertext_raw = openssl_encrypt($plaintext, $cipher, $key, $options=OPENSSL_RAW_DATA, $iv);
+$hmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary=true);
+$ciphertext = base64_encode( $iv.$hmac.$ciphertext_raw );
+
+// daha sonra şifreyi çözmek için....
+$c = base64_decode($ciphertext);
+$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$iv = substr($c, 0, $ivlen);
+$hmac = substr($c, $ivlen, $sha2len=32);
+$ciphertext_raw = substr($c, $ivlen+$sha2len);
+$original_plaintext = openssl_decrypt($ciphertext_raw, $cipher, $key, $options=OPENSSL_RAW_DATA, $iv);
+$calcmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary=true);
+if (hash_equals($hmac, $calcmac))// timing attack safe comparison
+{
+    echo $original_plaintext."\n";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>openssl_decrypt</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>openssl_decrypt</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

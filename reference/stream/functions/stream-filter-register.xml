@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.stream-filter-register" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>stream_filter_register</refname>
@@ -36,137 +35,14 @@
      <term><parameter>sınıf</parameter></term>
      <listitem>
       <para>
-       Bir süzgeci gerçeklemek için, <literal>php_user_filter</literal>'in bir
-       uzantısı olarak, aşağıda belirtilen üye işlevlerle bir sınıf
+       Bir süzgeci gerçeklemek için, <classname>php_user_filter</classname>'a
+       bir eklenti olarak, üye işlevlerle bir sınıf
        tanımlamanız gerekir. Süzgecinizin ekli olduğu akım üzerinde okuma ve
        yazma işlemleri yaparken, PHP tüm veriyi süzgecinizden (ve akıma ekli
        diğer süzgeçlerden) geçirerek verinin istendiği gibi değiştirilmesini
-       sağlar. Yöntemleri tamamen aşağıda belirtildiği gibi gerçeklemeniz
-       gerekir. Başka türlü yaparsanız süzgecin ne yapacağı belli olmaz.
-      </para>
-      <methodsynopsis>
-       <type>int</type><methodname>filter</methodname>
-       <methodparam><type>resource</type><parameter>in</parameter></methodparam>
-       <methodparam><type>resource</type><parameter>out</parameter></methodparam>
-       <methodparam><type>int</type><parameter role="reference">consumed</parameter></methodparam>
-       <methodparam><type>bool</type><parameter>closing</parameter></methodparam>
-      </methodsynopsis>
-      <para>
-       Bu yöntem, süzgecin ekli olduğu akım üzerinde yapılan her okuma veya
-       yazma (<function>fread</function> veya <function>fwrite</function>
-       gibi) işleminde çağrılır.
-       <parameter>in</parameter> değiştirgesi, süzülecek verinin içerdiği bir
-       veya daha fazla sayıda <literal>biriktirici</literal> nesneden oluşan
-       <literal>biriktirici kümesi</literal>'ni gösteren bir özkaynaktır.
-       <parameter>out</parameter> değiştirgesi, değiştirilen biriktiricilerin
-       konulduğu <literal>biriktirici kümesi</literal>'ni gösteren bir
-       özkaynaktır.
-       <parameter>consumed</parameter> değiştirgesi, süzgecinizce okunan ve
-       değiştirilen veri uzunluğu kadar artmalı ve göreli olarak
-       aktarılmalıdır. Çoğu durumda <parameter>consumed</parameter> değeri her
-       <literal>$biriktirici</literal> için
-       <literal>$biriktirici->datalen</literal> kadar arttılırılır. Eğer akım
-       kapama sürecindeyse (dolayısıyla bu, süzgeç zincirindeki son geçiştir)
-       <parameter>closing</parameter> değiştirgesine &true; atanmalıdır.
-       <methodname>filter</methodname> yöntemi işini bitirdiğinde şu üç
-       değerden birini döndürmelidir:
-       <informaltable>
-        <tgroup cols="2">
-         <thead>
-          <row>
-           <entry>Dönüş Değeri</entry>
-           <entry>Anlamı</entry>
-          </row>
-         </thead>
-         <tbody>
-          <row>
-           <entry><constant>PSFS_PASS_ON</constant></entry>
-           <entry>
-            Süzgeç veriyi başarıyla işleyip <literal>biriktirici
-            kümesi</literal>'ni <parameter>out</parameter> değiştirgesine
-            yerleştirdi.
-           </entry>
-          </row>
-          <row>
-           <entry><constant>PSFS_FEED_ME</constant></entry>
-           <entry>
-            Süzgeç işini tamamladı ancak, döndürülecek bir veri yok. Akımdan
-            veya önceki süzgeçten daha fazla veri gerekiyor.
-           </entry>
-          </row>
-          <row>
-           <entry><constant>PSFS_ERR_FATAL</constant> (öntanımlı)</entry>
-           <entry>
-            Süzgeç kurtarılamayacak bir hata tespit etti; devam edilemiyor.
-           </entry>
-          </row>
-         </tbody>
-        </tgroup>
-       </informaltable>
-      </para>
-      <methodsynopsis>
-       <type>bool</type><methodname>onCreate</methodname>
-       <void/>
-      </methodsynopsis>
-      <simpara>
-       Bu yöntem süzgeç sınıfının bir nesne olarak örneklenmesi sırasında
-       çağrılır. Süzgeciniz herhangi bir özkaynak ayıracaksa (bir tampon gibi)
-       bunun yapılacağı yer burasıdır. Yöntem başarılı olduğunda &true; aksi
-       takdirde &false; döndürmelidir
-      </simpara>
-      <simpara>
-       Süzgeciniz ilk örneklendiğinde ve
-       <literal>süzgeciniz-&gt;onCreate()</literal> çağrıldığında, aşağıdaki
-       tabloda gösterilen özellikler kullanılabilir olmalıdır:
-      </simpara>
-      <para>
-       <informaltable>
-        <tgroup cols="2">
-         <thead>
-          <row>
-           <entry>Özellik</entry>
-           <entry>İçeriği</entry>
-          </row>
-         </thead>
-         <tbody>
-          <row>
-           <entry><literal>süzgeciniz-&gt;filtername</literal></entry>
-           <entry>
-            Örneklenen süzgecin ismini içeren dizge. Süzgeçler farklı
-            isimlerle veya dosya ismi kalıplarıyla kayıt altına alınabilirler.
-            Bu özellik kullanılacak ismi belirlemek için kullanılır.
-           </entry>
-          </row>
-          <row>
-           <entry><literal>süzgeciniz-&gt;params</literal></entry>
-           <entry>
-            <parameter>params</parameter> değiştirgesinin içeriği
-            <function>stream_filter_append</function> veya
-            <function>stream_filter_prepend</function> işlevine aktarılır.
-           </entry>
-          </row>
-          <row>
-           <entry><literal>süzgeciniz-&gt;stream</literal></entry>
-           <entry>
-            Süzülecek akım özkaynağı. Sadece <parameter>closing</parameter>
-            değiştirgesine &false; atanmışken yapılan
-            <methodname>filter</methodname> çağrılarında kullanılabilir.
-           </entry>
-          </row>
-         </tbody>
-        </tgroup>
-       </informaltable>
-      </para>
-      <methodsynopsis>
-       <type>void</type><methodname>onClose</methodname>
-       <void/>
-      </methodsynopsis>
-      <para>
-       Bu yöntem süzgeç kapanırken çağrılır (genellikle, akım da bu sırada
-       kapanır) ve <literal>flush</literal> yöntem çağrısından
-       <emphasis>sonra</emphasis> çalıştırılır. <literal>onCreate()</literal>
-       çağrısı ile oluşturulan veya ayrılan özkaynaklar varsa bunların
-       elden çıkarılacağı veya serbest bırakılacağı yer burasıdır.
+       sağlar. Yöntemleri tamamen <classname>php_user_filter</classname>
+       sınıfında açıklandığı gibi gerçeklemeniz gerekir. -- Başka türlü
+       yaparsanız süzgecin ne yapacağı belli olmaz.
       </para>
      </listitem>
     </varlistentry>
@@ -201,12 +77,12 @@
 
 /* Kendi süzgecimizi tanımlayalım */
 class strtoupper_filter extends php_user_filter {
-  function filter($in, $out, &$consumed, $closing)
+  function filter($giriş, $çıkış, &$tüketilen, $kapanış)
   {
-    while ($bucket = stream_bucket_make_writeable($in)) {
-      $bucket->data = strtoupper($bucket->data);
-      $consumed += $bucket->datalen;
-      stream_bucket_append($out, $bucket);
+    while ($bakla = stream_bucket_make_writeable($giriş)) {
+      $bakla->data = strtoupper($bakla->data);
+      $tüketilen += $bakla->datalen;
+      stream_bucket_append($çıkış, $bakla);
     }
     return PSFS_PASS_ON;
   }
@@ -255,17 +131,17 @@ EASY AS 123
 class string_filter extends php_user_filter {
   var $mode;
 
-  function filter($in, $out, &$consumed, $closing)
+  function filter($giriş, $çıkış, &$tüketilen, $kapanış)
   {
-    while ($bucket = stream_bucket_make_writeable($in)) {
+    while ($bakla = stream_bucket_make_writeable($giriş)) {
       if ($this->mode == 1) {
-        $bucket->data = strtoupper($bucket->data);
+        $bakla->data = strtoupper($bakla->data);
       } elseif ($this->mode == 0) {
-        $bucket->data = strtolower($bucket->data);
+        $bakla->data = strtolower($bakla->data);
       }
 
-      $consumed += $bucket->datalen;
-      stream_bucket_append($out, $bucket);
+      $tüketilen += $bakla->datalen;
+      stream_bucket_append($çıkış, $bakla);
     }
     return PSFS_PASS_ON;
   }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: af4410a7e15898c3dbe83d6ea38246745ed9c6fb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ab45e8c9d43453d3cf3f3917b6db03e4f99c4a76 Maintainer: nilgun Status: ready -->
 <refentry xml:id="collator.compare" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>Collator::compare</refname>
@@ -10,23 +9,22 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <para>Nesne yönelimli kullanım</para>
-  <methodsynopsis>
-   <type>int</type>
-   <methodname>Collator::compare</methodname>
+  <para>&style.oop;</para>
+  <methodsynopsis role="oop">
+   <modifier>public</modifier>
+   <type class="union"><type>int</type><type>false</type></type><methodname>Collator::compare</methodname>
    <methodparam><type>string</type><parameter>dizge1</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge2</parameter></methodparam>
-  </methodsynopsis>
-  <para>Yordamsal kullanım</para>
-  <methodsynopsis>
-   <type>int</type>
-   <methodname>collator_compare</methodname>
-   <methodparam><type>Collator</type><parameter>karşılaştırıcı</parameter></methodparam>
+   </methodsynopsis>
+  <para>&style.procedural;</para>
+  <methodsynopsis role="procedural">
+   <type class="union"><type>int</type><type>false</type></type><methodname>collator_compare</methodname>
+   <methodparam><type>Collator</type><parameter>nesne</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge1</parameter></methodparam>
    <methodparam><type>string</type><parameter>dizge2</parameter></methodparam>
-  </methodsynopsis>
+   </methodsynopsis>
   <para>
-   İki evrenkodlu dizgeyi yerelin karşılaştırma kurallarına uygun olarak
+   İki Unicode dizgeyi yerelin karşılaştırma kurallarına uygun olarak
    karşılaştırır.
   </para>
  </refsect1>
@@ -36,7 +34,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>coll</parameter></term>
+     <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
        <classname>Collator</classname> nesnesi.
@@ -122,6 +120,32 @@ if ($res === false) {
     <screen>
 s1, s2'den büyüktür
     </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Aksansız veya büyük/küçük harfe duyarlı olmayan dizeleri karşılaştırma</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$c = new Collator('en');
+$c->setStrength(Collator::PRIMARY);
+
+if ($c->compare('Séan', 'Sean') == 0)
+{
+    echo "İkisi aynı\n";
+}
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+     İkisi aynı
+    </screen>
+    <para>
+     Bu örnek, karşlaştırıcıya yalnızca temel karakterleri hesaba katarak
+     karşılaştırma yapması talimatını verir. Karşılaştırma seviyeleri
+     <function>Collator->setStrength</function> belgesinde açıklanmıştır.
+    </para>
    </example>
   </para>
  </refsect1>
