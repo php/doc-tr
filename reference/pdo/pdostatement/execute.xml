@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 91bec719b351e11e6f0fe618f091edbb82b9acc2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 65d4ecb42e75a180eb8964968c230b09d81d3601 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.execute" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDOStatement::execute</refname>
@@ -84,7 +84,8 @@ $colour = 'red';
 $sth = $dbh->prepare('SELECT name, colour, calories
     FROM fruit
     WHERE calories < :calories AND colour LIKE :colour');
-$sth->bindParam(':calories', $calories, PDO::PARAM_INT);
+$sth->bindParam('calories', $calories, PDO::PARAM_INT);
+/* isimler ":" ile öncelenebiliyor (seçimlik) */
 $sth->bindParam(':colour', "%{$colour}%");
 $sth->execute();
 ?>
@@ -104,6 +105,8 @@ $colour = 'red';
 $sth = $dbh->prepare('SELECT name, colour, calories
     FROM fruit
     WHERE calories < :calories AND colour = :colour');
+$sth->execute(array('calories' => $calories, 'colour' => $colour));
+/* Dizi anahtarları da ":" ile öncelenebiliyor (seçimlik) */
 $sth->execute(array(':calories' => $calories, ':colour' => $colour));
 ?>
 ]]>

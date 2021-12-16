@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: a0ae28d3bc85f927c22649ebd9a590b921534b7d Maintainer: nilgun  Status: ready -->
+<!-- EN-Revision: 92673cc45aefdb6085b332cb381675825926a519 Maintainer: nilgun  Status: ready -->
 <!-- CREDITS: mesut, yasar -->
  <chapter xml:id="features.file-upload" xmlns="http://docbook.org/ns/docbook">
   <title>Karşıya dosya yükleme</title>
@@ -129,6 +129,16 @@
        <para>
         Bu dosya yüklemesiyle ilişkili
         <link linkend="features.file-upload.errors">hata kodu</link>dur.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><varname>$_FILES['kullanici_dosyasi']['full_path']</varname></term>
+      <listitem>
+       <para>
+        Tam dosya yolu (full_path) tarayıcı tarafından gönderilir. Bu yol
+        her zaman gerçek dizin yapısını içermediğinden güvenilmemelidir.
+        PHP 8.1.0 ve sonrasında kullanılabilir.
        </para>
       </listitem>
      </varlistentry>
@@ -461,6 +471,47 @@ foreach ($_FILES["resimler"]["error"] as $anahtar => $hata) {
     yüklemeye çalışmamasını sağlamalısınız.
     </simpara>
    </warning>
+   <para>
+    <example>
+     <title>- Dizinin tamamen karşıya yüklenmesi</title>
+     <simpara>
+      HTML dosya karşıya yükleme alanlarında,
+      <literal>webkitdirectory</literal> özniteliği ile bir dizinin tamamı
+      karşıya yüklenebilir. Bu özellik günümüz tarayıcılarının çoğu
+      tarafından desteklenmektedir.
+     </simpara>
+     <simpara>
+      <literal>full_path</literal> bilgisi ile göreli dosya yolunu
+      saklamak ve sunucuda aynı dizini oluşturmak mümkündür.
+     </simpara>
+     <programlisting role="html">
+<![CDATA[
+<form action="file-upload.php" method="post" enctype="multipart/form-data">
+  Bu dizini gönder:<br />
+  <input name="userfile[]" type="file" webkitdirectory multiple />
+  <input type="submit" value="Dosyaları gönder" />
+</form>
+]]>
+     </programlisting>
+    </example>
+
+    <warning>
+     <simpara>
+      <literal>webkitdirectory</literal> özniteliği standart değildir ve
+      standartlaşma sürecinde değildir. İnternete açık üretim sitelerinde
+      kullanılmamalıdır: her kullanıcı için çalışmayacaktır. Ayrıca
+      uygulamalar arasında büyük uyumsuzluklar olabilir ve davranış gelecekte
+      değişebilir.
+     </simpara>
+     <simpara>
+      PHP sadece tarayıcının gönderdiği göreli dizin yapısını çözümler ve bu
+      bilgiyi <varname>$_FILES</varname> dizisinde aktarır.
+      <literal>full_path</literal> dizisindeki değerlerin gerçek dizin
+      yapısını içermesinin bir garantisi yoktur ve PHP uygulamalarında bu
+      bilgiye güvenilmemelidir.
+     </simpara>
+    </warning>
+   </para>
   </sect1>
 
   <sect1 xml:id="features.file-upload.put-method">
