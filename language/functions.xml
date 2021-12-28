@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 0219f62dcd220d3c02911891b6946d82af232171 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 5c2678e02f0eb135946799eed02d884de1bcf4ad Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -1524,6 +1524,143 @@ var_export($x);  // 1 çıktılanır
      </simpara>
     </note>
    </sect2>
+  </sect1>
+
+  <sect1 xml:id="functions.first_class_callable_syntax">
+   <title>Birinci sınıf çağrılabilir sözdizimi</title>
+
+   <para>
+    PHP 8.1.0 itibariyle kullanılabilen birinci sınıf çağrılabilir sözdizimi
+    <link linkend="language.types.callable">çağrılabilir</link>
+    <link linkend="functions.anonymous">anonim işlevler</link> oluşturmanın
+    bir yoludur. Dizgeleri ve dizileri kullanan mevcut çağrılabilir
+    sözdiziminin yerini alır. Bu sözdiziminin getirisi statik analiz için
+    erişilebilir olması ve çağrılabilirin elde edildiği etki alanın
+    kullanılabilmesidir.
+   </para>
+
+   <para>
+    Çağrılabilirden <classname>Closure</classname> nesne oluşturmakta
+    <code>CallableExpr(...)</code> sözdizimi kullanılır.
+    <code>CallableExpr</code> PHP dil yapısı içinde doğrudan çözümlenebilen
+    her ifadeyi kabul eder:
+    <example>
+     <title>- Basit birinci sınıf çağrılabilir sözdizimi</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class Foo {
+   public function yöntem() {}
+   public static function statikyöntem() {}
+   public function __invoke() {}
+}
+
+$obj = new Foo();
+$sınıfDizgesi = 'Foo';
+$yöntemDizgesi = 'method';
+$statikYöntemDizgesi = 'staticmethod';
+
+
+$f1 = strlen(...);
+$f2 = $obj(...);  // çağrılabilir nesne
+$f3 = $obj->yöntem(...);
+$f4 = $obj->$yöntemDizgesi(...);
+$f5 = Foo::statikyöntem(...);
+$f6 = $sınıfDizgesi::$statikYöntemDizgesi(...);
+
+// dizi, dizge kullanan geleneksel çağrılabilir
+$f7 = 'strlen'(...);
+$f8 = [$obj, 'method'](...);
+$f9 = [Foo::class, 'staticmethod'](...);
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <note>
+    <para>
+     <code>...</code> sözdiziminin bir parçası olup ihmal edilmemelidir.
+    </para>
+   </note>
+
+   <para>
+    <code>CallableExpr(...)</code> sözdizimi
+    <methodname>Closure::fromCallable</methodname> ile aynı yapıdadır.
+    Yani, dizi ve dizge kullanan çağrılabilirlerin tersine
+    <code>CallableExpr(...)</code> oluşturulduğu etki alanına bağlıdır:
+    <example>
+     <title>- Geleneksel çağrılabilir ile <code>CallableExpr(...)</code>
+      karşılaştırması</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class Foo {
+    public function getPrivateMethod() {
+        return [$this, 'privateMethod'];
+    }
+
+    private function privateMethod() {
+        echo __METHOD__, "\n";
+    }
+}
+
+$foo = new Foo;
+$privateMethod = $foo->getPrivateMethod();
+$privateMethod();
+// Ölümcül hata: private yöntem Foo::privateMethod() küresel etki alanında çağrılıyor.
+// Bunun nedeni, çağrının Foo dışında yapılması ve
+// görünürlüğün bu noktadan denetlenmesidir.
+
+class Foo1 {
+    public function getPrivateMethod() {
+        // Çağrılabilirin oluşturulduğu etki alanı kullanılıyor.
+        return $this->privateMethod(...); // Closure::fromCallable([$this, 'privateMethod']); ile eşdeğer
+    }
+
+    private function privateMethod() {
+        echo __METHOD__, "\n";
+    }
+}
+
+$foo1 = new Foo1;
+$privateMethod = $foo1->getPrivateMethod();
+$privateMethod();  // Foo1::privateMethod
+?>
+]]>
+     </programlisting>
+    </example>
+
+   </para>
+
+   <note>
+    <para>
+     Bu sözdizimini kullanarak nesne oluşturmak (<code>new Foo(...)</code>
+     gibi) desteklenmemektedir. Bunun sebebi  <code>new Foo()</code>
+     sözdiziminin bir işlev/yöntem çağrısı olarak ele alınmamasıdır.
+    </para>
+   </note>
+
+   <note>
+    <para>
+     Basit birinci sınıf çağrılabilir sözdizimi ile
+     <link linkend="language.oop5.basic.nullsafe">güvenli null işleci</link>
+     ?-> birlikte kullanılmamalıdır. Aşağıdakilerin her biri bir derleme
+     hatasıyla sonuçlanır:
+     <example>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$obj?->method(...);
+$obj?->prop->method(...);
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+   </note>
   </sect1>
 
 </chapter>
