@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 9dd74f527dc164165dee7f19058bec75a901e770 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b57f8f256a4773fc09d19733c70ef8816074d12d Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.declarations">
  <title>Tür Bildirimleri</title>
 
@@ -169,8 +169,8 @@ Stack trace:
     <type>string</type><type>int</type><type>float</type>
     <type>bool</type><type>null</type>
    </type>
-   <link linkend="language.types.declarations.union">birlik türüne</link>
-   eşdeğerdir. PHP 8.0.0 ve sonrasında kullanılabilir.
+   <link linkend="language.types.declarations.composite.union">birlik
+    türüne</link> eşdeğerdir. PHP 8.0.0 ve sonrasında kullanılabilir.
   </para>
  </sect3>
 
@@ -383,56 +383,96 @@ NULL
   </note>
  </sect2>
 
- <sect2 xml:id="language.types.declarations.union">
-  <title>Birleşim türleri</title>
+ <sect2 xml:id="language.types.declarations.composite">
+  <title>Karma Türler</title>
   <para>
-   Bir birleşim (union) türü bildirimi, tek bir tür yerine birden fazla türde
-   değer kabul eder. Birleşim türleri <literal>T1|T2|...</literal> sözdizimi
-   kullanılarak belirtilir. Birleşim türleri PHP 8.0.0 ve sonrasında
-   kullanılabilir.
+   Basit türleri karma türler halinde birleştirmek mümkündür.
+   PHP türlerin birleştirilmesinde şu yolların kullanımına izin verir:
   </para>
 
-  <sect3 xml:id="language.types.declarations.union.nullable">
-   <title>Boş olabilen birleşim türleri</title>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Basit türlerin birleşimi. PHP 8.0.0 ve sonrası.
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Sınıf türlerinin (arayüzler ve sınıf isimleri) kesişimi.
+     PHP 8.1.0 ve sonrası.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <caution>
+   <simpara>
+    Kesişim türleri, birleşim türleri ile birleştirilemez.
+   </simpara>
+  </caution>
+
+  <sect3 xml:id="language.types.declarations.composite.union">
+   <title>Birleşim türleri</title>
    <para>
-    Boş (<literal>null</literal>) tür, birleşimlerin bir parçası olarak
-    desteklenir, öyle ki <literal>T1|T2|null</literal> sözdizimi, boş
-    olabilen bir birleşim oluşturmak için kullanılabilir. Mevcut
-    <literal>?T</literal> gösterimi, yaygın <literal>T|null</literal>
-    durumu için bir kısaltma olarak kabul edilir.
+    Bir birleşim (union) türü bildirimi, tek bir tür yerine birden fazla türde
+    değer kabul eder. Birleşim türleri <literal>T1|T2|...</literal> sözdizimi
+    kullanılarak belirtilir. Birleşim türleri PHP 8.0.0 ve sonrasında
+    kullanılabilir.
    </para>
 
-   <caution>
-    <simpara>
-     <literal>null</literal> tek başına bir tür olarak kullanılamaz.
-    </simpara>
-   </caution>
+   <sect4 xml:id="language.types.declarations.composite.union.nullable">
+    <title>Boş olabilen birleşim türleri</title>
+    <para>
+     Boş (<literal>null</literal>) tür, birleşimlerin bir parçası olarak
+     desteklenir, yani <literal>T1|T2|null</literal> sözdizimi, boş
+     olabilen bir birleşim oluşturmak için kullanılabilir. Mevcut
+     <literal>?T</literal> gösterimi, yaygın <literal>T|null</literal>
+     durumu için bir kısaltma olarak kabul edilir.
+    </para>
+
+    <caution>
+     <simpara>
+      <literal>null</literal> tek başına bir tür olarak kullanılamaz.
+     </simpara>
+    </caution>
+   </sect4>
+
+   <sect4 xml:id="language.types.declarations.composite.union.false">
+    <title>false sözde türü</title>
+    <para>
+     <literal>false</literal> değişmez türü, birleşimlerin bir parçası olarak
+     desteklenir ve tarihsel nedenlerden ötürü, birçok dahili işlev
+     başarısızlık durumunda <literal>null</literal> yerine
+     <literal>false</literal> döndürür. Böyle bir işleve klasik bir örnek
+     <function>strpos</function>'dur.
+    </para>
+
+    <caution>
+     <simpara>
+      <literal>false</literal> tek başına bir tür olarak kullanılamaz (boş
+      olabilen tür dahil). Bu nedenle, <literal>false</literal>,
+      <literal>false|null</literal> ve <literal>?false</literal> ifadelerinin
+      hiçbirine izin verilmez.
+     </simpara>
+    </caution>
+    <caution>
+     <simpara>
+      <literal>true</literal> diye bir tür <emphasis>yoktur</emphasis>.
+     </simpara>
+    </caution>
+   </sect4>
   </sect3>
 
-  <sect3 xml:id="language.types.declarations.union.false">
-   <title>false sözde türü</title>
+  <sect3 xml:id="language.types.declarations.composite.intersection">
+   <title>Kesişim türleri</title>
    <para>
-    <literal>false</literal> değişmez türü, birleşimlerin bir parçası olarak
-    desteklenir ve tarihsel nedenlerden ötürü, birçok dahili işlev başarısızlık
-    durumunda <literal>null</literal> yerine <literal>false</literal> döndürür.
-    Böyle bir işleve klasik bir örnek <function>strpos</function>'dur.
+    Kesişim türü bildirimi, tek bir tür yerine çok sayıda sınıf türü
+    bildirimini karşılayan değerleri kabul eder. Kesişim türleri
+    <literal>T1&amp;T2&amp;...</literal> sözdizimi kullanılarak bildirilir.
+    Kesişim türleri PHP 8.1.0 ve sonrasında kullanılabilmektedir.
    </para>
-
-   <caution>
-    <simpara>
-     <literal>false</literal> tek başına bir tür olarak kullanılamaz (boş
-     olabilen tür dahil). Bu nedenle, <literal>false</literal>,
-     <literal>false|null</literal> ve <literal>?false</literal> ifadelerinin hiçbirine izin verilmez.
-    </simpara>
-   </caution>
-   <caution>
-    <simpara>
-     <literal>true</literal> tek başına türü mevcut <emphasis>değildir</emphasis>.
-    </simpara>
-   </caution>
   </sect3>
 
-  <sect3 xml:id="language.types.declarations.union.redundant">
+  <sect3 xml:id="language.types.declarations.composite.redundant">
    <title>Yinelenen ve artık türler</title>
    <para>
     Birleşim türü bildirimlerindeki basit hataları yakalamak için, sınıf
@@ -442,24 +482,54 @@ NULL
      <listitem>
       <simpara>
        Ad-çözümlemeli her tür yalnızca bir kere görünebilir. Örneğin,
-       <literal>int|string|INT</literal> birleşimi bir hatayla sonuçlanır.
+       <literal>int|string|INT</literal> birleşimi veya
+       <literal>Countable&amp;Traversable&amp;COUNTABLE</literal> kesişimi
+       bir hatayla sonuçlanır.
       </simpara>
      </listitem>
      <listitem>
       <simpara>
-       Eğer <type>bool</type> kullanılmışsa, yanına <type>false</type> eklenemez.
+       <type>mixed</type> kullanımı bir hatayla sonuçlanır.
       </simpara>
      </listitem>
      <listitem>
-      <simpara>
-       Eğer <type>object</type> kullanılmışsa, yanına sınıf türleri eklenemez.
-      </simpara>
+      <simpara>Birleşim türlerinde:</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         Eğer <type>bool</type> kullanılmışsa,
+         yanına <type>false</type> eklenemez.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         Eğer <type>object</type>  kullanılmışsa,
+         yanına sınıf türleri eklenemez.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         Eğer <type>iterable</type> kullanılmışsa, yanına <type>array</type>
+         ve <classname>Traversable</classname> eklenemez.
+        </simpara>
+       </listitem>
+      </itemizedlist>
      </listitem>
      <listitem>
-      <simpara>
-       Eğer <type>iterable</type> kullanılmışsa, yanına <type>array</type>
-       ve <classname>Traversable</classname> eklenemez.
-      </simpara>
+      <simpara>Kesişim türlerinde:</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         Sınıf türünde olmayan bir türün kullanımı hatayla sonuçlanır.
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         <type>self</type>, <type>parent</type> ve
+         <type>static</type> kullanımları da hatayla sonuçlanır.
+        </simpara>
+       </listitem>
+      </itemizedlist>
      </listitem>
     </itemizedlist>
    </para>
@@ -485,19 +555,22 @@ NULL
 <?php
 function foo(): int|INT {} // izin verilmez
 function foo(): bool|false {} // izin verilmez
+function foo(): int&Traversable {} // izin verilmez
+function foo(): self&Traversable {} // izin verilmez
 
 use A as B;
 function foo(): A|B {} // izin verilmez ("use" ad çözünürlüğünün bir parçasıdır)
+function foo(): A&B {} // izin verilmez ("use" ad çözünürlüğünün bir parçasıdır)
 
 class_alias('X', 'Y');
 function foo(): X|Y {} // izin verilir (fazlalık sadece çalışma anında anlaşılır)
+function foo(): X&Y {} // izin verilir (fazlalık sadece çalışma anında anlaşılır)
 ?>
 ]]>
      </programlisting>
     </informalexample>
    </para>
   </sect3>
-
  </sect2>
 
  <sect2 xml:id="language.types.declarations.return-only">
