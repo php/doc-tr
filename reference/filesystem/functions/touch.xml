@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f9c4a68ef4f89e51e6d9b905ad3ddb6492386dd3 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.touch">
+<!-- EN-Revision: ea62fb83196997032641b50fe44420305466195e Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.touch" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>touch</refname>
   <refpurpose>Dosyanın erişim ve değişiklik zamanını ayarlar</refpurpose>
@@ -11,8 +11,8 @@
   <methodsynopsis>
    <type>bool</type><methodname>touch</methodname>
    <methodparam><type>string</type><parameter>dosyaismi</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>zaman</parameter><initializer>time()</initializer></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>ezamanı</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>zaman</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>ezamanı</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
    <parameter>dosyaismi</parameter> değiştirgesi ile ismi belirtilen dosyanın
@@ -40,7 +40,8 @@
      <term><parameter>zaman</parameter></term>
      <listitem>
       <para>
-       Değişiklik zamanı. Eğer <parameter>zaman</parameter> belirtilmemişse, o anki zaman kullanılır.
+       Değişiklik zamanı. Eğer <parameter>zaman</parameter> &null; ise,
+       o anki zaman kullanılır.
       </para>
      </listitem>
     </varlistentry>
@@ -48,9 +49,9 @@
      <term><parameter>ezamanı</parameter></term>
      <listitem>
       <para>
-       Belirtilmişse dosyanın erişim zamanı <parameter>ezamanı</parameter>
+       &null; ise dosyanın erişim zamanı <parameter>ezamanı</parameter>
        değerine ayarlanır. Aksi takdirde <parameter>zaman</parameter> değerine
-       ayarlanır. İki değitirge de mevcut değilse geçerli sistem zamanı
+       ayarlanır. İki değiştirge de &null; ise geçerli sistem zamanı
        kullanılır.
       </para>
      </listitem>
@@ -64,6 +65,29 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>zaman</parameter> ve <parameter>ezamanı</parameter>
+       artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

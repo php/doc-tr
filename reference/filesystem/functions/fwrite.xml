@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 9d2b858bca85edbeebb83f05a1cd2e87cf90127d Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fwrite">
+<!-- EN-Revision: ea62fb83196997032641b50fe44420305466195e Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.fwrite" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>fwrite</refname>
   <refpurpose>Dosyaya ikil kipte yazar</refpurpose>
@@ -9,14 +9,14 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>int</type><methodname>fwrite</methodname>
-   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
-   <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter></methodparam>
+   <type class="union"><type>int</type><type>false</type></type><methodname>fwrite</methodname>
+   <methodparam><type>resource</type><parameter>akım</parameter></methodparam>
+   <methodparam><type>string</type><parameter>veri</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <simpara>
-   <function>fwrite</function> işlevi, <parameter>dizge</parameter> dizgesini
-   dosya tanıtıcısı <parameter>dt</parameter> ile belirtilen dosya akımına
+   <function>fwrite</function> işlevi, <parameter>veri</parameter> dizgesini
+   dosya tanıtıcısı <parameter>akım</parameter> ile belirtilen dosya akımına
    yazar.
   </simpara>
  </refsect1>
@@ -26,13 +26,13 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dt</parameter></term>
+     <term><parameter>akım</parameter></term>
      <listitem>
       &fs.file.pointer;
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>dizge</parameter></term>
+     <term><parameter>veri</parameter></term>
      <listitem>
       <para>
        Akıma yazılacak dizge.
@@ -43,8 +43,8 @@
      <term><parameter>uzunluk</parameter></term>
      <listitem>
       <para>
-       <parameter>uzunluk</parameter> değiştirgesi belirtilmişse yazma işlemi
-       <parameter>uzunluk</parameter> bayt yazıldıktan sonra veya
+       <parameter>uzunluk</parameter> değiştirgesi bir tamsayı ise yazma
+       işlemi <parameter>uzunluk</parameter> bayt yazıldıktan sonra veya
        <parameter>dizge</parameter> dizgesinin sonuna gelindiğinde durur
        (hangisi önce vuku bulursa).
       </para>
@@ -60,6 +60,28 @@
    <function>fwrite</function> işlevi bir hata oluşmamışsa yazılan baytların
    sayısı ile aksi takdirde &false; ile döner.
   </simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -136,9 +158,9 @@ function fwrite_stream($fp, $string) {
   </note>
   <note>
    <para>
-    Eğer <parameter>dt</parameter> dosya sonuna ekleme kipinde açılmışsa
+    Eğer <parameter>akım</parameter> dosya sonuna ekleme kipinde açılmışsa
     (bazı sistemlerde ve dosya yerel dosya sisteminde olduğu sürece
-    <parameter>dizge</parameter> uzunluğu dosya sisteminin blok boyunu
+    <parameter>veri</parameter> uzunluğu dosya sisteminin blok boyunu
     aşmadığı takdirde) yazma işlemi atomiktir. Yani,
     <function>fwrite</function> işlevini çağırmadan önce dosya tanıtıcısını
     <function>flock</function> ile kilitlemeye gerek yoktur; tüm veri

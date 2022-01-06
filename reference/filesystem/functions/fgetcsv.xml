@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7d93e0fe5eabef4325e6fc33abc329d1d370be86 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.fgetcsv">
+<!-- EN-Revision: 34e2e3541c52edc9f60a1ad9735b1f769254eb1e Maintainer: nilgun Status: ready -->
+<refentry xml:id="function.fgetcsv" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>fgetcsv</refname>
   <refpurpose>Dosya tanıtıcısından CSV alanlarını çözümleyerek bir satır
@@ -10,11 +10,11 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>array</type><methodname>fgetcsv</methodname>
-   <methodparam><type>resource</type><parameter>dt</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
+   <type class="union"><type>array</type><type>false</type></type><methodname>fgetcsv</methodname>
+   <methodparam><type>resource</type><parameter>akım</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>uzunluk</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>ayraç</parameter><initializer>","</initializer></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter><initializer>'"'</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>sınırlayıcı</parameter><initializer>"\""</initializer></methodparam>
    <methodparam choice="opt"><type>string</type><parameter>öncelem</parameter><initializer>"\\"</initializer></methodparam>
   </methodsynopsis>
   <para>
@@ -35,11 +35,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>dt</parameter></term>
+     <term><parameter>akım</parameter></term>
      <listitem>
       <para>
        <function>fopen</function>, <function>popen</function>veya
-       <function>fsockopen</function> tarafından başarıyla açılmış geçerrli
+       <function>fsockopen</function> tarafından başarıyla açılmış geçerli
        bir dosyanın tanıtıcısı.
       </para>
      </listitem>
@@ -54,9 +54,9 @@
        oluşan parçalara bölünür.
       </para>
       <para>
-       Bu değiştirgenin belirtilmemesi (veya PHP 5.0.4 ve sonrası için 0
-       belirtilmesi) durumunda azami satır uzunluğu sınırlanmaz fakat işlem
-       yavaşlar.
+       Bu değiştirgenin belirtilmemesi (veya PHP 8.0.0 ve sonrası için 0 veya
+       &null; belirtilmesi) durumunda azami satır uzunluğu sınırlanmaz fakat
+       işlem yavaşlar.
       </para>
      </listitem>
     </varlistentry>
@@ -107,7 +107,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Okunan alanları içeren indisli bir dizi döner.
+   Başarı durumunda okunan alanları içeren indisli bir
+   dizi,&return.falseforfailure;.
   </para>
   <note>
    <para>
@@ -116,11 +117,6 @@
    </para>
   </note>
   &note.line-endings;
-  <para>
-   <function>fgetcsv</function> işlevi, geçersiz <parameter>dt</parameter>
-   belirtilmişse &null;, dosya sonuna gelindiğinde veya bir hata
-   oluştuğunda ise &false; döndürür.
-  </para>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -135,6 +131,12 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>uzunluk</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
       <row>
        <entry>7.4.0</entry>
        <entry>

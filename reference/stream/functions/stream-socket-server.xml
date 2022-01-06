@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e41806c30bf6975e452c0d4ce35ab0984c2fa68c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a1702b5d45ad950c5f7a077878378a37851a2df6 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.stream-socket-server" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>stream_socket_server</refname>
@@ -9,15 +9,15 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>resource</type><methodname>stream_socket_server</methodname>
-   <methodparam><type>string</type><parameter>yerel_soket</parameter></methodparam>
-   <methodparam choice="opt"><type>int</type><parameter role="reference">hatanum</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter role="reference">ileti</parameter></methodparam>
+   <type class="union"><type>resource</type><type>false</type></type><methodname>stream_socket_server</methodname>
+   <methodparam><type>string</type><parameter>adres</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter role="reference">hatanum</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter role="reference">ileti</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>STREAM_SERVER_BIND | STREAM_SERVER_LISTEN</initializer></methodparam>
-   <methodparam choice="opt"><type>resource</type><parameter>bağlam</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>resource</type><type>null</type></type><parameter>bağlam</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Belirtilen <parameter>yerel_soket</parameter> üzerinde bir akım veya
+   Belirtilen <parameter>adres</parameter> üzerinde bir akım veya
    verikatarı soketi oluşturur.
   </para>
   <para>
@@ -31,7 +31,7 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>yerel_soket</parameter></term>
+     <term><parameter>adres</parameter></term>
      <listitem>
       <para>
        Oluşturulacak soketin türü standart URL biçemi kullanılarak belirtilir:
@@ -39,7 +39,7 @@
       </para>
       <para>
        TCP ve UDP gibi Genel Ağ Alanı soketleri (<constant>AF_INET</constant>)
-       için, <parameter>uzak_soket</parameter>'in <literal>hedef</literal>
+       için, <parameter>adres</parameter>'in <literal>hedef</literal>
        parçası bir konak ismi veya IP adresinden sonra gelen bir ikinokta imi
        ve bir port numarasından oluşur. Unix alan soketleri için
        <literal>hedef</literal> parçası ise dosya sistemi üstündeki bir soket
@@ -64,10 +64,10 @@
        çağrılarında oluşan sistem seviyesindeki hatanın bilgisi atanır. Eğer
        <parameter>hatanum</parameter> değiştirgesinde <literal>0</literal>
        döndüğünde işlev &false; döndürmüşse hata, <literal>bind()</literal>
-       çağrısından önce oluşmuş demektir. Bu sorunla çoğunlukla soketin
-       ilklendirilmesi sırasında karşılaşılır. <parameter>hatanum</parameter>
-       ve <parameter>ileti</parameter> değiştirgelerinin daima gönderimli
-       aktarıldıklarına dikkat ediniz.
+       çağrısından önce oluşmuş demektir.
+       Bu sorunla çoğunlukla soketin ilklendirilmesi sırasında karşılaşılır.
+       <parameter>hatanum</parameter> ve <parameter>ileti</parameter>
+       değiştirgelerinin daima gönderimli aktarılmasına dikkat edilmelidir.
       </para>
      </listitem>
     </varlistentry>
@@ -111,6 +111,28 @@
   <para>
    Bir hata durumunda &false;, aksi takdirde oluşturulan soketi döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>bağlam</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">

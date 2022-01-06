@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 363a506c6d5ab264ffb5d9a82d9aa6379b8d27bb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d6fbec8b2161d13e51af9763bbd1487b0b25bd42 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.get-class" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>get_class</refname>
@@ -29,7 +29,13 @@
       <note>
        <simpara>
         PHP 7.2.0 ve sonrasında <parameter>nesne</parameter>'ye &null;
-        belirtmeye artık izin verilmiyor.
+        belirtmeye artık izin verilmiyor ve <constant>E_WARNING</constant>
+        seviyesinde bir uyarı çıktılanıyor.
+       </simpara>
+       <simpara>
+        PHP 8.0.0 ve sonrasında ise <parameter>nesne</parameter>'ye &null;
+        belirtilmesi durumunda <classname>TypeError</classname> istisnası
+        oluşuyor.
        </simpara>
        <simpara>
         Değiştirge hala seçimlik olup işlev bir sınıfın içinden
@@ -46,8 +52,7 @@
   &reftitle.returnvalues;
   <para>
    Belirtilen <parameter>nesne</parameter> nesnesinin ait olduğu sınıfın
-   ismini bir dizge olarak döndürür. Eğer <parameter>nesne</parameter> bir
-   nesne değilse &false; döner.
+   ismini bir dizge olarak döndürür.
   </para>
   <para>
   <parameter>nesne</parameter> bir sınıfın içinde kullanılmazsa, sınıfın
@@ -62,7 +67,8 @@
   &reftitle.errors;
   <para>
    <function>get_class</function> bir nesneden farklı bir şey ile çağrılırsa
-   <constant>E_WARNING</constant> seviyesinde bir hata oluşur.
+   <classname>TypeError</classname> istisnası oluşur. PHP 8.0.0 öncesinde
+   <constant>E_WARNING</constant> seviyesinde bir hata oluşuyordu.
   </para>
  </refsect1>
  <refsect1 role="changelog">
@@ -77,6 +83,15 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        Bu işlevin bir sınıf dışından değiştirgesiz çağrılması
+        <classname>Error</classname> istisnası yavrulanmasına sebep olur.
+        Evvelce, <constant>E_WARNING</constant> seyiyesinde bir uyarı
+        ile işlev &false; döndürürdü.
+       </entry>
+      </row>
       <row>
        <entry>7.2.0</entry>
        <entry>
