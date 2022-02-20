@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 5c2678e02f0eb135946799eed02d884de1bcf4ad Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0bafd5454e7c54de5b9e455f997bec3ecf89cfdb Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -228,31 +228,6 @@ function takes_many_args(
     </programlisting>
    </example>
    </para>
-   <para>
-    PHP 8.0.0'dan itibaren, zorunlu değiştirgelerin seçimlik değiştirgelerden
-    sonra kullanılması önerilmemektedir. Bu sorun genellikle
-    öntanımlı değer yazılmamak suretiyle çözümlenebilir. Bunun tek istisnası
-    &null; öntanımlamasının türün örtük olarak null olabilmesini sağlayan
-    <code>Type $param = null</code> şeklindeki değiştirgelerdir. Bu kullanıma
-    hala izin veriliyor olsa da bunun açıkça bildirimde null türünü de
-    içererek yapılması önerilir.
-   </para>
-   <para>
-   <example>
-    <title>- Zorunlu değiştirgelerin seçimliklerden sonra kullanımı</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-function foo($a = [], $b) {} // Önce
-function foo($a, $b) {}      // Sonra
-
-function bar(A $a = null, $b) {} // Hala kullanımda
-function bar(?A $a, $b) {}       // Önerilen
-?>
-]]>
-    </programlisting>
-   </example>
-   </para>
 
    <sect2 xml:id="functions.arguments.by-reference">
     <title>Gönderimli değiştirge kullanımı</title>
@@ -298,8 +273,10 @@ echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
     <title>Öntanımlı değiştirge değerleri</title>
 
     <para>
-      Bir işlevde, sayıl değiştirgeler için C++ tarzı öntanımlı değerler
-      aşağıdaki biçimde tanımlanabilir:
+      Bir işlevde, değiştirgeler için öntanımlı değerler, değişken ataması biçiminde
+      tanımlanabilir. Öntanımlı değer sadece işlev çağrısı sırasında değiştirge
+      belirtilmemişse kullanılır. Şuna özellikle dikkat edilmelidir: &null; değer
+      öntanımlı değer olarak tanımlanamaz.
     </para>
     <para>
      <example>
@@ -328,8 +305,9 @@ Bir fincan az şekerli kahve yapalım.
      </example>
     </para>
     <para>
-     PHP ayrıca, öntanımlı değer olarak dizilerin ve özel &null; türünün
-     kullanımına da izin verir, örneğin:
+     Öntanımlı değer olarak, diziler, özel &null; türü ve PHP 8.1.0 itibariyle
+     <link linkend="language.oop5.basic.new">new SınıfAdı()</link> sözdizimi ile
+     nesneler kullanılabilir.
     </para>
     <para>
      <example>
@@ -349,6 +327,33 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
       </programlisting>
      </example>
     </para>
+    <para>
+     <example>
+      <title>- Öntanımlı değer olarak nesne kullanımı (PHP 8.1.0 ve sonrası)</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class ÖntanımlıDemleyici {
+    public function demle() {
+        return 'Çay demleniyor.';
+    }
+}
+class PorselenDemleyici {
+    public function demle() {
+        return 'Özel çayınız demleniyor.';
+    }
+}
+function çayyap($demleyici = new ÖntanımlıDemleyici)
+{
+    return $demleyici->demle();
+}
+echo çayyap();
+echo çayyap(new PorselenDemleyici);
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
 
     <simpara>
      Öntanımlı değer bir değişken, bir sınıf üyesi ya da bir işlev çağrısı
@@ -356,9 +361,9 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
     </simpara>
     <para>
      Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
-     değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerin sağında yer
-     alması gerektiğine dikkat edin. Aksi takdirde işler yolunda
-     gitmeyebilir. Aşağıdaki kod parçasını inceleyin:
+     değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerden sonra yer
+     alması gerektiğine dikkat edin. Aksi takdirde çağrı sırasında bunlar atlanamaz.
+     Aşağıdaki örneği inceleyin:
     </para>
     <para>
      <example>
@@ -366,22 +371,24 @@ echo kahveyap(array("çok şekerli", "az şekerli"), "mangalda");
       <programlisting role="php">
 <![CDATA[
 <?php
-function yoğurtyap($nekadar = "az", $neli)
+function yoğurtyap($miktar = "az", $katkı)
 {
-    return "Bir kase $nekadar $neli yoğurt yap.\n";
+    return "Bir kase $miktar $katkı içeren yoğurt yapılıyor.\n";
 }
 
-echo yoğurtyap("çilekli");   // beklendiği gibi çalışmayacaktır
+echo yoğurtyap("çilek");   // "çilek" $miktar olarak işleme alınır ve
+                           // tek değiştirge aktarımı hataya yol açar.
 ?>
 ]]>
       </programlisting>
       &example.outputs;
       <screen>
 <![CDATA[
-Warning: Missing argument 2 for yoğurtyap(), called in
-/home/nilgun/dnm/php-dnm on line 7 and defined in
-/home/nilgun/dnm/php-dnm on line 2
-Bir kase çilekli  yoğurt yap.
+Fatal error: Uncaught ArgumentCountError: Too few arguments to function yoğurtyap(), 1 passed in dnm.php on line 7 and exactly 2 expected in dnm.php:2
+Stack trace:
+#0 dnm.php(7): yoğurtyap('\xC3\xA7ilekli')
+#1 {main}
+  thrown in dnm.php on line 2
 ]]>
       </screen>
      </example>
@@ -395,23 +402,81 @@ Bir kase çilekli  yoğurt yap.
       <programlisting role="php">
 <![CDATA[
 <?php
-function yoğurtyap($neli, $nekadar= "az")
+function yoğurtyap($katkı, $miktar = "az")
 {
-    return "Bir kase $nekadar $neli yoğurt yap.\n";
+    return "Bir kase $miktar $katkı içeren yoğurt yapılıyor.\n";
 }
 
-echo yoğurtyap("çilekli");   // beklendiği gibi çalışır
+echo yoğurtyap("çilek");   // "çilek" $katkı olarak işleme alınır
 ?>
 ]]>
       </programlisting>
       &example.outputs;
       <screen>
 <![CDATA[
-Bir kase az çilekli yoğurt yap.
+Bir kase az çilek içeren yoğurt yapılıyor.
 ]]>
       </screen>
      </example>
     </para>
+    <para>
+     PHP 8.0.0 ve sonrasında, çok sayıda seçimlik değiştirgeyi atlamak için <link
+     linkend="functions.named-arguments">isimli değiştirgeler</link> kullanılabilir.
+    </para>
+    <para>
+     <example>
+      <title>- Öntanımlı işlev değiştirgelerinin doğru kullanımı</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function yoğurtyap($katkı = "şeker", $miktar = "az", $tarz = "doğal")
+{
+    return "Bir kase $miktar $katkı içeren $tarz yoğurt yapılıyor.\n";
+}
+echo makeyogurt($tarz: "süzme");
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+Bir kase az çilek içeren süzme yoğurt yapılıyor.
+]]>
+      </screen>
+     </example>
+    </para>
+    <para>
+     PHP 8.0.0 ve sonrasında, işlev çağrısında zorunlu değiştirgelerin
+     seçimliklerden sonra tanımlanması <emphasis>kullanımdan
+     kaldırılmıştır</emphasis>. Bu genellikle, kullanılmayacak olan öntanımlı
+     değer atlanarak çözümlenir. Bunun tek istisnası, türü örtük olarak &null;
+     yapan <code>Tür $param = null</code> biçimindeki değiştirgelerdir. Bunun
+     kullanımına hala izin verilmekteyse de bunun yerine,
+     <link linkend="language.types.declarations.nullable">&null; olabilen
+     tür</link> kullanımı önerilmektedir.
+     <example>
+      <title>- Seçimliklerin zorunlu değiştirgelerden sonra bildirimi</title>
+      <programlisting role="php">
+<![CDATA[
+ <?php
+ function foo($a = [], $b) {} // Öntanımlı değiştirge böyle kullanılamaz;
+                              // PHP 8.0.0 ve sonrasında kullanımda değil
+
+ function foo($a, $b) {}      // İşlevsel olarak aynı, bir uyarı verilmez
+ function bar(A $a = null, $b) {} // Hala izin veriliyor; $a null olabiliyor
+ function bar(?A $a, $b) {}       // Önerilen kullanım
+ ?>
+ ]]>
+      </programlisting>
+     </example>
+    </para>
+    <note>
+     <simpara>
+      PHP 7.1.0 ve sonrasında, öntanımlı değer belirtilmemiş bir değiştirgenin
+      atlanması <classname>ArgumentCountError</classname> yavrulanmasına yol
+      açmaktadır; önceki sürümlerde sadece bir uyarı çıktılanırdı.
+     </simpara>
+    </note>
 
     <note>
      <simpara>
@@ -690,8 +755,8 @@ htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8', fa
    </para>
    <para>
     <example>
-     <title>- Aynı değiştirgeyi birden fazla kullanırken
-      <classname>Error</classname> istisnası
+     <title>- Aynı değiştirgenin birden fazla kullanımında
+      <classname>Error</classname> yavrulanması
      </title>
      <programlisting role="php">
       <![CDATA[
