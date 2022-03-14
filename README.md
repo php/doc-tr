@@ -224,6 +224,7 @@ Boolean         Mantıksal
 Built-in        Yerleşik
 Callback        Geriçağırım
 Class           Sınıf
+Closure         Kapsanım
 Unicode Code Point    Unicode Karakter Kodu
 Compile         Derleme
 Configuration   Yapılandırma
@@ -310,6 +311,7 @@ Transaction     Veri hareketi
 Type            "Tür" veya "veri türü"
 Unary           Tek terimli
 Union type      Birleşim türü
+Unpack          Genişletme, yayma
 Unserialize     Nesneleştirme
 Validation      Geçerlilik
 Variable        Değişken
