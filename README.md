@@ -216,7 +216,7 @@ Attribute       Öznitelik
 Authentication  Kimlik doğrulama
 Authorization   Yetkilendirme
 Backslash       Ters bölü
-Binary          Programsa kastedilen "çalıştırılabilir", kendisi bir veri
+Binary          Uygulamaysa kastedilen "çalıştırılabilir", kendisi bir veri
                 türü ise çevrilmez, veri türünü niteliyorsa "ikil", bir
                 işleci niteliyorsa "iki terimli".
 Bitwise         Bitsel
