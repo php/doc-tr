@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9ee9eccf455188ab6eb352194eb6f9eb99e15606 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 18b39f03ef77080a349f6cd2d82112dd43f904c2 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.decon" xmlns="http://docbook.org/ns/docbook">
   <title>Kurucular ve Yıkıcılar</title>
@@ -175,6 +174,55 @@ class Point {
      </para>
     </note>
    </sect3>
+
+   <sect3 xml:id="language.oop5.decon.constructor.new">
+    <title>İlkendiricilerde new kullanımı</title>
+    <para>
+     PHP 8.1.0 ve sonrasında, nesneler öznitelik değiştirgelerinin yanısıra
+     öntanımlı değiştirgeler, statik değiştirgeler ve küresel sabitler olarak
+     kullanılabilmektedir. Buna ek olarak, nesneler
+     <function>define</function>'a da aktarılabilmektedir.
+    </para>
+    <note>
+     <para>
+      Dinamik veya dizge olmayan bir sınıf adının veya anonim bir sınıfın
+      kullanımına izin verilmez. Değiştirge genişletmeye izin verilmez.
+      Desteklenmeyen ifadelerin değiştirge olarak kullanımına izin verilmez.
+     </para>
+    </note>
+    <example>
+     <title>Using new in initializers</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+// All allowed:
+static $x = new Foo;
+
+const C = new Foo;
+
+function test($param = new Foo) {}
+
+#[AnAttribute(new Foo)]
+class Test {
+    public function __construct(
+        public $prop = new Foo,
+    ) {}
+}
+
+// Hiçbirine izin verilmez (derleme-anı hatası):
+function test(
+    $a = new (CLASS_NAME_CONSTANT)(), // dinamik sınıf adı
+    $b = new class {}, // anonim sınıf
+    $c = new A(...[]), // değiştirge genişletme
+    $d = new B($abc), // desteklenmeyen sabit ifadesi
+) {}
+?>
+]]>
+     </programlisting>
+    </example>
+   </sect3>
+
    <sect3 xml:id="language.oop5.decon.constructor.static">
     <title>Statik kurucu yöntemleri</title>
     <para>

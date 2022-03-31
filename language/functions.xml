@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 0bafd5454e7c54de5b9e455f997bec3ecf89cfdb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 08498c3bd38660ffa1259de0e58cd884c2497d59 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -273,10 +273,10 @@ echo $dzg;    // 'Bu bir dizgedir ve bir kaç karakter eklenmiştir.'
     <title>Öntanımlı değiştirge değerleri</title>
 
     <para>
-      Bir işlevde, değiştirgeler için öntanımlı değerler, değişken ataması biçiminde
-      tanımlanabilir. Öntanımlı değer sadece işlev çağrısı sırasında değiştirge
-      belirtilmemişse kullanılır. Şuna özellikle dikkat edilmelidir: &null; değer
-      öntanımlı değer olarak tanımlanamaz.
+      Bir işlevde, değiştirgeler için öntanımlı değerler, değişken ataması
+      biçiminde tanımlanabilir. Öntanımlı değer sadece işlev çağrısı
+      sırasında değiştirge belirtilmemişse kullanılır. Şuna özellikle
+      dikkat edilmelidir: &null; değer öntanımlı değer olarak tanımlanamaz.
     </para>
     <para>
      <example>
@@ -362,8 +362,8 @@ echo çayyap(new PorselenDemleyici);
     <para>
      Öntanımlı değiştirgeleri kullanırken, öntanımlama yapılmış tüm
      değiştirgelerin öntanımlama yapılmamış tüm değiştirgelerden sonra yer
-     alması gerektiğine dikkat edin. Aksi takdirde çağrı sırasında bunlar atlanamaz.
-     Aşağıdaki örneği inceleyin:
+     alması gerektiğine dikkat edin. Aksi takdirde çağrı sırasında bunlar
+     atlanamaz. Aşağıdaki örneği inceleyin:
     </para>
     <para>
      <example>
@@ -420,8 +420,9 @@ Bir kase az çilek içeren yoğurt yapılıyor.
      </example>
     </para>
     <para>
-     PHP 8.0.0 ve sonrasında, çok sayıda seçimlik değiştirgeyi atlamak için <link
-     linkend="functions.named-arguments">isimli değiştirgeler</link> kullanılabilir.
+     PHP 8.0.0 ve sonrasında, çok sayıda seçimlik değiştirgeyi atlamak için
+     <link linkend="functions.named-arguments">isimli değiştirgeler</link>
+     kullanılabilir.
     </para>
     <para>
      <example>
@@ -753,13 +754,12 @@ htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8', fa
     Aynı değiştirgeyi birden fazla kullanmak bir <classname>Error</classname>
     istisnasına yol açar.
    </para>
-   <para>
-    <example>
-     <title>- Aynı değiştirgenin birden fazla kullanımında
-      <classname>Error</classname> yavrulanması
-     </title>
-     <programlisting role="php">
-      <![CDATA[
+   <example>
+    <title>- Aynı değiştirgenin birden fazla kullanımında
+     <classname>Error</classname> yavrulanması
+    </title>
+    <programlisting role="php">
+     <![CDATA[
 <?php
 function foo($param) { ... }
 foo(param: 1, param: 2);
@@ -768,9 +768,30 @@ foo(1, param: 2);
 // Hata: $param isimli değiştirgesi önceki değiştirgeyi geçersiz kılıyor
 ?>
 ]]>
+    </programlisting>
+   </example>
+   <para>
+    PHP 8.1.0 itibariyle, değiştirge genişletmesinden sonra isimli değiştirge
+    kullanımına izin verilmektedir ancak, isimli değiştirgenin genişletmedeki
+    değiştirgeyi geçersiz kılmaması <emphasis>gerekir</emphasis>.
+   </para>
+
+   <example>
+    <title>- Genişletme sonrası isimli değiştirge kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo($a, $b, $c = 3, $d = 4) {
+  return $a + $b + $c + $d;
+}
+var_dump(foo(...[1, 2], d: 40)); // 46
+var_dump(foo(...['b' => 2, 'a' => 1], d: 40)); // 46
+var_dump(foo(...[1, 2], b: 20)); // Ölümcül hata. İsimli değiştirge $b, genişletmedekini geçersiz kılıyor
+?>
+]]>
      </programlisting>
     </example>
-   </para>
+
    </sect2>
   </sect1>
 
