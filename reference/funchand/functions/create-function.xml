@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- EN-Revision: eec6a4a36bf452bf271f116e7b6b9bb09d1181c3 Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 5065e44c26ccb29437ce26e9df0d26f446583d7a Maintainer: onurozgurozkan Status: ready -->
 <refentry xml:id="function.create-function" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>create_function</refname>
-  <refpurpose>Bir anonim (lamda tarzı) işlev oluşturur</refpurpose>
+  <refpurpose>Kod dizgesini değerlendirerek dinamik olarak bir işlev oluşturur</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -18,17 +18,18 @@
    <methodparam><type>string</type><parameter>kod</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Verilen değiştirgelerden isimsiz bir işlev oluşturur ve onun için eşsiz
-   bir isim döndürür.
+   Verilen değiştirgelerden dinamik olarak bir işlev oluşturur ve onun için
+   eşsiz bir isim döndürür.
   </para>
   <caution>
    <para>
     Bu işlev dahili olarak bir <function>eval</function> çağrısı yapar, bu
     nedenle <function>eval</function> ile aynı güvenlik sorunlarına sahiptir.
-    Ek olarak, kötü başarım ve bellek kullanımı özellikleri de vardır.
+    Ayrıca, oluşturulan işlev küresel bağlamda ve serbest bırakılamaz
+    olduğundan kötü başarım ve bellek kullanımı özellikleri de vardır.
    </para>
    <para>
-    Bu işlev yerine yerleşik bir <link linkend="functions.anonymous">anonim
+    Bu işlev yerine yerleşik bir <link linkend="functions.anonymous">isimsiz
     işlev</link> kullanılmalıdır.
    </para>
   </caution>
@@ -36,17 +37,19 @@
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
-   Genellikle bu değiştirgeler tek tırnaklar arasına alınmış bir dizge ile
-   işleve aktarılır. Tek tırnak kullanılmasının nedeni değişken isimlerini
-   çözümleme işleminden korumaktır. Çift tırnak kullanırsanız, değişken
-   adlarını <literal>\$avar</literal> örneğinde olduğu öncelemeniz
-   gerekecektir.
+   Normalde bu değiştirgeleri
+   <link linkend="language.types.string.syntax.single">tek tırnaklı
+   dizgeler</link> olarak aktarmanız önerilir.
+   <link linkend="language.types.string.syntax.double">Çift tırnaklı
+   dizgeler</link> kullanılırsa, koddaki değişken adlarının
+   <literal>\$somevar</literal> örneğindeki gibi dikkatli bir şekilde
+   öncelenmesi gerekecektir.
    <variablelist>
     <varlistentry>
      <term><parameter>değiştirgeler</parameter></term>
      <listitem>
       <para>
-       İşlevin değiştirgeleri.
+       Tek tırnaklı dizge olarak, işlevin değiştirgeleri.
       </para>
      </listitem>
     </varlistentry>
@@ -65,8 +68,10 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Hata oluşmamışsa bir dizge olarak işleve eşsiz bir isim, aksi takdirde
-   &false; döndürür.
+   Başarı durumunda bir dizge olarak işleve eşsiz bir isim, aksi takdirde
+   &false; döndürür. İşlev isminin yazdırılamayan bir karakter
+   (<literal>"\0"</literal>) içerdiği unutulmamalıdır, bu nedenle bu isim
+   yazdırılırken veya başka bir dizgeye eklenirken dikkatli olunmalıdır.
   </para>
  </refsect1>
 
@@ -75,34 +80,51 @@
   <para>
    <example>
     <title>-
-     <function>create_function</function> ile isimsiz işlev oluşturmak
+     <function>create_function</function> veya isimsiz işlevlerle ile bir
+     işlevin dinamik olarak oluşturulması
     </title>
     <para>
-     Bu işlevi, çalışma anında toplanan bilgileri kullanarak yeni bir işlev
-     oluşturmak için kullanabilirsiniz.
+     Çalışma anında toplanan bilgileri kullanarak yeni bir işlev
+     oluşturmak için dinamik olarak oluşturulmuş bir işlev kullanabilirsiniz.
+     Önce, <function>create_function</function> kullanarak:
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
 $işlev = create_function('$a,$b', 'return "ln($a) + ln($b) = " . log($a * $b);');
-echo "Yeni bir isimsiz işlev: $işlev\n";
 echo $işlev(2, M_E) . "\n";
-// Çıktısı:
-// Yeni bir isimsiz işlev: lambda_1
-// ln(2) + ln(2.718281828459) = 1.6931471805599
 ?>
 ]]>
     </programlisting>
+    <para>
+     Ve, <link linkend="functions.anonymous">isimsiz işlev</link> kullanarak;
+     dikkat edilirse, kod ve değiştirgeler artık dizgelerin içinde değildir:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$newfunc = function($a,$b) { return "ln($a) + ln($b) = " . log($a * $b); };
+echo $newfunc(2, M_E) . "\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+ln(2) + ln(2.718281828459) = 1.6931471805599
+]]>
+    </screen>
    </example>
   </para>
   <para>
-   Belki, bir değiştirge listesi üzerinde belli işlemler yapan bir genel işlem
-   işlevi tercih edersiniz:
-  </para>
-  <para>
    <example>
-    <title>- <function>create_function</function> işlevi ile bir genel işlem
-    işlevi oluşturmak</title>
+    <title>- <function>create_function</function> işlevi  veya isimsiz
+     işlevlerle bir genel işlem işlevi oluşturmak
+    </title>
+    <para>
+     Diğer bir kullanım, bir değiştirge listesi üzerinde belli işlemler yapan
+     genel bir işleyici işlev olabilir:
+  </para>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -114,29 +136,64 @@ function process($var1, $var2, $farr)
 }
 
 // Birkaç matematik işlevi oluşturalım
-$f1 = 'if ($a >=0) {return "b*a^2 = ".$b*sqrt($a);} else {return false;}';
-$f2 = "return \"min(b^2+a, a^2,b) = \".min(\$a*\$a+\$b,\$b*\$b+\$a);";
-$f3 = 'if ($a > 0 && $b != 0) {return "ln(a)/b = ".log($a)/$b; } else { return false; }';
 $farr = array(
     create_function('$x,$y', 'return "biraz trig: ".(sin($x) + $x*cos($y));'),
     create_function('$x,$y', 'return "bir hipotenüs: ".sqrt($x*$x + $y*$y);'),
-    create_function('$a,$b', $f1),
-    create_function('$a,$b', $f2),
-    create_function('$a,$b', $f3)
-    );
-
-echo "\nİlk isimsiz işlev grubumuz\n";
+    create_function('$a,$b', 'if ($a >=0) {return "b*a^2 = ".$b*sqrt($a);} else {return false;}'),
+    create_function('$a,$b', "return \"min(b^2+a, a^2,b) = \".min(\$a*\$a+\$b,\$b*\$b+\$a);"),
+    create_function('$a,$b', 'if ($a > 0 && $b != 0) {return "ln(a)/b = ".log($a)/$b; } else { return false; }')
+);
+echo "\nBirinci dinamik işlev grubumuz\n";
 echo "değiştirgeler: 2.3445, M_PI\n";
 process(2.3445, M_PI, $farr);
 
 // birkaç tane de dizge işlevi oluşturalım
 $garr = array(
     create_function('$b,$a', 'if (strncmp($a, $b, 3) == 0) return "** \"$a\" '.
-    've \"$b\"\n** (ilk üç karaktere bakarak) Bak bu ikisi aynı!";'),
-    create_function('$a,$b', '; return "CRCs: " . crc32($a) . ", ".crc32($b);'),
-    create_function('$a,$b', '; return "benzerlik(a,b) = " . similar_text($a, $b, &$p) . "(%$p)";')
-    );
-echo "\nİkinci isimsiz işlev grubumuz\n";
+        've \"$b\"\n**  (ilk üç karaktere bakarak) Bak bu ikisi aynı!";'),
+    create_function('$a,$b', 'return "CRCs: " . crc32($a) . ", ".crc32($b);'),
+    create_function('$a,$b', 'return "benzerlik(a,b) = " . similar_text($a, $b, $p) . "($p%)";')
+);
+echo "\nİkinci dinamik işlev grubumuz\n";
+process("Gün yavaş yavaş ışıyordu", "Gün aydınlanıyordu", $garr);
+?>
+]]>
+    </programlisting>
+    <para>
+     Aynı kodu bu kez <link linkend="functions.anonymous">isimsiz
+     işlevlerle</link> oluşturuluyor. Dikkat edilirse, koddaki değişken
+     isimleri artık dizge içinde olmadığından öncelenmemiştir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function process($var1, $var2, $farr)
+{
+    foreach ($farr as $f) {
+        echo $f($var1, $var2) . "\n";
+    }
+}
+
+// Birkaç matematik işlevi oluşturalım
+$farr = array(
+    function($x,$y) { return "biraz trig: ".(sin($x) + $x*cos($y)); },
+    function($x,$y) { return "hipotenüs: ".sqrt($x*$x + $y*$y); },
+    function($a,$b) { if ($a >=0) {return "b*a^2 = ".$b*sqrt($a);} else {return false;} },
+    function($a,$b) { return "min(b^2+a, a^2,b) = " . min($a*$a+$b, $b*$b+$a); },
+    function($a,$b) { if ($a > 0 && $b != 0) {return "ln(a)/b = ".log($a)/$b; } else { return false; } }
+);
+
+echo "\nBirinci dinamik işlev grubumuz\n";
+echo "değiştirgeler: 2.3445, M_PI\n";
+process(2.3445, M_PI, $farr);
+
+// birkaç tane de dizge işlevi oluşturalım
+$garr = array(
+    function($b,$a) { if (strncmp($a, $b, 3) == 0) return "** \"$a\" " .
+        "ve \"$b\"\n**  (ilk üç karaktere bakarak) Bak bu ikisi aynı!"; },
+    function($a,$b) { return "CRCs: " . crc32($a) . ", ".crc32($b); },
+    function($a,$b) { return "benzerlik(a,b) = " . similar_text($a, $b, $p) . "($p%)"; }
+);echo "\nİkinci dinamik işlev grubumuz\n";
 process("Gün yavaş yavaş ışıyordu", "Gün aydınlanıyordu", $garr);
 ?>
 ]]>
@@ -144,31 +201,31 @@ process("Gün yavaş yavaş ışıyordu", "Gün aydınlanıyordu", $garr);
     &example.outputs;
     <screen>
 <![CDATA[
-İlk isimsiz işlev grubumuz
+Birinci dinamik işlev grubumuz
 değiştirgeler: 2.3445, M_PI
 biraz trig: -1.6291725057799
-bir hipotenüs: 3.9199852871011
+hipotenüs: 3.9199852871011
 b*a^2 = 4.8103313314525
 min(b^2+a, a^2,b) = 8.6382729035898
 ln(a)/b = 0.27122299212594
 
-İkinci isimsiz işlev grubumuz
+İkinci dinamik işlev grubumuz
 ** "Gün aydınlanıyordu" ve "Gün yavaş yavaş ışıyordu"
-** (ilk üç karaktere bakarak) Bak bu ikisi aynı!
-CRCs: -725381282, 342550513
-benzerlik(a,b) = 15(%58.823529411765)
+**  (ilk üç karaktere bakarak) Bak bu ikisi aynı!
+CRCs: 2226456759, 3176276925
+benzerlik(a,b) = 15(58.823529411765%)
 ]]>
     </screen>
    </example>
   </para>
   <para>
-   Şüphesiz, lamda tarzı (isimsiz) işlevlerin asıl kullanım amacı geriçağırım
+   <example>
+    <title>- Dinamik işlevlerin geriçağırım işlevlerinde kullanımı</title>
+  <para>
+   Şüphesiz, dinamik işlevlerin asıl kullanım amacı geriçağırım
    işlevleri oluşturmaktır. <function>array_walk</function> ve
    <function>usort</function> işlevlerini kullanan örnekler:
   </para>
-  <para>
-   <example>
-    <title>- İsimsiz işlevlerin geriçağırım işlevlerinde kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -177,6 +234,18 @@ $av = array("işte ", "bir ", "bu ", "şu ");
 array_walk($av, create_function('&$v,$k', '$v = $v . "mango";'));
 print_r($av);
 
+?>
+]]>
+    </programlisting>
+    <para>
+     <link linkend="functions.anonymous">İsimsiz işlev</link> kullanarak:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$av = array("işte ", "bir ", "bu ", "şu ");
+array_walk($av, function(&$v,$k) { $v = $v . "mango"; });
+print_r($av);
 ?>
 ]]>
     </programlisting>
@@ -193,21 +262,40 @@ Array
 ]]>
     </screen>
     <para>
-     Kısadan uzuna sıralanmış dizgelerden oluşan bir dizi:
+     Bir dizgeyi <function>create_function</function> ile uzundan kısaya
+     sıralamak:
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-
 $sv = array("kısa", "daha uzun", "daha da uzun", "daha daha uzun");
+echo "Özgün:\n";
 print_r($sv);
-
+echo "Sıralı:\n";
+usort($sv, create_function('$a,$b','return strlen($b) - strlen($a);'));
+print_r($sv);
+?>
+]]>
+    </programlisting>
+    <para>
+     <link linkend="functions.anonymous">İsimsiz işlev</link> kullanarak:
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sv = array("kısa", "daha uzun", "daha da uzun", "daha daha uzun");
+echo "Özgün:\n";
+print_r($sv);
+echo "Sıralı:\n";
+usort($sv, function($a,$b) { return strlen($b) - strlen($a); });
+print_r($sv);
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
+Özgün:
 Array
 (
     [0] => kısa
@@ -215,32 +303,14 @@ Array
     [2] => daha da uzun
     [3] => daha daha uzun
 )
-
-]]>
-    </screen>
-    <para>
-     Şimdi uzundan kısaya doğru sıralayalım:
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-usort($sv, create_function('$a,$b','return strlen($b) - strlen($a);'));
-print_r($sv);
-
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
+Sıralı:
+Array
 (
     [0] => daha daha uzun
     [1] => daha da uzun
     [2] => daha uzun
     [3] => kısa
 )
-
 ]]>
     </screen>
    </example>
@@ -251,7 +321,7 @@ print_r($sv);
   &reftitle.seealso;
   <para>
    <simplelist>
-    <member><link linkend="functions.anonymous">Anonim işlevler</link></member>
+    <member><link linkend="functions.anonymous">İsimsiz işlevler</link></member>
    </simplelist>
    </para>
   </refsect1>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 0c9c2dd669fe9395eaa73d487fbd160f9057429a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a223531900823441f82d178ca4e94c0444f24576 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.utf8-encode">
  <refnamediv>
   <refname>utf8_encode</refname>
-  <refpurpose>Bir ISO-8859-1 dizgeyi UTF-8'e dönüştürür</refpurpose>
+  <refpurpose>ISO-8859-1 dizgeyi UTF-8'e dönüştürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -17,6 +17,13 @@
    <literal>UTF-8</literal>'e dönüştürür.
   </para>
   <note>
+   <para>
+    Bu işlev, belirtilen dizgenin geçerli kodlamasını tahmin etmeye çalışmaz,
+    bunun ISO-8859-1 ("Latin 1" olarak da bilinir) olarak kodlandığını
+    varsayar ve UTF-8'e dönüştürür. Her bayt dizisi geçerli bir ISO-8859-1
+    dizesi olduğundan, bu hiçbir zaman bir hataya yol açmaz, ancak farklı bir
+    kodlama istendiğinde yararlı bir dizgeyle sonuçlanmaz.
+   </para>
    <para>
     <literal>ISO-8859-1</literal> karakter kodlamasını kullanıyor olarak
     imlenmiş birçok sayfa aslında benzeri olan <literal>Windows-1252</literal>
@@ -57,6 +64,29 @@
   </para>
  </refsect1>
 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title>- Temel örnek</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// 'Zoë' dizgesini ISO 8859-1'den UTF-8'e dönüştürür
+$iso8859_1_string = "\x5A\x6F\xEB";
+$utf8_string = utf8_encode($iso8859_1_string);
+echo bin2hex($utf8_string), "\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+5a6fc3ab
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -72,8 +102,8 @@
       <row>
        <entry>7.2.0</entry>
        <entry>
-        Bu işlev PHP çekirdeğine taşınmıştır. Bu nedenle bu işlevin
-        kullanılabilir olması için XML eklentisine gereksinimi kaldırmıştır.
+        Bu işlev XML eklentisinden PHP çekirdeğine taşınmıştır. Önceki
+        sürümlerde sadece XML eklentisi kurulduğunda kullanılabiliyordu.
        </entry>
       </row>
      </tbody>
@@ -85,13 +115,10 @@
  <refsect1 role="seealso">
   &reftitle.seealso;
   <simplelist>
-   <member><function>utf8_decode</function> - Tersine dönüşüm yapar</member>
-   <member><function>mb_convert_encoding</function> - UTF-8, ISO-8859-1 ve
-   Windows-1252 dahil pek çok karakter kodlaması arasında dönüşüm yapar</member>
-   <member><function>iconv</function> - Çeşitli karakter kodlamaları arasında
-   dönüşüm yapar</member>
-   <member><function>recode_string</function> - Çeşitli karakter kodlamaları
-   arasında dönüşüm yapar</member>
+   <member><function>utf8_decode</function></member>
+   <member><function>mb_convert_encoding</function></member>
+   <member><methodname>UConverter::transcode</methodname></member>
+   <member><function>iconv</function></member>
   </simplelist>
  </refsect1>
 
