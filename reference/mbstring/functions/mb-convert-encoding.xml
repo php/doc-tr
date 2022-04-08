@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c9893954e17ec13bf66f54433e72c8af026406cf Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 99d758bd259fa80c2828cf8cc250984cb683ee8f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-convert-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_convert_encoding</refname>
@@ -16,9 +16,9 @@
   </methodsynopsis>
   <para>
    Belirtilen <parameter>dizge</parameter>nin karakter kodlamasını
-   <parameter>kodlamadan</parameter> <parameter>kodlamaya</parameter>
-   dönüştürür. <parameter>dizge</parameter> olarak bir dizi verilmişse tüm
-   dizge değerler sırayla dönüştürülür.
+   <parameter>kodlamadan</parameter> veya dahili kodlamadan
+   <parameter>kodlamaya</parameter> dönüştürür. <parameter>dizge</parameter>
+   olarak bir dizi verilmişse tüm dizge değerler sırayla dönüştürülür.
   </para>
  </refsect1>
 
@@ -43,21 +43,26 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>from_encoding</parameter></term>
+     <term><parameter>kodlamadan</parameter></term>
      <listitem>
       <para>
        <parameter>kodlamadan</parameter> değiştirgesinde, dizge kodlamasını
        algılamak için kullanılacak karakter kodlamaları bir dizi veya virgül
-       ayraçlı liste olarak belirtilir. Belirtilmezse
-       <link linkend="ini.mbstring.detect-order">dahili algılama sırası</link>
-       kullanılır.
+       ayraçlı liste olarak belirtilir. Doğru kodlama
+       <function>mb_detect_encoding</function> işlevinde kullanılan algoritma
+       ile saptanmaya çalışılır.
       </para>
       <para>
-       <!-- can the meaning of auto be altered? -->
-       "<literal>auto</literal>" değeri de belirtilebir. Bu takdirde,
-       <emphasis>"ASCII,JIS,UTF-8,EUC-JP,SJIS"</emphasis> algı sırası
-       kullanılır. Bkz. <link
-       linkend="mbstring.supported-encodings">desteklenen kodlamalar</link>
+       <parameter>kodlamadan</parameter> &null; ise veya belirtilmezse <link
+       linkend="ini.mbstring.internal-encoding">mbstring.internal_encoding</link>
+       yönergesinin değeri, aksi takdirde <link
+       linkend="ini.default-charset">default_charset</link> değeri kullanılır.
+      </para>
+      <para>
+       <parameter>kodlamaya</parameter> ve <parameter>kodlamadan</parameter>
+       değiştirgelerine aktarılabilecek geçerli değerler için
+       <link linkend="mbstring.supported-encodings">Desteklenen Karakter
+       Kodlamaları</link> sayfasına bakılabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -147,7 +152,9 @@ $str = mb_convert_encoding($str, "UTF-7", "EUC-JP");
    UCS-2LE'ye dönüşüm yaptıralım */
 $str = mb_convert_encoding($str, "UCS-2LE", "JIS, eucjp-win, sjis-win");
 
-/* "auto" değeri "ASCII,JIS,UTF-8,EUC-JP,SJIS" olarak genişletilir */
+/*  mbstring.language değeri "Japanese" ise, "auto" değeri
+ * "ASCII,JIS,UTF-8,EUC-JP,SJIS" olarak genişletilir
+ */
 $str = mb_convert_encoding($str, "EUC-JP", "auto");
 ?>
 ]]>
@@ -158,11 +165,11 @@ $str = mb_convert_encoding($str, "EUC-JP", "auto");
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>mb_detect_order</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>mb_detect_order</function></member>
+   <member><methodname>UConverter::transcode</methodname></member>
+   <member><function>iconv</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

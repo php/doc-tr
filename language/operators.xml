@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 87b582706267d69006a8aaaed3b5eda2ccf99c92 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c653d5a2b9b3a2671ca017c9f7ab6976fa8d148d Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook">
   <title>İşleçler</title>
   <simpara>
@@ -1776,7 +1776,7 @@ function standard_dizi_karşılaştır($trm1, $trm2)
     }
     foreach ($ter1 as $anh => $değ) {
         if (!array_key_exists($anh, $ter2)) {
-            return null;                   // karşılaştırılamaz
+            return 1;
         } elseif ($değ < $ter2[$anh]) {
             return -1;
         } elseif ($değ > $ter2[$anh]) {
@@ -1797,12 +1797,21 @@ function standard_dizi_karşılaştır($trm1, $trm2)
      <type>float</type> türlerinin dahili gösteriminden dolayı iki
      <type>float</type> sayının eşitliğine bakamazsınız.
     </para>
-
     <para>
      Bu konuda daha ayrıntıl bilgi için <type>float</type> türünün belgesine
      bakınız.
     </para>
    </warning>
+   <note>
+    <simpara>
+     Farklı türdeki değerleri karşılaştırırken, özellikle tamsayıları
+     mantıksal değerlerle veya dizgelerle karşılaştırırken, PHP'nin otomatik
+     tür dönüşümünün her zaman açık olmadığını unutmayın. Bu nedenle, çoğu
+     durumda <literal>==</literal> ve <literal>!=</literal> yerine genellikle
+     <literal>===</literal> and <literal>!==</literal>  karşılaştırmalarının
+     kullanılması önerilir.
+    </simpara>
+   </note>
 
    <sect2 role="seealso">
     &reftitle.seealso;
@@ -1844,14 +1853,14 @@ if (empty($_POST['action'])) {
      <literal>(ifade1) ? (ifade2) : (ifade3)</literal> ifadesinin sonucu,
      <replaceable>ifade1</replaceable> doğruysa
      <replaceable>ifade2</replaceable> değilse
-     <replaceable>ifade3</replaceable>'dir.
+     <replaceable>ifade3</replaceable>'tür.
     </para>
     <para>
      Üç terimli işlecin orta parçasını dışarda bırakmak mümkündür.
-     <literal>ifade1 ?: ifade3</literal> ifadesi
-     <replaceable>ifade1</replaceable> &true; ise
-     <replaceable>ifade1</replaceable> ile,
-     değilse <replaceable>ifade3</replaceable> ile döner.
+     <literal>ifade1 ?: ifade3</literal> ifadesinin sonucu,
+     <replaceable>ifade1</replaceable> doğruysa
+     <replaceable>ifade1</replaceable> değilse
+     <replaceable>ifade3</replaceable>'tür.
     </para>
     <note>
      <simpara>
@@ -1897,12 +1906,30 @@ echo ((true ? 'true' : false) ? 't' : 'f');
       </example>
      </para>
     </note>
+    <note>
+     <para>
+      Ancak kısa üç terimli (<literal>?:</literal>) zincirleri kararlıdır ve beklendiği gibi davranır. Yanlış olmayan ilk değiştirge değerlendirilir. Tanımsız değerlerin yine de bir uyarı vereceği unutulmamalıdır.
+      <example>
+       <title>- Kısa üç terimli zinciri</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+echo 0 ?: 1 ?: 2 ?: 3, PHP_EOL; //1
+echo 0 ?: 0 ?: 2 ?: 3, PHP_EOL; //2
+echo 0 ?: 0 ?: 0 ?: 3, PHP_EOL; //3
+?>
+]]>
+       </programlisting>
+      </example>
+     </para>
+    </note>
    </sect2>
 
    <sect2 xml:id="language.operators.comparison.coalesce">
     <title>Null kaynaşma işleci</title>
     <para>
-     "??" null kaynaşma işleci adını alır.
+     Diğer bir kullanışlı işleç kısaltması olan "??" null kaynaşma işleci
+     adını alır.
      <example>
       <title>- Öntanımlı değer atama</title>
       <programlisting role="php">
@@ -1911,7 +1938,7 @@ echo ((true ? 'true' : false) ? 't' : 'f');
 // Null kaynaşma işleci için kullanım örneği
 $action = $_POST['action'] ?? 'default';
 
-// Yukarıdaki satır, bu if/else deyimine esdeğerdir.
+// Yukarıdaki satır, bu if/else deyimine eşdeğerdir.
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
 } else {
@@ -1943,7 +1970,25 @@ if (isset($_POST['action'])) {
     </note>
     <note>
      <para>
-      Null kaynaşma işleci basit iç içeliğe izi verir:
+      Null kaynaşma işleci düşük önceliğe sahiptir. Yani, diğer işleçlerle
+      (dizge bitiştirme veya aritmetik işleçler gibi) birlikte
+      kullanıldığında yay ayraçlar gerekli olabilir.
+     </para>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// $name tanımsızsa uyarı verilir
+print 'Mr. ' . $name ?? 'Anonymous';
+
+// "Mr. Anonymous" basar
+print 'Mr. ' . ($name ?? 'Anonymous');
+?>
+]]>
+     </programlisting>
+    </note>
+    <note>
+     <para>
+      Null kaynaşma işleci basit iç içeliğe izin verir:
       <example>
        <title>- İçiçe null kaynaşma işleci</title>
        <programlisting role="php">

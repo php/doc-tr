@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- EN-Revision: af64507ffdd4fe88b2dc19efade2cf6230cde739 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e84773a60556e5052754bf28bd6ab18ea438c4ef Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdo.setattribute" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDO::setAttribute</refname>
@@ -18,86 +18,241 @@
    listelenmiştir. Bazı sürücülerin kendilerine özgü öznitelikleri olabilir.
    Sürücüye özgü özniteliklerin <emphasis>başka sürücülerde
    kullanılmamasına</emphasis> ise özellikle dikkat edilmelidir.
-   <itemizedlist>
-    <listitem><para>
-     <literal>PDO::ATTR_CASE</literal>: Sütun isimlerinin harflerini belli bir
-     büyüklüğe zorlar.
-     <itemizedlist>
-      <listitem><para>
-       <literal>PDO::CASE_LOWER</literal>: Sütun isimlerinin harflerini küçük
-       harfe zorlar.
-      </para></listitem>
-      <listitem><para>
-       <literal>PDO::CASE_NATURAL</literal>: Sütun isimlerinin harfleri veritabanı sürücüsünden döndüğü haliyle kullanılır.
-      </para></listitem>
-      <listitem><para>
-       <literal>PDO::CASE_UPPER</literal>: Sütun isimlerinin harflerini büyük
-       harfe zorlar.
-      </para></listitem>
-     </itemizedlist>
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_ERRMODE</literal>: Hata raporlama.
-     <itemizedlist>
-      <listitem><para><literal>PDO::ERRMODE_SILENT</literal>:
-       Sadece hata kodlarını atar.</para></listitem>
-      <listitem><para><literal>PDO::ERRMODE_WARNING</literal>:
-       Bir <constant>E_WARNING</constant> çıktılanır.</para></listitem>
-      <listitem><para><literal>PDO::ERRMODE_EXCEPTION</literal>:
-       Bir <link linkend="class.pdoexception">istisna</link>
-       yavrulanır.</para></listitem>
-     </itemizedlist>
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_ORACLE_NULLS</literal>
-     (Sadece Oracle için değil, bütün sürücüler için kullanılabilir):
-     &null;'a ve boş dizgelere dönüşüm.
-     <itemizedlist>
-      <listitem><para><literal>PDO::NULL_NATURAL</literal>:
-       Dönüşüm yok.</para></listitem>
-      <listitem><para><literal>PDO::NULL_EMPTY_STRING</literal>:
-       Boş dizge &null;'a dönüştürülür.</para></listitem>
-      <listitem><para><literal>PDO::NULL_TO_STRING</literal>:
-       &null; boş dizgeye dönüştürülür.</para></listitem>
-     </itemizedlist>
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_STRINGIFY_FETCHES</literal>:
-     Döndürülürken sayısal değerler dizgeye dönüştürülür. Mantıksal bir değer
-     gerekir.
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_STATEMENT_CLASS</literal>:
-     <classname>PDOStatement</classname> sınıfından türetilmiş kullanıcı
-     tanımlı bir deyim sınıfı tanımlar. Kalıcı PDO bağlantılarıyla
-     kullanılamaz. <literal>array(string sınıfadı, array(mixed
-     kurucu_değiştirgeler))</literal> gerekir.
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_TIMEOUT</literal>:
-     Zaman aşımı süresini saniye cinsinden belirtir. Tüm sürücüler bu seçeneği
-     desteklemez ve anlamı sürücüden sürücüye farklılık gösterebilir. Örneğin,
-     sqlite yazılabilir bir kilit almaktan vazgeçmeden önce bu zaman değerini
-     bekler, ancak diğer sürücüler bunu bir bağlanma veya okuma zaman aşımı
-     aralığı olarak yorumlayabilir. <type>int</type> türünde değer gerektirir.
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_AUTOCOMMIT</literal>
-     (OCI, Firebird ve MySQL'de kullanılır): Her tek deyimin otomatik gönderilip
-     gönderilmeyeceği belirtilir.
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_EMULATE_PREPARES</literal>
-     Hazırlanmış deyimlerin öykünmesini etkinleştirir veya devre dışı bırakır.
-     Bazı sürücüler yerel olarak hazırlanmış deyimleri desteklemez veya bunlar
-     için sınırlı desteğe sahiptir. PDO'yu ya her zaman hazırlanmış deyimleri
-     öykünmeye (eğer &true; ve öykünmüş hazırlar sürücü tarafından
-     destekleniyorsa) ya da yerel hazırlanmış deyimleri kullanmaya (&false; ise)
-     zorlamak için bu ayarı kullanın. Sürücü mevcut sorguyu başarılı bir şekilde
-     hazırlayamazsa, her zaman hazırlamış deyimi öykünmeye geri dönecektir.
-     <type>bool</type> türünde değer gerektirir.
-     </para></listitem>
-    <listitem><para><literal>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY</literal>
-     (MySQL'de kullanılır): Tamponlu sorgular kullanılır.
-    </para></listitem>
-    <listitem><para><literal>PDO::ATTR_DEFAULT_FETCH_MODE</literal>:
-     Öntanımlı al-getir kipini ayarlar, Kipin açıklaması için
-    <function>PDOStatement::fetch</function> belgesine bakınız.
-    </para></listitem>
-   </itemizedlist>
+   <variablelist>
+    <varlistentry>
+     <term><constant>PDO::ATTR_CASE</constant></term>
+     <listitem>
+      <para>
+       Sütun isimlerinin harflerini belli birbüyüklüğe zorlar.
+       Aşağıdaki değerlerden birini alabilir:
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term><constant>PDO::CASE_LOWER</constant></term>
+        <listitem>
+         <simpara>
+          Sütun isimlerinin harflerini küçük harfe zorlar.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::CASE_NATURAL</constant></term>
+        <listitem>
+         <simpara>
+          Sütun isimlerinin harfleri veritabanı sürücüsünden döndüğü
+          haliyle kullanılır.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::CASE_UPPER</constant></term>
+        <listitem>
+         <simpara>
+          Sütun isimlerinin harflerini büyük harfe zorlar.
+         </simpara>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_ERRMODE</constant></term>
+     <listitem>
+      <para>
+       PDO hata raporlama kipi.
+       Aşağıdaki değerlerden birini alabilir:
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term><constant>PDO::ERRMODE_SILENT</constant></term>
+        <listitem>
+         <simpara>
+          Sadece hata kodlarını atar.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::ERRMODE_WARNING</constant></term>
+        <listitem>
+         <simpara>
+          Bir <constant>E_WARNING</constant> çıktılanır.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::ERRMODE_EXCEPTION</constant></term>
+        <listitem>
+         <simpara>
+          <classname>PDOException</classname> istisnası yavrulanır.
+         </simpara>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_ORACLE_NULLS</constant></term>
+     <listitem>
+      <note>
+       <simpara>
+        Sadece Oracle için değil, bütün sürücüler için kullanılabilir.
+       </simpara>
+      </note>
+      <para>
+       &null;'a ve boş dizgelere dönüşümü belirler.
+       Aşağıdaki değerlerden birini alabilir:
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term><constant>PDO::NULL_NATURAL</constant></term>
+        <listitem>
+         <simpara>
+          Dönüşüm yok.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::NULL_EMPTY_STRING</constant></term>
+        <listitem>
+         <simpara>
+          Boş dizge &null;'a dönüştürülür.
+         </simpara>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><constant>PDO::NULL_TO_STRING</constant></term>
+        <listitem>
+         <simpara>
+          &null; boş dizgeye dönüştürülür.
+         </simpara>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_STRINGIFY_FETCHES</constant></term>
+     <listitem>
+      <para>
+       Döndürülürken sayısal değerler dizgeye dönüştürülür. Mantıksal bir değer
+       gerekir: &true; etkinleştirir, &false; iptal eder.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_STATEMENT_CLASS</constant></term>
+     <listitem>
+      <para>
+       <classname>PDOStatement</classname> sınıfından türetilmiş kullanıcı
+       tanımlı bir deyim sınıfı tanımlar. <literal>array(string sınıfadı,
+       array(mixed kurucu_değiştirgeler))</literal> gerekir.
+      </para>
+      <caution>
+       <simpara>
+        Kalıcı PDO bağlantılarıyla kullanılamaz.
+       </simpara>
+      </caution>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_TIMEOUT</constant></term>
+     <listitem>
+      <para>
+       Zaman aşımı süresini saniye cinsinden belirtir.
+       <type>int</type> türünde değer gerektirir.
+      </para>
+      <note>
+       <para>
+        Tüm sürücüler bu seçeneği desteklemez ve anlamı sürücüden sürücüye
+        farklılık gösterebilir. Örneğin, sqlite yazılabilir bir kilit almaktan
+        vazgeçmeden önce bu zaman değerini bekler, ancak diğer sürücüler bunu
+        bir bağlanma veya okuma zaman aşımı aralığı olarak yorumlayabilir.
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_AUTOCOMMIT</constant></term>
+     <listitem>
+      <note>
+       <simpara>
+        Sadece OCI, Firebird ve MySQL'de kullanılabilir.
+       </simpara>
+      </note>
+      <para>
+       Her tek deyimin otomatik gönderilip gönderilmeyeceği belirtilir.
+       Mantıksal bir değer gerekir: &true; etkinleştirir, &false; iptal eder.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_EMULATE_PREPARES</constant></term>
+     <listitem>
+      <note>
+       <simpara>
+        Sadece OCI, Firebird ve MySQL'de kullanılabilir.
+       </simpara>
+      </note>
+      <para>
+       Hazırlanmış deyimlerin öykünmesini etkinleştirir veya devre dışı
+       bırakır. Bazı sürücüler yerel olarak hazırlanmış deyimleri desteklemez
+       veya bunlar için sınırlı desteğe sahiptir. Mantıksal bir değer gerekir:
+       PDO'yu ya her zaman hazırlanmış deyimleri öykünmeye (eğer &true; ve
+       öykünmüş hazırlar sürücü tarafından destekleniyorsa) ya da yerel
+       hazırlanmış deyimleri kullanmaya (&false; ise) zorlamak için bu ayar
+       kullanılır. Sürücü mevcut sorguyu başarılı bir şekilde hazırlayamazsa,
+       her zaman hazırlamış deyimi öykünmeye geri dönecektir.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY</constant></term>
+     <listitem>
+      <note>
+       <simpara>
+        MySQL'de kullanılır.
+       </simpara>
+      </note>
+      <para>
+       Tamponlu sorgu kullanımı. Mantıksal bir değer gerekir: &true; etkinleştirir, &false; iptal eder.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><constant>PDO::ATTR_DEFAULT_FETCH_MODE</constant></term>
+     <listitem>
+      <para>
+       Öntanımlı al-getir kipini ayarlar. Kipin açıklaması için
+       <function>PDOStatement::fetch</function> belgesine bakınız.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>öznitelik</parameter></term>
+     <listitem>
+      <para>
+       Değiştirilecek öznitelik.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>değer</parameter></term>
+     <listitem>
+      <para>
+       <parameter>öznitelik</parameter>'e atanacak değer.
+       Özniteliğe özgü bir tür gerekli olabilir.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
   </para>
  </refsect1>
 
@@ -106,6 +261,15 @@
   <para>
    &return.success;
   </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>PDO::getAttribute</function></member>
+   <member><function>PDOStatement::getAttribute</function></member>
+   <member><function>PDOStatement::setAttribute</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>

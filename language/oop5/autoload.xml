@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 9ee9eccf455188ab6eb352194eb6f9eb99e15606 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fca50d321ce57036f3786f278887abe58cd41de8 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.autoload" xmlns="http://docbook.org/ns/docbook">
   <title>Otomatik Yüklenen Sınıflar</title>
@@ -28,7 +27,20 @@
     PHP 7.2.0 itibariyle önerilmemekte olup PHP 8.0.0 itibariyle kullanımdan
     kaldırılmıştır.
    </para>
+   <para>
+    Kurucu benzeri her sınıf aynı yolla otomatik yüklenebilir. Buna sınıflar,
+    arayüzler, nitelikler ve numaralandırmalar dahildir.
+   </para>
   </caution>
+  <note>
+   <para>
+    <function>spl_autoload_register</function>, birden çok otomatik yükleyiciyi
+    kaydetmek için bir çok kez çağrılabilir. Ancak bir otomatik yükleme
+    işlevinden bir istisna yavrulanması, bu işlemi kesintiye uğratır ve diğer
+    otomatik yükleme işlevleri çalışamaz. Bu nedenle, bir otomatik yükleme
+    işlevinden istisna yavrulanması kesinlikle önerilmez.
+   </para>
+  </note>
   <para>
    <example>
     <title>- Otomatik yükleme örneği</title>
@@ -77,82 +89,18 @@ Fatal error: Interface 'DenemeA' not found in ...
 ]]>
     </programlisting>
    </example>
-   <example>
-    <title>- İstisnalı otomatik yükleme</title>
-    <para>
-     Bu örnekte bir istisna yakalanmakta ve <literal>try/catch</literal>
-     kullanımı gösterilmektedir.
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-spl_autoload_register(function ($name) {
-    echo "$name yüklenmek isteniyor.\n";
-    throw new Exception("$name yüklenemedi.");
-});
-
-try {
-    $obj = new YüklenemezSınıf();
-} catch (Exception $e) {
-    echo $e->getMessage(), "\n";
-}
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-YüklenemezSınıf yüklenmek isteniyor.
-YüklenemezSınıf yüklenemedi.
-]]>
-    </screen>
-   </example>
-   <example>
-    <title>- İstisnalı otomatik yükleme - Eksik özel istisna</title>
-    <para>
-     Bu örnek, yüklenemeyen, özel bir istisna için bir istisna yavrular.
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-spl_autoload_register(function ($name) {
-    echo "$name yüklenmek isteniyor.\n";
-    throw new Eksikİstisna("$name yüklenemedi.");
-});
-
-try {
-    $obj = new YülenemezSınıf();
-} catch (Exception $e) {
-    echo $e->getMessage(), "\n";
-}
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-YülenemezSınıf yüklenmek isteniyor.
-Eksikİstisna yüklenmek isteniyor.
-
-Fatal error: Class 'Eksikİstisna' not found in testMissingException.php on line 4
-]]>
-    </screen>
-    </example>
   </para>
 
   <simplesect role="seealso">
    &reftitle.seealso;
-   <para>
-    <simplelist>
-     <member><function>unserialize</function></member>
-     <member><link linkend="ini.unserialize-callback-func">
-         unserialize_callback_func</link></member>
-     <member><function>spl_autoload_register</function></member>
-
-     <member><function>spl_autoload</function></member>
-     <member><function>__autoload</function></member>
-    </simplelist>
-   </para>
+   <simplelist>
+    <member><function>unserialize</function></member>
+    <member><link linkend="ini.unserialize-callback-func">
+        unserialize_callback_func</link></member>
+    <member><function>spl_autoload_register</function></member>
+    <member><function>spl_autoload</function></member>
+    <member><function>__autoload</function></member>
+   </simplelist>
   </simplesect>
 
  </sect1>
