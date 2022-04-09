@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7973fd533364af4dd6282ca9e7bee2dffec39b1c Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 8d7f21b1c19fcde59b32d5496eaeed1784692f63 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.register-shutdown-function" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>register_shutdown_function</refname>
@@ -26,8 +26,9 @@
    kapanma işlevi çağrılmaz.
   </para>
   <para>
-   PHP 4'ten beri <function>register_shutdown_function</function> işlevi
-   üzerinden kapanma işlevine ek değiştirgeler aktarılabilmektedir.
+   Kapanma işlevleri, kuyruğun sonuna başka kapanma işlevleri eklemek için
+   <function>register_shutdown_function</function> işlevini kendileri de
+   çağırabilir.
   </para>
  </refsect1>
 
@@ -118,6 +119,16 @@ register_shutdown_function('kapat');
     kullanabilirsiniz.
    </para>
   </note>
+  <note>
+   <para>
+    Kapanma işlevleri, <link
+    linkend="ini.max-execution-time">max_execution_time</link> süresinde
+    çalışan işlevlerden değildir. Yani, bir işlem çok uzun süre çalıştığı
+    için sonlandırılsa bile kapanma işlevleri yine de çağrılacaktır. Ayrıca,
+    kapanma işlevi çalışırken <literal>max_execution_time</literal>
+    süresi bitse bile, kapanma işlevi çalışmasını sürdürür.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -126,6 +137,7 @@ register_shutdown_function('kapat');
    <simplelist>
     <member><link linkend="ini.auto-append-file">auto_append_file</link></member>
     <member><function>exit</function></member>
+    <member><function>fastcgi_finish_request</function></member>
     <member><link linkend="features.connection-handling">Bağlantı
     yönetimi</link> bölümü</member>
    </simplelist>

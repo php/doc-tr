@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 14b55b8b4ba3a51b38cd3b1c360e21df632ca890 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e3ac07c850bad582acd5a3b6c1cf0300af53791d Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.usort" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>usort</refname>
@@ -102,6 +102,28 @@ foreach ($a as $anahtar => $değer) {
 4: 6
 ]]>
     </screen>
+    <para>
+     Dahili karşılaştırmayı daha da basitleştirmek için mekik işleci
+     kullanılabilir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function cmp($a, $b)
+{
+    return $a <=> $b;
+}
+
+$a = array(3, 2, 5, 6, 1);
+
+usort($a, "cmp");
+
+foreach ($a as $key => $value) {
+    echo "$key: $value\n";
+}
+?>
+]]>
+    </programlisting>
    </example>
   </para>
   <note>
@@ -154,7 +176,7 @@ $meyvalar[2]: portakal
 <![CDATA[
 <?php
 class Deneme {
-    var $isim;
+    private string $isim;
 
     function __construct($isim)
     {
@@ -164,12 +186,7 @@ class Deneme {
     /* Duruk karşılaştırma işlevi: */
     static function nesne_karşılaştır($a, $b)
     {
-        $al = strtolower($a->isim);
-        $bl = strtolower($b->isim);
-        if ($al == $bl) {
-            return 0;
-        }
-        return ($al > $bl) ? +1 : -1;
+        return strtolower($a->name) <=> strtolower($b->name);
     }
 }
 
@@ -177,7 +194,7 @@ $a[] = new Deneme("c");
 $a[] = new Deneme("b");
 $a[] = new Deneme("d");
 
-usort($a, array("Deneme", "nesne_karşılaştır"));
+usort($a, [Deneme::class, "nesne_karşılaştır]);
 
 foreach ($a as $öğe) {
     echo $öğe->isim . "\n";
@@ -225,6 +242,43 @@ foreach ($array as $item) {
 y, a
 x, b
 z, c
+]]>
+    </screen>
+   </example>
+   <example xml:id="function.usort.examples.multiple-axes">
+    <title>-
+     Mekik işleci kullanılan <function>usort</function> örneği
+    </title>
+    <para>
+     Mekik işleci, bileşik değerlerin doğrudan çok yönlü karşılaştırılmasını
+     sağlar. Aşağıdaki örnekte, <literal>$people</literal> önce soyadına göre,
+     ardından soyadı eşleşirse ada göre sıralayacaktır.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$people[0] = ['first' => 'Adam', 'last' => 'West'];
+$people[1] = ['first' => 'Alec', 'last' => 'Baldwin'];
+$people[2] = ['first' => 'Adam', 'last' => 'Baldwin'];
+
+function sorter(array $a, array $b) {
+    return [$a['last'], $a['first']] <=> [$b['last'], $b['first']];
+}
+
+usort($people, 'sorter');
+
+foreach ($people as $person) {
+    print $person['last'] . ', ' . $person['first'] . PHP_EOL;
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Baldwin, Adam
+Baldwin, Alec
+West, Adam
 ]]>
     </screen>
    </example>
