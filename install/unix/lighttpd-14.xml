@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 4c8603d1c114c20d9ee6142f508da396affc83a8 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7006df7c1fbc64457ac4011ae33309c3f3e5b202 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="install.unix.lighttpd-14" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Unix sistemlerde Lighttpd 1.4</title>
 
@@ -16,24 +15,18 @@
  </para>
 
  <para>
-  PHP ve Lighttpd'ye bağlanmak için tercih edilen SAPI Fastcgi'dir. Fastcgi,
-  PHP 5.3'te php-cgi'yi otomatik olarak sihirli bir şekilde etkin kılar.
-  Fakat, eski sürümler için PHP'nin <option
-  role="configure">--enable-fastcgi</option> ile derlenmesi gerekir. PHP'nin
-  fastcgi için hazır olduğunu doğrulamak için <literal>php -v</literal>
-  çıktısının <literal>PHP 5.2.5 (cgi-fcgi)</literal> içermesi gerekir. PHP
-  5.2.3 öncesinde, fastcgi, php çalıştırılabiliri üzerinde etkindi (php-cgi
-  diye birşey yoktu).
+  PHP ve Lighttpd'ye bağlanmak için tercih edilen SAPI FastCGI'dir. FastCGI,
+  php-cgi'yi otosihirli bir şekilde etkin kılar.
  </para>
 
  <sect2 xml:id="install.unix.lighttpd-14.lighttpd-spawn">
-  <title>Letting Lighttpd'ye PHP süreçlerini çatallattırmak</title>
+  <title>Lighttpd'ye PHP süreçlerini çatallattırmak</title>
 
   <para>
    Lighttpd'nin PHP'ye bağlanmasını ve fastcgi süreçlerini çatallamasını
-   sağlamak üzere yapılandırmak için lighttpd.conf dosyasını düzenlemeniz
-   gerekir. Fastcgi süreçlerine yerel sistemden bağlanmak için soketler
-   tercih edilir.
+   sağlamak üzere yapılandırmak için <filename>lighttpd.conf</filename>
+   dosyasını düzenlemeniz gerekir. FastCGI süreçlerine yerel sistemden
+   bağlanmak için soketler tercih edilir.
   </para>
 
   <example>
@@ -61,16 +54,18 @@ fastcgi.server = ( ".php" =>
   </example>
 
   <para>
-   <code>bin-path</code> yönergesi lighttpd'nin fastcgi süreçlerini dinamik
-   olarak çatallamasına izin verir. PHP kendi çocuklarını PHP_FCGI_CHILDREN
-   ortam değişkenine göre çatallayacaktır. PHP, PHP_FCGI_MAX_REQUESTS
-   değerinin aşılmasına sebep olan çocuk süreci öldürür. PHP'de
-   <code>min-procs</code> ve <code>max-procs</code> yönergelerinden genel
-   olarak kaçınılması gerekir. PHP kendi çocuklarını yönetir ve makine kodu
-   önbelleklerini APC gibi çocukları arasında paylaştırır.
-   <code>min-procs</code> yönergesine 1'den büyük bir değer atanmışsa PHP
-   yanıtçılarının sayısı PHP_FCGI_CHILDREN değerinin katları olacaktır  (2
-   min-procs * 16 çocuk eşittir 32 yanıtçı).
+   <filename>bin-path</filename> yönergesi lighttpd'nin fastcgi süreçlerini
+   dinamik olarak çatallamasına izin verir. PHP kendi çocuklarını
+   <envar>PHP_FCGI_CHILDREN</envar> ortam değişkenine göre çatallayacaktır.
+   Çatallanan sürecin ortamını <literal>bin-environment</literal> yönergesi
+   tanımlar. PHP, <envar>PHP_FCGI_MAX_REQUESTS</envar> değerinin aşılmasına
+   sebep olan çocuk süreci öldürür. PHP'de <literal>min-procs</literal> ve
+   <literal>max-procs</literal> yönergelerinden genel olarak kaçınılması
+   gerekir. PHP kendi çocuklarını yönetir ve makine kodu önbelleklerini APC
+   gibi çocukları arasında paylaştırır. <literal>min-procs</literal>
+   yönergesine <literal>1</literal>'den büyük bir değer atanmışsa PHP
+   yanıtçılarının sayısı <envar>PHP_FCGI_CHILDREN</envar> değerinin katları
+   olacaktır (<literal>2 min-procs * 16 çocuk eşittir 32 yanıtçı</literal>).
   </para>
  </sect2>
 
@@ -78,8 +73,8 @@ fastcgi.server = ( ".php" =>
   <title>Spawn-fcgi ile çatallama</title>
 
   <para>
-   Lighttpd, fastcgi süreçlerinin çatallanmasını kolaylaştırmak için
-   spawn-fcgi adında bir programla gelir.
+   Lighttpd, FastCGI süreçlerinin çatallanmasını kolaylaştırmak için
+   <code>spawn-fcgi</code> adında bir uygulamayla gelir.
   </para>
  </sect2>
 
@@ -87,12 +82,13 @@ fastcgi.server = ( ".php" =>
   <title>php-cgi'nin çatallanması</title>
 
   <para>
-   Süreçleri spawn-fcgi kullanmaksızın çatallamak mümkünse de, biraz ağır
-   kaldırma çalışmak gerekir. Gelen istekleri karşılamak için PHP'nin kaç
-   çocuk çatallayacağı PHP_FCGI_CHILDREN ortam değişkeni ile belirlenir.
-   PHP'nin her çocuğunun kaç isteklik yaşayacağını ise PHP_FCGI_MAX_REQUESTS
-   belirler. Aşağıda, PHP yanıtçılarının çatallanmasına yardımcı olan basit
-   bir bash betiği verilmiştir.
+   Süreçleri <code>spawn-fcgi</code> kullanmaksızın çatallamak mümkünse de,
+   biraz ağır kaldırma çalışmak gerekir. Gelen istekleri karşılamak için
+   PHP'nin kaç çocuk çatallayacağı <envar>PHP_FCGI_CHILDREN</envar> ortam
+   değişkeni ile belirlenir. PHP'nin her çocuğunun kaç isteklik yaşayacağını
+   ise <envar>PHP_FCGI_MAX_REQUESTS</envar> belirler. Aşağıda, PHP
+   yanıtçılarının çatallanmasına yardımcı olan basit bir <code>bash</code>
+   betiği verilmiştir.
   </para>
 
   <example>
@@ -130,7 +126,7 @@ echo $! > "$PHP_PID"
   <title>Uzak FCGI (nesnel) örneklerine bağlanmak</title>
 
   <para>
-   Uygulamaları dengelemek için Fastcgi örnekleri çok sayıda uzak makineye
+   Uygulamaları dengelemek için FastCGI örnekleri çok sayıda uzak makineye
    çatallanabilir.
   </para>
 
