@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 165718f97f983da66504dbe547900b7e5d54fdb5 Maintainer: yasar Status: ready -->
+<!-- EN-Revision: 61cfd00858115c6fe029df05829b04c1ec5bc9c2 Maintainer: yasar Status: ready -->
  <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Değişkenler</title>
 
@@ -493,6 +493,35 @@ function foo(){
     </example>
    </para>
 
+   <para>
+    PHP 8.1.0 ve sonrasında, statik değişken kullanan bir yöntem miras
+    alındığında (geçersiz kılınmamak şartıyla), statik değişkenlerini ebeveyn
+    yöntemle paylaşmaktadır. Yani, yöntemlerdeki statik değişkenler artık
+    birer statik özellik gibi davranmaktadır.
+   </para>
+
+   <example>
+    <title>- Miras alınan yöntemlerde statik değişken kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public static function counter() {
+        static $counter = 0;
+        $counter++;
+        return $counter;
+    }
+}
+class Bar extends Foo {}
+var_dump(Foo::counter()); // int(1)
+var_dump(Foo::counter()); // int(2)
+var_dump(Bar::counter()); // int(3), PHP 8.1.0 öncesi int(1)
+var_dump(Bar::counter()); // int(4), PHP 8.1.0 öncesi int(2)
+?>
+]]>
+    </programlisting>
+   </example>
+
    <note>
     <para>
      Statik bildirimler derleme sırasında çözümlenir.
@@ -507,8 +536,8 @@ function foo(){
     <link
     linkend="language.variables.scope.static"><literal>static</literal></link> ve
     <link linkend="language.variables.scope.global"><literal>global</literal></link>
-    değişken niteleyicilerini <link linkend="language.references">gönderim</link>
-    olarak gerçeklemiştir.
+    değişken niteleyicileri <link linkend="language.references">gönderim</link>
+    olarak gerçeklenmiştir.
     Örneğin, <literal>global</literal> deyimi ile bir işlevin etki alanında
     geçerli kılınan bir küresel değişken aslında kendine bir gönderim
     oluşturur. Bu durum aşağıdaki örnekte de görüldüğü gibi beklenmedik
@@ -521,14 +550,14 @@ function foo(){
 <?php
 function gönderimli_küresel_dene() {
     global $nesne;
-    $new = new stdclass;
-    $nesne = &$new;
+    $yeni = new stdclass;
+    $nesne = &$yeni;
 }
 
 function gönderimsiz_küresel_dene() {
     global $nesne;
-    $new = new stdclass;
-    $nesne = $new;
+    $yeni = new stdclass;
+    $nesne = $yeni;
 }
 
 gönderimli_küresel_dene();

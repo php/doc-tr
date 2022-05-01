@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 08498c3bd38660ffa1259de0e58cd884c2497d59 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 3e087a5c618b815c273510ffdc4a86ab189eda00 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
   <title>İşlevler</title>
@@ -1083,6 +1083,42 @@ $func(); // "bar" basar
      güvenilmemelidir. PHP 8.0.0 itibariyle, böyle bir durumda bir
      <classname>TypeError</classname> istisnası yavrulanması gerekir.
     </simpara>
+   </note>
+   <note>
+    <para>
+     Sayıl türler, zorlanmış kipteyken yerleşik işlevlerde öntanımlı olarak
+     &null; olabilmektedir. PHP 8.1.0'dan itibaren nullable türünde
+     bildirilmeyen bir dahili işlev değiştirgesine &null; aktarılması
+     önerilmemekte ve sayıl türlerin açıkça nullable olarak bildirilmesini
+     gerektiren kullanıcı tanımlı işlevlerin davranışıyla uyum sağlamak için
+     zorlanmış kipte kullanımdan kaldırma uyarısı çıktılanmaktadır.
+    </para>
+
+    <para>
+     Örneğin, <function>strlen</function> işlevinin <literal>$dizge</literal>
+     değiştirgesinde &string; türünde bir değer alabileceği belirtilmiş,
+     &null; olabileceği belirtilmemiştir. Geriye uyumluluk adına PHP zorlayıcı
+     kipte bu değiştirgeye değer olarak &null; aktarılmasına izin vermekte
+     olup değiştirge örtük olarak <type>string</type> türüne dönüştürülmekte
+     ve sonuçta değer <literal>""</literal> olmaktadır. Katı kipte ise bunun
+     aksine, <classname>TypeError</classname> çıktılanmaktadır.
+    </para>
+
+    <example>
+     <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(strlen(null));
+// "Önerilmiyor: string türündeki 1. değiştirgeye ($dizge) null aktarımı PHP 8.1.0 itibariyle önerilmiyor.
+// int(0)
+
+var_dump(str_contains("foobar", null));
+// "Önerilmiyor: string türündeki 2. değiştirgeye ($iğne) null aktarımı PHP 8.1.0 itibariyle önerilmiyor.
+// bool(true)
+?>
+]]>
+     </programlisting>
+    </example>
    </note>
 
    <sect2 role="seealso">

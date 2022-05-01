@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 085c38d45e466691062b4444c71f4dbe4198f884 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 754641d8dd08d4d63808d98bfc15c31346505d9c Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
  <title><code>int</code></title>
 
@@ -216,8 +216,30 @@ var_dump(round(25/7));  // float(4)
 
    <simpara>
     <type>float</type> türünden <type>int</type> türüne dönüşümde sayı
-    <emphasis>sıfıra yaklaştırılarak</emphasis> yuvarlanır.
+    <emphasis>sıfıra yaklaştırılarak</emphasis> yuvarlanır. PHP 8.1.0 ve
+    sonrasında, örtük dönüşümdeki hassasiyet kaybından dolayı işlemin
+    önerilmediğini belirten bir uyarı çıktılanmaktadır.
    </simpara>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+function foo($value): int {
+  return $value;
+}
+
+var_dump(foo(8.1)); // "Önerilmiyor: float 8.1 değerin int türüne örtük
+// olarak dönüştürülmesi hassasiyet kaybı oluşturduğundan PHP 8.1.0 ve
+// sonrasında önerilmemektedir.
+var_dump(foo(8.1)); // PHP 8.1.0 öncesinde 8
+var_dump(foo(8.0)); // Her iki durumda  8
+
+var_dump((int)8.1);    // Her iki durumda  8
+var_dump(intval(8.1)); // Her iki durumda  8
+?>
+]]>
+   </programlisting>
 
    <para>
     Dönüşüm sonucu <type>int</type> türüne ayrılan genişliğe (normalde
