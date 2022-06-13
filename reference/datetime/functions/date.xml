@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 9b7ab9bc8e78b1201b8b8c71eac051256d433993 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 089983558f0d09521df6ef09582c451c1ec79ef3 Maintainer: behzat Status: ready -->
 <refentry xml:id="function.date" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>date</refname>
-  <refpurpose>Yerel tarihi/saati biçimlendirir</refpurpose>
+  <refpurpose>Unix zaman damgasını biçimlendirir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -14,11 +14,19 @@
    <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>zaman_damgası</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>zaman_damgası</parameter> değiştirgesi ile belirtilen zamanı ya
-   da zaman damgası değiştirgesi kullanılmamışsa yerel zamanı, belirtilen
-   biçime göre biçimlendirerek döndürür.  Başka bir deyişle,
-   <parameter>zaman_damgası</parameter> değiştirgesini belirtmek isteğe
-   bağlıdır ve varsayılan değeri <function>time</function> işlevinin değeridir.
+   Unix <parameter>zaman_damgası</parameter> değiştirgesi ile belirtilen
+   zamanı ya da değiştirge kullanılmamışsa geçerli zamanı, belirtilen
+   <parameter>biçim</parameter>e göre biçimlendirerek döndürür.  Başka bir
+   deyişle, <parameter>zaman_damgası</parameter> değiştirgesini belirtmek
+   isteğe bağlıdır ve varsayılan değeri <function>time</function> işlevinin
+   değeridir.
+  </para>
+  <para>
+   Unix zaman damgaları yerel zaman dilimi hakkında herhangi bir bilgi
+   içermez. Tarih ve saat bilgilerini işlerken zaman dilimini de hesaba
+   katabilmek için <classname>DateTimeImmutable</classname> sınıfı ve bu
+   sınıfın biçemleme yöntemi olan
+   <methodname>DateTimeInterface::format</methodname> kullanılabilir.
   </para>
  </refsect1>
 
@@ -29,7 +37,7 @@
     <term><parameter>biçim</parameter></term>
     <listitem>
      <para>
-      <function>DateTimeInterface::format</function> tarafından kabul
+      <methodname>DateTimeInterface::format</methodname> tarafından kabul
       edilen biçim.
      </para>
     </listitem>
@@ -208,21 +216,19 @@ $bugün = date("Y-m-d H:i:s");                   // 2001-03-10 17:16:18 (MySQL D
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>gmdate</function></member>
-    <member><function>idate</function></member>
-    <member><function>getdate</function></member>
-    <member><function>getlastmod</function></member>
-    <member><function>mktime</function></member>
-    <member><methodname>IntlDateFormatter::format</methodname></member>
-    <member><function>time</function></member>
-    <member><function>DateTimeImmutable::__construct</function></member>
-    <member><link linkend="datetime.constants.types">Öntanımlı Tarih/Saat
-    Sabitleri</link></member>
-
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><methodname>DateTimeImmutable::__construct</methodname></member>
+   <member><methodname>DateTimeInterface::format</methodname></member>
+   <member><function>gmdate</function></member>
+   <member><function>idate</function></member>
+   <member><function>getdate</function></member>
+   <member><function>getlastmod</function></member>
+   <member><function>mktime</function></member>
+   <member><methodname>IntlDateFormatter::format</methodname></member>
+   <member><function>time</function></member>
+   <member><link linkend="datetime.constants.types">Öntanımlı Tarih/Saat
+   Sabitleri</link></member>
+  </simplelist>
  </refsect1>
 </refentry>
 
