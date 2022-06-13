@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 3d9dad29c75a70e7985ed595dfa2a836e61418da Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 4586854a24b1ca532b5c9ba2410db1f1eee338ed Maintainer: behzat Status: ready -->
 <phpdoc:classref xml:id="class.dateinterval" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
 
  <title>DateInterval sınıfı</title>
@@ -15,8 +15,9 @@
    </para>
    <para>
     Ya sabit bir süre (yıl, ay, gün saat sayısı gibi) ya da
-    <classname>DateTime</classname> kurucusunun desteklediği biçemde göreli
-    bir zaman dizgesi saklanır.
+    <classname>DateTimeImmutable</classname> ve
+    <classname>DateTime</classname> kurucusunun desteklediği biçemde
+    göreli bir zaman dizgesi saklanır.
    </para>
    <para>
     Daha açıkçası, bir <classname>DateInterval</classname> nesnesindeki bilgiler,
@@ -25,8 +26,8 @@
    </para>
    <para>
     <classname>DateInterval</classname> nesnesi oluşturmanın yaygın yolu,
-    <function>DateTimeInterface::diff</function> aracılığıyla iki tarih/saat
-    nesnesi arasındaki farkı hesaplamaktır.
+    <methodname>DateTimeInterface::diff</methodname> aracılığıyla iki
+    tarih/saat nesnesi arasındaki farkı hesaplamaktır.
    </para>
    <para>
     Tarih aralıklarını karşılaştırmak için uygun bir yöntem bulunmadığından
@@ -97,6 +98,16 @@
      <modifier>public</modifier>
      <type>mixed</type>
      <varname linkend="dateinterval.props.days">days</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>bool</type>
+     <varname linkend="dateinterval.props.from-string">from_string</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <type>string</type>
+     <varname linkend="dateinterval.props.date-string">date_string</varname>
     </fieldsynopsis>
 
     <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
@@ -186,9 +197,33 @@
      <term><varname>days</varname></term>
      <listitem>
       <para>
-       DateInterval nesnesi <function>DateTime::diff</function> tarafından
-       yaratılmışsa, başlangıç ve son tarihler arsındaki toplam gün sayısıdır.
+       DateInterval nesnesi <methodname>DateTimeImmutable::diff</methodname>
+       veya <function>DateTime::diff</function> tarafından oluşturulmuşsa,
+       başlangıç ve son tarihler arasındaki toplam gün sayısıdır.
        Aksi takdirde, <varname>days</varname> &false;'dır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateinterval.props.from-string">
+     <term><varname>from_string</varname></term>
+     <listitem>
+      <para>
+       DateInterval nesnesi
+       <methodname>DateInterval::createFromDateString</methodname>
+       tarafından oluşturulmuşsa, özelliğin değeri &true; olur ve
+       <varname>date_string</varname> özelliği oluşturulur. Aksi takdirde
+       değer &false; olur ve <varname>y</varname>'den <varname>f</varname>'ye
+       kadar özellikler ile <varname>invert</varname> ve
+       <varname>days</varname> özellikleri oluşturulur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="dateinterval.props.date-string">
+     <term><varname>date_string</varname></term>
+     <listitem>
+      <para>
+       Dizge <methodname>DateInterval::createFromDateString</methodname>
+       için bir değiştirge olarak kullanılır.
       </para>
      </listitem>
     </varlistentry>
@@ -207,6 +242,15 @@
        </row>
       </thead>
       <tbody>
+       <row>
+        <entry>8.2.0</entry>
+        <entry>
+         <methodname>DateInterval::createFromDateString</methodname>
+         yöntemiyle oluşturulan <classname>DateInterval</classname> nesneleri
+         için <varname>from_string</varname> ve <varname>date_string</varname>
+         özellikleri eklendi.
+        </entry>
+       </row>
       <row>
        <entry>7.4.0</entry>
        <entry>
