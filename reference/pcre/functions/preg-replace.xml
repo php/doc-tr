@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 41c8533ff5a8f93ba9fdf0732d05dd5ab79864c9 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 18c86650bd4e134e164c4b4e358c63482840b00a Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.preg-replace" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>preg_replace</refname>
@@ -104,6 +104,10 @@
       <para>
        Eğer <parameter>konu</parameter> bir dizge ise arama ve değiştirme her
        eleman için ayrı ayrı yapılır ve sonuçlar da bir dizi olarak döndürülür.
+      </para>
+      <para>
+       Eğer <parameter>konu</parameter> ilişkisel bir dizi ise dönen değerde
+       anahtarlar korunacaktır.
       </para>
      </listitem>
     </varlistentry>
@@ -297,6 +301,31 @@ xp***to
     <function>preg_replace</function> işlevini çağırmadan önce her iki diziyi
     de  <function>ksort</function> işlevinden geçirmelisiniz.
    </para>
+  </note>
+  <note>
+   <para>
+    <parameter>şablon</parameter> ve <parameter>yenisi</parameter>
+    değiştirgelerinin ikisi de dizi ise eşleştirme kuralları sıralı uygulanır.
+    Yani, ikinci <parameter>şablon</parameter>/<parameter>yenisi</parameter>
+    çiftine uygulanacak dizge, birinci
+    <parameter>şablon</parameter>/<parameter>yenisi</parameter> çiftinin
+    sonucudur, özgün dizge değil. İki değeri takas etmek gibi paralel çalışan
+    değiştirmeler yapılmak istenirse, bir <parameter>şablon</parameter>u bir
+    ara yer tutucu ile değiştirip ardından daha sonraki bir çiftte bu aracı
+    yer tutucu <parameter>yenisi</parameter> ile değiştirilebilir.
+   </para>
+   <example>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$p = array('/a/', '/b/', '/c/');
+$r = array('b', 'c', 'd');
+print_r(preg_replace($p, $r, 'a'));
+// d basar
+?>
+]]>
+    </programlisting>
+   </example>
   </note>
  </refsect1>
 
