@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 926842882dbed9c74ab7b951e78db96d42ee43ea Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2b06b9d84c3c1b957596334a923b05f985a6a1a0 Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.registernodeclass" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::registerNodeClass</refname>
@@ -139,33 +138,45 @@ text in child
     <para>
      <classname>DOMDocument</classname> sınıfına özgü olarak, sınıf
      örneklenirken sınıfın <varname>ownerDocument</varname> özelliği
-     örneklenen sınıfı gösterecektir. Yani, <classname>DOMDocument</classname>
-     sınıfı için <function>DOMDocument::registerNodeClass</function> yönteminin
+     örneklenen sınıfı gösterecektir. Ancak, bu sınıfa yapılan tüm başvurular
+     kaldırılırsa, sınıf yok edilir ve yerine yeni bir
+     <classname>DOMDocument</classname> sınıfı oluşturulur. Bu sebeple,
+     <classname>DOMDocument</classname> sınıfı için
+     <function>DOMDocument::registerNodeClass</function> yönteminin
      kullanımına aslında gerek yoktur.
     </para>
     <programlisting role="php">
 <![CDATA[
 <?php
-class myDOMDocument extends DOMDocument {
+class MyDOMDocument extends DOMDocument {
 }
 
-class myOtherDOMDocument extends DOMDocument {
+class MyOtherDOMDocument extends DOMDocument {
 }
 
-// myDOMDocument nesnesini XML belge olarak oluşturalım
-$doc = new myDOMDocument;
+// MyDOMDocument nesnesini XML belge olarak oluşturalım
+$doc = new MyDOMDocument;
 $doc->loadXML("<root><element><child>text in child</child></element></root>");
 
 $child = $doc->getElementsByTagName("child")->item(0);
 
-// Düğümün sahibi myDOMDocument nesnesidir
+// Düğümün sahibi MyDOMDocument nesnesidir
+var_dump(get_class($child->ownerDocument));
+// MyDOMDocument yok edildi
+unset($doc);
+// Ve yeni bir DOMDocument örneği oluşturuldu
 var_dump(get_class($child->ownerDocument));
 
-// myDOMDocument nesnesinden bir düğüm alalım
-$newdoc = new myOtherDOMDocument;
+// MyDOMDocument nesnesinden bir düğüm alalım
+$newdoc = new MyOtherDOMDocument;
 $child = $newdoc->importNode($child);
 
-// Düğümün sahibi artık myOtherDOMDocument nesnesi oldu
+// Özel DOMDocument sınıfını kayda alalım
+$newdoc->registerNodeClass("DOMDocument", "MyOtherDOMDocument");
+
+var_dump(get_class($child->ownerDocument));
+unset($doc);
+// Yeni MyOtherDOMDocument oluşturuldu
 var_dump(get_class($child->ownerDocument));
 ?>
 ]]>
@@ -173,8 +184,10 @@ var_dump(get_class($child->ownerDocument));
     &example.outputs;
     <screen role="xml">
 <![CDATA[
-string(13) "myDOMDocument"
-string(18) "myOtherDOMDocument"
+string(13) "MyDOMDocument"
+string(11) "DOMDocument"
+string(18) "MyOtherDOMDocument"
+string(18) "MyOtherDOMDocument"
 ]]>
     </screen>
    </example>
