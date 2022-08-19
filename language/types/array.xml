@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2ff6e6bcad9700adaf50f9e1639c6d7d7d1f059d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fb6ffde9728aa008bf89e9d0043de8d8acc2bb82 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.array">
  <title><code>array</code></title>
 
@@ -384,14 +384,10 @@ function getArray() {
 }
 
 $ikinciEleman = getArray()[1];
-
-// veya
-list(, $ikinciEleman) = getArray();
 ?>
 ]]>
     </programlisting>
    </example>
-
    <note>
     <para>
      Atanmamış bir dizi elemanına erişme çabası, atanmamış bir değişkene erişme
@@ -547,9 +543,141 @@ Array
 ]]>
      </screen>
     </informalexample>
+   </note>
+  </sect3>
 
+  <sect3 xml:id="language.types.array.syntax.destructuring">
+   <title>Dizilerin Yeniden Yapılandırılması</title>
+
+   <para>
+    Diziler, <literal>[]</literal> (PHP 7.1.0 ve sonrası) veya
+    <function>list</function> dil yapıları kullanılarak yeniden
+    yapılandırılabilir. Bu dil yapıları bir dizinin içindeki farklı
+    değişkenleri yeniden yapılandırmakta da kullanılabilir.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$source_array = ['foo', 'bar', 'baz'];
+
+[$foo, $bar, $baz] = $source_array;
+
+echo $foo;    // "foo" basar
+echo $bar;    // "bar" basar
+echo $baz;    // "baz" basar
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Dizilerin yeniden yapılandırmasında çok boyutlu bir dizi,  &foreach;
+    kullanılarak yinelemeli olarak yeniden yapılandırılabilir.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$source_array = [
+    [1, 'John'],
+    [2, 'Jane'],
+];
+
+foreach ($source_array as [$id, $name]) {
+    // $id ve $name ile ilgili yinelemeler
+}
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Bir değişken sağlanmamış dizi elemanları yok sayılır. Yeniden
+    yapılandırma daima <literal>0</literal>. indisten başlar.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$source_array = ['foo', 'bar', 'baz'];
+
+// 2. indisteki elemana $baz ile atama
+[, , $baz] = $source_array;
+
+echo $baz;    // "baz" basar
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    PHP 7.1.0 ve sonrasında, ilişkisel diziler de yeniden
+    yapılandırılabilmektedir. Ayrıca, sayısal indisli dizilerde indisler
+    doğrudan belirtilebildiğinden doğru elemanın daha kolay belirlenebilmesini
+    de sağlar.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$source_array = ['foo' => 1, 'bar' => 2, 'baz' => 3];
+
+// 'baz' indisli elemana $üç değişkenini atamak
+['baz' => $üç] = $source_array;
+
+echo $üç;    // 3 basar
+
+$source_array = ['foo', 'bar', 'baz'];
+
+// 2. indisteki elemana $baz değişkenini atamak
+[2 => $baz] = $source_array;
+
+echo $baz;    // "baz" basar
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>
+    Dizi yeniden yapılandırması iki değişkeni kolayca takaslamak için de
+    kullanılabilir.
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1;
+$b = 2;
+
+[$b, $a] = [$a, $b];
+
+echo $a;    // 2 basar
+echo $b;    // 1 basar
+?>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <note>
+    <para>
+      Atamalarda çoğaltma işleci (<literal>...</literal>) desteklenmemektedir.
+    </para>
    </note>
 
+   <note>
+    <para>
+      Tanımlanmamış bir dizi anahtarına erişmeye çalışmak, diğer tanımsız
+      değişkenlere erişmekle aynıdır:  <constant>E_NOTICE</constant>
+      (PHP 8.0.0 ve sonrasında <constant>E_WARNING</constant>) seviyesinde
+      bir hata çıktılanır ve sonuç &null; olur.
+    </para>
+   </note>
   </sect3>
  </sect2><!-- end syntax -->
 
