@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6f845b90b480d7fd5f0999ff6c6c03d06dc86682 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 5c951013ca04161992efed8b86fb40f55669958e Maintainer: behzat Status: ready -->
 <refentry xml:id="function.date-parse" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>date_parse</refname>
@@ -54,6 +54,50 @@
    Başarılı olduğunda çözümlenen tarih/zaman bilgilerini içeren diziyle,
    başarısız olduğunda &false; değeriyle döner.
   </para>
+  <para>
+   Dönen dizinin anahtarları: <literal>year</literal>,
+   <literal>month</literal>, <literal>day</literal>, <literal>hour</literal>,
+   <literal>minute</literal>, <literal>second</literal>,
+   <literal>fraction</literal> ve <literal>is_localtime</literal>.
+  </para>
+  <para>
+   <literal>is_localtime</literal> mevcutsa<literal>zone_type</literal>
+   zaman dilimi türünü betimler. <literal>1</literal>. tür (UTC farkı)
+   için  <literal>zone</literal>, <literal>is_dst</literal> alanları eklendi;
+   <literal>2</literal>. tür (kısaltma) için <literal>tz_abbr</literal>,
+   <literal>is_dst</literal> alanları eklendi; ve <literal>3</literal>.tür
+   (zaman dilimi betimleyici) için <literal>tz_abbr</literal>,
+   <literal>tz_id</literal> alanları eklendi.
+  </para>
+  <para>
+   <parameter>tarihzaman</parameter> dizgesi içinde, <literal>+3 days</literal>
+   (+3 gün) gibi göreli zaman elemanları mevcutsa, dönen dizi
+   <literal>relative</literal> anahtarlı gömülü bir dizi içerir. Bu dizinin
+   anahtarları <literal>year</literal>, <literal>month</literal>,
+   <literal>day</literal>, <literal>hour</literal>, <literal>minute</literal>,
+   <literal>second</literal> ve gerekiyorsa <literal>weekday</literal> ve
+   <literal>weekdays</literal> olup değerleri aktarılan dizgeye bağlıdır.
+  </para>
+  <para>
+   Dizi <literal>warning_count</literal> ve <literal>warnings</literal>
+   alanlarını içerir. İlki, gelen uyarı sayısıdır. <literal>warnings</literal>
+   dizisinin anahtarları uyarının kendisini açıklayan dizge değerini ve verilen
+   <parameter>tarihzaman</parameter> içinde uyarının oluştuğu konumu betimler.
+  </para>
+  <para>
+   Dizi ayrıca, <literal>error_count</literal> ve <literal>errors</literal>
+   alanlarını da içerir. İlki bulunan hata sayısıdır. <literal>errors</literal>
+   dizisinin anahtarları hatanın kendini açıklayan dizge değerini ve verilen
+   <parameter>tarihzaman</parameter> içinde hatanın oluştuğu konumu betimler.
+  </para>
+  <warning>
+   <para>
+    <literal>warnings</literal> ve <literal>errors</literal> dizilerindeki
+    eleman sayısı, ikisi de aynı konumda oluşmuşsa
+    <literal>warning_count</literal> veya  <literal>error_count</literal>
+    değerlerinden küçük olmalıdır.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="errors">
@@ -368,7 +412,7 @@ array(13) {
     <member><function>date_parse_from_format</function> (Belirli biçemlerin
      <parameter>tarihzaman</parameter> dizgesinden ayrıştırılması
      için)</member>
-    <member><function>checkdate</function></member>
+    <member><function>checkdate</function> (Gregoryen tarih doğrulaması için)</member>
     <member><function>getdate</function></member>
    </simplelist>
   </para>

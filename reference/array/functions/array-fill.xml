@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: eaaf3a0b450ef688c5e80ba7d8cd97a771dc81cc Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ce882c196dce81bf6bd4d94af4fa4110ddc49ef4 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-fill" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_fill</refname>
@@ -34,8 +34,12 @@
        desteklenmektedir.
       </para>
       <para>
-       <parameter>başlangıç</parameter> negatifse, dönen dizinin ilk indisi <parameter>başlangıç</parameter> olacak sonrakiler ise sıfırdan başlayacaktır.
-       (<link linkend="function.array-fill.example.basic">örneğe bakın</link>).
+       <parameter>başlangıç</parameter> negatifse, dönen dizinin ilk indisi
+       <parameter>başlangıç</parameter> olur, sonrakiler ise PHP 8.0.0
+       öncesinde sıfırdan başlardı.  PHP 8.0.0 ve sonrasında ise negatif
+       indisler normal olarak artmaktadır. (<link
+       linkend="function.array-fill.example.negative-start-index">örneğe
+       bakın</link>).
        </para>
      </listitem>
     </varlistentry>
@@ -112,9 +116,7 @@
 <![CDATA[
 <?php
 $a = array_fill(5, 6, 'banana');
-$b = array_fill(-2, 4, 'pear');
 print_r($a);
-print_r($b);
 ?>
 ]]>
     </programlisting>
@@ -130,6 +132,24 @@ Array
     [9]  => banana
     [10] => banana
 )
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example xml:id="function.array-fill.example.negative-start-index">
+    <title>- Negatif başlangıç indisli <function>array_fill</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = array_fill(-2, 4, 'pear');
+print_r($a);
+?>
+]]>
+    </programlisting>
+    &example.outputs.7;
+    <screen>
+<![CDATA[
 Array
 (
     [-2] => pear
@@ -140,6 +160,10 @@ Array
 ]]>
     </screen>
    </example>
+  </para>
+  <para>
+   <literal>-1</literal> indisinin PHP 8.0.0 öncesinde var olmayacağı
+   unutulmamalıdır.
   </para>
  </refsect1>
 

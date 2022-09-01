@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e2c7b3635d5353c05c248c29038bf9d5b7133d6e	 Maintainer: behzat Status: ready -->
+<!-- EN-Revision: b7ac6fa547cef108d56729fa322677eec4882285	 Maintainer: behzat Status: ready -->
 <refentry xml:id="dateperiod.construct" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>DatePeriod::__construct</refname>
@@ -31,6 +31,20 @@
   <para>
    Yeni bir <classname>DatePeriod</classname> nesnesi oluşturur.
   </para>
+  <para>
+   <classname>DatePeriod</classname> nesneleri, bir başlangıç
+   (<parameter>start</parameter>) tarihinden, bir aralıktan
+   (<parameter>interval</parameter>) ve bir bitiş (<parameter>end</parameter>)
+   tarihinden veya yineleme sayısından (<parameter>recurrences</parameter>)
+   bir dizi <classname>DateTimeImmutable</classname> veya
+   <classname>DateTime</classname> nesnesi oluşturmak için yineleyici olarak
+   kullanılabilir.
+  </para>
+  <para>
+   Nesnelerden dönen sınıf başlangıç (<parameter>start</parameter>)
+   nesnesinin ata sınıfı olan <classname>DateTimeImmutable</classname>
+   veya <classname>DateTime</classname> sınıfına eşdeğerdir.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -41,7 +55,7 @@
      <term><parameter>start</parameter></term>
      <listitem>
       <para>
-       Dönemin başlangıç tarihi.
+       Dönemin başlangıç tarihi. Öntanımlı olarak, sonuç kümesine dahil edilir.
       </para>
      </listitem>
     </varlistentry>
@@ -57,7 +71,9 @@
      <term><parameter>recurrences</parameter></term>
      <listitem>
       <para>
-        Yineleme sayısı. <literal>0</literal>'dan büyük olmalıdır.
+       Yineleme sayısı. <literal>0</literal>'dan büyük olmalıdır.
+       Dönen sonuç sayısı, başlangıç tarihi öntanımlı olarak sonuç
+       kümesine dahil edildiğinden bundan büyük olmalıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -65,7 +81,7 @@
      <term><parameter>end</parameter></term>
      <listitem>
       <para>
-       Dönemin bitiş tarihi.
+       Dönemin bitiş tarihi. Öntanımlı olarak, sonuç kümesine dahil edilmez.
       </para>
      </listitem>
     </varlistentry>
@@ -83,9 +99,18 @@
      <term><parameter>options</parameter></term>
      <listitem>
       <para>
+       Başlangıç ve bitiş tarihleri ile belirli davranışları denetlemek için
+       kullanılan bit alanı.
+      </para>
+      <para>
        Başlangıç tarihini, dönem içindeki yinelenen tarihler kümesinden hariç
        tutmak için <constant>DatePeriod::EXCLUDE_START_DATE</constant> sabiti
-       kullanılabilir.
+       kullanılır.
+      </para>
+      <para>
+       Bitiş tarihini, dönem içindeki yinelenen tarihler kümesine dahil etmek
+       için <constant>DatePeriod::INCLUDE_END_DATE</constant> sabiti
+       kullanılır.
       </para>
      </listitem>
     </varlistentry>
@@ -105,6 +130,12 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.2.0</entry>
+       <entry>
+        <constant>DatePeriod::INCLUDE_END_DATE</constant> sabiti eklendi.
+       </entry>
+      </row>
       <row>
         <entry>7.2.19, 7.3.6, 7.4.0</entry>
        <entry>
@@ -187,6 +218,43 @@ foreach ($period as $date) {
 2012-07-15
 2012-07-22
 2012-07-29
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- Bir yıldaki tüm son Perşembeleri gösteren DatePeriod örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$begin = new DateTime('2021-12-31');
+$end = new DateTime('2022-12-31 23:59:59');
+
+$interval = DateInterval::createFromDateString('last thursday of next month');
+$period = new DatePeriod($begin, $interval, $end, DatePeriod::EXCLUDE_START_DATE);
+
+foreach ($period as $dt) {
+    echo $dt->format('l Y-m-d'), "\n";
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Thursday 2022-01-27
+Thursday 2022-02-24
+Thursday 2022-03-31
+Thursday 2022-04-28
+Thursday 2022-05-26
+Thursday 2022-06-30
+Thursday 2022-07-28
+Thursday 2022-08-25
+Thursday 2022-09-29
+Thursday 2022-10-27
+Thursday 2022-11-24
+Thursday 2022-12-29
 ]]>
     </screen>
    </example>
