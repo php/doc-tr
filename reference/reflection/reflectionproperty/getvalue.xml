@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 98df2cf9a939729d73adee1484ec05929c74c98b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 12dce4f0cc555ad5ea09450885c66c7aa8b76ce7 Maintainer: nilgun Status: ready -->
 <refentry xml:id="reflectionproperty.getvalue" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>ReflectionProperty::getValue</refname>
@@ -44,15 +44,6 @@
   </para>
  </refsect1>
 
- <refsect1 role="errors">
-  &reftitle.errors;
-  <para>
-   Özellik erişilebilir değilse <classname>ReflectionException</classname>
-   yavrulanır. Protected veya private bir özelliği erişilebilir kılmak için
-   <methodname>ReflectionProperty::setAccessible</methodname> kullanılmalıdır.
-  </para>
- </refsect1>
-
  <refsect1 role="changelog">
   &reftitle.changelog;
   <informaltable>
@@ -64,6 +55,17 @@
      </row>
     </thead>
     <tbody>
+     <row>
+      <entry>8.1.0</entry>
+      <entry>
+       Private ve protected özellikler
+       <methodname>ReflectionProperty::getValue</methodname> tarafından hemen
+       erişilebilir olur. Evvelce erişilebilir olmaları için
+       <methodname>ReflectionProperty::setAccessible</methodname> çağrısı
+       yapmak gerekirdi; özellik erişilebilir değilse
+       <classname>ReflectionException</classname> istisnası oluşurdu.
+      </entry>
+     </row>
      <row>
       <entry>8.0.0</entry>
       <entry>
@@ -96,7 +98,7 @@ var_dump($reflectionClass->getProperty('staticProperty')->getValue());
 var_dump($reflectionClass->getProperty('property')->getValue(new Foo));
 
 $reflectionProperty = $reflectionClass->getProperty('privateProperty');
-$reflectionProperty->setAccessible(true);
+$reflectionProperty->setAccessible(true); // yalnızca PHP 8.1.0 öncesi
 var_dump($reflectionProperty->getValue(new Foo));
 ?>
 ]]>

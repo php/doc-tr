@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: b635b435e117557c48f68ac1e6112e368be415bb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0a89f2d43977ac8de515030b4f78317bf060f7f0 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.magic" xmlns="http://docbook.org/ns/docbook">
   <title>Sihirli Yöntemler</title>
@@ -387,6 +387,96 @@ var_dump(is_callable($obj));
 <![CDATA[
 int(5)
 bool(true)
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- <link linkend="object.invoke">__invoke()</link> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Sort
+{
+    private $key;
+
+    public function __construct(string $key)
+    {
+        $this->key = $key;
+    }
+
+    public function __invoke(array $a, array $b): int
+    {
+        return $a[$this->key] <=> $b[$this->key];
+    }
+}
+
+$müşteriler = [
+    ['no' => 1, 'isim' => 'John', 'soyisim' => 'Do'],
+    ['no' => 3, 'isim' => 'Alice', 'soyisim' => 'Gustav'],
+    ['no' => 2, 'isim' => 'Bob', 'soyisim' => 'Filipe']
+];
+
+// $müşterileri isme göre sırala
+usort($müşteriler, new Sort('isim'));
+print_r($müşteriler);
+
+// $müşterileri soyisme göre sırala
+usort($müşteriler, new Sort('soyisim'));
+print_r($müşteriler);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => Array
+        (
+            [no] => 3
+            [isim] => Alice
+            [soyisim] => Gustav
+        )
+
+    [1] => Array
+        (
+            [no] => 2
+            [isim] => Bob
+            [soyisim] => Filipe
+        )
+
+    [2] => Array
+        (
+            [no] => 1
+            [isim] => John
+            [soyisim] => Do
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [no] => 1
+            [isim] => John
+            [soyisim] => Do
+        )
+
+    [1] => Array
+        (
+            [no] => 2
+            [isim] => Bob
+            [soyisim] => Filipe
+        )
+
+    [2] => Array
+        (
+            [no] => 3
+            [isim] => Alice
+            [soyisim] => Gustav
+        )
+
+)
 ]]>
     </screen>
    </example>
