@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: eae19eb5fe0f5bebcbce382ea7a505cedeb5a883 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1508d46d0998c4843a22d28460bb6c4244290129 Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.error-handling" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Hatalar ve Ele Alınışları</title>
  <para>
@@ -76,16 +76,25 @@ $dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 $user = 'dbuser';
 $password = 'dbpass';
 
-try {
-    $dbh = new PDO($dsn, $user, $password);
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-}
+$dbh = new PDO($dsn, $user, $password);
+$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// BU PDO'un  PDOException yavrulamasına sebep olur (tablo yoksa)
+$dbh->query("SELECT wrongcolumn FROM wrongtable");
 
 ?>
 ]]>
    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Fatal error: Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'testdb.wrongtable' doesn't exist in /tmp/pdo_test.php:10
+Stack trace:
+#0 /tmp/pdo_test.php(10): PDO->query('SELECT wrongcol...')
+#1 {main}
+  thrown in /tmp/pdo_test.php on line 10
+]]>
+    </screen>
   </example>
  </para>
  <note>
@@ -93,8 +102,7 @@ try {
    Eğer bağlantı başarısız olursa, hangi <constant>PDO::ATTR_ERRMODE</constant>
    hata kipinin atanmış olduğuna bakmaksızın
    <methodname>PDO::__construct</methodname> daima bir
-   <classname>PDOException</classname> yavrular. Yakalanmayan istisnalar
-   ölümcüldür.
+   <classname>PDOException</classname> yavrular.
   </para>
  </note>
  <para>
@@ -107,17 +115,7 @@ $dsn = 'mysql:dbname=test;host=127.0.0.1';
 $user = 'googleguy';
 $password = 'googleguy';
 
-/*
-    Kurucu etrafında try/catch kullanımı ERRMODE'u WARNING olarak ayarlasak
-    bile geçerlidir, çünkü PDO::__construct, bağlantı başarısız olursa daima
-    bir PDOException oluşturur.
-*/
-try {
-    $dbh = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
-} catch (PDOException $e) {
-    echo 'Bağlantı kurulamadı: ' . $e->getMessage();
-    exit;
-}
+$dbh = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
 
 // Bu, PDO'nun bir istisna yerine E_WARNING seviyesinde bir hata
 // yavrulamasına sebep olur (tablo mevcut olmadığında)
@@ -129,7 +127,7 @@ $dbh->query("SELECT wrongcolumn FROM wrongtable");
     <screen>
 <![CDATA[
 Warning: PDO::query(): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'test.wrongtable' doesn't exist in
-/tmp/pdo_test.php on line 18
+/tmp/pdo_test.php on line 9
 ]]>
     </screen>
   </example>
