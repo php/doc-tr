@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2a7c919451f9a536431ba2117f8f90ae814c1c5f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a484d5d2bbad7e385a8864370b5280c4e05add8c Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.levenshtein" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>levenshtein</refname>
@@ -87,8 +87,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Belirtilen diziler 255 karakterlik üst sınırdan uzunsa -1 değilse
-   Levenştayn mesafesi döner.
+   Belirtilen iki dizge arasındaki Levenştayn mesafesi döner.
   </para>
  </refsect1>
 
@@ -110,6 +109,13 @@
        iki ya da beş değiştirge ile çağrılabiliyordu.
       </entry>
      </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu sürümden önce, dizgelerden biri 255 karakterden uzunsa
+       <function>levenshtein</function> <literal>-1</literal> döndürürdü.
+      </entry>
+     </row>
     </tbody>
    </tgroup>
   </informaltable>
@@ -126,7 +132,7 @@
 // girdi yanlış yazılmış olsun
 $input = 'carrrot';
 
-// bir sözcük dizisiyle karşılaştıralım
+// bir sözcük dizisiyle karşılaştır
 $words  = array('apple','pineapple','banana','orange',
                 'radish','carrot','pea','bean','potato');
 
@@ -136,7 +142,7 @@ $shortest = -1;
 // En kısa mesafeyi bulmak için döngü
 foreach ($words as $word) {
 
-    // girdi ile sözcük arasındaki mesafeyi hesaplatalım
+    // girdi ile sözcük arasındaki mesafeyi hesapla
     $lev = levenshtein($input, $word);
 
     // Bir eşleşme var mı bakalım
@@ -146,14 +152,14 @@ foreach ($words as $word) {
         $closest = $word;
         $shortest = 0;
 
-        // Tam bir eşleşme bulduğumuza göre döngüden çıkalım
+        // Tam eşleşme varsa döngüden çık
         break;
     }
 
     // Eğer bu mesafe bir öncekinden kısaysa
     // veya en kısa mesafe henüz bulunamadıysa
     if ($lev <= $shortest || $shortest < 0) {
-        // en yakın eşleşmeyi ve en kısa mesafeyi tanımlayalım
+        // en yakın eşleşmeyi ve en kısa mesafeyi tanımla
         $closest  = $word;
         $shortest = $lev;
     }
