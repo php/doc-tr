@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c36ce0b514faa2efce1427ae87ba9ea25cc038ad Maintainer: nilgun Status: ready-->
+<!-- EN-Revision: 512670405c88acf7f0c9124f98c249e530ecd3cb Maintainer: nilgun Status: ready-->
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>Temel Kavramlar</title>
 
@@ -124,6 +124,70 @@ Stack trace:
      </screen>
     </example>
    </warning>
+
+   <sect3 xml:id="language.oop5.basic.class.readonly">
+    <title>Salt okunur sınıflar</title>
+    <para>
+     PHP 8.2.0 ve sonrasında, bir sınıf <modifier>readonly</modifier>
+     değiştiricisi ile imlenebilmektedir. Bir sınıfın
+     <modifier>readonly</modifier> imlenmesi bildirilen her özelliğe <link
+     linkend="language.oop5.properties.readonly-properties">
+     <modifier>readonly</modifier> değiştiricisi</link> eklenmesine ve
+     <link linkend="language.oop5.properties.dynamic-properties">dinamik
+     özelliklerin</link> oluşturulmasının engellenmesine neden olur. Dahası,
+     <classname>AllowDynamicProperties</classname> özniteliği kullanılarak bu
+     engelleme kaldırılamamakta, böyle bir çaba bir derleme anı hatasını  tetiklemektedir.
+    </para>
+    <example>
+     <programlisting role="php">
+<![CDATA[
+<?php
+#[AllowDynamicProperties]
+readonly class Foo {
+}
+
+// Ölümcül hata: #[AllowDynamicProperties] readonly class Foo'ya uygulanamaz
+?>
+]]>
+     </programlisting>
+    </example>
+
+    <para>
+     Türsüz ve statik özellikler <literal>readonly</literal> değiştiricisi
+     ile imlenemez ve salt okunur sınıflarda bildirilemez:
+    </para>
+    <example>
+     <programlisting role="php">
+<![CDATA[
+<?php
+readonly class Foo
+{
+    public $bar;
+}
+
+// Ölümcül hata: Salt okunur Foo::$bar özelliğinin bir türü olmalı
+?>
+]]>
+     </programlisting>
+     <programlisting role="php">
+<![CDATA[
+<?php
+readonly class Foo
+{
+    public static int $bar;
+}
+
+// Ölümcül hata: Salt okunur class Foo statik özellikler bildiremez
+?>
+]]>
+     </programlisting>
+    </example>
+    <para>
+     Salt okunur (<modifier>readonly</modifier> bildirimli) bir sınıfın
+     <link linkend="language.oop5.basic.extends">genişletilebilmesi</link>
+     için gerek ve yeter koşul çocuk sınıfının da salt okunur sınıf olmasıdır.
+    </para>
+   </sect3>
   </sect2>
 
   <sect2 xml:id="language.oop5.basic.new">
