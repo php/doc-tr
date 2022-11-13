@@ -1,31 +1,384 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2e8ef0a1bd98243cb2c6c5c627a195bb53a7a440 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 491a7cc9cddf1e20cda76b16226d0bc020402476 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, dirt, sezer -->
- <chapter xml:id="language.exceptions" xmlns="http://docbook.org/ns/docbook">
-  <title>İstisnalar</title>
+<chapter xml:id="language.exceptions" xmlns:phd="http://www.php.net/ns/phd">
+ <title>İstisnalar</title>
+ <para>
+  PHP diğer programlama dillerindekine benzer bir istisna modeline
+  sahiptir. Bir istisna oluşturulabilir (&throw;) ve yakalanabilir (&catch;).
+  Olası istisnaların yakalanabilmesi için, kod bir &try; bloğu içine
+  alınabilir. Her &try; bloğuna karşılık en az bir tane &catch; veya
+  &finally; bloğu olması gerekir.
+ </para>
+ <para>
+  Bir istisna oluşturulursa ve geçerli işlev bağlamında &catch; bloğu yoksa,
+  istisna, eşleşen bir &catch; bloğu bulana kadar çağrı yığıtını çağıran
+  işleve "kabarcıklandırır". Yol boyunca karşılaşılan tüm &finally; blokları
+  çalıştırılır. Eğer çağrı yığıtı, eşleşen bir &catch; bloğu bulamadan
+  küresel bağlama kadar boşalırsa ve bir küresel istisna işleyici de
+  atanmamışsa, ölümcül hata vererek sonlanır.
+ </para>
+ <para>
+  Oluşturulan nesne ya bir <interfacename>Throwable</interfacename> örneği
+  olmalıdır. Bunu sağlamayan bir nesne oluşturmaya çalışmak (&throw;)
+  ölümcül bir PHP hatasına yol açmaz.
+ </para>
+ <para>
+  PHP 8.0.0 ve sonrasında,  &throw; sözcüğü bir ifade olup herhangi bir
+  ifadenin içinde kullanılabilir. Önceki sürümlerde bir deyimdi ve kendi
+  satırına sahip olması gerekiyordu.
+ </para>
 
-  <sect1 xml:id="language.exceptions.extending">
-   <title>İstisnaları Genişletmek</title>
+ <sect1 phd:chunk="false" xml:id="language.exceptions.catch">
+  <title><literal>catch</literal></title>
+  <para>
+   Bir &catch; bloğu oluşturulan bir istisnaya nasıl yanıt verileceğini
+   tanımlar. Bir &catch; bloğu işleyebileceği bir veya daha fazla istisna
+   veya hata türünü ve isteğe bağlı olarak istisnanın atanacağı değişkeni
+   tanımlar. (PHP 8.0.0 öncesinde değişken gerekliydi.) İlk &catch; bloğu,
+   nesneyi işleyecek &throw; nesnesinin türüyle eşleşen bir hata veya
+   istisnayla karşılaştığında bunları engelleyecektir.
+  </para>
+  <para>
+   Farklı sınıflara ait istisnaları yakalamak için birden fazla &catch; bloğu
+   kullanılabilir. Normal çalışma sıradaki son &catch; bloğundan sonra devam
+   eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna
+   oluşmadığında) sıradaki tanımlanmış son &catch; bloğundan sora devam eder.
+   İstisnalar bir &catch; bloğu içerisinde oluşmuş olabileceği gibi yeniden
+   de oluşabilir (&throw;). Aksi takdirde, çalışma, tetiklenen &catch;
+   bloğundan sonra devam eder.
+  </para>
+  <para>
+   Bir istisna oluştuğunda, istisnanın oluştuğu yerden sonraki kodlar
+   çalıştırılmaz ve PHP oluşan istisna ile uyuşan ilk &catch;
+   bloğunu bulmaya çalışır. Bir istisnanın yakalanmaması durumunda,
+   <function>set_exception_handler</function> işlevi ile evvelce bir istisna
+   eylemcisi tanımlanmamışsa, PHP bir ölümcül hata durumu oluşturur ve bir
+   "<literal>Uncaught Exception ...</literal>" ("Yakalanmamış istisna ...")
+   iletisi çıktılar.
+  </para>
+  <para>
+   PHP 7.1.0 ve sonrasında, boru (<literal>|</literal>) karakteri kullanarak
+   bir &catch; bloğunda çok sayıda istisna belirtilebilir. Farklı sınıf
+   hiyerarşilerindeki farklı istisnalar aynı şekilde elde edildiğinde
+   kullanışlıdır.
+  </para>
+  <para>
+   PHP 8.0.0 ve sonrasında, değişken ismi yakalama istisnası için isteğe
+   bağlıdır. Belirtilmezse, &catch; bloğu çalışmaya yine de devam eder fakat
+   istisnayı oluşturacak nesneye erişemez.
+  </para>
+ </sect1>
+
+ <sect1 phd:chunk="false" xml:id="language.exceptions.finally">
+  <title><literal>finally</literal></title>
+  <para>
+   &catch; bloklarının yerine veya sonrasında bir
+   &finally; bloğu da belirtilebilir. Bir istisnanın oluşmamışsa bile ve
+   normal çalışmaya dönülmeden önce &finally; bloğu içindeki kodlar daima
+   &try; ve &catch; bloklarından sonra çalıştırılır.
+  </para>
+  <para>
+   Dikkate değer tek etkileşim, &finally; bloğu ile &return; deyimi arasında
+   olur. &try; veya &catch; bloklarının içinde bir &return; deyimine
+   rastlansa bile &finally; bloğu çalışmasına devam edeceği gibi, &return;
+   deyimi de çalıştırılır fakat &finally; bloğu işini bitirdikten sonra sonuç
+   döndürülür. Ek olarak, &finally; bloğu da bir &return; içeriyorsa
+   &finally; bloğundaki değer döndürülür.
+  </para>
+ </sect1>
+
+ <sect1 phd:chunk="false" xml:id="language.exceptions.exception-handler">
+  <title>Küresel istisna işleyici</title>
+  <para>
+   Eğer bir istisnanın küresel bağlama kadar kabarcıklanmasına izin verilirse,
+   atandığı takdirde bir küresel istisna işleyici tarafından yakalanabilir.
+   Başka bir blok çalıştırılmazsa bir &catch; bloğu yerine çağrılmak üzere bir
+   işlev <function>set_exception_handler</function> işlevi ile atanabilir.
+   Etkisi esasen, tüm programın,  &catch; olarak bu işleve sahip bir &try;-
+   &catch; bloğu ile sarmalanmasıyla aynıdır.
+  </para>
+ </sect1>
+
+ <sect1 phd:chunk="false" xml:id="language.exceptions.notes">
+  &reftitle.notes;
+  <note>
    <para>
-    Yerleşik <classname>Exception</classname> sınıfını genişleten kullanıcı
-    tanımlı bir istisna sınıfı tanımlanabilir. Aşağıdaki üyeler ve
-    özellikler, yerleşik <classname>Exception</classname> sınıfından
-    türetilen alt sınıf içerisinde nelerin erişilebilir olduğunu
-    göstermektedir.
+     Yerleşik PHP işlevleri aslında <link linkend="ini.error-reporting">hata
+     raporlama</link> yapmakta, istisnaları sadece <link
+     linkend="language.oop5">nesne yönelimli</link> güncel eklentiler
+     kullanmaktadır. Bununla birlikte hatalar <link
+     linkend="class.errorexception">ErrorException</link> ile kolayca
+     istisnalara dönüştürülebilir. Bununla birlikte, bu teknik sadece ölümcül
+     hatalarda çalışır.
    </para>
    <example>
-    <title>- Yerleşik <classname>Exception</classname> sınıfı</title>
-    <programlisting role="php">
+    <title>- Hata raporlamayı istisnalara dönüştürme örneği</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+    throw new ErrorException($message, 0, $severity, $filename, $lineno);
+}
+
+set_error_handler('exceptions_error_handler');
+?>
+]]>
+    </programlisting>
+   </example>
+  </note>
+  <tip>
+   <para>
+    <link linkend="intro.spl">Standard PHP Kütüphanesi (SPL)</link> bol bol
+    yerleşik istisna içerir.
+   </para>
+  </tip>
+ </sect1>
+
+ <sect1 phd:chunk="false" xml:id="language.exceptions.examples">
+  &reftitle.examples;
+  <example>
+   <title>- Bir İstisna Oluşturmak</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function inverse($x) {
+    if (!$x) {
+        throw new Exception('Sıfıra bölme.');
+    }
+    else return 1/$x;
+}
+
+try {
+    echo inverse(5) . "\n";
+    echo inverse(0) . "\n";
+} catch (Exception $e) {
+    echo 'Yakalanan olağandışılık: ',  $e->getMessage(), "\n";
+}
+
+// Çalışma sürer
+echo 'Merhaba Dünya';
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+0.2
+Yakalanan olağandışılık: Sıfıra bölme.
+Merhaba Dünya
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>- Bir &finally; bloğu ile istisnanın işleme sokulması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function inverse($x) {
+    if (!$x) {
+        throw new Exception('Sıfıra bölme.');
+    }
+    return 1/$x;
+}
+
+try {
+    echo inverse(5) . "\n";
+} catch (Exception $e) {
+    echo 'İstisna yakalandı: ',  $e->getMessage(), "\n";
+} finally {
+    echo "İlk finally bloğu.\n";
+}
+
+try {
+    echo inverse(0) . "\n";
+} catch (Exception $e) {
+    echo 'İstisna yakalandı: ',  $e->getMessage(), "\n";
+} finally {
+    echo "İkinci finally bloğu.\n";
+}
+
+// İcra sürer
+echo "Merhaba Dünya\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+0.2
+İlk finally bloğu.
+İstisna yakalandı: Sıfıra bölme..
+İkinci finally bloğu.
+Merhaba Dünya
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>- &finally; bloğu ile &return; arasındaki etkileşim örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+function test() {
+    try {
+        throw new Exception('foo');
+    } catch (Exception $e) {
+        return 'catch';
+    } finally {
+        return 'finally';
+    }
+}
+
+echo test();
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+finally
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>- İç içe istisnalar</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            try {
+                throw new MyException('foo!');
+            } catch (MyException $e) {
+                /* yeniden yakala */
+                throw $e;
+            }
+        } catch (Exception $e) {
+            var_dump($e->getMessage());
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+string(4) "foo!"
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>Çoklu catch istisna eldesi</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyException extends Exception { }
+
+class MyOtherException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            throw new MyException();
+        } catch (MyException | MyOtherException $e) {
+            var_dump(get_class($e));
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+string(11) "MyException"
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>- Yakalama değişkeninin olmayışı</title>
+   <para>Sadece PHP 8.0.0 ve sonrası için geçerlidir.</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class Özelİstisna extends Exception {}
+
+function test() {
+    throw new Özelİstisna('Oopsie');
+}
+
+try {
+    test();
+} catch (Özelİstisna) {
+    print "Bir Özelİstisna oluştu, fakat ayrıntılar önemsiz.";
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title>- Bir ifade olarak throw</title>
+   <para>Sadece PHP 8.0.0 ve sonrası için geçerlidir.</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class Özelİstisna extends Exception {}
+
+function test() {
+    do_something_risky() or throw new Exception('Çalışmadı...');
+}
+
+try {
+    test();
+} catch (Exception $e) {
+    print $e->getMessage();
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect1>
+
+ <sect1 xml:id="language.exceptions.extending">
+  <title>İstisnaları Genişletmek</title>
+  <para>
+   Yerleşik <classname>Exception</classname> sınıfını genişleten kullanıcı
+   tanımlı bir istisna sınıfı tanımlanabilir. Aşağıdaki üyeler ve
+   özellikler, yerleşik <classname>Exception</classname> sınıfından
+   türetilen alt sınıf içerisinde nelerin erişilebilir olduğunu
+   göstermektedir.
+  </para>
+  <example>
+   <title>- Yerleşik <classname>Exception</classname> sınıfı</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 class Exception implements Throwable
 {
     protected $message = 'Bilinmeyen istisna';  // istisna iletisi
-    private   $string;                          // __toString önbelleği
-    protected $code = 0;                     // kullanıcı tanımlı istisna kodu
-    protected $file;                         // istisnanın kaynak dosyası
+    private   $string;                // __toString önbelleği
+    protected $code = 0;              // kullanıcı tanımlı istisna kodu
+    protected $file;                  // istisnanın kaynak dosyası
     protected $line;                  // istisnanın kaynak dosyasındaki satırı
-    private   $trace;                           // geriye doğru hata izleme
+    private   $trace;                 // geriye doğru hata izleme
     private   $previous;              // istisnalar iç içe ise önceki istisna
 
 
@@ -48,33 +401,33 @@ class Exception implements Throwable
 }
 ?>
 ]]>
-    </programlisting>
-   </example>
+   </programlisting>
+  </example>
+  <para>
+   Bir sınıf yerleşik <classname>Exception</classname> sınıfını genişletiyor
+   ve <link linkend="language.oop5.decon">nesne kurucuyu</link> yeniden
+   tanımlıyorsa, mevcut tüm verinin düzgün biçimde atandığından emin olmak
+   için <link linkend="language.oop5.paamayim-nekudotayim"
+   >parent::__construct()</link> işlevinin de çağrılması hararetle önerilir.
+   Nesne bir karakter dizisi olarak sunulduğunda özelleştirilmiş bir çıktı
+   sağlayabilmek için <link linkend="language.oop5.magic"
+   >__toString()</link> yöntemi geçersiz kılınabilir.
+  </para>
+  <note>
    <para>
-    Bir sınıf yerleşik <classname>Exception</classname> sınıfını genişletiyor
-    ve <link linkend="language.oop5.decon">nesne kurucuyu</link> yeniden
-    tanımlıyorsa, mevcut tüm verinin düzgün biçimde atandığından emin olmak
-    için <link linkend="language.oop5.paamayim-nekudotayim"
-    >parent::__construct()</link> işlevinin de çağrılması hararetle önerilir.
-    Nesne bir karakter dizisi olarak sunulduğunda özelleştirilmiş bir çıktı
-    sağlayabilmek için <link linkend="language.oop5.magic"
-    >__toString()</link> yöntemi geçersiz kılınabilir.
+    İstisnaların kopyaları yapılamaz. Bir istisnanın <link
+    linkend="language.oop5.cloning">kopyasını</link> yapmaya çalışmak ölümcül
+    hatayla (<literal>E_FATAL</literal> seviyesinden bir hata) ile sonuçlanır.
    </para>
-   <note>
-    <para>
-     İstisnaların kopyaları yapılamaz. Bir istisnanın <link
-     linkend="language.oop5.cloning">kopyasını</link> yapmaya çalışmak ölümcül
-     hatayla (<literal>E_FATAL</literal> seviyesinden bir hata) ile sonuçlanır.
-    </para>
-   </note>
-   <example>
-    <title>- <classname>Exception</classname> sınıfının genişletilmesi</title>
-    <programlisting role="php">
+  </note>
+  <example>
+   <title>- <classname>Exception</classname> sınıfının genişletilmesi</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 /**
- * Özelleştirilmiş bir istisna sınıfı tanımlayalım
- */
+* Özelleştirilmiş bir istisna sınıfı tanımlayalım
+*/
 class MyException extends Exception
 {
     // İstisnayı yeniden tanımlayalım, böylece ileti seçimlik olmaktan çıkar
@@ -98,8 +451,8 @@ class MyException extends Exception
 
 
 /**
- * İstisnayı denemek için bir sınıf oluşturalım
- */
+* İstisnayı denemek için bir sınıf oluşturalım
+*/
 class TestException
 {
     public $var;
@@ -184,368 +537,9 @@ var_dump($o); // TestException
 echo "\n\n";
 ?>
 ]]>
-    </programlisting>
-   </example>
-  </sect1>
-
-  <simplesect xml:id="language.exceptions.introduction">
-  <para>
-    PHP diğer programlama dillerindekine benzer bir istisna modeline
-    sahiptir. Bir istisna oluşturulabilir (&throw;) ve yakalanabilir (&catch;).
-    Olası istisnaların yakalanabilmesi için, kod bir &try; bloğu içine
-    alınabilir. Her &try; bloğuna karşılık en az bir tane &catch; veya
-    &finally; bloğu olması gerekir.
-  </para>
-   <para>
-    Bir istisna oluşturulursa ve geçerli işlev bağlamında &catch; bloğu yoksa,
-    istisna, eşleşen bir &catch; bloğu bulana kadar çağrı yığıtını çağıran
-    işleve "kabarcıklandırır". Yol boyunca karşılaşılan tüm &finally; blokları
-    çalıştırılır. Eğer çağrı yığıtı, eşleşen bir &catch; bloğu bulamadan
-    küresel bağlama kadar boşalırsa ve bir küresel istisna işleyici de
-    atanmamışsa, ölümcül hata vererek sonlanır.
-   </para>
-  <para>
-    Oluşturulan nesne ya bir
-    <classname>Exception</classname> sınıfı ya da
-    bir <classname>Exception</classname> alt sınıfının örneği olmalıdır. Bunu
-    sağlamayan bir nesne oluşturmaya çalışmak (&throw;) ölümcül bir PHP
-    hatasına yol açmaz.
-   </para>
-   <para>
-    PHP 8.0.0 ve sonrasında,  &throw; sözcüğü bir ifade olup herhangi bir
-    ifadenin içinde kullanılabilir. Önceki sürümlerde bir deyimdi ve kendi
-    satırına sahip olması gerekiyordu.
-   </para>
-  </simplesect>
-
-  <simplesect xml:id="language.exceptions.catch">
-   <title><literal>catch</literal></title>
-   <para>
-    Bir &catch; bloğu oluşturulan bir istisnaya nasıl yanıt verileceğini
-    tanımlar. Bir &catch; bloğu işleyebileceği bir veya daha fazla istisna
-    veya hata türünü ve isteğe bağlı olarak istisnanın atanacağı değişkeni
-    tanımlar. (PHP 8.0.0 öncesinde değişken gerekliydi.) İlk &catch; bloğu,
-    nesneyi işleyecek &throw; nesnesinin türüyle eşleşen bir hata veya
-    istisnayla karşılaştığında bunları engelleyecektir.
-   </para>
-   <para>
-    Farklı sınıflara ait istisnaları yakalamak için birden fazla &catch; bloğu
-    kullanılabilir. Normal çalışma sıradaki son &catch; bloğundan sonra devam
-    eder. Buradaki normal çalışma (&try; bloğu içinde hiçbir istisna
-    oluşmadığında) sıradaki tanımlanmış son &catch; bloğundan sora devam eder.
-    İstisnalar bir &catch; bloğu içerisinde oluşmuş olabileceği gibi yeniden
-    de oluşabilir (&throw;). Aksi takdirde, çalışma, tetiklenen &catch;
-    bloğundan sonra devam eder.
-   </para>
-   <para>
-    Bir istisna oluştuğunda, istisnanın oluştuğu yerden sonraki kodlar
-    çalıştırılmaz ve PHP oluşan istisna ile uyuşan ilk &catch;
-    bloğunu bulmaya çalışır. Bir istisnanın yakalanmaması durumunda,
-    <function>set_exception_handler</function> işlevi ile evvelce bir istisna
-    eylemcisi tanımlanmamışsa, PHP bir ölümcül hata durumu oluşturur ve bir
-    "<literal>Uncaught Exception ...</literal>" ("Yakalanmamış istisna ...")
-    iletisi çıktılar.
-   </para>
-   <para>
-    PHP 7.1.0 ve sonrasında, boru (<literal>|</literal>) karakteri kullanarak
-    bir &catch; bloğunda çok sayıda istisna belirtilebilir. Farklı sınıf
-    hiyerarşilerindeki farklı istisnalar aynı şekilde elde edildiğinde
-    kullanışlıdır.
-   </para>
-   <para>
-    PHP 8.0.0 ve sonrasında, değişken ismi yakalama istisnası için isteğe
-    bağlıdır. Belirtilmezse, &catch; bloğu çalışmaya yine de devam eder fakat
-    istisnayı oluşturacak nesneye erişemez.
-   </para>
-  </simplesect>
-
-  <simplesect xml:id="language.exceptions.finally">
-   <title><literal>finally</literal></title>
-   <para>
-    &catch; bloklarının yerine veya sonrasında bir
-    &finally; bloğu da belirtilebilir. Bir istisnanın oluşmamışsa bile ve
-    normal çalışmaya dönülmeden önce &finally; bloğu içindeki kodlar daima
-    &try; ve &catch; bloklarından sonra çalıştırılır.
-   </para>
-   <para>
-    Dikkate değer tek etkileşim, &finally; bloğu ile &return; deyimi arasında
-    olur. &try; veya &catch; bloklarının içinde bir &return; deyimine
-    rastlansa bile &finally; bloğu çalışmasına devam edeceği gibi, &return;
-    deyimi de çalıştırılır fakat &finally; bloğu işini bitirdikten sonra sonuç
-    döndürülür. Ek olarak, &finally; bloğu da bir &return; içeriyorsa
-    &finally; bloğundaki değer döndürülür.
-   </para>
- </simplesect>
-
- <simplesect xml:id="language.exceptions.exception-handler">
-  <title><literal>Küresel istisna işleyici</literal></title>
-  <para>
-   Eğer bir istisnanın küresel bağlama kadar kabarcıklanmasına izin verilirse,
-   atandığı takdirde bir küresel istisna işleyici tarafından yakalanabilir.
-   Başka bir blok çalıştırılmazsa bir &catch; bloğu yerine çağrılmak üzere bir
-   işlev <function>set_exception_handler</function> işlevi ile atanabilir.
-   Etkisi esasen, tüm programın,  &catch; olarak bu işleve sahip bir &try;-
-   &catch; bloğu ile sarmalanmasıyla aynıdır.
-  </para>
- </simplesect>
-
-  <simplesect xml:id="language.exceptions.notes">
-   &reftitle.notes;
-
-   <note>
-    <para>
-      Yerleşik PHP işlevleri aslında <link linkend="ini.error-reporting">hata
-      raporlama</link> yapmakta, istisnaları sadece <link
-      linkend="language.oop5">nesne yönelimli</link> güncel eklentiler
-      kullanmaktadır. Bununla birlikte hatalar <link
-      linkend="class.errorexception">ErrorException</link> ile kolayca
-      istisnalara dönüştürülebilir. Bununla birlikte, bu teknik sadece ölümcül
-      hatalarda çalışır.
-    </para>
-    <example>
-     <title>- Hata raporlamayı istisnalara dönüştürme örneği</title>
-      <programlisting role="php">
-<![CDATA[
-<?php
-function exceptions_error_handler($severity, $message, $filename, $lineno) {
-    throw new ErrorException($message, 0, $severity, $filename, $lineno);
-}
-
-set_error_handler('exceptions_error_handler');
-?>
-]]>
-     </programlisting>
-    </example>
-  </note>
-  <tip>
-    <para>
-      <link linkend="intro.spl">Standard PHP Kütüphanesi (SPL)</link> bol bol
-      yerleşik istisna içerir.
-    </para>
-    </tip>
-  </simplesect>
-
-  <simplesect xml:id="language.exceptions.examples">
-   &reftitle.examples;
-   <example>
-    <title>- Bir İstisna Oluşturmak</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-function inverse($x) {
-    if (!$x) {
-        throw new Exception('Sıfıra bölme.');
-    }
-    else return 1/$x;
-}
-
-try {
-    echo inverse(5) . "\n";
-    echo inverse(0) . "\n";
-} catch (Exception $e) {
-    echo 'Yakalanan olağandışılık: ',  $e->getMessage(), "\n";
-}
-
-// Çalışma sürer
-echo 'Merhaba Dünya';
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-0.2
-Yakalanan olağandışılık: Sıfıra bölme.
-Merhaba Dünya
-]]>
-    </screen>
-   </example>
-
-   <example>
-    <title>- Bir &finally; bloğu ile istisnanın işleme sokulması</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-function inverse($x) {
-    if (!$x) {
-        throw new Exception('Sıfıra bölme.');
-    }
-    return 1/$x;
-}
-
-try {
-    echo inverse(5) . "\n";
-} catch (Exception $e) {
-    echo 'İstisna yakalandı: ',  $e->getMessage(), "\n";
-} finally {
-    echo "İlk finally bloğu.\n";
-}
-
-try {
-    echo inverse(0) . "\n";
-} catch (Exception $e) {
-    echo 'İstisna yakalandı: ',  $e->getMessage(), "\n";
-} finally {
-    echo "İkinci finally bloğu.\n";
-}
-
-// İcra sürer
-echo "Merhaba Dünya\n";
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-0.2
-İlk finally bloğu.
-İstisna yakalandı: Sıfıra bölme..
-İkinci finally bloğu.
-Merhaba Dünya
-]]>
-    </screen>
-   </example>
-   <example>
-    <title>- &finally; bloğu ile &return; arasındaki etkileşim örneği</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-function test() {
-    try {
-        throw new Exception('foo');
-    } catch (Exception $e) {
-        return 'catch';
-    } finally {
-        return 'finally';
-    }
-}
-
-echo test();
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-finally
-]]>
-    </screen>
-   </example>
-    <example>
-    <title>- İç içe istisnalar</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-class MyException extends Exception { }
-
-class Test {
-    public function testing() {
-        try {
-            try {
-                throw new MyException('foo!');
-            } catch (MyException $e) {
-                /* yeniden yakala */
-                throw $e;
-            }
-        } catch (Exception $e) {
-            var_dump($e->getMessage());
-        }
-    }
-}
-
-$foo = new Test;
-$foo->testing();
-
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-string(4) "foo!"
-]]>
-    </screen>
-   </example>
-   <example>
-    <title>Çoklu catch istisna eldesi</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-class MyException extends Exception { }
-
-class MyOtherException extends Exception { }
-
-class Test {
-    public function testing() {
-        try {
-            throw new MyException();
-        } catch (MyException | MyOtherException $e) {
-            var_dump(get_class($e));
-        }
-    }
-}
-
-$foo = new Test;
-$foo->testing();
-
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-string(11) "MyException"
-]]>
-    </screen>
-   </example>
-   <example>
-    <title>- Yakalama değişkeninin olmayışı</title>
-    <para>Sadece PHP 8.0.0 ve sonrası için geçerlidir.</para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-class Özelİstisna extends Exception {}
-
-function test() {
-    throw new Özelİstisna('Oopsie');
-}
-
-try {
-    test();
-} catch (Özelİstisna) {
-    print "Bir Özelİstisna oluştu, fakat ayrıntılar önemsiz.";
-}
-?>
-]]>
-    </programlisting>
-   </example>
-   <example>
-    <title>- Bir ifade olarak throw</title>
-    <para>Sadece PHP 8.0.0 ve sonrası için geçerlidir.</para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-
-class Özelİstisna extends Exception {}
-
-function test() {
-    do_something_risky() or throw new Exception('Çalışmadı...');
-}
-
-try {
-    test();
-} catch (Exception $e) {
-    print $e->getMessage();
-}
-?>
-]]>
-    </programlisting>
-   </example>
-  </simplesect>
+   </programlisting>
+  </example>
+ </sect1>
 
  </chapter>
 

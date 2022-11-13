@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 0e81411492de9b6813d288a27dd0288886bc694b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 54ff7bf8e0f8fa90988cccf6b583517366605f6d Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ucwords">
  <refnamediv>
   <refname>ucwords</refname>
@@ -14,14 +14,22 @@
    <methodparam choice="opt"><type>string</type><parameter>ayraçlar</parameter><initializer>" \t\r\n\f\v"</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>dizge</parameter> dizgesindeki her sözcüğün ilk harfini büyük
-   harf yapar. Sözcüğün ilk karakteri bir harf değilse o sözcüğe dokunulmaz.
+   Eğer <parameter>dizge</parameter>'nin her sözcüğünün ilk karakterini
+   <literal>"a"</literal> (0x61) ile <literal>"z"</literal> (0x7a) arasında
+   bir ASCII karakter ise (başka bir deyişle ASCII küçük harf ise) büyük
+   harfe çevirerek dizgeyi döndürür.
   </para>
   <para>
    Bir sözcük, <parameter>ayraçlar</parameter> karakterlerinden sonra gelen ve
    boşluk karakterleri içermeyen bir dizge olarak tanımlanır (Boşluk
    karakterleri: boşluk, yatay sekme, satırbaşı, satırsonu, sayfa ileri ve düşey
    sekme).
+  </para>
+  <para>
+   Benzer dönüşümün çok baytlı dizgelerde yapılması gerekirse
+   <function>mb_convert_case</function> işlevi
+   <constant>MB_CASE_TITLE</constant> sabiti ile kullanılabilir.
+   mode.
   </para>
  </refsect1>
 
@@ -55,6 +63,23 @@
   <para>
    Dönüştürülen dizgeyi döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &strings.changelog.ascii-case-conversion;
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -112,7 +137,6 @@ $baz = ucwords($foo, " \t\r\n\f\v'"); // Mike O'Hara
 
  <refsect1 role="notes">
   &reftitle.notes;
-  &note.locale-single-byte;
   &note.bin-safe;
  </refsect1>
 
