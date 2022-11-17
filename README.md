@@ -209,7 +209,7 @@ KAVRAM KARGAŞASI İÇİNDE BIRAKMAMAKTIR._
 _               Altçizgi imi
 &               Ve imi
 Abstract        Metin için "Özet" ifadeler için "soyut" veya "mutlak"
-Argument        Değiştirge
+Argument        Bağımsız değişken  (return durumunda: Bağımlı değişken)
 Array           Dizi
 Associative Array  İlişkisel Dizi
 Attribute       Öznitelik
@@ -276,7 +276,7 @@ Operator        İşleç
 Original        Özgün
 Outputs         Çıktılanır
 Override        Geçersiz kılmak
-Parameter       Değiştirge
+Parameter       Bağımsız değişken (return durumunda: Bağımlı değişken)
 Parse error     Çözümleme hatası
 Parser          Çözümleyici
 Pass into       İçe aktarmak
@@ -314,7 +314,7 @@ Union type      Birleşim türü
 Unpack          Genişletme, yayma
 Unserialize     Nesneleştirme
 Validation      Geçerlilik
-Variable        Değişken
+Variable        Değişken (İfadenin sol tarafında: "Bağımlı değişken", sağ tarafında: "Bağımsız değişken")
 Variance        Farklılık
 Vector          Yöney
 Web Server      HTTP Sunucusu
