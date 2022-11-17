@@ -3,7 +3,7 @@
 <refentry xml:id="pdostatement.bindparam" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDOStatement::bindParam</refname>
-  <refpurpose>Bir değiştirgeyi belirtilen değişkenle ilişkilendirir
+  <refpurpose>Bir bağımsız değişkeni belirtilen değişkenle ilişkilendirir
   </refpurpose>
  </refnamediv>
 
@@ -12,7 +12,7 @@
   <methodsynopsis>
    <modifier>public</modifier>
    <type>bool</type><methodname>PDOStatement::bindParam</methodname>
-   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter>değiştirge</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>int</type></type><parameter>bağımsız_değişken</parameter></methodparam>
    <methodparam><type>mixed</type><parameter role="reference">değişken</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>veri_türü</parameter><initializer>PDO::PARAM_STR</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
@@ -20,17 +20,17 @@
   </methodsynopsis>
   <para>
    Bir PHP değişkenini hazır SQL deyimindeki bir isimli veya soru imli
-   değiştirgeyle ilişkilendirir. <methodname>PDOStatement::bindValue</methodname>
+   bağımsız değişkenle ilişkilendirir. <methodname>PDOStatement::bindValue</methodname>
    yönteminin tersine değişken gönderimli olarak ilişkilendirilir ve sadece
    <methodname>PDOStatement::execute</methodname> çağrısı sırasında
    değerlendirmeye alınır.
   </para>
   <para>
-   Değiştirgeler çoğunlukla girdi değiştirgesidir, yani değiştirgeler sadece
+   Bağımsız değişkenler çoğunlukla girdi bağımsız değişkenidir, yani bağımsız değişkenler sadece
    sorguda salt okunur olarak ele alınır (ancak yine de
    <parameter>veri_türü</parameter>ne göre tür dönüşümü olabilir). Bazı
-   sürücüler, veriyi çıktı değiştirgelerinde döndüren kayıtlı yordamların
-   kullanımını mümkün kılar. Bazıları ise aynı değiştirgelerin hem girdi hem de
+   sürücüler, veriyi çıktı bağımsız değişkenlerinde döndüren kayıtlı yordamların
+   kullanımını mümkün kılar. Bazıları ise aynı bağımsız değişkenlerin hem girdi hem de
    çıktı için kullanımını mümkün kılar.
   </para>
 
@@ -41,11 +41,11 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>değiştirge</parameter></term>
+     <term><parameter>bağımsız_değişken</parameter></term>
       <listitem>
        <para>
-        Değiştirge betimleyicisi. İsimli değiştirgeler için
-        <varname>:isim</varname> biçemindedir. Soru imli değiştirgeler için
+        Bağımsız değişken betimleyicisi. İsimli bağımsız değişkenler için
+        <varname>:isim</varname> biçemindedir. Soru imli bağımsız değişkenler için
         ise soru iminin konumudur. Konumlar 1'den başlar.
        </para>
       </listitem>
@@ -54,7 +54,7 @@
      <term><parameter>değişken</parameter></term>
       <listitem>
        <para>
-        SQL deyimindeki değiştirge ile ilişkilendirilecek PHP değişkeni.
+        SQL deyimindeki bağımsız değişken ile ilişkilendirilecek PHP değişkeni.
        </para>
       </listitem>
      </varlistentry>
@@ -64,7 +64,7 @@
        <para>
         <link linkend="pdo.constants"><literal>PDO::PARAM_*</literal>
         sabitlerinden</link> biri olarak veri türü.
-        Değiştirgeden değer de döndürmek istiyorsanız
+        Bağımsız değişkenden değer de döndürmek istiyorsanız
         <constant>PDO::PARAM_INPUT_OUTPUT</constant> sabitini burada, bit
         seviyesinde VEYAlayın.
        </para>
@@ -74,9 +74,9 @@
      <term><parameter>uzunluk</parameter></term>
       <listitem>
        <para>
-        Veri türünün uzunluğu. Değiştirge çıktı almak amacıyla kullanılacaksa
+        Veri türünün uzunluğu. Bağımsız değişken çıktı almak amacıyla kullanılacaksa
         veri türü uzunluğu mutlaka belirtilmelidir. Sadece
-        <parameter>veri_türü</parameter> değiştirgesinde
+        <parameter>veri_türü</parameter> bağımsız değişkeninde
         <constant>PDO::PARAM_INPUT_OUTPUT</constant> belirtilmişse anlamlıdır.
         </para>
       </listitem>
@@ -102,7 +102,7 @@
 
  <refsect1 role="examples">
   &reftitle.examples;
-  <example><title>- İsimli değiştirgelerle
+  <example><title>- İsimli bağımsız değişkenlerle
    <methodname>PDOStatement::bindParam</methodname> örneği</title>
    <programlisting role="php">
 <![CDATA[
@@ -122,7 +122,7 @@ $sth->execute();
    </programlisting>
   </example>
 
-  <example><title>- Soru imli değiştirgelerle
+  <example><title>- Soru imli bağımsız değişkenlerle
    <methodname>PDOStatement::bindParam</methodname> örneği</title>
    <programlisting role="php">
 <![CDATA[
@@ -163,11 +163,11 @@ $sth->execute();
    </programlisting>
   </example>
 -->
-  <example><title>- Girdi/Çıktı değiştirgesi kullanımı</title>
+  <example><title>- Girdi/Çıktı bağımsız değişkeni kullanımı</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-/* Girdi/Çıktı değiştirgeli bir kayıtlı yordam çağrısı yapalım */
+/* Girdi/Çıktı bağımsız değişkenli bir kayıtlı yordam çağrısı yapalım */
 $colour = 'red';
 $sth = $dbh->prepare('CALL puree_fruit(?)');
 $sth->bindParam(1, $colour, PDO::PARAM_STR|PDO::PARAM_INPUT_OUTPUT, 12);

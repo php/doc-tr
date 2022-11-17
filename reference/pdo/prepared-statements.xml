@@ -4,7 +4,7 @@
  <title>Hazır deyimler ve Saklı Yordamlar</title>
  <para>
   Genellikle gelişkin veritabanlarınca desteklenen, hazır deyimler diye
-  bilinen bir kavram vardır. Bunlar nedir? Bunları bir takım değiştirgelerle
+  bilinen bir kavram vardır. Bunlar nedir? Bunları bir takım bağımsız değişkenlerle
   özelleştirilebilen, SQL için derlenmiş şablonlar olarak düşünebilirsiniz.
   Hazır deyimlerin başlıca iki yararı vardır:
  </para>
@@ -12,9 +12,9 @@
   <listitem>
    <simpara>
     Sorgunun tek bir defa çözümlenmesi (veya hazırlanması) gerekir fakat aynı
-    veya farklı değiştirgelerle defalarca çalıştırılabilir. Sorgu hazır
+    veya farklı bağımsız değişkenlerle defalarca çalıştırılabilir. Sorgu hazır
     olduğunda veritabanınca incelenir, derlenip sorgunun amacına uygun olarak
-    en iyilenir. Karmaşık sorgularda aynı sorguyu farklı değiştirgelerle
+    en iyilenir. Karmaşık sorgularda aynı sorguyu farklı bağımsız değişkenlerle
     defalarca yineleyecekseniz işlemler, uygulamanızı farkedilir şekilde
     yavaşlatacak kadar uzun sürebilir. Hazır deyimleri kullanarak her
     yinelemede tekrarlanan inceleme/derleme/eniyileme döngüsünden
@@ -24,7 +24,7 @@
   </listitem>
   <listitem>
    <simpara>
-    Hazır deyim değiştirgelerinin öncelenmesi gerekmez. Bu işlemi sürücüler
+    Hazır deyim bağımsız değişkenlerinin öncelenmesi gerekmez. Bu işlemi sürücüler
     sizin yerinize yapar. Uygulamanız özellikle hazır deyimleri kullanıyorsa
     hiçbir SQL zerkinin olmayacağından emin olabilirsiniz. (Ancak, sorgunun
     diğer parçaları öncelenmemiş girdiler içeriyorsa hala risk
@@ -40,10 +40,10 @@
  </para>
  <para>
   <example>
-   <title>- Hazır deyimlerle değiştirge ismine göre veri girişi</title>
+   <title>- Hazır deyimlerle bağımsız değişken ismine göre veri girişi</title>
    <simpara>
     Bu örnekte <literal>isim</literal> ve <literal>deger</literal> alanlarına
-    değiştirgelerin isimlerine göre bir INSERT sorgusu ile defalarca veri
+    bağımsız değişkenlerin isimlerine göre bir INSERT sorgusu ile defalarca veri
     girilmektedir.
    </simpara>
    <programlisting role="php">
@@ -70,10 +70,10 @@ $deyim->execute();
  </para>
  <para>
   <example>
-   <title>- Hazır deyimlerle değiştirge indisine göre veri girişi</title>
+   <title>- Hazır deyimlerle bağımsız değişken indisine göre veri girişi</title>
    <simpara>
     Bu örnekte <literal>isim</literal> ve <literal>deger</literal> alanlarına
-    değiştirgelerin indislerine göre bir INSERT sorgusu ile defalarca veri
+    bağımsız değişkenlerin indislerine göre bir INSERT sorgusu ile defalarca veri
     girilmektedir.
    </simpara>
    <programlisting role="php">
@@ -120,13 +120,13 @@ foreach ($deyim as $satır) {
  </para>
  <para>
   <example>
-   <title>- Bir saklı yordamın çıktı değiştirgesi ile kullanımı</title>
+   <title>- Bir saklı yordamın çıktı bağımsız değişkeni ile kullanımı</title>
    <simpara>
-    Eğer veritabanı sürücüsü değiştirge ilişkilendirmeyi destekiyorsa
-    değiştirgeleri sadece girdide değil çıktıda da değiştirgelerle
-    ilişkilendirebilirsiniz. Çıktı değiştirgelerinin kullanımı girdi
-    değiştirgelerine göre daha karmaşıktır. Böyle bir durumda
-    ilişkilendirdiğiniz değiştirge sayısını bilmeniz gerekir. Eğer dönen değer
+    Eğer veritabanı sürücüsü bağımsız değişken ilişkilendirmeyi destekiyorsa
+    bağımsız değişkenleri sadece girdide değil çıktıda da bağımsız değişkenlerle
+    ilişkilendirebilirsiniz. Çıktı bağımsız değişkenlerinin kullanımı girdi
+    bağımsız değişkenlerine göre daha karmaşıktır. Böyle bir durumda
+    ilişkilendirdiğiniz bağımsız değişken sayısını bilmeniz gerekir. Eğer dönen değer
     önerdiğinizden daha büyükse bir hata oluşur.
    </simpara>
    <programlisting role="php">
@@ -147,9 +147,9 @@ print "dönen değer: $dönen_değer\n";
 
  <para>
   <example>
-   <title>- Bir saklı yordamın girdi/çıktı değiştirgesi ile kullanımı</title>
+   <title>- Bir saklı yordamın girdi/çıktı bağımsız değişkeni ile kullanımı</title>
    <simpara>
-    Ayrıca, değerleri tutan değiştirgeleri hem girdi hem de çıktı için
+    Ayrıca, değerleri tutan bağımsız değişkenleri hem girdi hem de çıktı için
     kullanabilirsiniz. Sonraki örnekte, saklı yordama 'merhaba' dizgesi
     aktarılmakta, yordam döndüğünde 'merhaba' yerine yordamın dönüş değeri
     yerleştirilmektedir.
@@ -172,14 +172,14 @@ print "dönen değer: $değer\n";
  </para>
  <para>
   <example>
-   <title>- Geçersiz değiştirge kullanımı</title>
+   <title>- Geçersiz bağımsız değişken kullanımı</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 $deyim = $dbh->prepare("SELECT * FROM KUTUK where isim LIKE '%?%'");
 $deyim->execute([$_GET['isim']]);
 
-// değiştirge değerin bütünün yerine kullanılmalı
+// bağımsız değişken değerin bütünün yerine kullanılmalı
 $deyim = $dbh->prepare("SELECT * FROM KUTUK where isim LIKE ?");
 $deyim->execute(["%$_GET[isim]%"]);
 ?>
