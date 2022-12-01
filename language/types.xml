@@ -1,173 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 19e8122137a1d42ed60f17fe2c0c2b69b0b2d16b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 161dde4fe721309398dd324edbf02aec409f127b Maintainer: nilgun Status: ready -->
 <chapter xml:id="language.types" xmlns="http://docbook.org/ns/docbook">
  <title>Türler</title>
 
  <sect1 xml:id="language.types.intro">
   <title>Giriş</title>
 
-  <simpara>
-   PHP on ilkel veri türü destekler.
-  </simpara>
-
   <para>
-   Dört sayıl tür:
+   PHP'deki her ifadenin türü, değerine bağlı olarak aşağıdaki yerleşik
+   türlerden biridir:
+   <itemizedlist>
+    <listitem><simpara><type>null</type></simpara></listitem>
+    <listitem><simpara><type>bool</type> (mantıksal)</simpara></listitem>
+    <listitem><simpara><type>int</type> (tamsayı)</simpara></listitem>
+    <listitem><simpara><type>float</type> (gerçek sayı)</simpara></listitem>
+    <listitem><simpara><type>string</type> (dizge)</simpara></listitem>
+    <listitem><simpara><type>array</type> (dizi)</simpara></listitem>
+    <listitem><simpara><type>object</type> (nesne)</simpara></listitem>
+    <listitem><simpara><type>callable</type> (çağrılabilen)</simpara></listitem>
+    <listitem><simpara><type>resource</type> (özkaynak)</simpara></listitem>
+   </itemizedlist>
   </para>
 
-  <itemizedlist>
-
-   <listitem>
-    <simpara>
-     <type>bool</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>int</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>float</type> (kayan noktalı sayılar)
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>string</type>
-    </simpara>
-   </listitem>
-
-  </itemizedlist>
 
   <para>
-   dört bileşik tür:
+   PHP dinamik olarak yazılan bir dildir, yani bir değişkenin türü çalışma
+   anında belirleneceği için türü belirtmeye gerek olmadığı varsayılır.
+   Bununla birlikte, <link linkend="language.types.declarations">tür
+   bildirimlerini</link> kullanarak dilin bazı yönlerini statik olarak
+   yazmak mümkündür.
   </para>
-
-  <itemizedlist>
-
-   <listitem>
-    <simpara>
-     <type>array</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>object</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>callable</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>iterable</type>
-    </simpara>
-   </listitem>
-  </itemizedlist>
 
   <para>
-   Ve son olarak iki özel tür:
+   Türler, üzerlerinde gerçekleştirilebilecek işlem türlerini kısıtlar.
+   Bununla birlikte, bir işlemde türünün desteklemediği bir ifade veya
+   değişken kullanılırsa, PHP değerin türünü işlemi destekleyen <link
+   linkend="language.types.type-juggling">türe dönüştürmeye</link> çalışır.
+   Bu süreç, değerin kullanıldığı bağlama bağlıdır. Daha fazla bilgi
+   <link linkend="language.types.type-juggling">Tür Dönüşümü</link>
+   bölümünde bulunabilir.
   </para>
 
-  <itemizedlist>
-
-   <listitem>
-    <simpara>
-     <type>resource</type>
-    </simpara>
-   </listitem>
-
-   <listitem>
-    <simpara>
-     <type>NULL</type>
-    </simpara>
-   </listitem>
-
-  </itemizedlist>
-
-  <simpara>
-   Normal olarak, değişken türünü programcı belirlemez; çalışma anında
-   değişkenin bulunduğu bağlama göre buna PHP karar verir.
-  </simpara>
+  <tip>
+   <simpara>
+    Farklı türdeki değerler arasında karşılaştırma örnekleri
+    <link linkend="types.comparisons">tür karşılaştırma tablolarında</link>
+    bulunabilir.
+   </simpara>
+  </tip>
 
   <note>
    <simpara>
-    Bir <link linkend="language.expressions">ifade</link>nin değerinin ve
-    türünün ne olduğuna bakmak için <function>var_dump</function> işlevini
-    kullanabilirsiniz.
+    <link linkend="language.types.typecasting">Tür çarpıtma</link> kullanarak
+    bir ifadenin belirli bir türe göre değerlendirilmesini sağlamak mümkündür.
+    Bir değişkenin türü ayrıca, <function>settype</function> işlevi ile
+    kullanıldığı bağlamda da değiştirilebilir.
    </simpara>
+  </note>
 
-   <para>
-    Hata ayıklama amacıyla bir değişkenin türünü öğrenmek için
-    <function>gettype</function> işlevini kullanın. Belli bir türü sınamak
-    için <function>gettype</function> değil
-    <command>is_</command><literal>tür</literal> işlevlerini
-    kullanın. Bazı örnekler:
-   </para>
+  <para>
+   Bir <link linkend="language.expressions">ifadenin</link> değerini ve türünü
+   denetlemek için <function>var_dump</function> işlevi kullanılabilir. Bir
+   <link linkend="language.expressions">ifadenin</link> yalnızca türü
+   öğrenilmek istenirse <function>get_debug_type</function> işlevi
+   kullanılabilir. Ancak, bir ifadenin belirli bir türde olup olmadığını
+   saptamak için <literal>is_<replaceable>tür</replaceable></literal> işlevleri
+   kullanılmalıdır.
 
    <informalexample>
     <programlisting role="php">
 <![CDATA[
 <?php
-$a_bool = TRUE;   // boolean türünde
+$a_bool = true;   // bool türünde
 $a_str  = "foo";  // string türünde
 $a_str2 = 'foo';  // string türünde
-$an_int = 12;     // integer  türünde
+$an_int = 12;     // int  türünde
 
-echo gettype($a_bool); // boolean basar
-echo gettype($a_str);  // string basar
+echo get_debug_type($a_bool), "\n";
+echo get_debug_type($a_str), "\n";
 
 // Değişken bir tamsayı ise değeri dört arttır
 if (is_int($an_int)) {
     $an_int += 4;
 }
+var_dump($an_int);
 
 // $a_bool bir dizge ise değeri çıktıla
-// (hiçbir şey çıktılanmayacaktır)
 if (is_string($a_bool)) {
     echo "Dizge: $a_bool";
 }
 ?>
 ]]>
     </programlisting>
+    &example.outputs.8;
+    <screen>
+<![CDATA[
+bool
+string
+int(16)
+]]>
+    </screen>
    </informalexample>
+  </para>
+  <note>
+   <simpara>
+    PHP 8.0.0 öncesinde, <function>get_debug_type</function>
+    kullanılamadığından, yerine <function>gettype</function> kullanılabilir.
+    Ancak, bu işlevin döndürdüğü bazı tür adları bu belgedekinden farklı
+    olabilir.
+   </simpara>
   </note>
 
-  <simpara>
-   Bir değişkenin türünün mutlaka belli bir türe dönüşmesini isterseniz ya
-   <link linkend="language.types.typecasting">tür çarpıtma</link> yapın ya da
-   <function>settype</function> işlevini kullanın.
-  </simpara>
-
-  <simpara>
-   Yerine göre bazı durumlarda bir değişkenin değeri farklı değerlendirilir.
-   Daha ayrıntılı bilgi için <link linkend="language.types.type-juggling">Tür
-   Dönüşümü</link> bölümüne bakınız. Ayrıca, türlerle ilgili çeşitli
-   karşılaştırmaların listelendiği <link linkend="types.comparisons">Tür
-   karşılaştırma tabloları</link> da yararlı olabilir.
-  </simpara>
  </sect1>
 
+ &language.types.type-system;
+ &language.types.null;
  &language.types.boolean;
  &language.types.integer;
  &language.types.float;
  &language.types.string;
  &language.types.numeric-strings;
  &language.types.array;
- &language.types.iterable;
  &language.types.object;
  &language.types.enumerations;
  &language.types.resource;
- &language.types.null;
  &language.types.callable;
+ &language.types.mixed;
+ &language.types.void;
+ &language.types.never;
+ &language.types.relative-class-types;
+ &language.types.literal;
+ &language.types.iterable;
  &language.types.declarations;
  &language.types.type-juggling;
 
