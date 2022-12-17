@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c993be5c5d2c8625ee3958ec63ae2565f146b18a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fc1e94a9c2e271c7cefd86f28a1cb5bc30a52664 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
 Derleme sırasında bu seçenekle iptal edilebilir: '>
@@ -22,10 +22,21 @@ güvenilmemelidir.</simpara></warning>'>
 <!-- Cautions -->
 
 <!ENTITY caution.cryptographically-insecure '<caution xmlns="http://docbook.org/ns/docbook">
-<para>Bu işlev kriptografik olarak güvenilir değerler üretmez ve kriptografik
-amaçlarla kullanılmamalıdır. Kriptografik olarak güvenilir bir değere ihtiyaç
-duyuluyorsa bunun yerine <function>random_int</function> veya
-<function>random_bytes</function>  işlevi denenebilir.</para></caution>'>
+ <para>
+  Bu işlev kriptografik olarak güvenilir değerler üretmez ve kriptografik
+  amaçlarla veya döndürülen değerlerin tahmin edilemez olmasını gerektiren
+  amaçlarla <emphasis>kullanılmamalıdır</emphasis>.
+ </para>
+ <para>
+  Kriptografik olarak güvenilir rastgelelik gerekliyse
+  <classname>Random\Randomizer</classname> sınıfı
+  <classname>Random\Engine\Secure</classname> motoru ile kullanılabilir.
+  Basit kullanım durumlarında <function>random_int</function> ve
+  <function>random_bytes</function> işlevleri, işletim sisteminin
+  <acronym>CSPRNG</acronym>’i tarafından desteklenen kullanışlı ve güvenli
+  bir arayüz sağlar.
+ </para>
+</caution>'>
 
 <!-- Notes -->
 
@@ -1436,6 +1447,15 @@ verisi.</para></listitem></varlistentry>'>
 
 <!-- memcached notes -->
 
+<!ENTITY memcached.note.delete-time '<note xmlns="http://docbook.org/ns/docbook"><simpara>
+       memcached 1.3.0 (2009&apos;da dağıtılan) itibariyle bu özellik artık
+       desteklenmemektedir. Sıfırdan farklı <parameter>zaman</parameter>
+       değerleri silme işleminin başarısız olmasına sebep olur.
+       <methodname>Memcached::getResultCode</methodname> yöntemi
+       <constant>MEMCACHED_INVALID_ARGUMENTS</constant> döndürür.
+      </simpara></note>
+'>
+
 <!ENTITY memcached.parameter.expiration 'Zaman aşımı, öntanımlı 0&apos;dır.
 Daha ayrıntılı bilgi için <link xmlns="http://docbook.org/ns/docbook"
 linkend="memcached.expiration">Zaman aşımı süreleri</link> bölümüne bakınız.'>
@@ -1455,6 +1475,18 @@ ilgili öğelerin tek bir sunucuda gruplanmasına izin verir.'>
 <!ENTITY memcached.result.getresultcode 'Gerekirse
 <methodname xmlns="http://docbook.org/ns/docbook">Memcached::getResultCode</methodname>
 kullanılmalıdır.'>
+
+<!ENTITY memcached.result.delete-multi '<para xmlns="http://docbook.org/ns/docbook">
+   <parameter>anahtarlar</parameter> indisli bir dizi döner.  Her elemanın
+   değeri, ilgili anahtar silinmişse &true;, silme başarısız olmuşsa
+   <constant>Memcached::RES_*</constant> sabitlerinden biri olur.
+   </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   <methodname>Memcached::getResultCode</methodname> son silme işleminin
+   sonuç kodunu döndürür; buradaki son silme işlemi
+   <parameter>anahtarlar</parameter>’ın son elemanı için silme işlemidir.
+  </para>
+'>
 
 <!-- password notes -->
 

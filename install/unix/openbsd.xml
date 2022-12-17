@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 4eeb07225f615fcde68cbefb84df2fc9bf278f1f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 093eb6affefe2ef930b08043a668168d2181ecc1 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="install.unix.openbsd" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>OpenBSD Kurulum Bilgiler</title>
  <para>
-  Bu bölüm PHP'nin <link xlink:href="&url.openbsd;">OpenBSD 5.8</link>
+  Bu bölüm PHP'nin <link xlink:href="&url.openbsd;">OpenBSD</link>
   sistemlere kurulumu hakkında bilgiler ve ipuçları içerir.
  </para>
  <sect2 xml:id="install.unix.openbsd.packages">
@@ -16,7 +16,8 @@
    </simpara>
    <simpara>
     İhtiyacınız olan ana paket <filename>php</filename> olup,
-    temel motoru (artı gettext ve iconv) içerir. Modül paketleri ise
+    temel motoru (artı fpm, gettext ve iconv) içerir ve aralarından seçim
+    yapabileceğiniz çeşitli sürümler de mevcut olabilir. Modül paketleri ise
     <filename>php-mysql</filename> veya
     <filename>php-imap</filename> gibi isimler alırlar. Bu
     modülleri &php.ini; dosyanızda etkin ve etkisiz kılmak için
@@ -27,16 +28,16 @@
     <programlisting role="shell">
 <![CDATA[
 # pkg_add php
-# pkg_add php-fpm
-# pkg_add php-mysql
+# pkg_add php-apache
+# pkg_add php-mysqli
   (PEAR kütüphanesini kur)
 # pkg_add pear
 
 Paketlerle ilgili talimatları izle
   (paketleri kaldırmak için)
 # pkg_delete php
-# pkg_delete php-fpm
-# pkg_delete php-mysql
+# pkg_delete php-apache
+# pkg_delete php-mysqli
 # pkg_delete pear
 ]]>
     </programlisting>
@@ -53,7 +54,7 @@ Paketlerle ilgili talimatları izle
    Ayrıca, PHP'yi kaynak paketinden  <link
    xlink:href="&url.openbsd.ports;">port ağacı</link>nı kullanarak da
    derleyebilirsiniz. Ancak, bu sadece OpenBSD üzerinde tecrübeli
-   kullanıcılar için önerilebilecek bir yoldur. PHP4 portu iki alt dizine
+   kullanıcılar için önerilebilecek bir yoldur. PHP portu iki alt dizine
    ayrılır: çekirdek ve eklentiler. Eklentilerin bulunduğu dizin desteklenen
    tüm PHP modülleri için alt paketler üretir. Bu modüllerden üretilmesini
    istemedikleriniz için <command>no_*</command> FLAVOR'unu kullanınız.
@@ -89,8 +90,12 @@ Paketlerle ilgili talimatları izle
    </listitem>
    <listitem>
     <simpara>
-     <link xlink:href="&url.gd;">gd</link> eklentisi için, OpenBSD 5.7+ paketi
-     XFree86'nın kurulu olmasını gerektirir. Bu, kurulum sonrası paketlere eklenerek kurulabilir (OpenBSD FAQ#4'e bakınız).
+     <link xlink:href="&url.gd;">gd</link> eklentisi için, OpenBSD paketi
+     Xorg'un kurulu olmasını gerektirir. <filename>xbase.tgz</filename> dosya
+     kümesi eklenerek temel kurulumda zaten kurulmadıysa, kurulum sonrasında
+     eklenebilir (Bkz: <link
+     xlink:href="https://www.openbsd.org/faq/faq4.html#FilesNeeded">OpenBSD
+     FAQ#4</link>).
     </simpara>
    </listitem>
   </itemizedlist>
