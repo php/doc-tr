@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: afec339bc5b7918baddd9ba3cd02b90f3b423230 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b6f7d2d0762b52fe81ab510df30e2901fa2ff8ce Maintainer: nilgun Status: ready -->
  <sect1 xml:id="language.oop5.traits" xmlns="http://docbook.org/ns/docbook">
   <title>Nitelikler</title>
   <para>
@@ -471,30 +471,84 @@ $örnek = new ÖzellikÖrneği;
     </programlisting>
    </example>
    <para>
-    Bir nitelik bir özellik tanımlarsa sınıf aynı isimde bir özellik (uyumlu
-    - aynı görünürlük ve ilk değer - olmadıkça) tanımlayamaz, aksi takdirde
-    bir hata oluşur.
+    Bir nitelik bir özellik tanımlarsa sınıf aynı isimde bir özelliği uyumlu
+    (aynı görünürlük ve tür, salt okunur değiştirici ve ilk değer) olmadıkça
+    tanımlayamaz, aksi takdirde ölümcül hata oluşur.
    </para>
    <example xml:id="language.oop5.traits.properties.conflicts">
     <title>- Çelişki yaratma örneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
-trait NitelikliÖzellik {
+trait ÖzellikliNitelik {
     public $aynı = true;
-    public $farklı = false;
+    public $farklı1 = false;
+    public bool $farklı2;
+    readonly public bool $farklı3;
 }
 
-class ÖzellikÖrneği {
-    use NitelikliÖzellik;
+class ÖzellikliÖrnek {
+    use ÖzellikliNitelik;
     public $aynı = true;
-    public $farklı = true; // ölümcül hata
+    public $farklı1 = true; // ölümcül hata
+    public string $farklı2; // ölümcül hata
+    readonly public bool $farklı3; // ölümcül hata
 }
 ?>
 ]]>
     </programlisting>
    </example>
   </sect2>
+
+ <sect2 xml:id="language.oop5.traits.constants">
+  <title>&Constants;</title>
+  <para>
+   PHP 8.2.0 itibariyle nitelikler sabitleri de tanımlayabilmektedir.
+  </para>
+  <example xml:id="language.oop5.traits.constants.example">
+   <title>- Sabitlerin Tanımlanması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+trait SabitliNitelik {
+    public const FLAG_MUTABLE = 1;
+    final public const FLAG_IMMUTABLE = 5;
+}
+
+class SabitliÖrnek {
+    use SabitliNitelik;
+}
+
+$örnek = new SabitliÖrnek;
+$örnek::FLAG;
+?>
+]]>
+   </programlisting>
+  </example>
+  <para>
+   Bir niteliğin tanımladığı sabiti bir sınıf uyumluluk kurallarına (aynı
+   görünürlük, aynı ilk değer ve aynı sonuç) uymadan aynı isimle tekrar
+   tanımlayamaz, aksi takdirde ölümcül hata oluşur.
+  </para>
+  <example xml:id="language.oop5.traits.constants.conflicts">
+   <title>- Çelişki Çözümleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+trait SabitliNitelik {
+    public const FLAG_MUTABLE = 1;
+    final public const FLAG_IMMUTABLE = 5;
+}
+
+class SabitliÖrnek {
+    use SabitliNitelik;
+    public const FLAG_IMMUTABLE = 5; // Ölümcül hata
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
 
  </sect1>
 

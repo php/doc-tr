@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 5d1673b7a0e1a941111595d25cda663d8667a015 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e5bdb2471a1bb203b5b80a5e2797a9147ea31a07 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.interfaces" xmlns="http://docbook.org/ns/docbook">
   <title>Nesne Arayüzleri</title>
@@ -64,16 +64,10 @@
    </para>
    <warning>
     <para>
-     Bir sınıf, yöntem bildirimleri aynı olan aynı isimli iki arayüzü
-     gerçekleyebilir.
-    </para>
-   </warning>
-   <warning>
-    <para>
-     Bir arayüzü gerçekleyen bir sınıf, bağımsız değişkenleri için arayüzdekinden
-     farklı bir ad kullanabilir. Bununla birlikte, PHP 8.0'dan itibaren dil,
-     <link linkend="functions.named-arguments">isimli bağımsız değişkenleri</link>
-     desteklemektedir, bu da çağrıcıların arayüzdeki
+     Bir arayüzü gerçekleyen bir sınıf, bağımsız değişkenleri için
+     arayüzdekinden farklı bir ad kullanabilir. Bununla birlikte, PHP 8.0'dan
+     itibaren dil, <link linkend="functions.named-arguments">isimli bağımsız
+     değişkenleri</link> desteklemektedir, bu da çağrıcıların arayüzdeki
      bağımsız değişken adına güvenebileceği anlamına gelir. Bu nedenle,
      geliştiricilerin gerçeklenen arayüzle aynı bağımsız değişken adlarını
      kullanmaları şiddetle tavsiye edilir.
@@ -87,9 +81,13 @@
    </note>
    <note>
     <para>
-      Bir sınıf bir arayüzü gerçeklerken, bunu
-      <link linkend="language.oop.lsp">bağımsız değişken adı ve sırası arayüzle
-      uyumlu</link> yöntemler kullanarak yapmalıdır.
+     Bir sınıf bir arayüzü gerçeklerken, bunu <link
+     linkend="language.oop.lsp">bağımsız değişken adı ve sırası arayüzle
+     uyumlu</link> yöntemler kullanarak yapmalıdır. Bir sınıf, aynı adlı
+     yöntem bildiren birden çok arayüz gerçekleyebilir. Bu durumda gerçeklenim,
+     tüm arayüzler için <link linkend="language.oop.lsp">bağımsız değişken adı
+     ve sırası uyumluk kurallarına</link> uygun olmalıdır. Böylece, <link
+     linkend="language.oop5.variance">özgüllük</link> uygulanabilir olur.
      </para>
     </note>
   </sect2>
@@ -190,6 +188,33 @@ class D implements B
 
     public function baz(Foo $foo)
     {
+    }
+}
+?>
+]]>
+     </programlisting>
+   </example>
+   <example xml:id="language.oop5.interfaces.examples.variance.multiple.interfaces">
+    <title>- Çoklu arayüzlerle özgüllük uyumluluğu</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {}
+class Bar extends Foo {}
+
+interface A {
+    public function myfunc(Foo $arg): Foo;
+}
+
+interface B {
+    public function myfunc(Bar $arg): Bar;
+}
+
+class MyClass implements A, B
+{
+    public function myfunc(Foo $arg): Bar
+    {
+        return new Bar();
     }
 }
 ?>

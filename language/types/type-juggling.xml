@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f32703dce3d941dd6add101551a6c9f126d8eaa0 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 445502deadd968bfb0207f96237b8fb6f968b100 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.type-juggling">
  <title>Tür Dönüşümü</title>
 
@@ -80,7 +80,10 @@
   </simpara>
 
   <simpara>
-   Bu bağlamlarda değer <type>string</type> türünde değerlendirilir.
+   Bu bağlamlarda değer <type>string</type> olarak yorumlanır. Değer
+   yorumlanabilir değilse <classname>TypeError</classname> örneklenir.
+   PHP 7.4.0 öncesinde <constant>E_RECOVERABLE_ERROR</constant> hatası
+   oluşurdu.
   </simpara>
  </sect2>
 
@@ -130,17 +133,33 @@
   </simpara>
  </sect2>
 
- <sect2>
+ <sect2 xml:id="language.types.type-juggling.function">
   <title>İşlevsel bağlamlar</title>
 
   <simpara>
-   Bir değerin belli bir türdeki bir bağımsız değişkene veya özelliğe atandığı veya
-   dönüş türü bildiren bir işlevden döndürüldüğü bağlamlardır.
+   Bir değerin belli bir türdeki bir bağımsız değişkene veya özelliğe
+   atandığı veya dönüş türü bildiren bir işlevden döndürüldüğü bağlamlardır.
   </simpara>
   <para>
-   Bu bağlamlarda kodlama zorlayıcı olduğunda (öntanımlıdır) sadece sayıl
-   türler başka bir sayıl türe dönüştürülebilir. Basit tür bildirimleri
-   durumunda davranış şöyledir:
+   Bu bağlamlarda değerin bir türü olmalıdır. Bunun iki istisnası vardır.
+   İlk istisna: Değer <type>int</type> türündeyse ve bildirilen tür
+   <type>float</type> ise tamsayı gerçek sayıya dönüştürülür.
+   İkinci istisna: Değerin türü ve bildirim türü <emphasis>sayıl</emphasis>
+   türlerden biriyse ve zorlayıcı tür kipi etkinse (öntanımlıdır), değer
+   uygun bir sayıl türe dönüştürülebilir. Bu davranışın açıklaması aşağıda
+   bulunabilir.
+  </para>
+
+  <warning>
+   <simpara>
+    <link linkend="functions.internal">Dahili işlevler</link> sayıl türleri
+    otomatik olarak &null;'a dönüşmeye zorlar; bu davranışın PHP 8.1.0
+    itibariyle <emphasis>KULLANIMI ÖNERİLMEMEKTEDİR</emphasis>.
+   </simpara>
+  </warning>
+
+  <sect3 xml:id="language.types.type-juggling.function.simple">
+   <title>Basit tür bildirimli zorlayıcı tür kipi</title>
    <itemizedlist>
     <listitem>
      <simpara>
@@ -169,19 +188,92 @@
      </simpara>
     </listitem>
    </itemizedlist>
+  </sect3>
 
-   Tür bir birleşim ise
-   <link linkend="language.types.declarations.union.coercive">Birleşim
-   türleriyle zorlayıcı kodlama</link> bölümüne bakılabilir.
-  </para>
+  <sect3 xml:id="language.types.type-juggling.function.union">
+   <title>Birleşim türleriyle zorlanmış tür dönüşümü</title>
+   <para>
+    <literal>strict_types</literal> etkin olduğunda sayıl tür bildirimlerine
+    örtük olarak sınırlı tür zorlamaları uygulanır. Değerin asıl türü
+    birleşimin (<type>union</type>) parçası değilse hedef tür aşağıdaki
+    öncelik sırasına göre belirlenir:
 
-  <warning>
-   <simpara>
-    <link linkend="functions.internal">Yerleşik işlevler</link> otomatik
-    olarak &null; değerleri sayıl türlere zorlar. Bu davranışın PHP 8.1.0 ve
-    sonrasında kullanımdan kalkması beklenmektedir.
-   </simpara>
-  </warning>
+    <orderedlist>
+     <listitem>
+      <simpara>
+       <type>int</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>float</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>string</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>bool</type>
+      </simpara>
+     </listitem>
+    </orderedlist>
+
+    Tür hem birleşimde hem de değerde mevcutsa, PHP'nin mevcut tür sınama
+    anlamlandırmasına uygun olarak değerin türü zorlanarak tür seçilir,
+    değilse birleşimin sonraki türü denenir.
+   </para>
+
+   <caution>
+    <para>
+     Bir istisna olarak, değer bir dizgeyse ve hem int hem de float
+     birleşime dahilse tercihli tür mevcut "sayısal dizge" anlamlandırmasına
+     göre belirlenir. Örneğin, <literal>"42"</literal> değeri için
+     <type>int</type> seçilirken, <literal>"42.0"</literal> değeri için
+     <type>float</type> seçilir.
+    </para>
+   </caution>
+
+   <note>
+    <para>
+     Yukarıdaki tercih listesine dahil olmayan türler örtük zorlama için
+     seçilebilir hedefler değildir. Özellikle, <literal>null</literal> and
+     <literal>false</literal> değerlere hiçbir örtük zorlama uygulanmaz.
+    </para>
+   </note>
+
+   <example>
+    <title>- Birleşimin türlerinden birine zorlama örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// int|string
+42    --> 42          // kesin tür
+"42"  --> "42"        // kesin tür
+new ObjectWithToString --> "__toString() sonucu"
+                      // nesne int ile uyumsuz, son çare: string
+42.0  --> 42          // float ile int uyumlu
+42.1  --> 42          // float ile int uyumlu
+1e100 --> "1.0E+100"  // float; int için çok büyük, son çare: string
+INF   --> "INF"       // float; int için çok büyük, son çare: string
+true  --> 1           // bool ile int uyumlu
+[]    --> TypeError   // array ile int veya string uyumlu değil
+
+// int|float|bool
+"45"    --> 45        // int sayısal dizge
+"45.0"  --> 45.0      // float sayısal dizge
+
+"45X"   --> true      // sayısal dizge değil, son çare: bool
+""      --> false     // sayısal dizge değil, son çare: bool
+"X"     --> true      // sayısal dizge değil, son çare: bool
+[]      --> TypeError // array ile int, float veya bool uyumlu değil
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect3>
  </sect2>
 
  <sect2 xml:id="language.types.typecasting">
