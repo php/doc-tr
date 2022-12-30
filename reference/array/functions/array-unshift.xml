@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6a6f43d1c490a57b452656db285de6d136055ed2 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: caf779183ee9860b48c74c8994fb944039b6b56f Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.array-unshift" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_unshift</refname>
@@ -85,22 +85,115 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$liste = array("ayva", "muz");
+$liste = [
+    "ayva",
+    "muz"
+];
+
 array_unshift($liste, "elma", "armut");
-print_r($liste);
+var_dump($liste);
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen role="php">
 <![CDATA[
-Array
-(
-    [0] => elma
-    [1] => armut
-    [2] => ayva
-    [3] => muz
-)
+array(4) {
+  [0]=>
+  string(4) "elma"
+  [1]=>
+  string(5) "armut"
+  [2]=>
+  string(4) "ayva"
+  [3]=>
+  string(3) "muz"
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- İlişkisel dizilerle kullanım</title>
+    <para>
+     Bir ilişkisel dizi başka bir ilişkisel dizinin başına eklenirse,
+     başa eklenen dizi sayısal olarak diğer diziye indislenir.
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$meyveler = [
+    'elmalar' => [
+        'Amasya' => 'kırmızı',
+        'Ekşi' => 'yeşil',
+    ],
+    'portakallar' => [
+        'Finike' => 'turuncu',
+        'Vaşington' => 'turuncu',
+    ],
+];
+$sebzeler = [
+    'hıyarlar' => [
+        'Çengelköy' => 'yeşil',
+        'Acur' => 'yeşil',
+    ],
+    'havuçlar' => [
+        'Turuncu' => 'turuncu',
+        'Şalgam' => 'mor',
+    ],
+    'marullar' => [
+        'Kıvırcık' => 'yeşil',
+        'Göbek' => 'yeşil',
+    ],
+];
+
+array_unshift($meyveler, $sebzeler);
+var_dump($meyveler);
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+array(3) {
+  [0]=>
+  array(3) {
+    ["hıyarlar"]=>
+    array(2) {
+      ["Çengelköy"]=>
+      string(6) "yeşil"
+      ["Acur"]=>
+      string(6) "yeşil"
+    }
+    ["havuçlar"]=>
+    array(2) {
+      ["Turuncu"]=>
+      string(7) "turuncu"
+      ["Şalgam"]=>
+      string(3) "mor"
+    }
+    ["marullar"]=>
+    array(2) {
+      ["Kıvırcık"]=>
+      string(6) "yeşil"
+      ["Göbek"]=>
+      string(6) "yeşil"
+    }
+  }
+  ["elmalar"]=>
+  array(2) {
+    ["Amasya"]=>
+    string(10) "kırmızı"
+    ["Ekşi"]=>
+    string(6) "yeşil"
+  }
+  ["portakallar"]=>
+  array(2) {
+    ["Finike"]=>
+    string(7) "turuncu"
+    ["Vaşington"]=>
+    string(7) "turuncu"
+  }
+}
 ]]>
     </screen>
    </example>
@@ -110,6 +203,7 @@ Array
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>array_merge</function></member>
     <member><function>array_shift</function></member>
     <member><function>array_push</function></member>
     <member><function>array_pop</function></member>
