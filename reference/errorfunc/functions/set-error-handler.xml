@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 14a60fad6edabd3384c434cc6257255798453e87 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: bd38d9d20ab0186531a9e923494a30ac23b1ff8c Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.set-error-handler" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>set_error_handler</refname>
@@ -19,27 +19,25 @@
    (<parameter>hata_işleyici</parameter>) bildirir.
   </para>
   <para>
-   Bu işlev çalışma anında oluşan hatalardan kurtulmak için yapılacak
-   işlemleri tanımladığınız bir işlevi PHP'ye bildirmek için kullanılır.
-   Örneğin, verilerinizi veya dosyalarınızı temizlemek isterken işlemlerin
-   durmasına yol açacak bir hata oluştuğunda veya belli durumlar için
+   Bu işlev çalışma anında özel bir hata işleyici oluşturmakta kullanılabilir.
+   Örneğin, veriler veya dosyalar temizlenirken işlemlerin durmasına yol
+   açacak bir hata oluştuğunda veya belli durumlar için
    (<function>trigger_error</function> ile) bir hatayı tetiklemek gerektiğinde
-   PHP tarafından çağrılacak bir işlev tanımlayıp, bu işlevin ismini
-   <function>set_error_handler</function> ile PHP'ye bildirebilirsiniz.
+   PHP tarafından çağrılacak bir işlev tanımlayıp, bu işlevin ismi
+   <function>set_error_handler</function> ile PHP'ye bildirilebilir.
   </para>
   <para>
    Bu işlevin çağrılmasıyla PHP'nin standart hata işleyicisi
-   <parameter>hata_seviyeleri</parameter> ile beliirtilen hata türleri için, geri
-   çağırım işlevi &false; döndürmedikçe tamamen devre dışı kalacaktır. Bunu asla
-   aklınızdan çıkarmayın. <function>error_reporting</function> ayarları etkisiz
-   olacak ve her durumda sizin hata işleyiciniz çağrılacaktır. Ancak,
+   <parameter>hata_seviyeleri</parameter> ile belirtilen hata türleri için,
+   geri çağırım işlevi &false; döndürmedikçe tamamen devre dışı kalacaktır.
+   <function>error_reporting</function> ayarları etkisiz
+   olacak ve her durumda belirtilen hata işleyisi çağrılacaktır. Ancak,
    <link linkend="ini.error-reporting">error_reporting</link> yönergesindeki
-   değeri hala okuyabilecek ve buna göre davranabileceksiniz.
+   değer hala okubabilir ve buna göre davranılabilir.
   </para>
   <para>
-   Ayrıca şunu da aklınızdan çıkarmayın: Gerektiği takdirde
-   <function>die</function> işlevi de sizin
-   sorumluluğunuzdadır. <parameter>hata_işleyici</parameter> işlevi döndükten
+   Ayrıca, gerektiği takdirde <function>die</function> işlevi de işleyicinin
+   sorumluluğundadır. <parameter>hata_işleyici</parameter> işlevi döndükten
    sonra betiğin çalışması, hataya sebep olan deyimden sonraki deyimden devam
    edecektir.
   </para>
@@ -54,7 +52,7 @@
   </para>
   <para>
    Eğer betik çalıştırılmadan önce oluşan hatalar varsa (karşıya dosya yükleme
-   sırasında oluşan hatalar gibi), bu gibi durumlar için bildirdiğiniz
+   sırasında oluşan hatalar gibi), bu gibi durumlar için bildirilen
    <parameter>hata_işleyici</parameter> işlevi çağrılamayacaktır.
   </para>
  </refsect1>
@@ -94,8 +92,8 @@
          <term><parameter>errstr</parameter></term>
          <listitem>
           <simpara>
-           Hata iletisinin bir dizge olarak aktarılacağı değiştrge. İkinci
-           bağımsız değişken olmalıdır.
+           Hata iletisinin bir dizge olarak aktarılacağı bağımsız değişken.
+           İkinci bağımsız değişken olmalıdır.
           </simpara>
          </listitem>
         </varlistentry>
@@ -103,9 +101,9 @@
          <term><parameter>errfile</parameter></term>
          <listitem>
           <simpara>
-           hata_işleyici 3 bağımsız değişken kabul ediyorsa, hatanın oluştuğu betik
-           dosyasının ismini bir dizge olarak içerecek, belirtilmesi isteğe
-           bağlı üçüncü bağımsız değişken.
+           <parameter>hata_işleyici</parameter> 3 bağımsız değişken kabul
+           ediyorsa, hatanın oluştuğu betik dosyasının ismini bir dizge olarak
+           içerecek, belirtilmesi isteğe bağlı üçüncü bağımsız değişken.
           </simpara>
          </listitem>
         </varlistentry>
@@ -113,9 +111,10 @@
          <term><parameter>errline</parameter></term>
          <listitem>
           <simpara>
-           hata_işleyici 4 bağımsız değişken kabul ediyorsa, hatanın oluştuğu
-           deyimin satır numarasını bir tamsayı olarak içerecek,
-           belirtilmesi isteğe bağlı dördüncü bağımsız değişken.
+           <parameter>hata_işleyici</parameter> 4 bağımsız değişken kabul
+           ediyorsa, hatanın oluştuğu deyimin satır numarasını bir tamsayı
+           olarak içerecek, belirtilmesi isteğe bağlı dördüncü bağımsız
+           değişken.
           </simpara>
          </listitem>
         </varlistentry>
@@ -123,20 +122,22 @@
          <term><parameter>errcontext</parameter></term>
          <listitem>
           <simpara>
-           hata_işleyici 5 bağımsız değişken kabul ediyorsa, hatanın oluştuğu noktada etkin simge tablosuna işaret eden bir
-           diziyi kabul edecek, belirtilmesi isteğe bağlı beşinci bağımsız değişken.
-           Bu bağımsız değişken, başka bir deyişle, hatanın tetiklendiği etki
-           alanında etkin değişkenleri içeren bir dizidir. hata_işleyici bu
-           değişkenlerde bir değişiklik yapmamalıdır.
+           <parameter>hata_işleyici</parameter> 5 bağımsız değişken kabul
+           ediyorsa, hatanın oluştuğu noktada etkin simge tablosuna işaret eden
+           bir diziyi kabul edecek, belirtilmesi isteğe bağlı beşinci bağımsız
+           değişken. Bu bağımsız değişken, başka bir deyişle, hatanın
+           tetiklendiği etki alanında etkin değişkenleri içeren bir dizidir.
+           <parameter>hata_işleyici</parameter> bu değişkenlerde bir değişiklik
+           yapmamalıdır.
           </simpara>
           <warning xmlns="http://docbook.org/ns/docbook">
            <simpara>
             Bu bağımsız değişken PHP 7.2.0 ve sonrasında
-            <emphasis>kullanımdan</emphasis>
-            kaldırılmıştır. PHP 8.0.0'da <emphasis>tamanen</emphasis>
-            kaldırılmıştır. Eğer işleviniz bu bağımsız değişkeni bir öntanımlı
-            değer olmaksızın tanımlıyorsa, işlev çağrıldığı takdirde, "too
-            few arguments" (çok az bağımsız değişken) hatası oluşur.
+            <emphasis>kullanımdan</emphasis> kaldırılmıştır. PHP 8.0.0'da
+            <emphasis>tamanen</emphasis> kaldırılmıştır. Eğer işlev bu
+            bağımsız değişkeni bir öntanımlı değer olmaksızın tanımlıyorsa,
+            işlev çağrıldığı takdirde, "too few arguments" (çok az bağımsız
+            değişken) hatası oluşur.
            </simpara>
           </warning>
          </listitem>
@@ -287,22 +288,22 @@ function scale_by_log($vect, $scale)
     return $temp;
 }
 
-// kullanıcı tanımlı hata işleyiciyi bildirelim
+// kullanıcı tanımlı hata işleyiciyi bildir
 $old_error_handler = set_error_handler("hataİşleyicim");
 
-// Bazı hataları tetikleyelim.
-// Önce sayısal olmayan bir eleman içeren bir dizi tanımlayalım.
+// Bazı hataları tetikle.
+// Önce sayısal olmayan bir eleman içeren bir dizi tanımla.
 echo "ilk durum; bir hata: sayı yerine dizge\n";
 $a = array(2, 3, "foo", 5.5, 43.3, 21.11);
 print_r($a);
 
-// burada ikinci hatayı üretiyoruz
+// burada ikinci hatayı üret
 echo "----\nikinci durum - bir uyarı (b = log(PI) * a)\n";
 /* $pos. değer bir sayı değil, 0 kullanılıyor */
 $b = scale_by_log($a, M_PI);
 print_r($b);
 
-// Bir dizi yerine bir dizge aktarıp yine sorun çıkarıyoruz
+// Bir dizi yerine bir dizge aktarıp yine sorun çıkar
 echo "----\nüçüncü durum - bir uyarı\n";
 /* Yanlış girdi, değerler dizi olarak verilmeliydi */
 $c = scale_by_log("not array", 2.3);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 19e8122137a1d42ed60f17fe2c0c2b69b0b2d16b Maintainer: yasar Status: ready -->
+<!-- EN-Revision: 6d29533483657c036e49edb5ea88c7103d126681 Maintainer: yasar Status: ready -->
  <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Değişkenler</title>
 
@@ -174,11 +174,12 @@ var_dump($tanımsız_nesne);
    <para>
     İlklendirilmemiş bir değişkenin öntanımlı değerine güvenmek, içinde aynı
     değişken isminin kullanıldığı bir dosyayı betiğe dahil ettiğinizde sorun
-    çıkarır. İlklendirilmemiş değişken kullanımı <link
-    linkend="errorfunc.constants.errorlevels.e-notice">E_NOTICE</link>
-    seviyesinde hata oluşturur, ancak ilklendirilmemiş bir diziye eleman
-    eklenmesi halinde hata oluşmaz. <function>isset</function> dil oluşumu
-    bir değişkenin ilklendirilip  ilklendirilmediğini öğrenmek için
+    çıkarır. İlklendirilmemiş değişken kullanımı
+    <constant>E_WARNING</constant> (PHP 8.0.0 öncesinde,
+    <constant>E_NOTICE</constant>) seviyesinde hata oluşturur, ancak
+    ilklendirilmemiş bir diziye eleman eklenmesi halinde hata oluşmaz.
+    <function>isset</function> dil oluşumu bir değişkenin ilklendirilip
+    ilklendirilmediğini öğrenmek için
     kullanılabilir.
    </para>
   </sect1>
@@ -550,13 +551,13 @@ var_dump(Bar::counter()); // int(4), PHP 8.1.0 öncesi int(2)
 <?php
 function gönderimli_küresel_dene() {
     global $nesne;
-    $yeni = new stdclass;
+    $yeni = new stdClass;
     $nesne = &$yeni;
 }
 
 function gönderimsiz_küresel_dene() {
     global $nesne;
-    $yeni = new stdclass;
+    $yeni = new stdClass;
     $nesne = $yeni;
 }
 
@@ -592,7 +593,7 @@ function &gönderimli_örnek() {
     echo 'Statik nesne: ';
     var_dump($obj);
     if (!isset($obj)) {
-        $new = new stdclass;
+        $new = new stdClass;
         // Statik değişkene gönderim atayalım
         $obj = &$new;
     }
@@ -611,7 +612,7 @@ function &gönderimsiz_örnek() {
     var_dump($obj);
     if (!isset($obj)) {
         // Statik değişkene nesne atayalım
-        $obj = new stdclass;
+        $obj = new stdClass;
     }
     $obj->property++;
     return $obj;
