@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: a6aae95b01713b065acd0e6ca7bc4cfdeefdfc39 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 81af2a8f5da3a6ba8611eb3dc03fd5fd4e387be4 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
 Derleme sırasında bu seçenekle iptal edilebilir: '>
@@ -35,6 +35,28 @@ güvenilmemelidir.</simpara></warning>'>
   <function>random_bytes</function> işlevleri, işletim sisteminin
   <acronym>CSPRNG</acronym>’i tarafından desteklenen kullanışlı ve güvenli
   bir arayüz sağlar.
+ </para>
+</caution>'>
+
+<!ENTITY caution.mt19937-tiny-seed '<caution xmlns="http://docbook.org/ns/docbook">
+ <para>
+  Because the Mt19937 (“Mersenne Twister”) engine accepts only a single 32 bit integer as the
+  seed, the number of possible random sequences is limited to just 2<superscript>32</superscript>
+  (i.e. 4,294,967,296), despite Mt19937’s huge period of 2<superscript>19937</superscript>-1.
+ </para>
+ <para>
+  When relying on either implicit or explicit random seeding, duplications will appear
+  much earlier. Duplicated seeds are expected with 50&#37; probability after less than
+  80,000 randomly generated seeds according to the birthday problem. A 10&#37; probability
+  of a duplicated seed happens after randomly generating roughly 30,000 seeds.
+ </para>
+ <para>
+  This makes Mt19937 unsuitable for applications where duplicated sequences must not happen with
+  more than a negligible probability. If reproducible seeding is required, both the
+  <classname>Random\Engine\Xoshiro256StarStar</classname> and <classname>Random\Engine\PcgOneseq128XslRr64</classname>
+  engines support much larger seeds that are unlikely to collide randomly. If reproducibility
+  is not required, the <classname>Random\Engine\Secure</classname> engine provides cryptographically
+  secure randomness.
  </para>
 </caution>'>
 
@@ -808,6 +830,13 @@ linkend="ini.include-path">include_path</link> yönergesinde belirtilen
 yollarda da aranır.'>
 
 <!-- Returns -->
+
+<!ENTITY return.type.true '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.2.0</entry>
+ <entry>
+  Dönüş türü artık &true;;evvelce, <type>bool</type> idi.
+ </entry>
+</row>'>
 
 <!ENTITY return.falseforfailure ' başarısızlık durumunda &false; döner'>
 
@@ -2083,6 +2112,19 @@ kullanılabilir.</simpara>'>
 <simpara><constant>PDO::ATTR_ERRMODE</constant> niteliği
 <constant>PDO::ERRMODE_EXCEPTION</constant> değilse bile bir istisna
 yavrulanır.</simpara></note>'>
+
+<!-- PDO errors -->
+
+<!ENTITY pdo.errors '<para xmlns="http://docbook.org/ns/docbook">
+<constant>PDO::ATTR_ERRMODE</constant> özniteliğine
+<constant>PDO::ERRMODE_WARNING</constant> atanırsa
+<constant>E_WARNING</constant> düzeyinde bir hata çıktılanır.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+<constant>PDO::ATTR_ERRMODE</constant> özniteliğine
+<constant>PDO::ERRMODE_EXCEPTION</constant> atanırsa
+<classname>PDOException</classname> istisnası oluşur.
+</para>'>
 
 <!-- PECL entities -->
 <!ENTITY pecl.moved 'Bu <link xmlns="http://docbook.org/ns/docbook"
