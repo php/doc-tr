@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- EN-Revision: 21a6e32de516563e314a7f1177312bec4737b291 Maintainer: onurozgurozkan Status: ready -->
+<!-- EN-Revision: 5832a97c699c5e1bc808ee900447fe751af0d540 Maintainer: onurozgurozkan Status: ready -->
 <refentry xml:id="function.call-user-func-array" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>call_user_func_array</refname>
@@ -37,7 +37,23 @@
      <term><parameter>bağımsız_değişken_dizisi</parameter></term>
      <listitem>
       <para>
-       İşleve aktarılacak indisli dizi şeklinde bağımsız değişkenler.
+       İşleve dizi olarak aktarılacak bağımsız değişkenler.
+      </para>
+      <para>
+       <parameter>bağımsız_değişken_dizisi</parameter>'nin anahtarlarının
+       hepsi sayılardan oluşuyorsa bunlar yok sayılır ve her eleman
+       <parameter>işlev</parameter>'e konumsal sırasıyla aktarılır.
+      </para>
+      <para>
+       <parameter>bağımsız_değişken_dizisi</parameter>'nin anahtarlarının
+       hepsi dizgelerden oluşuyorsa her eleman <parameter>işlev</parameter>'e
+       anahtarı ile isimlendirilerek isimli bağımsız değişken olarak aktarılır.
+      </para>
+      <para>
+       <parameter>bağımsız_değişken_dizisi</parameter>'nin anahtarlarının
+       kısmen sayı kısmen dizge indisli olması veya isimlerden herhangi
+       birinin <parameter>işlev</parameter>'in bağımsız değişken isimleri
+       ile eşleşmemesi ölümcül hata ile sonuçlanır.
       </para>
      </listitem>
     </varlistentry>
@@ -187,6 +203,36 @@ echo "global \$bar=$bar\n";
 <![CDATA[
 function mega $a=55
 global $bar=55
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>- İsimli bağımsız değişkenli <code>call_user_func_array</code> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function biriki($birinci, $ikinci) {
+    echo __FUNCTION__, " $birinci ve $ikinci alındı\n";
+}
+
+// biriki() işlevini farklı sırada isimli değişkenlerle çağır
+call_user_func_array("biriki", array("ikinci" => "iki", "birinci" => "bir"));
+
+// çağrıda biriki() işlevinin bağımsız değişkenlerinden biri isimli olsun
+call_user_func_array("biriki", array("foo", "ikinci" => "bar"));
+
+// Ölümcül hata: Konumsal değişken isimli değişkenden sonra kullanılamaz
+call_user_func_array("biriki", array("birinci" => "bir", "bar"));
+
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+biriki bir ve iki alındı
+biriki foo ve bar alındı
+PHP Fatal error:  Uncaught Error: Cannot use positional argument after named argument
 ]]>
     </screen>
    </example>
