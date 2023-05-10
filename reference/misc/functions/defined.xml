@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c44475e1fafcbee203ed4935a6d5d7a01379fcdc Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 6c3091b54b66181db5f81ef5afe1d2e8b6efdeac Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.defined" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>defined</refname>
@@ -14,6 +14,11 @@
   </methodsynopsis>
   <para>
    Belirtilen isimli sabit tanımlıysa &true; döndürür.
+  </para>
+  <para>
+   Bu işlev ayrıca, <link
+   linkend="language.oop5.constants">sınıf sabitleri</link> ve <link
+   linkend="language.types.enumerations">sayılama kılıfları</link> ile de çalışır.
   </para>
   <note>
    <para>
@@ -57,10 +62,44 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+
 /* Kullanılan tırnağın türü önemlidir. */
 if (defined('TEST')) {
     echo TEST;
 }
+
+
+interface bar {
+    const test = 'foobar!';
+}
+
+class foo {
+    const test = 'foobar!';
+}
+
+var_dump(defined('bar::test')); // bool(true)
+var_dump(defined('foo::test')); // bool(true)
+
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>- sayılama kılıflarının Sınanması (PHP 8.1.0 ve üstü)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+enum Deste
+{
+    case Kupalar;
+    case Karolar;
+    case Sinekler;
+    case Maçalar;
+}
+
+var_dump(defined('Deste::Kupalar')); // bool(true)
+
 ?>
 ]]>
     </programlisting>

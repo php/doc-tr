@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- EN-Revision: d4d537e6a2a9e11b24d5a42e8be7b2d4763c3f0e Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 968c2bc60de3e93d7f38be0b9d2d1b9685a16ea7 Maintainer: nilgun Status: ready -->
 <section xml:id="pdo-mysql.constants" xmlns="http://docbook.org/ns/docbook">
  &reftitle.constants;
  &pdo.driver-constants;
@@ -7,27 +7,27 @@
   <varlistentry xml:id="pdo.constants.mysql-attr-use-buffered-query">
    <term>
     <constant>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY</constant>
-     (<type>int</type>)
+     (<type>bool</type>)
    </term>
    <listitem>
     <simpara>
-     Bu özniteliğe bir <classname>PDOStatement</classname> nesnesinde &true;
-     atanırsa  MySQL sürücüsü MySQL arayüzünün tamponlu sürümlerini kullanır.
-     Taşınabilir bir kod yazıyorsanız bunu yapmak yerine
-     <function>PDOStatement::fetchAll</function> yöntemini kullanın.
+     Öntanımlı olarak tüm deyimler <link
+     linkend="mysqlinfo.concepts.buffering">tamponlu kip</link>te yürütülür.
+     Bir <classname>PDO</classname> nesnesi üzerinde bu özniteliğe &false;
+     atanırsa MySQL sürücüsü tamponlu kipi kullanır.
     </simpara>
     <para>
      <example>
-      <title>- Sorguların tamponlanmasına zorlamak</title>
+      <title>-  MySQL sürücüsünde tamponlu kipi zorlamak</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-if ($db->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
-    $stmt = $db->prepare('select * from foo',
-        array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
-} else {
-    die("Bu uygulama sadece MySQL ile çalışır; " .
-        "yerine \$stmt->fetchAll() kullanılmalıydı");
+$pdo = new PDO("mysql:host=localhost;dbname=world", 'my_user', 'my_password');
+$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+
+$unbufferedResult = $pdo->query("SELECT Name FROM City");
+foreach ($unbufferedResult as $row) {
+    echo $row['Name'] . PHP_EOL;
 }
 ?>
 ]]>

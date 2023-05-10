@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2226ad08fd93e3979efbba47c5ae3545eec97d25 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 142651ca35e6455bd9f213b870e5cbfff0eed39f Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
 Derleme sırasında bu seçenekle iptal edilebilir: '>
@@ -885,9 +885,20 @@ işleci</link> kullanılabilir.</simpara></warning>'>
 <!ENTITY standard.changelog.calling-on-objects '<row xmlns="http://docbook.org/ns/docbook">
  <entry>8.1.0</entry>
  <entry>
-  Bu işlevin nesnelerden çağrılması artık önerilmiyor.
-  Ya <classname>ArrayIterator</classname> ya da nesne üzerinde önce
-  <function>get_mangled_object_vars</function> kullanın.
+  Bu işlevin nesnelerden çağrılması artık önerilmiyor. Ya nesne önce
+  <function>get_mangled_object_vars</function> kullanılarak bir diziye
+  dönüştürülmeli ya da bunun yerine <interfacename>Iterator</interfacename>
+  arayüzünü gerçekleyen bir sınıf tarafından sağlanan
+  <classname>ArrayIterator</classname> gibi yöntemler kullanılmalıdır.
+ </entry>
+</row>
+<row xmlns="http://docbook.org/ns/docbook">
+ <entry>7.4.0</entry>
+ <entry>
+  <link xmlns="http://docbook.org/ns/docbook" linkend="book.spl">SPL</link>
+  sınıflarının örnekleri, artık bu işlevle aynı ada sahip
+  <interfacename>Iterator</interfacename> yöntemini çağırmak yerine hiçbir
+  özelliği olmayan boş nesneler gibi ele alınıyor.
  </entry>
 </row>
 '>
@@ -4097,13 +4108,6 @@ dönüşümde ele alınacak bağımsız değişken sayısını belirler.</para><
    </para>
   </formalpara>
 
-  <note>
-   <simpara>
-    <constant>PHP_INT_MAX</constant>&apos;dan büyük bir konum belirteci
-    kullanmaya çalışılırsa uyarı üretilir.
-   </simpara>
-  </note>
-
   <para>
    <table>
     <title>Belirteçler</title>
@@ -4391,6 +4395,150 @@ dönüşümde ele alınacak bağımsız değişken sayısını belirler.</para><
  </row>
 '>
 
+<!ENTITY strings.changelog.sprintf '
+  <informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu işlev başarısızlık durumunda artık &false; döndürmüyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bağımsız değişken sayısı sıfırsa <classname>ValueError</classname> oluşuyor. Evvelce bunun yerine bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>[width]</literal> (genişlik) sıfırdan küçükse veya
+       <constant>PHP_INT_MAX</constant>&#39;tan büyükse bir
+       <classname>ValueError</classname> oluşuyor;
+       evvelce bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>[precision]</literal> (hassasiyet) sıfırdan küçükse veya
+       <constant>PHP_INT_MAX</constant>&#39;tan büyükse bir
+       <classname>ValueError</classname> oluşuyor;
+       evvelce bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Gereğinden daha az bağımsız değişken verildiğinde bir
+       <classname>ArgumentCountError</classname> oluşuyor; evvelce bir
+       <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+'>
+
+<!ENTITY strings.changelog.vsprintf '
+  <informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu işlev başarısızlık durumunda artık &false; döndürmüyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bağımsız değişken sayısı sıfırsa <classname>ValueError</classname> oluşuyor. Evvelce bunun yerine bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>[width]</literal> (genişlik) sıfırdan küçükse veya
+       <constant>PHP_INT_MAX</constant>&#39;tan büyükse bir
+       <classname>ValueError</classname> oluşuyor;
+       evvelce bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>[precision]</literal> (hassasiyet) sıfırdan küçükse veya
+       <constant>PHP_INT_MAX</constant>&#39;tan büyükse bir
+       <classname>ValueError</classname> oluşuyor;
+       evvelce bir <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Gereğinden daha az bağımsız değişken verildiğinde bir
+       <classname>ArgumentCountError</classname> oluşuyor; evvelce bir
+       <constant>E_WARNING</constant> uyarısı verilirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+'>
+
+<!ENTITY strings.errors.sprintf '
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if the number of arguments is zero.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if <literal>[width]</literal> is less than zero or bigger than <constant>PHP_INT_MAX</constant>.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if <literal>[precision]</literal> is less than zero or bigger than <constant>PHP_INT_MAX</constant>.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ArgumentCountError</classname> is thrown when less arguments are given than required.
+   Prior to PHP 8.0.0, &false; was returned and a <constant>E_WARNING</constant> emitted instead.
+  </para>
+'>
+
+<!ENTITY strings.errors.vsprintf '
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if the number of arguments is zero.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if <literal>[width]</literal> is less than zero or bigger than <constant>PHP_INT_MAX</constant>.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown if <literal>[precision]</literal> is less than zero or bigger than <constant>PHP_INT_MAX</constant>.
+   Prior to PHP 8.0.0, a <constant>E_WARNING</constant> was emitted instead.
+  </para>
+  <para xmlns="http://docbook.org/ns/docbook">
+   As of PHP 8.0.0, a <classname>ValueError</classname> is thrown when less arguments are given than required.
+   Prior to PHP 8.0.0, &false; was returned and a <constant>E_WARNING</constant> emitted instead.
+  </para>
+'>
+
 <!-- filter snippets -->
 
 <!ENTITY filter.param.filter '
@@ -4414,33 +4562,65 @@ eşdeğeri olan <constant>FILTER_DEFAULT</constant> kullanılır.
 
 <!ENTITY csprng.sources '
 <para xmlns="http://docbook.org/ns/docbook">
- Bu işlevde kullanılan rasgelelik kaynakları:
+ Öncelik sırasına göre rastgelelik kaynakları aşağıdaki gibidir:
 </para>
 <itemizedlist xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <listitem>
+  <para>
+   Linux: <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>.
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   FreeBSD &gt;= 12 (PHP &gt;= 7.3): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   Windows (PHP &gt;= 7.2): <link xlink:href="&url.csprng.cng-api;">CNG-API</link>
+  </para>
+  <para>
+   Windows: <link xlink:href="&url.csprng.crypt-gen-random;">CryptGenRandom</link>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   macOS (PHP &gt;= 8.2; &gt;= 8.1.9; &gt;= 8.0.22 if CCRandomGenerateBytes is available at compile time): CCRandomGenerateBytes()
+  </para>
+  <para>
+   macOS (PHP &gt;= 8.1; &gt;= 8.0.2): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   NetBSD &gt;= 7 (PHP &gt;= 7.1; &gt;= 7.0.1): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   OpenBSD &gt;= 5.5 (PHP &gt;= 7.1; &gt;= 7.0.1): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   DragonflyBSD (PHP &gt;= 8.1): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   Solaris (PHP &gt;= 8.1): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
   <simpara>
-   Windows&apos;ta, daima <link
-   xlink:href="&url.csprng.crypt-gen-random;"><function>CryptGenRandom</function></link>
-   kullanılır. PHP 7.2.0 itibariyle, bunun yerine daima
-   <link xlink:href="&url.csprng.cng-api;">CNG-API</link> kullanılmaktadır.
+   Daha önce belirtilmeyen herhangi bir işletim sistemi ve PHP sürümü birleşimi:
+   <filename>/dev/urandom</filename>
   </simpara>
  </listitem>
  <listitem>
   <simpara>
-   Linux&apos;ta, mümkünse
-   <link xlink:href="&url.csprng.get-random-2;">getrandom(2)</link>
-   sistem çağrısı kullanılır.
-  </simpara>
- </listitem>
- <listitem>
-  <simpara>
-   Diğer sistemlerde, <filename>/dev/urandom</filename> kullanılır.
-  </simpara>
- </listitem>
- <listitem>
-  <simpara>
-   Yukarıda belirtilen kaynakların hiçbiri kullanılamıyorsa, bir
-   <classname>Random\RandomException</classname> yavrulanır.
+   Kaynaklardan hiçbiri kullanılabilir değilse veya hiçbiri rasgelelik üretemezse,
+   bir <classname>Random\RandomException</classname> oluşur.
   </simpara>
  </listitem>
 </itemizedlist>
