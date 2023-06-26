@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e2e41fdb46fd7e23acc16c7e7ff36a9894b2cec7 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: bfabdf420fa4c710ec5995480dd7cbc17abdbada Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.assert" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>assert</refname>
@@ -8,105 +8,53 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <para>PHP 5 ve 7</para>
   <methodsynopsis>
    <type>bool</type><methodname>assert</methodname>
    <methodparam><type>mixed</type><parameter>sav</parameter></methodparam>
-   <methodparam choice="opt"><type>string</type><parameter>açıklama</parameter></methodparam>
-  </methodsynopsis>
-  <para>PHP 7</para>
-  <methodsynopsis>
-   <type>bool</type><methodname>assert</methodname>
-   <methodparam><type>mixed</type><parameter>sav</parameter></methodparam>
-   <methodparam choice="opt"><type>Throwable</type><parameter>açıklama</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>Throwable</type><type>string</type><type>null</type></type><parameter>açıklama</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>assert</function> işlevi belirtilen
-   <parameter>sav</parameter>ın doğruluğuna bakar ve sonuç &false; ise
-   uygun eylemi devreye sokar.
+   <function>assert</function> bir işlev değil beklentilerin tanımlanmasını
+   sağlayan bir dil oluşumudur: geliştirme ve deneme ortamlarında yürürlüğe
+   giren, ancak üretimde sıfır maliyetli olacak şekilde en iyilenmiş savlardır.
   </para>
-  <refsect2>
-   <title>Geleneksel savlar (PHP 5 ve 7)</title>
-   <para>
-    <parameter>sav</parameter> bir dizge olarak verilirse,
-    <function>assert</function> tarafından PHP kodu olarak değerlendirilir.
-    <parameter>sav</parameter> olarak mantıksal bir koşul belirtilirse, bu
-    koşul, <function>assert_options</function> ile tanımlanan sav işlevine
-    boş dizge olarak aktarılır.
-   </para>
-   <para>
-    Savlar yalnızca hata ayıklama özelliği olarak kullanılmalıdır. Bunlar,
-    her zaman &true; olması gereken ve değilse bazı yazılım hatalarını
-    gösteren koşulları veya eklenti işlevleri, belirli sistem sınırları ve
-    özellikleri gibi belirli özelliklerin varlığını sınamak için
-    kullanılabilir.
-   </para>
-   <para>
-    Savlar, girdi bağımsız değişkeni sınamaları gibi normal çalışma zamanı
-    işlemleri için kullanılmamalıdır. Genel bir kural olarak, sav sınaması
-    etkinleştirilmemiş olsa bile kodunuz her zaman doğru şekilde
-    çalışabilmelidir.
-   </para>
-   <para>
-    <function>assert</function> işlevinin davranışı,
-    <function>assert_options</function> ile veya bu işlevlerin kılavuz
-    sayfalarında açıklanan .ini ayarları kullanılarak yapılandırılabilir.
-   </para>
-   <para>
-    <function>assert_options</function> işlevi ve/veya
-    <constant>ASSERT_CALLBACK</constant> yapılandırma yönergesi, başarısız
-    savları işlemek için bir geri çağırım işlevinin tanımlanmasını sağlar.
-   </para>
-   <para>
-    <function>assert</function> geri çağırımları, otomatikleştirilmiş
-    denemeler yapmak için özellikle kullanışlıdır, çünkü sava aktarılan kod
-    ve savın yapıldığı yer gibi bilgilerin kolayca yakalanmasına olanak tanır.
-    Bu bilgiler başka yöntemlerle elde edilebilirse de savlar kullanılarak
-    çok daha hızlı ve kolay hale getirilebilir!
-   </para>
-   <para>
-    Geri çağırım işlevinin üç bağımsız değişken kabul etmesi gerekir. İlk
-    bağımsız değişken savın başarısız olduğu dosyayı, ikinci bağımsız
-    değişken savın başarısız olduğu satırı ve üçüncü bağımsız değişken
-    başarısız olan ifadeyi içerecektir (&#x2014; karakteri varsa 1 veya "iki"
-    gibi değişmez değerler bu bağımsız değişken ile aktarılamaz). PHP 5.4.8
-    ve sonraki sürümlerde ayrıca, <function>assert</function> işlevine
-    aktarılan <parameter>açıklama</parameter>yı içeren dördüncü bir seçimlik
-    bağımsız değişkenin aktarımı da mümkündür.
-   </para>
-  </refsect2>
-  <refsect2 xml:id="function.assert.expectations">
-   <title>Beklentiler (sadece PHP 7 için)</title>
-   <para>
-    <function>assert</function>, PHP 7'de beklentilerin tanımlanmasına izin
-    veren bir dil yapısıdır: geliştirme ve deneme ortamlarında etkili olan,
-    ancak üretimdeki maliyeti sıfır olacak şekilde en iyilenmiş savlar.
-   </para>
-   <para>
-    <function>assert_options</function> geriye uyumluluk nedenleriyle
-    yukarıda açıklandığı gibi davranışı denetim altında tutmak için
-    kullanılabilirken, PHP 7'ye özgü kod, <function>assert</function>
-    işlevinin davranışını denetlemek için aşağıdaki iki yeni yapılandırma
-    yönergesini kullanmalı ve <function>assert_options</function> işlevini
-    çağırMAmalıdır.
-   </para>
+  <para>
+   Savlar yalnızca hata ayıklama özelliği olarak kullanılmalıdır. Bir kullanımı,
+   her zaman &true; olması gereken, aksi takdirde bazı yazılım hatalarını
+   gösteren ön koşullar için tutarlılık denetimidir. Başka bir kullanımı ise,
+   eklenti işlevleri veya belirli sistem sınırları ve özellikleri gibi belirli
+   özelliklerin varlığını sınamaktır.
+  </para>
+  <para>
+   Sav denetimi devre dışı bırakılabilecek şekilde yapılandırılabileceğinden,
+   girdilerin denetlenmesi gibi normal çalışma zamanı işlemleri için
+   kullanılmamalıdır. Genel bir kural olarak, sav denetimi devre dışı
+   bırakılsa bile kod beklendiği gibi davranmalıdır.
+  </para>
+  <para>
+   <function>assert</function> oluşumu, <parameter>sav</parameter> ile belirtilen
+   beklentinin geçerliliğini sınar.
+  </para>
+
+  <para>
+   <function>assert</function> oluşumunun davranışı aşağıdaki INI ayarları ile
+   değiştirilebilir:
    <table>
     <title>
-     <function>assert</function> için PHP 7 yapılandırma yönergeleri
+     Sav yapılandırma yönergeleri
     </title>
-    <tgroup cols="3">
+    <tgroup cols="4">
      <thead>
       <row>
-       <entry>Yönerge</entry>
-       <entry>Öntanımlı değer</entry>
-       <entry>Olası değerler</entry>
+       <entry>&Name;</entry>
+       <entry>&Default;</entry>
+       <entry>&Description;</entry>
+       <entry>&Changelog;</entry>
       </row>
      </thead>
      <tbody>
       <row>
-       <entry>
-        <link linkend="ini.zend.assertions">zend.assertions</link>
-       </entry>
+       <entry><link linkend="ini.zend.assertions">zend.assertions</link></entry>
        <entry><literal>1</literal></entry>
        <entry>
         <simplelist>
@@ -121,6 +69,40 @@
           <literal>-1</literal>: kod üretme (üretim kipi)
          </member>
         </simplelist>
+       </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><link linkend="ini.assert.active">assert.active</link></entry>
+       <entry>&true;</entry>
+       <entry>
+        &false; ise, <function>assert</function> beklentiyle ilgilenmez
+        ve koşulsuz olarak &true; döndürür.
+       </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><link linkend="ini.assert.callback">assert.callback</link></entry>
+       <entry>&null;</entry>
+       <entry>
+        Sav başarısız olduğunda çağrılacak kullanıcı tanımlı işlev. Sözdizimi:
+        <methodsynopsis role="procedural">
+         <type>void</type><methodname>assert_callback</methodname>
+         <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+         <methodparam><type>int</type><parameter>satır</parameter></methodparam>
+         <methodparam><type>null</type><parameter>sav</parameter></methodparam>
+         <methodparam choice="opt"><type>string</type><parameter>açıklama</parameter></methodparam>
+        </methodsynopsis>
+       </entry>
+       <entry>
+        PHP 8.0.0 öncesnde, işlevin sözdizimi şöyle olmalıydı:
+        <methodsynopsis role="procedural">
+         <type>void</type><methodname>assert_callback</methodname>
+         <methodparam><type>string</type><parameter>dosya</parameter></methodparam>
+         <methodparam><type>int</type><parameter>satır</parameter></methodparam>
+         <methodparam><type>string</type><parameter>sav</parameter></methodparam>
+         <methodparam choice="opt"><type>string</type><parameter>açıklama</parameter></methodparam>
+        </methodsynopsis>
        </entry>
       </row>
       <row>
@@ -144,11 +126,33 @@
          </member>
         </simplelist>
        </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><link linkend="ini.assert.bail">assert.bail</link></entry>
+       <entry>&false;</entry>
+       <entry>
+        &true; ise, beklenti karşılanmazsa PHP betiğinin yürütülmesini iptal eder.
+       </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry><link linkend="ini.assert.warning">assert.warning</link></entry>
+       <entry>&true;</entry>
+       <entry>
+        &true; ise, beklenti karşılanmazsa bir <constant>E_WARNING</constant>
+        çıktılanır. Bu INI ayarı, <link
+        linkend="ini.assert.exception">assert.exception</link>
+        etkinleştirilmişse etkisizdir.
+       </entry>
+       <entry/>
       </row>
      </tbody>
     </tgroup>
    </table>
-  </refsect2>
+   The options starting with <literal>assert.</literal>ile başlayan seçenekler
+   <function>assert_options</function> ile yapıaldırılabilir. Ancak, bu önerilmez.
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -159,14 +163,16 @@
      <term><parameter>sav</parameter></term>
      <listitem>
       <para>
-       PHP 5'te, bu değerlendirilecek bir dizge veya sınanacak mantıksal bir
-       ifade, PHP 7'de, ayrıca, çalıştırılacak ve sonucu, savın başarının
-       belirlemekte kullanılacak değeri döndüren bir ifade olmalıdır.
+       Çalıştırılacak ve sonucu, savın başarını belirlemekte kullanılacak
+       değeri döndüren bir ifade olmalıdır.
       </para>
       <warning>
        <para>
-        PHP 7.2 ve sonrasında, <parameter>sav</parameter> olarak dizge
-        kullanımı artık <emphasis>ÖNERİLMEMEKTE</emphasis> olup PHP 8.0.0'da
+        PHP 8.0.0 öncesinde, <parameter>sav</parameter> PHP kodu olarak
+        yorumlanan ve <function>eval</function> ile yürütülen bir dizge idi.
+        Bu dizge geri çağırım işlevine üçüncü bağımsız değişken olarak
+        aktarılırdı. PHP 7.2.0'da kullanımı artık
+        <emphasis>ÖNERİLMEMEKTE</emphasis> olup PHP 8.0.0'da
         kullanımdan <emphasis>KALDIRILMIŞTIR</emphasis>.
        </para>
       </warning>
@@ -176,11 +182,40 @@
      <term><parameter>açıklama</parameter></term>
      <listitem>
       <para>
-       <parameter>sav</parameter> başarısız olursa başarısızlık iletisine
-       dahil edilecek isteğe bağlı bir açıklama. PHP 7'den itibaren, bir
-       açıklama belirtilmemişse, <function>assert</function> çağrısı için
-       kaynak koduna eşit bir öntanımlı açıklama sağlanır.
+       <parameter>açıklama</parameter> bir <classname>Throwable</classname>
+       örneği ise, yalnızca <parameter>sav</parameter> yürütülüp başarısız
+       olduğunda yavrulanır.
+       <note>
+        <para>
+         PHP 8.0.0 ve sonrasında, bu, olası bir tanımlanmış onaylama geri
+         çağrım işlevi çağrılmadan <emphasis>önce</emphasis> yapılır.
+        </para>
+       </note>
+       <note>
+        <para>
+         PHP 8.0.0 ve sonrasında, nesne
+         <link linkend="ini.assert.exception">assert.exception</link>
+         yapılandırmasına bakılmaksızın yavrulanır.
+        </para>
+       </note>
+       <note>
+        <para>
+         PHP 8.0.0 ve sonrasında, bu durumda
+         <link linkend="ini.assert.bail">assert.bail</link> etkisizdir.
+        </para>
+       </note>
       </para>
+      <para>
+        <parameter>sav</parameter> başarısız olursa başarısızlık iletisine
+       dahil edilecek isteğe bağlı bir açıklama.
+       <parameter>açıklama</parameter> bir dizge ise bir istisna veya uyarı
+       çıktılanırsa kullanılır.
+     </para>
+     <para>
+      <parameter>açıklama</parameter> kullanılmazsa, derleme zamanında
+      <function>assert</function> çağrısı için kaynak koduna eşit öntanımlı
+      bir açıklama oluşturulur.
+     </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -201,7 +236,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Sav başarısız olursa &false; olmazsa &true; döner.
+   <parameter>sav</parameter> başarısız olursa &false; olmazsa &true; döner.
   </para>
  </refsect1>
 
@@ -217,6 +252,21 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>açıklama</parameter> bir <classname>Throwable</classname>
+        örneği ise, yalnızca <parameter>sav</parameter> yürütülüp başarısız
+        olduğunda yavrulanır.
+       </entry>
+      </row>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>açıklama</parameter> bir <classname>Throwable</classname>
+        örneği ise, atanmış olsa bile geri çağırım işlevi çağrılmaz.
+       </entry>
+      </row>
       <row>
        <entry>8.0.0</entry>
        <entry>
@@ -254,17 +304,6 @@
         atanmışsa bir <constant>E_DEPRECATED</constant> uyarısı veriliyor.
        </entry>
       </row>
-      <row>
-       <entry>7.0.0</entry>
-       <entry>
-        <function>assert</function> artık bir işlev değil bir dil oluşumu.
-        <parameter>sav</parameter> artık bir ifade olabiliyor. İkinci
-        bağımsız değişken ya bir <parameter>istisna</parameter> (bir
-        <classname>Throwable</classname> nesnesi belirtilmişse), ya da 5.4.8
-        sürümünden beri desteklendiği gibi bir <parameter>açıklama</parameter>
-        olabiliyor.
-       </entry>
-      </row>
      </tbody>
     </tgroup>
    </informaltable>
@@ -274,79 +313,7 @@
  <refsect1 role="examples">
   &reftitle.examples;
   <refsect2>
-   <title>- Geleneksel savlar (PHP 5 ve 7)</title>
-   <para>
-    <example>
-     <title>- Başarısız savın özel bir işleyici ile ele alınması</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-// Savı etkinleştir ve sessizleştir
-assert_options(ASSERT_ACTIVE, 1);
-assert_options(ASSERT_WARNING, 0);
-assert_options(ASSERT_QUIET_EVAL, 1);
-
-// İşleyici işlevi oluştur
-function my_assert_handler($file, $line, $code)
-{
-    echo "<hr>Sav başarısız:
-        Dosya '$file'<br />
-        Satır '$line'<br />
-          Kod '$code'<br /><hr />";
-}
-
-// Geri çağırım işlevini kaydet
-assert_options(ASSERT_CALLBACK, 'my_assert_handler');
-
-// Başarısız bir sav
-assert('mysql_query("")');
-?>
-]]>
-     </programlisting>
-    </example>
-   </para>
-   <para>
-    <example>
-     <title>- Bir açıklama göstermek için özel işleyici kullanımı</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-// Savı etkinleştir ve sessizleştir
-assert_options(ASSERT_ACTIVE, 1);
-assert_options(ASSERT_WARNING, 0);
-assert_options(ASSERT_QUIET_EVAL, 1);
-
-// İşleyici işlevi oluştur
-function my_assert_handler($file, $line, $code, $desc = null)
-{
-    echo "Sav başarısız - $file:$line: $code";
-    if ($desc) {
-        echo ": $desc";
-    }
-    echo "\n";
-}
-
-//Geri çağırım işlevini kaydet
-assert_options(ASSERT_CALLBACK, 'my_assert_handler');
-
-// Başarısız savlar
-assert('2 < 1');
-assert('2 < 1', 'İki birden küçüktür');
-?>
-]]>
-     </programlisting>
-     &example.outputs;
-     <screen>
- <![CDATA[
-Sav başarısız - test.php:21: 2 < 1
-Sav başarısız - test.php:22: 2 < 1: İki birden küçüktür
- ]]>
-     </screen>
-    </example>
-   </para>
-  </refsect2>
-  <refsect2>
-   <title>- Beklentiler (sadece PHP 7 için)</title>
+   <title>- Beklentiler</title>
    <example>
     <title>- Özel bir sav olmaksızın beklentiler</title>
     <programlisting role="php">
@@ -440,6 +407,114 @@ Stack trace:
 ]]>
     </screen>
    </example>
+  </refsect2>
+  <refsect2>
+   <title>- Değerlendirilen kod savları (yalnızca, PHP 7)</title>
+
+   <para>
+    Değerlendirilen kod savları ile, <function>assert</function> geri çağırımları
+    savın nerede yapıldığına dair bilgilerin yanı sıra sav için kullanılan kod da
+    geri çağırıma iletildiğinden özellikle yararlı olabilir.
+   </para>
+   <para>
+    <example>
+     <title>-  Başarısız bir savın özel bir işleyici ile işlenmesi</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// savı etkin ve sessiz yap
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// İşleyici işlev
+function my_assert_handler($file, $line, $code)
+{
+    echo "<hr>Assertion Failed:
+        File '$file'<br />
+        Line '$line'<br />
+        Code '$code'<br /><hr />";
+}
+
+// geri çağırım işlevi
+assert_options(ASSERT_CALLBACK, 'my_assert_handler');
+
+// Başarısız olması gereken savı öne sür
+$array = [];
+assert('count($array);');
+?>
+]]>
+     </programlisting>
+     &example.outputs.72;
+     <screen>
+<![CDATA[
+Deprecated: assert(): Calling assert() with a string argument is deprecated in test.php on line 21
+<hr>Assertion Failed:
+        File 'test.php'<br />
+        Line '21'<br />
+        Code 'count($array);'<br /><hr />
+]]>
+     </screen>
+     &example.outputs.71;
+     <screen>
+<![CDATA[
+<hr>Assertion Failed:
+        File 'test.php'<br />
+        Line '21'<br />
+        Code 'count($array);'<br /><hr />
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    <example>
+     <title>- Açıklama basmak için özel işleyici kullanımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// savı etkin ve sessiz yap
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// İşleyici işlev
+function my_assert_handler($file, $line, $code, $desc = null)
+{
+    echo "sav başarısız - $file:$line: $code";
+    if ($desc) {
+        echo ": $desc";
+    }
+    echo "\n";
+}
+
+// Geri çağırım işlevi
+assert_options(ASSERT_CALLBACK, 'my_assert_handler');
+
+// Başarısız olması gereken savı öne sür
+assert('2 < 1');
+assert('2 < 1', 'İki birden küçüktür');
+?>
+]]>
+     </programlisting>
+     &example.outputs.72;
+     <screen>
+<![CDATA[
+Deprecated: assert(): Calling assert() with a string argument is deprecated in test.php on line 21
+Assertion failed at test.php:21: 2 < 1
+
+Deprecated: assert(): Calling assert() with a string argument is deprecated in test.php on line 22
+Assertion failed at test.php:22: 2 < 1: İki birden küçüktür
+]]>
+     </screen>
+     &example.outputs.71;
+     <screen>
+<![CDATA[
+Assertion failed at test.php:21: 2 < 1
+Assertion failed at test.php:22: 2 < 1: İki birden küçüktür
+]]>
+     </screen>
+    </example>
+   </para>
   </refsect2>
  </refsect1>
 

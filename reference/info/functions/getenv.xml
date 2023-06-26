@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 8dd14a886c7e954cef181c374b6f05cc7149e643 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 1299a9808782769bba9f6a48bf52cb1c68182e78 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.getenv" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>getenv</refname>
-  <refpurpose>Bir ortam değişkeninin değerini döndürür</refpurpose>
+  <refpurpose>Ortam değişkenlerinden birinin veya tümünün değerini döndürür</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type class="union"><type>string</type><type>false</type></type><methodname>getenv</methodname>
-   <methodparam><type>string</type><parameter>değişken</parameter></methodparam>
+   <type class="union"><type>string</type><type>array</type><type>false</type></type><methodname>getenv</methodname>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>değişken</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>yerel</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
-  <methodsynopsis>
-   <type>array</type><methodname>getenv</methodname>
-   <void/>
-  </methodsynopsis>
   <para>
-   Belirtilen ortam değişkeninin değerini döndürür.
+   Ortam değişkenlerinden birinin veya tümünün değerini döndürür.
   </para>
   <para>
    Tüm ortam değişkenlerini <function>phpinfo</function> işlevini kullanarak
@@ -35,7 +31,7 @@
      <term><parameter>değişken</parameter></term>
      <listitem>
       <para>
-       Ortam değişkeninin ismi.
+       Ortam değişkeninin ismi, &null; olabilir.
       </para>
      </listitem>
     </varlistentry>
@@ -43,8 +39,9 @@
      <term><parameter>yerel</parameter></term>
      <listitem>
       <para>
-       &true; belirtilirse sacece yerel ortam değişkenleri (işletim sistemi
-       veya putenv ile atanır) döner.
+       &true; belirtilirse, yalnızca <parameter>değişken</parameter> bir dizge
+       ise yalnızca yerel ortam değişkenleri (işletim sistemi veya putenv ile
+       atanır) döner.
       </para>
      </listitem>
     </varlistentry>
@@ -56,9 +53,9 @@
   &reftitle.returnvalues;
   <para>
    <parameter>değişken</parameter> diye bir ortam değişkeni yoksa &false; aksi
-   takdirde <parameter>değişken</parameter> ile belirtilen ortam değişkeninin
-   değerini döndürür. <parameter>değişken</parameter> atlanırsa, tüm ortam
-   değişkenlerini içeren ilişkisel bir dizi döner.
+   takdirde belirtilen ortam değişkeninin değerini döndürür.
+   <parameter>değişken</parameter> &null; ise, tüm ortam değişkenlerini içeren
+   ilişkisel bir dizi döner.
   </para>
  </refsect1>
 
@@ -73,6 +70,12 @@
      </row>
     </thead>
     <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>değişken</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
      <row>
       <entry>7.1.0</entry>
       <entry>
