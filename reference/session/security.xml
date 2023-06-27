@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 184f3f7bd45643cb80f828d0bb001991ec3a5fad Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ccb379494533c9b7d63a81f0221231a9e526eee9 Maintainer: nilgun Status: ready -->
 <chapter xml:id="session.security" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Oturumlar ve Güvenlik</title>
  <para>
@@ -7,9 +7,9 @@
  </para>
  <para>
   HTTP oturum yönetimi, site güvenliğinin özünü temsil eder. Oturumların
-  güvence altına alınmasını sağlamak için tüm olası etki azaltma önlemleri
-  ALINMALIDIR. Geliştiriciler ayrıca uygulanabilir güvenlik önlemlerini
-  etkinleştirmeli ve kullanmalıdır.
+  güvence altına alınmasını sağlamak için tüm olası etki azaltma önlemlerinin
+  alınması <emphasis>zorunludur</emphasis>. Geliştiricilerin ayrıca uygulanabilir
+  güvenlik önlemlerini etkinleştirmesi ve kullanması gerekir.
  </para>
 
   <sect1 xml:id="features.session.security.management">
@@ -26,10 +26,10 @@
      Oturumlarınız tarafından taşınan verinin önemine ve konuşlandırdığınız ek
      korumalara bağlı olarak ki, bunun bir fiyatı vardır, kullanıcının rahatı
      azalır. Örneğin, kullanıcılarınızı basit sosyal mühendislik
-     taktiklerinden korumak için <link linkend="ini.session.use-only-cookies">
-     <parameter>session.use_only_cookies</parameter></link> yönergesi etkin
-     kılınmalıdır. Bu durumda, çerezler kullanıcı tarafında koşulsuz olarak
-     etkin kılınmalıdır yoksa oturum çalışmayacaktır.
+     taktiklerinden korumak için
+     <link linkend="ini.session.use-only-cookies">session.use_only_cookies</link>
+     yönergesi etkin kılınmalıdır. Bu durumda, çerezler kullanıcı tarafında
+     koşulsuz olarak etkin kılınmalıdır yoksa oturum çalışmayacaktır.
     </para>
     <para>
      Bir mevcut oturum kimliğinin üçüncü şahıslara ifşa olmasının çeşitli
@@ -115,7 +115,7 @@
      kimliği silinecektir.
     </simpara>
     <simpara>
-     Eski bir oturuma erişim gerçekleştiğinde, bu bilgiler, müteakip bir
+     Eski oturuma erişim gerçekleştiğinde, bu bilgiler, müteakip bir
      soruşturma için geçerli olacağından, geliştiriciler kullanıcının
      tüm etkin oturum verilerini kaydetmelidir. Kullanıcının tüm oturumları
      zorla kapatılmalı ve yeniden kimlik doğrulaması yapması istenmelidir.
@@ -125,7 +125,7 @@
    </note>
    <warning>
     <simpara>
-     Eski bir oturuma erişim, mutlaka bir saldırı anlamına gelmez. Kararsız
+     Eski oturuma erişim, mutlaka bir saldırı anlamına gelmez. Kararsız
      bir ağ ve/veya etkin oturumun derhal silinmesi, meşru kullanıcıların
      eski oturumlarını kullanmasına sebep olacaktır.
     </simpara>
@@ -143,8 +143,8 @@
    <note>
     <simpara>
      PHP 7.1.0 öncesinde gelitiriciler yeni bir oturum kimliği üretmek için
-     /dev/urandom gibi bir CSPRNG veya aş işlevlerini ve
-     <function>random_bytes</function> işlevini kullanmalıdır.
+     <filename>/dev/urandom</filename> gibi <acronym>CSPRNG</acronym> veya aş
+     işlevlerini ve <function>random_bytes</function> işlevini kullanmalıdır.
      <function>session_create_id</function> çakışma algılama özelliğine
      sahiptir ve oturumun INI ayarlarına göre bir oturum kimliği üretir.
     </simpara>
@@ -163,7 +163,7 @@
     Oturum kimliğinin yenilenmesi oturum kimliklerinin çalınma riskini
     azaltır, bu bakımdan <function>session_regenerate_id</function> belirli
     aralıklarla sürekli çağrılmalıdır. Örneğin, güvenlik açısından hassas
-    içerik için oturum kimliğini her 15 dakikada bir yeniden oluşturun. Bir
+    içerik için oturum kimliği her 15 dakikada bir yeniden oluşturulmalıdır. Bir
     oturum kimliğinin çalınması durumunda bile, hem meşru kullanıcının hem de
     saldırganın oturumu sona erecektir. Başka bir deyişle, kullanıcı veya
     saldırgan tarafından erişim, eski bir oturuma erişim hatası üretecektir.
@@ -172,12 +172,13 @@
    <para>
     Oturum kimlikleri, kullanıcı ayrıcalıkları yükseltildiğinde, kimlik
     doğrulamasından sonra yapıldığı gibi <emphasis>yeniden
-    oluşturulmalıdır</emphasis>. Kimlik doğrulama bilgisi $_SESSION dizisine
-    atamadan önce <function>session_regenerate_id</function> çağrılmalıdır.
+    oluşturulmalıdır</emphasis>. Kimlik doğrulama bilgisi
+   <varname>$_SESSION</varname> dizisine atamadan önce
+   <function>session_regenerate_id</function> çağrılmalıdır.
     (PHP 7.0.0'dan itibaren, <function>session_regenerate_id</function>, zaman
     damgasını/ve benzerlerini geçerli oturuma kaydetmek için mevcut oturum
     verilerini otomatik olarak kaydeder.) Yalnızca yeni oturumun doğrulanmış
-    bayrağı içerdiğinden emin olun.
+    bayrağı içerdiğinden emin olunmalıdır.
    </para>
 
    <para>
@@ -201,7 +202,7 @@
      saklanmalıdır. Aynı zamanda, geliştiriciler, eski oturum verilerinin
      silindiğinden emin olmalıdır. Ancak geliştiriciler, etkin oturum
      verilerini hemen silmemelidir.
-     Yani <literal>session_regenerate_id(true);</literal> ve
+     Yani <code>session_regenerate_id(true);</code> ve
      <function>session_destroy</function> etkin bir oturum için asla birlikte
      çağrılmamalıdır. Bu çelişkili gelebilir, ancak bu zorunlu bir
      gerekliliktir.
@@ -228,9 +229,9 @@
     </simpara>
     <simpara>
      Geliştiriciler, güncel olmayan oturumları hemen silmek yerine,
-     $_SESSION'da kısa süreli bir zaman aşımı (bir zaman damgası) belirlemeli
-     ve kulanıcıların oturum verilerine kendi başlarına erişmesi
-     engellenmellidir.
+     <varname>$_SESSION</varname>'da kısa süreli bir zaman aşımı (bir zaman
+     damgası) belirlemeli ve kulanıcıların oturum verilerine kendi başlarına
+     erişmesi engellenmelidir.
     </simpara>
     <simpara>
      Geliştiriciler, <function>session_regenerate_id</function> işleminin
@@ -260,9 +261,11 @@
 
    <warning>
     <simpara>
-     DoS riski yanlış anlaşılmasın. <literal>use_strict_mode=On</literal>
+     DoS riski yanlış anlaşılmasın.
+     <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>=On
      genel oturum kimliği güvenliği için zorunludur! Tüm sitelerin
-     <literal>use_strict_mode</literal>'u etkinleştirmesi önerilir.
+     <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>'u
+     etkinleştirmesi önerilir.
     </simpara>
     <simpara>
      DoS, yalnızca hesap saldırı altındayken gerçekleşebilir.
@@ -288,13 +291,13 @@
    </para>
 
    <para>
-    $_SESSION içinde zaman aşımı damgasını ayarlayın ve yönetin. Güncel
-    olmayan oturum verilerine erişimi yasaklayın. Eski oturum verilerine
-    erişim tespit edildiğinde, kullanıcının oturumlarından tüm kimliği
-    doğrulanmış durumları kaldırıp onları yeniden kimlik doğrulamaya
-    zorlamanız önerilir. Eski oturum verilerine erişim bir saldırıyı temsil
-    edebilir. Bunu başarmak için geliştiriciler, her kullanıcının tüm etkin
-    oturumlarını takip etmelidir.
+    <varname>$_SESSION</varname> içinde zaman aşımı damgası ayarlanmalı ve
+    yönetilmelidir. Güncel olmayan oturum verilerine erişim yasaklanmalıdır.
+    Eski oturum verilerine erişim tespit edildiğinde, kullanıcının
+    oturumlarından tüm kimliği doğrulanmış durumları kaldırıp yeniden kimlik
+    doğrulamaya zorlanması önerilir. Eski oturum verilerine erişim bir
+    saldırıyı temsil edebilir. Bunu başarmak için geliştiriciler, her
+    kullanıcının tüm etkin oturumlarını takip etmelidir.
    </para>
 
    <note>
@@ -316,7 +319,7 @@
     ne de <function>session_destroy</function> ile yok edilmeli, oturum
     verilerine erişimi denetlemek için zaman damgaları kullanılmalıdır.
     <function>session_gc</function>'nin oturum veri deposundaki eski verileri
-    silmesine izin verin.
+    silmesine izin verilmelidir.
    </para>
 
   </sect2>
@@ -333,18 +336,20 @@
    <para>
     Ancak oturum kilitleme, saldırganlar tarafından DoS saldırıları
     gerçekleştirmek için kötüye kullanılabilir. Oturum kilitleyerek DoS
-    saldırısı riskini azaltmak için kilitleri en aza indirin. Oturum
-    verilerinin güncellenmesi gerekmediğinde salt okunur oturumlar kullanın.
-    <function>session_start</function> işlevini 'read_and_close' seçeneği ile
-    kullanın: <literal>session_start(['read_and_close'=>1]);</literal>
-    <function>session_commit</function> kullanarak $_SESSION güncellendikten
-    hemen sonra, mümkün olan en kısa sürede oturumu kapatın.
+    saldırısı riskini azaltmak için kilitler en aza indirilmelidir. Oturum
+    verilerinin güncellenmesi gerekmediğinde salt okunur oturumlar kullanılmalıdır.
+    <function>session_start</function> işlevi 'read_and_close' seçeneği ile
+    kullanılmalıdır: <code>session_start(['read_and_close'=>1]);</code>
+    <function>session_commit</function> kullanarak <varname>$_SESSION</varname>
+    güncellendikten hemen sonra, mümkün olan en kısa sürede oturum
+    kapatılmalıdır.
    </para>
 
    <para>
-    Geçerli oturum modülü, oturum etkin olmadığında $_SESSION üzerinde
-    herhangi bir değişiklik algılamaz. Oturum etkin değilken $_SESSION
-    üzerinde değişiklik yapmamak geliştiricinin sorumluluğundadır.
+    Geçerli oturum modülü, oturum etkin olmadığında <varname>$_SESSION</varname>
+    üzerinde herhangi bir değişiklik algılamaz. Oturum etkin değilken
+    <varname>$_SESSION</varname> üzerinde değişiklik yapmamak geliştiricinin
+    sorumluluğundadır.
    </para>
 
   </sect2>
@@ -354,8 +359,8 @@
 
    <para>
     Geliştiriciler, her kullanıcı için tüm etkin oturumları izlemelidir. Ve
-    onlara kaç tane etkin oturum, hangi IP'den (ve alandan), ne kadar süredir
-    etkin olduklarını vs. bildirin. PHP bunları takip etmez. Bunu
+    kullanıcılara kaç tane etkin oturum, hangi IP'den (ve alandan), ne kadar süredir
+    etkin oldukları vs. bildirilmelidir. PHP bunları takip etmez. Bunu
     geliştiricilerin yapacağı varsayılır.
    </para>
 
@@ -369,8 +374,8 @@
 
    <para>
     En basit uygulamalardan biri "oturum kimliği ile öncelenmiş kullanıcı
-    kimliği"dir ve gerekli bilgiler $_SESSION içinde saklanır. Birçok
-    veritabanı, bu öneki seçebilmektedir. Geliştiriciler bunun için
+    kimliği"dir ve gerekli bilgiler <varname>$_SESSION</varname> içinde saklanır.
+    Birçok veritabanı, bu öneki seçebilmektedir. Geliştiriciler bunun için
     <function>session_regenerate_id</function> ve
     <function>session_create_id</function> kullanabilir.
    </para>
@@ -413,24 +418,24 @@
    <para>
     <function>setcookie</function> kullanarak otomatik oturum açma anahtarı
     olarak tek seferlik güvenli bir aşlama anahtarı kullanın. SHA-2'den daha
-    güçlü bir aşlama algoritması kullanın. Örneğin, /dev/urandom veya
-    <function>random_bytes</function>'dan rastgele verilerle SHA-256 veya üstü.
+    güçlü bir aşlama algoritması kullanın. Örneğin, <filename>/dev/urandom</filename>
+    veya <function>random_bytes</function>'dan rastgele verilerle SHA-256 veya üstü.
    </para>
 
    <para>
     Kullanıcının kimliği doğrulanmamışsa, tek seferlik otomatik giriş
-    anahtarının geçerli olup olmadığına bakın. Geçerli olması durumunda,
-    kullanıcının kimliğini doğrulayın ve yeni bir güvenli tek seferlik aşlama
-    anahtarı atayın. Otomatik oturum açma anahtarı yalnızca bir kez
-    kullanılmalıdır, yani bir otomatik oturum açma anahtarını asla yeniden
-    kullanmayın, her zaman yeni bir tane oluşturun.
+    anahtarının geçerli olup olmadığına bakılmalıdır. Geçerli olması durumunda,
+    kullanıcının kimliği doğrulanmalı ve yeni bir güvenli tek seferlik aşlama
+    anahtarı atanmalıdır. Otomatik oturum açma anahtarı yalnızca bir kez
+    kullanılmalıdır, yani bir otomatik oturum açma anahtarının asla yeniden
+    kullanılmaması gerekir. Her zaman yeni bir tane oluşturulmalıdır.
    </para>
 
    <para>
     Otomatik oturum açma anahtarı, uzun ömürlü bir kimlik doğrulama
     anahtarıdır, mümkün olduğunca korunması gerekir. Güvenli hale getirmek
-    için path/httponly/secure/SameSite çerezinin özniteliklerini kullanın.
-    Yani otomatik giriş anahtarını gerekmedikçe asla aktarmayın.
+    için path/httponly/secure/SameSite çerezinin öznitelikleri kullanılmalıdır.
+    Yani otomatik giriş anahtarı, gerekmedikçe asla aktarılmamalıdır.
    </para>
 
    <para>
@@ -451,7 +456,7 @@
 
    <para>
     CSRF koruması için <function>output_add_rewrite_var</function>
-    kullanılabilir. Daha fazla bilgi için işlevin sayfasına bakın.
+    kullanılabilir. Daha fazla bilgi işlevin sayfasında bulunabilir.
    </para>
 
    <note>
@@ -464,7 +469,7 @@
 
    <para>
     Çoğu sayfa uygulama çerçevesi CSRF korumasını destekler. Daha fazla
-    ayrıntı için sayfa uygulama çerçevesi kılavuzunuza bakın.
+    ayrıntı için sayfa uygulama çerçevesi kılavuzunuza bakılabilir.
    </para>
 
    <para>
@@ -515,12 +520,12 @@
      <para>
       HTTP çerezleri bazı sorunlara yol açsa da çerezler oturum kimliklerini
       yönetmek için tercih edilmeye devam etmektedir. Çerezleri yalnızca mümkün
-      olduğunda oturum kimliği yönetimi için kullanın. Çoğu uygulama, oturum
-      kimliği için bir çerez kullanmaktadır.
+      olduğunda oturum kimliği yönetimi için kullanılmalıdır. Çoğu uygulama, oturum
+      kimliği için çerez kullanmaktadır.
      </para>
      <para>
-      <literal>session.use_only_cookies</literal>=Off ise, oturum modülü,
-      oturum kimliği çerezinin ilklendirilmemiş olması koşuluyla,
+      <link linkend="ini.session.use-only-cookies">session.use_only_cookies</link>=Off
+      ise, oturum modülü, oturum kimliği çerezinin ilklendirilmemiş olması koşuluyla,
       GET/POST/URL tarafından atanan oturum kimliği değerlerini kullanır.
      </para>
     </listitem>
@@ -531,8 +536,8 @@
      </para>
      <para>
       Bununla birlikte, güvenli oturumlar için
-      <literal>session.use_strict_mode</literal>'un etkinleştirilmesi
-      zorunludur. Önatnımlı olarak devre dışıdır.
+      <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>'un
+      etkinleştirilmesi zorunludur. Önatnımlı olarak devre dışıdır.
      </para>
      <para>
       Bu, oturum modülünün ilklendirilmemiş oturum kimliği kullanmasını
@@ -543,7 +548,8 @@
      <para>
       Çerez belirtiminden dolayı, saldırganlar JavaScript zerkleriyle veya
       yerel olarak bir çerez veritabanı atayarak kaldırılamayan oturum kimliği
-      çerezleri yerleştirebilir. <literal>session.use_strict_mode</literal>,
+      çerezleri yerleştirebilir.
+      <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>,
       bir saldırganın ilklendirdiği oturum kimliğinin kullanılmasını
       engelleyebilir.
      </para>
@@ -553,8 +559,8 @@
        oturum kimliğini atayabilir. Kötüye kullanım için oturum kimliğini
        etkin tutmaları gerekir. Bu senaryoda bir saldırı gerçekleştirmek için
        saldırganlara ek adımlar gerekir. Bu nedenle,
-       <literal>session.use_strict_mode</literal> bir risk azaltıcı olarak
-       çalışır.
+       <link linkend="ini.session.use-strict-mode">session.use_strict_mode</link>
+       bir risk azaltıcı olarak çalışır.
       </para>
      </note>
     </listitem>
@@ -622,9 +628,9 @@
       <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>=[en küçük olasılığı seç]
      </para>
      <para>
-      <literal>session.gc_maxlifetime</literal>, eski oturum kimliğini silmek
-      içindir. Bu ayara <emphasis>güvenilmemelidir</emphasis>. Geliştiriciler,
-      oturumların ömrünü bir zaman damgasıyla kendileri yönetmelidir.
+      <link linkend="ini.session.gc-maxlifetime">session.gc_maxlifetime</link>,
+      eski oturum kimliğini silmek içindir. Bu ayara <emphasis>güvenilmemeli</emphasis>,
+      geliştiriciler, oturumların ömrünü bir zaman damgasıyla kendileri yönetmelidir.
      </para>
      <para>
       Oturum çöp toplayıcısı en iyi şekilde <function>session_gc</function>
@@ -642,7 +648,7 @@
       ayarlanması önerilir. Otomatik oturum açma özelliği gerekliyse
       geliştiricilerin kendi güvenli otomatik oturum açma özelliklerini
       gerçeklemeleri gerekir, daha fazla bilgi için yukarıya bakın.
-      Bu özellik için asla uzun ömürlü oturum kimliği kullanmayın,
+      Bu özellik için asla uzun ömürlü oturum kimliği kullanılmamalıdır.
      </para>
      <note>
       <para>
@@ -690,8 +696,8 @@
      </para>
      <para>
       (PHP 7.1.0 ve üstü) Bu INI, effaf oturum kimliğini yeniden yazmaya
-      izin veren beyaz listeli konakları tanımlar. Asla güvenilmeyen
-      konakları eklemeyin. Oturum modülü yalnızca bu ayar boş olduğunda
+      izin veren beyaz listeli konakları tanımlar. Güvenilmeyen
+      konaklar asla eklenmemelidir. Oturum modülü yalnızca bu ayar boş olduğunda
       <literal>$_SERVER['HTTP_HOST']</literal> öğesine izin verir.
      </para>
     </listitem>
@@ -703,10 +709,12 @@
      <para>
       <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
       etkinleştirildiğinde. Oturum kimliği zerk riskini azaltır. Site örneğin
-      http://example.com/ ise, yönergeye http://example.com/ atayın. HTTPS ile
-      tarayıcıların referrer başlığını göndermeyeceğini unutmayın. Tarayıcılar,
-      referrer başlığını yapılandırmaya göre gönderemez. Bu nedenle, bu ayar
-      güvenilir bir güvenlik önlemi değildir. Bu ayarın kullanılması önerilir.
+      <literal>http://example.com/</literal> ise, yönergeye de
+      <literal>http://example.com/</literal> atanmalıdır. HTTPS ile
+      tarayıcıların <literal>referrer</literal> başlığını göndermeyeceği
+      unutulmamalıdır. Tarayıcılar, <literal>referrer</literal> başlığını
+      yapılandırmaya göre gönderemez. Bu nedenle, bu ayar güvenilir bir
+      güvenlik önlemi değildir. Bu ayarın kullanılması önerilir.
      </para>
     </listitem>
 
@@ -716,12 +724,13 @@
      </para>
      <para>
       Kimliği doğrulanmış oturumlar için HTTP içeriğinin önbelleğe
-      alınmadığından emin olun. Yalnızca içerik gizli olmadığında önbelleğe
-      almaya izin verin. Aksi takdirde, içerik açığa çıkabilir. HTTP içeriği
-      güvenlik açısından hassas veriler içermiyorsa "private" kullanılabilir.
-      "private" ataması nedeniyle, paylaşılan istemciler tarafından önbelleğe
-      alınan özel verilerin aktarılabileceğini unutmayın. "public" yalnızca
-      HTTP içeriği hiçbir özel veri içermediğinde kullanılmalıdır.
+      alınmadığından emin olunmalıdır. Yalnızca içerik gizli olmadığında önbelleğe
+      alınmasına izin verilmelidir. Aksi takdirde, içerik açığa çıkabilir. HTTP
+      içeriği güvenlik açısından hassas veriler içermiyorsa
+      <literal>"private"</literal>  kullanılabilir. <literal>"private"</literal>
+      ataması nedeniyle, paylaşılan  istemciler tarafından önbelleğe alınan
+      özel verilerin aktarılabileceği unutulmamalıdır. <literal>"public"</literal>
+      yalnızca HTTP içeriği hiçbir özel veri içermediğinde kullanılmalıdır.
      </para>
     </listitem>
 
