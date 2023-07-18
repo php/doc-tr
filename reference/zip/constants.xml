@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- EN-Revision: a70ce62757f43aeddb179be114731b75f9d35d07 Maintainer: haluk Status: ready -->
+<!-- EN-Revision: dd9775e98b7368f4d04847f343250c9627bb8da8 Maintainer: haluk Status: ready -->
 <appendix xml:id="zip.constants" xmlns="http://docbook.org/ns/docbook">
  &reftitle.constants;
  &extension.constants;
 
   <para>
    <classname>ZipArchive</classname>, sınıf sabitleri kullanır.
-   Dört çeşit sabit vardır:
+   Çeşitli sabitler vardır. Bazıları:
+   Seçenekler (<literal>FL_</literal> önekli),
    Küresel seçenekler (<literal>AFL_</literal> önekli),
-   yerel seçenekler (<literal>FL_</literal> önekli),
    hatalar (<literal>ER_</literal> önekli) ve
    kipler (öneksiz).
   </para>
 
- <variablelist>
+ <variablelist xml:id="ziparchive.constants.mode">
   <varlistentry xml:id="ziparchive.constants.create">
    <term>
     <constant>ZipArchive::CREATE</constant>
@@ -64,7 +64,10 @@
     başarısız olursa hata verir.</simpara>
    </listitem>
   </varlistentry>
+ </variablelist>
 
+ <variablelist xml:id="ziparchive.constants.afl">
+  <title>Küresel Arşiv Seçenekleri</title>
   <varlistentry xml:id="ziparchive.constants.afl-rdonly">
    <term>
     <constant>ZipArchive::AFL_RDONLY</constant>
@@ -113,7 +116,10 @@
     </simpara>
    </listitem>
   </varlistentry>
+ </variablelist>
 
+ <variablelist xml:id="ziparchive.constants.fl">
+  <title>Arşiv Seçenekleri</title>
   <varlistentry xml:id="ziparchive.constants.fl-nocase">
    <term>
     <constant>ZipArchive::FL_NOCASE</constant>
@@ -158,6 +164,8 @@
     <simpara>
      Verinin yeniden sıkıştırlmasını zorlar.
      PHP 8.0.0 ve PECL zip 1.18.0 itibariyle kullanılabilir.
+     PHP 8.3.0 ve PECL zip 1.22.0 itibariyle önerilmemekte olup
+     gelecek libzip sürümlerinden birinde kaldırılacaktır.
     </simpara>
    </listitem>
   </varlistentry>
@@ -200,7 +208,7 @@
 
   <varlistentry xml:id="ziparchive.constants.fl-central">
    <term>
-    <constant>ZipArchive::ZIP_FL_CENTRAL</constant>
+    <constant>ZipArchive::FL_CENTRAL</constant>
    </term>
    <listitem>
     <simpara>
@@ -270,6 +278,22 @@
    </listitem>
   </varlistentry>
 
+  <varlistentry xml:id="ziparchive.constants.fl-open-file-now">
+   <term>
+    <constant>ZipArchive::FL_OPEN_FILE_NOW</constant>
+   </term>
+   <listitem>
+    <simpara>
+     Arşivin kapanmasını beklemek yerine, eklendiğinde dosyayı açar.
+     Dosya tanıtıcı tüketiminin farkında olunur.
+     PHP 8.3.0 ve PECL zip 1.22.1 ve sonrasında geçerlidir.
+    </simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+
+ <variablelist xml:id="ziparchive.constants.cm">
+  <title>Sıkıştırma Kipleri</title>
   <varlistentry xml:id="ziparchive.constants.cm-default">
    <term>
     <constant>ZipArchive::CM_DEFAULT</constant>
@@ -460,7 +484,10 @@
     <simpara></simpara>
    </listitem>
   </varlistentry>
+ </variablelist>
 
+ <variablelist xml:id="ziparchive.constants.er">
+  <title>Hatalar</title>
   <varlistentry xml:id="ziparchive.constants.er-ok">
    <term>
     <constant>ZipArchive::ER_OK</constant>
@@ -749,7 +776,7 @@
 
   <varlistentry xml:id="ziparchive.constants.er-opnotsupp">
    <term>
-    <constant>ZipArchive::ZIP_ER_OPNOTSUPP</constant>
+    <constant>ZipArchive::ER_OPNOTSUPP</constant>
 
    </term>
    <listitem>
@@ -763,7 +790,7 @@
 
   <varlistentry xml:id="ziparchive.constants.er-inuse">
    <term>
-    <constant>ZipArchive::ZIP_ER_INUSE</constant>
+    <constant>ZipArchive::ER_INUSE</constant>
 
    </term>
    <listitem>
@@ -777,7 +804,7 @@
 
   <varlistentry xml:id="ziparchive.constants.er-tell">
    <term>
-    <constant>ZipArchive::ZIP_ER_TELL</constant>
+    <constant>ZipArchive::ER_TELL</constant>
 
    </term>
    <listitem>
@@ -791,7 +818,7 @@
 
   <varlistentry xml:id="ziparchive.constants.er-compressed-data">
    <term>
-    <constant>ZipArchive::ZIP_ER_COMPRESSED_DATA</constant>
+    <constant>ZipArchive::ER_COMPRESSED_DATA</constant>
 
    </term>
    <listitem>
@@ -841,7 +868,10 @@
     </simpara>
    </listitem>
   </varlistentry>
+ </variablelist>
 
+ <variablelist xml:id="ziparchive.constants.em">
+  <title>Şifreleme Kipleri</title>
   <varlistentry xml:id="ziparchive.constants.em-none">
    <term>
     <constant>ZipArchive::EM_NONE</constant>
@@ -915,7 +945,10 @@
     </simpara>
    </listitem>
   </varlistentry>
+ </variablelist>
 
+ <variablelist xml:id="ziparchive.constants.other">
+  <title>Diğer Sabitler</title>
   <varlistentry xml:id="ziparchive.constants.libzip-version">
    <term>
     <constant>ZipArchive::LIBZIP_VERSION</constant> (<type>string</type>)
@@ -931,67 +964,167 @@
 
  <variablelist xml:id="ziparchive.constants.opsys">
   <title>Harici Öznitelikler için İşletim Sistemi Sabitleri</title>
-  <varlistentry xml:id="ziparchive.constants.opsys.default">
+  <varlistentry xml:id="ziparchive.constants.opsys.dos">
    <term>
     <constant>ZipArchive::OPSYS_DOS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-amiga">
    <term>
     <constant>ZipArchive::OPSYS_AMIGA</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-openvms">
    <term>
     <constant>ZipArchive::OPSYS_OPENVMS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-unix">
    <term>
     <constant>ZipArchive::OPSYS_UNIX</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-vm-cms">
    <term>
     <constant>ZipArchive::OPSYS_VM_CMS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-atari-st">
    <term>
     <constant>ZipArchive::OPSYS_ATARI_ST</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-os-2">
    <term>
     <constant>ZipArchive::OPSYS_OS_2</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-macintosh">
    <term>
     <constant>ZipArchive::OPSYS_MACINTOSH</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-z-system">
    <term>
     <constant>ZipArchive::OPSYS_Z_SYSTEM</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-cpm">
    <term>
     <constant>ZipArchive::OPSYS_CPM</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-windows-ntfs">
    <term>
     <constant>ZipArchive::OPSYS_WINDOWS_NTFS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-mvs">
    <term>
     <constant>ZipArchive::OPSYS_MVS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-vse">
    <term>
     <constant>ZipArchive::OPSYS_VSE</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-acorn-risc">
    <term>
     <constant>ZipArchive::OPSYS_ACORN_RISC</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-vfat">
    <term>
     <constant>ZipArchive::OPSYS_VFAT</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-alternate-mvs">
    <term>
     <constant>ZipArchive::OPSYS_ALTERNATE_MVS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-beos">
    <term>
     <constant>ZipArchive::OPSYS_BEOS</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-tandem">
    <term>
     <constant>ZipArchive::OPSYS_TANDEM</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-os-4000">
    <term>
     <constant>ZipArchive::OPSYS_OS_400</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-os-x">
    <term>
     <constant>ZipArchive::OPSYS_OS_X</constant>
    </term>
+   <listitem>
+    <simpara></simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="ziparchive.constants.opsys-default">
    <term>
     <constant>ZipArchive::OPSYS_DEFAULT</constant>
    </term>
