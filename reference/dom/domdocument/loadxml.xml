@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 4f5e2b22575131fa5e9c3004b1c874e1acb06573 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 765749a26b620538117fff4425fafb3ed5834b54 Maintainer: nilgun Status: ready -->
 <refentry xml:id="domdocument.loadxml" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>DOMDocument::loadXML</refname>
@@ -8,7 +8,7 @@
  <refsect1 role="description">
   &reftitle.description;
    <methodsynopsis role="DOMDocument">
-   <modifier>public</modifier> <type class="union"><type>DOMDocument</type><type>bool</type></type><methodname>DOMDocument::loadXML</methodname>
+   <modifier>public</modifier> <type>bool</type> <methodname>DOMDocument::loadXML</methodname>
    <methodparam><type>string</type><parameter>dizge</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer>0</initializer></methodparam>
   </methodsynopsis>
@@ -44,8 +44,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success; Duruk olarak çağrıldığı takdirde bir
-   <classname>DOMDocument</classname>,&return.falseforfailure;.
+   &return.success;
   </para>
  </refsect1>
  <refsect1 role="errors">
@@ -55,7 +54,34 @@
    üretilir. Bu uyarıyı libxml üretmez ve libxml'in hata işlevleri ile elde
    edilemez.
   </para>
-  &dom.allowstatic;
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.3.0</entry>
+      <entry>
+       Bu işlevin dönüş türü artık deneysel <type>bool</type> türünde.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Bu işlevin duruk olarak çağrılması artık <classname>Error</classname>
+       oluşturuyor. Evvelce <constant>E_DEPRECATED</constant> hatası verirdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
  <refsect1 role="examples">
   &reftitle.examples;
@@ -67,21 +93,6 @@
 <?php
 $doc = new DOMDocument();
 $doc->loadXML('<root><node/></root>');
-echo $doc->saveXML();
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- Statik <methodname>DOMDocument::loadXML</methodname> çağrısı
-    </title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-// E_DEPRECATED hatası verir
-$doc = DOMDocument::loadXML('<root><node/></root>');
 echo $doc->saveXML();
 ?>
 ]]>
