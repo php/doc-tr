@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 72e81bd314be5212f713f6cffafff6f5f5e4e85d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 587830d5d261802148a160a59059dd8d76385fd2 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: haluk -->
 <chapter xml:id="reference.pcre.pattern.syntax" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>PCRE düzenli ifade sözdizimi</title>
@@ -1292,20 +1292,26 @@
    Alt şablonlar yaylı ayraçlarla sınırlanır ve iç içe olabilirler. Bir
    şablonun bir alt parçası iki şekilde kendini gösterir:
   </para>
-  <para>
-   1. Bir olasılık kümesinden oluşabilir. Örneğin,
-      <literal>gel(enek|incik|)</literal> şablonu "gel", "gelenek" ve
-      "gelincik" sözcüklerinden biriyle eşleşecektir. Yaylı ayraçlar
-      olmasaydı "gelenek", "incik" ve boş bir dizge ile eşleşirdi.
-  </para>
-  <para>
-   2. Şablon grupları olarak görünebilir (aşağıya bakınız). Şablonun tamamı
-      eşleştiğinde, eşleşmeye konu dizgenin alt şablonla eşleşen parçası
-      <function>pcre_exec</function> işlevinin <emphasis>ovector</emphasis>
-      bağımsız değişkeni üzerinden çağrıcıya aktarılır. Yakalayan alt şablon
-      sayısını tutturmak için grup açılışları soldan sağa doğru sayılır
-      (ilk  grup 1 olmak üzere).
-  </para>
+  <orderedlist>
+   <listitem>
+    <para>
+     Bir olasılık kümesinden oluşabilir. Örneğin,
+     <literal>gel(enek|incik|)</literal> şablonu "gel", "gelenek" ve
+     "gelincik" sözcüklerinden biriyle eşleşecektir. Yaylı ayraçlar
+     olmasaydı "gelenek", "incik" ve boş bir dizge ile eşleşirdi.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Şablon grupları olarak görünebilir (aşağıya bakınız). Şablonun tamamı
+     eşleştiğinde, eşleşmeye konu dizgenin alt şablonla eşleşen parçası
+     <function>pcre_exec</function> işlevinin <emphasis>ovector</emphasis>
+     bağımsız değişkeni üzerinden çağrıcıya aktarılır. Yakalayan alt şablon
+     sayısını tutturmak için grup açılışları soldan sağa doğru sayılır
+     (ilk  grup 1 olmak üzere).
+    </para>
+   </listitem>
+  </orderedlist>
   <para>
    Örneğin, "the red king" dizgesini <literal>the ((red|white)
    (king|queen))</literal> şablonuyla eşleştirmek istersek "red king",
@@ -1348,6 +1354,38 @@
    yanısıra dizgelerine göre indislenmiş eşleşmeleri de içerecektir. Buna
    eşdeğer iki sözdizimi daha vardır: <literal>(?&lt;ad&gt;kalıp)</literal>
    ve <literal>(?'ad'kalıp)</literal>
+  </para>
+  <para>
+   Bazen, düzenli bir ifadede birden çok eşleşen, ancak değişen alt grupların
+   varlığı gerekir. Normalde, bunlardan yalnızca biri muhtemelen eşleşecek
+   olsa bile, bunların her birine kendi geri başvuru numarası verilir. Bunun
+   üstesinden gelmek için, <literal>(?|</literal> sözdizimi yinelenen sayılara
+   izin verir. <literal>Sunday</literal> dizgesiyle eşleşen aşağıdaki normal
+   ifade ele alınırsa:
+  </para>
+
+  <informalexample>
+   <programlisting>
+<![CDATA[(?:(Sat)ur|(Sun))day]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Burada <literal>Sun</literal>, 2. geri başvuruda depolanırken, 1. geri
+   başvuru boştur. <literal>Saturday</literal> eşleşmesi, 1. geri başvuruda
+   <literal>Sat</literal> verir, 2. geri başvuru yoktur.
+   <literal>(?|</literal> kullanmak için kalıbı değiştirmek bu sorunu giderir:
+  </para>
+
+  <informalexample>
+   <programlisting>
+<![CDATA[(?|(Sat)ur|(Sun))day]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Bu kalıp kullanılarak, hem <literal>Sun</literal> hem de
+   <literal>Sat</literal> 1. geri başvuruda saklanacaktır.
   </para>
  </section>
 
