@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: eae19eb5fe0f5bebcbce382ea7a505cedeb5a883 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d861a1bcea24f05e52e4938c1ecdf9d70326d7aa Maintainer: nilgun Status: ready -->
 <chapter xml:id="pdo.connections" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Bağlantılar ve Bağlantı Yönetimi</title>
  <para>
-  Bağlantılar temel PDO sınıfının örneklenmesiyle kurulur. Hangi sürücüyü
-  kullanacağınızın bir önemi yoktur; daima PDO sınıf ismini kullanmanız gerekir.
-  Veritabanı kaynağını (diğer bir deyişle DSN' i) ve isteğe bağlı olarak kullanıcı
-  ismini ve parolasını belirtmek için kurucuyu kullanabilirsiniz.
+  Bağlantılar temel PDO sınıfının örneklenmesiyle kurulur. Hangi sürücünün
+  kullanılacağının bir önemi yoktur; daima PDO sınıf isminin kullanılması gerekir.
+  Veritabanı kaynağı (diğer bir deyişle DSN) ve isteğe bağlı olarak kullanıcı
+  ismi ve parolası belirtmek için kurucu kullanılabilir.
  </para>
  <para>
   <example>
@@ -22,9 +22,9 @@ $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
  </para>
  <para>
   Bir hata oluşursa bu bir <classname>PDOException</classname> istisnasına
-  sebep olur. Hatayı ele almak için istisnayı yakalayabilir veya işi
-  <function>set_exception_handler</function> üzerinden ayarladığınız bir
-  küresel hata işleme uygulamasına bırakabilirsiniz.
+  sebep olur. Hatayı ele almak için istisna yakalanabilir veya işlem
+  <function>set_exception_handler</function> üzerinden ayarlanmış bir
+  küresel hata işleme uygulamasına bırakılabilir.
  </para>
  <para>
   <example><title>- Bağlantı hatalarının ele alınışı</title>
@@ -33,13 +33,8 @@ $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
 <?php
 try {
     $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
-    foreach($dbh->query('SELECT * from FOO') as $row) {
-        print_r($row);
-    }
-    $dbh = null;
 } catch (PDOException $e) {
-    print "Hata!: " . $e->getMessage() . "<br/>";
-    die();
+// örneğin zaman aşımını bekledikten sonra yediden bağlanmaya çalış
 }
 ?>
 ]]>
@@ -48,22 +43,23 @@ try {
  </para>
  <warning>
   <para>
-   Uygulamanız, PDO kurucusu tarafından tetiklenen istisnayı yakalamazsa
-   betiği sonlandırıp bir hata geri izlemesi oluşturmak için denetim öntanımlı
-   olarak zend motoruna geçer. Bu geri izleme, kullanıcı ismi ve parola dahil
-   veritabanı bağlantısıyla ilgili tüm ayrıntıları ortaya döker. Bu istisnayı
-   yakalamak sizin sorumluluğunuzdadır. Bunu ya doğrudan
-   <literal>catch</literal> deyimiyle ya da örtük olarak
-   <function>set_exception_handler</function> üzerinden yaparsınız.
+   Tıpkı diğer herhangi bir <link linkend="language.exceptions">istisna</link>
+   gibi, <classname>PDOException</classname> da bir &catch; deyimi aracılığıyla
+   açıkça veya <function>set_exception_handler</function> aracılığıyla dolaylı
+   olarak yakalanabilir. Aksi takdirde varsayılan olarak, yakalanmamış bir
+   istisnayı <constant>E_FATAL_ERROR</constant> ölümcül hatasına dönüştürme
+   davranışı gerçekleşir. Ölümcül hata, bağlantı ayrıntılarını sızdırabilecek
+   bir geri izleme içerecektir. Bu nedenle, bir üretim sunucusunda &php.ini;
+   <link linkend="ini.display-errors"><literal>display_errors</literal></link>
+   seçeneğine <literal>0</literal> atanmalıdır.
   </para>
  </warning>
  <para>
   Veritabanı bağlantısının başarıyla kurulmasıyla betiğinize PDO sınıfının bir
   örneği döner. PDO nesnesinin ömrü boyunca bağlantı etkin kalır. Bağlantıyı
   kapatmak için, nesneye gönderimli herşeyin silindiğinden emin olarak nesneyi
-  yok etmeniz gerekir; bunu nesneyi tutan değişkene &null; atayarak
-  yapabilirsiniz. Bunu siz yapmazsanız, PHP betiğiniz sonlandığında bunu sizin
-  yerinize yapacaktır.
+  yok etmek gerekir; nesneyi tutan değişkene &null; atanarak bu yapılabilir.
+  Bu yapılmazsa, PHP betiği sonlandığında nesne kendiliğinden yok edilir.
  </para>
  <note>
   <simpara>
@@ -127,16 +123,16 @@ $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass, array(
   <para>
    Kalıcı bağlantı kullanmak için PDO kurucusuna aktarılan sürücü seçenekleri
    dizisinde <constant>PDO::ATTR_PERSISTENT</constant> sabitine &true;
-   atamalısınız. Nesneyi ilklendirdikten sonra bu özelliği
-   <methodname>PDO::setAttribute</methodname> ile etkin kılmak
-   isterseniz sürücü kalıcı bağlantıları kullanmayacaktır.
+   atanmalıdır. Nesne ilklendirildikten sonra bu özelliğin
+   <methodname>PDO::setAttribute</methodname> ile etkin kılınması
+   istenirse sürücü kalıcı bağlantıları kullanmayacaktır.
   </para>
  </note>
  <note>
   <para>
-   PDO ODBC sürücüsünü kullanıyorsanız ve ODBC küüphaneleriniz ODBC Bağlantı
+   PDO ODBC sürücüsü kullanılıyorsa ve ODBC kütüphaneleri ODBC Bağlantı
    Havuzlarını destekliyorsa (hem unixODBC hem de Windows bunu yapar;
-   başkaları da olabilir) kalıcı PDO bağlantılarını kullanmanız önerilmez;
+   başkaları da olabilir) kalıcı PDO bağlantılarının kullanılması önerilmez;
    bağlantı önbelleklemesini ODBC Bağlantı Havuzlama katmanına bırakmak daha
    iyidir. ODBC Bağlantı Havuzu bağlantıyı süreçteki diğer modüllerle
    paylaşır; eğer PDO bağlantıyı önbelleklemeye çalışırsa bu bağlantı asla

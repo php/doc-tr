@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 789af834328bf5d492ed174a4fedb226ccaf4b27 Maintainer: aydin Status: ready -->
+<!-- EN-Revision: a0fcdcb58023bd4cb017fdba511df29b9f7a25f5 Maintainer: aydin Status: ready -->
 <refentry xml:id="function.easter-date" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>easter_date</refname>
@@ -18,13 +17,6 @@
   <para>
    Verilen yıl için paskalya gece yarısının unix zaman damgasını döner.
   </para>
-  <warning>
-   <para>
-    Bu işlev, yıl unix zaman damgasının geçerli olduğu aralık dışında
-    (32 bitlik sistemlerde, 1970&apos;den önce 2037&apos;den sonra) verilirse
-    bir uyarı üretir.
-   </para>
-  </warning>
   <para>
    Paskalya günü, ilk olarak M.S. 325 yılında İznik Konseyi tarafından,
    İlk dolunaydan veya Bahar ılımından (ekinoks) sonraki ilk pazar günü olarak
@@ -48,8 +40,9 @@
      <term><parameter>yil</parameter></term>
      <listitem>
       <para>
-       1970-2037 aralığındaki değerlerden biri. Atlanırsa veya &null;
-       belirtilirse yerel zamana göre geçerli yıl öntanımlıdır.
+       32 bitlik sistemlerde 1970-2037, 64 bitlik sistemlerde
+       1970-2,000,000,000 aralığındaki değerlerden biri. Atlanırsa veya
+       &null; belirtilirse yerel zamana göre geçerli yıl öntanımlıdır.
       </para>
      </listitem>
     </varlistentry>
@@ -74,6 +67,15 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   32 bitlik sistemlerde <parameter>yıl</parameter> 1970'ten önceyse veya
+   2037'den sonraysa veya 64 bitlik sistemlerde 2,000,000,000'dan sonraysa
+   <classname>ValueError</classname> istisnası oluşur.
+  </para>
+ </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -87,9 +89,24 @@
      </thead>
      <tbody>
       <row>
+       <entry>8.3.0</entry>
+       <entry>
+        64 bitlik sistemlerde <parameter>yıl</parameter> artık
+        1970-2,000,000,000 aralığında değer kabul ediyor.
+       </entry>
+      </row>
+      <row>
        <entry>8.0.0</entry>
        <entry>
         <parameter>yıl</parameter> artık &null; olabiliyor.
+       </entry>
+      </row>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        <parameter>yıl</parameter> izin verilen aralığın dışındaysa artık
+        <classname>ValueError</classname> istisnası oluşuyor. Evvelce bir
+        <constant>E_WARNING</constant> oluşur ve işlev &false; döndürürdü.
        </entry>
       </row>
      </tbody>
@@ -167,6 +184,24 @@ Easter in 2015 is on April 5
     </screen>
    </informalexample>
   </note>
+
+   <example>
+    <title>- <function>easter_date</function> ile <classname>DateTime</classname> kullanımı</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$timestamp = easter_date(2023);
+
+$datetime = new \DateTime();
+$datetime->setTimestamp($timestamp);
+
+echo $datetime->format('M-d-Y'); // Apr-09-2023
+
+?>
+]]>
+    </programlisting>
+   </example>
  </refsect1>
 
  <refsect1 role="seealso">
