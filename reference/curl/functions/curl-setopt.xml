@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 52dbbb3856a16174bfd0a96e6df8c52f236397eb Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: ab0006771069b6deaccdb44522a6312adaa91b35 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.curl-setopt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>curl_setopt</refname>
@@ -737,6 +737,7 @@
              <constant>CURLAUTH_DIGEST</constant>,
              <constant>CURLAUTH_GSSNEGOTIATE</constant>,
              <constant>CURLAUTH_NTLM</constant>,
+             <constant>CURLAUTH_AWS_SIGV4</constant>,
              <constant>CURLAUTH_ANY</constant> ve
              <constant>CURLAUTH_ANYSAFE</constant>.
             </para>
@@ -748,15 +749,13 @@
              kullanır.
             </para>
             <para>
-             <constant>CURLAUTH_ANY</constant> sabiti
-             <literal>CURLAUTH_BASIC | CURLAUTH_DIGEST |
-             CURLAUTH_GSSNEGOTIATE | CURLAUTH_NTLM</literal> ifadesi için
-             bir kısaltmadır.
+             <constant>CURLAUTH_ANY</constant> tüm bitleri etkin kılar.
+             cURL otomatik olarak en güvenlisini seçer.
             </para>
             <para>
              <constant>CURLAUTH_ANYSAFE</constant> sabiti
-             <literal>CURLAUTH_DIGEST | CURLAUTH_GSSNEGOTIATE |
-             CURLAUTH_NTLM</literal> ifadesi için bir kısaltmadır.
+             <literal>CURLAUTH_BASIC</literal> dışında tüm bitleri etkin kılar.
+             cURL otomatik olarak en güvenlisini seçer.
             </para>
            </entry>
            <entry />
@@ -789,6 +788,60 @@
             altında kalacağı, saniye cinsinden aktarım süresi.
            </entry>
            <entry />
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAIL_RCPT_ALLLOWFAILS</constant></entry>
+           <entry valign="top">
+            Bazı alıcılar için RCPT TO komutunun başarısız olmasına izin verir.
+           </entry>
+           <entry valign="top">
+            Birden fazla alıcıya veri gönderirken, alıcılardan en az biri
+            RCPT TO komutunun hata döndürmesine neden olursa cURL varsayılan
+            olarak SMTP görüşmesini iptal eder. Bu seçenek, cURL'ye hataları
+            yok saymasını ve kalan geçerli alıcılarla devam etmesini söyler.
+            Tüm alıcılar RCPT TO hatalarını tetiklerse ve bu seçenek etkinse,
+            cURL SMTP görüşmesini iptal eder ve son RCPT TO komutundan alınan
+            hatayı döndürür.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAXAGE_CONN</constant></entry>
+           <entry valign="top">
+            Mevcut bir bağlantının yeniden kullanım için değerlendirilmesi
+            için izin verilen azami boşta kalma süresi. Varsayılan azami
+            değer, <literal>118</literal> saniyedir.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAXFILESIZE_LARGE</constant></entry>
+           <entry valign="top">
+            İndirilmesine izin verilen dosya için azami bayt miktarı. İstenen
+            dosya bu değerden büyükse aktarım başlamaz ve
+            <constant>CURLE_FILESIZE_EXCEEDED</constant> döner. İndirme öncesi
+            dosya boyutları her zaman bilinmez ve dosya aktarımı bittiğinde dosya
+            boyutu bu değerden büyük olacak olsa bile böyle dosyalarda bu seçenek
+            etkisizdir.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_MAXLIFETIME_CONN</constant></entry>
+           <entry valign="top">
+            Bağlantının oluşturulmasından bu yana, mevcut bir bağlantının
+            yeniden kullanım için değerlendirilmesine izin verilen, saniye
+            cinsinden azami süre. Önbellekte bu değerden daha eski bir
+            bağlantı bulunursa devam eden aktarımlar tamamlandıktan sonra
+            bağlantı kapatılır. Varsayılan 0 saniye olup seçeneğin devre dışı
+            bırakıldığı ve tüm bağlantıların yeniden kullanılmaya uygun olduğu
+            anlamına gelir.
+           </entry>
+           <entry valign="top">
+           </entry>
           </row>
           <row>
            <entry valign="top"><constant>CURLOPT_MAXCONNECTS</constant></entry>
@@ -857,6 +910,7 @@
              <constant>CURLPROTO_DICT</constant>,
              <constant>CURLPROTO_FILE</constant>,
              <constant>CURLPROTO_TFTP</constant>,
+             <constant>CURLPROTO_MQTT</constant>
              <constant>CURLPROTO_ALL</constant>
             </para>
            </entry>
@@ -974,6 +1028,34 @@
              <constant>CURLSSLOPT_NO_REVOKE</constant>: Bu tür bir davranışın
              mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini
              devre dışı bırakır.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_AUTO_CLIENT_CERT</constant>: Sunucu tarafından
+             istendiğinde, kimlik doğrulama için istemci sertifikası otomatik
+             olarak bulunup kullanılır. Bu seçenek yalnızca Schannel (yerel
+             Windows SSL kitaplığı) için desteklenir.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_NATIVE_CA</constant>: Sertifika doğrulaması
+             için işletim sisteminin yerel CA deposunu kullanılır. OpenSSL
+             kullanmak üzere oluşturulduğunda yalnızca Windows üzerinde çalışır.
+             Bu seçenek deneyseldir ve davranış değişebilir.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_NO_PARTIALCHAIN</constant>: cURL'nin
+             varsayılan olarak kabul ettiği "kısmi" sertifika zincirleri
+             kabul edilmez. Bu seçenek yalnızca OpenSSL için desteklenir
+             ve zincir bir kök sertifikayla değil de bir ara sertifikayla
+             biterse sertifika doğrulamasında başarısız olur.
+            </simpara>
+            <simpara>
+             <constant>CURLSSLOPT_REVOKE_BEST_EFFORT</constant>: Bu tür
+             davranışların mevcut olduğu SSL arka uçları için eksik veya
+             çevrimdışı dağıtım noktaları olması durumunda sertifika iptal
+             denetimleri yok sayılır. Bu seçenek yalnızca Schannel (yerel
+             Windows SSL kitaplığı) için desteklenir.
+             <constant>CURLSSLOPT_NO_REVOKE</constant> ile birleştirilirse
+             ikincisi önceliklidir.
             </simpara>
            </entry>
            <entry valign="top">
@@ -1184,9 +1266,10 @@
             cURL işlevlerinin çalışmasına izin verilecek azami milisaniye
             sayısı.
             <!-- http://curl.haxx.se/libcurl/c/curl_easy_setopt.html -->
-            If libcurl is built to use the standard system name resolver, that
-            portion of the connect will still use full-second resolution for
-            timeouts with a minimum timeout allowed of one second.
+            Libcurl, standart sistem adı çözümleyicisini kullanmak üzere
+            derlenmişse, bağlantının bu kısmı, bir saniyelik asgari zaman
+            aşımına izin verilerek, zaman aşımları için tam saniyelik
+            çözünürlüğü kullanmaya devam edecektir.
            </entry>
            <entry valign="top">
             cURL 7.16.2'de eklendi.
@@ -1214,6 +1297,31 @@
            </entry>
            <entry valign="top">
             cURL 7.59.0'de eklendi. PHP 7.3.0'dan beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_UPKEEP_INTERVAL_MS</constant></entry>
+           <entry valign="top">
+            Bazı protokollerin "bağlantı bakım" düzenekleri vardır.
+            Bu düzenekler, bağlantıyı canlı tutmak için genellikle mevcut
+            bağlantılara bir miktar trafik gönderir. Bu seçenek, bağlantı
+            bakım aralığını tanımlar. Şu anda, bağlantı bakım düzeneğine
+            sahip tek protokol HTTP/2'dir. Bağlantı bakım aralığı
+            aşıldığında, bağlantıya HTTP/2 PING tertibi gönderilir.
+            <literal>60</literal> saniye varsayılan değerdir.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_UPLOAD_BUFFERSIZE</constant></entry>
+           <entry valign="top">
+            CURL yükleme tamponu için bayt cinsinden tercih edilen boyut.
+            Yükleme tamponunun boyutu varsayılan olarak 64 kilobayttır.
+            Tahsis edilebilecek tampon boyutunun azamisi 2 megabayt,
+            asgarisi 16 kilobayttır.
+           </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
@@ -1275,8 +1383,9 @@
            <entry valign="top">
             Curl'e FTP(S) sunucusundaki bir dosyaya ulaşmak için hangi
             yöntemin kullanacağını söyler. Olası değerler:
+            <constant>CURLFTPMETHOD_DEFAULT</constant>,
             <constant>CURLFTPMETHOD_MULTICWD</constant>,
-            <constant>CURLFTPMETHOD_NOCWD</constant> ve
+            <constant>CURLFTPMETHOD_NOCWD</constant>, and
             <constant>CURLFTPMETHOD_SINGLECWD</constant>.
            </entry>
            <entry valign="top">
@@ -1314,6 +1423,51 @@
            </entry>
           </row>
           <row>
+           <entry valign="top"><constant>CURLOPT_ALTSVC</constant></entry>
+           <entry valign="top">
+            <constant>CURLOPT_ALTSVC_CTRL</constant> üzerinden
+            <constant>CURLALTSVC_READONLYFILE</constant> etkin kılınmadıkça,
+            mevcut önbellek içeriğini okumak ve muhtemelen bir aktarımdan
+            sonra geri yazmak için Alt-Svc önbellek dosyası olarak kullanmak
+            üzere cURL'ye dosya adını aktarır.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_ALTSVC_CTRL</constant></entry>
+           <entry valign="top">
+            cURL'ye bu tanıtıcıyı kullanarak aktarımlar için Alt-Svc'yi nasıl
+            işleyeceğini bildirmek üzere bit maskesini doğru özellik grubuyla
+            doldurur. cURL, HTTPS üzerinden yalnızca Alt-Svc başlıklarını
+            kabul eder. Ayrıca, kaynak yalnızca HTTPS üzerinden uygun şekilde
+            sunuluyorsa, başka bir kaynağa yönelik isteği tamamlayacaktır.
+            Herhangi bir bitin etkinleştirilmesi Alt-Svc motorunu etkinleştirir.
+            Seçenekler:
+            <constant>CURLALTSVC_H1</constant>,
+            <constant>CURLALTSVC_H2</constant>,
+            <constant>CURLALTSVC_H3</constant> ve
+            <constant>CURLALTSVC_READONLYFILE</constant>.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_AWS_SIGV4</constant></entry>
+           <entry valign="top">
+            <para>
+             HTTP(S) başlığında AWS V4 imza kimlik doğrulaması sağlar.
+            </para>
+            <para>
+             Bu seçenek, <constant>CURLOPT_HTTPAUTH</constant> ile atanan diğer
+             tüm kimlik doğrulama türlerini geçersiz kılar. Bu yöntem, diğer
+             kimlik doğrulama türleriyle birleştirilemez.
+            </para>
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
            <entry valign="top"><constant>CURLOPT_CAINFO</constant></entry>
            <entry valign="top">
             Eşle doğrulanacak bir veya daha fazla sertifikanın tutulduğu
@@ -1323,6 +1477,17 @@
            </entry>
            <entry valign="top">
             Mutlak bir yol gerektirebilir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_CAINFO_BLOB</constant></entry>
+           <entry valign="top">
+            Eşi doğrulamak için bir veya daha fazla sertifika tutan bir PEM
+            dosyasının adı. <constant>CURLOPT_CAINFO</constant> seçeneğini
+            geçersiz kılar.
+           </entry>
+           <entry valign="top">
+            PHP 8.2.0 ve cURL 7.77.0 itibariyle kullanılabilmektedir.
            </entry>
           </row>
           <row>
@@ -1411,6 +1576,30 @@
            </para></entry>
            <entry valign="top">
             cURL 7.45.0'da eklendi. PHP 7.0.7'den beri kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HSTS</constant></entry>
+           <entry valign="top">
+            <para>
+             HSTS (HTTP Strict Transport Security - Sıkı Taşıma Güvenliği) önbellek dosya adı.
+            </para>
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_HSTS_CTRL</constant></entry>
+           <entry valign="top">
+            <para>
+             HSTS (HTTP Strict Transport Security- Sıkı Taşıma Güvenliği)
+             davranışını denetler. cURL'ye bu tanıtıcıyı kullanarak aktarımlar
+             için HSTS'yi nasıl işleyeceğini öğretmek için bit maskesini doğru
+             özellik kümesiyle doldurur. HSTS önbellek dosyası tanımlıysa dosyayı
+             salt okunur yapmak için <constant>CURLHSTS_READONLYFILE</constant> atanır.
+            </para>
+           </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
@@ -1629,6 +1818,19 @@
            </entry>
            <entry valign="top">
             libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0'dan beri
+            kullanılabilmektedir.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_PROXY_CAINFO_BLOB</constant></entry>
+           <entry valign="top">
+            HTTPS vekilini doğrulamak için bir veya daha fazla sertifika tutan
+            PEM dosyasının adı. Bu seçenek, bir HTTPS sunucusuna değil, bir
+            HTTPS vekiline bağlanmak içindir. Varsayılanlar, libcurl'ün cacert
+            paketinin bulunduğu varsayılan sistem yoluna ayarlanmıştır.
+           </entry>
+           <entry valign="top">
+            PHP 8.2.0 ve libcurl &gt;= cURL 7.77.0'dan beri
             kullanılabilmektedir.
            </entry>
           </row>
@@ -1858,6 +2060,19 @@
            </entry>
           </row>
           <row>
+           <entry valign="top"><constant>CURLOPT_SASL_AUTHZID</constant></entry>
+           <entry valign="top">
+            Aktarım için yetkilendirme kimliği (authzid). Yalnızca isteğe
+            bağlı olduğu durumlarda salt metin SASL kimlik doğrulama düzeneği
+            için geçerlidir. Belirtilmediğinde, yalnızca kullanıcı adıyla
+            belirtilen kimlik doğrulama kimliği (authcid), parolayla birlikte
+            sunucuya gönderilir. Sunucu, sağlanmadığında authzid'i authcid'den
+            türetecek ve bunu daha sonra dahili olarak kullanacaktır.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
            <entry valign="top"><constant>CURLOPT_SERVICE_NAME</constant></entry>
            <entry valign="top">
             Kimlik kanıtlama hizmetini adı.
@@ -1876,6 +2091,15 @@
            </entry>
            <entry valign="top">
             cURL 7.17.1'da eklendi.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256</constant></entry>
+           <entry valign="top">
+            Uzak konağın genel anahtarının Base64 kodlu SHA256 aşı. Verilen aş,
+            uzak konağın sağladığı aş ile eşleşmezse aktarım başarısız olur.
+           </entry>
+           <entry valign="top">
            </entry>
           </row>
           <row>
@@ -1909,6 +2133,18 @@
             SSL için kullanılacak şifrelerin listesi. Örneğin,
             <literal>RC4-SHA</literal> ve <literal>TLSv1</literal> geçerli
             şifre listeleridir.
+           </entry>
+           <entry valign="top">
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLOPT_SSL_EC_CURVES</constant></entry>
+           <entry valign="top">
+            Eliptik eğri algoritmalarının iki nokta üst üstelerle ayrılmış
+            listesi. Örneğin, <literal>X25519:P-521</literal>, iki eliptik
+            eğrinin geçerli listesidir. Bu seçenek, cURL SSL arka ucu olarak
+            bunu desteklemek için derlenmişse, istemcinin SSL el
+            sıkışmasındaki anahtar değişim algoritmalarını tanımlar.
            </entry>
            <entry valign="top">
            </entry>
