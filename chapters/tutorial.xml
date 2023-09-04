@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- EN-Revision: 528bcc7b2e73270c61b654a4ee50992808b128b5 Maintainer: tpug Status: ready -->
+<!-- EN-Revision: 46ffb4b3fa11ea5733de780a8bcc211d8dc3d92b Maintainer: tpug Status: ready -->
  <chapter xml:id="tutorial" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Basit bir eğitmen</title>
 
@@ -77,12 +77,12 @@
      <programlisting role="php">
 <![CDATA[
 <html>
- <head>
-  <title>PHP Denemesi</title>
- </head>
- <body>
- <?php echo '<p>Merhaba Dünya</p>'; ?>
- </body>
+  <head>
+    <title>PHP Denemesi</title>
+  </head>
+  <body>
+    <?php echo '<p>Merhaba Dünya</p>'; ?>
+  </body>
 </html>
 ]]>
      </programlisting>
@@ -100,12 +100,12 @@
      <screen role="html">
 <![CDATA[
 <html>
- <head>
-  <title>PHP Denemesi</title>
- </head>
- <body>
- <p>Merhaba Dünya</p>
- </body>
+  <head>
+    <title>PHP Denemesi</title>
+  </head>
+  <body>
+    <p>Merhaba Dünya</p>
+  </body>
 </html>
 ]]>
      </screen>
@@ -246,7 +246,9 @@
       Bu betiğin çıktısı şöyle bir dizge olabilirdi:
     </para>
     <screen role="html">
+<![CDATA[
 Mozilla/5.0 (Linux) Firefox/112.0
+]]>
     </screen>
    </example>
    </para>
@@ -277,8 +279,8 @@ Mozilla/5.0 (Linux) Firefox/112.0
      <programlisting role="php">
 <![CDATA[
 <?php
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
-    echo 'Firefox kullanıldığı saptandı.<br />';
+if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
+    echo 'Firefox kullanıldığı saptandı';
 }
 ?>
 ]]>
@@ -288,7 +290,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
      </para>
      <screen role="html">
 <![CDATA[
-Firefox kullanıldığı saptandı.<br />
+Firefox kullanıldığı saptandı.
 ]]>
      </screen>
     </example>
@@ -302,15 +304,14 @@ Firefox kullanıldığı saptandı.<br />
     Başvuru Kılavuzu</link> bölümünün okunması faydalı olacaktır.
    </para>
    <para>
-    Devreye sokulan ikinci kavram, <function>strpos</function> işlevi ile
-    yapılan çağrı oldu. <function>strpos</function>, bir dizgeyi başka bir
+    Devreye sokulan ikinci kavram, <function>str_contains</function> işlevi ile
+    yapılan çağrı oldu. <function>str_contains</function>, bir dizgeyi başka bir
     dizgenin içinde arayan yerleşik bir PHP işlevidir. Burada
     <varname>$_SERVER['HTTP_USER_AGENT']</varname> içinde (samanlık)
     <literal>'Firefox'</literal> dizgesi (iğne) aranıyor. İğne samanlıkta
-    bulunursa işlev iğnenin konumunu samanlığın başlangıcına göre
-    döndürür. Aksi takdirde &false; döner.
+    bulunursa &true;, aksi takdirde &false; döner.
     <link linkend="control-structures.if">if</link> ifadesinin sonucu
-    &true; olduğu takdirde &false; dönmez ve kaşlı ayraçlar arasındaki kod
+    &true; olduğu takdirde kaşlı ayraçlar arasındaki kod
     çalıştırılır. Aksi takdirde kod çalıştırılmaz. <link
     linkend="control-structures.if">If</link>, <link
     linkend="control-structures.else">else</link> gibi denetim yapıları ile
@@ -332,14 +333,14 @@ Firefox kullanıldığı saptandı.<br />
      <programlisting role="php">
 <![CDATA[
 <?php
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
+if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
 ?>
-<h3>strpos() false döndürmemiş olmalı</h3>
+<h3>str_contains() false döndürmemiş olmalı</h3>
 <p>Firefox kullanıldığı saptandı.</p>
 <?php
 } else {
 ?>
-<h3>strpos() false döndürmüş olmalı</h3>
+<h3>str_contains() false döndürmüş olmalı</h3>
 <p>Firefox kullanılmadığı saptandı.</p>
 <?php
 }
@@ -351,7 +352,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
      </para>
      <screen role="html">
 <![CDATA[
-<h3>strpos() false döndürmemiş olmalı</h3>
+<h3>str_contains() false döndürmemiş olmalı</h3>
 <p>Firefox kullanıldığı saptandı.</p>
 ]]>
      </screen>
@@ -361,7 +362,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
     Bir çıktı üretmek için PHP echo komutunu kullanmak yerine, PHP kipinden
     çıkıldı ve düz HTML gönderildi. Burada dikkat edilmesi gereken önemli
     nokta, betiğin mantıksal akışının değişmiyor olmasıdır.
-    <function>strpos</function> işlevinden edinilen sonuca göre HTML kod
+    <function>str_contains</function> işlevinden edinilen sonuca göre HTML kod
     çiftlerinden yalnızca biri görüntüleyiciye gönderilmektedir. Başka bir
     deyişle, bu işleyiş <literal>Firefox</literal> dizgesinin bulunup
     bulunmamasına bağlıdır.
@@ -384,9 +385,13 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
      <programlisting role="html">
 <![CDATA[
 <form action="action.php" method="post">
- <p>İsminiz: <input type="text" name="isim" /></p>
- <p>Yaşınız: <input type="text" name="yaş" /></p>
- <p><input type="submit" /></p>
+    <label for="name">İsminiz:</label>
+    <input name="name" id="name" type="text">
+
+    <label for="age">Yaşınız:</label>
+    <input name="age" id="age" type="number">
+
+    <button type="submit">Gönder</button>
 </form>
 ]]>
      </programlisting>
@@ -394,7 +399,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
    </para>
    <para>
     Bu formda özel hiçbir şey yoktur. Hiçbir özel etiket içermeyen düz bir
-    HTML formudur. Kullanıcı formu doldurup gönder tuşuna bastığında,
+    HTML formudur. Kullanıcı formu doldurup 'Gönder' tuşuna bastığında,
     <filename>action.php</filename> sayfası çağrılır. Bu dosyaya aşağıdakiler
     yazılabilir:
    </para>
@@ -403,8 +408,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
      <title>- Formdan veri yazdırmak</title>
      <programlisting role="php">
 <![CDATA[
-Merhaba <?php echo htmlspecialchars($_POST['isim']); ?>.
-Siz <?php echo (int)$_POST['yaş']; ?> yaşındasınız.
+Merhaba <?php echo htmlspecialchars($_POST['name']); ?>.
+Siz <?php echo (int)$_POST['age']; ?> yaşındasınız.
 ]]>
      </programlisting>
      <para>
