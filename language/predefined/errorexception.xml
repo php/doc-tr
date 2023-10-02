@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 14767af0f05dffa6fdb9b49e1a1f4e9ca7022a60 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: e6376e04ed2526138e5b71e16168cf6bb269fa8a Maintainer: nilgun Status: ready -->
 <!-- CREDITS: haluk -->
 <phpdoc:exceptionref xml:id="class.errorexception" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
  <title>ErrorException Sınıfı</title>
@@ -83,12 +83,20 @@
      <programlisting role="php">
  <![CDATA[
 <?php
-function exception_error_handler($errno, $errstr, $errfile, $errline ) {
-    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+function exception_error_handler(int $errno, string $errstr, string $errfile = null, int $errline) {
+    if (!(error_reporting() & $errno)) {
+        // Bu hata kodu hata bildiriminde bulunmaz
+        return;
+    }
+    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
-set_error_handler("exception_error_handler");
+set_error_handler(exception_error_handler(...));
+// PHP 8.1.0'dan ve birinci sınıf çağrılabilir sözdiziminin
+   kullanıma sunulmasından önce, bunun yerine
+// set_error_handler(__NAMESPACE__ . "\\exception_error_handler");
+//  çağrısının kullanılması gerekirdi
 
-/* İstisnayı oluşturalım */
+/* İstisnayı tetikle */
 strpos();
 ?>
 ]]>
