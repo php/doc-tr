@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f781803449007bb0e3a96c693e0eee067f7eb466 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 5a14f904d231d294e2e5b4fb5d2fc4d2fd9eddee Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-processing-instruction-handler">
  <refnamediv>
   <refname>xml_set_processing_instruction_handler</refname>
@@ -10,74 +10,59 @@
   &reftitle.description;
   <methodsynopsis>
    <type>true</type><methodname>xml_set_processing_instruction_handler</methodname>
-   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
    <methodparam><type>callable</type><parameter>işleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
+   <parameter>ayrıştırıcı</parameter> ile belirtilen XML ayrıştırıcı için
    işlem komutu (PI) işleyicisini belirler.
   </para>
   <para>
    Bir işlem komutunun biçemi şöyledir:
   <programlisting role="xml">
-   <code>&lt;?</code><replaceable>hedef</replaceable>
-   <replaceable>veri</replaceable><code>?&gt;</code>
+<![CDATA[
+<?hedef
+veri
+?>
+]]>
    </programlisting>
-   PHP kodunu böyle bir işlem komutu içine koyabilirsiniz, fakat bir sınırlama
-   konusunda dikkatli olmalısınız: Bir XML işlemci komutunda kapama etiketi
-   (<literal>?&gt;</literal>) öncelenmemelidir (anlamsızlaştırılmamalıdır).
-   Dolayısıyla XML belgelere işlem komutlarıyla gömülen PHP kodları böyle
-   karakter dizilimleri içermemelidir. Aksi takdirde, PHP kodu ve işlem
-   komutunun kapama etiketi karakter verisi olarak ele alınır.
   </para>
+  <caution>
+   <para>
+    PHP kodu <literal>&lt;?php</literal> işlem komutu içine konabilir.
+    Böylece bir XML belgesisi PHP kodu içerebilir. Ancak,
+    XML işlem komutunda kapama etiketi (<literal>?&gt;</literal>)
+    verinin bir parçası olmamalıdır. İşlem komutunun kapama etiketi
+    gömülü PHP kodunun içinde yer alırsa, PHP kodu ve işlem
+    komutunun "asıl" kapama etiketi karakter verisi olarak ele alınır.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>çözümleyici</parameter></term>
-     <listitem>
-      <para>
-       İşlem komutu işleyici işlevini ayarlamak için XML çözümleyiciye
-       başvuru.
-      </para>
-     </listitem>
-    </varlistentry>
+    &xml.parser.param;
     <varlistentry>
      <term><parameter>işleyici</parameter></term>
      <listitem>
+      &xml.handler.description;
       <para>
-       <function>xml_parse</function> işlevi
-       <parameter>çözümleyici</parameter> için çağrıldığında mevcut olması
-       gereken işlevin ismini içeren dizge.
-      </para>
-      <para>
-       İsmi <parameter>işleyici</parameter> ile belirtilen işlevin üç
-       bağımsız değişken kabul etmesi gerekir:
+       İşleyici işlev sözdizimi:
        <methodsynopsis>
-        <methodname><replaceable>işleyici</replaceable></methodname>
-        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+        <type>void</type><methodname><replaceable>işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
         <methodparam><type>string</type><parameter>hedef</parameter></methodparam>
         <methodparam><type>string</type><parameter>veri</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
-        <varlistentry>
-         <term><parameter>çözümleyici</parameter></term>
-         <listitem>
-          <simpara>
-           İlk bağımsız değişken, işleyici işlevi çağıran XML çözümleyicinin
-           tanıtıcısıdır.
-          </simpara>
-         </listitem>
-        </varlistentry>
+        &xml.handler.parser.param;
         <varlistentry>
          <term><parameter>hedef</parameter></term>
          <listitem>
           <simpara>
-           İkinci bağımsız değişken, <parameter>hedef</parameter>, PI hedefini
-           içermelidir.
+           İşlem komutu hedefini içermelidir.
           </simpara>
          </listitem>
         </varlistentry>
@@ -85,18 +70,12 @@
          <term><parameter>veri</parameter></term>
          <listitem>
           <simpara>
-           Üçüncü bağımsız değişken, <parameter>veri</parameter>, PI verisini
-           içermelidir.
+           İşlem komutu verisini içermelidir.
           </simpara>
          </listitem>
         </varlistentry>
        </variablelist>
       </para>
-      <para>
-       <parameter>işleyici</parameter> bağımsız değişkeninde işlev olarak boş bir
-       dizge veya &false; belirtilirse ilgili işleyici iptal edilir.
-      </para>
-      &note.func-callback;
      </listitem>
     </varlistentry>
    </variablelist>

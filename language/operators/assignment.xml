@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 52407313885d27a4e891e08dd2e2481bcc39e244 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.operators.assignment">
+ <title>Atama İşleçleri</title>
+ <simpara>
+  Temel atama işleci "<literal>=</literal>" imidir. Programlamaya yeni
+  başlayanlar bu işleci"eşittir" diye okurlar. Aslında yapılan işlem bir
+  şeyleri birbirlerine eşitlemek değildir. Yaptığı iş sağındaki ifadenin
+  değerini solundaki terimin değeri haline getirmektir, yani imleci içeren
+  ifadeyi birşey'in değeri diye okumak daha doğrudur.
+ </simpara>
+ <para>
+  Bir atama ifadesinin değeri atanan değerdir. Yani, "<literal>$a =
+  3</literal>" ifadesinin değeri 3'tür. Bunun bir takım yan sonuçları da
+  vardır:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+$a = ($b = 4) + 5; // $a'nın değeri 9, $b'nin değeri 4 olur.
+
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  Temel atama işlecinden başka atama işlemini temel aritmetik, <link
+  linkend="language.operators">ikil aritmetik</link> işlemleriyle veya
+  dizi ya da dizge birleştirme işlemleriyle  birleştiren, "birleşik atama
+  işleçleri" vardır. Örnek:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+$a = 3;
+$a += 5; // $a'nın değeri 8 olur, asıl işlem: $a = $a + 5;
+$b = "Herkese ";
+$b .= "Merhaba!"; // $b'nin değeri "Herkese Merhaba!" olur.
+                  // asıl işlem: $b = $b . "Merhaba!";
+
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+ <para>
+  Atama işleminin özgün değişkeni yeni değişkene kopyaladığına (değeriyle
+  atadığına) dikkat ediniz. Dolayısıyla birinde yapılan değişiklik
+  diğerini etkilemeyecektir. Kapalı bir döngü içinde büyükçe bir diziye
+  atama işlemleri yapma ihtiyacı duyarsanız bu ayrı bir anlam kazanır.
+  </para>
+ <para>
+  PHP içindeki değere göre olağan atama davranışının bir istisnası,
+  gönderimle atanan nesnelerle gerçekleşir. Nesneler
+  <link linkend="language.oop5.cloning">clone</link> anahtar sözcüğü ile
+  doğrudan kopyalanabilir.
+ </para>
+
+ <sect2 xml:id="language.operators.assignment.reference">
+  <title>Gönderimli atama</title>
+  <para>
+   Gönderimli atama <literal>$değişken = &amp;$diğerdeğişken;</literal>
+   sözdizimi ile desteklenmektedir. 'Gönderimli atama', iki
+   değişkenin aynı veriyi gösterdiği ve birbirlerinden birşeyler
+   kopyalamadıkları anlamına gelir.
+  </para>
+  <para>
+   <example>
+    <title>- Gönderimli atama</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3;
+$b = &$a; // $b, $a'ya bir gönderimdir
+
+print "$a\n"; // 3 basar
+print "$b\n"; // 3 basar
+
+$a = 4; // $a değişir
+
+print "$a\n"; // 4 basar
+print "$b\n"; // bu da 4 basar, $b, $a'ya bir gönderimdi ve $a değişti
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <link linkend="language.oop5.basic.new">new</link> işleci otomatik
+   olarak bir gönderim döndürür. Dolayısıyla,
+   <link linkend="language.oop5.basic.new">new</link> sonucunu gönderimli
+   atamak bir hatadır.
+  </para>
+  <para>
+   Örneğin bu kod bir hata veya uyarı ile sonuçlanır:
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class C {}
+
+$o = &new C;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Parse error: syntax error, unexpected 'new' (T_NEW) in …
+// Çözümleme hatası: sözdizimi hatası, beklenmeyen 'new' (T_NEW) in …
+]]>
+    </screen>
+  </informalexample>
+  </para>
+  <para>
+   Gönderimler hakkında daha ayrıntılı bilgi
+   edinmek için <link linkend="language.references">Gönderimlerle ilgili
+   herşey</link> bölümüne bakınız.
+  </para>
+ </sect2>
+ <sect2 xml:id="language.operators.assignment.arithmetic">
+  <title>Aritmetik Atams İşleçleri</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>Örnek</entry>
+      <entry>Eşdeğeri</entry>
+      <entry>İşlem</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a += $b</entry>
+      <entry>$a = $a + +$b</entry>
+      <entry>Toplama</entry>
+     </row>
+     <row>
+      <entry>$a -= $b</entry>
+      <entry>$a = $a - $b</entry>
+      <entry>Çıkarma</entry>
+     </row>
+     <row>
+      <entry>$a *= $b</entry>
+      <entry>$a = $a * $b</entry>
+      <entry>Çarpma</entry>
+     </row>
+     <row>
+      <entry>$a /= $b</entry>
+      <entry>$a = $a / $b</entry>
+      <entry>Bölme</entry>
+     </row>
+     <row>
+      <entry>$a %= $b</entry>
+      <entry>$a = $a % $b</entry>
+      <entry>Mod</entry>
+     </row>
+     <row>
+      <entry>$a **= $b</entry>
+      <entry>$a = $a ** $b</entry>
+      <entry>Üs alma</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 xml:id="language.operators.assignment.bitwise">
+  <title>Bitsel Atama İşleçleri</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>Örnek</entry>
+      <entry>Eşdeğeri</entry>
+      <entry>İşlem</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a &amp;= $b</entry>
+      <entry>$a = $a &amp; $b</entry>
+      <entry>Bitsel VE</entry>
+     </row>
+     <row>
+      <entry>$a |= $b</entry>
+      <entry>$a = $a | $b</entry>
+      <entry>Bitsel VEYA</entry>
+     </row>
+     <row>
+      <entry>$a ^= $b</entry>
+      <entry>$a = $a ^ $b</entry>
+      <entry>Bitsel XOR</entry>
+     </row>
+     <row>
+      <entry>$a &lt;&lt;= $b</entry>
+      <entry>$a = $a &lt;&lt; $b</entry>
+      <entry>Sola Öteleme</entry>
+     </row>
+     <row>
+      <entry>$a &gt;&gt;= $b</entry>
+      <entry>$a = $a &gt;&gt; $b</entry>
+      <entry>Sağa Öteleme</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 xml:id="language.operators.assignment.other">
+  <title>Diğer Atama İşleçleri</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>Örnek</entry>
+      <entry>Eşdeğeri</entry>
+      <entry>İşlem</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a .= $b</entry>
+      <entry>$a = $a . $b</entry>
+      <entry>Dize Birleştirme</entry>
+     </row>
+     <row>
+      <entry>$a ??= $b</entry>
+      <entry>$a = $a ?? $b</entry>
+      <entry>Null Birleşimi</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 role="seealso" xml:id="language.operators.assignment.see-also">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.operators.arithmetic">aritmetik
+     işleçler</link></member>
+    <member><link linkend="language.operators.bitwise">bitsel
+     işleçler</link></member>
+    <member><link linkend="language.operators.comparison.coalesce">null
+     birleşim işleçleri</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

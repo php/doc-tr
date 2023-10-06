@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f781803449007bb0e3a96c693e0eee067f7eb466 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 5a14f904d231d294e2e5b4fb5d2fc4d2fd9eddee Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-object">
  <refnamediv>
   <refname>xml_set_object</refname>
-  <refpurpose>XML çözümleyici, nesne içinde kullanılır</refpurpose>
+  <refpurpose>XML ayrıştırıcı, nesne içinde kullanılır</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
    <type>true</type><methodname>xml_set_object</methodname>
-   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
    <methodparam><type>object</type><parameter>nesne</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Bu işlev, <parameter>çözümleyici</parameter> ile belirtilen XML
-   çözümleyicinin belirtilen <parameter>nesne</parameter> nesnesi içinde
+   Bu işlev, <parameter>ayrıştırıcı</parameter> ile belirtilen XML
+   ayrıştırıcının belirtilen <parameter>nesne</parameter> nesnesi içinde
    kullanılmasını mümkün kılar. Bu durumda,
    <function>xml_set_element_handler</function> benzeri işlevlerle belirtilen
    eylemci işlevlerin <parameter>nesne</parameter> nesnesinin yöntemleri
@@ -28,10 +28,10 @@
   <para>
    <variablelist>
     <varlistentry>
-     <term><parameter>çözümleyici</parameter></term>
+     <term><parameter>ayrıştırıcı</parameter></term>
      <listitem>
       <para>
-       <parameter>nesne</parameter> içinde kullanılacak XML çözümleyici nesnesi.
+       <parameter>nesne</parameter> içinde kullanılacak XML ayrıştırıcı nesnesi.
       </para>
      </listitem>
     </varlistentry>
@@ -39,7 +39,7 @@
      <term><parameter>nesne</parameter></term>
      <listitem>
       <para>
-       XML çözümleyicinin içinde kullanılacağı nesne.
+       XML ayrıştırıcının içinde kullanılacağı nesne.
       </para>
      </listitem>
     </varlistentry>
@@ -79,49 +79,43 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-class XMLParser
+class CustomXMLParser
 {
     private $parser;
 
     function __construct()
     {
-        $this->çözümleyici = xml_parser_create();
+        $this->ayrıştırıcı = xml_parser_create();
 
-        xml_set_object($this->çözümleyici, $this);
-        xml_set_element_handler($this->çözümleyici, "etiketAç", "etiketKapa");
-        xml_set_character_data_handler($this->çözümleyici, "cdata");
+        xml_set_object($this->ayrıştırıcı, $this);
+        xml_set_element_handler($this->ayrıştırıcı, "etiketAç", "etiketKapa");
+        xml_set_character_data_handler($this->ayrıştırıcı, "cdata");
     }
 
-    function __destruct()
+    function ayrıştır($veri)
     {
-        xml_parser_free($this->çözümleyici);
-        unset($this->çözümleyici);
+        xml_parse($this->ayrıştırıcı, $veri);
     }
 
-    function çözümle($veri)
-    {
-        xml_parse($this->çözümleyici, $veri);
-    }
-
-    function etiketAç($çözümleyici, $etiket, $bağımsız değişkenler)
+    function etiketAç(ayrıştırıcı, $etiket, $bağımsız değişkenler)
     {
         var_dump($etiket, $bağımsız değişkenler);
     }
 
-    function cdata($çözümleyici, $cdata)
+    function cdata(ayrıştırıcı, $cdata)
     {
         var_dump($cdata);
     }
 
-    function etiketKapa($çözümleyici, $etiket)
+    function etiketKapa(ayrıştırıcı, $etiket)
     {
         var_dump($etiket);
     }
 
 }
 
-$xml_çözümleyici = new XMLParser();
-$xml_çözümleyici->çözümle("<A ID='alo'>PHP</A>");
+ayrıştırıcı = new CustomXMLParser();
+$xml_ayrıştırıcı->ayrıştır("<A ID='alo'>PHP</A>");
 ?>
 ]]>
     </programlisting>

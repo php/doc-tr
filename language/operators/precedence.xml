@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 52407313885d27a4e891e08dd2e2481bcc39e244 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.operators.precedence">
+ <title>İşleç Önceliği</title>
+ <para>
+  İşleç önceliği iki ifadenin birbirine hangi sıkılıkta bağlı olduğunu
+  belirtir. Örneğin, <literal>1 + 5 * 3</literal> ifadesinin sonucu 18 değil,
+  16'dır. Çünkü, çarpma ("*") işlecinin önceliği toplama ("+") işlecinden
+  yüksektir. Önceliği arttırmak için gerekirse parantezler kullanılabilir.
+  Örneğin, <literal>(1 + 5) * 3</literal> ifadesinin sonucu 18 olacaktır.
+ </para>
+ <para>
+  İşleçler eşit önceliğe sahip olduklarında aralarındaki ilişkiye işleçlerin
+  gruplanışına göre karar verilir. Örneğin "-" isoldan ilişkilendirmelidir,
+  dolayısıyla, <literal>1 - 2 - 3</literal> ifadesi
+  <literal>(1 - 2) - 3</literal> olarak gruplanır ve <literal>-4</literal>
+  olarak değerlendirlir. "=" ise sağdan ilişkilendirmelidir, dolayısıyla,
+  <literal>$a = $b = $c</literal> ifadesi <literal>$a = ($b = $c)</literal>
+  olarak gruplanır.  Özetle, soldan ilişkilendirme, ifadenin soldan sağa, sağdan
+  ilişkilendirme ise sağdan sola değerlendirileceği anlamına gelir.
+ </para>
+ <para>
+  İlişkisel olmayan eş öncelikli işleçler birbirlerinin ardından
+  kullanılamazlar, örneğin <literal>1 &lt; 2 &gt; 1</literal> ifadesi PHP için
+  uygun değilken <literal>1 &lt;= 1 == 1</literal> ifadesi uygundur. Sebebi
+  <literal>==</literal> işlecinin <literal>&lt;=</literal> işlecinden daha az
+  öncelikli olmasıdır.
+ </para>
+ <para>
+  İlişkisellik sadece iki terimli (ve üç terimli) işleçler için anlamlıdır.
+  Tek terimli işleçlerin önüne veya ardına ekleme yapıldığından bu fikir tek
+  terimlilere uygulanabilir değildir. Örneğin, <literal>!!$a</literal>
+  ifadesi sadece <literal>!(!$a)</literal> olarak gruplanabilir.
+ </para>
+ <para>
+  Parantez kullanımı gerekli olmasa bile çoğunlukla kodun okunabilirliğini
+  arttırır. Örtük işleç önceliğine ve ilişkiselliğine güvenmektense kodu
+  açıkça gruplamak daha iyidir.
+ </para>
+ <para>
+  Aşağıdaki listede işleçler en yüksek öncelikliden başlayıp en düşük
+  öncelikliye doğru sıralanmışlardır. Aynı satırda yer alan işleçler
+  eş öncelikli olup hangi sırada ele alınacaklarına değerlendirme sırasında
+  karar verilir.
+  <table>
+   <title>İşleç Öncelikleri</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>İlişkilendirme</entry>
+      <entry>İşleçler</entry>
+      <entry>Ek bilgi</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>(yok)</entry>
+      <entry>
+       <literal>clone</literal>
+       <literal>new</literal>
+     </entry>
+      <entry><link linkend="language.oop5.cloning">clone</link> ve <link
+      linkend="language.oop5.basic.new">new</link></entry>
+     </row>
+     <row>
+      <entry>(yok)</entry>
+      <entry><literal>**</literal></entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">aritmetik</link>
+      </entry>
+     </row>
+     <row>
+      <entry>sağdan</entry>
+      <entry>
+       <literal>+</literal>
+       <literal>-</literal>
+       <literal>++</literal>
+       <literal>--</literal>
+       <literal>~</literal>
+       <literal>(int)</literal>
+       <literal>(float)</literal>
+       <literal>(string)</literal>
+       <literal>(array)</literal>
+       <literal>(object)</literal>
+       <literal>(bool)</literal>
+       <literal>@</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">aritmetik</link>
+       (tek terimli <literal>+</literal> ve <literal>-</literal>),
+       <link linkend="language.operators.increment">arttırım/eksiltim</link>,
+       <link linkend="language.operators.bitwise">bitsel</link>,
+       <link linkend="language.types.typecasting">tür
+        çarpıtma</link>&listendand;
+       <link linkend="language.operators.errorcontrol">hata denetimi</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>instanceof</literal></entry>
+      <entry>
+       <link linkend="language.operators.type">Tür</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(yok)</entry>
+      <entry><literal>!</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry>
+       <literal>*</literal>
+       <literal>/</literal>
+       <literal>%</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">aritmetik</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry>
+       <literal>+</literal>
+       <literal>-</literal>
+       <literal>.</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">aritmetik</link>
+       (iki terimli <literal>+</literal> ve <literal>-</literal>),
+       <link linkend="language.operators.array">dizi</link>&listendand;
+       <link linkend="language.operators.string">dize</link> (PHP 8.0.0
+       öncesinde <literal>.</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry>
+       <literal>&lt;&lt;</literal>
+       <literal>&gt;&gt;</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitsel</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>.</literal></entry>
+      <entry>
+       <link linkend="language.operators.string">dize</link> (PHP 8.0.0
+       öncesinde <literal>.</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry>yönsüz</entry>
+      <entry>
+       <literal>&lt;</literal>
+       <literal>&lt;=</literal>
+       <literal>&gt;</literal>
+       <literal>&gt;=</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.comparison">karşılaştırma</link>
+      </entry>
+     </row>
+     <row>
+      <entry>yönsüz</entry>
+      <entry>
+       <literal>==</literal>
+       <literal>!=</literal>
+       <literal>===</literal>
+       <literal>!==</literal>
+       <literal>&lt;&gt;</literal>
+       <literal>&lt;=&gt;</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.comparison">karşılaştırma</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>&amp;</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitsel</link>&listendand;
+       <link linkend="language.references">gönderimler</link></entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>^</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitsel</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>|</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitsel</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>&amp;&amp;</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>||</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+     <row>
+      <entry>right</entry>
+      <entry><literal>??</literal></entry>
+      <entry>
+       <link linkend="language.operators.comparison.coalesce">null birleşimi</link>
+      </entry>
+     </row>
+     <row>
+      <entry>yönsüz</entry>
+      <entry><literal>? :</literal></entry>
+      <entry>
+       <link linkend="language.operators.comparison.ternary">üç terimli
+       </link> (PHP 8.0.0 öncesinde soldan)
+      </entry>
+     </row>
+     <row>
+      <entry>sağdan</entry>
+      <entry>
+       <literal>=</literal>
+       <literal>+=</literal>
+       <literal>-=</literal>
+       <literal>*=</literal>
+       <literal>**=</literal>
+       <literal>/=</literal>
+       <literal>.=</literal>
+       <literal>%=</literal>
+       <literal>&amp;=</literal>
+       <literal>|=</literal>
+       <literal>^=</literal>
+       <literal>&lt;&lt;=</literal>
+       <literal>&gt;&gt;=</literal>
+       <literal>??=</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.assignment">atama</link>
+      </entry>
+     </row>
+      <row>
+      <entry>(yok)</entry>
+      <entry><literal>yield from</literal></entry>
+      <entry>
+       <link linkend="control-structures.yield.from">yield from</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(yok)</entry>
+      <entry><literal>yield</literal></entry>
+      <entry>
+       <link linkend="control-structures.yield">yield</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(yok)</entry>
+      <entry><literal>print</literal></entry>
+      <entry><function>print</function></entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>and</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>xor</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+     <row>
+      <entry>soldan</entry>
+      <entry><literal>or</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">mantıksal</link>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </para>
+ <para>
+  <example>
+   <title>- Öncelik yönü</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3 * 3 % 5; // (3 * 3) % 5 = 4
+// üç terimli işlecin değerlendirilmesi C/C++ dillerinden farklıdır
+$a = true ? 0 : true ? 1 : 2; // (true ? 0 : true) ? 1 : 2 = 2 (PHP 8.0.0 öncesi)
+
+$a = 1;
+$b = 2;
+$a = $b += 3; // $a = ($b += 3) -> $a = 5, $b = 5
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  İşleç önceliklerini ve işlem yönünü ifadeni gruplanışı belirler. PHP
+  (genelde) ifadenin hangi sırayla değerlendirileceğini belirmez ve
+  kodlamada özel bir değerlendirme sırası kabulünden kaçınılmalıdır.
+  Çünkü davranış PHP'nin sürümleri arasında farklı olabildiği gibi
+  sarmalayan koda bağlı olarak da değişebilir.
+  <example>
+   <title>- Tanımsız değerlendirme sırası</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1;
+echo $a + $a++; // 2 veya 3 basabilir
+
+$i = 1;
+$array[$i] = $i++; // indis 1 veya 2 olabilir
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title><literal>+</literal>, <literal>-</literal> ve <literal>.</literal>
+    aynı önceliğe sahiptir (PHP 8.0.0 öncesi)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$x = 4;
+// bu satır beklenmedik bir çıktı ile sonuçlanabilir:
+echo "x eksi bir eşittir " . $x-1 . ", ya da ben öyle umdum\n";
+
+// çünkü aşağıdaki satır gibi değerlendirilir:
+echo (("x eksi bir eşittir " . $x) - 1) . ", ya da ben öyle umdum\n";
+
+// istenen öncelik parantez kullanarak elde edilebilir:
+echo "x eksi bir eşittir " . ($x-1) . ", ya da ben öyle umdum\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+-1, ya da ben öyle umdum
+-1, ya da ben öyle umdum
+x eksi bir eşittir 3, ya da ben öyle umdum
+]]>
+   </screen>
+  </example>
+ </para>
+ <note>
+  <para>
+   Eşitlik (<literal>=</literal>) işleci çoğu işleçten daha düşük önceliğe
+   sahip olduğundan PHP halen şuna benzer ifadelere izin vermektedir:
+   <literal>foo()</literal> işlevinin dönüş değerini <varname>$a</varname>
+   değişkenine atayan <literal>if (!$a = foo())</literal> ifadesi.
+  </para>
+ </note>
+ <sect2 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Dizelerin ard arda eklenmesi (<literal>.</literal>) artık aritmetik
+       toplama ve çıkarma (<literal>+</literal> ve <literal>-</literal>) ve
+       bitsel sola/sağa kaydırma (<literal>&lt;&lt;</literal> ve
+       <literal>&gt;&gt;</literal>) işleçlerinden daha düşük öncelikli oldu;
+       evvelce <literal>+</literal> ve <literal>-</literal> ile aynı
+       önceliğe, <literal>&lt;&lt;</literal> ve <literal>&gt;&gt;</literal>
+       işleçlerinden daha yüksek önceliğe sahipti.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Üç terimli işleç (<literal>? :</literal>) artık ilişkisel değil;
+       evvelce soldan ilişkili idi.
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Dizelerin ard arda eklenmesinin (<literal>.</literal>)
+       toplama ve çıkarma (<literal>+</literal> ve <literal>-</literal>) ve
+       bitsel sola/sağa kaydırma (<literal>&lt;&lt;</literal> ve
+       <literal>&gt;&gt;</literal>) işleçlerine göre önceliğine (yani
+       parantezsiz birlikte kullanımlarına) güvenilmesi artık önerilmiyor.
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Üç terimli işlecin (<literal>? :</literal>) soldan ilişkiselliğine
+       güvenmek artık önerilmiyor; yani, çok sayıda parantezsiz üç terimli
+       artık iç içe yazılmamalıdır.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

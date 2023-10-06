@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 52407313885d27a4e891e08dd2e2481bcc39e244 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.operators.comparison">
+ <title>Karşılaştırma İşleçleri</title>
+ <simpara>
+  Karşılaştırma işleçleri isminden de anlaşılacağı üzere iki değerin
+  karşılaştırılmasını sağlar. Çeşitli veri türleri arasındaki
+  karşılaştırma örneklerinin yer aldığı <link linkend="types.comparisons"
+  >tür karşılaştırma tabloları</link> sayfasına da bakılabilir.
+ </simpara>
+ <table>
+  <title>Karşılaştırma İşleçleri</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>Örnek</entry>
+     <entry>İsim</entry>
+     <entry>Sonuç</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry><userinput>$a == $b</userinput></entry>
+     <entry>Eşittir</entry>
+     <entry>Tür dönüşümünden sonra, <varname>$a</varname> ve
+       <varname>$b</varname> aynı değere sahipse sonuç &true; olur.</entry>
+    </row>
+    <row>
+     <entry><userinput>$a === $b</userinput></entry>
+     <entry>Aynıdır</entry>
+     <entry>
+      <varname>$a</varname> ve <varname>$b</varname> aynı değere sahipse ve
+      türleri de aynıysa sonuç &true; olur.
+     </entry>
+    </row>
+    <row>
+     <entry><userinput>$a != $b</userinput></entry>
+     <entry>Eşit değildir</entry>
+     <entry>Tür dönüşümünden sonra, <varname>$a</varname> ve
+      <varname>$b</varname> aynı değere sahip değilse sonuç &true; olur.
+     </entry>
+    </row>
+    <row>
+     <entry><userinput>$a &lt;&gt; $b</userinput></entry>
+     <entry>Eşit değildir</entry>
+     <entry>Tür dönüşümünden sonra, <varname>$a</varname> ve
+      <varname>$b</varname> aynı değere sahip değilse sonuç &true; olur.
+     </entry>
+    </row>
+    <row>
+     <entry><userinput>$a !== $b</userinput></entry>
+     <entry>Farklıdır</entry>
+     <entry>
+      <varname>$a</varname> ve <varname>$b</varname> aynı değere sahip
+      değilse veya türleri aynı değilse sonuç &true; olur.
+     </entry>
+    </row>
+    <row>
+     <entry><userinput>$a &lt; $b</userinput></entry>
+     <entry>Küçüktür</entry>
+     <entry><varname>$a</varname> kesin olarak <varname>$b</varname>'den
+     küçükse sonuç &true; olur.</entry>
+    </row>
+    <row>
+     <entry><userinput>$a &gt; $b</userinput></entry>
+     <entry>Büyüktür</entry>
+     <entry><varname>$a</varname> kesin olarak <varname>$b</varname>'den
+     büyükse sonuç &true; olur.</entry>
+    </row>
+    <row>
+     <entry><userinput>$a &lt;= $b</userinput></entry>
+     <entry>Küçük veya eşittir</entry>
+     <entry><varname>$a</varname>, <varname>$b</varname>'den küçük veya ona
+     eşitse sonuç &true; olur.</entry>
+    </row>
+    <row>
+     <entry><userinput>$a &gt;= $b</userinput></entry>
+     <entry>Büyük veya eşittir</entry>
+     <entry><varname>$a</varname>, <varname>$b</varname>'den büyük veya ona
+     eşitse sonuç &true; olur.</entry>
+    </row>
+    <row>
+     <entry>$a &lt;=&gt; $b</entry>
+     <entry>Mekik</entry>
+     <entry>
+      <varname>$a</varname> küçük, eşit veya büyük <varname>$b</varname>
+      olduğunda, bir tamsayı da sırasıyla küçük, eşit veya büyük sıfırdır.
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+ <para>
+  Her iki terim de sayısal dize ise veya bir terim sayı ve diğeri sayısal
+  dizeyse, karşılaştırma sayısal olarak yapılır. Bu kurallar ayrıca
+  <link linkend="control-structures.switch">switch</link> deyimine de
+  uygulanır. <literal>===</literal> veya <literal>!==</literal> ile tür
+  ve dolayısıyla değer karşılaştırıldığından böyle karşılaştırmalarda
+  tür dönüşümü yapılmaz.
+ </para>
+
+ <warning>
+  <para>
+   PHP 8.0.0'dan önce, bir dize bir sayı veya sayısal bir dizeyle
+   karşılaştırılırsa, karşılaştırma yapılmadan önce dize bir sayıya
+   dönüştürülürdü. Bu, aşağıdaki örnekte görülebileceği gibi şaşırtıcı
+   sonuçlara yol açabilir:
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(0 == "a");
+var_dump("1" == "01");
+var_dump("10" == "1e1");
+var_dump(100 == "1e2");
+
+switch ("a") {
+case 0:
+    echo "0";
+    break;
+case "a":
+    echo "a";
+    break;
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.7;
+    <screen>
+<![CDATA[
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+0
+]]>
+    </screen>
+    &example.outputs.8;
+    <screen>
+<![CDATA[
+bool(false)
+bool(true)
+bool(true)
+bool(true)
+a
+]]>
+    </screen>
+   </informalexample>
+  </para>
+ </warning>
+
+ <para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Tamsayılar
+echo 1 <=> 1; // 0
+echo 1 <=> 2; // -1
+echo 2 <=> 1; // 1
+
+// Gerçeller
+echo 1.5 <=> 1.5; // 0
+echo 1.5 <=> 2.5; // -1
+echo 2.5 <=> 1.5; // 1
+
+// Dizeler
+echo "a" <=> "a"; // 0
+echo "a" <=> "b"; // -1
+echo "b" <=> "a"; // 1
+
+echo "a" <=> "aa"; // -1
+echo "zz" <=> "aa"; // 1
+
+// Diziler
+echo [] <=> []; // 0
+echo [1, 2, 3] <=> [1, 2, 3]; // 0
+echo [1, 2, 3] <=> []; // 1
+echo [1, 2, 3] <=> [1, 2, 1]; // 1
+echo [1, 2, 3] <=> [1, 2, 4]; // -1
+
+// Nesneler
+$a = (object) ["a" => "b"];
+$b = (object) ["a" => "b"];
+echo $a <=> $b; // 0
+
+$a = (object) ["a" => "b"];
+$b = (object) ["a" => "c"];
+echo $a <=> $b; // -1
+
+$a = (object) ["a" => "c"];
+$b = (object) ["a" => "b"];
+echo $a <=> $b; // 1
+
+// sadece değerler karşılaştırılmaz, anahtarlar da eşleşmeli
+$a = (object) ["a" => "b"];
+$b = (object) ["b" => "b"];
+echo $a <=> $b; // 1
+
+?>
+]]>
+   </programlisting>
+  </informalexample>
+ </para>
+
+ <para>
+  Çeşitli türler arasında karşılaştırma aşağıdaki tabloya ve tablodaki
+  sıralamaya uygun olarak yapılır.
+ </para>
+ <table xml:id="language.operators.comparison.types">
+  <title>Çeşitli Türlerin Karşılaştırılması</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>1. Terimin Türü</entry>
+     <entry>2. Terimin Türü</entry>
+     <entry>Sonuç</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry><type>null</type> veya <type>string</type></entry>
+     <entry><type>string</type></entry>
+     <entry>&null;, "" dizgesine dönüştürülür, sayısal veya alfabetik
+     karşılaştırma yapılır.</entry>
+    </row>
+    <row>
+     <entry><type>bool</type> veya <type>null</type></entry>
+     <entry>herhangi bir tür</entry>
+     <entry>Her iki tarafta <type>bool</type> türüne dönüşümden sonra
+       &false; &lt; &true; karşılaştırması yapılır</entry>
+    </row>
+    <row>
+     <entry><type>object</type></entry>
+     <entry><type>object</type></entry>
+     <entry>Yerleşik sınıflar kendi karşılaştırmalarını tanımlayabilir.
+     Farklı sınıflar eşsizdir. Aynı sınıflar için bkz: <link
+     linkend="language.oop5.object-comparison">Nesne karşılaştırması</link>
+     </entry>
+    </row>
+    <row>
+     <entry><type>string</type>, <type>resource</type>, <type>int</type>
+       veya <type>float</type></entry>
+     <entry><type>string</type>, <type>resource</type>, <type>int</type>
+       veya <type>float</type></entry>
+     <entry>Diziler ve özkaynaklar sayılara dönüştürülür, sayısal
+     karşılaştırma yapılır.</entry>
+    </row>
+    <row>
+     <entry><type>array</type></entry>
+     <entry><type>array</type></entry>
+     <entry>Daha az üyeye sahip dizi diğerinden küçüktür. Eğer 1. terimin
+     anahtarı 2. terimde yoksa diziler eşsizdir. Karşılaştırma
+     daima değerler karşılaştırılarak yapılır (aşağıdaki örneğe
+     bakınız).</entry>
+    </row>
+    <row>
+     <entry><type>object</type></entry>
+     <entry>herhangi bir tür</entry>
+     <entry><type>object</type> daima büyüktür.</entry>
+    </row>
+    <row>
+     <entry><type>array</type></entry>
+     <entry>herhangi bir tür</entry>
+     <entry><type>array</type> daima büyüktür</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+ <para>
+  <example>
+   <title>- Bool/null karşılaştırması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Bool ve null daima bool gibi karşılaştırılır.
+var_dump(1 == TRUE);  // TRUE - (bool)1 == TRUE ile aynı
+var_dump(0 == FALSE); // TRUE - (bool)0 == FALSE ile aynı
+var_dump(100 < TRUE); // FALSE - (bool)100 < TRUE ile aynı
+var_dump(-10 < FALSE);// FALSE - (bool)-10 < FALSE ile aynı
+var_dump(min(-100, -10, NULL, 10, 100)); // NULL - (bool)NULL < (bool)-100 is FALSE < TRUE
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+
+
+ <para>
+  <example>
+   <title>- Özetle Standard Dizi Karşılaştırması</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Diziler mekik işlecinin yanı sıra standart karşılaştırma işleçleri ile
+// böyle karşılaştırılır
+function standard_dizi_karşılaştır($trm1, $trm2)
+{
+    if (count($ter1) < count($ter2)) {
+      return -1;                          // $ter1 < $ter2
+    } elseif (count($op1) > count($op2)) {
+        return 1;                         // $ter1 > $ter2
+    }
+    foreach ($ter1 as $anh => $değ) {
+        if (!array_key_exists($anh, $ter2)) {
+            return 1;
+        } elseif ($değ < $ter2[$anh]) {
+            return -1;
+        } elseif ($değ > $ter2[$anh]) {
+            return 1;
+        }
+    }
+    return 0; // $ter1 == $ter2
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+
+ <warning>
+  <title>Kayan noktalı sayıların karşılaştırılması</title>
+  <para>
+   <type>float</type> türlerinin dahili gösteriminden dolayı iki
+   <type>float</type> sayının eşitliğine bakılamaz.
+  </para>
+  <para>
+   Bu konuda daha ayrıntılı bilgi için <type>float</type> türünün belgesine
+   bakılabilir.
+  </para>
+ </warning>
+ <note>
+  <simpara>
+   Farklı türdeki değerleri karşılaştırırken, özellikle tamsayıları
+   mantıksal değerlerle veya dizgelerle karşılaştırırken, PHP'nin otomatik
+   tür dönüşümünün her zaman açık olmadığı unutmamalıdır. Bu nedenle, çoğu
+   durumda <literal>==</literal> ve <literal>!=</literal> yerine genellikle
+   <literal>===</literal> and <literal>!==</literal>  karşılaştırmalarının
+   kullanılması önerilir.
+  </simpara>
+ </note>
+
+ <sect2 xml:id="language.operators.comparison.incomparable">
+  <title>Eşsiz Değerler</title>
+  <simpara>
+   Benzerlik karşılaştırması (<literal>===</literal> and
+   <literal>!==</literal>) her değere uygulanabilirken, diğer
+   karşılaştırma işleçlerinin sadece karşılaştırılabilir değerlere
+   uygulanması gerekir. Eşsiz değerlerin karşılaştırma sonucu tanımsızdır
+   ve bu sonuca güvenilmemelidir.
+  </simpara>
+ </sect2>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>strcasecmp</function></member>
+    <member><function>strcmp</function></member>
+    <member><link linkend="language.operators.array">Dizi
+     işleçleri</link></member>
+    <member><link linkend="language.types">Türler</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.operators.comparison.ternary">
+  <title>Üç Terimli İşleç</title>
+  <para>
+   Diğer bir karşılaştırma işleci <literal>?:</literal> (üç terimli)
+   işlecidir.
+   <example>
+    <title>- Öntanımlı bir değer atama</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Üç terimli işleç için kullanım örneği
+$action = (empty($_POST['action'])) ? 'default' : $_POST['action'];
+
+// Yukarıdaki kod ile buradaki if/else deyimi aynı işlemi yapar.
+if (empty($_POST['action'])) {
+    $action = 'default';
+} else {
+    $action = $_POST['action'];
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+   <literal>(ifade1) ? (ifade2) : (ifade3)</literal> ifadesinin sonucu,
+   <replaceable>ifade1</replaceable> doğruysa
+   <replaceable>ifade2</replaceable> değilse
+   <replaceable>ifade3</replaceable>'tür.
+  </para>
+  <para>
+   Üç terimli işlecin orta parçasını dışarda bırakmak mümkündür.
+   <literal>ifade1 ?: ifade3</literal> ifadesinin sonucu,
+   <replaceable>ifade1</replaceable> doğruysa
+   <replaceable>ifade1</replaceable> değilse
+   <replaceable>ifade3</replaceable>'tür.
+  </para>
+  <note>
+   <simpara>
+    Üç terimli işleç aslında bir ifadedir, dolayısıyla sonucu bir
+    değişkene atanamaz, fakat bir deyimin sonucuna atanabilir.
+    Bir değişkenin gönderimli döndürülmesi gerekiyorsa bu önem kazanır.
+    Gönderimli olarak değer döndüren bir işlevde
+    <literal>return $var == 42 ? $a : $b;</literal> deyimi bu bakımdan
+    çalışmaz ve bir uyarı gösterilir.
+   </simpara>
+  </note>
+  <note>
+   <para>
+    Üç terimli işleçleri parantezsiz olarak iç içe kullanmanız önerilmez.
+    PHP'nin böyle bir
+    işlemin tek bir deyimde yapılmak istenmesi durumundaki davranışı
+    diğer dillerle karşılaştırıldığında beklendiği gibi olmayabilir.
+    Aslında PHP 8.0.0'dan önce, üçlü ifadeler diğer programlama dilleri
+    gibi sağdan sola yerine soldan sağa değerlendiriliyordu.
+    PHP 7.4.0 itibariyle soldan sağa ilişkilendirmeye güvenilmesi
+    önerilmemekte olup PHP 8.0.0 itibariyle üçlü işlecin değerlendirmesi
+    yönsüzdür.
+    <example>
+     <title>- İç içe üç terimli davranışı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+// ilk bakışta aşağıdaki deyimin sonucu 'true' olacak sanılır.
+echo (true ? 'true' : false ? 't' : 'f');
+
+// ancak gerçekte çıktı 't' olur, PHP 8.0.0 öncesinde.
+// Çünkü üç terimli ifade soldan ilişkilendirilir.
+
+// Aynı deyimi şöyle yazarsanız, durum anlaşılır hale gelir
+echo ((true ? 'true' : false) ? 't' : 'f');
+
+// Burada, ilk ifade mantıksal olarak doğru olduğundan sonuç 'true'
+// olacak, böylece ikinci üç terimlinin ilk terimi 'true' olacak ve
+// ikinci üç terimliden 't' dönecektir.
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
+  <note>
+   <para>
+    Ancak kısa üç terimli (<literal>?:</literal>) zincirleri kararlıdır ve beklendiği gibi davranır. Yanlış olmayan ilk bağımsız değişken değerlendirilir. Tanımsız değerlerin yine de bir uyarı vereceği unutulmamalıdır.
+    <example>
+     <title>- Kısa üç terimli zinciri</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo 0 ?: 1 ?: 2 ?: 3, PHP_EOL; //1
+echo 0 ?: 0 ?: 2 ?: 3, PHP_EOL; //2
+echo 0 ?: 0 ?: 0 ?: 3, PHP_EOL; //3
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
+ </sect2>
+
+ <sect2 xml:id="language.operators.comparison.coalesce">
+  <title>Null kaynaşma işleci</title>
+  <para>
+   Diğer bir kullanışlı işleç kısaltması olan "??" null kaynaşma işleci
+   adını alır.
+   <example>
+    <title>- Öntanımlı değer atama</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Null kaynaşma işleci için kullanım örneği
+$action = $_POST['action'] ?? 'default';
+
+// Yukarıdaki satır, bu if/else deyimine eşdeğerdir.
+if (isset($_POST['action'])) {
+    $action = $_POST['action'];
+} else {
+    $action = 'default';
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+   <literal>(ifade1) ?? (ifade2)</literal> ifadesinin sonucu,
+   <replaceable>ifade1</replaceable> &null;
+   ise <replaceable>ifade2</replaceable>
+   değilse <replaceable>ifade1</replaceable>'dir.
+  </para>
+  <para>
+   Aslında, bu işleç sol taraf değeri mevcut değilse
+   <function>isset</function> gibi bir uyarı ya da bilgi çıktılamaz.
+   Bu, özellikle dizi anahtarlarında kullanışlıdır.
+  </para>
+  <note>
+   <simpara>
+    Null kaynaşma işleci bir ifade olup bir değişkene atanmaz ama bir deyimin
+    sonucuna atanabilir. Bir değişkenin gönderimli döndürülmesi gerekiyorsa
+    bunu belirtmek önemlidir. Gönderimli döndüren bir işlevde
+    <literal>return $foo ?? $bar;</literal> deyimi bu nedenle çalışmaz ve bir
+    uyarı çıktılanır.
+   </simpara>
+  </note>
+  <note>
+   <para>
+    Null kaynaşma işleci düşük önceliğe sahiptir. Yani, diğer işleçlerle
+    (dizge bitiştirme veya aritmetik işleçler gibi) birlikte
+    kullanıldığında yay ayraçlar gerekli olabilir.
+   </para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// $name tanımsızsa uyarı verilir
+print 'Mr. ' . $name ?? 'Anonymous';
+
+// "Mr. Anonymous" basar
+print 'Mr. ' . ($name ?? 'Anonymous');
+?>
+]]>
+   </programlisting>
+  </note>
+  <note>
+   <para>
+    Null kaynaşma işleci basit iç içeliğe izin verir:
+    <example>
+     <title>- İçiçe null kaynaşma işleci</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$foo = null;
+$bar = null;
+$baz = 1;
+$qux = 2;
+
+echo $foo ?? $bar ?? $baz ?? $qux; // 1 basar
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </note>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

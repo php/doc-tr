@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f781803449007bb0e3a96c693e0eee067f7eb466 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 5a14f904d231d294e2e5b4fb5d2fc4d2fd9eddee Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.xml-set-element-handler">
  <refnamediv>
   <refname>xml_set_element_handler</refname>
@@ -10,17 +10,17 @@
   &reftitle.description;
   <methodsynopsis>
    <type>true</type><methodname>xml_set_element_handler</methodname>
-   <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+   <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
    <methodparam><type>callable</type><parameter>açılış_işleyici</parameter></methodparam>
    <methodparam><type>callable</type><parameter>kapanış_işleyici</parameter></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
+   <parameter>ayrıştırıcı</parameter> ile belirtilen XML ayrıştırıcı için
    açılış ve kapanış etiketi işleyicileri belirler.
-   <parameter>açılış_işleyici</parameter> ve
-   <parameter>kapanış_işleyici</parameter> işlevleri
-   <parameter>çözümleyici</parameter> ile belirtilen XML çözümleyici için
-   <function>xml_parse</function> çağrılmadan önce tanımlanmış olmalıdır.
+  </para>
+  <para>
+   <parameter>açılış_işleyici</parameter> XML elemanı açılırken,
+   <parameter>kapanış_işleyici</parameter> ise kapanırken çağrılır.
   </para>
  </refsect1>
 
@@ -28,43 +28,26 @@
   &reftitle.parameters;
   <para>
    <variablelist>
-    <varlistentry>
-     <term><parameter>çözümleyici</parameter></term>
-     <listitem>
-      <para>
-       Açılış ve kapanış etiketi işleyicileri ayarlamak için XML çözümleyiciye
-       başvuru.
-      </para>
-     </listitem>
-    </varlistentry>
+    &xml.parser.param;
     <varlistentry>
      <term><parameter>açılış_işleyici</parameter></term>
      <listitem>
+      &xml.handler.description;
       <para>
-       İsmi <parameter>açılış_işleyici</parameter> ile belirtilen
-       işlevin üç bağımsız değişken kabul etmesi gerekir:
+       İşleyici işlevin şuna benzemesi gerekir:
        <methodsynopsis>
         <methodname><replaceable>açılış_işleyici</replaceable></methodname>
-        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+        <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
         <methodparam><type>string</type><parameter>isim</parameter></methodparam>
         <methodparam><type>array</type><parameter>öznitelikler</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
-        <varlistentry>
-         <term><parameter>çözümleyici</parameter></term>
-         <listitem>
-          <simpara>
-           İlk bağımsız değişken, eylemci işlevi çağıran XML çözümleyicinin
-           tanıtıcısıdır.
-          </simpara>
-         </listitem>
-        </varlistentry>
+        &xml.handler.parser.param;
         <varlistentry>
          <term><parameter>isim</parameter></term>
          <listitem>
           <simpara>
-           İkinci bağımsız değişken olan <parameter>isim</parameter>, bu eylemcinin
-           çağrılacağı elemanın ismidir. Eğer çözümleyicide <link
+           İşleyicinin çağrılacağı elemanın ismidir. Eğer ayrıştırıcıda <link
            linkend="xml.case-folding">büyük harfe dönüşüm</link> etkinse
            eleman isminin harfleri büyük harfe dönüştürülür.
           </simpara>
@@ -74,63 +57,46 @@
          <term><parameter>öznitelikler</parameter></term>
          <listitem>
           <simpara>
-           Üçüncü bağımsız değişken olan <parameter>öznitelikler</parameter>, (varsa)
-           eleman özniteliklerini içeren ilişkisel bir dizidir. Dizi
-           elemanlarının anahtarları özniteliklerin isimleri, değerleri ise
-           özniteliklerin değerleridir. Eğer çözümleyicide <link
-           linkend="xml.case-folding">büyük harfe dönüşüm</link> etkinse
-           eleman isimlerine uygulanan işlem öznitelik isimlerine de
-           uygulanır. Değerlere ise bu işlem uygulanmaz.
+           Eleman özniteliklerini içeren ilişkisel bir dizidir. Elemanın
+           öznitelikleri yoksa dizi boştur. Dizi elemanlarının anahtarları
+           özniteliklerin isimleri, değerleri ise özniteliklerin değerleridir.
+           Eğer ayrıştırıcıda <link linkend="xml.case-folding">büyük harfe
+           dönüşüm</link> etkinse eleman isimlerine uygulanan işlem öznitelik
+           isimlerine de uygulanır. Değerlere ise bu işlem uygulanmaz.
           </simpara>
           <simpara>
-           Öznitelikler, dizi elemanlarına <function>each</function>
-           uygulanarak özgün sıralarıyla ele alınabilir. Dizideki ilk eleman
-           elemanın ilk özniteliğini içerir ve böyle devam eder.
+           <parameter>öznitelikler</parameter>, özniteliklerin belirtildiği
+           sırada olmalıdır.
           </simpara>
          </listitem>
         </varlistentry>
        </variablelist>
       </para>
-      &note.func-callback;
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><parameter>kapanış_işleyici</parameter></term>
      <listitem>
       <para>
-       İsmi <parameter>kapanış_işleyici</parameter> ile belirtilen
-       işlevin iki bağımsız değişken kabul etmesi gerekir:
+       İşlevin şuna benzemesi gerekir:
        <methodsynopsis>
-        <methodname><replaceable>kapanış_işleyici</replaceable></methodname>
-        <methodparam><type>XMLParser</type><parameter>çözümleyici</parameter></methodparam>
+        <type>void</type><methodname><replaceable>kapanış_işleyici</replaceable></methodname>
+        <methodparam><type>XMLParser</type><parameter>ayrıştırıcı</parameter></methodparam>
         <methodparam><type>string</type><parameter>isim</parameter></methodparam>
        </methodsynopsis>
        <variablelist>
-        <varlistentry>
-         <term><parameter>çözümleyici</parameter></term>
-         <listitem>
-          <simpara>
-           İlk bağımsız değişken, işleyici işlevi çağıran XML çözümleyicinin
-           tanıtıcısıdır.
-          </simpara>
-         </listitem>
-        </varlistentry>
+        &xml.handler.parser.param;
         <varlistentry>
          <term><parameter>isim</parameter></term>
          <listitem>
           <simpara>
-           İkinci bağımsız değişken olan <parameter>isim</parameter>, bu işleyicinin
-           çağrılacağı elemanın ismidir. Eğer çözümleyicide <link
-           linkend="xml.case-folding">büyük harfe dönüşüm</link> etkinse
-           eleman isminin harfleri büyük harfe dönüştürülür.
+           İşleyicinin çağrılacağı elemanın ismidir. Eğer ayrıştırıcıda
+           <link linkend="xml.case-folding">büyük harfe dönüşüm</link>
+           etkinse eleman isminin harfleri büyük harfe dönüştürülür.
           </simpara>
          </listitem>
         </varlistentry>
        </variablelist>
-      </para>
-      <para>
-       <parameter>işleyici</parameter> bağımsız değişkeninde işlev olarak boş bir
-       dizge veya &false; belirtilirse ilgili işleyici iptal edilir.
       </para>
      </listitem>
     </varlistentry>
