@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2526581912be11d14da7006fba344ca525a8566a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 60b29fbe11384d5233398d70fdc74e9078fe32ad Maintainer: nilgun Status: ready -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.crypt">
  <refnamediv>
   <refname>crypt</refname>
@@ -204,79 +204,16 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$aşlıParola = crypt('parolam');
-// Tuzu PHP üretsin; önerilmez
+$kullanıcı_girdisi = 'rasmuslerdorf';
+$aşlıParola = '$6$rounds=1000000$NJy4rIPjpOaU$0ACEYGg/aKCY3v8O8AfyiO7CTfZQ8/W231Qfh2tRLmfdvFD6XfHk12u6hMr9cYIA4hnpjLNSTRtUwYr9km9Ij/';
 
-/* Parola karşılaştırmasında, farklı şifreleme algoritmaları ile ilgili
-   sorunlardan kaçınmak için crypt() sonucunun tamamını tuz olarak işleve
-   aktarmalısınız. (Yukarıda belirtildiği gibi standart DES parola aşları
-   2 karakterlik tuz kullanırken MD5 parola özetleri 12 karakterlik tuz
-   kullanır.) */
-if (hash_equals($özetliParola, crypt($kullanıcı_girdisi, $aşlıParola))) {
+// Mevcut crypt() aşını PHP dışı yazılımlarla uyumlu olacak şekilde doğrula.
+if (hash_equals($aşlıParola, crypt($kullanıcı_girdisi, $aşlıParola))) {
    echo "Parola doğru!";
 }
 ?>
 ]]>
     </programlisting>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- htpasswd ile <function>crypt</function> kullanımı</title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-// Parolayı tanmılayalım
-$parola = 'parolam';
-
-// Tuzu PHP üretsin ve bize parola aşını versin
-$hash = crypt($parola);
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
-  <para>
-   <example>
-    <title>- <function>crypt</function> işlevinin farklı aş türleri ile
-    kullanımı</title>
-    <programlisting role="php">
-<![CDATA[
-+/* Bu tuzlar sadece örnektir. Asla bire bir kullanılmamalıdır.
-+   Her parola için ayrı üretilmiş, iyi biçimlenmiş bir tuz kullanılmalıdır.
-+*/
-+echo 'Standard DES: ',
-+    crypt('rasmuslerdorf', 'rl'),
-+    "\n";
-+echo 'Gelişkin DES: ',
-+    crypt('rasmuslerdorf', '_J9..rasm'),
-+    "\n";
-+echo 'MD5:          ',
-+    crypt('rasmuslerdorf', '$1$rasmusle$'),
-+    "\n";
-+echo 'Blowfish:     ',
-+    crypt('rasmuslerdorf', '$2a$07$usesomesillystringforsalt$'),
-+    "\n";
-+echo 'SHA-256:      ',
-+    crypt('rasmuslerdorf', '$5$rounds=5000$usesomesillystringforsalt$'),
-+    "\n";
-+echo 'SHA-512:      ',
-+    crypt('rasmuslerdorf', '$6$rounds=5000$usesomesillystringforsalt$'),
-+    "\n";
-?>
-]]>
-    </programlisting>
-    &example.outputs.similar;
-    <screen>
-<![CDATA[
-Standart DES: rl.3StKT.4T8M
-Gelişkin DES: _J9..rasmBYk8r9AiWNc
-MD5:          $1$rasmusle$rISCgZzpwk3UhDidwXvin0
-+Blowfish:     $2y$07$usesomesillystringfore2uDLvp1Ii2e./U9C8sBjqp8I90dH6hi
-SHA-256:      $5$rounds=5000$usesomesillystri$KqJWpanXZHKq2BOB43TSaYhEWsQ1Lr5QNyPCDH/Tp.6
-SHA-512:      $6$rounds=5000$usesomesillystri$D4IrlXatmP7rx3P3InaxBeoomnAihCKRVQP22JZ6EY47Wc6BkroIuUUBOov1i.S5KPgErtP/EN5mcO.ChWQW21
-]]>
-    </screen>
    </example>
   </para>
  </refsect1>
@@ -286,7 +223,7 @@ SHA-512:      $6$rounds=5000$usesomesillystri$D4IrlXatmP7rx3P3InaxBeoomnAihCKRVQ
   <note>
    <simpara>
     <function>crypt</function> tek yönlü algoritma kullandığından tekrar özgün
-    dizgeyi elde etmenizi sağlayacak bir işlev yoktur.
+    dizgeyi elde etmeyi sağlayacak bir işlev yoktur.
    </simpara>
   </note>
  </refsect1>
@@ -297,7 +234,6 @@ SHA-512:      $6$rounds=5000$usesomesillystri$D4IrlXatmP7rx3P3InaxBeoomnAihCKRVQ
    <simplelist>
     <member><function>hash_equals</function></member>
     <member><function>password_hash</function></member>
-    <member><function>md5</function></member>
     <member><link xlink:href="http://belgeler.gen.tr/man/man3/man3-crypt.html">
     crypt işlevinin Unix kılavuz sayfası</link></member>
    </simplelist>
