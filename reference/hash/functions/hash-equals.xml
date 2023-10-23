@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 91e303f2d27cbca485137230fa7d2e50e75f19a6 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 472a8ae5cc4e91fcf8365760ba07787f61087aae Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.hash-equals" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>hash_equals</refname>
@@ -14,13 +14,22 @@
    <methodparam><type>string</type><parameter>kullanıcı_dzg</parameter></methodparam>
   </methodsynopsis>
   <para>
-   İki dizgenin uzunluklarını aynı zamanı kullanarak karşılaştırır.
-   Uzunluklar farklıysa hemen &false; döner.
+   Yürütme sırasında <parameter>bilinen_dzg</parameter> içeriği hakkında
+   bilgi sızdırmaksızın iki dizgenin eşit olup olmadığına bakar.
   </para>
   <para>
-   Bu işlev, zamanlama saldırılarını azaltmak için kullanılmalıdır; Örneğin,
-  <function>crypt</function> parola aşlarını denerken.
+   Bu işlev, zamanlama saldırılarını azaltmak için kullanılabilir.
+   <code>===</code> ile düzenli karşılaştırma yapmak, iki değerin farklı olup
+   olmadığına ve ilk farkın hangi konumda bulunabileceğine bağlı olarak daha
+   fazla veya daha az zaman alacaktır, dolayısıyla
+   <parameter>bilinen_dzg</parameter> içeriği hakkında bilgi sızdırılacaktır.
   </para>
+  <caution>
+   <para>
+    Kullanıcı tarafından sağlanan dizgenin birinci yerine ikinci bağımsız
+    değişken olarak belirtilmesi önemlidir.
+   </para>
+  </caution>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -30,7 +39,7 @@
     <term><parameter>bilinen_dzg</parameter></term>
     <listitem>
      <para>
-       Karşılaştırılacak dizge
+      Gizli tutulması gereken dizge.
      </para>
     </listitem>
    </varlistentry>
@@ -38,7 +47,7 @@
     <term><parameter>kullanıcı_dzg</parameter></term>
     <listitem>
      <para>
-      Kullanıcının sağladığı dizge
+      Karşılaştıma için kullanıcının sağladığı dizge.
      </para>
     </listitem>
    </varlistentry>
@@ -60,20 +69,25 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-$umulan  = crypt('12345', '$2a$07$usesomesillystringforsalt$');
-$dogru   = crypt('12345', '$2a$07$usesomesillystringforsalt$');
-$yanlis = crypt('apple', '$2a$07$usesomesillystringforsalt$');
+$gizliAnahtar = '8uRhAeH89naXfFXKGOEj';
 
-var_dump(hash_equals($umulan, $dogru));
-var_dump(hash_equals($umulan, $yanlis));
+// Değer ve imzayı kullanıcı örn. URL içinde sağlar ve
+// $_GET kullanılarak alınır.
+$değer = 'username=rasmuslerdorf';
+$imza = '8c35009d3b50caf7f5d2c1e031842e6b7823a1bb781d33c5237cd27b57b5f327';
+
+if (hash_equals(hash_hmac('sha256', $değer, $gizliAnahtar), $signature)) {
+    echo "Değer doğru imzalanmış.", PHP_EOL;
+} else {
+    echo "Değer tahrif edilmiş.", PHP_EOL;
+}
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-bool(true)
-bool(false)
+Değer doğru imzalanmış.
 ]]>
     </screen>
    </example>
@@ -89,12 +103,15 @@ bool(false)
     bilinen dizgenin uzunluğu değişebilir.
    </para>
   </note>
-  <note>
-   <para>
-    Kullanıcını sağladığı dizgeyi ilk değil ikinci bağımsız değişkende  belirtmek
-    önemlidir.
-   </para>
-  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>hash_hmac</function></member>
+   </simplelist>
+  </para>
  </refsect1>
 
 </refentry>

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 52407313885d27a4e891e08dd2e2481bcc39e244 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 02302a754aa0b2ea9a783f792e2c2c6c54230829 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.operators.increment">
- <title>Arttırım ve Eksiltim İşleçleri</title>
+ <title>Artırım ve Eksiltim İşleçleri</title>
  <para>
-  PHP, C tarzı önceden ve sonradan arttırım ve eksiltim işleçlerini
-  destekler.
+  PHP, önceden ve sonradan artırım ve eksiltim işleçlerini destekler.
+  Bunlar değeri bir artıran veya eksilten tek terimli işleçlerdir.
  </para>
- <note>
-  <simpara>
-   Arttırım ve eksiltim işleçleri sadece sayıları ve dizeleri etkiler.
-   Diziler, nesneler, mantıksallar ve özkaynaklar etkilenmez.
-   &null; değerini eksiltmenin bir etkisi yoktur fakat arttırmanın sonucu
-   <literal>1</literal>'dir.
-  </simpara>
- </note>
  <table>
   <title>Arttırım ve Eksiltim İşleçleri</title>
   <tgroup cols="3">
@@ -27,15 +19,15 @@
    <tbody>
     <row>
      <entry><userinput>++$a</userinput></entry>
-     <entry>Önceden arttırım</entry>
-     <entry><varname>$a</varname> bir arttırıldıktan sonra
+     <entry>Önceden artırım</entry>
+     <entry><varname>$a</varname> bir artırıldıktan sonra
      döndürülür.</entry>
     </row>
     <row>
      <entry><userinput>$a++</userinput></entry>
-     <entry>Sonradan arttırım</entry>
+     <entry>Sonradan artırım</entry>
      <entry><varname>$a</varname> döndürüldükten sonra değeri bir
-     arttırılır.</entry>
+     artırılır.</entry>
     </row>
     <row>
      <entry><userinput>--$a</userinput></entry>
@@ -58,43 +50,95 @@
    <programlisting role="php">
 <![CDATA[
 <?php
-echo "<h3>Sonradan arttırım</h3>\n";
+echo "Sonradan artırım\n";
 $a = 5;
-echo "5 olmalı: " . $a++ . "<br />\n";
-echo "6 olmalı: " . $a . "<br />\n";
+var_dump($a++);
+var_dump($a);
 
-echo "<h3>Önceden arttırım</h3>\n";
+echo "Önceden artırım\n";
 $a = 5;
-echo "6 olmalı: " . ++$a . "<br />\n";
-echo "6 olmalı: " . $a . "<br />\n";
+var_dump(++$a);
+var_dump($a);
 
-echo "<h3>Sonradan eksiltim</h3>\n";
+echo "Sonradan eksiltim\n";
 $a = 5;
-echo "5 olmalı: " . $a-- . "<br />\n";
-echo "4 olmalı: " . $a . "<br />\n";
+var_dump($a--);
+var_dump($a);
 
-echo "<h3>Önceden eksiltim</h3>\n";
+echo "Sonradan eksiltim\n";
 $a = 5;
-echo "4 olmalı: " . --$a . "<br />\n";
-echo "4 olmalı: " . $a . "<br />\n";
+var_dump(--$a);
+var_dump($a);
 ?>
 ]]>
    </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Sonradan artırım:
+int(5)
+int(6)
+Önceden artırım:
+int(6)
+int(6)
+Sonradan eksiltim:
+int(5)
+int(4)
+Sonradan eksiltim:
+int(4)
+int(4)
+]]>
+   </screen>
   </informalexample>
+  <warning>
+   <para>
+    Artırım ve eksiltim işleçlerinin <type>bool</type> türündeki değerler
+    üstünde etkisi yoktur. İleri sürümlerde değer örtük olarak
+    <type>int</type> türüne dönüşüm uygulanacağından PHP 8.3.0 ve sonrasında
+    bir <constant>E_WARNING</constant> çıktılanır.
+   </para>
+   <para>
+    Eksiltim işlecinin <type>null</type> türünde değerler üzerinde etkisi
+    yoktur. İleri sürümlerde değer örtük olarak <type>int</type> türüne
+    dönüşüm uygulanacağından PHP 8.3.0 ve sonrasında bir
+    <constant>E_WARNING</constant> çıktılanır.
+   </para>
+   <para>
+    Değer <link linkend="language.types.numeric-strings">sayısal dizge</link>
+    değilse eksiltim işleci etkisizdir. İleri sürümlerde
+    <classname>TypeError</classname> oluşturacak olan bu durum PHP 8.3.0 ve
+    sonrasında bir <constant>E_WARNING</constant> çıktılanmasına sebep olur.
+   </para>
+  </warning>
+  <note>
+   <para>
+    Aşırı yüklemeyi destekleyen dahili nesnelerin toplama ve çıkarma
+    işlemlerinde de artırım ve eksiltim yapılabilir. Böyle bir dahili
+    nesneye örnek olarak <classname>GMP</classname> verilebilir.
+   </para>
+  </note>
  </para>
- <para>
-  PHP, karakter değişkenleri üzerinde çalışırken C'nin değil Perl'in
-  yöntemlerini izler. Örneğin, PHP ve Perl'de
-  <literal>$a = 'Z'; $a++;</literal> ifadesi <literal>$a</literal>
-  içinde 'AA' değerini döndürürken, C'de <literal>a = 'Z'; a++;</literal>
-  ifadesi <literal>a</literal> içinde'[' döndürür. <literal>'Z'</literal>
-  için ASCII değer 90, <literal>'['</literal> için 91'dir.
-  Karakterlerin arttırılabileceğine fakat azaltılamayacağına ve sadece
-  ASCII harflerin ve rakamların (a-z ve A-Z, 0-9) desteklendiğine dikkat
-  edilmelidir. Diğer karakterler üzerinde arttırım ve eksiltim etkisiz olup
-  özgün değer değişmeden döndürürlür.
+
+ <sect2 xml:id="language.operators.increment.string">
+  <title>PERL dizge artırım özelliği</title>
+  <warning>
+   <simpara>
+    Bu özelliğin PHP 8.3.0 ve sonrasında kullanımı bazı durumlarda
+    önerilmemekte olup böyle bir durumun ortaya çıkmaması için bu özellik
+    yerine <function>str_increment</function> işlevi kullanılmalıdır.
+   </simpara>
+  </warning>
+
+  <para>
+   Değer <link linkend="language.types.numeric-strings">sayısal dizge</link>
+   değilse dizgeye artırım uygulanabilir. Bunun için dizgenin abecesaysal
+   ASCII dizge olması gerekir. Harflerin bir sonraki harfe kadar artırılması
+   durumunda, <literal>Z</literal> harfine ulaşıldığında artış soldaki değere
+   taşınır. Örneğin, <code>$a = 'Z'; $a++;</code> için <varname>$a</varname>
+   değeri <literal>'AA'</literal> olur.
+  </para>
   <example>
-   <title>- Karakter değişkenleri üzerinde aritmetik işlemler</title>
+   <title>- PERL dizge artırım örneği</title>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -142,10 +186,43 @@ A14
 ]]>
    </screen>
   </example>
- </para>
- <para>
-  Mantıksal değerlere arttırım ve eksiltim uygulamanın bir etkisi olmaz.
- </para>
+
+  <warning>
+   <para>
+    Abecesayısal dizge, <link linkend="language.types.numeric-strings">sayısal
+    dizge</link> olarak yorumlanırsa değer <type>int</type> veya
+    <type>float</type> türüne dönüştürülür. Bu özellikle üstel gösterimle
+    yazılmış gerçel bir sayı gibi görünen dizgelerde ortaya çıkar.
+    <function>str_increment</function> işlevi böyle örtük tür dönüşümlerinden
+    etkilenmez.
+   </para>
+   <example>
+    <title>- float türüne dönüştürülen abecesayısal dizge</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$s = "5d9";
+var_dump(++$s);
+var_dump(++$s);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(3) "5e0"
+float(6)
+]]>
+    </screen>
+    <para>
+     Bunun nedeni, <literal>"5e0"</literal> değerinin <type>float</type>
+     olarak yorumlanması ve artırılmadan önce <literal>5,0</literal> değerine
+     dönüştürülmesidir.
+    </para>
+   </example>
+  </warning>
+ </sect2>
+
 </sect1>
 
 <!-- Keep this comment at the end of the file
