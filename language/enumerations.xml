@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 16b11ae4604f3c38f9011c46137ddcbf9238154b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0f53e8f37b7bf8513c93e5e2d67e7787f26ed693 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.enumerations" xmlns="http://docbook.org/ns/docbook">
   <title>Sayılamalar</title>
   <sect1 xml:id="language.enumerations.overview">
@@ -68,12 +68,19 @@ enum Deste
    <programlisting role="php">
 <![CDATA[
 <?php
-function kart_seç(Deste $deste) { ... }
+function kart_seç(Deste $deste)
+{
+    /* ... */
+}
+
 $val = Deste::Karolar;
+
 // OK
 kart_seç($val);
+
 // OK
 kart_seç(Deste::Sinekler);
+
 // Tür hatası: kart_seç(): Bağımsız değişken #1 ($deste) Deste türünde olmalıyken string türünde
 kart_seç('Sinekler');
 ?>
@@ -220,6 +227,7 @@ enum Deste: string
   <programlisting role="php">
 <![CDATA[
 <?php
+
 print Deste::Sinekler->value;
 // Çıktısı: "S"
 ?>
@@ -234,6 +242,7 @@ print Deste::Sinekler->value;
   <programlisting role="php">
 <![CDATA[
 <?php
+
 $deste = Deste::Sinekler;
 $ref = &$deste->value;
 // hata: Deste::$value özelliğine gönderim sağlanamıyor
@@ -279,6 +288,7 @@ $ref = &$deste->value;
   <programlisting role="php">
 <![CDATA[
 <?php
+
 $record = get_stuff_from_database($id);
 print $record['deste'];
 $deste =  Deste::from($record['deste']);
@@ -312,6 +322,7 @@ print $deste->value;
   <programlisting role="php">
 <![CDATA[
 <?php
+
 interface Renkli
 {
     public function renk(): string;
@@ -336,7 +347,11 @@ enum Deste implements Renkli
         return "Dörtgen";
     }
 }
-function boya(Renkli $c) { ... }
+function boya(Renkli $c)
+{
+   /* ... */
+}
+
 boya(Deste::Sinekler);  // çalışır
 print Deste::Karolar->kesim(); //  "Dörtgen"
 ?>
@@ -358,6 +373,7 @@ print Deste::Karolar->kesim(); //  "Dörtgen"
   <programlisting role="php">
    <![CDATA[
 <?php
+
 interface Renkli
 {
     public function renk(): string;
@@ -406,6 +422,7 @@ enum Deste: string implements Renkli
   <programlisting role="php">
 <![CDATA[
 <?php
+
 interface Renkli
 {
     public function renk(): string;
@@ -458,6 +475,7 @@ final class Deste implements UnitEnum, Renkli
   <programlisting role="php">
 <![CDATA[
 <?php
+
 enum Boyut
 {
     case Küçük;
@@ -495,6 +513,7 @@ enum Boyut
   <programlisting role="php">
 <![CDATA[
 <?php
+
 enum Boyut
 {
     case Küçük;
@@ -520,6 +539,7 @@ enum Boyut
   <programlisting role="php">
 <![CDATA[
 <?php
+
 interface Renkli
 {
     public function renk(): string;
@@ -573,26 +593,46 @@ enum Deste implements Renkli
   <programlisting role="php">
 <![CDATA[
 <?php
+
 // Bu tamamen geçerli bir sayılama tanımıdır.
 enum Direction implements ArrayAccess
 {
     case Up;
     case Down;
-    public function offsetGet($val) { ... }
-    public function offsetExists($val) { ... }
-    public function offsetSet($val) { throw new Exception(); }
-    public function offsetUnset($val) { throw new Exception(); }
+
+    public function offsetExists($offset): bool
+    {
+        return false;
+    }
+
+    public function offsetGet($offset): mixed
+    {
+        return null;
+    }
+
+    public function offsetSet($offset, $value): void
+    {
+        throw new Exception();
+    }
+
+    public function offsetUnset($offset): void
+    {
+        throw new Exception();
+    }
 }
 class Foo
 {
     // Buna izin verilir.
-    const Bar = Direction::Down;
+    const DOWN = Direction::Down;
     // Buna izin verilmez, belirleyici olmayabilir.
-    const Bar = Direction::Up['short'];
+    const UP = Direction::Up['short'];
     // Ölümcül Hata: enum üzerinde sabit ifadesi içinde [] kullanılamaz
 }
 // Bu, bir sabit ifadesi olmadığından tamamen geçerlidir.
 $x = Direction::Up['short'];
+var_dump("\$x: " . var_export($x, true));
+
+$foo = new Foo();
 ?>
 ]]>
   </programlisting>
@@ -663,6 +703,7 @@ $x = Direction::Up['short'];
   <programlisting role="php">
 <![CDATA[
 <?php
+
 $trefl = new Deste();
 // Hata: enum Deste örneklenemez
 $kör = (new ReflectionClass(Deste::class))->KurucusuzYeniÖrnek()
@@ -686,6 +727,7 @@ $kör = (new ReflectionClass(Deste::class))->KurucusuzYeniÖrnek()
   <programlisting role="php">
 <![CDATA[
 <?php
+
 Deste::cases();
 // Şunları üretir: [Deste::Kupalar, Deste::Karolar, Deste::Sinekler, Deste::Maçalar]
 ?>
@@ -712,6 +754,7 @@ Deste::cases();
   <programlisting role="php">
 <![CDATA[
 <?php
+
 Deste::Kupalar === unserialize(serialize(Deste::Kupalar));
 print serialize(Deste::Kupalar);
 // E:14:"Deste::Kupalar";
@@ -740,6 +783,7 @@ print serialize(Deste::Kupalar);
   <programlisting role="php">
 <![CDATA[
 <?php
+
 enum Foo {
     case Bar;
 }
@@ -799,6 +843,7 @@ function bar(B $b) {
   <programlisting role="php">
 <![CDATA[
 <?php
+
 enum ErrorCode {
     case SOMETHING_BROKE;
 }
@@ -828,6 +873,7 @@ function quux(ErrorCode $errorCode)
   <programlisting role="php">
 <![CDATA[
 <?php
+
 // Sayılamaların değişmez olmadığı deneysel kod.
 // Dikkat, bu kod aslında PHP'de çalışmaz.
 enum MoreErrorCode extends ErrorCode {
@@ -869,12 +915,16 @@ fot(MoreErrorCode::PEBKAC);
     <programlisting role="php">
 <![CDATA[
 <?php
+
 enum Sırala
 {
     case Art;
     case Azal;
 }
-function sorgu($alanlar, $süzgeç, Sırala $sırala = Sırala::Art) { ... }
+function sorgu($alanlar, $süzgeç, Sırala $sırala = Sırala::Art)
+{
+     /* ... */
+}
 ?>
 ]]>
     </programlisting>
@@ -896,6 +946,7 @@ function sorgu($alanlar, $süzgeç, Sırala $sırala = Sırala::Art) { ... }
     <programlisting role="php">
 <![CDATA[
 <?php
+
 enum UserStatus: string
 {
     case Pending = 'B';
@@ -936,6 +987,7 @@ enum UserStatus: string
     <programlisting role="php">
 <![CDATA[
 <?php
+
 foreach (UserStatus::cases() as $case) {
     printf('<option value="%s">%s</option>\n', $case->value, $case->yafta());
 }
