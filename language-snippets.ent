@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: fe11910e25e7eba44959bd347ba946ffc4d56934 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 2a72c95c0a3773a6404d10602005dc453b024843 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
 Derleme sırasında bu seçenekle iptal edilebilir: '>
@@ -803,6 +803,32 @@ linkend="array.sorting">Dizilerde Sıralama</link>'>
   dönüştürülmesiyle sonuçlanır. Bu nedenle <literal>0.99</literal> ve
   <literal>0.1</literal> gibi değerlerin her ikisi de <literal>0</literal>
   tamsayı değerine dönüştürüp bunlar eşit değerler olarak karşılaştırılacaktır.
+ </para>
+</caution>'>
+
+<!ENTITY sort.callback.description.presort '<caution xmlns="http://docbook.org/ns/docbook">
+ <para>
+  Sıralama geri çağrısı, başlangıçta sağlandıkları sıraya bakılmaksızın,
+  herhangi bir dizideki herhangi bir değeri herhangi bir sırada işlemelidir.
+
+  Bunun nedeni, her bir dizinin diğer dizilerle karşılaştırılmadan önce ilk olarak sıralanmasıdır.
+
+  Örneğin:
+  <programlisting role="php">
+<![CDATA[
+<?php
+$arrayA = ["string", 1];
+$arrayB = [["value" => 1]];
+
+// $item1 ve $item2 "string", 1 veya [“value” => 1] seçeneklerinden herhangi biri olabilir
+$compareFunc = static function ($item1, $item2) {
+    $value1 = is_string($item1) ? strlen($item1) : (is_array($item1) ? $item1["value"] : $item1);
+    $value2 = is_string($item2) ? strlen($item2) : (is_array($item2) ? $item2["value"] : $item2);
+    return $value1 <=> $value2;
+};
+?>
+]]>
+  </programlisting>
  </para>
 </caution>'>
 
@@ -1835,6 +1861,17 @@ içerir:</para>
 </books>
 ]]></programlisting>'>
 
+<!ENTITY dom.parameters.register_node_ns '<varlistentry xmlns="http://docbook.org/ns/docbook">
+ <term><parameter>kaydet</parameter></term>
+ <listitem>
+  <para>
+   Bağlam düğümünün kapsam içi ad alanı öneklerinin <classname>DOMXPath</classname> nesnesine otomatik olarak kaydedilip kaydedilmeyeceği.
+   Bu, kapsam dahilindeki her ad alanı için <methodname>DOMXPath::registerNamespace</methodname> öğesini manuel olarak çağırmaya gerek kalmaması için kullanılabilir.
+   Bir ad alanı öneki çakışması olduğunda, yalnızca en yakın soydan gelen ad alanı öneki kaydedilir.
+  </para>
+ </listitem>
+</varlistentry>'>
+
 <!ENTITY dom.errors.hierarchy.parent '<varlistentry xmlns="http://docbook.org/ns/docbook">
  <term><constant>DOM_HIERARCHY_REQUEST_ERR</constant></term>
   <listitem>
@@ -1876,6 +1913,25 @@ içerir:</para>
   <link linkend="libxml.constants">libxml seçenek sabitleri</link>nin
   <link linkend="language.operators.bitwise">bitsel <literal>VEYA</literal></link>sı.
 </para>'>
+
+<!ENTITY dom.c14n.xpath_array '<listitem xmlns="http://docbook.org/ns/docbook">
+  <para>
+   Düğümleri filtrelemek için bir XPath dizisi.
+   Bu dizideki her girdi, aşağıdakileri içeren bir ilişkisel dizidir:
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      XPath ifadesini bir dize olarak içeren gerekli bir <literal>query</literal> anahtarı.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Ad alanı öneklerini (anahtarlar) ad alanı URI&apos;lerine (değerler) eşleyen bir dizi içeren isteğe bağlı bir <literal>namespaces</literal> anahtarı.
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </listitem>'>
 
 <!-- FileSystem entities -->
 <!ENTITY fs.emits.warning.on.failure '<para
@@ -3942,7 +3998,7 @@ local: {
          </row>
          <row>
           <entry>queryType</entry>
-          <entry><type>int</type></entry>
+          <entry><type>string</type></entry>
           <entry>
            <para>
             The query type for evaluating queries with indexed, encrypted
