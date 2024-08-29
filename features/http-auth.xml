@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2d1981cc3003cd94f5fb88e0473eed2c5b26efde Maintainer: yasar  Status: ready -->
+<!-- EN-Revision: 61d5b83d9145d58515ad4c93c6125a339fb5eeda Maintainer: yasar  Status: ready -->
  <chapter xml:id="features.http-auth" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>PHP ile HTTP Kimlik Doğrulaması</title>
 
@@ -14,7 +14,7 @@
    <link linkend="reserved.variables"> öntanımlı değişkenleri</link>
    ile tekrar çağrılır. Bu öntanımlı değişkenler <varname>$_SERVER</varname>
    dizileri içinde bulunur. Sadece "Temel" (<literal>Basic</literal>) ve
-   "Özet" (<literal>Digest</literal>) kimlik doğrulama yöntemleri desteklenir.
+   kimlik doğrulama yöntemi desteklenir.
    Daha fazla bilgi için <function>header</function> işlevine bakınız.
   </simpara>
 
@@ -35,78 +35,6 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 } else {
     echo "<p>Merhaba {$_SERVER['PHP_AUTH_USER']}.</p>";
     echo "<p>Parola olarak {$_SERVER['PHP_AUTH_PW']} verdiniz.</p>";
-}
-?>
-]]>
-    </programlisting>
-   </example>
-  </para>
-
-  <para>
-   <example>
-    <title>- Özet HTTP Kimlik Doğrulaması örneği</title>
-    <para>
-     Bu örnek basit bir Özet HTTP kimlik doğrulama betiğinin nasıl
-     uygulanacağını gösterir. Daha fazla bilgi için
-     <link xlink:href="&url.rfc;2617">RFC 2617</link> belgesini okuyunuz.
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$saha = 'Kısıtlanmış alan';
-
-// kullanici => parola
-$kullanicilar = array('yonetici' => 'gizlisifre', 'misafir' => 'misafir');
-
-
-if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
-    header('HTTP/1.1 401 Unauthorized');
-    header('WWW-Authenticate: Digest realm="'.$saha.
-           '",qop="auth",nonce="'.uniqid().'",opaque="'.md5($saha).'"');
-
-    die('Kullanıcı İptal düğmesine basınca çıkacak metin');
-}
-
-
-// PHP_AUTH_DIGEST değişkenini inceleyelim
-if (!($veri = http_ozet_cozumle($_SERVER['PHP_AUTH_DIGEST'])) ||
-    !isset($kullanicilar[$veri['username']]))
-    die('Kimlik Doğrulama Hatası!');
-
-
-// geçerli yanıt üretimi
-$A1 = md5($veri['username'] . ':' . $saha . ':' .
-      $kullanicilar[$veri['username']]);
-$A2 = md5($_SERVER['REQUEST_METHOD'].':'.$veri['uri']);
-$gecerli_yanit = md5($A1.':'.$veri['nonce'].':'.$veri['nc'].':'.
-      $veri['cnonce'].':'.$veri['qop'].':'.$A2);
-
-if ($veri['response'] != $gecerli_yanit)
-    die('Kimlik Doğrulama Hatası!');
-
-// tamam, geçerli kullanıcı adı & parolası
-echo 'Hoşgeldiniz : ' . $veri['username'];
-
-
-// http kimlik doğrulama başlığını çözümleyecek işlev
-function http_ozet_cozumle($metin)
-{
-    // eksik veriye karşı koruma
-    $gerekli_kisimlar = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1,
-                              'username'=>1, 'uri'=>1, 'response'=>1);
-    $veri = array();
-    $keys = implode('|', array_keys($gerekli_kisimlar));
-
-
-    preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@',
-                    $metin, $eslesen, PREG_SET_ORDER);
-
-    foreach ($eslesen as $m) {
-        $veri[$m[1]] = $m[3] ? $m[3] : $m[4];
-        unset($gerekli_kisimlar[$m[1]]);
-    }
-
-    return $gerekli_kisimlar ? false : $veri;
 }
 ?>
 ]]>
