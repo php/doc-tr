@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2a72c95c0a3773a6404d10602005dc453b024843 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: fde7fc43bf3ca7addaf9da05bd852b54dcc600e9 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: cumhuronat, tpug, antimon, flarecaster -->
 <!ENTITY installation.enabled.disable 'Bu eklenti öntanımlı olarak etkindir.
 Derleme sırasında bu seçenekle iptal edilebilir: '>
@@ -1824,6 +1824,30 @@ kullanılabilir.</para></note>'>
 <function>json_encode</function> işlevi kullanılırsa sonuç
 boş bir nesnenin kodlanması olacaktır.</para></note>'>
 
+<!ENTITY dom.domdocument.html5 '<warning xmlns="http://docbook.org/ns/docbook">
+ <para>
+  Bu işlev, girdiyi bir HTML 4 ayrıştırıcısı kullanarak ayrıştırır. Günümüz
+  tarayıcılarının kullandığı HTML 5 için ayrıştırma kuralları farklıdır.
+  Girdiye bağlı olarak bu farklı bir DOM yapısıyla sonuçlanabilir. Bu
+  nedenle bu işlev HTML temizliği için güvenli bir şekilde kullanılamaz.
+ </para>
+ <para>
+  HTML ayrıştırılırken davranış, özellikle uç koşulları ve hata işleme
+  açısından kullanılan <literal>libxml</literal> sürümüne bağlı olabilir.
+  HTML5 belirtimine uyan ayrıştırma için PHP 8.4 sürümünde eklenen
+  <methodname>Dom\HTMLDocument::createFromString</methodname> veya
+  <methodname>Dom\HTMLDocument::createFromFile</methodname> kullanılmalıdır.
+ </para>
+ <para>
+  Örneğin, bazı HTML öğeleri karşılaşıldığında bir üst öğeyi örtük olarak
+  kapatır. Üst öğeleri otomatik olarak kapatma kuralları HTML 4 ve HTML 5
+  arasında farklılık gösterir ve bu nedenle
+  <classname>DOMDocument</classname> tarafından görülen sonuç DOM yapısı bir
+  tarayıcının gördüğü DOM yapısından farklı olabilir ve bu da bir
+  saldırganın sonuç HTML kodunu kırmasına olanak tanıyabilir.
+ </para>
+</warning>'>
+
 <!-- Dom Examples -->
 <!ENTITY dom.book.example '<para xmlns="http://docbook.org/ns/docbook">
 Aşağıdaki örneklerde kulllanılan <filename>book.xml</filename> şunları
@@ -2772,13 +2796,12 @@ gerekebilir.</simpara></note>'>
 <!ENTITY Credit.Authors.and.Contributors 'Yazarlar ve Katkıda Bulunanlar'>
 
 <!ENTITY Credit.Introduction '<para
-xmlns="http://docbook.org/ns/docbook">Kılavuzun ön sayfasında şu anda en etkin
-kişileri ön plana çıkartıyoruz, ancak çalışmamıza halen katkıda bulunmakta
-olan birçok kişi ve geçmişte önemli katkılarda bulunmuş birçok insan var.
-Kılavuz sayfalarında kullanıcı önerileri üzerinden katılımda bulunarak destek
-veren birçok isimsiz kişi var. Bu kişiler düzenli olarak buradaki listelere
-ekleniyor, tüm katılımcılara destekleri için müteşekkiriz. Aşağıdaki
-listelerde isimler alfabetik olarak sıralanmıştır.</para>'>
+xmlns="http://docbook.org/ns/docbook">Çalışmamıza halen katkıda bulunmakta
+olan çok sayıda kişi ve geçmişte önemli katkılarda bulunmuş birçok insan
+var. Ayrıca, kılavuz sayfalarında kullanıcı önerileri üzerinden katılımda
+bulunarak destek veren birçok isimsiz kişi de var. Bu kişiler düzenli olarak
+buradaki listelere ekleniyor, tüm katılımcılara destekleri için
+müteşekkiriz. Aşağıdaki listelerde isimler alfabetik olarak sıralanmıştır.</para>'>
 
 <!ENTITY Credit.Authors.and.Editors 'Yazarlar ve Düzeltmenler'>
 
@@ -3953,7 +3976,7 @@ local: {
             <member><constant>MongoDB\Driver\ClientEncryption::AEAD_AES_256_CBC_HMAC_SHA_512_RANDOM</constant></member>
             <member><constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant></member>
             <member><constant>MongoDB\Driver\ClientEncryption::ALGORITHM_UNINDEXED</constant></member>
-            <member><constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant></member>
+            <member><constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE</constant></member>
            </simplelist>
           </entry>
          </row>
@@ -3970,7 +3993,7 @@ local: {
             <literal>algorithm</literal> is
             <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant>
             or
-            <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant>.
+            <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE</constant>.
            </para>
           </entry>
          </row>
@@ -4012,7 +4035,7 @@ local: {
            <para>This option only applies and may only be specified when
             <literal>algorithm</literal> is
             <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant>
-            or <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant>.
+            or <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE</constant>.
            </para>
           </entry>
          </row>
@@ -4021,12 +4044,10 @@ local: {
           <entry><type>array</type></entry>
           <entry>
            <para>
-            Index options for a queryable encryption field supporting
-            "rangePreview" queries. The options below must match the values set
-            in the <literal>encryptedFields</literal> of the target collection.
-            For double and decimal128 BSON field types, <literal>min</literal>,
-            <literal>max</literal>, and <literal>precision</literal> must all be
-            set, or all be unset.
+            Index options for a queryable encryption field supporting "range"
+            queries. The options below must match the values set in the
+            <literal>encryptedFields</literal> of the target collection. For
+            double and decimal128 BSON field types, <literal>min</literal>,
            </para>
            <para>
             <table>
@@ -4043,22 +4064,33 @@ local: {
                <row>
                 <entry>min</entry>
                 <entry><type>mixed</type></entry>
-                <entry>Required if <literal>precision</literal> is set.</entry>
+                <entry>Required if <literal>precision</literal> is set.
+                The minimum BSON value of the range.</entry>
                </row>
                <row>
                 <entry>max</entry>
                 <entry><type>mixed</type></entry>
-                <entry>Required if <literal>precision</literal> is set.</entry>
+                <entry>Required if <literal>precision</literal> is set.
+                The maximum BSON value of the range.</entry>
                </row>
                <row>
                 <entry>sparsity</entry>
                 <entry><type>int</type></entry>
-                <entry>Required.</entry>
+                <entry>Required. Positive 64-bit integer.</entry>
                </row>
                <row>
                 <entry>precision</entry>
                 <entry><type>int</type></entry>
-                <entry>Optional. May only be set for double or decimal128 BSON field types.</entry>
+                <entry>
+                 Optional. Positive 32-bit integer specifying precision to
+                 use for explicit encryption. May only be set for double or
+                 decimal128 BSON field types.
+                </entry>
+               </row>
+               <row>
+                <entry>trimFactor</entry>
+                <entry><type>int</type></entry>
+                <entry>Required. Positive 32-bit integer.</entry>
                </row>
               </tbody>
              </tgroup>
@@ -4153,7 +4185,7 @@ local: {
 <!ENTITY mongodb.note.forking '
    <note xmlns="http://docbook.org/ns/docbook">
     <simpara>
-     On Unix platforms, the MongoDB driver is sensitive to scripts that use the
+     On Unix platforms, the extension driver is sensitive to scripts that use the
      fork() system call without also calling exec(). Users are advised not to
      re-use <classname>MongoDB\Driver\Manager</classname> instances in a forked
      child process.
