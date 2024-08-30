@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6d29533483657c036e49edb5ea88c7103d126681 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d58ee8eaaa7f716c51f66f5f1058ab3c42376d98 Maintainer: nilgun Status: ready -->
  <chapter xml:id="language.references" xmlns="http://docbook.org/ns/docbook">
   <title>Gönderimlerle İlgili Herşey</title>
 
@@ -9,8 +9,10 @@
     PHP'de gönderimler aynı değişken içeriğine farklı isimlerle erişmek
     demektir. C'deki göstericilere benzemezler; örneğin, üzerlerinde gösterici
     aritmetiği kullanamazsınız, çünkü gerçekte bellek adresleri
-    değillerdir.Ayrıntılar için  <xref linkend="language.references.arent" />
-    bölümüne bakınız. daha çok simge tablosu PHP'de şuna dikkat edin: Değişken
+    değillerdir. Ayrıntılar için  <xref linkend="language.references.arent" />
+    bölümüne bakınız. Daha çok
+    <link linkend="features.gc.refcounting-basics">simge tablosu</link>
+    takma adlarıdır. PHP'de şuna dikkat edin: Değişken
     içeriği ve değişken ismi farklı şeylerdir. Bu bakımdan, aynı içeriğin
     farklı isimleri olabilir. En yakın benzerlik, Unix dosya isimleri ve
     dosyaları ile kurulabilir; değişken isimleri dizinlerse, değişken içeriği
@@ -170,7 +172,9 @@ echo $ref; // 3 - yinelenen dizinin son elemanı
 $a = 1;
 $b = array(2, 3);
 $arr = array(&$a, &$b[0], &$b[1]);
-$arr[0]++; $arr[1]++; $arr[2]++;
+$arr[0]++;
+$arr[1]++;
+$arr[2]++;
 /* $a == 2, $b == array(3, 4); */
 ?>
 ]]>
@@ -191,12 +195,12 @@ $arr[0]++; $arr[1]++; $arr[2]++;
 $a = 1;
 $b =& $a;
 $c = $b;
-$c = 7; //$c bir gönderim değildir; $a veya $b değişmez
+$c = 7; // $c bir gönderim değildir; $a veya $b değişmez
 
 /* Dizi değişkenlerinin atanması */
 $arr = array(1);
-$a =& $arr[0]; //$a ve $arr[0] aynı gönderim kümesindedir
-$arr2 = $arr; //gönderime göre atama dğildir!
+$a =& $arr[0]; // $a ve $arr[0] aynı gönderim kümesindedir
+$arr2 = $arr; // gönderime göre atama değildir!
 $arr2[0]++;
 /* $a == 2, $arr == array(2) */
 /* Bir gönderim olmasa bile, $arr'ın içeriği değişti!! */
@@ -276,10 +280,12 @@ foo($bar);
     <varname>$bar</varname> değişkeni <varname>foo</varname> işlevinin etki
     alanında mevcut değildir (işlev etki alanında <varname>$var</varname>
     tarafından temsil edilmekteyse de <varname>$var</varname> sadece
-    değişkenin içeriğine sahiptir ve çağrı simgeleri tablosunda ismi değere
-    bağlayan şey değildir). İşlev tarafından seçilen değişkenlere gönderim
-    yapabilmek için değeri <link linkend="language.references.return"
-    >gönderimle döndürme</link>lisiniz.
+    değişkenin içeriğine sahiptir ve çağrı
+    <link linkend="features.gc.refcounting-basics">simgeleri tablosunda</link>
+    ismi değere bağlayan şey değildir). İşlev tarafından seçilen değişkenlere
+    gönderim yapabilmek için değeri
+    <link linkend="language.references.return">gönderimle döndürmek</link>
+    gerekir.
    </simpara>
   </sect1>
 
@@ -369,9 +375,7 @@ foo(bar()); // Bir uyarı üretir
 foo($a = 5); // Bir ifade, değişken değil
 foo(5);      // Ölümcül hata üretir
 
-class Foobar
-{
-}
+class Foobar {}
 
 foo(new Foobar()) // PHP 7.0.7'dan beri bir uyarı üretmekte
                   // Uyarı: Sadece değişkenler gönderime göre aktarılmalıdır.
@@ -395,10 +399,12 @@ foo(new Foobar()) // PHP 7.0.7'dan beri bir uyarı üretmekte
      <programlisting role="php">
 <![CDATA[
 <?php
-class sınıf {
+class sınıf
+{
     public $değer = 42;
 
-    public function &değeriBağla() {
+    public function &değeriBağla()
+    {
         return $this->değer;
     }
 }
@@ -440,7 +446,8 @@ echo $değerim;                   // 2 basar
      <programlisting role="php">
 <![CDATA[
 <?php
-function &collector() {
+function &collector()
+{
   static $collection = array();
   return $collection;
 }
@@ -456,7 +463,8 @@ $collection[] = 'foo';
      <programlisting role="php">
 <![CDATA[
 <?php
-function &collector() {
+function &collector()
+{
   static $collection = array();
   return $collection;
 }
