@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 082ddc19f53e6e254010de1a1fbbe485ff744ec1 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: daf4cc624df3c21d472149725feb377b1beedb04 Maintainer: nilgun Status: ready -->
 <refentry xml:id="pdostatement.fetch" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>PDOStatement::fetch</refname>
@@ -63,7 +63,9 @@
         <listitem><para>
          <constant>PDO::FETCH_LAZY</constant>:
          <constant>PDO::FETCH_BOTH</constant> ve
-         <constant>PDO::FETCH_OBJ</constant> sabitlerinin birleşimidir.
+         <constant>PDO::FETCH_OBJ</constant> sabitlerinin birleşimidir ve
+         erişildikçe nesne özellik adlarını oluşturan bir
+         <classname>PDORow</classname> nesnesi döndürür.
         </para></listitem>
         <listitem><para>
          <constant>PDO::FETCH_NAMED</constant>: Aynı isimde birden fazla sütun
@@ -117,8 +119,8 @@
        Kaydırılabilir göstericili bir PDOStatement nesnesi
        için <parameter>göst_yönü</parameter> bağımsız değişkeninde
        <constant>PDO::FETCH_ORI_REL</constant> belirtilirse bu değer alınacak
-       satırı bir önceki <methodname>PDOStatement::fetch</methodname> çağrısındaki
-       gösterici konumuna göreli olarak belirler.
+       satırı bir önceki <methodname>PDOStatement::fetch</methodname>
+       çağrısındaki gösterici konumuna göreli olarak belirler.
       </para>
      </listitem>
     </varlistentry>
@@ -151,29 +153,29 @@ $sth = $dbh->prepare("SELECT ad, renk FROM meyveler");
 $sth->execute();
 
 /* PDOStatement::fetch tarzlarını deneyelim */
-print("PDO::FETCH_ASSOC:\n");
-print("Sütun isimlerine göre indisli bir dizi olarak:\n");
+print "PDO::FETCH_ASSOC:\n";
+print "Sütun isimlerine göre indisli bir dizi olarak:\n";
 $result = $sth->fetch(PDO::FETCH_ASSOC);
 print_r($result);
 print("\n");
 
-print("PDO::FETCH_BOTH:\n");
-print("Sütun isimlerine ve numaralarına göre indisli bir dizi olarak:\n");
+print "PDO::FETCH_BOTH:\n";
+print "Sütun isimlerine ve numaralarına göre indisli bir dizi olarak:\n";
 $result = $sth->fetch(PDO::FETCH_BOTH);
 print_r($result);
-print("\n");
+print "\n";
 
-print("PDO::FETCH_LAZY:\n");
-echo "Her özelliğin bir sütun ismine denk düştüğü bir anonim nesne olarak:\n";
+print "PDO::FETCH_LAZY:\n";
+echo "Her özelliğin bir sütun ismine denk düştüğü bir PDORow nesnesi olarak:\n";
 $result = $sth->fetch(PDO::FETCH_LAZY);
 print_r($result);
-print("\n");
+print "\n";
 
-print("PDO::FETCH_OBJ:\n");
+print "PDO::FETCH_OBJ:\n";
 echo "Her özelliğin bir sütun ismine denk düştüğü bir anonim nesne olarak:\n";
 $result = $sth->fetch(PDO::FETCH_OBJ);
 print $result->ad;
-print("\n");
+print "\n";
 ?>
 ]]>
     </programlisting>
@@ -199,7 +201,7 @@ Array
 )
 
 PDO::FETCH_LAZY:
-Her özelliğin bir sütun ismine denk düştüğü bir anonim nesne olarak:
+Her özelliğin bir sütun ismine denk düştüğü bir PDORow nesnesi olarak:
 PDORow Object
 (
     [ad] => portakal
