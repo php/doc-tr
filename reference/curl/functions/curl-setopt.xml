@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c957c4c205b18978e0bf318b24978e92c70e19ee Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 310963ad9ab1c2ca315361ff94314a21fa65f8b8 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.curl-setopt" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>curl_setopt</refname>
@@ -554,7 +554,7 @@
            <entry valign="top">
             FTP aktarımlarında ASCII kip kullanmak için &true; olmalıdır.
             LDAP için veri, HTML yerine salt metin olarak alınır. Windows
-            sistemlerinde, <literal>STDOUT</literal>'a ikil kip atanmaz.
+            sistemlerinde, <constant>STDOUT</constant>'a ikil kip atanmaz.
            </entry>
            <entry />
           </row>
@@ -668,9 +668,9 @@
            <entry valign="top"><constant>CURLOPT_FTPSSLAUTH</constant></entry>
            <entry valign="top">
             FTP kimlik doğrulama yöntemi (etkinse):
-            <literal>CURLFTPAUTH_SSL</literal> (önce SSL denenir),
-            <literal>CURLFTPAUTH_TLS</literal> (önce TLS denenir) veya
-            <literal>CURLFTPAUTH_DEFAULT</literal> (cURL karar verir).
+            <constant>CURLFTPAUTH_SSL</constant> (önce SSL denenir),
+            <constant>CURLFTPAUTH_TLS</constant> (önce TLS denenir) veya
+            <constant>CURLFTPAUTH_DEFAULT</constant> (cURL karar verir).
            </entry>
            <entry valign="top">
             cURL 7.12.2'de eklendi.
@@ -679,28 +679,40 @@
            <row>
            <entry valign="top"><constant>CURLOPT_HEADEROPT</constant></entry>
            <entry valign="top">
-            Başlıklar ile başa çıkmak için aşağıdaki sabitlerden biri:
-            <simpara>
-             <constant>CURLHEADER_UNIFIED</constant>:
-             <constant>CURLOPT_HTTPHEADER</constant> içinde belirtilen
-             başlıklar hem sunuculara hem de vekillere yapılan isteklerde
-             kullanılacaktır. Bu seçenek etkinleştirildiğinde,
-             <constant>CURLOPT_PROXYHEADER</constant> herhangi bir etkiye
-             sahip olmayacaktır.
-            </simpara>
-            <simpara>
-             <constant>CURLHEADER_SEPARATE</constant>:
-             <constant>CURLOPT_HTTPHEADER</constant> başlıklarının bir vekile
-             değil, yalnızca bir sunucuya gönderilmesini sağlar. Vekil
-             başlıklarının kullanılabilmesi için
-             <constant>CURLOPT_PROXYHEADER</constant> ile ayarlanması gerekir.
-             Bir vekile CONNECT olmayan bir istek gönderilirse, libcurl'un hem
-             sunucu başlıklarını hem de vekil başlıklarını göndereceğini
-             unutmayın. CONNECT yapılırken, libcurl
-             <constant>CURLOPT_PROXYHEADER</constant> başlıklarını yalnızca
-             vekile ve ardından <constant>CURLOPT_HTTPHEADER</constant>
-             başlıklarını yalnızca sunucuya gönderir.
-            </simpara>
+            <para>
+             Başlıklar ile başa çıkmak için aşağıdaki sabitlerden biri:
+             <variablelist>
+              <varlistentry>
+               <term>CURLHEADER_UNIFIED</term>
+               <listitem>
+                <simpara>
+                 <constant>CURLOPT_HTTPHEADER</constant> içinde belirtilen
+                 başlıklar hem sunuculara hem de vekillere yapılan isteklerde
+                 kullanılacaktır. Bu seçenek etkinleştirildiğinde,
+                 <constant>CURLOPT_PROXYHEADER</constant> herhangi bir etkiye
+                 sahip olmayacaktır.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLHEADER_SEPARATE</term>
+               <listitem>
+                <simpara>
+                 <constant>CURLOPT_HTTPHEADER</constant> başlıklarının bir
+                 vekile değil, yalnızca bir sunucuya gönderilmesini sağlar.
+                 Vekil başlıklarının kullanılabilmesi için
+                 <constant>CURLOPT_PROXYHEADER</constant> ile ayarlanması
+                 gerekir. Bir vekile CONNECT olmayan bir istek gönderilirse,
+                 libcurl'un hem sunucu başlıklarını hem de vekil başlıklarını
+                 göndereceğini unutmayın. CONNECT yapılırken, libcurl
+                 <constant>CURLOPT_PROXYHEADER</constant> başlıklarını yalnızca
+                 vekile ve ardından <constant>CURLOPT_HTTPHEADER</constant>
+                 başlıklarını yalnızca sunucuya gönderir.
+                </simpara>
+               </listitem>
+              </varlistentry>
+             </variablelist>
+            </para>
             <simpara>
              cURL 7.42.1 itibariyle <constant>CURLHEADER_SEPARATE</constant>
              ve öncesinde <constant>CURLHEADER_UNIFIED</constant> öntanımlıdır.
@@ -754,7 +766,7 @@
             </para>
             <para>
              <constant>CURLAUTH_ANYSAFE</constant> sabiti
-             <literal>CURLAUTH_BASIC</literal> dışında tüm bitleri etkin kılar.
+             <constant>CURLAUTH_BASIC</constant> dışında tüm bitleri etkin kılar.
              cURL otomatik olarak en güvenlisini seçer.
             </para>
            </entry>
@@ -1017,46 +1029,82 @@
           <row>
            <entry valign="top"><constant>CURLOPT_SSL_OPTIONS</constant></entry>
            <entry valign="top">
-            SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi birinin
-            bit maskesidir:
-            <simpara>
-             <constant>CURLSSLOPT_ALLOW_BEAST</constant>: SSL3 ve TLS1.0
-             protokollerinde bir güvenlik açığı için herhangi bir geçici çözüm
-             kullanmaya çalışmaz.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_NO_REVOKE</constant>: Bu tür bir davranışın
-             mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini
-             devre dışı bırakır.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_AUTO_CLIENT_CERT</constant>: Sunucu tarafından
-             istendiğinde, kimlik doğrulama için istemci sertifikası otomatik
-             olarak bulunup kullanılır. Bu seçenek yalnızca Schannel (yerel
-             Windows SSL kitaplığı) için desteklenir.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_NATIVE_CA</constant>: Sertifika doğrulaması
-             için işletim sisteminin yerel CA deposunu kullanılır. OpenSSL
-             kullanmak üzere oluşturulduğunda yalnızca Windows üzerinde çalışır.
-             Bu seçenek deneyseldir ve davranış değişebilir.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_NO_PARTIALCHAIN</constant>: cURL'nin
-             varsayılan olarak kabul ettiği "kısmi" sertifika zincirleri
-             kabul edilmez. Bu seçenek yalnızca OpenSSL için desteklenir
-             ve zincir bir kök sertifikayla değil de bir ara sertifikayla
-             biterse sertifika doğrulamasında başarısız olur.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_REVOKE_BEST_EFFORT</constant>: Bu tür
-             davranışların mevcut olduğu SSL arka uçları için eksik veya
-             çevrimdışı dağıtım noktaları olması durumunda sertifika iptal
-             denetimleri yok sayılır. Bu seçenek yalnızca Schannel (yerel
-             Windows SSL kitaplığı) için desteklenir.
-             <constant>CURLSSLOPT_NO_REVOKE</constant> ile birleştirilirse
-             ikincisi önceliklidir.
-            </simpara>
+            <para>
+             SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi
+             birinin bit maskesidir:
+             <variablelist>
+              <varlistentry>
+               <term>CURLSSLOPT_ALLOW_BEAST</term>
+               <listitem>
+                <simpara>
+                 SSL3 ve TLS1.0 protokollerinde bir güvenlik açığı için herhangi bir geçici çözüm kullanmaya çalışmaz.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_NO_REVOKE</term>
+               <listitem>
+                <simpara>
+                 Bu tür bir davranışın mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini devre dışı bırakır.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_AUTO_CLIENT_CERT</term>
+               <listitem>
+                <simpara>
+                 Sunucu tarafından istendiğinde, kimlik doğrulama için istemci
+                 sertifikası otomatik olarak bulunup kullanılır. Bu seçenek
+                 yalnızca Schannel (yerel Windows SSL kitaplığı) için
+                 desteklenir.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_NATIVE_CA</term>
+               <listitem>
+                <simpara>
+                 Sertifika doğrulaması için işletim sisteminin yerel CA
+                 deposunu kullanılır. OpenSSL kullanmak üzere oluşturulduğunda
+                 yalnızca Windows üzerinde çalışır.
+                </simpara>
+                <note>
+                 <simpara>
+                  Bu seçenek deneyseldir ve davranış değişebilir.
+                 </simpara>
+                </note>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_NO_PARTIALCHAIN</term>
+               <listitem>
+                <simpara>
+                 cURL'nin varsayılan olarak kabul ettiği "kısmi" sertifika
+                 zincirleri kabul edilmez. Bu seçenek yalnızca OpenSSL için
+                 desteklenir ve zincir bir kök sertifikayla değil de bir ara
+                 sertifikayla biterse sertifika doğrulamasında başarısız olur.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_REVOKE_BEST_EFFORT</term>
+               <listitem>
+                <simpara>
+                 Bu tür davranışların mevcut olduğu SSL arka uçları için eksik
+                 veya çevrimdışı dağıtım noktaları olması durumunda sertifika
+                 iptal denetimleri yok sayılır. Bu seçenek yalnızca Schannel
+                 (yerel Windows SSL kitaplığı) için desteklenir.
+                </simpara>
+                <note>
+                 <simpara>
+                  <constant>CURLSSLOPT_NO_REVOKE</constant> ile birleştirilirse
+                  ikincisi önceliklidir.
+                 </simpara>
+                </note>
+               </listitem>
+              </varlistentry>
+             </variablelist>
+            </para>
            </entry>
            <entry valign="top">
             cURL 7.25.0'da eklendi. PHP 7.0.7 ve sonrasında kullanılabilir.
@@ -1079,56 +1127,75 @@
           <row>
            <entry valign="top"><constant>CURLOPT_SSLVERSION</constant></entry>
            <entry valign="top">
-            <constant>CURL_SSLVERSION_DEFAULT</constant> (0),
-            <constant>CURL_SSLVERSION_TLSv1</constant> (1),
-            <constant>CURL_SSLVERSION_SSLv2</constant> (2),
-            <constant>CURL_SSLVERSION_SSLv3</constant> (3),
-            <constant>CURL_SSLVERSION_TLSv1_0</constant> (4),
-            <constant>CURL_SSLVERSION_TLSv1_1</constant> (5),
-            <constant>CURL_SSLVERSION_TLSv1_2</constant> (6) veya
-            <constant>CURL_SSLVERSION_TLSv1_3</constant> (7) sabitlerinden
-            biri. Azami TLS sürümü <constant>CURL_SSLVERSION_MAX_*</constant>
-            sabitlerinden biri kullanarak atanabilir.
-            <constant>CURL_SSLVERSION_*</constant> sabitlerinden biri ile
-            <constant>CURL_SSLVERSION_MAX_*</constant> sabitlerinden birini
-            VEYAlamak da mümkündür.
-            <constant>CURL_SSLVERSION_MAX_DEFAULT</constant> (kütüphane
-            tarafından desteklenen en büyük sürüm),
-            <constant>CURL_SSLVERSION_MAX_TLSv1_0</constant>,
-            <constant>CURL_SSLVERSION_MAX_TLSv1_1</constant>,
-            <constant>CURL_SSLVERSION_MAX_TLSv1_2</constant> veya
-            <constant>CURL_SSLVERSION_MAX_TLSv1_3</constant>.
-            <note>
-             <para>
+            <simpara>
+             <constant>CURL_SSLVERSION_DEFAULT</constant> (0),
+             <constant>CURL_SSLVERSION_TLSv1</constant> (1),
+             <constant>CURL_SSLVERSION_SSLv2</constant> (2),
+             <constant>CURL_SSLVERSION_SSLv3</constant> (3),
+             <constant>CURL_SSLVERSION_TLSv1_0</constant> (4),
+             <constant>CURL_SSLVERSION_TLSv1_1</constant> (5),
+             <constant>CURL_SSLVERSION_TLSv1_2</constant> (6) veya
+             <constant>CURL_SSLVERSION_TLSv1_3</constant> (7) sabitlerinden
+             biri. Azami TLS sürümü <constant>CURL_SSLVERSION_MAX_*</constant>
+             sabitlerinden biri kullanarak atanabilir.
+             <constant>CURL_SSLVERSION_*</constant> sabitlerinden biri ile
+             <constant>CURL_SSLVERSION_MAX_*</constant> sabitlerinden birini
+             VEYAlamak da mümkündür.
+             <constant>CURL_SSLVERSION_MAX_DEFAULT</constant> (kütüphane
+             tarafından desteklenen en büyük sürüm),
+             <constant>CURL_SSLVERSION_MAX_TLSv1_0</constant>,
+             <constant>CURL_SSLVERSION_MAX_TLSv1_1</constant>,
+             <constant>CURL_SSLVERSION_MAX_TLSv1_2</constant> veya
+             <constant>CURL_SSLVERSION_MAX_TLSv1_3</constant>.
+            </simpara>
+            <warning>
+             <simpara>
               En iyi seçiminiz, bunu ayarlamamak ve öntanımlıyı kullanmasına
               izin vermektir. Bunu 2 veya 3 olarak ayarlamak, SSLv2 ve
               SSLv3'teki bilinen güvenlik açıkları göz önüne alındığında çok
               tehlikelidir.
-             </para>
-            </note>
+             </simpara>
+            </warning>
            </entry>
-           <entry />
+           <entry/>
           </row>
           <row>
            <entry valign="top"><constant>CURLOPT_PROXY_SSL_OPTIONS</constant></entry>
            <entry valign="top">
-            SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi birinin
-            bit maskesidir:
-            <simpara>
-             <constant>CURLSSLOPT_ALLOW_BEAST</constant>: SSL3 ve TLS1.0
-             protokollerinde bir güvenlik açığı için herhangi bir geçici çözüm
-             kullanmaya çalışmaz.
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_NO_REVOKE</constant>: Bu tür bir davranışın
-             mevcut olduğu SSL arka uçları için sertifika iptal denetimlerini
-             devre dışı bırakır. (curl &gt;= 7.44.0)
-            </simpara>
-            <simpara>
-             <constant>CURLSSLOPT_NO_PARTIALCHAIN</constant>: Belirtilmediğinde
-             öntanımlı olan "kısmi" sertifika zincirlerini kabul etmez.
-             (curl &gt;= 7.68.0)
-            </simpara>
+            <para>
+             SSL davranış seçeneklerini, aşağıdaki sabitlerden herhangi
+             birinin bit maskesidir:
+             <variablelist>
+              <varlistentry>
+               <term>CURLSSLOPT_ALLOW_BEAST</term>
+               <listitem>
+                <simpara>
+                 SSL3 ve TLS1.0 protokollerinde bir güvenlik açığı için
+                 herhangi bir geçici çözüm kullanmaya çalışmaz.
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_NO_REVOKE</term>
+               <listitem>
+                <simpara>
+                 Bu tür bir davranışın mevcut olduğu SSL arka uçları için
+                 sertifika iptal denetimlerini devre dışı bırakır.
+                 (curl &gt;= 7.44.0)
+                </simpara>
+               </listitem>
+              </varlistentry>
+              <varlistentry>
+               <term>CURLSSLOPT_NO_PARTIALCHAIN</term>
+               <listitem>
+                <simpara>
+                 Belirtilmediğinde öntanımlı olan "kısmi" sertifika
+                 zincirlerini kabul etmez. (curl &gt;= 7.68.0)
+                </simpara>
+               </listitem>
+              </varlistentry>
+             </variablelist>
+            </para>
            </entry>
            <entry valign="top">
             libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0 ve sonrasında
@@ -1167,14 +1234,14 @@
             <constant>CURL_SSLVERSION_MAX_TLSv1_2</constant>,
             <constant>CURL_SSLVERSION_MAX_TLSv1_3</constant> veya
             <constant>CURL_SSLVERSION_SSLv3</constant> sabitlerinden biri.
-            <note>
-             <para>
+            <warning>
+             <simpara>
               En iyi seçim, bunu ayarlamamak ve uzak SSL protokol sürümünü
               bulmaya çalışacak olan öntanımlı
               <constant>CURL_SSLVERSION_DEFAULT</constant>'un kullanımına izin
               vermektir.
-             </para>
-            </note>
+             </simpara>
+            </warning>
             </entry>
            <entry valign="top">
             libcurl &gt;= cURL 7.52.0 ve PHP 7.3.0 ve sonrasında
@@ -1527,6 +1594,15 @@
            <entry valign="top">
             Tanıtıcı kapatıldığında (ör. curl_close çağrısından sonra) tüm
             dahili çerezlerin kaydedileceği dosyanın adı.
+            <warning>
+             <simpara>
+              PHP 8.0.0 itibariyle, <function>curl_close</function> işlevsel
+              değildir ve tanıtıcıyı <emphasis>yok etmez</emphasis>.
+              Tanıtıcının otomatik olarak yok edilmesinden önce çerezlerin
+              yazılması gerekiyorsa, tanıtıcı üzerinde
+              <function>unset</function> çağrılmalıdır.
+             </simpara>
+            </warning>
            </entry>
            <entry valign="top">
            </entry>
@@ -1990,7 +2066,7 @@
            <entry valign="top"><constant>CURLOPT_PROXY_TLSAUTH_TYPE</constant></entry>
            <entry valign="top">
             HTTPS bağlantısı için kullanılan TLS kimlik doğrulama yöntemi.
-            Desteklenen yöntem "SRP" dir.
+            Desteklenen yöntem <literal>"SRP"</literal> dir.
             <note>
              <para>
               TLS için Güvenli Uzak Parola (SRP) kimlik doğrulaması, her iki
@@ -2421,7 +2497,7 @@
           <row>
            <entry valign="top"><constant>CURLOPT_FILE</constant></entry>
            <entry valign="top">
-            Aktarımın yazılacağı dosya. <literal>STDOUT</literal> (tarayıcı
+            Aktarımın yazılacağı dosya. <constant>STDOUT</constant> (tarayıcı
             penceresi) öntanımlıdır.
            </entry>
            <entry valign="top">
@@ -2438,7 +2514,7 @@
           <row>
            <entry valign="top"><constant>CURLOPT_STDERR</constant></entry>
            <entry valign="top">
-            Çıktı hatalarının gönderileceği <literal>STDERR</literal> yerine
+            Çıktı hatalarının gönderileceği <constant>STDERR</constant> yerine
             kullanılacak dosya.
            </entry>
            <entry valign="top">
