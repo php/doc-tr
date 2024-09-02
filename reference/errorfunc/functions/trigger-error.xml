@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: c44475e1fafcbee203ed4935a6d5d7a01379fcdc Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 210d382b5b139444fe2e16a5a3211076a65ff2ba Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.trigger-error" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>trigger_error</refname>
@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis>
-   <type>bool</type><methodname>trigger_error</methodname>
+   <type>true</type><methodname>trigger_error</methodname>
    <methodparam><type>string</type><parameter>ileti</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>hata_seviyesi</parameter><initializer><constant>E_USER_NOTICE</constant></initializer></methodparam>
   </methodsynopsis>
@@ -44,7 +44,7 @@
      <listitem>
       <para>
        Tetiklenen hata için tasarlanmış hata türü. Sadece
-       <literal>E_USER_</literal> ailesinden sabitler belirtilebilir.
+       <constant>E_USER_</constant>* ailesinden sabitler belirtilebilir.
        <constant>E_USER_NOTICE</constant> öntanımlıdır.
       </para>
      </listitem>
@@ -56,9 +56,43 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   <parameter>hata_seviyesi</parameter> yanlış belirtilmişse &false;
-   aksi takdirde &true; döner.
+   &return.true.always;
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   <parameter>hata_seviyesi</parameter> şunlardan biri değilse
+   <classname>ValueError</classname> oluşur:
+   <constant>E_USER_ERROR</constant>,
+   <constant>E_USER_WARNING</constant>,
+   <constant>E_USER_NOTICE</constant>,
+   <constant>E_USER_DEPRECATED</constant>.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Geçersiz bir <parameter>hata_seviyesi</parameter> belirtilirse artık
+       <classname>ValueError</classname> oluşuyor. Evvelce &false; dönerdi.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
