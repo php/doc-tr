@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 19e8122137a1d42ed60f17fe2c0c2b69b0b2d16b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 9f2e30a00afda6d6b6a3e19b13956150c2eaf2c1 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: ecamalan -->
 <refentry xml:id="function.json-encode" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -327,8 +327,7 @@ string(33) "{"0":"foo","2":"baz","3":"blong"}"
     </screen>
    </example>
    <example>
-    <title>- <constant>JSON_PRESERVE_ZERO_FRACTION</constant> seçeneği
-      örneği</title>
+    <title>- <constant>JSON_PRESERVE_ZERO_FRACTION</constant> seçeneği</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -348,13 +347,49 @@ string(2) "12"
   </para>
  </refsect1>
 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Kodlamada bir başarısızlık durumunda, hatanın tam niteliğini belirlemek için
+    <function>json_last_error</function> kullanılabilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    Bir diziyi kodlarken, anahtarlar 0'dan başlayan sürekli bir sayısal dizi
+    değilse, tüm anahtarlar dizge olarak kodlanır ve her anahtar-değer çifti
+    için bu açıkça belirtilir.
+   </para>
+  </note>
+  <note>
+   <para>
+    İlgili JSON kodlayıcısı gibi, <function>json_encode</function>, girdi
+    <parameter>değer</parameter>i olarak &string;, &integer;, &float; veya
+    &boolean; verildiğinde basit bir değer olan (yani bir nesne veya bir dizi
+    olmayan) JSON üretecektir. Çoğu kod çözücü bu değerleri geçerli JSON olarak
+    kabul ederken, bazıları kabul etmeyebilir çünkü belirtim bu noktada
+    belirsizdir.
+   </para>
+   <para>
+    Özetlemek gerekirse, JSON kod çözücünün
+    <function>json_encode</function>'dan üretilen çıktıyı işleyebildiği her
+    zaman sınanmalıdır.
+   </para>
+  </note>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><interfacename>JsonSerializable</interfacename></member>
     <member><function>json_decode</function></member>
+    <member><function>json_last_error</function></member>
+    <member><function>json_last_error_msg</function></member>
+    <member><function>serialize</function></member>
    </simplelist>
-  </para>
+   </para>
  </refsect1>
 </refentry>
 
