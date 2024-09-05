@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 86e6094e86b84a51d00ab217ac50ce8dde33d82a Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d4d5216e7a965ca194f6b1c9dee84cecab2674e5 Maintainer: nilgun Status: ready -->
 <section xml:id="outcontrol.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -19,19 +18,19 @@
     <tbody>
     <row>
      <entry><link linkend="ini.output-buffering">output_buffering</link></entry>
-     <entry>"0"</entry>
+     <entry><literal>"0"</literal></entry>
      <entry><constant>INI_PERDIR</constant></entry>
      <entry></entry>
     </row>
     <row>
      <entry><link linkend="ini.output-handler">output_handler</link></entry>
-     <entry>NULL</entry>
+     <entry>&null;</entry>
      <entry><constant>INI_PERDIR</constant></entry>
      <entry></entry>
     </row>
     <row>
      <entry><link linkend="ini.implicit-flush">implicit_flush</link></entry>
-     <entry>"0"</entry>
+     <entry><literal>"0"</literal></entry>
      <entry><constant>INI_ALL</constant></entry>
      <entry></entry>
     </row>
@@ -39,9 +38,11 @@
      <entry><link linkend="ini.url-rewriter.tags">url_rewriter.tags</link></entry>
      <entry>"a=href,area=href,frame=src,form=,fieldset="</entry>
      <entry><constant>INI_ALL</constant></entry>
-     <entry>PHP 7.1.0 öncesinde oturumun, trans sid rewrite özelliğini atamakta
-     kullanılırdı. Sonrasında, sadece
-     <function>output_add_rewrite_var</function> tarafından kullanılmaktadır.
+     <entry>PHP 7.1.0'dan önce, bu INI ayarı şeffaf oturum kimliği desteğini
+     etkinleştiriyordu
+     (bkz. <link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link>).
+     PHP 7.1.0 ve sonrasında, yalnızca
+     <function>output_add_rewrite_var</function> işlevini etkiliyor.
      </entry>
     </row>
     <row>
@@ -67,11 +68,11 @@
    </term>
    <listitem>
     <para>
-     Bu yönergeye 'On' değeri atamak suretiyle çıktı tamponlamasını bütün
-     dosyalar için etkin kılabilirsiniz. Tamponun boyunu belli bir değerle
-     sınırlamak isterseniz 'On' yerine bu değeri bayt cinsinden yazabilirsiniz
-     (örnek: output_buffering=4096). PHP-CLI'de bu
-     yönergenin değeri daima 'Off'tur.
+     Bu yönergeye <literal>"On"</literal> değeri atamak suretiyle çıktı
+     tamponlaması bütün dosyalar için etkin kılınabilir. Tamponun boyun belli
+     bir değerle sınırlanmak istenirse, <literal>"On"</literal> yerine bu değer
+     bayt cinsinden yazılabilir (örnek: <literal>output_buffering=4096</literal>).
+     PHP-CLI'de bu yönergenin değeri daima <literal>"Off"</literal>tur.
     </para>
    </listitem>
   </varlistentry>
@@ -83,8 +84,8 @@
    </term>
    <listitem>
     <para>
-     Betiğinizin tüm çıktısını bir işleve yönlendirebilirsiniz. Örneğin, bu
-     yönergeye <function>mb_output_handler</function> atarsanız karakter
+     Betiğin tüm çıktısı bir işleve yönlendirilebilir. Örneğin, bu
+     yönergeye <function>mb_output_handler</function> atanırsa karakter
      kodlaması şeffaf olarak belirtilen kodlamaya dönüştürülür. Bu yönergeye
      herhangi bir çıktı eylemcisinin atanması otomatik olarak çıktı
      tamponlamasını etkin kılar.
@@ -92,10 +93,16 @@
     <note>
      <para>
       <function>mb_output_handler</function> ve
-      <function>ob_iconv_handler</function> işlevlerini birlikte
-      kullanamazsınız, bu durum <function>ob_gzhandler</function> ve
+      <function>ob_iconv_handler</function> işlevleri birlikte kullanılamaz.
+       <function>ob_gzhandler</function> ve
       <link linkend="ini.zlib.output-compression">zlib.output_compression</link>
-      çifti için de geçerlidir.
+      ise şunlardan biri ile birlikte kullanılamaz:
+      <function>mb_output_handler</function>,
+      <function>ob_gzhandler</function>,
+      <link linkend="ini.zlib.output-compression">zlib.output_compression</link>,
+      'URL-Yeniden-Yazma' işleyicisi (bkz.
+      <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link>
+      ve <function>output_add_rewrite_var</function>).
      </para>
     </note>
     <note>
@@ -116,9 +123,9 @@
     <para>
      &false; öntanımlıdır. &true; atandığında her çıktı bloğundan sonra çıktı
      tamponu kendi kendini otomatik olarak boşaltır. Bu işlem, her
-     <literal>HTML</literal> bloğundan, her <function>print</function> veya
-     <function>echo</function> çağrısından sonra <function>flush</function>
-     işlevini çağırmaya eşdeğerdir.
+     <literal>HTML</literal> bloğundan, çıktı üreten her çağrıdan
+     (<function>print</function> veya <function>echo</function> gibi) sonra
+     <function>flush</function> işlevini çağırmaya eşdeğerdir.
     </para>
     <para>
      PHP'yi HTTP ortamında kullanırken bu seçeneğe &true; atandığında bir
@@ -139,22 +146,28 @@
    <listitem>
     <simpara>
      <function>output_add_rewrite_var</function> değerleri tarafından yeniden
-     yazılacak HTML etiketlerini belirtmek içindir.
-     <literal>a=href,area=href,frame=src,input=src,form=</literal> öntanımlıdır.
+     yazılacak HTML etiketlerini ve özniteliklerini belirtmek içindir.
+     <literal>"form="</literal> öntanımlıdır.
     </simpara>
     <simpara>
-     <literal>form</literal> özel bir etikettir. Form değişkeni olarak
-     <literal>&lt;input hidden="session_id" name="session_name"&gt;</literal>
-     eklenir.
+     <literal>"form="</literal> veya herhangi bir <literal>form</literal>
+     özniteliğinin eklenmesi, <function>output_add_rewrite_var</function>
+     işlevine aktarılan her isim-değer çifti için bir isim ve değer özniteliği
+     içeren <literal>form</literal>'a gizli bir <literal>input</literal> öğesi
+     ekleyecektir.
     </simpara>
+    <caution>
+     <simpara>
+      Aynı etiket <literal>url_rewriter.tags</literal>'e birden fazla kez
+      eklenirse, URL yeniden yazma işlemi sırasında yalnızca ilki kullanılır.
+     </simpara>
+    </caution>
     <note>
      <simpara>
       PHP 7.1.0 öncesinde,
       <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link>,
       <link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link>
       belirtmek için kullanılırdı.
-      PHP 7.1.0 ve sonrasında, <literal>fieldset</literal> artık özel
-      bir etiket değildir.
      </simpara>
     </note>
    </listitem>

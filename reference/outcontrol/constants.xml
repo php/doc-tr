@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: a0ae28d3bc85f927c22649ebd9a590b921534b7d Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7976e4688f783f37c8a90f59ac8f9a365d179160 Maintainer: nilgun Status: ready -->
 <appendix xml:id="outcontrol.constants" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.constants;
  &extension.constants.core;
- <variablelist>
+  <variablelist xml:id="outcontrol.constants.flags-passed-to-handler">
+  <title>Çıktı işleyicisine aktarılan durum bayrakları</title>
+  <para>
+   Aşağıdaki bayraklar, <function>ob_start</function> tarafından bir bit
+   maskesinin parçası olarak ayarlanan çıktı işleyicisinin ikinci bağımsız
+   değişkenine (<parameter>kip</parameter>) aktarılır:
+  </para>
   <varlistentry xml:id="constant.php-output-handler-start">
    <term>
     <constant>PHP_OUTPUT_HANDLER_START</constant>
@@ -91,6 +97,13 @@
     </para>
    </listitem>
   </varlistentry>
+ </variablelist>
+ <variablelist xml:id="outcontrol.constants.buffer-control-flags">
+  <title>Çıktı tamponu denetim seçenekleri</title>
+  <para>
+   Aşağıdaki seçenekler, <function>ob_start</function> işlevinin ikinci bağımsız
+   değişkenine (<parameter>seçenekler</parameter>) aktarılır:
+  </para>
   <varlistentry xml:id="constant.php-output-handler-cleanable">
    <term>
     <constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant>
@@ -99,7 +112,9 @@
    <listitem>
     <para>
      <function>ob_start</function> tarafından oluşturulan bir çıktı tamponunun
-     temizlenebilirliğini denetler.
+     <function>ob_clean</function> tarafından temizlenebilirliğini denetler.
+     Bu seçenek <function>ob_end_clean</function> veya
+     <function>ob_get_clean</function> işlevinin davranışını denetlemez.
     </para>
    </listitem>
   </varlistentry>
@@ -111,7 +126,9 @@
    <listitem>
     <para>
      <function>ob_start</function> tarafından oluşturulan bir çıktı tamponunun
-     boşaltılabilirliğini denetler.
+     <function>ob_flush</function> tarafından boşaltılabilirliğini denetler.
+     Bu seçenek <function>ob_end_flush</function> veya
+     <function>ob_get_flush</function> işlevinin davranışını denetlemez.
     </para>
    </listitem>
   </varlistentry>
@@ -123,7 +140,10 @@
    <listitem>
     <para>
      <function>ob_start</function> tarafından oluşturulan bir çıktı tamponunun
-     betik sonlanmadan önce silinebilirliğini denetler.
+     betik sonlanmadan önce veya
+     <function>ob_end_clean</function>, <function>ob_end_flush</function>,
+     <function>ob_get_clean</function> ya da <function>ob_get_flush</function>
+     çağrıldığında silinebilirliğini denetler.
     </para>
    </listitem>
   </varlistentry>
@@ -138,6 +158,49 @@
      <constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant> |
      <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant> |
      <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist xml:id="outcontrol.constants.flags-returned-by-handler">
+  <title>Çıktı işleyicisi durum bayrakları</title>
+  <para>
+   Aşağıdaki bayraklar <function>ob_get_status</function> tarafından
+   döndürülen (<literal>status</literal>) bit maskesini oluşturabilir:
+  </para>
+  <varlistentry xml:id="constant.php-output-handler-started">
+   <term>
+    <constant>PHP_OUTPUT_HANDLER_STARTED</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Çıktı işleyicisinin çağrıldığını belirtir.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.php-output-handler-disabled">
+   <term>
+    <constant>PHP_OUTPUT_HANDLER_DISABLED</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Çıktı işleyicisinin devre dışı olduğunu belirtir.
+     Bu bayrak, çıktı işleyicisi çağrılmadan önce atandığında, çıktı işleyicisi
+     &false; döndürdüğünde veya tamponu işlerken başarısız olduğunda atanır
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.php-output-handler-processed">
+   <term>
+    <constant>PHP_OUTPUT_HANDLER_PROCESSED</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     Çıktı işleyicisinin tamponu başarıyla işlediğini gösterir.
+     PHP 8.4.0'dan itibaren kullanılabilir.
     </para>
    </listitem>
   </varlistentry>
