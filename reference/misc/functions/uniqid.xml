@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 52c495140bdb84f45f186bfb1cccf09788b0121e Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b65b98da1039e01b4a8f51f94560822ec9a113d9 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.uniqid" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>uniqid</refname>
-  <refpurpose>Eşsiz bir kimlik dizgesi üretir</refpurpose>
+  <refpurpose>Zamana dayalı kimlik dizgesi üretir</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -14,8 +14,9 @@
    <methodparam choice="opt"><type>bool</type><parameter>döküntü_üret</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Mikrosaniye cinsinden geçerli zamana dayalı olarak belirtilen
-   <parameter>önek</parameter> ile eşsiz bir kimlik dizgesi üretir.
+   Mikrosaniye cinsinden geçerli zamana dayalı olarak, belirtilen
+   <parameter>önek</parameter> ve isteğe bağlı olarak rastgele üretilen bir
+   değerle eşsiz bir kimlik dizgesi üretir.
   </para>
   &caution.cryptographically-insecure;
   <warning>
@@ -24,7 +25,7 @@
      sistem saati NTP veya benzeriyle ayarlandığından, sistem zamanı sürekli
      olarak değiştirilir. Bu nedenle, bu işlevin süreç/evre için benzersiz
      bir kimlik döndürmemesi mümkündür. Benzersiz olma olasılığını artırmak
-     için <parameter>döküntü_üret</parameter> bağımsız değişkenini kullanın.
+     için <parameter>döküntü_üret</parameter> bağımsız değişkeni kullanılır.
     </para>
   </warning>
  </refsect1>
@@ -37,8 +38,10 @@
      <term><parameter>önek</parameter></term>
      <listitem>
       <para>
-       Bu bağımsız değişken, farklı konaklar üzerinde aynı anda üretilen kimliklerin
-       farklılaştırılmasında yararlı olabilir.
+       Bu bağımsız değişken, farklı konaklar üzerinde aynı anda üretilen
+       kimliklerin farklılaştırılmasında yararlı olabilir. (Bu durum, sistem
+       saatinin NTP ile ayarlandığı durumlarda, saatin bir işlemle geriye
+       alınması durumunda aynı konakta bile gerçekleşebilir.)
       </para>
       <para>
        Boş bir <parameter>önek</parameter> belirtildiğinde 13 karakterlik bir
@@ -65,12 +68,11 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Sistem zamanına dayalı benzersiz bir kimlik dizgesi döner.
+   Sistem zamanına dayalı bir kimlik dizgesi döner.
   </para>
   <warning>
    <para>
-     Bu işlev benzersiz bir kimlik üretmeye çalışır fakat dönen değerin %100
-     benzersiz olacağını garanti etmez.
+    Bu işlev dönen değerin eşsizliğini garanti etmez.
    </para>
   </warning>
  </refsect1>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 37280533a76693adac626a37ffc8daa2276400ce Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 434366e9284206b3b073a49bddf7c42e85427aa0 Maintainer: nilgun Status: ready -->
 <appendix xml:id="openssl.constants" xmlns="http://docbook.org/ns/docbook">
  &reftitle.constants;
  &extension.constants;
@@ -207,8 +207,8 @@
          <entry>Şifreli/imzalı iletiye başlıklar
          <literal>text/plain</literal> içerik türüyle eklenir. Şifre çözme
          veya doğrulama yapılacaksa bu başlıklar çıktıdan ayıklanır; eğer
-         şifresi çözülecek veya doğrulanacak iletinin MIME türü
-         <literal>text/plain</literal> değilse bir hata oluşur.</entry>
+         şifresi çözülecek veya doğrulanacak iletinin <acronym>MIME</acronym>
+         türü <literal>text/plain</literal> değilse bir hata oluşur.</entry>
         </row>
         <row xml:id="constant.pkcs7-binary">
          <entry><constant>PKCS7_BINARY</constant> (<type>int</type>)</entry>
@@ -223,9 +223,9 @@
          <entry>Bir ileti doğrulanırken iletiye dahil edilmiş  sertifikalar
          varsa bunlar imzalama sertifikaları olarak ele alınır. Bu seçenekle
          sadece <function>openssl_pkcs7_verify</function> işlevinin
-         <parameter>ek_sertifikalar</parameter> bağımsız değişkeninde belirtilen
-         sertifikalar kullanılır. Bununla birlikte, sağlanan sertifikalar hala
-         güvencesiz CA olarak kullanılabilir.
+         <parameter>güvenilmez_sertifikalar_dosyası</parameter> bağımsız
+         değişkeninde belirtilen sertifikalar kullanılır. Bununla birlikte,
+         sağlanan sertifikalar hala güvencesiz CA olarak kullanılabilir.
          </entry>
         </row>
         <row xml:id="constant.pkcs7-noverify">
@@ -245,8 +245,8 @@
          iletinin boyu küçülmüş olur, ancak doğrulayıcının imzalama
          sertifikasının bir kopyasına sahip olması gerekir (örneğin,
          <function>openssl_pkcs7_verify</function> işlevinin
-         <parameter>ek_sertifikalar</parameter> bağımsız değişkeninde
-         aktarılabilir).
+         <parameter>güvenilmez_sertifikalar_dosyası</parameter> bağımsız
+         değişkeninde aktarılabilir).
          </entry>
         </row>
         <row xml:id="constant.pkcs7-noattr">
@@ -511,8 +511,9 @@
      <listitem>
       <simpara>
        Bu sabit sadece PHP, MD2 desteğiyle
-       derlenmişse kullanılabilir. OpenSSL 1.0.0+ derlenirken enable-md2 ve PHP
-       derlenirken CFLAG olarak -DHAVE_OPENSSL_MD2_H aktarılmasını gerektirir.
+       derlenmişse kullanılabilir. OpenSSL 1.0.0+ derlenirken
+       <literal>enable-md2</literal> ve PHP derlenirken CFLAG olarak
+       <literal>-DHAVE_OPENSSL_MD2_H</literal> aktarılmasını gerektirir.
       </simpara>
      </listitem>
     </varlistentry>
@@ -522,96 +523,107 @@
   <section xml:id="openssl.ciphers">
    <title>Şifreler</title>
    <variablelist>
-  <varlistentry xml:id="constant.openssl-cipher-rc2-40">
-   <term>
-    <constant>OPENSSL_CIPHER_RC2_40</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+    <varlistentry xml:id="constant.openssl-default-stream-ciphers">
+     <term>
+      <constant>OPENSSL_DEFAULT_STREAM_CIPHERS</constant>
+      (<type>string</type>)
+     </term>
+     <listitem>
+      <simpara>
+       Öntanımlı şifreleri listeler.
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-rc2-40">
+     <term>
+      <constant>OPENSSL_CIPHER_RC2_40</constant>
+       (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-rc2-128">
-   <term>
-    <constant>OPENSSL_CIPHER_RC2_128</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-rc2-128">
+     <term>
+      <constant>OPENSSL_CIPHER_RC2_128</constant>
+       (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-rc2-64">
-   <term>
-    <constant>OPENSSL_CIPHER_RC2_64</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-rc2-64">
+     <term>
+      <constant>OPENSSL_CIPHER_RC2_64</constant>
+       (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-des">
-   <term>
-    <constant>OPENSSL_CIPHER_DES</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-des">
+     <term>
+      <constant>OPENSSL_CIPHER_DES</constant>
+       (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-3des">
-   <term>
-    <constant>OPENSSL_CIPHER_3DES</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-3des">
+     <term>
+      <constant>OPENSSL_CIPHER_3DES</constant>
+       (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-   <varlistentry xml:id="constant.openssl-cipher-aes-128-cbc">
-   <term>
-    <constant>OPENSSL_CIPHER_AES_128_CBC</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+      </simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-cipher-aes-128-cbc">
+    <term>
+     <constant>OPENSSL_CIPHER_AES_128_CBC</constant>
+      (<type>int</type>)
+    </term>
+    <listitem>
+     <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-aes-192-cbc">
-   <term>
-    <constant>OPENSSL_CIPHER_AES_192_CBC</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+     </simpara>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="constant.openssl-cipher-aes-192-cbc">
+    <term>
+     <constant>OPENSSL_CIPHER_AES_192_CBC</constant>
+      (<type>int</type>)
+    </term>
+    <listitem>
+     <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
-  <varlistentry xml:id="constant.openssl-cipher-aes-256-cbc">
-   <term>
-    <constant>OPENSSL_CIPHER_AES_256_CBC</constant>
-     (<type>int</type>)
-   </term>
-   <listitem>
-    <simpara>
+     </simpara>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="constant.openssl-cipher-aes-256-cbc">
+    <term>
+     <constant>OPENSSL_CIPHER_AES_256_CBC</constant>
+      (<type>int</type>)
+    </term>
+    <listitem>
+     <simpara>
 
-    </simpara>
-   </listitem>
-  </varlistentry>
- </variablelist>
-  </section>
+     </simpara>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </section>
 
  <section xml:id="openssl.constversion">
   <title>Sürüm sabitleri</title>
@@ -677,6 +689,18 @@
          <function>openssl_decrypt</function> işlevine
          <constant>OPENSSL_RAW_DATA</constant> aktarılmışsa, veri olduğu gibi
          döndürülür. Belirtilmezse Base64 kodlu veri döndürülür.
+        </simpara>
+      </listitem>
+    </varlistentry>
+    <varlistentry xml:id="constant.openssl-dont-zero-pad-key">
+      <term>
+       <constant>OPENSSL_DONT_ZERO_PAD_KEY</constant>
+       (<type>int</type>)
+      </term>
+      <listitem>
+        <simpara>
+         <function>openssl_encrypt</function> işlevinin öntanımlı anahtar
+         uzunluğundan daha kısa olan anahtarlara dolgu eklemesini önler.
         </simpara>
       </listitem>
     </varlistentry>
