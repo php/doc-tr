@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- $Revision$ -->
-<!-- EN-Revision: c6a8e42bdbbb814124b84d45d95cd793129aac6b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b0d9505811e05bc11b58ef23167f3855c742edba Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.output-add-rewrite-var">
  <refnamediv>
   <refname>output_add_rewrite_var</refname>
@@ -15,27 +14,33 @@
    <methodparam><type>string</type><parameter>değer</parameter></methodparam>
   </methodsynopsis>
   <para>
-   Bu işlev URL yeniden yazım mekanizmasına yeni bir isim/değer çifti ekler.
-   İsim ve değer URL'lere (GET bağımsız değişkeni olarak) ve formlara (gizli
-   girdi alanı olarak),
-   <link linkend="ini.session.use-trans-sid">session.use_trans_sid</link> ile
-   şeffaf URL yeniden yazımı etkinleştirilmiş gibi oturum ID'sinin eklendiği
-   tarzda eklenir.
+   Bu işlev, etkin değilse <literal>'URL-Rewriter'</literal>  çıktı tamponu
+   işleyicisini başlatır, <parameter>isim</parameter> ve
+   <parameter>değer</parameter> çiftini depolar ve tampon temizlendiğinde
+   <acronym>URL</acronym>leri ve formları geçerli ini ayarlarına göre yeniden
+   yazar. Bu işleve yapılan sonraki  çağrılar, işleyici kapatılana kadar tüm ek
+   isim/değer çiftlerini depolar.
   </para>
   <para>
-   Bu işlevin davranışı
+   Çıktı tamponu temizlendiğinde (<function>ob_flush</function>,
+   <function>ob_end_flush</function>, <function>ob_get_flush</function>
+   çağrılarak veya betiğin sonunda) 'URL-Yeniden-Yazım' işleyicisi isim/değer
+   çiftlerini HTML etiketlerinin özniteliklerindeki <acronym>URL</acronym>lere
+   sorgu olarak ekleyip
    <link linkend="ini.url-rewriter.tags">url_rewriter.tags</link> ve
-   <link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link> &php.ini;
-   yönergesi ile denetlenir.
+   <link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link>
+   yapılandırma yönergelerinin değerlerine göre formlara gizli alanlar ekler.
   </para>
   <para>
-   Bu işlevin istek başına en fazla bir kez başarıyla çağrılabileceği
-   unutulmamalıdır.
+   <literal>'URL-Rewriter'</literal> işleyicisine eklenen her isim/değer
+   çifti, aynı isim öznitelikleriyle yinelenen <acronym>URL</acronym>
+   sorgularıyla  sonuçlansa bile <acronym>URL</acronym>lere ve/veya formlara
+   eklenir.
   </para>
   <note>
    <simpara>
-    Bu işlevin çağrılması örtük olarak çıktı tamponlamasını henüz başlamamışsa
-    başlatır.
+    <literal>'URL-Rewriter'</literal> işleyicisi kapatıldıktan sonra tekrar
+    başlatılamaz.
    </simpara>
   </note>
  </refsect1>
@@ -86,12 +91,14 @@
       <row>
        <entry>7.1.0</entry>
        <entry>
-        PHP 7.1.0 öncesinde, <function>output_add_rewrite_var</function>
-        tarafından yeniden yazılan değişkenler aynı oturum modülünün trans sid
-        çıktı tamponunu kullanırdı. PHP 7.1.0 ve sonrasında, adanmış çıktı
+        PHP 7.1.0 ve sonrasında, artık adanmış çıktı
         tamponu kullanılmaktadır. Çıktı işlevleri için yalnızca <link
         linkend="ini.url-rewriter.tags">url_rewriter.tags</link> kullanılır.
         <link linkend="ini.url-rewriter.tags">url_rewriter.hosts</link> eklendi.
+        PHP 7.1.0 öncesinde, <function>output_add_rewrite_var</function>
+        tarafından yeniden yazılan değişkenler şeffaf oturum kimliği desteğiyle
+        çıktı tamponunu paylaşırdı (bkz.
+        <link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link>).
        </entry>
       </row>
      </tbody>
@@ -108,6 +115,8 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+ini_set('url_rewriter.tags', 'a=href,form=');
+
 output_add_rewrite_var('var', 'value');
 
 // bazı bağlar
@@ -153,8 +162,6 @@ Array
     <member><function>ob_list_handlers</function></member>
     <member><link linkend="ini.url-rewriter.tags">url_rewriter.tags</link></member>
     <member><link linkend="ini.url-rewriter.hosts">url_rewriter.hosts</link></member>
-    <member><link linkend="ini.session.trans-sid-tags">session.trans_sid_tags</link></member>
-    <member><link linkend="ini.session.trans-sid-hosts">session.trans_sid_hosts</link></member>
    </simplelist>
   </para>
  </refsect1>

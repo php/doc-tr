@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 87a266cdd7f53bc86cd22d21af289b9a75f57f94 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-list-handlers">
  <refnamediv>
   <refname>ob_list_handlers</refname>
@@ -25,11 +25,29 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Kullanımdaki çıktı eylemcileri (varsa) içeren bir dizi döndürür. Eğer
-   <link linkend="ini.output-buffering">output_buffering</link> etkinse veya
-   <function>ob_start</function> ile bir anonim işlev belirtilmişse
-   <function>ob_list_handlers</function> işlevi "default output handler"
-   (öntanımlı çıktı eylemcisi) dizgesini döndürür.
+   Kullanımdaki çıktı eylemcileri (varsa) içeren bir dizi döndürür.
+  </para>
+  <para>
+   Eğer <link linkend="ini.output-buffering">çıktı tamponlaması</link> etkinse
+   ve <link linkend="ini.output-handler">output_handler</link> atanmamışsa veya
+   <function>ob_start</function> ile bir geriçağırım işlevi belirtilmemişse ya
+   da &null; belirtilmişse "öntanımlı çıktı işleyicisi" döner.
+   <link linkend="ini.output-buffering">çıktı tamponlaması</link>nı
+   etkinleştirmek ve bir <link linkend="ini.output-handler">çıktı işleyicisi</link>
+   belirtmek <function>ob_start</function> işlevine bir
+   <link linkend="functions.internal">dahili (yerleşik) işlev</link> aktarmaya
+   eşdeğerdir.
+  </para>
+  <para>
+   <function>ob_start</function> işlevine bir geriçağırım işlevi aktarılmışsa,
+   geriçağırım işlevinin <link linkend="language.namespaces.basics">tam
+   nitelenmiş ismi</link> döner. Geriçağırım işlevi olarak
+   <link linkend="language.oop5.magic.invoke">__invoke()</link> sınıfını
+   gerçekleyen bir nesne belirtilmişse bu nesnenin
+   <link linkend="language.oop5.magic.invoke">__invoke()</link> yönteminin
+   <link linkend="language.namespaces.basics">tam nitelenmiş ismi</link> döner.
+   Geriçağırım işlevi olarak bir <classname>Closure</classname> belirtilmişse,
+   <literal>"Closure::__invoke"</literal> döner.
   </para>
  </refsect1>
 
@@ -41,38 +59,117 @@
     <programlisting role="php">
 <![CDATA[
 <?php
-// output_buffering=On
-print_r(ob_list_handlers());
+// output_buffering=On ve çıktı işleyici yok
+var_dump(ob_list_handlers());
 ob_end_flush();
 
-ob_start("ob_gzhandler");
-print_r(ob_list_handlers());
+// geriçağırım yok ya da null
+ob_start();
+var_dump(ob_list_handlers());
 ob_end_flush();
 
 // anonim işlev
 ob_start(function($string) { return $string; });
-print_r(ob_list_handlers());
+var_dump(ob_list_handlers());
 ob_end_flush();
+
+// ok işlevi
+ob_start(fn($string) => $string);
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+// kullanıcı tanımlı işlev ve __invoke
+$firstClassCallable = userDefinedFunction(...);
+
+ob_start([$firstClassCallable, '__invoke']);
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+// dahili (yerleşik) işlev
+ob_start('print_r');
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+// kullanıcı tanımlı işlev
+function userDefinedFunction($string, $flags) { return $string; };
+
+ob_start('userDefinedFunction');
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+class MyClass {
+    public static function staticHandle($string) {
+        return $string;
+    }
+
+    public static function handle($string) {
+        return $string;
+    }
+
+    public function __invoke($string) {
+        return $string;
+    }
+}
+
+// sınıf ve statik yöntem
+ob_start(['MyClass','staticHandle']);
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+// nesne ve statik olmayan yöntem
+ob_start([new MyClass,'handle']);
+var_dump(ob_list_handlers());
+ob_end_flush();
+
+// çağrılabilir nesne
+ob_start(new MyClass);
+var_dump(ob_list_handlers());ob_end_flush();
 ?>
 ]]>
     </programlisting>
     &example.outputs;
     <screen>
 <![CDATA[
-Array
-(
-    [0] => Closure::__invoke
-)
-
-Array
-(
-    [0] => ob_gzhandler
-)
-
-Array
-(
-    [0] => default output handler
-)
+array(1) {
+  [0]=>
+  string(22) "default output handler"
+}
+array(1) {
+  [0]=>
+  string(22) "default output handler"
+}
+array(1) {
+  [0]=>
+  string(7) "print_r"
+}
+array(1) {
+  [0]=>
+  string(19) "userDefinedFunction"
+}
+array(1) {
+  [0]=>
+  string(17) "Closure::__invoke"
+}
+array(1) {
+  [0]=>
+  string(17) "Closure::__invoke"
+}
+array(1) {
+  [0]=>
+  string(17) "Closure::__invoke"
+}
+array(1) {
+  [0]=>
+  string(21) "MyClass::staticHandle"
+}
+array(1) {
+  [0]=>
+  string(15) "MyClass::handle"
+}
+array(1) {
+  [0]=>
+  string(17) "MyClass::__invoke"
+}
 ]]>
     </screen>
    </example>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 55f70d19870c396f3bf86b6c45826da3cb7e525f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: af7044e82ac0abe745ce3dfe2169e69a7e8e342f Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-get-status">
  <refnamediv>
   <refname>ob_get_status</refname>
@@ -42,107 +42,140 @@
   &reftitle.returnvalues;
   <para>
    <parameter>tam_durum</parameter> bağımsız değişkeni belirtilmezse veya
-   <parameter>tam_durum</parameter> = &false; olduğunda aşağıdaki
-   elemanlarla basit bir dizi döner:
-   <informalexample>
-    <screen>
-<![CDATA[
-Array
-(
-    [level] => 2
-    [type] => 0
-    [status] => 0
-    [name] => URL-Rewriter
-    [del] => 1
-)
-]]>
-    </screen>
-   </informalexample>
+   &false; olduğunda etkin çıktı seviyesindeki durum bilgisini tutan basit bir
+   dizi döndürülür.
+  </para>
+  <para>
+   <parameter>tam_durum</parameter> &true; ise her etkin çıktı tamponu
+   seviyesi için tek elemana sahip bir dizi döndürülür. Çıktı seviyesi, en
+   üst seviye dizinin anahtarı olarak kullanılır ve her dizi elemanının
+   kendisi, tek bir etkin çıkış seviyesindeki durum bilgisini tutan başka bir
+   dizidir.
+  </para>
+  <para>
+   Çıktı tamponu etkin değilse boş bir dizi döndürülür.
+  </para>
+  <para>
    <segmentedlist>
-    <title><function>ob_get_status</function> işlevinin basit sonuçları</title>
+    <title><function>ob_get_status</function> işlevinin döndürdüğü dizi elemanları</title>
     <segtitle>Anahtar</segtitle><segtitle>Değer</segtitle>
     <seglistitem>
-     <seg>level</seg>
-     <seg>Çıktı iç içelik seviyesi</seg>
+     <seg>name</seg>
+     <seg>
+      Etkin çıktı işleyicisinin ismi (ayrıntılar için bkz, <function>ob_list_handlers</function>) dönüş değeleri)
+     </seg>
     </seglistitem>
     <seglistitem>
      <seg>type</seg>
      <seg>
       <literal>0</literal> (dahili işleyici) veya
-      <literal>1</literal> (kullanıcının işleyicisi)
-     </seg>
-     </seglistitem>
-    <seglistitem>
-     <seg>status</seg>
-     <seg>
-      <literal>PHP_OUTPUT_HANDLER_START</literal> (0),
-      <literal>PHP_OUTPUT_HANDLER_CONT</literal> (1) veya
-      <literal>PHP_OUTPUT_HANDLER_END</literal> (2) değerlerinden biri
+      <literal>1</literal> (kullanıcı tanımlı işleyici)
      </seg>
     </seglistitem>
     <seglistitem>
-     <seg>name</seg>
+     <seg>flags</seg>
      <seg>
-      Etkin çıktı eylemcisinin ismi veya atanmamışsa
-      'öntanımlı çıktı işleyicisi'
+      <function>ob_start</function> tarafından ayarlanan bayrakların bit
+      maskesi, çıktı işleyicisinin türü (yukarıya bakın) ve tamponlama
+      işleminin durumu
+      (<link linkend="outcontrol.constants.flags-returned-by-handler">
+       <constant>PHP_OUTPUT_HANDLER_<replaceable>*</replaceable></constant>
+      </link> sabitleri). Eğer işleyici, tamponu başarıyla işlediyse ve
+      &false; döndürmediyse,
+      <constant>PHP_OUTPUT_HANDLER_STARTED</constant> ve
+      <constant>PHP_OUTPUT_HANDLER_PROCESSED</constant> atanır.  Eğer
+      işleyici, tamponu başarıyla işleyemediyse ve &false; döndürdüyse,
+      <constant>PHP_OUTPUT_HANDLER_STARTED</constant> ve
+      <constant>PHP_OUTPUT_HANDLER_DISABLED</constant> atanır.
      </seg>
     </seglistitem>
     <seglistitem>
-     <seg>del</seg>
-     <seg><function>ob_start</function> tarafından belirlenen silme seçeneği
-    </seg>
+     <seg>level</seg>
+     <seg>
+      Çıktı iç içelik seviyesi (sıfır tabanlı). Aynı seviye için
+      <function>ob_get_level</function> tarafından döndürülen değerin bir
+      eksik olduğu unutulmamalıdır. İlk seviye
+      <function>ob_get_status</function> için <literal>0</literal> ve
+      <function>ob_get_level</function> için <literal>1</literal>'dir.
+     </seg>
+    </seglistitem>
+    <seglistitem>
+     <seg>chunk_size</seg>
+     <seg>
+      Bayt cinsinden parça boyu. <function>ob_start</function> veya
+      <link linkend="ini.output-buffering">output_buffering</link> tarafından
+      etkinleştirilir ve değer olarak pozitif bir tamsayı atanır.
+     </seg>
+    </seglistitem>
+    <seglistitem>
+     <seg>buffer_size</seg>
+     <seg>
+      Bayt cinsinden çıktı tamponu boyu.
+     </seg>
+    </seglistitem>
+    <seglistitem>
+     <seg>buffer_used</seg>
+     <seg>
+      Bayt cinsinden çıtı tamponundaki verini boyu
+      (<function>ob_get_length</function> işlevinin tamsayı dönüş değeri ile aynı).
+     </seg>
     </seglistitem>
    </segmentedlist>
   </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
   <para>
-   İşlev, <parameter>tam_durum</parameter> = &true; değeriyle çağrılırsa, her
-   ektin çıktı tamponu seviyesi için bir eleman içeren bir dizi döner. Çıktı
-   seviyesi üst seviye dizinin anahtarı olarak kullanılır ve bu anahtarların
-   değerleri de kendi etkin çıktı seviyelerine ilişkin durum bilgisi içeren
-   birer dizi içerirler.
-   <informalexample>
+   <example>
+    <title>- <parameter>tam_durum</parameter> &false; olduğunda dönen dizi</title>
+    <screen>
+<![CDATA[
+Array
+(
+    [type] => 0
+    [flags] => 112
+    [level] => 2
+    [chunk_size] => 0
+    [buffer_size] => 16384
+    [buffer_used] => 1024
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>- <parameter>tam_durum</parameter> &true; olduğunda dönen dizi</title>
     <screen>
 <![CDATA[
 Array
 (
     [0] => Array
         (
-            [chunk_size] => 0
-            [size] => 40960
-            [block_size] => 10240
-            [type] => 1
-            [status] => 0
             [name] => default output handler
-            [del] => 1
+            [type] => 0
+            [flags] => 112
+            [level] => 1
+            [chunk_size] => 0
+            [buffer_size] => 16384
+            [buffer_used] => 2048
         )
 
     [1] => Array
         (
-            [chunk_size] => 0
-            [size] => 40960
-            [block_size] => 10240
-            [type] => 0
-            [buffer_size] => 0
-            [status] => 0
             [name] => URL-Rewriter
-            [del] => 1
+            [type] => 0
+            [flags] => 112
+            [level] => 2
+            [chunk_size] => 0
+            [buffer_size] => 16384
+            [buffer_used] => 1024
         )
-
 )
 ]]>
     </screen>
-   </informalexample>
-  </para>
-  <para>
-   Tam çıktı ek olarak şu elemanları içerir:
-   <segmentedlist>
-    <title><function>ob_get_status</function> işlevinin tam sonuçları</title>
-    <segtitle>Anahtar</segtitle><segtitle>Değer</segtitle>
-    <seglistitem><seg>chunk_size</seg><seg><function>ob_start</function>
-    tarafından atanan parça boyutu</seg></seglistitem>
-    <seglistitem><seg>size</seg><seg>...</seg></seglistitem>
-    <seglistitem><seg>blocksize</seg><seg>...</seg></seglistitem>
-   </segmentedlist>
+   </example>
   </para>
  </refsect1>
 
@@ -152,6 +185,8 @@ Array
    <simplelist>
     <member><function>ob_get_level</function></member>
     <member><function>ob_list_handlers</function></member>
+    <member><function>ob_get_length</function></member>
+    <member><function>ob_start</function></member>
    </simplelist>
   </para>
  </refsect1>

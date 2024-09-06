@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86b976d5afaf037868174fe5c242e886eb69baa4 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-end-flush">
  <refnamediv>
   <refname>ob_end_flush</refname>
-  <refpurpose>Çıktı tamponunu boşaltır (gönderir) ve tamponu kapatır
+  <refpurpose>Etkin çıktı işleyicisinin dönüş değerini temizler (gönderir),
+   etkin çıktı tamponunu kapatır
   </refpurpose>
  </refnamediv>
 
@@ -14,26 +15,20 @@
    <void/>
   </methodsynopsis>
   <para>
-   Bu işlev en üst seviye çıktı tamponunun (varsa) içeriğini gönderir ve bu
-   tamponu kapatır. <function>ob_end_flush</function> çağrısından sonra tampon
-   yok edildiğinden eğer gönderilen tampon içeriğin saklamak istiyorsanız
-   <function>ob_end_flush</function> çağrısından önce bir
-   <function>ob_get_contents</function> çağrısı yapmalısınız.
+   Çıktı işleyicisini çağırır
+   (<constant>PHP_OUTPUT_HANDLER_FINAL</constant> bayrağı ile),
+   dönüş değerini temizler (gönderir), etkin çıktı tamponunun içeriğini
+   temizler ve tamponu kapatır.
   </para>
   <para>
-   Çıktı tamponu <function>ob_start</function> tarafından
-   <link linkend="constant.php-output-handler-cleanable"
-    >PHP_OUTPUT_HANDLER_CLEANABLE</link> ve
-   <link linkend="constant.php-output-handler-removable"
-    >PHP_OUTPUT_HANDLER_REMOVABLE</link> ile başlatılmalıdır. Aksi takdirde
-   <function>ob_end_flush</function> çalışmaz.
+   <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant> ile başlatılmış bir etkin
+   çıktı tamponu yoksa <function>ob_end_flush</function> başarısız olur.
   </para>
-  <note>
-   <simpara>
-    <function>ob_get_flush</function> işlevi, bu işlevden farklı olarak tampon
-    içeriğini bir dizge olarak döndürür.
-   </simpara>
-  </note>
+  <para>
+   Etkin çıktı tamponu <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant>
+   bayrağı olmaksızın başlatılsa bile <function>ob_end_flush</function> çıktı
+   işleyicisinin dönüş değerini temizler (gönderir).
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -44,15 +39,14 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success; Başarısızlık sebeplerinden biri etkin bir tamponun
-   bulunmaması diğeri ise tamponun silinememesi (özel bir tamponsa) olabilir.
+   &return.success;
   </para>
  </refsect1>
 
  <refsect1 role="errors">
   &reftitle.errors;
   <para>
-   İşlev başarısız olursa <constant>E_NOTICE</constant> seviyesinde bir ileti üretir.
+   İşlev başarısız olursa bir <constant>E_NOTICE</constant> üretir.
   </para>
  </refsect1>
 
@@ -82,8 +76,8 @@
    <simplelist>
     <member><function>ob_start</function></member>
     <member><function>ob_get_contents</function></member>
-    <member><function>ob_get_flush</function></member>
     <member><function>ob_flush</function></member>
+    <member><function>ob_get_flush</function></member>
     <member><function>ob_end_clean</function></member>
    </simplelist>
   </para>

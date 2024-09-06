@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 91ab4f5f898023b0eed0e642e1482ac11f749d20 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.flush">
  <refnamediv>
   <refname>flush</refname>
@@ -14,37 +14,32 @@
   </methodsynopsis>
   <para>
    PHP'nin kullandığı ve PHP'nin artalanında kullanılan (CGI, HTTP sunucusu
-   gibi) sistem yazma tamponlarını boşaltır. Bu işlem, çıktı tamponları
-   boşalıncaya kadar çıktının kullanıcının tarayıcısına gönderilmesi demektir.
+   gibi) sistem yazma tamponlarını boşaltır. Komut satırı ortamında
+   <function>flush</function> yalnızca tamponların içeriklerini temizlemeye
+   çalışırken, HTTP bağlamında ise başlıklar ve tamponların içerikleri
+   temizlenir.
   </para>
-  <para>
-   <function>flush</function> işlevi HTTP sunucunuzun veya istemci tarafında
-   tarayıcının tamponlama ayarlarını ve PHP'nin kullanıcı alanı çıktı
-   tamponlama mekanizmasını etkilemez. Bu bakımdan, kullanılan çıktı tamponlarını
-   boşaltmak için <function>ob_flush</function> çağrısı
-   <function>flush</function> çağrısından önce yapılmalıdır.
-  </para>
-  <para>
-   Çeşitli sunucular, özellikle de Win32 üstünde, tarayıcıya sonuçların
-   aktarılması bitmemişse betiğiniz sonlanıncaya kadar betiğinizin çıktısı
-   tamponlanmaya devam eder.
-  </para>
-  <para>
-   mod_gzip gibi Apache sunucu modülleri, verinin istemciye gönderimi bitmeden
-   kendi tamponunu boşaltırken bir <function>flush</function> işlemine sebep
-   olabilir.
-  </para>
-  <para>
-   Tarayıcı, göstermeden önce girdisini tamponlayabilir. Örneğin, Netscape, bir
-   satırsonu veya bir kapama etiketi alana kadar metni tamponlar ve en dıştaki
-   tablonun &lt;/table&gt; kapama etiketini almadan tabloyu oluşturmaz.
-  </para>
-  <para>
-   Microsoft Internet Explorer'ın bazı sürümleri 256 baytlık çıktı almadan
-   sayfayı göstermeye başlamaz, yani, bu tarayıcının daha önce birşeyler
-   göstermesini istiyorsanız boşaltma öncesi ek boşluk karakterleri göndermeniz
-   gerekebilir.
-  </para>
+  <note>
+   <simpara>
+    <function>flush</function> HTTP sunucusunun tamponlama şemasını geçersiz
+    kılamayabilir ve tarayıcıdaki istemci tarafı tamponlama üzerinde hiçbir
+    etkisi yoktur.
+   </simpara>
+  </note>
+  <note>
+   <simpara>
+    Bu işlevin <function>ob_start</function> veya
+    <function>output_add_rewrite_var</function> tarafından başlatılanlar gibi
+    kullanıcı seviyesi çıktı işleyicileri üzerinde herhangi bir etkisi yoktur.
+   </simpara>
+  </note>
+  <warning>
+   <simpara>
+    <function>flush</function>, HTTP bağlamında başlıkları atayan ve gönderen
+    çıktı işleyicilerine (örneğin <function>ob_gzhandler</function>) onlardan
+    önce başlıkları göndererek müdahale edebilir.
+   </simpara>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">

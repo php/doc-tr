@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 9e0a39029d6e66cd5f7c7e8cfecf76fdb8ad7f49 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: da6be21fef84d61cc4c621b3fe1d5fd2c9046c45 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-start">
  <refnamediv>
   <refname>ob_start</refname>
@@ -10,41 +10,27 @@
   &reftitle.description;
   <methodsynopsis>
    <type>bool</type><methodname>ob_start</methodname>
-   <methodparam choice="opt"><type>callable</type><parameter>geriçağırım</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>callable</type><type>null</type></type><parameter>geriçağırım</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>parça_boyu</parameter><initializer>0</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>seçenekler</parameter><initializer><constant>PHP_OUTPUT_HANDLER_STDFLAGS</constant></initializer></methodparam>
   </methodsynopsis>
   <para>
    Bu işlev çıktı tamponlamasını ektin kılar. Çıktı tamponlaması etkinken
-   betikten (başlıklar dışında) hiçbir çıktı gönderilmez ve çıktı dahili bir
-   tamponda saklanır.
+   betikten hiçbir çıktı gönderilmez ve çıktı dahili bir tamponda saklanır.
+   Tam olarak hangi çıktının etkilendiğini görmek için bkz.
+   <xref linkend="outcontrol.what-output-is-buffered"/>
   </para>
-  <para>
-   Bu dahili tamponun içeriği <function>ob_get_contents</function> işleviyle
-   bir dizge değişkenine kopyalanabilir. Dahili tamponda birikenleri
-   çıktılamak için  <function>ob_end_flush</function> işlevini kullanın.
-   Çıktılamak istemiyorsanız, <function>ob_end_clean</function> işlevi ile
-   tampon içeriğini sessiz sedasız silebilirsiniz.
-  </para>
-  <warning>
-   <para>
-    Bazı HTTP sunucuları (Apache gibi) geriçağırım işlevini çağırırken betiğin
-    çalışma dizinini değiştirir. Geriçağırım işlevinde
-    <literal>chdir(dirname($_SERVER['SCRIPT_FILENAME']))</literal> gibi bir
-    çağrıyla betiğin bulunduğu dizine dönebilirsiniz.
-   </para>
-  </warning>
   <para>
    Çıktı tamponlaması bir yığıt gibi çalışabilir, bir
    <function>ob_start</function> etkinken başka bir
-   <function>ob_start</function> çağrısı yapabilirsiniz. Yalnız aynı sayıda
-   <function>ob_end_flush</function> çağrısı yapmayı unutmayın. Eğer çok
+   <function>ob_start</function> çağrısı yapılabilir. Eğer çok
    sayıda çıktı geriçağırım işlevi etkinse, her biri iç içelik sırası
-   gözetilerek çıktıyı süzerler.
+   gözetilerek çıktıyı süzer. Ayrıntılar için bkz.
+   <xref linkend="outcontrol.nesting-output-buffers"/>
   </para>
   <para>
-   Betik sonlandığında çıktı tamponu hala etkinse, içeriği PHP tarafından
-   otomatik olarak çıktılanır.
+   Çıktı tamponlarının ayrıntılı açıklaması için bkz.
+   <xref linkend="outcontrol.user-level-output-buffers"/>
   </para>
  </refsect1>
 
@@ -57,16 +43,17 @@
      <listitem>
       <para>
        Bu bağımsız değişken ile isteğe bağlı bir çıktı eylemcisi işlev
-       belirtilebilir. Bu işlev bağımsız değişken olarak bir dizge almalı ve bir
-       dizge döndürmelidir. Bu işlev, çıktı tamponu boşaltılırken (gönderim),
+       belirtilebilir. Ayrıca &null; aktarılarak atlatılabilir.
+      </para>
+      <para>
+       Bu işlev, çıktı tamponu boşaltılırken (gönderim),
        tampon temizlenirken (<function>ob_flush</function>,
        <function>ob_clean</function> ve benzeri bir işlevle) veya isteğin
        sonunda çıktı tamponu kullanıcının tarayıcısına boşaltılırken
-       çağrılacaktır. İşlev çağrıldığında çıktı tamponunu bağımsız değişken olarak
-       alması ve sonuçta tarayıcıya gönderilmek üzere yeni bir çıktı tamponu
-       döndürmesi beklenir. Eğer bu bağımsız değişken ile belirtilen işlev
-       çağrılabilir değilse <function>ob_start</function> &false; döndürür.
-       İşlevinin sözdizimi:
+       çağrılacaktır.
+      </para>
+      <para>
+       <parameter>geriçağırım</parameter> işlevinin sözdizimi:
       </para>
       <para>
        <methodsynopsis>
@@ -87,9 +74,10 @@
          <term><parameter>kip</parameter></term>
          <listitem>
           <simpara>
-           <link linkend="outcontrol.constants"
-           ><constant>PHP_OUTPUT_HANDLER_*</constant></link> sabitlerinin
-           bit maskesi.
+           <link linkend="constant.php-output-handler-start">
+            <constant>PHP_OUTPUT_HANDLER_<replaceable>*</replaceable></constant></link>
+           sabitlerinin bit maskesi. Ayrıntılar için bkz.
+           <xref linkend="outcontrol.flags-passed-to-output-handlers"/>
           </simpara>
          </listitem>
         </varlistentry>
@@ -97,33 +85,25 @@
       </para>
       <para>
        <parameter>geriçağırım</parameter> &false; döndürdüğü takdirde
-       özgün çıktı tarayıcıya gönderilir.
+       tampon içeriği döner. Ayrıntılar için bkz.
+       <xref linkend="outcontrol.output-handler-return-values"/>
       </para>
+      <warning>
+       <simpara>
+        Aşağıdaki işlevlerden herhangi birini bir çıktı işleyicisinden
+        çağırmak onulmaz bir hataya yol açacaktır:
+        <function>ob_clean</function>, <function>ob_end_clean</function>,
+        <function>ob_end_flush</function>, <function>ob_flush</function>,
+        <function>ob_get_clean</function>, <function>ob_get_flush</function>,
+        <function>ob_start</function>.
+       </simpara>
+      </warning>
       <para>
-       <parameter>geriçağırım</parameter>, bağımsız değişkenine bir &null;
-       değer aktarılarak atlanabilir.
+       <parameter>geriçağırım</parameter> (çıktı işleyici) işlevleri ile
+       ilgili ayrıntılar için bkz.
+       <xref linkend="outcontrol.output-handlers"/> ve
+       <xref linkend="outcontrol.working-with-output-handlers"/>
       </para>
-      <para>
-       <function>ob_end_clean</function>, <function>ob_end_flush</function>,
-       <function>ob_clean</function>, <function>ob_flush</function> ve
-       <function>ob_start</function> bir geriçağırım işlevi olarak
-       belirtilemez. Bunlardan biri belirtilirse, davranışın nasıl olacağı
-       belirsizdir. Bir tamponun içeriğini silmek isterseniz geriçağrıcıdan ""
-       (boş dizge) döndürmelisiniz. Bir geriçağırım işlevinden, çıktı
-       tamponlama işlevlerini kullanarak <literal>print_r($ifade,
-       true)</literal> veya <literal>highlight_file($dosyaismi,
-       true)</literal> gibi işlevleri çağıramazsınız.
-      </para>
-      <note>
-       <para>
-        Sıkıştırılmış sayfaları destekleyen
-        tarayıcılara gziplenmiş veri göndermek için
-        <function>ob_gzhandler</function> işlevi kullanılabilmektedir.
-        <function>ob_gzhandler</function> işlevi tarayıcının kabul edeceği
-        içerik kodlamasının türünü tespit ettikten sonra buna uygun çıktı
-        döndürür.
-       </para>
-      </note>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -133,22 +113,22 @@
        İsteğe bağlı <parameter>parça_boyu</parameter> belirtildiği takdirde,
        <parameter>parça_boyu</parameter>nu aşan veya tamponun tam dolmasına
        sebep olan bir çıktılama çağrısından sonra tampon boşaltılır. Öntanımlı
-       0 değerinin anlamı işlevin sadece çıktı tamponu kapandığında
-       çağrılacağı anlamına gelir.
+       <literal>0</literal> değerinin anlamı tampon kapatılana kadar tüm
+       çıktıların tamponlanacağı anlamına gelir. Ayrıntılar için bkz.
+       <xref linkend="outcontrol.buffer-size"/>
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>kip</parameter></term>
+     <term><parameter>seçenekler</parameter></term>
      <listitem>
       <para>
-       <parameter>kip</parameter>, çıktı tamponuna uygulanabilecek işlemleri
-       denetleyen bir bitmaskesidir. Çıktı tamponunun temizlenmesi,
-       boşaltılması ve silinmesine izin vermek öntanımlı olup, bunun karşılığı
-       <constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant> |
-       <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant> |
-       <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant> veya kısaca
-       <constant>PHP_OUTPUT_HANDLER_STDFLAGS</constant> sabitidir.
+       <parameter>seçenekler</parameter>, çıktı tamponuna uygulanabilecek
+       işlemleri denetleyen bir bitmaskesidir. Çıktı tamponunun temizlenmesi,
+       boşaltılması ve silinmesine izin vermek öntanımlı olup,
+       <xref linkend="outcontrol.constants.buffer-control-flags"/> üzerinden
+       doğrudan belirlenebilir. Ayrıntılar için bkz.
+       <xref linkend="outcontrol.operations-on-buffers"/>
       </para>
       <para>
        Her sabit aşağıda açıklandığı gibi belli bir işlev kümesine erişimi
@@ -165,25 +145,21 @@
           <row>
            <entry><constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant></entry>
            <entry>
-            <function>ob_clean</function>,
-            <function>ob_end_clean</function> ve
-            <function>ob_get_clean</function>.
+            <function>ob_clean</function>
            </entry>
           </row>
           <row>
            <entry><constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant></entry>
            <entry>
-            <function>ob_end_flush</function>,
-            <function>ob_flush</function> ve
-            <function>ob_get_flush</function>.
+            <function>ob_flush</function>
            </entry>
           </row>
           <row>
            <entry><constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant></entry>
            <entry>
-            <function>ob_end_clean</function>,
-            <function>ob_end_flush</function> ve
-            <function>ob_get_flush</function>.
+            <function>ob_end_flush</function>,
+            <function>ob_get_clean</function>,
+            <function>ob_get_flush</function>
            </entry>
           </row>
          </tbody>

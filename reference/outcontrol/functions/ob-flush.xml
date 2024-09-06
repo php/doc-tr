@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: a866f72f5334d05a2cdfe9dd423eedd071192ff8 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-flush">
  <refnamediv>
   <refname>ob_flush</refname>
-  <refpurpose>Çıktı tamponunu boşaltır (gönderir)</refpurpose>
+  <refpurpose>Etkin çıktı işleyicisinin dönüş değerini temizler (gönderir)</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -13,15 +13,19 @@
    <void/>
   </methodsynopsis>
   <para>
-   Bu işlev (varsa) çıktı tamponunun içeriğini gönderir.
-   <function>ob_flush</function> sonrası tampon içeriği temizlendiğinden eğer
-   gönderilen içeriği saklamak istiyorsanız <function>ob_flush</function>
-   çağrısından önce bir <function>ob_get_contents</function> çağrısı
-   yapmalısınız.
+   Bu işlev çıktı işleyicisini çağırır
+   <constant>PHP_OUTPUT_HANDLER_FLUSH</constant> bayrağı ile) dönüş değerini
+   temizler (gönderir) ve etkin çıktı tamponunun içeriğini siler.
   </para>
   <para>
-   Bu işlev, <function>ob_end_flush</function> işlevinin yaptığı gibi çıktı
-   tamponunu yok etmez.
+   Bu işlev, <function>ob_end_flush</function> veya
+   <function>ob_get_flush</function> işlevinin yaptığı gibi çıktı tamponunu
+   kapatmaz.
+  </para>
+  <para>
+   Etkin çıktı tamponu <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant>
+   bayrağı olmaksızın başlatılırsa  <function>ob_flush</function>
+   başarısız olur.
   </para>
  </refsect1>
 
@@ -37,14 +41,22 @@
   </para>
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   İşlev başarısız olursa bir <constant>E_NOTICE</constant> üretir.
+  </para>
+ </refsect1>
+
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>ob_start</function></member>
     <member><function>ob_get_contents</function></member>
-    <member><function>ob_clean</function></member>
     <member><function>ob_end_flush</function></member>
-    <member><function>ob_end_clean</function></member>
+    <member><function>ob_get_flush</function></member>
+    <member><function>ob_clean</function></member>
    </simplelist>
   </para>
  </refsect1>

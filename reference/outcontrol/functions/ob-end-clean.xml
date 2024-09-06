@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86b976d5afaf037868174fe5c242e886eb69baa4 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-end-clean">
  <refnamediv>
   <refname>ob_end_clean</refname>
-  <refpurpose>Çıktı tamponunu temizler (siler) ve tamponu kapatır</refpurpose>
+  <refpurpose>Etkin çıktı tamponunu temizler (siler) ve tamponu kapatır</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -13,19 +13,20 @@
    <void/>
   </methodsynopsis>
   <para>
-   Bu işlev, en üst seviye çıktı tamponunun içeriğini siler ve bu çıktı
-   tamponunu kapatır. <function>ob_end_clean</function> çağrısından sonra
-   tampon yok edildiğinden eğer gönderilen tampon içeriğin saklamak
-   istiyorsanız <function>ob_end_clean</function> çağrısından önce bir
-   <function>ob_get_contents</function> çağrısı yapmalısınız.
+   Bu işlev çıktı işleyicisini çağırır
+   (<constant>PHP_OUTPUT_HANDLER_CLEAN</constant> ve
+   <constant>PHP_OUTPUT_HANDLER_FINAL</constant> bayraklarıyla), dönüş
+   değerini iptal eder, etkin çıktı tamponunun içeriğini siler ve tamponu
+   kapatır.
   </para>
   <para>
-   Çıktı tamponu <function>ob_start</function> tarafından
-   <link linkend="constant.php-output-handler-cleanable"
-   >PHP_OUTPUT_HANDLER_CLEANABLE</link> ve
-   <link linkend="constant.php-output-handler-removable"
-   >PHP_OUTPUT_HANDLER_REMOVABLE</link> ile başlatılmalıdır. Aksi takdirde
-   <function>ob_end_clean</function> çalışmaz.
+   <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant> ile başlatılmış bir etkin
+   çıktı tamponu yoksa <function>ob_end_clean</function> başarısız olur.
+  </para>
+  <para>
+   Etkin çıktı tamponu <constant>PHP_OUTPUT_HANDLER_CLEANABLE</constant>
+   bayrağı olmaksızın başlatılsa bile <function>ob_end_clean</function>
+   etkin çıktı tamponunun içeriğini siler.
   </para>
  </refsect1>
 
@@ -37,8 +38,7 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   &return.success; Başarısızlık sebeplerinden biri etkin bir tamponun
-   bulunmaması diğeri ise tamponun silinememesi (özel bir tamponsa) olabilir.
+   &return.success;
   </para>
  </refsect1>
 
@@ -52,7 +52,8 @@
  <refsect1 role="examples">
   &reftitle.examples;
   <para>
-   Aşağıda çıktı tamponlarından kurtulmanın kolay bir yolu gösterilmiştir:
+   Aşağıda etkin çıktı tamponunun içeriğinden kurtulmanın kolay bir yolu
+   gösterilmiştir:
   </para>
   <para>
    <example>
@@ -76,7 +77,9 @@ ob_end_clean();
    <simplelist>
     <member><function>ob_start</function></member>
     <member><function>ob_get_contents</function></member>
-    <member><function>ob_flush</function></member>
+    <member><function>ob_clean</function></member>
+    <member><function>ob_get_clean</function></member>
+    <member><function>ob_end_flush</function></member>
    </simplelist>
   </para>
  </refsect1>

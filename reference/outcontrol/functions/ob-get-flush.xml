@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- EN-Revision: 6ab6ea465889620fc2a8cdaf7b008cbaed83c523 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 86b976d5afaf037868174fe5c242e886eb69baa4 Maintainer: nilgun Status: ready -->
 <refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.ob-get-flush">
  <refnamediv>
   <refname>ob_get_flush</refname>
-  <refpurpose>Çıktı tamponunu boşaltır, içeriğini bir dizge olarak döndürür ve
-  çıktı tamponlamasını kapatır</refpurpose>
+  <refpurpose>Etkin çıktı işleyicisinin dönüş değerini boşaltır (gönderir),
+   etkin çıktı tamponunun içeriğini döndürür ve kapatır</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -14,21 +14,20 @@
    <void/>
   </methodsynopsis>
   <para>
-   <function>ob_get_flush</function> işlevi, çıktı tamponunu boşaltır,
-   içeriğini bir dizge olarak döndürür ve çıktı tamponlamasını kapatır.
+   Çıktı işleyicisini çağırır
+   (<constant>PHP_OUTPUT_HANDLER_FINAL</constant> bayrağı ile),
+   dönüş değerini temizler (gönderir), etkin çıktı tamponunun içeriğini
+   döndürüp tamponu kapatır.
   </para>
   <para>
-   Çıktı tamponu <function>ob_start</function> tarafından
-   <link linkend="constant.php-output-handler-flushable"
-   >PHP_OUTPUT_HANDLER_FLUSHABLE</link> ile başlatılmalıdır. Aksi takdirde
-   <function>ob_get_flush</function> çalışmaz.
+   <constant>PHP_OUTPUT_HANDLER_REMOVABLE</constant> ile başlatılmış bir etkin
+   çıktı tamponu yoksa <function>ob_get_flush</function> başarısız olur.
   </para>
-  <note>
-   <simpara>
-    Tampon içeriğini bir dizge olarak döndürmesi dışında
-    <function>ob_end_flush</function> işlevine benzer.
-   </simpara>
-  </note>
+  <para>
+   Etkin çıktı tamponu <constant>PHP_OUTPUT_HANDLER_FLUSHABLE</constant>
+   bayrağı olmaksızın başlatılsa bile <function>ob_get_flush</function> çıktı
+   işleyicisinin dönüş değerini temizler (gönderir).
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -39,8 +38,14 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Çıktı tamponlaması etkin değilse &false; aksi takdirde çıktı tamponunun
-   içeriğini döndürür.
+   Başarı durumunda etkin çıktı tamponunun içeriğini, aksi takdirde &false; döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   İşlev başarısız olursa bir <constant>E_NOTICE</constant> üretir.
   </para>
  </refsect1>
 
@@ -84,8 +89,11 @@ Array
   <para>
    <simplelist>
     <member><function>ob_end_clean</function></member>
+    <member><function>ob_start</function></member>
+    <member><function>ob_get_contents</function></member>
+    <member><function>ob_flush</function></member>
     <member><function>ob_end_flush</function></member>
-    <member><function>ob_list_handlers</function></member>
+    <member><function>ob_get_clean</function></member>
    </simplelist>
   </para>
  </refsect1>
