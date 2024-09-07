@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7b68fb17124ccf73ed0c98974d90977a69ea0425 Maintainer: nilgun Status: ready -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="function.hash-pbkdf2">
+<!-- EN-Revision: 539a9823a805ac29cab7fa4baf3ae3a28116a2f5 Maintainer: nilgun Status: ready -->
+<refentry  xml:id="function.hash-pbkdf2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>hash_pbkdf2</refname>
   <refpurpose>Belirtilen bir parolanın PBKDF2 anahtar türevini döndürür
@@ -12,11 +12,12 @@
   <methodsynopsis>
    <type>string</type><methodname>hash_pbkdf2</methodname>
    <methodparam><type>string</type><parameter>algo</parameter></methodparam>
-   <methodparam><type>string</type><parameter>parola</parameter></methodparam>
+   <methodparam><modifier role="attribute">#[\SensitiveParameter]</modifier><type>string</type><parameter>parola</parameter></methodparam>
    <methodparam><type>string</type><parameter>tuz</parameter></methodparam>
    <methodparam><type>int</type><parameter>yineleme</parameter></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>uzunluk</parameter><initializer>0</initializer></methodparam>
    <methodparam choice="opt"><type>bool</type><parameter>ikil</parameter><initializer>&false;</initializer></methodparam>
+   <methodparam choice="opt"><type>array</type><parameter>seçenekler</parameter><initializer>[]</initializer></methodparam>
   </methodsynopsis>
  </refsect1>
 
@@ -28,10 +29,15 @@
      <term><parameter>algo</parameter></term>
      <listitem>
       <para>
-       Seçilen aşlama algoritmasının ismi ("md5", "sha256", "haval160,4" ve
-       benzerleri). Desteklenen algoritmaların listesi
-       <function>hash_algos</function> işlevinde bulunabilir.
+       Seçilen aşlama algoritmasının ismi (<literal>"sha256"</literal> gibi).
+       Desteklenen algoritmaların listesi
+       <function>hash_hmac_algos</function> işlevinde bulunabilir.
       </para>
+       <note>
+        <para>
+         Kriptografik olmayan aş işlevlerine izin verilmez.
+        </para>
+       </note>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -78,6 +84,16 @@
       <para>
        &true; ise ham ikil veri, &false; ise küçük harfli onaltılıklar
        çıktılanır.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>seçenekler</parameter></term>
+     <listitem>
+      <para>
+       Çeşitli aşlama algoritmaları için bir dizi seçenek.
+       Şu anda, MurmurHash çeşitleri tarafından yalnızca
+       <literal>"seed"</literal> anahtarı desteklenmektedir.
       </para>
      </listitem>
     </varlistentry>

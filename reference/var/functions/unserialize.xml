@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: ce3a2d381693ccbc10cc4a808c3eb853f3c85c9e Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 4150dc92749c177758efe59eab23b6a5d32ffda2 Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.unserialize" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>unserialize</refname>
@@ -55,18 +55,14 @@
        çağıracaktır.
       </para>
        <note>
-        <title><link linkend="unserialize-callback-func">
+        <title><link linkend="ini.unserialize-callback-func">
         unserialize_callback_func</link> yönergesi</title>
         <para>
-         Nesneleştirme sırasında tanımsız bir sınıf örneklenecekse (eksikli
-         bir "__PHP_Incomplete_Class" nesnesinin elde edilmesini engellemek
-         için) çağrılmak üzere bir geriçağırım işlevi tanımlamak mümkündür.
-         Böyle bir işlevi &php.ini; veya &htaccess; dosyasında <link
-         linkend="ini.unserialize-callback-func">unserialize_callback_func</link>
-         yönergesinde veya ya da <function>ini_set</function> işlevinde
-         belirtebilirsiniz. Bu işlevin her çağrılışında tanımsız bir sınıfın
-         örneklenmesi gerekir. Bu özelliği iptal etmek için bu ayarı boş
-         bırakmanız yeterlidir.
+         <link linkend="ini.unserialize-callback-func">unserialize_callback_func</link>
+         yönergesinde belirtilen geriçağırım işlevi tanımsız bir sınıfın
+         dizgeleştirmesi kaldırılırken çağrılır. Geriçağırım işlevi
+         belirtilmezse, nesne <classname>__PHP_Incomplete_Class</classname>
+         olarak örneklenir.
         </para>
        </note>
      </listitem>
@@ -137,7 +133,7 @@
   </para>
   <para>
    Nesneleştirilemeyen bir dizge belirtilmesi durumunda işlev &false; döndürür
-   ve bir <constant>E_NOTICE</constant> çıktılar.
+   ve bir <constant>E_WARNING</constant> çıktılar.
   </para>
  </refsect1>
 
@@ -161,6 +157,22 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.3.0</entry>
+       <entry>
+        Nesneleştirilemeyen bir dizge belirtilmesi durumunda artık bir
+        <constant>E_WARNING</constant> üretiliyor. Evvelce
+        <constant>E_NOTICE</constant> üretilirdi.
+       </entry>
+      </row>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>
+        Nesneleştirme sırasında izin verilen yapıların azami derinliğini
+        ayarlamak için <parameter>seçenekler</parameter> bağımsız
+        değişkenine <literal>max_depth</literal> öğesi eklendi.
+       </entry>
+      </row>
       <row>
        <entry>7.1.0</entry>
        <entry>
