@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 161dde4fe721309398dd324edbf02aec409f127b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c09d80b942f41c7b9961a0773525ac8e1408daf2 Maintainer: nilgun Status: ready -->
 <sect1 xml:id="language.types.integer">
  <title>int</title>
 
@@ -87,7 +87,7 @@ tamsayı   : onluk
   </informalexample>
 
   <para>
-   Bir <type>intr</type> türün genişliği platforma göre değişir. 32 bitlik
+   Bir <type>int</type> türün genişliği platforma göre değişir. 32 bitlik
    sistemlerde azami değer 2 milyon civarında iken 64 bitlik sistemlerde 9E18
    civarındadır. PHP işaretsiz tamsayıları (C'deki unsigned) desteklemez.
    <type>int</type> türün genişliği <constant>PHP_INT_SIZE</constant>
@@ -108,42 +108,23 @@ tamsayı   : onluk
   </para>
 
   <example>
-   <title>- 32 bitlik sistemlerde tamsayı taşması</title>
+   <title>- Tamsayı taşması</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-$büyük_sayı =  2147483647;
-var_dump($büyük_sayı);
+$büyük_sayı =  50000000000000000000;
+var_dump($büyük_sayı);           // float(5.0E+19)
 
-$büyük_sayı =  2147483648;
-var_dump($büyük_sayı);
-
-$milyon = 1000000;
-$büyük_sayı =  50000 * $million;
-var_dump($büyük_sayı);
+var_dump(PHP_INT_MAX + 1);       // 32-bit sistem: float(2147483648)
+                                 // 64-bit sistem: float(9.2233720368548E+18)
 ?>
 ]]>
    </programlisting>
   </example>
+ </sect2>
 
-  <example>
-   <title>64 bitlik sistemlerde tamsayı taşması</title>
-   <programlisting role="php">
-<![CDATA[
-<?php
-$büyük_sayı = 9223372036854775807;
-var_dump($büyük_sayı);                     // int(9223372036854775807)
-
-$büyük_sayı = 9223372036854775808;
-var_dump($büyük_sayı);                     // float(9.2233720368548E+18)
-
-$milyon = 1000000;
-$büyük_sayı=  50000000000000 * $milyon;
-var_dump($büyük_sayı);                     // float(5.0E+19)
-?>
-]]>
-   </programlisting>
-  </example>
+ <sect2 xml:id="language.types.integer.division">
+  <title>Tamsayı Bölme</title>
 
   <para>
    PHP'de sonucun <type>int</type> türünde elde edileceği bir bölme
@@ -244,7 +225,8 @@ var_dump(intval(8.1)); // Her iki durumda  8
 
    <note>
     <para>
-     <type>int</type> türüne çarpıtıldığında NaN ve Infinity daima sıfır
+     <type>int</type> türüne çarpıtıldığında  <literal>NaN</literal>,
+     <literal>Inf</literal> ve <literal>-Inf</literal> daima sıfır
      olacaktır.
     </para>
    </note>
@@ -276,7 +258,7 @@ echo (int) ( (0.1+0.7) * 10 ); // çıktısı: 7!
    <title><type>string</type> türünden dönüşüm</title>
 
    <simpara>
-    Dize <link linkend="language.types.numeric-strings">sayısal</link>
+    Dizge <link linkend="language.types.numeric-strings">sayısal</link>
     veya öncü sayısal ise, karşılık gelen tamsayı değerine çözümlenir,
     aksi takdirde sıfıra (<literal>0</literal>) dönüştürülür.
    </simpara>
