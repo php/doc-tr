@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 68c2c871505aadf983f16113c5b077b335ce8d76 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0904e1f4db189dfd2873a126bf72fe34fa9c50f8 Maintainer: nilgun Status: ready -->
 <book xml:id="book.hash" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <?phpdoc extension-membership="core" ?>
  <title>HASH İleti Aşı Çerçevesi</title>
@@ -9,8 +9,69 @@
  <preface xml:id="intro.hash">
   &reftitle.intro;
   <para>
-   İleti Aş (hash) motoru. Çeşitli aşlama algoritmalarının keyfi
-   uzunluktaki iletilere doğrudan veya ardışık uygulanmasını sağlar.
+   Bu eklenti, <acronym>HMAC</acronym> değerlerinin oluşturulması ve
+   <acronym>HKDF</acronym> ve <acronym>PBKDF2</acronym> gibi anahtar
+   türetmeleri de dahil olmak üzere çeşitli aş algoritmaları kullanılarak
+   keyfi uzunluktaki iletilerin doğrudan veya artımlı işlenmesi için
+   kullanılabilen işlevler sağlar.
+  </para>
+  <para>
+   Kabaca üç aş algoritması sınıfı vardır ve algoritmaların tam listesi
+   <function>hash_algos</function> belgelemesinde bulunabilir.
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Sağlama toplamı algoritmaları (<literal>"crc32b"</literal> veya
+      <literal>"adler32"</literal> gibi): Bunlar, ileti hatalarının tespit
+      edilmesi gibi durumlarda yararlı olan sağlama toplamlarını hesaplamak
+      için kullanılır. Genellikle çok hızlıdırlar. Bu algoritmalar genellikle
+      kolayca "tahmin edilebilir"dir ve karışıklık yaratmak için elle
+      değiştirilebilen değerler üretir, bu nedenle bunlar kriptografik
+      kullanım için tamamen uygun değildir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Kriptografik olmayan algoritmalar (xxHash ailesi gibi): Bunlar
+      genellikle aş tabloları için aş değerlerini hesaplamak için kullanılır,
+      çünkü keyfi dizge girdileri üzerinde iyi bir dağıtım elde etmek üzere
+      tasarlanmıştır. Ayrıca genellikle hızlıdırlar, ancak bunlar da
+      kriptografik kullanım için uygun değildir.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Kriptografik algoritmalar (SHA-2 ailesi gibi): Bunlar, girdilerini
+      temsil eden ancak tahmin edilebilir veya çatışmalara eğilimli olmayan
+      aş değerleri üretmek için tasarlanmıştır. Başarım genellikle ikincil
+      bir endişe kaynağıdır, ancak günümüz donanımı genellikle PHP'nin
+      mevcut olduğunda kullanmaya çalıştığı bu algoritmalar için özel
+      işlemeyi destekler.
+     </simpara>
+     <simpara>
+      <acronym>NIST</acronym>'in Bilgisayar Güvenliği Kaynak Merkezi
+      <link xlink:href="&url.hash.nist-hash-functions;">Amerika Birleşik
+      Devletleri Federal Bilgi İşleme Standartları tarafından onaylı geçerli
+      algoritmaların açıklamasını</link> sunmaktadır.
+     </simpara>
+     <caution>
+      <para>
+       <literal>"md4"</literal>, <literal>"md5"</literal> ve
+       <literal>"sha1"</literal> gibi bazı erken dönem kriptografik
+       algoritmaların çatışma saldırılarına karşı hassas olduğu
+       kanıtlanmıştır ve bunların kriptografik uygulamalarda artık
+       kullanılmaması genel olarak önerilmektedir.
+      </para>
+     </caution>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   Parolaları ele alırken aş işlevlerini kullanma konusunda en iyi
+   uygulamalar hakkında bilgi edinmek için
+   <link linkend="faq.passwords">Güvenli Parola Karma İşlemi ile ilgili
+   SSS</link>'ye de bakılabilir.
   </para>
  </preface>
  <!-- }}} -->
