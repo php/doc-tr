@@ -1,182 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 645c1b0252ac20e344c151a5184d9c8e594f4811 Maintainer: nilgun Status: ready -->
-  <chapter xml:id="install.unix" xmlns="http://docbook.org/ns/docbook">
-   <title>Unix Sistemlere Kurulum</title>
-   <para>
-    Bu bölümde, PHP'nin Unix sistemleri üzerindeki yapılandırmasından ve
-    kurulumundan ana hatları ile bahsedilecektir. Kuruluma başlamadan önce
-    platformunuza ve kullandığınız HTTP sunucusuna özgü bölümleri
-    incelemenizi öneririz.
-   </para>
-   <para>
-    Kılavuzun <link linkend="install.general">Genel Kurulum
-    Değerlendirmesi</link> bölümünde ana hatlarıyla bahsettiğimiz gibi, bu
-    bölümde esas olarak HTTP sunucusunu ilgilendiren ayarlardan bahseceksek
-    de PHP'nin komut satırından kullanımı ile ilgili ayarlara da değineceğiz.
-   </para>
-   <para>
-    PHP'yi Unix platformlarına kurmanın çeşitli yolları vardır. Kaynak kod
-    paketinden kendiniz derleyip kurabileceğiniz gibi başkaları tarafından
-    derlenip paketlenmiş sürümleri de kurabilirsiniz. Bu belgelerde esas
-    olarak kaynak kod paketinden derleme, kurulum ve yapılandırma sürecinden
-    bahsedeceğiz. Çoğu Unix benzeri sistemin kendine özgü paket kurulum
-    yöntemi vardır. Bu, standart yapılandırmaya yardımcı olabilirse de farklı
-    özelliklere ihtiyaç duyduğunuzda (örneğin, güvenli sunucu veya veritabanı
-    sunucusu), HTTP sunucunuzu ve PHP'yi kendiniz derlemek zorunda
-    kalırsınız. Yazılımları kendiniz derleyip kuracak bilgiye sahip
-    değilseniz, sizin istediğiniz özelliklerde başkaları paket derlemiş mi
-    diye bir araştırma yapmanızı öneririz.
-   </para>
-   <para>
-    Derleme işlemi için gerekli bilgi ve yazılımlar:
-    <itemizedlist>
-     <listitem>
-      <simpara>
-       Temel Unix kullanım bilgisi ("make" komutunu ve bir C derleyicisini
-       kullanabiliyor olmak)
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       Bir ANSI C derleyici
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       Bir HTTP sunucusu
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       Modüllere özgü bileşenler (<acronym>GD</acronym>,
-       <acronym>PDF</acronym> kütüphaneleri, vs.)
-      </simpara>
-     </listitem>
-    </itemizedlist>
-   </para>
+<!-- EN-Revision: 4cb53ecbd763db2db808e90d7eda63afb380e6df Maintainer: nilgun Status: ready -->
+<chapter xml:id="install.unix" xmlns="http://docbook.org/ns/docbook">
+ <title>Unix Sistemlere Kurulum</title>
+ <simpara>
+  Çoğu Unix (ve Linux) işletim sistemi ve dağıtımında, PHP'nin paketlenmiş bir
+  sürümü ve paketleme sistemleri aracılığıyla erişilebilen eklentiler bulunur.
+  Bu sistemleri kullanarak PHP yükleme hakkında temel bilgiler içeren bölümler
+  vardır.
+ </simpara>
+ <simpara>
+  Bazı dağıtımlar için, genellikle daha geniş çeşitlilikte kullanılabilir
+  sürümler ve eklentiler içeren paketlerin üçüncü taraf depoları da vardır.
+ </simpara>
+ <simpara>
+  PHP, FrankenPHP ve Open Swoole gibi bazı üçüncü taraf uygulama sunucularının
+  bir bileşeni olarak da yüklenebilir.
+ </simpara>
+ <simpara>
+  Son olarak, PHP her zaman kaynak dağıtımlarından yüklenebilir; bu da hangi
+  özelliklerin, eklentilerin ve sunucu API'lerinin etkinleştirileceğini seçmede
+  en büyük esnekliği sağlar. Özellikle farklı sunucu API'leriyle kullanmak üzere
+  PHP'yi derleme ve yapılandırma hakkında bilgi içeren bölümler vardır.
+ </simpara>
 
-   <para>
-    Git kaynaklarıdan derlerken veya özel değişiklikler yaptıktan sonra
-    şunlar da gerekebilir:
-    <itemizedlist>
-     <listitem>
-      <simpara>
-       autoconf
-      </simpara>
-      <itemizedlist>
-       <listitem>
-        <simpara>
-         PHP 7.3 ve sonrası: 2.68+
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         PHP 7.2: 2.64+
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         PHP 7.1 ve öncesi: 2.59+
-        </simpara>
-       </listitem>
-      </itemizedlist>
-     </listitem>
-     <listitem>
-      <simpara>
-       automake: 1.4+
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       libtool: 1.4.x+ (1.4.2 hariç)
-      </simpara>
-     </listitem>
-     <listitem>
-      <simpara>
-       re2c
-      </simpara>
-      <itemizedlist>
-       <listitem>
-        <simpara>
-         PHP 8.3 ve sonrası: 1.0.3+
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         PHP 8.2 ve öncesi: 0.13.4+
-        </simpara>
-       </listitem>
-      </itemizedlist>
-     </listitem>
-     <listitem>
-      <simpara>
-       bison
-       </simpara>
-      <itemizedlist>
-       <listitem>
-        <simpara>
-         PHP 7.4 ve sonrası: 3.0.0+
-        </simpara>
-       </listitem>
-       <listitem>
-        <simpara>
-         PHP 7.3 ve öncesi: 2.4+ (Bison 3.x dahil)
-        </simpara>
-       </listitem>
-      </itemizedlist>
-      </listitem>
-     </itemizedlist>
-   </para>
-
-   <para>
-    PHP kaynak kod paketinin derleme için ayar ve yapılandırma işlemi
-    <command>configure</command> betiğinin komut satırı seçenekleri
-    kullanılarak yapılır. Bu seçeneklerin neler olduğunu görmek için kaynak
-    paketinin kök dizininde komut satırından <command>./configure
-    --help</command> komutunu verebilirsiniz. Ayrıca, bu kılavuzda da bazı
-    seçeneklerin açıklamalarına yer verilmiştir. <link
-    linkend="configure.about">Temel yapılandırma seçenekleri</link>ni eklerde
-    bulabilirsiniz. Eklentilere özgü yapılandırma seçenekleri ise
-    eklentilerin kılavuzdaki belgelerinde bulunabilir.
-   </para>
-
-   <para>
-    PHP'yi yapılandırdığınızda modülleri ve çalıştırılabilirleri derlemeye
-    hazırsınız demektir. Artık <command>make</command> komutunu
-    verebilirsiniz. Derleme işlemi bir noktada başarısız olursa ve bunun
-    sebebini anlayamazsanız, <link linkend="install.problems">Sorunlar</link>
-    bölümüne bakınız.
-   </para>
-   <note>
-    <para>
-     Bazı Unix sistemleri (OpenBSD ve SELinux gibi), PaX MPROTECT veya W^X
-     ihlal koruması olarak adlandırılan koruma, güvenlik nedenleriyle hem
-     yazılabilir hem de çalıştırılabilir eşleme sayfalarına izin vermeyebilir.
-     Bununla birlikte, bu tür bir bellek eşlemesi PCRE'nin JIT desteği için
-     gereklidir, bu nedenle ya PHP'nin <link linkend="pcre.installation">PCRE
-     JIT desteği olmadan</link> kurulması ya da ikili sistemin sistem
-     tarafından sağlanan herhangi bir yolla beyaz listeye alınması gerekir.
-    </para>
-   </note>
-
-   <note>
-    <simpara>
-     ARM için Android araç zinciriyle çapraz derleme şu anda
-     desteklenmemektedir.
-    </simpara>
-   </note>
-
-   <!-- web server specific nodes -->
-   &install.unix.apache2;
-   &install.unix.nginx;
-   &install.unix.lighttpd-14;
-   &install.unix.litespeed;
-   &install.unix.commandline;
-   <!-- operating system specific nodes -->
-   &install.unix.openbsd;
-   &install.unix.solaris;
-   <!-- distribution specific nodes -->
-   &install.unix.debian;
+ <!-- distribution specific nodes -->
+ &install.unix.debian;
+ &install.unix.dnf;
+ &install.unix.openbsd;
+ <!-- general from-source instructions -->
+ &install.unix.source;
+ <!-- web server specific nodes -->
+ &install.unix.commandline;
+ &install.unix.apache2;
+ &install.unix.nginx;
+ &install.unix.lighttpd-14;
+ &install.unix.litespeed;
+ <!-- operating system specific nodes -->
+ &install.unix.solaris;
 
   </chapter>
 

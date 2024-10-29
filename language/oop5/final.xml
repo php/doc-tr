@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 5e8652131e898cd3d02cd26eeb26da718a6aaf65 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 16f66c05a4060a7d673ae1c70b656d65009407b0 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.final" xmlns="http://docbook.org/ns/docbook">
   <title><code>final</code> Anahtar Sözcüğü</title>
   <para>
-    Tanımı <literal>final</literal> anahtar sözcüğü ile başlayan yöntem veya
-    sabiti çocuk sınıflar geçersiz kılamaz. Tanımı <literal>final</literal>
-    sözcüğüyle ile başlayan bir sınıf ise genişletilemez.
+    Tanımı <literal>final</literal> anahtar sözcüğü ile başlayan yöntem,
+    özellik veya sabiti çocuk sınıflar geçersiz kılamaz. Tanımı
+    <literal>final</literal> sözcüğüyle ile başlayan bir sınıf ise
+    genişletilemez.
   </para>
 
   <example>
@@ -60,10 +61,26 @@ class ÇocukSınıf extends AnaSınıf {
 ]]>
    </programlisting>
   </example>
-  <para>
-   <example xml:id="language.oop5.final.example.php81">
-    <title>- PHP 8.1.0 ve sonrasında Final sabit örneği</title>
-    <programlisting role="php">
+ <example>
+  <title>- PHP 8.4.0 ve sonrasında Final özellik örneği</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+class BaseClass {
+   final protected string $test;
+}
+
+class ChildClass extends BaseClass {
+    public string $test;
+}
+// Onulmaz hata ile sonuçlanır: Cannot override final property BaseClass::$test
+?>
+]]>
+  </programlisting>
+ </example>
+  <example xml:id="language.oop5.final.example.php81">
+   <title>- PHP 8.1.0 ve sonrasında Final sabit örneği</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 class Foo
@@ -79,18 +96,20 @@ class Bar extends Foo
 // Ölümcül hata: Bar::X, final constant Foo::X ile geçersiz kılınamaz
 ?>
 ]]>
-    </programlisting>
-   </example>
-  </para>
+   </programlisting>
+  </example>
 
   <note>
    <simpara>
-    Özellikler <code>final</code> olarak bildirilemez, sadece sınıflar,
-    yöntemler ve sabitler <code>final</code> olarak bildirilebilir.
+     PHP 8.0.0 itibariyle, private yöntemler,
+     <link linkend="language.oop5.decon.constructor">kurucular</link> hariç
+     final olarak bildirilememektedir.
    </simpara>
+  </note>
+  <note>
    <simpara>
-    PHP 8.0.0 itibariyle, private yöntemler, kurucular hariç final olarak
-    bildirilememektedir.
+    <link linkend="language.oop5.visibility-members-aviz"><literal>private(set)</literal></link>
+    olarak bildirilen bir özellik örtük olarak <literal>final</literal>'dir.
    </simpara>
   </note>
  </sect1>

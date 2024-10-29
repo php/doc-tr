@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: f5e5b54129045a7d02c5285a88cea0abff8ffb6f Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7d7b378abd302430b8ce7cedb4b78c7033f5e88c Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
  <sect1 xml:id="language.oop5.visibility" xmlns="http://docbook.org/ns/docbook">
   <title>Görünürlük</title>
@@ -23,10 +23,9 @@
     Görünürlük belirtilmeden bildirilen özelliklerin görünürlüğünün
     <literal>public</literal> olduğu varsayılır.
    </para>
-   <para>
-    <example>
-     <title>- Özellik bildirimi</title>
-     <programlisting role="php">
+   <example>
+    <title>- Özellik bildirimi</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 /**
@@ -80,9 +79,132 @@ $nesne2->selamVer();    // Genel2, Öbür korumalı ve Undefined görüntülenir
 
 ?>
 ]]>
+    </programlisting>
+   </example>
+   <sect3 xml:id="language.oop5.visibility-members-aviz">
+    <title>Bakışımsız Özellik Görünürlüğü</title>
+    <simpara>
+     PHP 8.4'ten itibaren, özelliklerin görünürlükleri bakışımsız olarak
+     ayarlanabilir, okuma (<literal>get</literal>) ve yazma
+     (<literal>set</literal>) için farklı kapsamlar olabilir. Özellikle,
+     <literal>set</literal> görünürlüğü, öntanımlı görünürlükten daha izin
+     verici olmadığı sürece ayrı olarak belirtilebilir.
+    </simpara>
+    <example>
+     <title>- Bakışımsız Özellik Görünürlüğü</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Book
+{
+    public function __construct(
+        public private(set) string $title,
+        public protected(set) string $author,
+        protected private(set) int $pubYear,
+    ) {}
+}
+
+class SpecialBook extends Book
+{
+    public function update(string $author, int $year): void
+    {
+        $this->author = $author; // OK
+        $this->pubYear = $year; // Onulmaz Hata
+    }
+}
+
+$b = new Book('How to PHP', 'Peter H. Peterson', 2024);
+
+echo $b->title; // Çalışır
+echo $b->author; // Çalışır
+echo $b->pubYear; // Onulmaz Hata
+
+$b->title = 'How not to PHP'; // Onulmaz Hata
+$b->author = 'Pedro H. Peterson'; // Onulmaz Hata
+$b->pubYear = 2023; // Onulmaz Hata
+?>
+]]>
+    </programlisting>
+   </example>
+    <para>Bakışımsız görünürlükle ilgili birkaç uyarı var:</para>
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       Yalnızca yazılan özelliklerin ayrı bir <literal>set</literal>
+       görünürlüğü olabilir.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>set</literal> görünürlüğü <literal>get</literal> ile aynı
+       veya daha kısıtlayıcı olmalıdır. Yani,
+       <code>public protected(set)</code> ve
+       <code>protected protected(set)</code> kullanımına izin verilir,
+       ancak <code>protected public(set)</code> bir sözdizimi hatasına
+       neden olur.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Bir özellik <literal>public</literal> ise, ana görünürlük atlanabilir.
+       Yani, <code>public private(set)</code> ve <code>private(set)</code>
+       aynı sonucu verecektir.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>private(set)</literal> görünürlüğüne sahip bir özellik
+       otomatik olarak <literal>final</literal> olur ve bir alt sınıfta
+       yeniden bildirilemez.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Bir özelliğe başvurulmasını sağlamak <literal>set</literal>
+       görünürlüğünü takip eder, <literal>get</literal>'i değil.
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       Benzer şekilde, bir dizi özelliğine yazmaya çalışmak hem dahili
+       olarak <literal>get</literal> hem de <literal>set</literal> işlemini
+       içerir ve bu nedenle her zaman daha kısıtlayıcı olan
+       <literal>set</literal> görünürlüğünü takip eder.
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    <simpara>
+     Bir sınıf başka bir sınıfı genişlettiğinde, alt sınıf
+     <literal>final</literal> olmayan herhangi bir özelliği yeniden tanımlayabilir. Bunu yaparken, yeni görünürlük ana sınıfla aynı veya
+     ondan daha geniş olduğu sürece, ana görünürlüğü veya
+     <literal>set</literal> görünürlüğünü genişletebilir. Ancak, bir
+     <literal>private</literal> özelliği geçersiz kılınırsa, aslında ana
+     sınıfın özelliğinin değiştirilmediği, ancak farklı bir dahili isme
+     sahip yeni bir özellik oluşturduğu unutulmamalıdır.
+    </simpara>
+    <example>
+     <title>- Bakışımsız Özellik Kalıtımı</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Book
+{
+    protected string $title;
+    public protected(set) string $author;
+    protected private(set) int $pubYear;
+}
+
+class SpecialBook extends Book
+{
+    public protected(set) $title; // OK, çünkü okumak daha geniş, yazmak ise aynı.
+    public string $author; // OK, çünkü okumak aynı, yazmak ise daha geniş.
+    public protected(set) int $pubYear; // Onulmaz hata. private(set) özellikler finaldir.
+}
+?>
+]]>
      </programlisting>
     </example>
-   </para>
+   </sect3>
   </sect2>
 
   <sect2 xml:id="language.oop5.visiblity-methods">
@@ -93,10 +215,9 @@ $nesne2->selamVer();    // Genel2, Öbür korumalı ve Undefined görüntülenir
     herhangi biri kullanılmadan yapılmış yöntem tanımlarının
     <literal>public</literal> kullanılarak yapıldığı varsayılır.
    </para>
-   <para>
-    <example>
-     <title>- Yöntem bildirimi</title>
-     <programlisting role="php">
+   <example>
+    <title>- Yöntem bildirimi</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 /**
@@ -183,9 +304,8 @@ $fo->dnm();  // Bar::dnmÖzel
 
 ?>
 ]]>
-     </programlisting>
-    </example>
-   </para>
+    </programlisting>
+   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.visiblity-constants">
@@ -195,10 +315,9 @@ $fo->dnm();  // Bar::dnmÖzel
     protected olarak tanımlanabilir. Bu sözcükler olmaksızın tanımlanmış
     sabitlerin public olarak tanımlandıkları varsayılır.
    </para>
-   <para>
-    <example>
-     <title>- PHP 7.1.0 ve sonrasında sabit bildirimleri</title>
-     <programlisting role="php">
+   <example>
+    <title>- PHP 7.1.0 ve sonrasında sabit bildirimleri</title>
+    <programlisting role="php">
 <![CDATA[
 <?php
 /**
@@ -249,9 +368,8 @@ echo MyClass2::MY_PUBLIC; // Çalışır
 $myclass2->foo2(); // genel ve korumalı çalışır, özel çalışmaz
 ?>
 ]]>
-     </programlisting>
-    </example>
-   </para>
+    </programlisting>
+   </example>
   </sect2>
 
   <sect2 xml:id="language.oop5.visibility-other-objects">
