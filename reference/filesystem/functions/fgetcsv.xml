@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: cef78b0fbe0fbe02003699b027ab50200097e949 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 73007ad9889ca2a3d85b0a710b55deb44ac370cc Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.fgetcsv" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>fgetcsv</refname>
@@ -61,7 +61,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>ayraç</parameter></term>
+     <term><parameter>ayraç</parameter> (<parameter>separator</parameter>)</term>
      <listitem>
       <para>
        İsteğe bağlı bu bağımsız değişken ile alan ayracı (tek baytlık bir
@@ -70,7 +70,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>sınırlayıcı</parameter></term>
+     <term><parameter>sınırlayıcı</parameter> (<parameter>enclosure</parameter>)</term>
      <listitem>
       <para>
        İsteğe bağlı bu bağımsız değişken ile alan sınırlayıcı (tek baytlık bir
@@ -79,7 +79,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><parameter>öncelem</parameter></term>
+     <term><parameter>öncelem</parameter> (<parameter>escape</parameter>)</term>
      <listitem>
       <para>
        Belirtilmesi seçimlik olup önceleme karakteri (tek baytlık bir
@@ -98,6 +98,14 @@
         özel bir anlamı yoktur; kendisini de öncelemesi amaçlanmamıştır.
        </simpara>
       </note>
+      <warning>
+       <simpara>
+        PHP 8.4.0 ve sonrasında, <parameter>öncelem</parameter> öntanımlı
+        değerine bağlı olarak kullanım dışıdır. Açıkça ya konumsal olarak
+        ya da <link linkend="functions.named-arguments">isimli bağımsız
+        değişkenler</link> kullanılarak sağlanması gerekir.
+       </simpara>
+      </warning>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -120,6 +128,19 @@
   &note.line-endings;
  </refsect1>
 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <simpara>
+   <parameter>ayraç</parameter> veya <parameter>sınırlayıcı</parameter> tek
+   bayt uzunlukta değilse <exceptionname>ValueError</exceptionname> istisnası
+   oluşur.
+  </simpara>
+  <simpara>
+   <parameter>öncelem</parameter> tek bayt uzunlukta değilse veya boş dizge
+   ise <exceptionname>ValueError</exceptionname> istisnası oluşur.
+  </simpara>
+ </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -132,6 +153,13 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.4.0</entry>
+       <entry>
+        <parameter>öncelem</parameter> bağımsız değişkeninin öntanımlı
+        değerine güvenmek artık kullanım dışıdır.
+       </entry>
+      </row>
       <row>
        <entry>8.0.0</entry>
        <entry>
@@ -180,15 +208,17 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
 
  <refsect1 role="seealso">
   &reftitle.seealso;
-  <para>
-   <simplelist>
-    <member><function>str_getcsv</function></member>
-    <member><function>explode</function></member>
-    <member><function>file</function></member>
-    <member><function>pack</function></member>
-    <member><function>fputcsv</function></member>
-   </simplelist>
-  </para>
+  <simplelist>
+   <member><function>fputcsv</function></member>
+   <member><function>str_getcsv</function></member>
+   <member><methodname>SplFileObject::fgetcsv</methodname></member>
+   <member><methodname>SplFileObject::fputcsv</methodname></member>
+   <member><methodname>SplFileObject::setCsvControl</methodname></member>
+   <member><methodname>SplFileObject::getCsvControl</methodname></member>
+   <member><function>explode</function></member>
+   <member><function>file</function></member>
+   <member><function>pack</function></member>
+  </simplelist>
  </refsect1>
 
 </refentry>
