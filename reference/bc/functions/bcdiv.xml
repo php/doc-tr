@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 4754397753fd79f1c846868b66a2448babab1c54 Maintainer: aydin Status: ready -->
-<refentry xml:id="function.bcdiv" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: ddb05f8827151e25dd1c3e058f95f6c024bc881b Maintainer: aydin Status: ready -->
+<refentry xml:id="function.bcdiv" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude">
  <refnamediv>
   <refname>bcdiv</refname>
   <refpurpose>İki keyfi duyarlıklı sayıyı böler</refpurpose>
@@ -15,10 +14,10 @@
    <methodparam><type>string</type><parameter>bölen</parameter></methodparam>
    <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>basamak</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
-  <para>
+  <simpara>
    <parameter>bölünen</parameter>'i
    <parameter>bölen</parameter>'e böler.
-  </para>
+  </simpara>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -49,9 +48,18 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Bölme sonucunu dizge olarak hesaplar. Eğer
-   <parameter>bölen</parameter> 0 ise &null; döner.
+   Bölme sonucunu dizge olarak hesaplar.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  <!-- Include standard ValueErrors for num1, num2, and scale, this includes the title -->
+  <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('function.bcadd')/db:refsect1[@role='errors']/*)" />
+  <simpara>
+   <parameter>bölen</parameter> bağımsız değişkeninin değeri
+   <literal>0</literal> ise <exceptionname>DivisionByZeroError</exceptionname>
+   istisnası oluşur.
+  </simpara>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -69,6 +77,14 @@
       <entry>8.0.0</entry>
       <entry>
        <parameter>basamak</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>0</literal> ile bölme, &null; döndürmek yerine artık
+       <exceptionname>DivisionByZeroError</exceptionname> istisnasına
+       sebep oluyor.
       </entry>
      </row>
     </tbody>
@@ -96,6 +112,8 @@ echo bcdiv('105', '6.55957', 3);  // 16.007
   &reftitle.seealso;
   <para>
    <simplelist>
+    <member><function>bcdivmod</function></member>
+    <member><function>bcmod</function></member>
     <member><function>bcmul</function></member>
    </simplelist>
   </para>
