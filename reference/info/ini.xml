@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: ada1d79de35239334b68d0120b011530e31244ff Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: b1116af46680f7baf89c46610430a3b63ce9a1f0 Maintainer: nilgun Status: ready -->
 <section xml:id="info.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
@@ -91,6 +91,24 @@
       <entry><constant>INI_ALL</constant></entry>
       <entry></entry>
      </row>
+    <row>
+     <entry><link linkend="ini.zend.max-allowed-stack-size">zend.max_allowed_stack_size</link></entry>
+     <entry>"0"</entry>
+     <entry><constant>INI_SYSTEM</constant></entry>
+     <entry>PHP 8.3.0 ve sonrasında kullanılabilir.</entry>
+    </row>
+    <row>
+     <entry><link linkend="ini.zend.reserved-stack-size">zend.reserved_stack_size</link></entry>
+     <entry>"0"</entry>
+     <entry><constant>INI_SYSTEM</constant></entry>
+     <entry>PHP 8.3.0 ve sonrasında kullanılabilir.</entry>
+    </row>
+    <row>
+     <entry><link linkend="ini.fiber.stack-size">fiber.stack_size</link></entry>
+     <entry></entry>
+     <entry><constant>INI_ALL</constant></entry>
+     <entry>PHP 8.1.0 ve sonrasında kullanılabilir.</entry>
+    </row>
     </tbody>
    </tgroup>
   </table>
@@ -295,6 +313,104 @@
     <listitem>
      <para>
       Döngüsel gönderim toplayıcısını açıp kapar.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry xml:id="ini.zend.max-allowed-stack-size">
+    <term>
+     <parameter>zend.max_allowed_stack_size</parameter>
+     <type>int</type>
+    </term>
+    <listitem>
+     <para>
+      İşletim sisteminin yazılımın tüketmesine izin verdiği azami yerel yığıt
+      alanı. İşletim sisteminin izin verdiğinden daha fazlasını tüketmeye
+      çalışmak genellikle kolayca erişilebilen hata ayıklama bilgisi olmadan
+      sert bir çökmeyle sonuçlanır. Hata ayıklamayı kolaylaştırmak için, motor
+      çökmeden önce bir <classname>Error</classname> oluşturur (yazılım
+      <link linkend="ini.zend.max-allowed-stack-size">zend.max_allowed_stack_size</link>-<link linkend="ini.zend.reserved-stack-size">zend.reserved_stack_size</link>
+      bayttan daha fazla yığıt kullandığında).
+     </para>
+     <para>
+      Kullanıcı tanımlı koddaki yineleme yerel yığın alanını tüketmez. Ancak,
+      dahili işlevler ve sihirli yöntemler tüketir. Bu işlevleri içeren çok
+      derin yineleme, yazılımın tüm kullanılabilir yerel yığıt alanını
+      tüketmesine neden olabilir.
+     </para>
+     <para>
+      Bu seçenek için olası değerler şunlardır:
+      <simplelist>
+       <member>
+        <literal>0</literal>: İşletim sisteminin yazılımın tüketmesine izin
+        verdiği azami yerel yığıt alanını otomatik olarak algıla. Bu öntanımlı
+        değerdir. Algılama mümkün olmadığında, bilinen bir sistem öntanımlısı
+        kullanılır.
+       </member>
+       <member>
+        <literal>-1</literal>: Motorda yığıt boyutu denetimini devre dışı
+        bırakır.
+       </member>
+       <member>
+        Pozitif tam sayı: Bayt cinsinden sabit bir boyut. Bu değer çok yüksek
+        ayarlanırsa, etkisi yığıt boyutu denetimini devre dışı bırakmakla
+        aynıdır.
+       </member>
+      </simplelist>
+     </para>
+     <para>
+      <link linkend="language.fibers">fibers</link>'in yığıt boyutu
+      <link linkend="ini.fiber.stack-size">fiber.stack_size</link> ile
+      belirlendiğinden, bir Fiber'in yürütülmesi sırasında yığıt kullanımını denetlerken
+      <link linkend="ini.zend.max-allowed-stack-size">zend.max_allowed_stack_size</link>
+      yerine bu seçeneğin değeri kullanılır.
+     </para>
+     <note>
+      <para>
+       Bu, yığıt <emphasis>tamponu</emphasis> taşmalarıyla ilgili değildir ve
+       bir güvenlik özelliği değildir.
+      </para>
+     </note>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.zend.reserved-stack-size">
+    <term>
+     <parameter>zend.reserved_stack_size</parameter>
+     <type>int</type>
+    </term>
+    <listitem>
+     <para>
+      Bayt cinsinden ayrılmış yığıt boyutu. Bu, yığıt boyutu denetlenirken
+      bir tampon olarak <link linkend="ini.zend.max-allowed-stack-size">izin
+      verilen azami yığıt boyutundan</link> çıkarılır.
+     </para>
+     <para>
+      Bu seçenek için olası değerler şunlardır:
+      <simplelist>
+       <member>
+        <literal>0</literal>: Mantıklı boyutu otomatik olarak algıla.
+       </member>
+       <member>
+        Pozitif tam sayı: Bayt cinsinden sabit bir boyut.
+       </member>
+      </simplelist>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="ini.fiber.stack-size">
+    <term>
+     <parameter>fiber.stack_size</parameter>
+     <type>int</type>
+    </term>
+    <listitem>
+     <para>
+      Bayt cinsinden, her <link linkend="language.fibers">Fiber</link> için
+      tahsis edilen yerel yığıt boyutu.
+     </para>
+     <para>
+      Öntanımlı değer, gösterici boyutu 8 bayttan küçük olan sistemlerde
+      1MiB, aksi takdirde 2MiB'dir.
      </para>
     </listitem>
    </varlistentry>
