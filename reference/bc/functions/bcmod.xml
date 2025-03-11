@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 4754397753fd79f1c846868b66a2448babab1c54 Maintainer: aydin Status: ready -->
-<refentry xml:id="function.bcmod" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: c7e83fbbbcde9f54affc09424d032c38492a3ff4 Maintainer: aydin Status: ready -->
+<refentry xml:id="function.bcmod" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude">
  <refnamediv>
   <refname>bcmod</refname>
   <refpurpose>Keyfi duyarlıklı sayılarda bölme işleminden kalanı bulur
@@ -12,47 +11,31 @@
   &reftitle.description;
   <methodsynopsis>
    <type>string</type><methodname>bcmod</methodname>
-   <methodparam><type>string</type><parameter>bölünen</parameter></methodparam>
-   <methodparam><type>string</type><parameter>bölen</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sayı1</parameter></methodparam>
+   <methodparam><type>string</type><parameter>sayı2</parameter></methodparam>
    <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>basamak</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <parameter>bölünen</parameter>'in
-   <parameter>bölen</parameter>'e bölünmesinden kalanı döndürür.
-   <parameter>bölen</parameter> sıfır olmadıkça sonuç
-   <parameter>bölünen</parameter>'in işaretini alır.
+   <parameter>sayı1</parameter>'in
+   <parameter>sayı2</parameter>'ye bölünmesinden kalanı döndürür.
+   Sonuç <parameter>sayı1</parameter>'in işaretini alır.
   </para>
  </refsect1>
 
- <refsect1 role="parameters">
-  &reftitle.parameters;
-  <para>
-   <variablelist>
-    <varlistentry>
-     <term><parameter>bölünen</parameter></term>
-     <listitem>
-      <para>
-       Dizge olarak bölünen sayı.
-      </para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term><parameter>bölen</parameter></term>
-     <listitem>
-      <para>
-       Dizge olarak bölen sayı.
-      </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </para>
- </refsect1>
+ <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('function.bcadd')/db:refsect1[@role='parameters'])" />
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizge olarak kalanı veya <parameter>bölen</parameter> <literal>0</literal>
-   ise &null; döndürür.
+   Dizge olarak kalanı döndürür.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('function.bcadd')/db:refsect1[@role='errors']/*)" />
+  <para>
+   <parameter>sayı1</parameter>  <literal>0</literal> ise
+   <exceptionname>DivisionByZeroError</exceptionname> istisnası oluşur.
   </para>
  </refsect1>
 
@@ -74,9 +57,17 @@
       </entry>
      </row>
      <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>0</literal> ile bölme, &null; döndürmek yerine artık
+       <exceptionname>DivisionByZeroError</exceptionname> istisnasına
+       sebep oluyor.
+      </entry>
+     </row>
+     <row>
       <entry>7.2.0</entry>
       <entry>
-       <parameter>bölünen</parameter> ve <parameter>bölen</parameter> artık
+       <parameter>sayı1</parameter> ve <parameter>sayı2</parameter> artık
        ondalık kısmı kırpılıp tamsayı yapılmıyor. Dolayısıyla, işlev artık
        <literal>%</literal> işleci gibi değil <function>fmod</function> gibi
        davranıyor.
@@ -127,6 +118,8 @@ echo bcmod('5.7', '1.3'); // PHP 7.2.0 ve sonrası 0.5 - öncesi 0
   <para>
    <simplelist>
     <member><function>bcdiv</function></member>
+    <member><function>bcdivmod</function></member>
+    <member><methodname>BcMath\Number::mod</methodname></member>
    </simplelist>
   </para>
  </refsect1>

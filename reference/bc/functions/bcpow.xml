@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Revision$ -->
-<!-- EN-Revision: 23f5599c8cc2713e7a4fdc29d8cceab66c341c48 Maintainer: aydin Status: ready -->
-<refentry xml:id="function.bcpow" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 3295741565f760edd22e305bd10e37f243e9e194 Maintainer: aydin Status: ready -->
+<refentry xml:id="function.bcpow" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude">
  <refnamediv>
   <refname>bcpow</refname>
   <refpurpose>Keyfi duyarlıklı sayılar için üs alma işlemi yapar</refpurpose>
@@ -37,14 +36,14 @@
      <term><parameter>üs</parameter></term>
      <listitem>
       <para>
-       Dizge olarak üs. Üs tamsayılardan oluşmuyorsa tamsayı olmayan kısım
-       kırpılır. Üssün geçerli aralığı platforma özgüdür, ancak en azından
+       Dizge olarak üs. Üs tamsayı olmalı ondalık kısım içermemelidir.
+       Üssün geçerli aralığı platforma özgüdür, ancak en azından
        <literal>-2147483648</literal> ile <literal>2147483647</literal>
        arasındadır.
       </para>
      </listitem>
     </varlistentry>
-    &bc.scale.description;
+    <xi:include xpointer="function.bcadd..parameters.scale" />
    </variablelist>
   </para>
  </refsect1>
@@ -55,6 +54,27 @@
    Sonucu dizge olarak döndürür.
   </para>
  </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   İşlev aşağıdaki durumlarda <exceptionname>ValueError</exceptionname>
+   istisnası oluşturur:
+   <simplelist>
+    <member><parameter>taban</parameter> veya <parameter>üs</parameter>
+    iyi biçimlenmiş BCMath sayısal dizgesi değilse</member>
+    <member><parameter>üs</parameter> ondalık kısım içeriyorsa</member>
+    <member><parameter>üs</parameter> veya <parameter>basamak</parameter>
+    geçerli aralığın dışındaysa</member>
+   </simplelist>
+  </para>
+  <simpara>
+   <parameter>taban</parameter> <literal>0</literal> ve
+   <parameter>üs</parameter> negatif ise
+   <exceptionname>DivisionByZeroError</exceptionname> istisnası oluşur.
+  </simpara>
+ </refsect1>
+
  <refsect1 role="changelog"><!-- {{{ -->
   &reftitle.changelog;
   <informaltable>
@@ -66,6 +86,22 @@
      </row>
     </thead>
     <tbody>
+     <row>
+      <entry>8.4.0</entry>
+      <entry>
+       <literal>0</literal>'ın negatif üssü evvelce <literal>0</literal>
+       döndürürdü, artık <exceptionname>DivisionByZeroError</exceptionname>
+       istisnası oluşuyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>üs</parameter> ondalık kısım içeriyorsa, ondalık kısmın
+       kırpılması yerine artık <exceptionname>ValueError</exceptionname>
+       istisnası oluşuyor.
+      </entry>
+     </row>
      <row>
       <entry>7.3.0</entry>
       <entry>
@@ -124,6 +160,7 @@ echo bcpow('5', '2', 2);     // "25" basar, "25.00" değil
    <simplelist>
     <member><function>bcpowmod</function></member>
     <member><function>bcsqrt</function></member>
+    <member><methodname>BcMath\Number::pow</methodname></member>
    </simplelist>
   </para>
  </refsect1>

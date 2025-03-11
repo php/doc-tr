@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: cbac1ecf71d754707d69bdc344c4031c157eaa54 Maintainer: aydin Status: ready -->
-<refentry xml:id="function.bcpowmod" xmlns="http://docbook.org/ns/docbook">
+<!-- EN-Revision: 3295741565f760edd22e305bd10e37f243e9e194 Maintainer: aydin Status: ready -->
+<refentry xml:id="function.bcpowmod" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude">
  <refnamediv>
   <refname>bcpowmod</refname>
   <refpurpose>Önce bir keyfi duyarlıklı sayının diğerine göre üs alma
@@ -53,7 +53,7 @@
       </para>
      </listitem>
     </varlistentry>
-    &bc.scale.description;
+    <xi:include xpointer="function.bcadd..parameters.scale" />
    </variablelist>
   </para>
  </refsect1>
@@ -61,9 +61,29 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
-   Dizge olarak sonucu veya <parameter>modül</parameter> 0 ise veya
-   <parameter>üs</parameter> negatifse &false; döndürür.
+   Dizge olarak sonucu döndürür.
   </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   İşlev aşağıdaki durumlarda <exceptionname>ValueError</exceptionname>
+   istisnası oluşturur:
+   <simplelist>
+    <member><parameter>taban</parameter>, <parameter>üs</parameter>
+     veya <parameter>modül</parameter> iyi biçimlenmiş BCMath sayısal
+     dizgesi değilse</member>
+    <member><parameter>taban</parameter>, <parameter>üs</parameter>
+     veya <parameter>modül</parameter> ondalık kısım içeriyorsa</member>
+    <member><parameter>üs</parameter> negatif ise</member>
+    <member><parameter>basamak</parameter> geçerli aralığın dışındaysa</member>
+   </simplelist>
+  </para>
+  <simpara>
+   <parameter>modül</parameter> <literal>0</literal> ise
+   <exceptionname>DivisionByZeroError</exceptionname> istisnası oluşur.
+  </simpara>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -81,6 +101,21 @@
       <entry>8.0.0</entry>
       <entry>
        <parameter>basamak</parameter> artık &null; olabiliyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>üs</parameter> negatif ise &false; döndürmek yerine artık
+       <exceptionname>ValueError</exceptionname> istisnası oluşturuluyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <literal>0</literal> ile bölme işlemi &false; döndürmek yerine artık
+       <exceptionname>DivisionByZeroError</exceptionname> istisnası
+       oluşturuluyor.
       </entry>
      </row>
     </tbody>
@@ -127,6 +162,7 @@ $b = bcmod(bcpow($x, $y), $mod);
    <simplelist>
     <member><function>bcpow</function></member>
     <member><function>bcmod</function></member>
+    <member><methodname>BcMath\Number::powmod</methodname></member>
    </simplelist>
   </para>
  </refsect1>
