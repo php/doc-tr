@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 4f5e2b22575131fa5e9c3004b1c874e1acb06573 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: c1f37a6c270aadbbb3da56a3973ffd62197adf2b Maintainer: nilgun Status: ready -->
 <refentry xml:id="domxpath.registerphpfunctions" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>DOMXPath::registerPhpFunctions</refname>
@@ -27,11 +27,15 @@
      <term><parameter>sınırla</parameter></term>
      <listitem>
       <para>
-       XPath ifadelerinde kullanmak üzere sadece belli işlevlere izin vermek için kullanılır.
+       XPath ifadelerinde kullanmak üzere sadece belli işlevlere izin vermek
+       için kullanılır.
       </para>
       <para>
-       Ya bir dizge (işlev ismi) ya da işlev isimlerini içeren bir dizi
-       olabilir.
+       Değer şunlardan biri olabilir:
+       <type>string</type> türünde bir işlev adı, işlev adlarını içeren
+       indisli bir dizi veya anahtarları işlev isimlerinden, ilişkili
+       değerleri <type>callable</type> türünde değerlerden oluşan bir
+       ilişkisel dizi.
       </para>
      </listitem>
     </varlistentry>
@@ -44,6 +48,57 @@
   <para>
    &return.void;
   </para>
+ </refsect1>
+
+ <refsect1 role="errors" xml:id="domxpath.registerphpfunctions..errors">
+  &reftitle.errors;
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Geri çağırım işlevinin adı geçersiz ise
+     <exceptionname>ValueError</exceptionname> istisnası oluşur.
+    </simpara>
+   </listitem>
+   &dom.errors.compliant.common;
+   <listitem>
+    <simpara>
+     Belirtilen .
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row xml:id="domxpath.registerphpfunctions..changelog.errors">
+      <entry>8.4.0</entry>
+      <entry>
+       Geçersiz geri çağırım işlevi adları artık
+       <exceptionname>ValueError</exceptionname> istisnası oluşturuyor.
+       Geri çağırım işlevi <type>callable</type> türünde değilse artık
+       <exceptionname>TypeError</exceptionname> istisnası oluşuyor.
+      </entry>
+     </row>
+     <row>
+      <entry>8.4.0</entry>
+      <entry>
+       Geri çağırım işlevlerinin <type>callable</type> kısmı
+       <parameter>sınırla</parameter> değeri olarak bir ilişkisel diziye
+       belirtilebiliyor.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
@@ -79,7 +134,7 @@
   </para>
   <para>
    <example>
-    <title>- <methodname>DOMXPath::registerPHPFunctions</methodname> ve <literal>php:functionString</literal> kullanımı</title>
+    <title>- <methodname>DOMXPath::registerPhpFunctions</methodname> ve <literal>php:functionString</literal> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -92,7 +147,7 @@ $xpath = new DOMXPath($doc);
 $xpath->registerNamespace("php", "http://php.net/xpath");
 
 // PHP işlevlerini tanıt (sınırlama yok)
-$xpath->registerPHPFunctions();
+$xpath->registerPhpFunctions();
 
 // substr işlevini book/title üzerinde kullan
 $nodes = $xpath->query('//book[php:functionString("substr", title, 0, 3) = "PHP"]');
@@ -119,7 +174,7 @@ Jenny Smythe tarafından yazılan 'PHP Secrets'
   </para>
   <para>
    <example>
-    <title>- <methodname>DOMXPath::registerPHPFunctions</methodname> ve <literal>php:function</literal> kullanımı</title>
+    <title>- <methodname>DOMXPath::registerPhpFunctions</methodname> ve <literal>php:function</literal> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -132,7 +187,7 @@ $xpath = new DOMXPath($doc);
 $xpath->registerNamespace("php", "http://php.net/xpath");
 
 // PHP işlevlerini tanıt (sadece birden_fazla işlevi)
-$xpath->registerPHPFunctions("birden_fazla");
+$xpath->registerPhpFunctions("birden_fazla");
 
 function birden_fazla($nodes) {
     // Bir yazardan fazla varsa true dönsün
@@ -158,6 +213,36 @@ PHP Basics
     </screen>
    </example>
   </para>
+  <para>
+   <example>
+    <title>- Geri çağırımlı <methodname>DOMXPath::registerPhpFunctions</methodname></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$doc = new DOMDocument;
+$doc->load('examples/book-simple.xml');
+
+$xpath = new DOMXPath($doc);
+
+// php: isim alanını tanıt (gerekli)
+$xpath->registerNamespace("php", "http://php.net/xpath");
+
+// PHP işlevlerini tanıt (yalnızca birden_fazla)
+$xpath->registerPhpFunctions(["birden_fazla" => fn ($nodes) => count($nodes) > 1]);
+
+// Birden fazla yazarlı kitapları ayır
+$books = $xpath->query('//book[php:function("birden_fazla", author)]');
+
+echo "Birden fazla yazarlı kitaplar:\n";
+foreach ($books as $book) {
+    echo $book->getElementsByTagName("title")->item(0)->nodeValue . "\n";
+}
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="seealso">
@@ -167,6 +252,7 @@ PHP Basics
     <member><methodname>DOMXPath::registerNamespace</methodname></member>
     <member><methodname>DOMXPath::query</methodname></member>
     <member><methodname>DOMXPath::evaluate</methodname></member>
+    <member><methodname>XSLTProcessor::registerPHPFunctions</methodname></member>
    </simplelist>
   </para>
  </refsect1>
