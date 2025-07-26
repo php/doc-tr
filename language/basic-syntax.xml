@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6b09bb638aa64d1fad5f4a630a8da9a2692ce733 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 0e618211e53c66f33762be225a4d57c08ef4b2f7 Maintainer: nilgun Status: ready -->
 <!-- CREDITS: tpug, sezer -->
- <chapter xml:id="language.basic-syntax" xmlns="http://docbook.org/ns/docbook">
+ <chapter xml:id="language.basic-syntax" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
   <title>Temel Sözdizimi</title>
   <sect1 xml:id="language.basic-syntax.phptags">
    <title>PHP etiketleri</title>
    <para>
-    PHP bir dosyayı çözümlerken, hangi bölümü yorumlayıp hangi bölümü
-    yorumlamadan geçeceğine karar vermek için <literal>&lt;?php</literal> ve
-    <literal>?&gt;</literal> açılış ve kapanış etiketlerine bakar. Bu şekilde
-    çözümleme PHP'nin her çeşit farklı belgeye gömülmesini sağlar, çünkü bir
-    çift açılış ve kapanış etiketinin dışındaki her şey PHP çözümleyicisi
-    tarafından gözardı edilir.
+    PHP bir dosyayı işlerken, PHP kodunun yürütülme sınırlarını tanımlamak
+    için <literal>&lt;?php</literal> ve <literal>?&gt;</literal> açma ve
+    kapatma etiketlerini tanır. Bu etiketlerin dışındaki içerik, PHP
+    ayrıştırıcısı tarafından göz ardı edilir ve PHP'nin çeşitli belge
+    türlerine sorunsuz bir şekilde gömülmesini sağlar.
    </para>
 
    <para>
-    PHP daha açıklayıcı olan <code>&lt;?php echo</code> etiketine bir kısaltma olarak
-    <literal>&lt;?=</literal> kısa echo etiketini içerir.
+    Uygun dizgeciklerin ayrılmasını sağlamak için <literal>&lt;?php</literal>
+    etiketinin hemen ardında bir boşluk karakteri (boşluk, sekme veya satır
+    sonu) bulunmalıdır. Bu boşluğun bulunmaması sözdizimi hatasına neden
+    olacaktır.
+   </para>
+
+   <para>
+    PHP ayrıca <code>&lt;?php echo</code> için kısayol olan
+    <literal>&lt;?=</literal> kısa <code>echo</code> etiketi içerir.
    </para>
 
    <para>
@@ -55,25 +61,28 @@
    </para>
 
    <para>
-    Bir dosya sadece PHP kodu içeriyorsa, dosyanın sonunda PHP kapanış etiketini koymamak
-    tercih edilir. Yazılımcıdan herhangi bir çıktı gönderme isteği gelmezse PHP
-    betiğin bu noktasında çıktı tamponlamasını başlatacağından kapama etiketinden
-    sonra istenmeyen etkilere neden olabilecek boşluk veya yeni satırların
-    yanlışlıkla eklenmesi böylece engellenmiş olur.
-    <informalexample>
+    Bir dosya PHP kodu ile bitiyorsa, dosyanın sonunda PHP kapanış etiketini
+    koymamak tercih edilir. Yazılımcıdan herhangi bir çıktı gönderme isteği
+    gelmezse PHP betiğin bu noktasında çıktı tamponlamasını başlatacağından
+    kapama etiketinden sonra istenmeyen etkilere neden olabilecek boşluk veya
+    yeni satırların yanlışlıkla eklenmesi böylece engellenmiş olur.
+   </para>
+   <para>
+    <example>
+     <title>- PHP koduyla biten dosya</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-echo "Merhaba Dünya";
+echo "Merhaba Dünya\n";
 
 // ... daha kod
 
-echo "İletişimin sonu";
+echo "İletişimin sonu\n";
 
 // PHP kapama etiketi olmadan betik burada biter
 ]]>
      </programlisting>
-    </informalexample>
+    </example>
    </para>
   </sect1>
 
@@ -84,7 +93,10 @@ echo "İletişimin sonu";
     tarafından gözardı edilerek PHP dosyalarının karışık içeriğe sahip olabilmesi
     sağlanır. Çoğu zaman, bu örnekte olduğu gibi PHP'nin HTML içine gömülmüş
     olduğunu göreceksiniz.
-    <informalexample>
+   </para>
+   <para>
+    <example>
+     <title>- HTML içine PHP gömmek</title>
      <programlisting role="php">
 <![CDATA[
 <p>Bu bölüm PHP tarafından gözardı edilecek ve tarayıcıda gösterilecektir.</p>
@@ -92,14 +104,16 @@ echo "İletişimin sonu";
 <p>Bu bölüm de PHP tarafından gözardı edilecek ve tarayıcıda gösterilecektir.</p>
 ]]>
      </programlisting>
-    </informalexample>
-     Bu beklendiği gibi çalışır, çünkü PHP çözümleyicisi ?&gt; kapanış etiketine
-     rastlayınca  (hemen ardından bir satırsonu karakteri gelmesi durumu hariç -
-     bak: <link linkend="language.basic-syntax.instruction-separation">deyim
-     ayırma</link>) başka bir açılış etiketine rastlayıncaya kadar (etiketin koşullu
-     bir ifadenin ortasında olması durumu hariç - bu durumda çözümleyici neyin
-     atlanacağına karar vermek için ifadenin sonucun saptamaya çalışacaktır) herşeyi
-     çıktılamaya başlar. Aşağıdaki örneğe bakınız:
+    </example>
+   </para>
+   <para>
+    Bu beklendiği gibi çalışır, çünkü PHP çözümleyicisi ?&gt; kapanış etiketine
+    rastlayınca  (hemen ardından bir satırsonu karakteri gelmesi durumu hariç -
+    bak: <link linkend="language.basic-syntax.instruction-separation">deyim
+    ayırma</link>) başka bir açılış etiketine rastlayıncaya kadar (etiketin koşullu
+    bir ifadenin ortasında olması durumu hariç - bu durumda çözümleyici neyin
+    atlanacağına karar vermek için ifadenin sonucun saptamaya çalışacaktır) herşeyi
+    çıktılamaya başlar. Aşağıdaki örneğe bakınız:
    </para>
    <para>
     Yapıların koşullu kullanımı
@@ -112,7 +126,6 @@ echo "İletişimin sonu";
 <?php else: ?>
   İfade doğru değilse bu gösterilir.
 <?php endif; ?>
-?>
 ]]>
      </programlisting>
     </example>
@@ -159,7 +172,7 @@ Satırsonu karakteri yok
      &example.outputs;
      <screen>
 <![CDATA[
-Some textSatırsonu karakteri yok
+Satırsonu karakteri yok
 Ama şimdi var
 ]]>
      </screen>
@@ -167,20 +180,22 @@ Ama şimdi var
    </para>
 
    <para>
-    PHP ayrıştırıcısına girme ve çıkma örnekleri:
-    <informalexample>
+    <example>
+     <title>- PHP ayrıştırıcısına girme ve çıkma örnekleri</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-    echo 'Bu bir denemedir';
+    echo "Bu bir denemedir\n";
 ?>
 
-<?php echo 'Bu bir denemedir' ?>
+<?php echo "Bu bir denemedir\n" ?>
 
-<?php echo 'Son kapanış etiketini koymadık';
+<?php echo "Son kapanış etiketini koymadık\n";
 ]]>
      </programlisting>
-    </informalexample>
+    </example>
+   </para>
+   <para>
     <note>
      <para>
       Dosya sonunda PHP kapanış etiketini kullanmak isteğe bağlıdır, hatta
@@ -200,20 +215,22 @@ Ama şimdi var
    <title>Açıklamalar</title>
    <para>
     PHP, 'C', 'C++' ve Unix kabuk tarzı (Perl tarzı) açıklamaların hepsini destekler. Örnegin:
-
-    <informalexample>
+   </para>
+   <para>
+    <example>
+     <title>- Açıklamalar</title>
      <programlisting role="php">
 <![CDATA[
 <?php
-    echo 'Bu bir denemedir'; // Bu tek satırlık c++ tarzı açıklamadır
+    echo "Bu bir denemedir\n"; // Bu tek satırlık c++ tarzı açıklamadır
     /* Bu, C tarzı çok satırlı
        bir açıklamadır */
-    echo 'Bir deneme daha';
-    echo 'Bu da sonuncusu'; # Bu tek satırlık kabuk tarzı açıklamadır
+    echo "Bir deneme daha\n";
+    echo "Bu da sonuncusu\n"; # Bu tek satırlık kabuk tarzı açıklamadır
 ?>
 ]]>
      </programlisting>
-    </informalexample>
+    </example>
    </para>
    <simpara>
     "Tek satırlık" bir açıklamanın etki alanı yalnızca satır sonuna ya da PHP
@@ -224,14 +241,15 @@ Ama şimdi var
     <literal>#</literal> kullanımı bunu etkileyemez.
    </simpara>
    <para>
-    <informalexample>
+    <example>
+     <title>- Tek satırlık açıklamalar</title>
      <programlisting role="php">
 <![CDATA[
 <h1>Bu <?php # echo 'basit';?> bir örnektir.</h1>
 <p>Yukarıdaki başlık 'Bu bir örnektir' diye gösterilecektir.</p>
 ]]>
      </programlisting>
-    </informalexample>
+    </example>
    </para>
    <simpara>
     Bir 'C' tarzı açıklama ilk <literal>*/</literal> ile karşılaşıldığı
