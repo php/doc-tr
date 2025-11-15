@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: c999c7066ede7dc2df80e0bd3364bfa0ef1f9533 Maintainer: nilgun Status: ready -->
+<sect1 xml:id="language.operators.functional">
+ <title>Çağrılabilir Öğe İşleçleri</title>
+ <titleabbrev>İşlevsel Öğeler</titleabbrev>
+ <para>
+  PHP 8.5 ve sonraki sürümler, doğrudan çağrılabilir öğeler üzerinde çalışan
+  bir işleci destekler. <literal>|&gt;</literal> işleci veya "boru", sağ
+  tarafta tek bağımsız değişkenli çağrılabilir bir öğeyi kabul eder ve sol
+  taraftaki değeri ona aktararak çağrılabilir öğenin sonucunu değerlendirir.
+  Sağ taraftaki çağrılabilir öğe, geçerli herhangi bir PHP çağrılabilir öğesi
+  olabilir: bir <classname>Closure</classname>,
+  <link linkend="functions.first_class_callable_syntax">birinci sınıf
+  çağrılabilir</link> bir öğe, <link linkend="object.invoke">__invoke()</link>
+  örnekleyen bir nesne vb.
+ </para>
+ <para>
+  Bu, aşağıdaki iki satırın mantıksal olarak eşdeğer olduğu anlamına gelir.
+  <example>
+   <title>- <literal>|&gt;</literal> Kullanımı</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$result = "Merhaba Dünya" |> strlen(...);
+echo $result, PHP_EOL;
+
+$result = strlen("Merhaba Dünya");
+echo $result, PHP_EOL;
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+14
+14
+]]>
+   </screen>
+  </example>
+ </para>
+ <para>
+  Tek bir çağrı için pek kullanışlı olmasa da, birden fazla çağrı birbirine
+  zincirlendiğinde kullanışlı hale gelir. Yani, aşağıdaki iki kod parçası
+  mantıksal olarak eşdeğerdir:
+  <example>
+   <title>|&gt; çağrılarını zincirleme</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$result = "PHP Rocks"
+    |> htmlentities(...)
+    |> str_split(...)
+    |> (fn($x) => array_map(strtoupper(...), $x))
+    |> (fn($x) => array_filter($x, fn($v) => $v != 'O'))
+;
+echo $result, PHP_EOL;
+
+$temp = "PHP Rocks";
+$temp = htmlentities($temp);
+$temp = str_split($temp);
+$temp = array_map(strtoupper(...), $temp);
+$temp = array_filter($temp, fn($v) => $v != 'O');
+$result = $temp;
+echo $result, PHP_EOL;
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Array
+(
+    [0] => P
+    [1] => H
+    [2] => P
+    [3] =>
+    [4] => R
+    [6] => C
+    [7] => K
+    [8] => S
+)
+Array
+(
+    [0] => P
+    [1] => H
+    [2] => P
+    [3] =>
+    [4] => R
+    [6] => C
+    [7] => K
+    [8] => S
+)
+]]>
+   </screen>
+  </example>
+ </para>
+ <para>
+  Borunun sol tarafı herhangi bir değer veya ifade olabilir. Sağ taraf, tek
+  bir bağımsız değişken alan geçerli bir PHP çağrılabilir öğesi veya böyle
+  bir çağrılabilir öğe olarak değerlendirilen herhangi bir ifade olabilir.
+  Birden fazla zorunlu bağımsız değişkeni olan işlevlere izin verilmez ve
+  işlev yetersiz bağımsız değişkenlerle normal şekilde çağrılmış gibi
+  başarısız olur. Başvuru olarak değişken alan işlevlere izin verilmez. Sağ
+  taraf geçerli bir çağrılabilir öğe olarak değerlendirilmezse hata oluşur.
+ </para>
+ <note>
+  <para>
+   Sözdizimi belirsizliğini önlemek için, yukarıdaki örneklerde olduğu gibi,
+   bir boru işleciyle kullanıldığında <link linkend="functions.arrow">ok
+   işlevlerinin</link> yaylı ayraç içine alınması GEREKTİĞİ unutulmamalıdır.
+   Bunu yapmamak, ölümcül bir hataya yol açar.
+  </para>
+ </note>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><classname>Closure</classname></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>
