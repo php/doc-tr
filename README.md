@@ -1,15 +1,13 @@
 # PHP Belgeleri NASIL çevrilir?
 
-Çeviriye katkıda bulunmanız 3 şekilde mümkündür:
-* PHP karmanız vardır,
+Çeviriye katkıda bulunmanız 2 şekilde mümkündür:
 * PR yapabilirsiniz,
 * Çevirilerinizi ekip liderine gönderirsiniz.
 
 Hangi yöntemi kulanırsanız kullanın, çevirmenlerimizin birçok dilde ama
 mutlaka PHP ile kodlama yapabildiğini, komut satırından git kullanabildiğini,
 GitHub kullanabildiğini, HTML ve XML belgeler üretmekte ve düzenlemekte zorluk
-çekmeyeceğini, iyi ingilizce ve türkçe bildiğini ama en önemlisi "öğrenmeyi"
-bildiğini (herşeyi bilemeyiz ama öğrenebiliriz) varsayıyoruz. Aşağıdaki
+çekmeyeceğini, iyi ingilizce ve türkçe bildiğini varsayıyoruz. Aşağıdaki
 bilgiler Linux kullananlara göre düzenlenmiştir.
 
 Bir GitHub hesabınız olması önerilir.
@@ -17,26 +15,22 @@ Bir GitHub hesabınız olması önerilir.
 
 PR yapacaksanız GitHub hesabınızda oturum açtıktan sonra
 https://github.com/php/doc-tr adresine gidip bu depoya bir "fork" açın.
-Hesap sayfanızda yeni bir deponuz oldu. PR yapmayanlardan farklı olarak
-`tr` deposu olarak bu depoyu kullanacaksınız.
+Böylece GitHub hesap sayfanızda yeni bir deponuz olacak.
 
-Bizim çalışacağımız modülün ismi: `tr`
-
-Önce çalışma dizininizi oluşturun: `phpdoc`
+Bilgisayarınızda önce çalışma dizininizi oluşturun: `phpdoc`
 Dizine geçin ve şu komutları girin:
 
 GitHub PR'ları yapacaklar için komutlar:
 ```bash
-git clone git@github.com:<github-user>/doc-tr.git tr
-git clone https://github.com/php/doc-en.git en
-git clone https://github.com/php/doc-base.git doc-base
-```
+$ git clone git@github.com:<github-user>/doc-tr.git tr
+$ git clone https://github.com/php/doc-en.git en
+$ git clone https://github.com/php/doc-base.git doc-base```
+
 Liderle çalışacaklar için komutlar:
 ```bash
-git clone https://github.com/php/doc-tr.git tr
-git clone https://github.com/php/doc-en.git en
-git clone https://github.com/php/doc-base.git doc-base
-```
+$ git clone https://github.com/php/doc-tr.git tr
+$ git clone https://github.com/php/doc-en.git en
+$ git clone https://github.com/php/doc-base.git doc-base```
 
 PHP karması olanların https://github.com/php/doc-base/README.md dosyasını
 okuduktan sonra buraya dönmesini öneririm.
@@ -47,8 +41,7 @@ dizininden bahsederken "çalışma dizini" diyeceğiz. Bunu yaptıktan sonra yen
 bir çeviriye başlamaya karar vermeden önce bu üç dizinde de daima
 
 ```bash
-git pull
-```
+$ git pull```
 
 komutunu vermelisiniz. Bu komut çalışma dizininizi son haline getirir.
 `tr` dizininde sadece çevrilmiş ve çevirisi sürmekte olan dosyalar vardır.
@@ -57,7 +50,7 @@ Yani çevireceğiniz dosya `tr` altında varsa başka bir dosya seçmeniz gereke
 kopyalayacaksınız. Örneğin, `en/reference/apache/book.xml` dosyasını
 gözünüze kestirdiniz diyelim. Yapacağınız, çalışma dizininizin içinde
 ```bash
-cp en/reference/apache/book.xml tr/reference/apache/book.xml
+$ cp en/reference/apache/book.xml tr/reference/apache/book.xml
 ```
 komutunu vermeye eşdeğer bir işlem olacak.
 
@@ -89,7 +82,7 @@ tamamlandığında `ready` yazacaksınız.
 Böylece özgün belgenin sürüm numarası değiştiğinde `en` dizini altındaki
 dosya için
 ```bash
-git diff <EN-revision> <en/dizin/dosya>
+$ git diff <EN-revision> <en/dizin/dosya>
 ```
 komutuyla eski ve yeni sürümler arasındaki farkı kolayca görebilecek,
 tüm dosyayı yeni baştan çevirircesine elden geçirmekten kurtulacağız.
@@ -100,13 +93,13 @@ Güncelleme sırasında `123456` yerine özgün belgenin yeni commit hash'ini
 yazmayı unutmuyoruz. Bunu elde etmek için özgün belgenin bulunduğu dizinde
 şu komutu verin:
 ```
-cmhash  <dosya.xml>
+$ cmhash  <dosya.xml>
 ```
 
 Bu başta çalışmayacak çünkü `cmhash` bir bash alias.
 Ev dizinizde `.bashrc` dosyasının sonuna şu satırı ekleyin:
 ```bash
-alias cmhash='git log -n1 --format=format:"%H"'
+$ alias cmhash='git log -n1 --format=format:"%H"'
 ```
 ve aynı satırı bir defalık komut satırından da girin ki oturum aç/kapa
 yapmak gerekmesin. Böylece her dosya için bu alengirli komutu yazmaktan
@@ -169,22 +162,25 @@ sayfasında o tırnağı bulamayabilirsiniz.
 Linux kullananların çeviriyi kate üzerinde yapmasını öneririm.
 Windows kullananlara notepad++ öneririm.
 
+Özellikle dikkat edilmesi gereken husus, internetteki çeviri motorlarını
+yardımcı olması için kullanabilirsiniz ama o çevirileri elden geçirmeden
+buraya göndermeyin. Hatasız çeviri yapanı (yıl: 2026) hala yok.
+
 Son olarak dosyayı teslim etmeden önce
 `phpdoc/doc-base` dizininde şu komutunu kullanın:
 ```bash
 $ php configure.php --with-lang=tr --enable-force-dom-save --disable-segfault-error --enable-xml-details
 ```
-Komut hata vermemişse ve bir GiT hesabınız varsa veya GitHub PR'ı
-yapacaksanız dosyayı depoya gönderebilirsiniz.
-Aksi takdirde, dosyayı ekip liderine göndermelisiniz.
+Komut hata vermemişse ve GitHub PR'ı yapacaksanız dosyayı depoya
+gönderebilirsiniz. Aksi takdirde, dosyayı ekip liderine göndermelisiniz.
 Verdiği hatayı nasıl gidereceğinizi bilmiyorsanız listedekilere sorunuz.
 (Burada artık esr'nin ünlü belgesinden söz etmeyelim.) Hatalı dosyayı bana
-gönderebilirsiniz ama ASLA ve ASLA depoya teslim etmeyin.
+gönderebilirsiniz.
 
 Git hesabı olanlar için teslimat işlemleri:
 ```bash
-git commit -m"açıklamayı buraya yazın" <dosya.xml>
-git push
+$ git commit -m"açıklamayı buraya yazın" <dosya.xml>
+$ git push
 ```
 PR yapacak olanlar bu işlemden sonra artık GitHub hesaplarında
 Pull Request oluşturabilir.
@@ -193,10 +189,10 @@ Pull Request oluşturabilir.
 aşağıdaki komutu verin ve `revcheck.html` dosyasını tarayıcınız ile açın.
 Çevirmenler için çok yararlı bir araçtır.
 ```bash
-php doc-base/scripts/revcheck.php tr > revcheck.html
+$ php doc-base/scripts/revcheck.php tr > revcheck.html
 ```
 Veya http://doc.php.net/revcheck.php?p=filesummary&lang=tr adresine bakın
-(4 saatte bir güncellenmektedir).
+(saatte bir güncellenmektedir).
 
 
 ### Sözlük
@@ -232,7 +228,7 @@ Constants       Sabitler (Değişmezler değil!)
 Contravariance  Az Özgüllük (bu ikisi tam karşılık değil, kullanıma uygunluk sağlar)
 Covariance      Çok Özgüllük
 Control Structure    Denetim Yapısı
-Default         Öntanımlı
+Default         Ön tanımlı
 Detail          Ayrıntı (lütfen "detay" diye çevirmeyin)
 Digest          Özet
 Directive       Yönerge
@@ -263,6 +259,7 @@ Interpreter     Yorumlayıcı
 integer         tamsayı
 Label           Yafta
 Matrix          Dizey
+Mechanism       Düzenek
 Method          Yöntem
 mixed           karışık
 Module          Modül
