@@ -24,13 +24,15 @@ GitHub PR'ları yapacaklar için komutlar:
 ```bash
 $ git clone git@github.com:<github-user>/doc-tr.git tr
 $ git clone https://github.com/php/doc-en.git en
-$ git clone https://github.com/php/doc-base.git doc-base```
+$ git clone https://github.com/php/doc-base.git doc-base
+```
 
 Liderle çalışacaklar için komutlar:
 ```bash
 $ git clone https://github.com/php/doc-tr.git tr
 $ git clone https://github.com/php/doc-en.git en
-$ git clone https://github.com/php/doc-base.git doc-base```
+$ git clone https://github.com/php/doc-base.git doc-base
+```
 
 PHP karması olanların https://github.com/php/doc-base/README.md dosyasını
 okuduktan sonra buraya dönmesini öneririm.
@@ -41,7 +43,8 @@ dizininden bahsederken "çalışma dizini" diyeceğiz. Bunu yaptıktan sonra yen
 bir çeviriye başlamaya karar vermeden önce bu üç dizinde de daima
 
 ```bash
-$ git pull```
+$ git pull
+```
 
 komutunu vermelisiniz. Bu komut çalışma dizininizi son haline getirir.
 `tr` dizininde sadece çevrilmiş ve çevirisi sürmekte olan dosyalar vardır.
