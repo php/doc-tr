@@ -302,6 +302,7 @@ Slash           Bölü imi
 Statement       Deyim
 Strict Typing   Katı Kodlama
 String          Dize, dizge
+Superglobal     Süper Küresel
 Tag             İmlenim dilleri (*ML) için "etiket"
 Ternary         Üç terimli
 Thread          Evre
