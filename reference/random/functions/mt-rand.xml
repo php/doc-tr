@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: d6dc2be3c5c70e4a1c3d13f788643ea232747c19 Maintainer: lacatoire Status: ready -->
+<refentry xml:id="function.mt-rand" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>mt_rand</refname>
+  <refpurpose>Mersenne Twister Rastgele Sayı Üreteci ile rastgele bir değer üretir</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>mt_rand</methodname>
+   <void/>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>int</type><methodname>mt_rand</methodname>
+   <methodparam><type>int</type><parameter>asgari</parameter></methodparam>
+   <methodparam><type>int</type><parameter>azami</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>
+   Eski libc'lerin pek çok rastgele sayı üreteci, şüpheli ya da bilinmeyen
+   özelliklere sahiptir ve yavaştır. <function>mt_rand</function> işlevi,
+   eski <function>rand</function> işlevinin yerine doğrudan kullanılabilen
+   bir karşılığıdır. <link xlink:href="&url.mersenne;">Mersenne Twister</link>
+   kullanan, bilinen özelliklere sahip bir rastgele sayı üreteci kullanır.
+   Bu üreteç, ortalama bir libc rand() işlevinden dört kat daha hızlı
+   rastgele sayı üretir.
+  </simpara>
+  <simpara>
+   Seçimlik <parameter>asgari</parameter> ve <parameter>azami</parameter>
+   bağımsız değişkenleri olmaksızın çağrıldığında
+   <function>mt_rand</function>, 0 ile <function>mt_getrandmax</function>
+   arasında bir sözde rastgele değer döndürür. Örneğin, 5 ile 15 (dahil)
+   arasında rastgele bir sayı isteniyorsa <literal>mt_rand(5, 15)</literal>
+   kullanılabilir.
+  </simpara>
+  &caution.cryptographically-insecure;
+  &caution.mt19937-global-state;
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>asgari</parameter></term>
+     <listitem>
+      <para>
+       Döndürülecek seçimlik en küçük değer (öntanımlı: 0)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>azami</parameter></term>
+     <listitem>
+      <para>
+       Döndürülecek seçimlik en büyük değer
+       (öntanımlı: <function>mt_getrandmax</function>)
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <parameter>asgari</parameter> (veya 0) ile <parameter>azami</parameter>
+   (veya <function>mt_getrandmax</function>, dahil) arasında rastgele bir
+   tamsayı değeri.
+  </para>
+ </refsect1>
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <parameter>azami</parameter>, <parameter>asgari</parameter>
+     değerinden küçükse bir <classname>ValueError</classname> istisnası
+     yavrulanır.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+      <entry>8.0.0</entry>
+      <entry>
+       <parameter>azami</parameter>, <parameter>asgari</parameter>
+       değerinden küçükse bir <classname>ValueError</classname> istisnası
+       yavrulanır; önceden <constant>E_WARNING</constant> uyarısı
+       üretiliyor ve işlev &false; döndürüyordu.
+      </entry>
+     </row>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <function>mt_rand</function>, modulo sapma hatası için
+        <link linkend="migration72.incompatible.rand-mt_rand-output">bir hata düzeltmesi aldı</link>.
+        Bu, belirli bir tohumla üretilen dizilerin, 64 bitlik makinelerde
+        PHP 7.1'den farklı olabileceği anlamına gelir.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <function>rand</function> işlevi <function>mt_rand</function>
+        işlevinin <link linkend="migration71.incompatible.rand-srand-aliases">takma adı haline getirildi</link>.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <function>mt_rand</function> işlevi, Mersenne Twister algoritmasının
+        sabitlenmiş, doğru sürümünü kullanmak üzere
+        <link linkend="migration71.incompatible.fixes-to-mt_rand-algorithm">güncellendi</link>.
+        Eski davranışa geri dönmek için ikinci bağımsız değişken olarak
+        <constant>MT_RAND_PHP</constant> ile <function>mt_srand</function>
+        kullanılabilir.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>mt_rand</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo mt_rand(), "\n";
+echo mt_rand(), "\n";
+
+echo mt_rand(5, 15), "\n";
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+1604716014
+1478613278
+6
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    <parameter>asgari</parameter> <parameter>azami</parameter> aralığı
+    <function>mt_getrandmax</function> aralığı içinde olmalıdır. Yani
+    (<parameter>azami</parameter> - <parameter>asgari</parameter>) &lt;=
+    <function>mt_getrandmax</function>. Aksi takdirde,
+    <function>mt_rand</function> olması gerekenden daha düşük kaliteli
+    rastgele sayılar döndürebilir.
+   </para>
+  </warning>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mt_srand</function></member>
+    <member><function>mt_getrandmax</function></member>
+    <member><function>random_int</function></member>
+    <member><function>random_bytes</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

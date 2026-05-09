@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: d6dc2be3c5c70e4a1c3d13f788643ea232747c19 Maintainer: lacatoire Status: ready -->
+<refentry xml:id="function.rand" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>rand</refname>
+  <refpurpose>Bir rastgele tamsayı üretir</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>rand</methodname>
+   <void/>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>int</type><methodname>rand</methodname>
+   <methodparam><type>int</type><parameter>asgari</parameter></methodparam>
+   <methodparam><type>int</type><parameter>azami</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>
+   Seçimlik <parameter>asgari</parameter> ve <parameter>azami</parameter>
+   bağımsız değişkenleri olmaksızın çağrıldığında <function>rand</function>,
+   0 ile <function>getrandmax</function> arasında bir sözde rastgele tamsayı
+   döndürür. Örneğin, 5 ile 15 (dahil) arasında rastgele bir sayı isteniyorsa
+   <literal>rand(5, 15)</literal> kullanılabilir.
+  </simpara>
+  &caution.cryptographically-insecure;
+  &caution.mt19937-global-state;
+  <note>
+   <simpara>
+    PHP 7.1.0 öncesinde, <function>getrandmax</function> bazı platformlarda
+    (Windows gibi) yalnızca 32767 idi. 32767'den büyük bir aralık
+    gerekiyorsa, <parameter>asgari</parameter> ve <parameter>azami</parameter>
+    bağımsız değişkenleri belirtilerek bundan daha büyük bir aralık
+    oluşturulabilir; ya da bunun yerine <function>mt_rand</function>
+    kullanılabilir.
+   </simpara>
+  </note>
+  <note><simpara>PHP 7.1.0'dan itibaren, <function>rand</function>
+   <function>mt_rand</function> ile aynı rastgele sayı üretecini kullanır.
+   Geriye dönük uyumluluğu korumak amacıyla <function>rand</function>,
+   <function>mt_rand</function> işlevinin aksine
+   <parameter>azami</parameter> değerinin <parameter>asgari</parameter>
+   değerinden küçük olmasına izin verir, &false; döndürmez.</simpara>
+  </note>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>asgari</parameter></term>
+     <listitem>
+      <para>
+       Döndürülecek en küçük değer (öntanımlı: 0)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>azami</parameter></term>
+     <listitem>
+      <para>
+       Döndürülecek en büyük değer (öntanımlı: <function>getrandmax</function>)
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <parameter>asgari</parameter> (veya 0) ile <parameter>azami</parameter>
+   (veya <function>getrandmax</function>, dahil) arasında bir sözde rastgele
+   değer.
+  </para>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>7.2.0</entry>
+       <entry>
+        <function>rand</function> işlevi, modulo sapma hatası için
+        <link linkend="migration72.incompatible.rand-mt_rand-output">bir hata düzeltmesi aldı</link>.
+        Bu, belirli bir tohumla üretilen dizilerin, 64 bitlik makinelerde
+        PHP 7.1'den farklı olabileceği anlamına gelir.
+       </entry>
+      </row>
+      <row>
+       <entry>7.1.0</entry>
+       <entry>
+        <function>rand</function> işlevi <function>mt_rand</function>
+        işlevinin <link linkend="migration71.incompatible.rand-srand-aliases">takma adı haline getirildi</link>.
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>rand</function> örneği</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo rand(), "\n";
+echo rand(), "\n";
+
+echo rand(5, 15), "\n";
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+7771
+22264
+11
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>
+    <parameter>asgari</parameter> <parameter>azami</parameter> aralığı
+    <function>getrandmax</function> aralığı içinde olmalıdır. Yani
+    abs(<parameter>azami</parameter> - <parameter>asgari</parameter>) &lt;=
+    <function>getrandmax</function>. Aksi takdirde,
+    <function>rand</function> düşük kaliteli rastgele sayılar
+    döndürebilir.
+   </para>
+  </warning>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>srand</function></member>
+    <member><function>getrandmax</function></member>
+    <member><function>mt_rand</function></member>
+    <member><function>random_int</function></member>
+    <member><function>random_bytes</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
