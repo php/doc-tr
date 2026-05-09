@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 9f30ccc6aa0dabe411c52305202fe85209ddc06b Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: d816a0fad6c458d9515f697cc89e26ca9d8069f5 Maintainer: lacatoire Status: ready -->
 <refentry xml:id="function.unset" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>unset</refname>
-  <refpurpose>Belirtilen değişkeni bildirimsiz yapar</refpurpose>
+  <refpurpose>Belirtilen değişkeni <function>unset</function> ile bildirimsiz yapar</refpurpose>
  </refnamediv>
 
  <refsect1 role="description">
@@ -26,8 +26,8 @@
    içinde küreselleştirilmiş bir değişken olup değişkenin sadece yerel tanımı
    yok edilir. Değişkenin çağrı ortamındaki değeri <function>unset</function>
    çağrılmadan önceki değerini korur.
-  </para>
-   <informalexample>
+   <example>
+    <title><function>unset</function> kullanımı</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -43,20 +43,13 @@ echo $foo;
 ?>
 ]]>
     </programlisting>
-   </informalexample>
-  &example.outputs;
-   <informalexample>
-    <screen>
-<![CDATA[
-bar
-]]>
-    </screen>
-   </informalexample>
+   </example>
+  </para>
   <para>
    Bir küresel değişkeni bir işlev içinde yoketmeniz gerekliyse
    <varname>$GLOBALS</varname> dizisini kullanabilirsiniz:
-  </para>
-   <informalexample>
+   <example>
+    <title>Bir küresel değişkenin <function>unset</function> ile yokedilmesi</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -70,14 +63,15 @@ foo();
 ?>
 ]]>
     </programlisting>
-   </informalexample>
+   </example>
+  </para>
   <para>
    Gönderimli aktarılan bir değişkeni bir işlev içinde yoketmeye çalışırsanız
    sadece yerel değişkeni yoketmiş olursunuz. Değişkenin, işlevin çağrıldıgı
    ortamdaki değeri <function>unset</function> çağrılmadan önceki değerini
    korur.
-  </para>
-   <informalexample>
+   <example>
+    <title>Gönderim ile <function>unset</function></title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -95,22 +89,14 @@ echo "$bar\n";
 ?>
 ]]>
     </programlisting>
-   </informalexample>
-   &example.outputs;
-   <informalexample>
-    <screen>
-<![CDATA[
-bir şey
-bir şey
-]]>
-    </screen>
-   </informalexample>
+   </example>
+  </para>
   <para>
    Bir duruk değişkeni bir işlev içinde yoketmeye çalışırsanız
    değişkeni sadece işlevin kalan bağlamı için yoketmiş olursunuz. Aşağıdaki
    çağrılar değişkenin önceki değerinin geçerli kaldığını gösterecektir.
-  </para>
-   <informalexample>
+   <example>
+    <title>Duruk değişkenle <function>unset</function></title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -130,17 +116,8 @@ foo();
 ?>
 ]]>
     </programlisting>
-   </informalexample>
-   &example.outputs;
-   <informalexample>
-    <screen>
-<![CDATA[
-unset öncesi: 1, unset sonrası: 23
-unset öncesi: 2, unset sonrası: 23
-unset öncesi: 3, unset sonrası: 23
-]]>
-    </screen>
-   </informalexample>
+   </example>
+  </para>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -179,7 +156,7 @@ unset öncesi: 3, unset sonrası: 23
   <para>
    <example>
     <title>- <function>unset</function> örneği</title>
-    <programlisting role="php">
+    <programlisting role="php" annotations="non-interactive">
 <![CDATA[
 <?php
 // tek bir değişkeni yokedelim
@@ -193,35 +170,6 @@ unset($foo1, $foo2, $foo3);
 ?>
 ]]>
     </programlisting>
-   </example>
-   <example>
-    <title>- (unset) - &null;'a dönüşüm örneği</title>
-    <para>
-     <link linkend="language.types.null.casting"><literal>(unset)</literal></link>
-     dönüşümü çoğunlukla <function>unset</function> işlevi ile karıştırılır.
-     <literal>(unset)</literal> dönüşümü bütünlük adına, sadece
-     <literal>NULL</literal> döndürür, dönüşüm yaptığı değişkene &null;
-     atamaz, yani işlev gibi değişkeni bildirimsiz yapmaz.
-     <literal>(unset)</literal> dönüşümünün kullanımı PHP 7.2.0
-     ve sonrasında önerilmemekte olup 8.0.0'da kullanımdan kaldırılmıştır.
-    </para>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$name = 'Felipe';
-
-var_dump((unset) $name);
-var_dump($name);
-?>
-]]>
-    </programlisting>
-    &example.outputs;
-    <screen>
-<![CDATA[
-NULL
-string(6) "Felipe"
-]]>
-    </screen>
    </example>
   </para>
  </refsect1>
