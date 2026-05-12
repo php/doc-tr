@@ -267,6 +267,7 @@ Mechanism       Düzenek
 Method          Yöntem
 mixed           karışık
 Module          Modül
+Modulo          Kalan
 Multithread     Çok evreli
 Multibyte       Çok baytlı
 Nowdoc          Yorumsuz metin
