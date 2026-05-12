@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: d94400847cec608f93830aa85e0761b97d7cb9bf Maintainer: behzat Status: ready -->
+<!-- EN-Revision: 3a8c3e77df070a046c9d5b56b68926ca2d7e5ee3 Maintainer: lacatoire Status: ready -->
+<!-- CREDITS: behzat -->
 <refentry xml:id="function.date" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>date</refname>
@@ -107,21 +108,20 @@ date_default_timezone_set('UTC');
 
 
 // Şöyle bir şey basar: Monday
-echo date("l");
+echo date("l") . "\n";
 
 // Şöyle bir şey basar: Monday 8th of August 2005 03:12:46 PM
-echo date('l jS \of F Y h:i:s A');
+echo date('l jS \of F Y h:i:s A') . "\n";
 
 // Şöyle bir şey basar: July 1, 2000 is on a Saturday
-echo "July 1, 2000 is on a " . date("l", mktime(0, 0, 0, 7, 1, 2000));
+echo "July 1, 2000 is on a " . date("l", mktime(0, 0, 0, 7, 1, 2000)) . "\n";
 
 /* biçim bağımsız değişkeni için sabit kullanımı*/
 // Şöyle bir şey basar: Wed, 25 Sep 2013 15:28:57 -0700
-echo date(DATE_RFC2822);
+echo date(DATE_RFC2822) . "\n";
 
 // Şöyle bir şey basar: 2000-07-01T00:00:00+00:00
 echo date(DATE_ATOM, mktime(0, 0, 0, 7, 1, 2000));
-?>
 ]]>
     </programlisting>
    </example>
@@ -138,34 +138,9 @@ echo date(DATE_ATOM, mktime(0, 0, 0, 7, 1, 2000));
 <?php
 // Şöyle bir şey basar: Wednesday the 15th
 echo date('l \t\h\e jS');
-?>
 ]]>
     </programlisting>
    </example>
-  </para>
-  <para>
-   <function>date</function> ve <function>mktime</function> işlevleri
-   birlikte, geçmiş ya da gelecek zamanın bulunmasında kullanılabilir.
-   <example>
-    <title>- <function>date</function> ve <function>mktime</function> örneği
-    </title>
-    <programlisting role="php">
-<![CDATA[
-<?php
-$yarın  = mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
-$geçenay = mktime(0, 0, 0, date("m")-1, date("d"),   date("Y"));
-$gelecekyıl = mktime(0, 0, 0, date("m"),   date("d"),   date("Y")+1);
-?>
-]]>
-    </programlisting>
-   </example>
-   <note>
-    <para>
-     Bu kullanım, yaz saati uygulamasından dolayı, bir zaman damgasına
-     basitçe saniye, gün ve ay ekleme veya çıkartma işlemlerinden daha
-     güvenilirdir.
-    </para>
-   </note>
   </para>
   <para>
    Bazı <function>date</function> işlevi biçimlendirme örnekleri. Diğer
@@ -181,18 +156,18 @@ $gelecekyıl = mktime(0, 0, 0, date("m"),   date("d"),   date("Y")+1);
 <?php
 // Bugünün; March 10th, 2001, 5:16:18 pm olduğunu ve
 // Mountain Standard Time (MST) Zaman Diliminde olduğumuzu varsayıyoruz
+date_default_timezone_set("America/Phoenix");
 
-$bugün = date("F j, Y, g:i a");                 // March 10, 2001, 5:16 pm
-$bugün = date("m.d.y");                         // 03.10.01
-$bugün = date("j, n, Y");                       // 10, 3, 2001
-$bugün = date("Ymd");                           // 20010310
-$bugün = date('h-i-s, j-m-y, it is w Day');     // 05-16-18, 10-03-01, 1631 1618 6 Satpm01
-$bugün = date('\i\t \i\s \t\h\e jS \d\a\y.');   // it is the 10th day.
-$bugün = date("D M j G:i:s T Y");               // Sat Mar 10 17:16:18 MST 2001
-$bugün = date('H:m:s \m \i\s\ \m\o\n\t\h');     // 17:03:18 m is month
-$bugün = date("H:i:s");                         // 17:16:18
-$bugün = date("Y-m-d H:i:s");                   // 2001-03-10 17:16:18 (MySQL DATETIME biçimi)
-?>
+echo date("F j, Y, g:i a") . "\n";                 // March 10, 2001, 5:16 pm
+echo date("m.d.y") . "\n";                         // 03.10.01
+echo date("j, n, Y") . "\n";                       // 10, 3, 2001
+echo date("Ymd") . "\n";                           // 20010310
+echo date('h-i-s, j-m-y, it is w Day') . "\n";     // 05-16-18, 10-03-01, 1631 1618 6 Satpm01
+echo date('\i\t \i\s \t\h\e jS \d\a\y.') . "\n";   // it is the 10th day.
+echo date("D M j G:i:s T Y") . "\n";               // Sat Mar 10 17:16:18 MST 2001
+echo date('H:m:s \m \i\s\ \m\o\n\t\h') . "\n";     // 17:03:18 m is month
+echo date("H:i:s") . "\n";                         // 17:16:18
+echo date("Y-m-d H:i:s") . "\n";                   // 2001-03-10 17:16:18 (MySQL DATETIME biçimi)
 ]]>
     </programlisting>
    </example>
