@@ -208,6 +208,7 @@ KAVRAM KARGAŞASI İÇİNDE BIRAKMAMAKTIR._
 _               Altçizgi imi
 &               Ve imi
 Abstract        Metin için "Özet" ifadeler için "soyut" veya "mutlak"
+Affine transformation   Benzeştirme dönüşümü
 Argument        Bağımsız değişken  (return durumunda: Bağımlı değişken)
 Array           Dizi
 Associative Array  İlişkisel Dizi
