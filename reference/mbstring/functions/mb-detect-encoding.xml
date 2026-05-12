@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2c17cef6e71c3d85011319cde128cc4edf89a053 Maintainer: nilgun Status: ready -->
+<!-- EN-Revision: 7c4b5fb40ac3149a5b931f1e31b1050ab5eaab7e Maintainer: nilgun Status: ready -->
 <refentry xml:id="function.mb-detect-encoding" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>mb_detect_encoding</refname>
@@ -15,8 +15,14 @@
    <methodparam choice="opt"><type>bool</type><parameter>katı</parameter><initializer>&false;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   Sıralı adaylar listesinden <type>string</type> türündeki
+   Adaylar listesinden <type>string</type> türündeki
    <parameter>dizge</parameter> için en uygun karakter kodlamasını saptar.
+  </para>
+  <para>
+   PHP 8.1 itibariyle, bu işlev belirtilen listedeki geçerli metin
+   kodlamalarından hangisinin doğru olma olasılığının en yüksek olduğunu
+   belirlemek için sezgisel yöntemler kullanır ve sonuç, belirtilen
+   <parameter>kodlamalar</parameter> sırasında olmayabilir.
   </para>
   <para>
    Amaçlanan karakter kodlamasının otomatik tespiti hiçbir zaman tamamen
@@ -28,8 +34,19 @@
   <para>
    Bu işlev, tüm bayt dizilerinin geçerli bir dizge oluşturmadığı çok baytlı
    kodlamalarda çok yararlıdır. Belirtilen dizge böyle bir dizi içeriyorsa, bu
-   kodlama reddedilecek ve sonraki kodlamaya bakılacaktır.
+   kodlama reddedilecektir.
   </para>
+
+  <warning>
+   <title>Sonuç doğru değildir</title>
+   <para>
+    Bu işlevin adı yanıltıcıdır; "algılama" yerine "tahmin" yapar.
+   </para>
+   <para>
+    Yapılan tahminler doğruluktan uzaktır, bu nedenle bu işlevle doğru
+    karakter kodlamasını güvenilir biçimde algılamak mümkün değildir.
+   </para>
+  </warning>
  </refsect1>
 
  <refsect1 role="parameters">
@@ -49,8 +66,8 @@
      <listitem>
       <para>
        <parameter>kodlamalar</parameter> ile denenecek karakter
-       kodlamalarının listesi belirtilir. Algı sırası bir dizeler dizisi veya
-       virgül ayraçlı bir liste olarak belirtilebilir.
+       kodlamalarının listesi belirtilir. Liste bir dizeler dizisi veya
+       virgül ayraçlı tek bir dizge olarak belirtilebilir.
       </para>
       <para>
        <parameter>kodlamalar</parameter> atlanırsa veya &null; ise,
@@ -121,14 +138,17 @@
     <programlisting role="php">
 <![CDATA[
 <?php
+
+$str = "\x95\xB6\x8E\x9A\x83\x52\x81\x5B\x83\x68";
+
 // Karakter kodlamasını dahili algı sırasını kullanarak algılatalım
-echo mb_detect_encoding($str);
+var_dump(mb_detect_encoding($str));
 
 // "auto" değeri mbstring.language ini değerine göre genişletilir
-echo mb_detect_encoding($str, "auto");
+var_dump(mb_detect_encoding($str, "auto"));
 
 // Kodlamaları virgül ayraçlı liste olarak belirtelim
-echo mb_detect_encoding($str, "JIS, eucjp-win, sjis-win");
+var_dump(mb_detect_encoding($str, "JIS, eucjp-win, sjis-win"));
 
 // Kodlamaları dizi olarak belirtelim
 $encodings = [
@@ -136,10 +156,19 @@ $encodings = [
   "JIS",
   "EUC-JP"
 ];
-echo mb_detect_encoding($str, $encodings);
+var_dump(mb_detect_encoding($str, $encodings));
 ?>
 ]]>
     </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "ASCII"
+string(5) "ASCII"
+string(8) "SJIS-win"
+string(5) "ASCII"
+]]>
+    </screen>
    </example>
   </para>
   <para>
@@ -200,8 +229,9 @@ string(10) "ISO-8859-1"
 <?php
 $str = "\xC4\xA2";
 
-// Dizge üç kodlamada da geçerli, dolayısıyla listenin başındaki döner
-var_dump(mb_detect_encoding($str, ['UTF-8', 'ISO-8859-1', 'ISO-8859-5']));
+// Dizge üç kodlamada da geçerli, ancak listenin başındaki her zaman dönmeyebilir
+var_dump(mb_detect_encoding($str, ['UTF-8']));
+var_dump(mb_detect_encoding($str, ['UTF-8', 'ISO-8859-1', 'ISO-8859-5'])); // PHP 8.1 itibariyle bu UTF-8 yerine ISO-8859-1 döndürür
 var_dump(mb_detect_encoding($str, ['ISO-8859-1', 'ISO-8859-5', 'UTF-8']));
 var_dump(mb_detect_encoding($str, ['ISO-8859-5', 'UTF-8', 'ISO-8859-1']));
 ?>
@@ -211,6 +241,7 @@ var_dump(mb_detect_encoding($str, ['ISO-8859-5', 'UTF-8', 'ISO-8859-1']));
     <screen>
 <![CDATA[
 string(5) "UTF-8"
+string(10) "ISO-8859-1"
 string(10) "ISO-8859-1"
 string(10) "ISO-8859-5"
 ]]>
