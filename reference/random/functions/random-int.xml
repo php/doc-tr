@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 0ec8e36e0f649354b20c714080a903d32df4dbfb Maintainer: lacatoire Status: ready -->
+
+<refentry xml:id="function.random-int" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>random_int</refname>
+  <refpurpose>Kriptografik olarak güvenli, düzgün dağılımlı bir tamsayı üretir</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description"><!-- {{{ -->
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>random_int</methodname>
+   <methodparam><type>int</type><parameter>asgari</parameter></methodparam>
+   <methodparam><type>int</type><parameter>azami</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Belirtilen asgari ve azami değerler arasında düzgün dağılımlı bir tamsayı
+   üretir.
+  </para>
+  <para>
+   Bu işlevin ürettiği rastgelelik, şifreleme anahtarları gibi uzun ömürlü
+   gizli değerlerin üretimi dahil tüm uygulamalar için uygundur.
+  </para>
+  &csprng.sources;
+  &csprng.function.backport;
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="parameters"><!-- {{{ -->
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>asgari</parameter></term>
+    <listitem>
+     <para>
+      Döndürülebilecek en küçük değer.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>azami</parameter></term>
+    <listitem>
+     <para>
+      Döndürülebilecek en büyük değer.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="returnvalues"><!-- {{{ -->
+  &reftitle.returnvalues;
+  <para>
+   Kapalı aralık [<parameter>asgari</parameter>, <parameter>azami</parameter>]
+   içinden kriptografik olarak güvenli, düzgün dağılımlı bir tamsayı.
+   Hem <parameter>asgari</parameter> hem de <parameter>azami</parameter> olası
+   dönüş değerleridir.
+  </para>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="errors"><!-- {{{ -->
+  &reftitle.errors;
+  <itemizedlist>
+   &csprng.errors;
+   <listitem>
+    <simpara>
+     <parameter>azami</parameter> <parameter>asgari</parameter>'den
+     küçükse bir <classname>ValueError</classname> yavrulanır.
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.2.0</entry>
+      <entry>
+       Bir <acronym>CSPRNG</acronym> hatası durumunda bu işlev artık bir
+       <classname>Random\RandomException</classname> yavruluyor. Evvelce
+       sıradan bir <classname>Exception</classname> yavrulanıyordu.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples"><!-- {{{ -->
+  &reftitle.examples;
+  <example xml:id="random-int.example.basic"><!-- {{{ -->
+   <title><function>random_int</function> örneği</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(random_int(100, 999));
+var_dump(random_int(-1000, 0));
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+int(248)
+int(-898)
+]]>
+   </screen>
+  </example><!-- }}} -->
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="seealso"><!-- {{{ -->
+  &reftitle.seealso;
+  <simplelist>
+   <member><methodname>Random\Randomizer::getInt</methodname></member>
+   <member><function>random_bytes</function></member>
+  </simplelist>
+ </refsect1><!-- }}} -->
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
